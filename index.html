@@ -1,0 +1,74 @@
+<html>
+  <head>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/hls.js@canary"></script> -->
+    <script type="module" src="./js/player-chrome.js"></script>
+    <script type="module" src="./js/hls-video-element.js"></script>
+    <script type="module" src="./js/video-element.js"></script>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <!-- <video-element
+      id="asdf"
+      src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
+      controls="controls"
+    ></video-element> -->
+
+    <!-- <video id="origHLS" controls></video> -->
+    <!-- <script>
+      const origHLS = document.getElementById('origHLS');
+      var hls = new Hls();
+      hls.loadSource(
+        'https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8'
+      );
+      hls.attachMedia(origHLS);
+      // hls.on(Hls.Events.MANIFEST_PARSED,function() {
+      //   video.play();
+      // });
+    </script> -->
+
+    <video
+      src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
+      controls="controls"
+      muted
+      id="ven"
+      preload="none"
+    ></video>
+
+    <video-element
+      src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
+      controls="controls"
+      muted
+      id="ve"
+      preload="none"
+    ></video-element>
+
+    <!-- <hls-video
+      id="asdf"
+      class="media-element"
+      src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"
+      preload="none"
+      controls="controls"
+      crossorigin=""
+      testattr=""
+      muted
+    ></hls-video> -->
+
+    <player-chrome id="my-player-chrome">
+      <!-- <video
+        id="videoEl"
+        src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
+      ></video> -->
+      <hls-video
+        class="media-element"
+        src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"
+        preload="none"
+      ></hls-video>
+      <player-control-bar>
+        <player-play-button>Play</player-play-button>
+        <player-progress-slider>Progress</player-progress-slider>
+        <player-fullscreen-button>Fullscreen</player-fullscreen-button>
+        <player-pip-button>PIP</player-pip-button>
+      </player-control-bar>
+    </player-chrome>
+  </body>
+</html>
