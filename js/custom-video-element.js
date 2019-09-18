@@ -1,69 +1,39 @@
+/**
+ * Custom Video Element
+ * The goal is to create an element that works just like the video element
+ * but can be extended/sub-classed, because native elements cannot be
+ * extended today.
+ */
+
 const template = document.createElement('template');
 // Could you get styles to apply by passing a global button from global to shadow?
-
-// Map all native element properties to the custom element
-// so that they're applied to the native element.
-// Skipping HTMLElement because of things like "attachShadow"
-// causing issues. Most of those props still need to apply to
-// the custom element.
-// Excluding HTMLElement, but includign EventTarget props
-let nativeElProps = [];
-
-// Can't check typeof directly on element prototypes without
-// throwing Illegal Invocation errors, so creating an element
-// to check on instead.
-const nativeElTest = document.createElement('video');
-
-// Deprecated props throw warnings if used, so exclude them
-const deprecatedProps = [
-  'webkitDisplayingFullscreen',
-  'webkitSupportsFullscreen',
-  // 'width',
-  // 'height',
-];
-
-// Walk the prototype chain up to HTMLElement.
-// This will grab all super class props in between.
-// e.g. VideoElement and MediaElement
-for (
-  let proto = Object.getPrototypeOf(nativeElTest);
-  proto && proto !== HTMLElement.prototype;
-  proto = Object.getPrototypeOf(proto)
-) {
-  Object.keys(proto).forEach(key => {
-    if (deprecatedProps.indexOf(key) === -1) {
-      nativeElProps.push(key);
-    }
-  });
-}
-
-// For the video element we also want to pass through all event listeners.
-nativeElProps = nativeElProps.concat(Object.keys(EventTarget.prototype));
 
 template.innerHTML = `
 <style>
   :host {
+    /* Supposed to reset styles. Need to understand the specific effects more */
     all: initial;
+
+    /* display:inline (like the native el) makes it so you can't fill
+      the container with the native el */
     display: inline-block;
     box-sizing: border-box;
-
     position: relative;
 
+    /* Same default widths as the native el */
     width: 300px;
     height: 150px;
-
-    background-color: #ccc;
-    border: 1px solid #900;
   }
 
   video {
+    /* Fill the continer */
     width: 100%;
     height: 100%;
   }
 </style>
 `;
 
-class VideoElement extends HTMLElement {
+class CustomVideoElement extends HTMLElement {
   nativeEl = null;
 
   constructor() {
@@ -74,26 +44,26 @@ class VideoElement extends HTMLElement {
 
     const nativeEl = (this.nativeEl = document.createElement('video'));
 
+    // Initialize all the attribute properties
     Array.prototype.forEach.call(this.attributes, attrNode => {
       this.attributeChangedCallback(attrNode.name, null, attrNode.value);
     });
 
     // Neither Chrome or Firefox support setting the muted attribute
     // after using document.createElement.
-    // One way to get around this would be to build the tag as a string.
+    // One way to get around this would be to build the native tag as a string.
     // But just fixing it manually for now.
-    // Apparently this may also be an issue with <input checked>
+    // Apparently this may also be an issue with <input checked> for buttons
     if (nativeEl.defaultMuted) {
       nativeEl.muted = true;
     }
 
-    this.nativeEl.addEventListener('loadedmetadata', e => {});
-
     this.shadowRoot.appendChild(nativeEl);
   }
 
-  // Required for attributeChangedCallback
-  // Needs to be the lowercase word, e.g. crossorigin, not crossOrigin
+  // observedAttributes is required to trigger attributeChangedCallback
+  // for any attributes on the custom element.
+  // Attributes need to be the lowercase word, e.g. crossorigin, not crossOrigin
   static get observedAttributes() {
     let attrs = [];
 
@@ -125,6 +95,8 @@ class VideoElement extends HTMLElement {
     return attrs;
   }
 
+  // We need to handle sub-class custom attributes differently from
+  // attrs meant to be passed to the internal native el.
   attributeChangedCallback(attrName, oldValue, newValue) {
     // Find the matching prop for custom attributes
     const ownProps = Object.getOwnPropertyNames(Object.getPrototypeOf(this));
@@ -136,72 +108,84 @@ class VideoElement extends HTMLElement {
         .toString()
         .indexOf('function HTMLElement') === 0;
 
-    // If this is a custom attribute we want to set the
-    // matching property.
+    // If this is a subclass custom attribute we want to set the
+    // matching property on the subclass
     if (propName && !isBaseElement) {
+      // Boolean props should never start as null
       if (typeof this[propName] == 'boolean') {
+        // null is returned when attributes are removed i.e. boolean attrs
         if (newValue === null) {
           this[propName] = false;
         } else {
+          // The new value might be an empty string, which is still true
+          // for boolean attributes
           this[propName] = true;
         }
       } else {
         this[propName] = newValue;
       }
-
-      // Just pass anything else through to the native el
     } else {
+      // When this is the original Custom Element, or the subclass doesn't
+      // have a matching prop, pass it through.
       if (newValue === null) {
         this.nativeEl.removeAttribute(attrName);
       } else {
-        this.nativeEl.setAttribute(attrName, newValue);
+        // Ignore a few that don't need to be passed through just in case
+        // it creates unexpected behavior.
+        if (['id', 'class'].indexOf(attrName) === -1) {
+          this.nativeEl.setAttribute(attrName, newValue);
+        }
       }
     }
-
-    // if (this[attrName]) {
-    //   propName = attrName;
-    // } else {
-    //   // Find the matching property (not lowercased)
-    //   // Walk the prototype chain to find it
-    //   for (
-    //     let proto = Object.getPrototypeOf(this);
-    //     proto;
-    //     proto = Object.getPrototypeOf(proto)
-    //   ) {
-    //     Object.getOwnPropertyNames(proto).forEach(key => {
-    //       if (key.toLowerCase() === attrName) {
-    //         propName = key;
-    //       }
-    //     });
-    //
-    //     if (propName) {
-    //       break;
-    //     }
-    //   }
-    // }
-    //
-    // if (!propName) {
-    //   // Not sure if it's an HTML requirement, but I'm not aware of
-    //   // any attributes without a matching prop.
-    //   console.warn(`No matching property for attribute: ${attrName}.`);
-    //   return;
-    // }
-    //
-    // if (newValue === null) {
-    //   this.nativeEl.removeAttribute(attrName);
-    // } else {
-    //   this.nativeEl.setAttribute(attrName, newValue);
-    // }
   }
 }
 
-// Proxy native el functions from the custom el to the native el
+// Map all native element properties to the custom element
+// so that they're applied to the native element.
+// Skipping HTMLElement because of things like "attachShadow"
+// causing issues. Most of those props still need to apply to
+// the custom element.
+// But includign EventTarget props because most events emit from
+// the native element.
+let nativeElProps = [];
+
+// Can't check typeof directly on element prototypes without
+// throwing Illegal Invocation errors, so creating an element
+// to check on instead.
+const nativeElTest = document.createElement('video');
+
+// Deprecated props throw warnings if used, so exclude them
+const deprecatedProps = [
+  'webkitDisplayingFullscreen',
+  'webkitSupportsFullscreen',
+];
+
+// Walk the prototype chain up to HTMLElement.
+// This will grab all super class props in between.
+// i.e. VideoElement and MediaElement
+for (
+  let proto = Object.getPrototypeOf(nativeElTest);
+  proto && proto !== HTMLElement.prototype;
+  proto = Object.getPrototypeOf(proto)
+) {
+  Object.keys(proto).forEach(key => {
+    if (deprecatedProps.indexOf(key) === -1) {
+      nativeElProps.push(key);
+    }
+  });
+}
+
+// For the video element we also want to pass through all event listeners
+// because all the important events happen there.
+nativeElProps = nativeElProps.concat(Object.keys(EventTarget.prototype));
+
+// Passthrough native el functions from the custom el to the native el
 nativeElProps.forEach(prop => {
   const type = typeof nativeElTest[prop];
 
   if (type == 'function') {
     // Function
-    VideoElement.prototype[prop] = function() {
+    CustomVideoElement.prototype[prop] = function() {
       return this.nativeEl[prop].apply(this.nativeEl, arguments);
     };
   } else {
@@ -219,7 +203,7 @@ nativeElProps.forEach(prop => {
       };
     }
 
-    Object.defineProperty(VideoElement.prototype, prop, config);
+    Object.defineProperty(CustomVideoElement.prototype, prop, config);
   }
 });
 
@@ -235,7 +219,7 @@ function arrayFindAnyCase(arr, word) {
   return found;
 }
 
-window.customElements.define('video-element', VideoElement);
-window.VideoElement = VideoElement;
+window.customElements.define('custom-video', CustomVideoElement);
+window.CustomVideoElement = CustomVideoElement;
 
-export default VideoElement;
+export default CustomVideoElement;

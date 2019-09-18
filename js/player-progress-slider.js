@@ -1,23 +1,8 @@
-import PlayerChromeElement from "./player-chrome-element.js";
+import PlayerChromeSlider from './player-chrome-slider.js';
 
-const template = document.createElement("template");
-
-template.innerHTML = `
-<style>
-input {
-  width: 100%;
-}
-</style>
-<input id="range" type="range" min="0" max="1000" step="1" value="0">
-`;
-
-class PlayerProgressSlider extends PlayerChromeElement {
+class PlayerProgressSlider extends PlayerChromeSlider {
   constructor() {
     super();
-
-    var shadow = this.attachShadow({ mode: "open" });
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.range = this.shadowRoot.querySelector("#range");
   }
 
   connectedCallback() {
@@ -27,12 +12,12 @@ class PlayerProgressSlider extends PlayerChromeElement {
     window.setTimeout(() => {
       const player = this.player;
 
-      this.range.addEventListener("input", () => {
+      this.range.addEventListener('input', () => {
         const time = (this.range.value / 1000) * this.player.duration;
         this.player.currentTime = time;
       });
 
-      player.addEventListener("timeupdate", () => {
+      player.addEventListener('timeupdate', () => {
         this.range.value = Math.round(
           (player.currentTime / player.duration) * 1000
         );
@@ -41,6 +26,6 @@ class PlayerProgressSlider extends PlayerChromeElement {
   }
 }
 
-window.customElements.define("player-progress-slider", PlayerProgressSlider);
+window.customElements.define('player-progress-slider', PlayerProgressSlider);
 
 export default PlayerProgressSlider;

@@ -4,32 +4,47 @@ import './player-play-button.js';
 import './player-fullscreen-button.js';
 import './player-pip-button.js';
 import './player-progress-slider.js';
+import './player-volume-slider.js';
+import './player-mute-button.js';
 
 const template = document.createElement('template');
 
 template.innerHTML = `
-<style>
-div {
-  /* Need position to display above video for some reason */
-  position: relative;
-  box-sizing: border-box;
-  display: flex;
-  background-color: #330;
-  width: 100%;
-}
+  <style>
+    :host {
+      /* Need position to display above video for some reason */
+      position: relative;
+      box-sizing: border-box;
+      display: flex;
+      background-color: #111;
 
-::slotted(*), div > * {
-  position: relative;
-  padding: 10px;
-  border: 1px solid #eee;
-  background-color: #900;
-  color: #777;
-}
-</style>
-<div>
-  <!-- <player-play-button>Play 2</player-play-button> -->
+      width: 100%;
+      color: var(--player-chrome-icon-color, #eee);
+      background: rgba(20,20,30, 0.7);
+    }
+
+    ::slotted(*), :host > * {
+      position: relative;
+      padding: 10px;
+    }
+
+    player-progress-slider,
+    ::slotted(player-progress-slider) {
+      flex-grow: 1;
+    }
+  </style>
   <slot></slot>
-</div>
+`;
+
+const controlsTemplate = document.createElement('template');
+
+controlsTemplate.innerHTML = `
+  <player-play-button>Play</player-play-button>
+  <player-mute-button>Mute</player-mute-button>
+  <player-volume-slider>Volume</player-volume-slider>
+  <player-progress-slider>Progress</player-progress-slider>
+  <player-fullscreen-button>Fullscreen</player-fullscreen-button>
+  <player-pip-button>PIP</player-pip-button>
 `;
 
 class PlayerControlBar extends PlayerChromeElement {
@@ -38,6 +53,12 @@ class PlayerControlBar extends PlayerChromeElement {
 
     var shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+  }
+
+  connectedCallback() {
+    if (this.attributes['controls']) {
+      this.shadowRoot.appendChild(controlsTemplate.content.cloneNode(true));
+    }
   }
 }
 
