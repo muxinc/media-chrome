@@ -1,4 +1,4 @@
-import PlayerChromeElement from "./player-chrome-button.js";
+import PlayerChromeButton from "./player-chrome-button.js";
 
 const enterFullscreenIcon = `
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -14,7 +14,7 @@ const exitFullscreenIcon = `
 </svg>
 `;
 
-class PlayerFullscreenButton extends PlayerChromeElement {
+class PlayerFullscreenButton extends PlayerChromeButton {
   constructor() {
     super();
 

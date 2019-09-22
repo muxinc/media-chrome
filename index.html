@@ -1,9 +1,9 @@
 <html>
   <head>
     <!-- <script src="https://cdn.jsdelivr.net/npm/hls.js@canary"></script> -->
-    <script type="module" src="./js/player-chrome.js"></script>
-    <script type="module" src="./js/hls-video-element.js"></script>
-    <script type="module" src="./js/custom-video-element.js"></script>
+    <script type="module" src="./dist/player-chrome.js"></script>
+    <script type="module" src="./dist/hls-video-element.js"></script>
+    <script type="module" src="./dist/custom-video-element.js"></script>
     <link rel="stylesheet" href="index.css" />
     <style>
       body {
@@ -61,12 +61,15 @@
     ></hls-video>
 
     <player-chrome id="my-player-chrome">
-      <video
-        src="http://localhost:8082/fhqwhgads.mp4"
-        muted
-        preload="none"
+      <hls-video
+        id="asdf"
         class="media-element"
-      ></video>
+        src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"
+        preload="none"
+        crossorigin=""
+        testattr=""
+        muted
+      ></hls-video>
       <player-control-bar>
         <player-play-button>Play</player-play-button>
         <player-forward-button>Forward</player-forward-button>

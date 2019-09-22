@@ -1,0 +1,34 @@
+{
+  "name": "@muxinc/player-chrome",
+  "version": "0.0.1",
+  "description": "An experiment with custom elements to build a UI wrapper for any video player.",
+  "main": "js/player-chrome.js",
+  "scripts": {
+    "build": "parcel build js/*.js",
+    "dev": "parcel index.html",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/muxinc/player-chrome.git"
+  },
+  "keywords": [
+    "webcomponent",
+    "html5",
+    "video",
+    "player",
+    "controls"
+  ],
+  "author": "Mux, Inc.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/muxinc/player-chrome/issues"
+  },
+  "homepage": "https://github.com/muxinc/player-chrome#readme",
+  "devDependencies": {
+    "parcel": "^1.12.3"
+  },
+  "dependencies": {
+    "hls.js": "^0.12.4"
+  }
+}

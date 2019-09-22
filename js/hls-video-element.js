@@ -1,7 +1,7 @@
 // Web Components: Extending Native Elements, A working example
 
 import CustomVideoElement from './custom-video-element.js';
-import Hls from '../node_modules/hls.js/dist/hls.js';
+import Hls from 'hls.js';
 
 class HLSVideoElement extends CustomVideoElement {
   constructor() {
