@@ -1,5 +1,5 @@
 {
-  "name": "@muxinc/player-chrome",
+  "name": "@mux/player-chrome",
   "version": "0.0.1",
   "description": "An experiment with custom elements to build a UI wrapper for any video player.",
   "main": "js/player-chrome.js",
