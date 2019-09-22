@@ -1,9 +1,8 @@
 class PlayerChromeElement extends HTMLElement {
   constructor() {
     super();
+    this._player = null;
   }
-
-  #player = null;
 
   connectedCallback() {
     // Check for a player supplied by attr
@@ -14,12 +13,12 @@ class PlayerChromeElement extends HTMLElement {
         throw new Error('Supplied player does not appear to be a player.');
       }
 
-      this.#player = player;
+      this._player = player;
     }
   }
 
   get player() {
-    if (this.#player) return this.#player;
+    if (this._player) return this._player;
 
     for (
       let parent = this.parentNode;

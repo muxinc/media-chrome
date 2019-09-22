@@ -41,6 +41,22 @@ class PlayerChrome extends HTMLElement {
 
     const shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    // Toggle play/pause with clicks on the media element itself
+    this.addEventListener('click', e => {
+      const player = this.player;
+
+      if (
+        e.target instanceof HTMLMediaElement ||
+        e.target instanceof CustomVideoElement
+      ) {
+        if (player.paused) {
+          player.play();
+        } else {
+          player.pause();
+        }
+      }
+    });
   }
 
   connectedCallback() {

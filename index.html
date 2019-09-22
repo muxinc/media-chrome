@@ -47,7 +47,7 @@
       controls
       id="ve"
       preload="none"
-    ></custom-video>
+    ></custom-video> -->
 
     <hls-video
       id="asdf"
@@ -58,22 +58,18 @@
       crossorigin=""
       testattr=""
       muted
-    ></hls-video> -->
+    ></hls-video>
 
-    <player-chrome id="my-player-chrome" controls>
-      <custom-video
+    <player-chrome id="my-player-chrome">
+      <video
         src="http://localhost:8082/fhqwhgads.mp4"
         muted
         preload="none"
         class="media-element"
-      ></custom-video>
-      <!-- <hls-video
-        class="media-element"
-        src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"
-        preload="none"
-      ></hls-video> -->
+      ></video>
       <player-control-bar>
         <player-play-button>Play</player-play-button>
+        <player-forward-button>Forward</player-forward-button>
         <player-mute-button>Mute</player-mute-button>
         <player-volume-slider>Volume</player-volume-slider>
         <player-progress-slider>Progress</player-progress-slider>

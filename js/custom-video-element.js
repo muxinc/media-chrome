@@ -34,8 +34,6 @@ template.innerHTML = `
 `;
 
 class CustomVideoElement extends HTMLElement {
-  nativeEl = null;
-
   constructor() {
     super();
 
