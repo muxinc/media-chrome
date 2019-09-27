@@ -217,7 +217,9 @@ function arrayFindAnyCase(arr, word) {
   return found;
 }
 
-window.customElements.define('custom-video', CustomVideoElement);
-window.CustomVideoElement = CustomVideoElement;
+if (!window.customElements.get('custom-video')) {
+  window.customElements.define('custom-video', CustomVideoElement);
+  window.CustomVideoElement = CustomVideoElement;
+}
 
 export default CustomVideoElement;

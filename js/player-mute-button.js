@@ -33,11 +33,9 @@ class PlayerMuteButton extends PlayerChromeButton {
   }
 
   connectedCallback() {
-    window.setTimeout(() => {
-      const player = this.player;
-      player.addEventListener('volumechange', this.update.bind(this));
-      this.update();
-    }, 0);
+    const player = this.player;
+    player.addEventListener('volumechange', this.update.bind(this));
+    this.update();
   }
 }
 

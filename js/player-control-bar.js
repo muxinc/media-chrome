@@ -7,6 +7,7 @@ import './player-progress-slider.js';
 import './player-volume-slider.js';
 import './player-mute-button.js';
 import './player-forward-button.js';
+import './player-replay-button.js';
 
 const template = document.createElement('template');
 
@@ -26,7 +27,6 @@ template.innerHTML = `
 
     ::slotted(*), :host > * {
       position: relative;
-      padding: 10px;
       /* flex-basis: 0; */
     }
 
@@ -40,6 +40,7 @@ template.innerHTML = `
       width: 80px;
     }
   </style>
+
   <slot></slot>
 `;
 

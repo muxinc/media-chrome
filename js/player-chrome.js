@@ -25,8 +25,22 @@ template.innerHTML = `
       height: 100%;
       background-color: #000;
     }
+
+    #container ::slotted(:not(.media-element):not(video):not(audio)) {
+      opacity: 1;
+      transition: opacity 0.25s;
+      visibility: visible;
+    }
+
+    /* Hide controls when inactive and not paused */
+    #container.inactive:not(.paused) ::slotted(:not(.media-element):not(video):not(audio)) {
+      opacity: 0;
+      transition: opacity 1s;
+    }
   </style>
-  <slot></slot>
+  <div id="container">
+    <slot></slot>
+  </div>
 `;
 
 const controlsTemplate = document.createElement('template');
@@ -41,8 +55,10 @@ class PlayerChrome extends HTMLElement {
 
     const shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.container = this.shadowRoot.getElementById('container');
 
     // Toggle play/pause with clicks on the media element itself
+    // TODO: handle child element changes, mutationObserver
     this.addEventListener('click', e => {
       const player = this.player;
 
@@ -57,6 +73,19 @@ class PlayerChrome extends HTMLElement {
         }
       }
     });
+
+    this.container.classList.add('paused');
+    this.player.addEventListener('play', () => {
+      this.container.classList.remove('paused');
+    });
+
+    this.player.addEventListener('pause', () => {
+      this.container.classList.add('paused');
+    });
+  }
+
+  get player() {
+    return this.querySelector('video, audio, .media-element');
   }
 
   connectedCallback() {
@@ -72,13 +101,39 @@ class PlayerChrome extends HTMLElement {
     });
 
     if (this.attributes['controls']) {
-      this.shadowRoot.appendChild(controlsTemplate.content.cloneNode(true));
+      this.container.appendChild(controlsTemplate.content.cloneNode(true));
     }
-  }
 
-  get player() {
-    // console.log('pc', this.querySelector('video, audio, .media-element'));
-    return this.querySelector('video, audio, .media-element');
+    const scheduleInactive = () => {
+      this.container.classList.remove('inactive');
+      window.clearTimeout(this.inactiveTimeout);
+      this.inactiveTimeout = window.setTimeout(() => {
+        this.container.classList.add('inactive');
+      }, 2000);
+    };
+
+    // Unhide for keyboard controlling
+    this.addEventListener('keyup', e => {
+      scheduleInactive();
+    });
+
+    this.addEventListener('mousemove', e => {
+      if (e.target === this) return;
+
+      // Stay visible if hovered over control bar
+      this.container.classList.remove('inactive');
+      window.clearTimeout(this.inactiveTimeout);
+
+      // If hovering over the media element we're free to make inactive
+      if (e.target === this.player) {
+        scheduleInactive();
+      }
+    });
+
+    // Immediately hide if mouse leaves the container
+    this.addEventListener('mouseout', e => {
+      this.container.classList.add('inactive');
+    });
   }
 }
 

@@ -1,4 +1,4 @@
-import PlayerChromeButton from "./player-chrome-button.js";
+import PlayerChromeButton from './player-chrome-button.js';
 
 const playIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
@@ -22,22 +22,20 @@ class PlayerPlayButton extends PlayerChromeButton {
   }
 
   connectedCallback() {
-    window.setTimeout(() => {
-      if (!this.player.paused) {
-        this.icon = pauseIcon;
-      }
+    if (!this.player.paused) {
+      this.icon = pauseIcon;
+    }
 
-      this.player.addEventListener("play", () => {
-        this.icon = pauseIcon;
-      });
+    this.player.addEventListener('play', () => {
+      this.icon = pauseIcon;
+    });
 
-      this.player.addEventListener("pause", () => {
-        this.icon = playIcon;
-      });
-    }, 0);
+    this.player.addEventListener('pause', () => {
+      this.icon = playIcon;
+    });
   }
 }
 
-window.customElements.define("player-play-button", PlayerPlayButton);
+window.customElements.define('player-play-button', PlayerPlayButton);
 
 export default PlayerPlayButton;

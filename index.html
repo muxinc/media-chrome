@@ -1,9 +1,11 @@
 <html>
   <head>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/hls.js@canary"></script> -->
-    <script type="module" src="./js/player-chrome.js"></script>
-    <script type="module" src="./js/hls-video-element.js"></script>
+    <!-- Media elements need to be defined before player chrome in the doc
+        so they're ready when player chrome attempts to interact with them  -->
     <script type="module" src="./js/custom-video-element.js"></script>
+    <script type="module" src="./js/hls-video-element.js"></script>
+    <script type="module" src="./js/player-chrome.js"></script>
+
     <link rel="stylesheet" href="index.css" />
     <style>
       body {
@@ -33,13 +35,13 @@
 
     <!-- src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4" -->
 
-    <!-- <video
+    <video
       src="http://localhost:8082/fhqwhgads.mp4"
       controls="controls"
       muted
       id="ven"
       preload="none"
-    ></video> -->
+    ></video>
 
     <!-- <custom-video
       src="http://localhost:8082/fhqwhgads.mp4"
@@ -49,7 +51,7 @@
       preload="none"
     ></custom-video> -->
 
-    <hls-video
+    <!-- <hls-video
       id="asdf"
       class="media-element"
       src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"
@@ -58,10 +60,10 @@
       crossorigin=""
       testattr=""
       muted
-    ></hls-video>
+    ></hls-video> -->
 
     <player-chrome id="my-player-chrome">
-      <hls-video
+      <!-- <hls-video
         id="asdf"
         class="media-element"
         src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"
@@ -69,9 +71,23 @@
         crossorigin=""
         testattr=""
         muted
-      ></hls-video>
+      ></hls-video> -->
+      <!-- <video
+        src="http://localhost:8082/fhqwhgads.mp4"
+        muted
+        id="ven"
+        preload="none"
+      ></video> -->
+      <custom-video
+        src="http://localhost:8082/fhqwhgads.mp4"
+        muted
+        id="ve"
+        preload="none"
+        class="media-element"
+      ></custom-video>
       <player-control-bar>
         <player-play-button>Play</player-play-button>
+        <player-replay-button>Replay</player-replay-button>
         <player-forward-button>Forward</player-forward-button>
         <player-mute-button>Mute</player-mute-button>
         <player-volume-slider>Volume</player-volume-slider>
@@ -80,5 +96,7 @@
         <player-pip-button>PIP</player-pip-button>
       </player-control-bar>
     </player-chrome>
+
+    <p>Some Text</p>
   </body>
 </html>

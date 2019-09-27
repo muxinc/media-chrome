@@ -2,38 +2,10 @@ import PlayerChromeElement from './player-chrome-element.js';
 
 const template = document.createElement('template');
 
-const rangeStylesReset = `
-/* Reset range styles */
-input[type="range"] {
-  -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-  width: 100%; /* Specific width is required for Firefox. */
-  background: transparent; /* Otherwise white in Chrome */
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-}
-
-input[type=range]:focus {
-  outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
-}
-
-input[type=range]::-ms-track {
-  width: 100%;
-  cursor: pointer;
-
-  /* Hides the slider so custom styles can be added */
-  background: transparent;
-  border-color: transparent;
-  color: transparent;
-}
-`;
-
 // Can't comma-separate selectors like ::-webkit-slider-thumb, ::-moz-range-thumb
 // Browsers ignore the whole rule if you do.
 const thumbStyles = `
   box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
-  /* border: 1px solid #000000; */
   height: 10px;
   width: 10px;
   border-radius: 10px;
@@ -54,15 +26,35 @@ const trackStyles = `
 
 template.innerHTML = `
   <style>
-    ${rangeStylesReset}
+    :host {
+      box-sizing: border-box;
+      background-color: var(--player-chrome-control-background-color, transparent);
+    }
+
+    :host(:focus, :focus-within) {
+      outline: 2px solid rgba(0,150,255, 0.33);
+      outline-offset: -2px;
+    }
+
+    :host(:hover) {
+      background: rgba(255,255,255, 0.10);
+    }
 
     input[type=range] {
-      /* margin-top: 10px; */
-      height: 20px;
+      /* Reset */
+      -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+      width: 100%; /* Specific width is required for Firefox. */
+      background: transparent; /* Otherwise white in Chrome */
+
+      box-sizing: border-box;
+      height: 100%;
+      padding: 10px;
+      margin: 0px;
     }
 
     /* Special styling for WebKit/Blink */
     input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
       margin-top: -3px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
       ${thumbStyles}
     }
@@ -70,10 +62,34 @@ template.innerHTML = `
 
     input[type=range]::-webkit-slider-runnable-track { ${trackStyles} }
     input[type=range]::-moz-range-track { ${trackStyles} }
-    input[type=range]::-ms-track { ${trackStyles} }
+    input[type=range]::-ms-track {
+      /* Reset */
+      width: 100%;
+      cursor: pointer;
+      /* Hides the slider so custom styles can be added */
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
 
+      ${trackStyles}
+    }
+
+    /* Eventually want to move towards different styles for focus-visible
+       https://github.com/WICG/focus-visible/blob/master/src/focus-visible.js
+       Youtube appears to do this by de-focusing a button after a button click */
+    input[type=range]:focus {
+      outline: 0;
+    }
     input[type=range]:focus::-webkit-slider-runnable-track {
-      background: #367ebd;
+      outline: 0;
+    }
+
+    input[type=range]:disabled::-webkit-slider-thumb {
+      background-color: #777;
+    }
+
+    input[type=range]:disabled::-webkit-slider-runnable-track {
+      background-color: #777;
     }
 
   </style>
@@ -90,6 +106,9 @@ class PlayerChromeSlider extends PlayerChromeElement {
   }
 }
 
-window.customElements.define('player-chrome-slider', PlayerChromeSlider);
+if (!window.customElements.get('custom-video')) {
+  window.customElements.define('player-chrome-slider', PlayerChromeSlider);
+  window.PlayerChromeSlider = PlayerChromeSlider;
+}
 
 export default PlayerChromeSlider;
