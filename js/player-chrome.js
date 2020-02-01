@@ -15,9 +15,7 @@ template.innerHTML = `
       flex-direction: column-reverse;
     }
 
-    ::slotted(.media-element),
-    ::slotted(video),
-    ::slotted(audio) {
+    ::slotted([slot=media]) {
       position: absolute;
       top: 0;
       left: 0;
@@ -26,66 +24,142 @@ template.innerHTML = `
       background-color: #000;
     }
 
-    #container ::slotted(:not(.media-element):not(video):not(audio)) {
+    #container ::slotted(*) {
       opacity: 1;
       transition: opacity 0.25s;
       visibility: visible;
     }
 
     /* Hide controls when inactive and not paused */
-    #container.inactive:not(.paused) ::slotted(:not(.media-element):not(video):not(audio)) {
+    #container.inactive:not(.paused) ::slotted(*) {
       opacity: 0;
       transition: opacity 1s;
     }
   </style>
+  <slot name="media"></slot>
   <div id="container">
     <slot></slot>
+    <slot name="controls"></slot>
   </div>
 `;
 
 const controlsTemplate = document.createElement('template');
 
 controlsTemplate.innerHTML = `
-  <player-control-bar controls></player-control-bar>
+  <player-control-bar>
+    <player-play-button>Play</player-play-button>
+    <player-mute-button>Mute</player-mute-button>
+    <player-volume-slider>Volume</player-volume-slider>
+    <player-progress-slider>Progress</player-progress-slider>
+    <player-pip-button>PIP</player-pip-button>
+    <player-fullscreen-button>Fullscreen</player-fullscreen-button>
+  </player-control-bar>
 `;
 
 class PlayerChrome extends HTMLElement {
   constructor() {
     super();
 
+    // Set up the Shadow DOM
     const shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.container = this.shadowRoot.getElementById('container');
 
-    // Toggle play/pause with clicks on the media element itself
-    // TODO: handle child element changes, mutationObserver
-    this.addEventListener('click', e => {
-      const player = this.player;
+    this._player = null;
 
-      if (
-        e.target instanceof HTMLMediaElement ||
-        e.target instanceof CustomVideoElement
-      ) {
-        if (player.paused) {
-          player.play();
-        } else {
-          player.pause();
+    const mutationCallback = function(mutationsList, observer) {
+      for (let mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+          mutation.removedNodes.forEach(node => {
+            if (node.player === this.player) {
+              // Undo auto-injected players
+              node.player = null;
+            }
+          });
+          mutation.addedNodes.forEach(node => {
+            if (node instanceof PlayerChromeElement && !node.player) {
+              // Inject the player in new children
+              // Todo: Make recursive
+              node.player = this.player;
+            }
+          });
         }
       }
-    });
+    };
 
-    this.container.classList.add('paused');
-    this.player.addEventListener('play', () => {
-      this.container.classList.remove('paused');
-    });
+    // Create an observer instance linked to the callback function
+    const observer = new MutationObserver(mutationCallback);
 
-    this.player.addEventListener('pause', () => {
-      this.container.classList.add('paused');
-    });
+    // Start observing the target node for configured mutations
+    observer.observe(this, { childList: true, subtree: true });
+
+    // -=----------------------------
+
+
   }
 
   get player() {
-    return this.querySelector('video, audio, .media-element');
+    return this._player;
+  }
+
+  set player(player) {
+    this._player = player;
+
+    if (player) {
+      // Toggle play/pause with clicks on the media element itself
+      // TODO: handle child element changes, mutationObserver
+      this.addEventListener('click', e => {
+        const player = this.player;
+
+        // instanceof HTMLMediaElement ||
+        // CustomVideoElement && e.target instanceof CustomVideoElement
+        if (e.target.slot == 'media') {
+          if (player.paused) {
+            player.play();
+          } else {
+            player.pause();
+          }
+        }
+      });
+
+      this.container.classList.add('paused');
+
+      // Uncomment to auto-hide controls
+      player.addEventListener('play', () => {
+        this.container.classList.remove('paused');
+      });
+
+      player.addEventListener('pause', () => {
+        this.container.classList.add('paused');
+      });
+
+      const playerName = player.nodeName.toLowerCase();
+
+      if (playerName == 'audio' || playerName == 'video') {
+        propagteNewPlayer.call(this, player);
+      } else {
+        // Wait for custom video element to be ready before setting it
+        window.customElements.whenDefined(playerName).then(() => {
+          propagteNewPlayer.call(this, player);
+        });
+      }
+    }
+
+    function propagteNewPlayer(player) {
+      this.querySelectorAll('*').forEach(el => {
+
+        if (el instanceof PlayerChromeElement) {
+          // Player should be settable at this point.
+          el.player = this.player;
+        }
+      });
+
+      this.shadowRoot.querySelectorAll('*').forEach(el => {
+        if (el instanceof PlayerChromeElement) {
+          el.player = this.player;
+        }
+      });
+    }
   }
 
   connectedCallback() {
@@ -100,8 +174,14 @@ class PlayerChrome extends HTMLElement {
       childList: true,
     });
 
-    if (this.attributes['controls']) {
+    if (this.attributes['defaultControls']) {
       this.container.appendChild(controlsTemplate.content.cloneNode(true));
+    }
+
+    let player = this.querySelector('[slot=media]');
+
+    if (player) {
+      this.player = player;
     }
 
     const scheduleInactive = () => {

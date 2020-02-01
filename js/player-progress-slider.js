@@ -11,7 +11,7 @@ class PlayerProgressSlider extends PlayerChromeSlider {
       // Can't set the time before the player is ready
       // Ignore if readyState isn't supported
       if (player.readyState > 0 || player.readyState === undefined) {
-        player.currentTime = (range.value / 1000) * player.duration;
+        player.currentTime = Math.round((range.value / 1000) * player.duration);
       }
     };
     this.range.addEventListener('input', this.setPlayerTimeWithRange);
@@ -19,21 +19,19 @@ class PlayerProgressSlider extends PlayerChromeSlider {
     // The following listeners need to be removeable
     this.updateRangeWithPlayerTime = () => {
       const player = this.player;
-
       this.range.value = Math.round(
         (player.currentTime / player.duration) * 1000
       );
     };
 
-    this.playIfNotReady = () => {
+    this.playIfNotReady = e => {
+      this.range.removeEventListener('change', this.playIfNotReady);
       const player = this.player;
       player.play().then(this.setPlayerTimeWithRange);
     };
   }
 
-  // Reuse connectedCallback to set player event listeners
-  // by calling connectedCallback whenever the player changes.
-  connectedCallback() {
+  playerSetCallback() {
     const player = this.player;
     const range = this.range;
 
@@ -42,11 +40,11 @@ class PlayerProgressSlider extends PlayerChromeSlider {
     // If readyState is supported, and the slider is used before
     // the player is ready, use the play promise to set the time.
     if (player.readyState !== undefined && player.readyState == 0) {
-      range.addEventListener('change', this.playIfNotReady);
+      // range.addEventListener('change', this.playIfNotReady);
     }
   }
 
-  disconnectedCallback() {
+  playerUnsetCallback() {
     const player = this.player;
     const range = this.range;
 

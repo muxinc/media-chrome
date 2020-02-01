@@ -27,8 +27,14 @@ const trackStyles = `
 template.innerHTML = `
   <style>
     :host {
+      display: inline-block;
+      vertical-align: middle;
       box-sizing: border-box;
-      background-color: var(--player-chrome-control-background-color, transparent);
+      background-color: transparent;
+      height: 44px;
+      min-height: 24px;
+      font-size: 16px;
+      line-height: 24px;
     }
 
     :host(:focus, :focus-within) {
@@ -43,13 +49,15 @@ template.innerHTML = `
     input[type=range] {
       /* Reset */
       -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-      width: 100%; /* Specific width is required for Firefox. */
       background: transparent; /* Otherwise white in Chrome */
 
-      box-sizing: border-box;
+      /* Fill host with the range */
       height: 100%;
-      padding: 10px;
-      margin: 0px;
+      width: 100%; /* Specific width is required for Firefox. */
+
+      box-sizing: border-box;
+      padding: 0 10px;
+      margin: 0;
     }
 
     /* Special styling for WebKit/Blink */
@@ -106,7 +114,7 @@ class PlayerChromeSlider extends PlayerChromeElement {
   }
 }
 
-if (!window.customElements.get('custom-video')) {
+if (!window.customElements.get('player-chrome-slider')) {
   window.customElements.define('player-chrome-slider', PlayerChromeSlider);
   window.PlayerChromeSlider = PlayerChromeSlider;
 }

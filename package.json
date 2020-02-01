@@ -29,6 +29,8 @@
     "parcel": "^1.12.3"
   },
   "dependencies": {
-    "hls.js": "^0.12.4"
+    "hls.js": "^0.12.4",
+    "raw-loader": "^3.1.0",
+    "video.js": "^7.6.5"
   }
 }

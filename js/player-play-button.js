@@ -9,10 +9,36 @@ class PlayerPlayButton extends PlayerChromeButton {
   constructor() {
     super();
     this.icon = playIcon;
+    this._playing = false;
+  }
+
+  static get observedAttributes() {
+    return ['playing'].concat(super.observedAttributes || []);
+  }
+
+  get playing() {
+    return this._playing;
+  }
+
+  set playing(val) {
+    this._playing = !!val;
+
+    if (val) {
+      this.icon = pauseIcon;
+    } else {
+      this.icon = playIcon;
+    }
   }
 
   onClick(e) {
     const player = this.player;
+
+    // If not using player detection, onClick should be overridden
+    if (!player) {
+      throw new Error(
+        'No player was found and an alternative onClick handler was not set.'
+      );
+    }
 
     if (player.paused) {
       player.play();
@@ -21,17 +47,17 @@ class PlayerPlayButton extends PlayerChromeButton {
     }
   }
 
-  connectedCallback() {
-    if (!this.player.paused) {
-      this.icon = pauseIcon;
-    }
+  playerSetCallback() {
+    const player = this.player;
+
+    if (!player) return;
 
     this.player.addEventListener('play', () => {
-      this.icon = pauseIcon;
+      this.playing = true;
     });
 
     this.player.addEventListener('pause', () => {
-      this.icon = playIcon;
+      this.playing = false;
     });
   }
 }

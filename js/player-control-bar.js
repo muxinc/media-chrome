@@ -8,6 +8,12 @@ import './player-volume-slider.js';
 import './player-mute-button.js';
 import './player-forward-button.js';
 import './player-replay-button.js';
+import './player-current-time-display.js';
+import './player-duration-display.js';
+import './player-chrome-menu-button.js';
+import './player-chrome-menu.js';
+import './player-settings-popup.js';
+import './player-chrome-popup.js';
 
 const template = document.createElement('template');
 
@@ -18,6 +24,10 @@ template.innerHTML = `
       position: relative;
       box-sizing: border-box;
       display: flex;
+
+      /* All putting the progress slider at full width on other lines */
+      flex-wrap: wrap;
+
       background-color: #111;
 
       width: 100%;
@@ -26,8 +36,7 @@ template.innerHTML = `
     }
 
     ::slotted(*), :host > * {
-      position: relative;
-      /* flex-basis: 0; */
+      /* position: relative; */
     }
 
     player-progress-slider,
@@ -46,13 +55,20 @@ template.innerHTML = `
 
 const controlsTemplate = document.createElement('template');
 
+/*
+Before this can work, the player needs to propogate from the control bar
+to shadow dom children. Player-chrome can't do that automatically, it
+has to be the control bar (or player-chrome-element).
+Probably could just kill this feature and wait until we know there's value.
+Let all custom controls happen at the player-chrome level.
+*/
 controlsTemplate.innerHTML = `
   <player-play-button>Play</player-play-button>
   <player-mute-button>Mute</player-mute-button>
   <player-volume-slider>Volume</player-volume-slider>
   <player-progress-slider>Progress</player-progress-slider>
-  <player-fullscreen-button>Fullscreen</player-fullscreen-button>
   <player-pip-button>PIP</player-pip-button>
+  <player-fullscreen-button>Fullscreen</player-fullscreen-button>
 `;
 
 class PlayerControlBar extends PlayerChromeElement {
@@ -64,7 +80,7 @@ class PlayerControlBar extends PlayerChromeElement {
   }
 
   connectedCallback() {
-    if (this.attributes['controls']) {
+    if (this.attributes['defaultControls']) {
       this.shadowRoot.appendChild(controlsTemplate.content.cloneNode(true));
     }
   }

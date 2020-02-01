@@ -32,8 +32,7 @@ class PlayerMuteButton extends PlayerChromeButton {
     }
   }
 
-  connectedCallback() {
-    const player = this.player;
+  playerSetCallback(player) {
     player.addEventListener('volumechange', this.update.bind(this));
     this.update();
   }

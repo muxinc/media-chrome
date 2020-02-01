@@ -6,8 +6,6 @@ class PlayerVolumeSlider extends PlayerChromeSlider {
 
     const player = this.player;
 
-    player.addEventListener('volumechange', this.update.bind(this));
-
     this.range.addEventListener('input', () => {
       const player = this.player;
 
@@ -49,6 +47,10 @@ class PlayerVolumeSlider extends PlayerChromeSlider {
         );
       } catch (e) {}
     });
+  }
+
+  playerSetCallback(player) {
+    player.addEventListener('volumechange', this.update.bind(this));
 
     // Update the player with the last set volume preference
     try {

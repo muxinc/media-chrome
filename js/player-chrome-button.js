@@ -5,9 +5,23 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
   :host {
+    position: relative;
     display: inline-block;
+    vertical-align: middle;
     box-sizing: border-box;
-    background-color: var(--player-chrome-control-background-color, transparent);
+    background-color: transparent;
+
+    /* Default width and height can be overridden externally */
+    height: 44px;
+    width: 44px;
+
+    /* Vertically center any text */
+    font-size: 16px;
+    line-height: 24px;
+
+    /* Min icon size is 24x24 */
+    min-height: 24px;
+    min-width: 24px;
   }
 
   :host(:focus, :focus-within) {
@@ -22,14 +36,16 @@ template.innerHTML = `
   button {
     width: 100%;
     height: 100%;
+    vertical-align: middle;
     border: none;
-    padding: 10px;
     margin: 0;
+    padding: 0;
     text-decoration: none;
     background: transparent;
     color: #ffffff;
     font-family: sans-serif;
-    font-size: 1rem;
+    font-size: 16px;
+    line-height: 24px;
     cursor: pointer;
     text-align: center;
     -webkit-appearance: none;
