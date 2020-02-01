@@ -8,12 +8,12 @@ An experiment with custom elements (web components) to build a UI wrapper for an
 ## Using &lt;player-chrome&gt; in your HTML
 
 1. Load &lt;player-chrome&gt; (async) in the head of your document.
-```
+```html
 <script type="module" src="./js/player-chrome.js"></script>
 ```
 
 2. Wrap your HTML media element in the `<player-chrome>` tag. Include the `defaultControls` attribute to turn on basic controls.
-```
+```html
 <player-chrome defaultControls>
   <video
     src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
@@ -23,7 +23,7 @@ An experiment with custom elements (web components) to build a UI wrapper for an
 ```
 
 3. Add the `slot="media"` attribute to your media element. At the same time remove the `controls` attribute from the media element or you'll have double controls.
-```
+```html
 <player-chrome defaultControls>
   <video
     slot="media"
@@ -40,8 +40,7 @@ An experiment with custom elements (web components) to build a UI wrapper for an
 
 ## Customizing &lt;player-chrome&gt;
 To customize player-chrome, remove the `defaultControls` attribute and use the built in control elements to include only the controls you want and customize how they look.
-
-```
+```html
 <player-chrome>
   <video
     slot="media"
@@ -67,13 +66,13 @@ To customize player-chrome, remove the `defaultControls` attribute and use the b
 For HLS.js we've created a custom element that acts just like a &lt;video&gt; element but has HLS.js baked in.
 
 1. Load the HLS.js custom element before player-chrome, so that the tag is already defined when player-chrome loads.
-```
+```html
 <script type="module" src="./js/hls-video-element.js"></script>
 <script type="module" src="./js/player-chrome.js"></script>
 ```
 
 2. Use `<hls-video>` in place of `<video>`, and use a `m3u8`(HLS) file as the source.
-```
+```html
 <player-chrome defaultControls>
   <hls-video
     slot="media"
