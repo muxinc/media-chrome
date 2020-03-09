@@ -1,43 +1,41 @@
 # &lt;player-chrome&gt;
 
-Custom elements (web components) for making audio and video player controls.
+Custom elements (web components) for making audio and video player controls that look great in your website or app.
 
-*From the creator of [Video.js](https://videojs.com/).*
+*From [Mux](https://mux.com/) and the creator of [Video.js](https://videojs.com/).*
 
 ## Why?
+We put so much effort into making our form buttons and navigation elements look uniquely beautiful but then use generic, default media player controls. Why? Because it's still difficult to create a player experience that's unique to a site or brand.
 
-Video and audio are integral parts of the web, but it's still difficult to create a player experience that's unique to a site or brand.
-* Web browsers have built-in players that can't easily be customized and look different from every other browser.
-* Social sites like Youtube, Vimeo, and SoundCloud let you control small details of the player, like primary button color.
-* Open source players like Video.js and JW Player let you control much more, but require you to learn proprietary JS APIs and CSS.
+* Web browsers have built-in player controls that can't easily be customized and look different in every browser.
+* Social sites like Youtube, Vimeo, and SoundCloud only let you customize small details of the player, like primary button color.
+* Player controls are complex and hard to build from scratch. Open source players like Video.js and JW Player help, but require you to learn proprietary JS APIs, and can be difficult to use with popular Javascript frameworks.
 
 ## Why now?
 
-Web components. I spoke about [the potential of web components for video](https://youtu.be/TwnygSWmToc?t=859) at the original Demuxed conference in 2015. They allow us to extend the browser's base HTML functionality, meaning we can now build player controls as simple HTML tags that:
+Web components. @heff spoke about [the potential of web components for video](https://youtu.be/TwnygSWmToc?t=859) at the original Demuxed conference in 2015. They allow us to extend the browser's base HTML functionality, meaning we can now build player controls as simple HTML tags that:
+
 * Can be used like any native HTML tag in HTML, Javascript, and CSS (unleash your designer)
-* Are compatible by default with any Javascript framework (React, Angular, Vue, etc.)
-* Could be used by any player (Youtube, Netflix, Video.js) as their built-in controls; sharing knowledge, functionality, and accessibility between players.
+* Are compatible by default with Javascript frameworks (React, Angular, Stencil)
+* Can be used across video players when using multiple, e.g Youtube & `<video>`. (Could even be used by video players as their own built-in controls)
 
-## Examples
+## Example players matching the website context
+* [Reddit player example](https://www.reddit.com/r/aww/comments/ffttr3/she_is_so_silly_and_i_love_her_dearly/) before/after
+* Mux Homepage w/ custom Mux player?
 
-### Adding controls
+## Quick Demos
 
-...
-
-### Removing controls
-
-...
-
-### Changing colors with CSS
-...
-
-### Moving controls with CSS
+### Adding/removing controls with HTML
+Controls can be used individually or within a `<player-chrome>` tag for some automatic positioning.
 
 ...
 
-## Player compatibility
-* Native `<video>` & HLS.js (components)...
-* Video.js, Youtube (Player.video)...
+### Styling and moving controls with CSS
+...
+
+### Adding controls to other players
+...
+
 
 ## Installing &lt;player-chrome&gt; and other elements
 ...
@@ -94,10 +92,12 @@ To customize player-chrome, remove the `defaultControls` attribute and use the b
 </player-chrome>
 ```
 
-## Using &lt;player-chrome&gt; with other video players
+## Using &lt;player-chrome&gt; with specific players
+* `<video>`
 * HLS.js
 * Video.js
 * JW Player
+* Youtube
 
 ### HLS.js
 For HLS.js we've created a custom element that acts just like a &lt;video&gt; element but has HLS.js baked in.
