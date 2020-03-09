@@ -2,7 +2,7 @@
  * Custom Video Element
  * The goal is to create an element that works just like the video element
  * but can be extended/sub-classed, because native elements cannot be
- * extended today.
+ * extended today across browsers.
  */
 
 const template = document.createElement('template');
