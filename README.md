@@ -1,6 +1,43 @@
 # &lt;player-chrome&gt;
 
-An experiment with custom elements (web components) to build a UI wrapper for any video player.
+Custom elements (web components) for making audio and video player controls.
+
+*From the creator of [Video.js](https://videojs.com/).*
+
+## Why?
+
+Video and audio are integral parts of the web, but it's still difficult to create a player experience that's unique to a site or brand.
+* Web browsers have built-in players that can't easily be customized and look different from every other browser.
+* Social sites like Youtube, Vimeo, and SoundCloud let you control small details of the player, like primary button color.
+* Open source players like Video.js and JW Player let you control much more, but require you to learn proprietary JS APIs and CSS.
+
+## Why now?
+
+Web components. I spoke about [the potential of web components for video](https://youtu.be/TwnygSWmToc?t=859) at the original Demuxed conference in 2015. They allow us to extend the browser's base HTML functionality, meaning we can now build player controls as simple HTML tags that:
+* Can be used like any native HTML tag in HTML, Javascript, and CSS (unleash your designer)
+* Are compatible by default with any Javascript framework (React, Angular, Vue, etc.)
+* Could be used by any player (Youtube, Netflix, Video.js) as their built-in controls; sharing knowledge, functionality, and accessibility between players.
+
+## Examples
+
+### Adding controls
+
+...
+
+### Removing controls
+
+...
+
+### Changing colors with CSS
+...
+
+### Moving controls with CSS
+
+...
+
+## Player compatibility
+* Native `<video>` & HLS.js (components)...
+* Video.js, Youtube (Player.video)...
 
 ## Installing &lt;player-chrome&gt; and other elements
 ...
