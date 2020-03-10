@@ -1,5 +1,5 @@
 {
-  "name": "@mux/player-chrome",
+  "name": "player-chrome",
   "version": "0.0.1",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
   "main": "dist/components/player-chrome.js",
