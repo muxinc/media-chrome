@@ -1,0 +1,79 @@
+<html>
+  <head>
+    <script type="module" src="../js/player-chrome.js"></script>
+  </head>
+  <body>
+
+    <h2>Before</h2>
+    <player-chrome id="before">
+      <video
+        slot="media"
+        src="https://storage.googleapis.com/55f35f7e2beb3300960bb074/_%2F9e18c8684db6ae04cc458477554f2976062f4d9d.mp4?GoogleAccessId=956532172770-27ie9eb8e4u326l89p7b113gcb04cdgd%40developer.gserviceaccount.com&Expires=1583877290&Signature=jrLlgVQ%2BImR5Mql%2BOi4XLyXCVWU3J9IMWHROWrNLt%2F5SYWLb3dyTRd4%2Fa%2BMm3FvQejKDZ3Glgkjcdiqsfmpa0b5emtqUXfMZj4Yy9dNasPFIPhD2%2Bn0d5AvtQbIsWISJmyn9vGGr9m4DFzAMGedxBKFb5CvcL6olL0KhRVF6LX4NuZJkjI3Hr7GR4YIsm6DXW0Q%2FYKI1NFHds1vWKgW%2BGb4mY%2Fwso4owHlkKRdAhw94DjT3up2TMUZ6UztdJmwe7ibGc3aZI3N7pZWfrXR%2BA%2B%2Fm%2FsZJrLaKgqCrcHjpBq9DrbssR0%2FA9iYn5DBW64fxTT2%2BjFT2ZK51PdAWn3GT39Q%3D%3D"
+        muted
+        preload="none"
+      ></video>
+      <player-control-bar>
+        <player-play-button>Play</player-play-button>
+        <player-mute-button>Mute</player-mute-button>
+        <player-volume-slider>Volume</player-volume-slider>
+        <player-progress-slider>Progress</player-progress-slider>
+        <player-fullscreen-button>Fullscreen</player-fullscreen-button>
+      </player-control-bar>
+    </player-chrome>
+
+    <h2>After</h2>
+
+    <style>
+      player-chrome#after {
+        --player-chrome-icon-color: #000;
+        width: 600;
+        height: 250px;
+      }
+
+      player-chrome#after player-control-bar {
+        background: transparent;
+      }
+
+      player-chrome#after player-play-button,
+      player-chrome#after player-mute-button,
+      player-chrome#after player-fullscreen-button {
+        background: rgba(240,150,100, 0.7);
+        margin-left: 5px;
+        margin-bottom: 5px;
+        border-radius: 22px;
+      }
+
+      player-chrome#after player-progress-slider,
+      player-chrome#after player-volume-slider {
+        background-color: transparent;
+      }
+
+      player-chrome#after player-progress-slider {
+        width: 100%;
+        height: 20px;
+      }
+
+      player-chrome#after player-fullscreen-button {
+        margin-left: auto;
+        margin-right: 5px;
+      }
+
+    </style>
+
+    <player-chrome id="after">
+      <video
+        slot="media"
+        src="https://storage.googleapis.com/55f35f7e2beb3300960bb074/_%2F9e18c8684db6ae04cc458477554f2976062f4d9d.mp4?GoogleAccessId=956532172770-27ie9eb8e4u326l89p7b113gcb04cdgd%40developer.gserviceaccount.com&Expires=1583877290&Signature=jrLlgVQ%2BImR5Mql%2BOi4XLyXCVWU3J9IMWHROWrNLt%2F5SYWLb3dyTRd4%2Fa%2BMm3FvQejKDZ3Glgkjcdiqsfmpa0b5emtqUXfMZj4Yy9dNasPFIPhD2%2Bn0d5AvtQbIsWISJmyn9vGGr9m4DFzAMGedxBKFb5CvcL6olL0KhRVF6LX4NuZJkjI3Hr7GR4YIsm6DXW0Q%2FYKI1NFHds1vWKgW%2BGb4mY%2Fwso4owHlkKRdAhw94DjT3up2TMUZ6UztdJmwe7ibGc3aZI3N7pZWfrXR%2BA%2B%2Fm%2FsZJrLaKgqCrcHjpBq9DrbssR0%2FA9iYn5DBW64fxTT2%2BjFT2ZK51PdAWn3GT39Q%3D%3D"
+        muted
+        preload="none"
+      ></video>
+      <player-control-bar>
+        <player-progress-slider>Progress</player-progress-slider>
+        <player-play-button>Play</player-play-button>
+        <player-mute-button>Mute</player-mute-button>
+        <player-volume-slider>Volume</player-volume-slider>
+        <player-fullscreen-button>Fullscreen</player-fullscreen-button>
+      </player-control-bar>
+    </player-chrome>
+  </body>
+</html>

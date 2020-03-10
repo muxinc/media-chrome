@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <script type="module" src="../js/player-chrome.js"></script>
+  </head>
+  <body>
+
+    <h2>Before</h2>
+    <player-chrome id="before">
+      <iframe
+        slot="media"
+        width="560" height="315" src="https://www.youtube.com/embed/U-XnWz0WmE8?autoplay=0&showinfo=0&controls=0"
+        frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      >
+      </iframe>
+      <player-control-bar>
+        <player-play-button>Play</player-play-button>
+        <player-mute-button>Mute</player-mute-button>
+        <player-volume-slider>Volume</player-volume-slider>
+        <player-progress-slider>Progress</player-progress-slider>
+        <player-fullscreen-button>Fullscreen</player-fullscreen-button>
+      </player-control-bar>
+    </player-chrome>
+
+  </body>
+</html>

@@ -5,7 +5,7 @@ const template = document.createElement('template');
 // Can't comma-separate selectors like ::-webkit-slider-thumb, ::-moz-range-thumb
 // Browsers ignore the whole rule if you do.
 const thumbStyles = `
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  box-shadow: 1px 1px 1px transparent;
   height: 10px;
   width: 10px;
   border-radius: 10px;
@@ -18,7 +18,7 @@ const trackStyles = `
   min-width: 60px;
   height: 4px;
   cursor: pointer;
-  box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+  box-shadow: none;
   background: #eee;
   border-radius: 0;
   border: none;

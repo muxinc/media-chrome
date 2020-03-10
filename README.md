@@ -13,7 +13,7 @@ We put so much effort into making our form buttons and navigation elements look 
 
 ## Why now?
 
-Web components. @heff spoke about [the potential of web components for video](https://youtu.be/TwnygSWmToc?t=859) at the original Demuxed conference in 2015. They allow us to extend the browser's base HTML functionality, meaning we can now build player controls as simple HTML tags that:
+Web components. @heff spoke about [the potential of web components for video](https://youtu.be/TwnygSWmToc?t=859) at Demuxed 2015. They allow us to extend the browser's base HTML functionality, meaning we can now build player controls as simple HTML tags that:
 
 * Can be used like any native HTML tag in HTML, Javascript, and CSS (unleash your designer)
 * Are compatible by default with Javascript frameworks (React, Angular, Stencil)

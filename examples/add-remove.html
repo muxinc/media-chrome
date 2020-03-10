@@ -1,0 +1,41 @@
+<html>
+  <head>
+    <script type="module" src="../js/player-chrome.js"></script>
+  </head>
+  <body>
+    <h2>Before</h2>
+    <player-chrome>
+      <video
+        slot="media"
+        src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
+        muted
+        preload="none"
+      ></video>
+      <player-control-bar>
+        <player-play-button>Play</player-play-button>
+        <player-mute-button>Mute</player-mute-button>
+        <player-volume-slider>Volume</player-volume-slider>
+        <player-progress-slider>Progress</player-progress-slider>
+        <player-fullscreen-button>Fullscreen</player-fullscreen-button>
+      </player-control-bar>
+    </player-chrome>
+
+    <h2>After</h2>
+    <p>Add a Picture-in-picture button, remove the volume and mute controls</p>
+
+    <player-chrome>
+      <video
+        slot="media"
+        src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
+        muted
+        preload="none"
+      ></video>
+      <player-control-bar>
+        <player-play-button>Play</player-play-button>
+        <player-progress-slider>Progress</player-progress-slider>
+        <player-pip-button>PIP</player-pip-button>
+        <player-fullscreen-button>Fullscreen</player-fullscreen-button>
+      </player-control-bar>
+    </player-chrome>
+  </body>
+</html>

@@ -28,11 +28,10 @@ template.innerHTML = `
       /* All putting the progress slider at full width on other lines */
       flex-wrap: wrap;
 
-      background-color: #111;
-
       width: 100%;
       color: var(--player-chrome-icon-color, #eee);
-      background: rgba(20,20,30, 0.7);
+
+      background-color: var(--player-chrome-control-bar-background, rgba(20,20,30, 0.7));
     }
 
     ::slotted(*), :host > * {

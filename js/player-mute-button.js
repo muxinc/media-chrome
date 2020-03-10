@@ -38,6 +38,9 @@ class PlayerMuteButton extends PlayerChromeButton {
   }
 }
 
-window.customElements.define('player-mute-button', PlayerMuteButton);
+if (!window.customElements.get('player-mute-button')) {
+  window.customElements.define('player-mute-button', PlayerMuteButton);
+  window.PlayerMuteButton = PlayerMuteButton;
+}
 
 export default PlayerMuteButton;

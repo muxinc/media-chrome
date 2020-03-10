@@ -1,11 +1,11 @@
 {
   "name": "@mux/player-chrome",
   "version": "0.0.1",
-  "description": "An experiment with custom elements to build a UI wrapper for any video player.",
-  "main": "js/player-chrome.js",
+  "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
+  "main": "dist/components/player-chrome.js",
   "scripts": {
-    "build": "parcel build js/*.js",
-    "dev": "parcel index.html",
+    "build": "rm -rf dist && parcel build js/*.js --out-dir dist/components && parcel build examples/*.html --out-dir dist/examples --no-minify",
+    "dev": "parcel index.html examples/*.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
