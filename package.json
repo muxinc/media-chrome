@@ -2,9 +2,10 @@
   "name": "player-chrome",
   "version": "0.0.1",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
+  "type": "module",
   "main": "dist/components/player-chrome.js",
   "scripts": {
-    "build": "rm -rf dist && parcel build js/*.js --out-dir dist/components && parcel build examples/*.html --out-dir dist/examples --no-minify",
+    "build": "rm -rf dist && rollup --config",
     "dev": "parcel index.html examples/*.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -29,8 +30,11 @@
     "parcel": "^1.12.3"
   },
   "dependencies": {
+    "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-node-resolve": "^7.1.1",
     "hls.js": "^0.12.4",
     "raw-loader": "^3.1.0",
+    "rollup-plugin-babel-minify": "^9.1.1",
     "video.js": "^7.6.5"
   }
 }

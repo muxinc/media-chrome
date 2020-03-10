@@ -1,3 +1,4 @@
+import PlayerChromeElement from './player-chrome-element.js';
 import './player-control-bar.js';
 
 const template = document.createElement('template');
