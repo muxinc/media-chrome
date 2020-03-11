@@ -4,7 +4,31 @@
   </head>
   <body>
 
-    <h2>Before</h2>
+    <style>
+      player-control-bar {
+        background-color: transparent;
+      }
+
+      player-control-bar > * {
+        background-color: rgba(240, 150, 100, 0.7);
+        margin-left: 5px;
+        margin-bottom: 5px;
+        border-radius: 22px;
+      }
+
+      player-progress-slider {
+        width: 100%;
+        height: 20px;
+        margin: 0;
+        background: none;
+      }
+
+      player-fullscreen-button {
+        margin-left: auto;
+        margin-right: 5px;
+      }
+    </style>
+
     <player-chrome id="before">
       <video
         slot="media"
@@ -13,15 +37,27 @@
         preload="none"
       ></video>
       <player-control-bar>
-        <player-play-button>Play</player-play-button>
-        <player-mute-button>Mute</player-mute-button>
-        <player-volume-slider>Volume</player-volume-slider>
-        <player-progress-slider>Progress</player-progress-slider>
-        <player-fullscreen-button>Fullscreen</player-fullscreen-button>
+        <player-progress-slider></player-progress-slider>
+        <player-play-button></player-play-button>
+        <player-mute-button></player-mute-button>
+        <player-volume-slider></player-volume-slider>
+        <player-fullscreen-button></player-fullscreen-button>
       </player-control-bar>
     </player-chrome>
 
-    <h2>After</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <h2>After</h2>
 
     <style>
       #after {
@@ -77,3 +113,4 @@
     </player-chrome>
   </body>
 </html>
+-->

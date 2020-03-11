@@ -6,7 +6,7 @@
   "main": "dist/components/player-chrome.js",
   "scripts": {
     "build": "rm -rf dist && rollup --config",
-    "dev": "parcel index.html examples/*.html",
+    "dev": "rm -rf dist && parcel index.html examples/*.html",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

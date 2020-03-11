@@ -35,6 +35,7 @@ template.innerHTML = `
       min-height: 24px;
       font-size: 16px;
       line-height: 24px;
+      padding: 0 10px;
     }
 
     :host(:focus, :focus-within) {
@@ -56,7 +57,7 @@ template.innerHTML = `
       width: 100%; /* Specific width is required for Firefox. */
 
       box-sizing: border-box;
-      padding: 0 10px;
+      padding: 0;
       margin: 0;
     }
 

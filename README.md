@@ -1,15 +1,17 @@
-# &lt;player-chrome&gt;
+# `<player-chrome>`
 
-Custom elements (web components) for making audio and video player controls that look great in your website or app.
+Custom elements (web components) for building audio and video player controls.
 
 *From [Mux](https://mux.com/) and the creator of [Video.js](https://videojs.com/).*
 
 ## Why?
-We put so much effort into making our form buttons and navigation elements look uniquely beautiful but then use generic, default media player controls. Why? Because it's still difficult to create a player experience that's unique to a site or brand.
+We often put a lot of effort into making our form buttons and navigation elements look uniquely beautiful, but then use generic, default media player controls...because it's hard not to.
 
 * Web browsers have built-in player controls that can't easily be customized and look different in every browser.
 * Social sites like Youtube, Vimeo, and SoundCloud only let you customize small details of the player, like primary button color.
 * Player controls are complex and hard to build from scratch. Open source players like Video.js and JW Player help, but require you to learn proprietary JS APIs, and can be difficult to use with popular Javascript frameworks.
+
+It should be easier... `<player-chrome>` is an attempt at solving that.
 
 ## Why now?
 
@@ -17,47 +19,54 @@ Web components. @heff spoke about [the potential of web components for video](ht
 
 * Can be used like any native HTML tag in HTML, Javascript, and CSS (unleash your designer)
 * Are compatible by default with Javascript frameworks (React, Angular, Stencil)
-* Can be used across video players when using multiple, e.g Youtube & `<video>`. (Could even be used by video players as their own built-in controls)
+* Can be used across players when using multiple in the same site, e.g Youtube & `<video>`. (Could even be used by players as their own built-in controls)
+
+## Quick Demo
+
+### Styling and moving controls with CSS
+...
 
 ## Example players matching the website context
 * [Reddit player example](https://www.reddit.com/r/aww/comments/ffttr3/she_is_so_silly_and_i_love_her_dearly/) before/after
 * Mux Homepage w/ custom Mux player?
 
-## Quick Demos
+## Installing `<player-chrome>` and other elements
 
-### Adding/removing controls with HTML
-Controls can be used individually or within a `<player-chrome>` tag for some automatic positioning.
+`<player-chrome>` is packaged as a javascript module (es6) only, which is supported by all evergreen browsers and Node v12+. It includes all of the other player controls with it, like `<player-play-button>`.
 
-...
+### Adding to your website/app using `<script>`
 
-### Styling and moving controls with CSS
-...
+Load the module in the `<head>` of your HTML page. Note the `type="module"`, that's important.
 
-### Adding controls to other players
-...
+> Modules are always loaded asynchronously by the browser, so it's ok to load them in the head :thumbsup:, and best for registering web components quickly.
 
-
-## Installing &lt;player-chrome&gt; and other elements
-...
-
-## Using &lt;player-chrome&gt; in your HTML
-
-1. Load &lt;player-chrome&gt; (async) in the head of your document.
 ```html
-<script type="module" src="./js/player-chrome.js"></script>
+<head>
+  <script type="module" src="https://unpkg.com/player-chrome"></script>
+</head>
 ```
 
-2. Wrap your HTML media element in the `<player-chrome>` tag. Include the `defaultControls` attribute to turn on basic controls.
-```html
-<player-chrome defaultControls>
-  <video
-    src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
-  >
-  </video>
-</player-chrome>
+### Adding to your app via `npm`
+
+```bash
+npm install player-chrome --save
+```
+Or yarn
+```bash
+yarn add player-chrome
 ```
 
-3. Add the `slot="media"` attribute to your media element. At the same time remove the `controls` attribute from the media element or you'll have double controls.
+Include in your app javascript (e.g. src/App.js)
+```js
+import 'player-chrome';
+```
+This will register the custom elements with the browser so they can be used as HTML.
+
+## Using in your HTML
+
+Wrap your HTML media element in the `<player-chrome>` tag. Include the `defaultControls` attribute to turn on basic controls.
+
+Add a `slot="media"` attribute to your media element and remove any `controls` attribute or you'll have double controls.
 ```html
 <player-chrome defaultControls>
   <video
@@ -68,13 +77,8 @@ Controls can be used individually or within a `<player-chrome>` tag for some aut
 </player-chrome>
 ```
 
-## Using &lt;player-chrome&gt; with other frameworks
-* React...
-* View...
-* Angular...
-
-## Customizing &lt;player-chrome&gt;
-To customize player-chrome, remove the `defaultControls` attribute and use the built in control elements to include only the controls you want and customize how they look.
+## Customizing the controls
+To customize player-chrome, remove the `defaultControls` attribute and use the included control elements to add only the controls you want and in whatever order you want.
 ```html
 <player-chrome>
   <video
@@ -92,8 +96,11 @@ To customize player-chrome, remove the `defaultControls` attribute and use the b
 </player-chrome>
 ```
 
+You can then use CSS to style the controls.
+
 ## Using &lt;player-chrome&gt; with specific players
 * `<video>`
+* `<audio>`
 * HLS.js
 * Video.js
 * JW Player
@@ -118,3 +125,8 @@ For HLS.js we've created a custom element that acts just like a &lt;video&gt; el
   </hls-video>
 </player-chrome>
 ```
+
+## Using &lt;player-chrome&gt; with javascript frameworks
+* React...
+* View...
+* Angular...
