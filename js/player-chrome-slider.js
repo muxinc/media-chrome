@@ -105,7 +105,7 @@ template.innerHTML = `
   <input id="range" type="range" min="0" max="1000" step="1" value="0">
 `;
 
-class PlayerChromeSlider extends PlayerChromeElement {
+class PlayerChromeRange extends PlayerChromeElement {
   constructor() {
     super();
 
@@ -115,9 +115,9 @@ class PlayerChromeSlider extends PlayerChromeElement {
   }
 }
 
-if (!window.customElements.get('player-chrome-slider')) {
-  window.customElements.define('player-chrome-slider', PlayerChromeSlider);
-  window.PlayerChromeSlider = PlayerChromeSlider;
+if (!window.customElements.get('player-chrome-range')) {
+  window.customElements.define('player-chrome-range', PlayerChromeRange);
+  window.PlayerChromeRange = PlayerChromeRange;
 }
 
-export default PlayerChromeSlider;
+export default PlayerChromeRange;

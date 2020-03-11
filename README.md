@@ -21,10 +21,15 @@ Web components. @heff spoke about [the potential of web components for video](ht
 * Are compatible by default with Javascript frameworks (React, Angular, Stencil)
 * Can be used across players when using multiple in the same site, e.g Youtube & `<video>`. (Could even be used by players as their own built-in controls)
 
-## Quick Demo
+## Quick Demos
 
-### Styling and moving controls with CSS
-...
+### Adding controls to a player
+Just HTML. No javascripting required.
+![Add controls to the player](http://image.mux.com/es7LU800gmNagIAaFuV5T25Z32xrmt6Gn/animated.gif?width=640&fps=15&end=10)
+
+### Moving the progress bar above the controls
+Simple HTML and CSS.
+![Moving the playback progress bar](http://image.mux.com/NAu02gDe4qenxs8x4CKDKOb65hFcirY02p/animated.gif?width=640&fps=15&end=10)
 
 ## Example players matching the website context
 * [Reddit player example](https://www.reddit.com/r/aww/comments/ffttr3/she_is_so_silly_and_i_love_her_dearly/) before/after
@@ -88,8 +93,8 @@ To customize player-chrome, remove the `defaultControls` attribute and use the i
   <player-control-bar>
     <player-play-button>Play</player-play-button>
     <player-mute-button>Mute</player-mute-button>
-    <player-volume-slider>Volume</player-volume-slider>
-    <player-progress-slider>Progress</player-progress-slider>
+    <player-volume-range>Volume</player-volume-range>
+    <player-progress-range>Progress</player-progress-range>
     <player-pip-button>PIP</player-pip-button>
     <player-fullscreen-button>Fullscreen</player-fullscreen-button>
   </player-control-bar>

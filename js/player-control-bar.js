@@ -3,8 +3,8 @@ import PlayerChromeElement from './player-chrome-element.js';
 import './player-play-button.js';
 import './player-fullscreen-button.js';
 import './player-pip-button.js';
-import './player-progress-slider.js';
-import './player-volume-slider.js';
+import './player-progress-range.js';
+import './player-volume-range.js';
 import './player-mute-button.js';
 import './player-forward-button.js';
 import './player-replay-button.js';
@@ -25,7 +25,7 @@ template.innerHTML = `
       box-sizing: border-box;
       display: flex;
 
-      /* All putting the progress slider at full width on other lines */
+      /* All putting the progress range at full width on other lines */
       flex-wrap: wrap;
 
       width: 100%;
@@ -38,13 +38,13 @@ template.innerHTML = `
       /* position: relative; */
     }
 
-    player-progress-slider,
-    ::slotted(player-progress-slider) {
+    player-progress-range,
+    ::slotted(player-progress-range) {
       flex-grow: 1;
     }
 
-    player-volume-slider,
-    ::slotted(player-volume-slider) {
+    player-volume-range,
+    ::slotted(player-volume-range) {
       width: 80px;
     }
   </style>
@@ -64,8 +64,8 @@ Let all custom controls happen at the player-chrome level.
 controlsTemplate.innerHTML = `
   <player-play-button>Play</player-play-button>
   <player-mute-button>Mute</player-mute-button>
-  <player-volume-slider>Volume</player-volume-slider>
-  <player-progress-slider>Progress</player-progress-slider>
+  <player-volume-range>Volume</player-volume-range>
+  <player-progress-range>Progress</player-progress-range>
   <player-pip-button>PIP</player-pip-button>
   <player-fullscreen-button>Fullscreen</player-fullscreen-button>
 `;

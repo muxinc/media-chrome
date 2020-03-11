@@ -1,53 +1,32 @@
 <html>
-  <head>
-    <script type="module" src="../js/player-chrome.js"></script>
-  </head>
-  <body>
+<head>
+  <script type="module" src="../js/player-chrome.js"></script>
+</head>
+<body>
 
-    <style>
-      player-control-bar {
-        background-color: transparent;
-      }
+<style>
+  player-progress-range {
+    width: 100%;
+    height: 20px;
+    padding: 0;
+  }
+</style>
 
-      player-control-bar > * {
-        background-color: rgba(240, 150, 100, 0.7);
-        margin-left: 5px;
-        margin-bottom: 5px;
-        border-radius: 22px;
-      }
-
-      player-progress-slider {
-        width: 100%;
-        height: 20px;
-        margin: 0;
-        background: none;
-      }
-
-      player-fullscreen-button {
-        margin-left: auto;
-        margin-right: 5px;
-      }
-    </style>
-
-    <player-chrome id="before">
-      <video
-        slot="media"
-        src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
-        muted
-        preload="none"
-      ></video>
-      <player-control-bar>
-        <player-progress-slider></player-progress-slider>
-        <player-play-button></player-play-button>
-        <player-mute-button></player-mute-button>
-        <player-volume-slider></player-volume-slider>
-        <player-fullscreen-button></player-fullscreen-button>
-      </player-control-bar>
-    </player-chrome>
-
-
-
-
+<player-chrome>
+  <video
+    slot="media"
+    src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
+    muted
+    preload="none"
+  ></video>
+  <player-control-bar>
+    <player-progress-range></player-progress-range>
+    <player-play-button></player-play-button>
+    <player-mute-button></player-mute-button>
+    <player-volume-range></player-volume-range>
+    <player-fullscreen-button></player-fullscreen-button>
+  </player-control-bar>
+</player-chrome>
 
 
 
@@ -77,12 +56,12 @@
         border-radius: 22px;
       }
 
-      #after player-progress-slider,
-      #after player-volume-slider {
+      #after player-progress-range,
+      #after player-volume-range {
         background-color: transparent;
       }
 
-      #after player-progress-slider {
+      #after player-progress-range {
         width: 100%;
         height: 20px;
         margin: 0;
@@ -104,13 +83,24 @@
         preload="none"
       ></video>
       <player-control-bar>
-        <player-progress-slider>Progress</player-progress-slider>
+        <player-progress-range>Progress</player-progress-range>
         <player-play-button>Play</player-play-button>
         <player-mute-button>Mute</player-mute-button>
-        <player-volume-slider>Volume</player-volume-slider>
+        <player-volume-range>Volume</player-volume-range>
         <player-fullscreen-button>Fullscreen</player-fullscreen-button>
       </player-control-bar>
     </player-chrome>
   </body>
 </html>
 -->
+
+<style>
+body {
+  text-align: right;
+}
+  player-chrome {
+    float: right;
+    width: 400;
+    height: 280;
+  }
+</style>

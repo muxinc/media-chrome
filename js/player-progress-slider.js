@@ -1,6 +1,6 @@
-import PlayerChromeSlider from './player-chrome-slider.js';
+import PlayerChromeRange from './player-chrome-range.js';
 
-class PlayerProgressSlider extends PlayerChromeSlider {
+class PlayerProgressRange extends PlayerChromeRange {
   constructor() {
     super();
 
@@ -37,7 +37,7 @@ class PlayerProgressSlider extends PlayerChromeSlider {
 
     player.addEventListener('timeupdate', this.updateRangeWithPlayerTime);
 
-    // If readyState is supported, and the slider is used before
+    // If readyState is supported, and the range is used before
     // the player is ready, use the play promise to set the time.
     if (player.readyState !== undefined && player.readyState == 0) {
       // range.addEventListener('change', this.playIfNotReady);
@@ -53,6 +53,6 @@ class PlayerProgressSlider extends PlayerChromeSlider {
   }
 }
 
-window.customElements.define('player-progress-slider', PlayerProgressSlider);
+window.customElements.define('player-progress-range', PlayerProgressRange);
 
-export default PlayerProgressSlider;
+export default PlayerProgressRange;

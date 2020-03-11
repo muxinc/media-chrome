@@ -50,8 +50,8 @@ controlsTemplate.innerHTML = `
   <player-control-bar>
     <player-play-button>Play</player-play-button>
     <player-mute-button>Mute</player-mute-button>
-    <player-volume-slider>Volume</player-volume-slider>
-    <player-progress-slider>Progress</player-progress-slider>
+    <player-volume-range>Volume</player-volume-range>
+    <player-progress-range>Progress</player-progress-range>
     <player-pip-button>PIP</player-pip-button>
     <player-fullscreen-button>Fullscreen</player-fullscreen-button>
   </player-control-bar>

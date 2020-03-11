@@ -1,6 +1,6 @@
-import PlayerChromeSlider from './player-chrome-slider.js';
+import PlayerChromeRange from './player-chrome-range.js';
 
-class PlayerVolumeSlider extends PlayerChromeSlider {
+class PlayerVolumeRange extends PlayerChromeRange {
   constructor() {
     super();
 
@@ -73,6 +73,6 @@ class PlayerVolumeSlider extends PlayerChromeSlider {
   }
 }
 
-window.customElements.define('player-volume-slider', PlayerVolumeSlider);
+window.customElements.define('player-volume-range', PlayerVolumeRange);
 
-export default PlayerVolumeSlider;
+export default PlayerVolumeRange;
