@@ -11,7 +11,8 @@
   "scripts": {
     "build": "rm -rf dist && rollup --config",
     "dev": "rm -rf dist && parcel index.html examples/*.html",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish-patch": "yarn run build && np patch --no-tests"
   },
   "repository": {
     "type": "git",
