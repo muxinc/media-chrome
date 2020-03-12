@@ -1,5 +1,6 @@
 import PlayerChromeElement from './player-chrome-element.js';
 import './player-control-bar.js';
+import './hls-video-element.js';
 
 const template = document.createElement('template');
 

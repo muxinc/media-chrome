@@ -33,13 +33,12 @@
   "homepage": "https://github.com/muxinc/player-chrome#readme",
   "devDependencies": {
     "parcel": "^1.12.3"
-  },
-  "dependencies": {
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
-    "hls.js": "^0.12.4",
-    "raw-loader": "^3.1.0",
     "rollup-plugin-babel-minify": "^9.1.1",
+  },
+  "dependencies": {
+    "hls.js": "^0.12.4",
     "video.js": "^7.6.5"
   }
 }
