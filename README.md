@@ -5,7 +5,7 @@ Custom elements (web components) for building audio and video player controls.
 *From [Mux](https://mux.com/) and the creator of [Video.js](https://videojs.com/).*
 
 ## Why?
-We often put a lot of effort into making our form buttons and navigation elements look uniquely beautiful, but then use generic, default media player controls...because it's hard not to.
+More often than not web designers and developers just use the default media player controls, even when creating a beautiful custom design theme. It's hard not to.
 
 * Web browsers have built-in player controls that can't easily be customized and look different in every browser.
 * Social sites like Youtube, Vimeo, and SoundCloud only let you customize small details of the player, like primary button color.
