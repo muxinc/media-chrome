@@ -21,14 +21,16 @@ Web components. @heff spoke about [the potential of web components for video](ht
 * Are compatible by default with Javascript frameworks (React, Angular, Stencil)
 * Can be used across players when using multiple in the same site, e.g Youtube & `<video>`. (Could even be used by players as their own built-in controls)
 
-## Quick Demos
+## _Quick_ Demos
 
 ### Adding controls to a player
 Just HTML. No javascripting required.
+
 ![Add controls to the player](http://image.mux.com/es7LU800gmNagIAaFuV5T25Z32xrmt6Gn/animated.gif?width=640&fps=15&end=10)
 
 ### Moving the progress bar above the controls
 Simple HTML and CSS.
+
 ![Moving the playback progress bar](http://image.mux.com/NAu02gDe4qenxs8x4CKDKOb65hFcirY02p/animated.gif?width=640&fps=15&end=10)
 
 ## Example players matching the website context

@@ -4,6 +4,10 @@
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
   "type": "module",
   "main": "dist/components/player-chrome.js",
+  "files": [
+    "./dist/*",
+    "README.md"
+  ],
   "scripts": {
     "build": "rm -rf dist && rollup --config",
     "dev": "rm -rf dist && parcel index.html examples/*.html",
