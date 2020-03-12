@@ -18,12 +18,12 @@ It should be easier... `<player-chrome>` is an attempt at solving that.
 Web components. @heff spoke about [the potential of web components for video](https://youtu.be/TwnygSWmToc?t=859) at Demuxed 2015. They allow us to extend the browser's base HTML functionality, meaning we can now build player controls as simple HTML tags that:
 
 * Can be used like any native HTML tag in HTML, Javascript, and CSS (unleash your designer)
-* Are compatible by default with Javascript frameworks (React, Angular, Stencil)
+* Are compatible by default with Javascript frameworks (React, Angular, Svelte)
 * Can be used across players when using multiple in the same site, e.g Youtube & `<video>`. (Could even be used by players as their own built-in controls)
 
 ## _Quick_ Demos
 
-### Adding controls to a player
+### Adding controls to a video element
 Just HTML. No javascripting required.
 
 ![Add controls to the player](http://image.mux.com/es7LU800gmNagIAaFuV5T25Z32xrmt6Gn/animated.gif?width=640&fps=15&end=10)
@@ -78,7 +78,7 @@ Add a `slot="media"` attribute to your media element and remove any `controls` a
 <player-chrome defaultControls>
   <video
     slot="media"
-    src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
+    src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
   >
   </video>
 </player-chrome>
@@ -90,7 +90,7 @@ To customize player-chrome, remove the `defaultControls` attribute and use the i
 <player-chrome>
   <video
     slot="media"
-    src="https://file-examples.com/wp-content/uploads/2017/04/file_example_MP4_480_1_5MG.mp4"
+    src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
   ></video>
   <player-control-bar>
     <player-play-button>Play</player-play-button>
