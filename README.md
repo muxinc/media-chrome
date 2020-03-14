@@ -33,10 +33,6 @@ Simple HTML and CSS.
 
 ![Moving the playback progress bar](http://image.mux.com/NAu02gDe4qenxs8x4CKDKOb65hFcirY02p/animated.gif?width=640&fps=15&end=10)
 
-## Example players matching the website context
-* [Reddit player example](https://www.reddit.com/r/aww/comments/ffttr3/she_is_so_silly_and_i_love_her_dearly/) before/after
-* Mux Homepage w/ custom Mux player?
-
 ## Installing `<player-chrome>` and other elements
 
 `<player-chrome>` is packaged as a javascript module (es6) only, which is supported by all evergreen browsers and Node v12+. It includes all of the other player controls with it, like `<player-play-button>`.
@@ -117,26 +113,15 @@ Player Chrome elements expect an HTML element that exposes the same basic API as
 * Youtube
 
 ### HLS.js
-For HLS.js we've created a custom element that acts just like a &lt;video&gt; element but has HLS.js baked in.
+For HLS.js we've created a custom element that acts just like a &lt;video&gt; element but has HLS.js baked in. It's included with the Player Chrome module.
 
-1. Load the HLS.js custom element before player-chrome, so that the tag is already defined when player-chrome loads.
-```html
-<script type="module" src="./js/hls-video-element.js"></script>
-<script type="module" src="./js/player-chrome.js"></script>
-```
-
-2. Use `<hls-video>` in place of `<video>`, and use a `m3u8`(HLS) file as the source.
+Use `<hls-video>` in place of `<video>`, and use a `m3u8`(HLS) file as the source.
 ```html
 <player-chrome defaultControls>
   <hls-video
     slot="media"
-    src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"
+    src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
   >
   </hls-video>
 </player-chrome>
 ```
-
-## Using &lt;player-chrome&gt; with javascript frameworks
-* React...
-* View...
-* Angular...
