@@ -6,11 +6,12 @@
   "main": "dist/player-chrome.js",
   "files": [
     "./dist/*",
-    "README.md"
+    "README.md",
+    "./examples/*"
   ],
   "scripts": {
-    "build": "rm -rf dist && rollup --config",
-    "dev": "rm -rf dist && parcel index.html examples/*.html",
+    "build": "gulp",
+    "dev": "gulp dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish-patch": "yarn run build && np patch --no-tests"
   },
@@ -34,15 +35,13 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
+    "del": "^5.1.0",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.2.0",
-    "gulp-each": "^0.5.0",
-    "parcel": "^1.12.3",
+    "gulp-livereload": "^4.0.2",
     "rollup": "^2.1.0",
     "rollup-plugin-babel-minify": "^9.1.1",
-    "rollup-plugin-terser": "^5.3.0",
+    "rollup-plugin-terser": "^5.3.0"
   },
-  "dependencies": {
-    "hls.js": "^0.12.4",
-  }
+  "dependencies": {}
 }
