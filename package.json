@@ -3,7 +3,7 @@
   "version": "0.0.3",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
   "type": "module",
-  "main": "dist/components/player-chrome.js",
+  "main": "dist/player-chrome.js",
   "files": [
     "./dist/*",
     "README.md"
@@ -25,7 +25,7 @@
     "player",
     "controls"
   ],
-  "author": "Mux, Inc.",
+  "author": "@muxinc",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/muxinc/player-chrome/issues"
@@ -34,11 +34,15 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
+    "gulp": "^4.0.2",
+    "gulp-cli": "^2.2.0",
+    "gulp-each": "^0.5.0",
     "parcel": "^1.12.3",
-    "rollup-plugin-babel-minify": "^9.1.1"
+    "rollup": "^2.1.0",
+    "rollup-plugin-babel-minify": "^9.1.1",
+    "rollup-plugin-terser": "^5.3.0",
   },
   "dependencies": {
     "hls.js": "^0.12.4",
-    "video.js": "^7.6.5"
   }
 }

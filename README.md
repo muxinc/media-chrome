@@ -103,7 +103,7 @@ You can then use CSS to style the controls.
 
 ## Using &lt;player-chrome&gt; with specific players
 
-Player Chrome elements expect an HTML element that exposes the same basic API as HTML Media Elements (`<video>` and `<audio>`). Through [more] custom elements, we can make it possible for any player to work with Player Chrome, by wrapping the player in a new element that translates the HTML media API to the player's specific API.
+Player Chrome will work with any HTML element that exposes the same basic API as HTML Media Elements (`<video>` and `<audio>`). Through [more] custom elements, we can make it possible for any player to work with Player Chrome, by wrapping the player in a new element that translates the HTML media API to the player's specific API.
 
 * `<video>`
 * `<audio>`
