@@ -1,14 +1,15 @@
 <html>
 <head>
   <script type="module" src="../dist/player-chrome.js"></script>
+  <script type="module" src="https://unpkg.com/hls-video-element"></script>
 </head>
 <body>
 
 <player-chrome>
-  <video
+  <youtube-video
+    src="https://www.youtube.com/watch?v=rubNgGj3pYo"
     slot="media"
-    src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-  ></video>
+  ></youtube-video>
   <player-control-bar>
     <player-play-button></player-play-button>
     <player-progress-range></player-progress-range>

@@ -42,11 +42,6 @@ template.innerHTML = `
     ::slotted(player-progress-range) {
       flex-grow: 1;
     }
-
-    player-volume-range,
-    ::slotted(player-volume-range) {
-      width: 80px;
-    }
   </style>
 
   <slot></slot>

@@ -32,6 +32,7 @@ template.innerHTML = `
       box-sizing: border-box;
       background-color: transparent;
       height: 44px;
+      width: 100px;
       min-height: 24px;
       font-size: 16px;
       line-height: 24px;

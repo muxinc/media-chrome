@@ -13,7 +13,7 @@
     "build": "gulp",
     "dev": "gulp dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "publish-patch": "yarn run build && np patch --no-tests"
+    "publish-patch": "yarn run build && np patch --no-tests",
   },
   "repository": {
     "type": "git",
@@ -33,8 +33,10 @@
   },
   "homepage": "https://github.com/muxinc/player-chrome#readme",
   "devDependencies": {
+    "@babel/core": "^7.9.0",
     "@rollup/plugin-commonjs": "^11.0.2",
     "@rollup/plugin-node-resolve": "^7.1.1",
+    "babel-loader": "^8.1.0",
     "del": "^5.1.0",
     "gulp": "^4.0.2",
     "gulp-cli": "^2.2.0",
