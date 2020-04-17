@@ -62,6 +62,9 @@ class PlayerPlayButton extends PlayerChromeButton {
   }
 }
 
-window.customElements.define('player-play-button', PlayerPlayButton);
+if (!window.customElements.get('player-play-button')) {
+  window.customElements.define('player-play-button', PlayerPlayButton);
+  window.PlayerChrome = PlayerPlayButton;
+}
 
 export default PlayerPlayButton;

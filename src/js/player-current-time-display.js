@@ -62,9 +62,9 @@ class PlayerCurrentTimeDisplay extends PlayerChromeElement {
   }
 }
 
-window.customElements.define(
-  'player-current-time-display',
-  PlayerCurrentTimeDisplay
-);
+if (!window.customElements.get('player-current-time-display')) {
+  window.customElements.define('player-current-time-display', PlayerCurrentTimeDisplay);
+  window.PlayerChrome = PlayerCurrentTimeDisplay;
+}
 
 export default PlayerCurrentTimeDisplay;

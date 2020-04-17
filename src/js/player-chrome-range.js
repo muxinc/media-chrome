@@ -3,30 +3,36 @@ import PlayerChromeElement from './player-chrome-element.js';
 const template = document.createElement('template');
 
 // Can't comma-separate selectors like ::-webkit-slider-thumb, ::-moz-range-thumb
-// Browsers ignore the whole rule if you do.
+// Browsers ignore the whole rule if you do. So using templates for those.
 const thumbStyles = `
-  box-shadow: 1px 1px 1px transparent;
-  height: 10px;
-  width: 10px;
-  border-radius: 10px;
-  background: #ffffff;
+  height: var(--thumb-height);
+  width: var(--player-range-thumb-width, 10px);
+  border: var(--player-range-thumb-border, none);
+  border-radius: var(--player-range-thumb-border-radius, 10px);
+  background: var(--player-range-thumb-background, #fff);
+  box-shadow: var(--player-range-thumb-box-shadow, 1px 1px 1px transparent);
   cursor: pointer;
 `;
 
 const trackStyles = `
   width: 100%;
-  min-width: 60px;
-  height: 4px;
+  min-width: 40px;
+  height: var(--track-height);
+  border: var(--player-range-track-border, none);
+  border-radius: var(--player-range-track-border-radius, 0);
+  background: var(--player-range-track-background-internal, --player-range-track-background, #eee);
+
+  box-shadow: var(--player-range-track-box-shadow, none);
+  transition: var(--player-range-track-transition, none);
   cursor: pointer;
-  box-shadow: none;
-  background: #eee;
-  border-radius: 0;
-  border: none;
 `;
 
 template.innerHTML = `
   <style>
     :host {
+      --thumb-height: var(--player-range-thumb-height, 10px);
+      --track-height: var(--player-range-track-height, 4px);
+
       display: inline-block;
       vertical-align: middle;
       box-sizing: border-box;
@@ -65,8 +71,10 @@ template.innerHTML = `
     /* Special styling for WebKit/Blink */
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      margin-top: -3px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
       ${thumbStyles}
+      /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+      margin-top: calc(calc(0px - var(--thumb-height) + var(--track-height)) / 2);
+      transition: margin .2s ease;
     }
     input[type=range]::-moz-range-thumb { ${thumbStyles} }
 
@@ -113,6 +121,49 @@ class PlayerChromeRange extends PlayerChromeElement {
     var shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.range = this.shadowRoot.querySelector('#range');
+
+    this.range.addEventListener('input', this.updateBar.bind(this));
+    this.updateBar();
+  }
+
+  /*
+    Native ranges have a single color for the whole track, which is different
+    from most video players that have a colored "bar" to the left of the handle
+    showing playback progress or volume level. Here we're building that bar
+    by using a background gradient that moves with the range value.
+  */
+  updateBar() {
+    const colorArray = this.getBarColors();
+
+    let gradientStr = 'linear-gradient(to right, ';
+    let prevPercent = 0;
+    colorArray.forEach((color)=>{
+      if (color[1] < prevPercent) return;
+      gradientStr = gradientStr + `${color[0]} ${prevPercent}%, ${color[0]} ${color[1]}%,`;
+      prevPercent = color[1];
+    });
+    gradientStr = gradientStr.slice(0, gradientStr.length-1) + ')';
+
+    this.style.setProperty(
+      '--player-range-track-background-internal',
+      gradientStr
+    );
+  }
+
+  /*
+    Build the color gradient for the range bar.
+    Creating an array so progress-bar can insert the buffered bar.
+  */
+  getBarColors() {
+    const range = this.range;
+    const rangePercent = (this.range.value / 1000) * 100;
+
+    let colorArray = [
+      ['var(--player-range-bar-color, #fff)', rangePercent],
+      ['var(--player-range-track-background, #333)', 100]
+    ];
+
+    return colorArray;
   }
 }
 

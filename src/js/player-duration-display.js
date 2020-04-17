@@ -62,6 +62,9 @@ class PlayerDurationDisplay extends PlayerChromeElement {
   }
 }
 
-window.customElements.define('player-duration-display', PlayerDurationDisplay);
+if (!window.customElements.get('player-duration-display')) {
+  window.customElements.define('player-duration-display', PlayerDurationDisplay);
+  window.PlayerChrome = PlayerDurationDisplay;
+}
 
 export default PlayerDurationDisplay;

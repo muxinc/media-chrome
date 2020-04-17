@@ -22,6 +22,8 @@ class PlayerProgressRange extends PlayerChromeRange {
       this.range.value = Math.round(
         (player.currentTime / player.duration) * 1000
       );
+
+      this.updateBar();
     };
 
     this.playIfNotReady = e => {
@@ -42,6 +44,8 @@ class PlayerProgressRange extends PlayerChromeRange {
     if (player.readyState !== undefined && player.readyState == 0) {
       // range.addEventListener('change', this.playIfNotReady);
     }
+
+    player.addEventListener('progress', this.updateBar.bind(this));
   }
 
   playerUnsetCallback() {
@@ -51,8 +55,26 @@ class PlayerProgressRange extends PlayerChromeRange {
     player.removeEventListener('timeupdate', this.updateRangeWithPlayerTime);
     range.removeEventListener('change', this.playIfNotReady);
   }
+
+  /* Add a buffered progress bar */
+  getBarColors() {
+    const player = this.player;
+    let colorsArray = super.getBarColors();
+
+    if (!player || !player.buffered || !player.buffered.length || player.duration <= 0) {
+      return colorsArray;
+    }
+
+    const buffered = player.buffered;
+    const buffPercent = (buffered.end(buffered.length-1) / player.duration) * 100;
+    colorsArray.splice(1, 0, ['var(--player-progress-buffered-color, #777)', buffPercent]);
+    return colorsArray;
+  }
 }
 
-window.customElements.define('player-progress-range', PlayerProgressRange);
+if (!window.customElements.get('player-progress-range')) {
+  window.customElements.define('player-progress-range', PlayerProgressRange);
+  window.PlayerChrome = PlayerProgressRange;
+}
 
 export default PlayerProgressRange;

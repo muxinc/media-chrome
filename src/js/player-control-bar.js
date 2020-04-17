@@ -29,9 +29,9 @@ template.innerHTML = `
       flex-wrap: wrap;
 
       width: 100%;
-      color: var(--player-chrome-icon-color, #eee);
+      color: var(--player-icon-color, #eee);
 
-      background-color: var(--player-chrome-control-bar-background, rgba(20,20,30, 0.7));
+      background-color: var(--player-control-bar-background, rgba(20,20,30, 0.7));
     }
 
     ::slotted(*), :host > * {
@@ -80,6 +80,9 @@ class PlayerControlBar extends PlayerChromeElement {
   }
 }
 
-window.customElements.define('player-control-bar', PlayerControlBar);
+if (!window.customElements.get('player-control-bar')) {
+  window.customElements.define('player-control-bar', PlayerControlBar);
+  window.PlayerChrome = PlayerControlBar;
+}
 
 export default PlayerControlBar;

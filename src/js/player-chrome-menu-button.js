@@ -65,9 +65,9 @@ class PlayerChromeMenuButton extends PlayerChromeButton {
   playerSetCallback(player) {}
 }
 
-window.customElements.define(
-  'player-chrome-menu-button',
-  PlayerChromeMenuButton
-);
+if (!window.customElements.get('player-chrome-menu-button')) {
+  window.customElements.define('player-chrome-menu-button', PlayerChromeMenuButton);
+  window.PlayerChrome = PlayerChromeMenuButton;
+}
 
 export default PlayerChromeMenuButton;

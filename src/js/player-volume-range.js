@@ -70,9 +70,14 @@ class PlayerVolumeRange extends PlayerChromeRange {
     } else {
       range.value = Math.round(player.volume * 1000);
     }
+
+    this.updateBar();
   }
 }
 
-window.customElements.define('player-volume-range', PlayerVolumeRange);
+if (!window.customElements.get('player-volume-range')) {
+  window.customElements.define('player-volume-range', PlayerVolumeRange);
+  window.PlayerChrome = PlayerVolumeRange;
+}
 
 export default PlayerVolumeRange;

@@ -1,6 +1,6 @@
 /* Player Chrome variable defaults */
 :root {
-  --player-chrome-icon-color: #eee;
+  --player-icon-color: #eee;
 }
 
 /* Method for avoiding flash of unstyled content (FOUC). Noting it here. */

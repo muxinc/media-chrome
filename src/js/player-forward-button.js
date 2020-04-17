@@ -15,6 +15,9 @@ class PlayerForwardButton extends PlayerChromeButton {
   }
 }
 
-window.customElements.define('player-forward-button', PlayerForwardButton);
+if (!window.customElements.get('player-forward-button')) {
+  window.customElements.define('player-forward-button', PlayerForwardButton);
+  window.PlayerChrome = PlayerForwardButton;
+}
 
 export default PlayerForwardButton;

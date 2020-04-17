@@ -45,9 +45,9 @@ class PlayerFullscreenButton extends PlayerChromeButton {
   }
 }
 
-window.customElements.define(
-  "player-fullscreen-button",
-  PlayerFullscreenButton
-);
+if (!window.customElements.get('player-fullscreen-button')) {
+  window.customElements.define('player-fullscreen-button', PlayerFullscreenButton);
+  window.PlayerChrome = PlayerFullscreenButton;
+}
 
 export default PlayerFullscreenButton;

@@ -218,6 +218,9 @@ class PlayerChrome extends HTMLElement {
   }
 }
 
-window.customElements.define('player-chrome', PlayerChrome);
+if (!window.customElements.get('player-chrome')) {
+  window.customElements.define('player-chrome', PlayerChrome);
+  window.PlayerChrome = PlayerChrome;
+}
 
 export default PlayerChrome;

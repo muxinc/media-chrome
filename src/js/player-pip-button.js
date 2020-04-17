@@ -25,6 +25,9 @@ class PlayerPIPButton extends PlayerChromeButton {
   }
 }
 
-window.customElements.define('player-pip-button', PlayerPIPButton);
+if (!window.customElements.get('player-pip-button')) {
+  window.customElements.define('player-pip-button', PlayerPIPButton);
+  window.PlayerChrome = PlayerPIPButton;
+}
 
 export default PlayerPIPButton;

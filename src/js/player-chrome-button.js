@@ -58,8 +58,15 @@ template.innerHTML = `
   }
   button:active {}
 
+  svg {
+    width: var(--player-button-icon-width);
+    height: var(--player-button-icon-height);
+    transform: var(--player-button-icon-transform);
+    transition: var(--player-button-icon-transition);
+  }
+
   svg .icon {
-    fill: var(--player-chrome-icon-color, #eee);
+    fill: var(--player-icon-color, #eee);
   }
 </style>
 <button id="icon-container">

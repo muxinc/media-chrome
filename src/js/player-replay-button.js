@@ -15,6 +15,9 @@ class PlayerReplayButton extends PlayerChromeButton {
   }
 }
 
-window.customElements.define('player-replay-button', PlayerReplayButton);
+if (!window.customElements.get('player-replay-button')) {
+  window.customElements.define('player-replay-button', PlayerReplayButton);
+  window.PlayerChrome = PlayerReplayButton;
+}
 
 export default PlayerReplayButton;
