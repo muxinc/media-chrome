@@ -1,0 +1,137 @@
+<html>
+<head>
+  <script type="module" src="../index.js"></script>
+</head>
+<body>
+
+<style>
+  body {
+    font-family: "Helvetica Neue", sans-serif;
+  }
+
+  player-chrome {
+    height: 290px;
+
+    --player-range-thumb-background: rgba(255,0,0, 1);
+    --player-range-track-height: 4px;
+    --player-range-track-transition: height .2s ease;
+    --player-range-track-background: #555;
+    --player-range-bar-color: rgb(229, 9, 20);
+
+    --player-button-icon-width: 35px;
+    --player-button-icon-height: 35px;
+  }
+
+  player-control-bar > player-progress-range {
+    width: 100%;
+    height: 25px;
+    --player-range-thumb-height: 20px;
+    --player-range-thumb-width: 20px;
+    --player-range-thumb-border-radius: 20px;
+    --player-progress-buffered-color: #777;
+  }
+
+  player-progress-range:hover {
+    --player-range-track-height: 9px;
+  }
+
+  player-control-bar {
+    background: none;
+    justify-content: space-between;
+    -webkit-box-align: center;
+    -ms-align-items: center;
+    align-items: center;
+    display: flex;
+    -webkit-box-pack: justify;
+  }
+
+  player-control-bar > * {
+    background: none;
+    display: flex;
+    flex: 0 1 auto;
+    width: 60px;
+    height: 60px;
+    padding-bottom: 10px;
+    --player-button-icon-transform: scale(1);
+    --player-button-icon-transition: transform .2s ease;
+  }
+
+  player-control-bar > *:focus,
+  player-control-bar > *:focus-within {
+    outline: 0;
+  }
+
+  /* For some reason `player-control-bar > *:hover` doesn't work...
+  while `player-control-bar > *:focus-within` does. Really annoying.
+  Need to submit a bug. */
+  player-control-bar > *:hover,
+  player-play-button:hover,
+  player-replay-button:hover,
+  player-forward-button:hover,
+  player-mute-button:hover,
+  player-fullscreen-button:hover {
+    --player-button-icon-transform: scale(1.25);
+    --player-button-icon-transition: transform .2s ease;
+  }
+
+  /* player-play-button:hover
+   {
+    --player-button-icon-transform: scale(1.5);
+  } */
+
+  .videoTitle {
+    flex-grow: 1;
+    height: 60px;
+    line-height: 44px;
+    vertical-align: middle;
+    overflow: hidden;
+    padding: 0 10px;
+  }
+
+  .videoTitleText {
+    width: 100%;
+    vertical-align: middle;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .videoTitleText h4 {
+    margin: 0;
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .videoTitle span {
+    display: inline;
+    font-weight: 200;
+    margin-left: 5px;
+  }
+
+</style>
+
+<player-chrome>
+  <video
+    slot="media"
+    src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+    muted
+    preload="none"
+  ></video>
+  <player-control-bar>
+    <player-progress-range></player-progress-range>
+    <player-play-button></player-play-button>
+    <player-replay-button></player-replay-button>
+    <player-forward-button></player-forward-button>
+    <player-mute-button></player-mute-button>
+    <player-volume-range></player-volume-range>
+    <div class="videoTitle">
+      <div class="videoTitleText">
+        <h4>My Title</h4><span>P2:E4 Episode 4</span>
+      </div>
+    </div>
+    <player-fullscreen-button></player-fullscreen-button>
+  </player-control-bar>
+</player-chrome>
+
+</body>
+</html>
