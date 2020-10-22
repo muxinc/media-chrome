@@ -1,4 +1,4 @@
-import PlayerChromeElement from './player-chrome-element.js';
+import MediaChromeElement from './media-chrome-element.js';
 
 const template = document.createElement('template');
 
@@ -43,7 +43,7 @@ template.innerHTML = `
 </div>
 `;
 
-class PlayerChromeMenuitem extends PlayerChromeElement {
+class MediaChromeMenuitem extends MediaChromeElement {
   constructor() {
     super();
 
@@ -59,9 +59,9 @@ class PlayerChromeMenuitem extends PlayerChromeElement {
   onClick() {}
 }
 
-if (!window.customElements.get('player-chrome-menuitem')) {
-  window.customElements.define('player-chrome-menuitem', PlayerChromeMenuitem);
-  window.PlayerChromeButton = PlayerChromeMenuitem;
+if (!window.customElements.get('media-chrome-menuitem')) {
+  window.customElements.define('media-chrome-menuitem', MediaChromeMenuitem);
+  window.MediaChromeButton = MediaChromeMenuitem;
 }
 
-export default PlayerChromeMenuitem;
+export default MediaChromeMenuitem;

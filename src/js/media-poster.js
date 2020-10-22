@@ -1,6 +1,6 @@
 // IN PROGRESS
 
-import PlayerChromeElement from './player-chrome-element.js';
+import MediaChromeElement from './media-chrome-element.js';
 
 const template = document.createElement('template');
 
@@ -35,7 +35,7 @@ template.innerHTML = `
 <div id="poster"></div>
 `;
 
-class PlayerPoster extends PlayerChromeElement {
+class MediaPoster extends MediaChromeElement {
   constructor() {
     super();
 
@@ -47,21 +47,21 @@ class PlayerPoster extends PlayerChromeElement {
     });
   }
 
-  playerSetCallback() {
-    const player = this.player;
+  mediaSetCallback() {
+    const media = this.media;
 
-    if (!player) return;
+    if (!media) return;
 
-    this.player.addEventListener('play', () => {
+    this.media.addEventListener('play', () => {
       this.hide();
     });
   }
 
   onClick() {
-    const player = this.player;
+    const media = this.media;
 
-    if (player) {
-      player.play();
+    if (media) {
+      media.play();
     }
   }
 
@@ -89,9 +89,9 @@ class PlayerPoster extends PlayerChromeElement {
   }
 }
 
-if (!window.customElements.get('player-poster')) {
-  window.customElements.define('player-poster', PlayerPoster);
-  window.PlayerPoster = PlayerPoster;
+if (!window.customElements.get('media-poster')) {
+  window.customElements.define('media-poster', MediaPoster);
+  window.MediaPoster = MediaPoster;
 }
 
-export default PlayerPoster;
+export default MediaPoster;

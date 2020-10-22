@@ -2,19 +2,19 @@
 <html>
   <head>
     <script>
-      // window.customElements.whenDefined('player-chrome').then(() => {
+      // window.customElements.whenDefined('media-chrome').then(() => {
       //   console.log('Chrome Defined');
       // });
-      // window.customElements.whenDefined('player-play-button').then(() => {
+      // window.customElements.whenDefined('media-play-button').then(() => {
       //   console.log('Play Defined');
       // });
     </script>
-    <!-- Media elements need to be defined before player chrome in the doc
-        so they're ready when player chrome attempts to interact with them  -->
+    <!-- Media elements need to be defined before media chrome in the doc
+        so they're ready when media chrome attempts to interact with them  -->
     <script type="module" src="./js/custom-video-element.js"></script>
     <script type="module" src="./js/hls-video-element.js"></script>
     <script type="module" src="./js/video-js-element.js"></script>
-    <script type="module" src="./js/player-chrome.js"></script>
+    <script type="module" src="./js/media-chrome.js"></script>
 
     <link rel="stylesheet" href="index.css" />
     <style>
@@ -78,7 +78,7 @@
       muted
     ></hls-video> -->
 
-    <player-chrome id="my-player-chrome">
+    <media-chrome id="my-media-chrome">
       <!-- <hls-video
         id="asdf"
         src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"
@@ -100,76 +100,76 @@
         preload="none"
       ></custom-video>
 
-      <player-settings-popup id="player-settings-popup">
-        <player-chrome-menu>
-          <player-chrome-submenu-menuitem label="Playback speed" value="1.2">
-            <player-chrome-menu slot="menu">
-              <player-chrome-menuitem>Normal</player-chrome-menuitem>
-              <player-chrome-menuitem>1.5</player-chrome-menuitem>
-            </player-chrome-menu>
-          </player-chrome-submenu-menuitem>
-          <player-chrome-menuitem>Hello1</player-chrome-menuitem>
-          <player-chrome-menuitem>Hello1</player-chrome-menuitem>
-          <player-chrome-menuitem>Hello1</player-chrome-menuitem>
-          <player-chrome-menuitem>Hello1</player-chrome-menuitem>
-        </player-chrome-menu>
-      </player-settings-popup>
+      <media-settings-popup id="media-settings-popup">
+        <media-chrome-menu>
+          <media-chrome-submenu-menuitem label="Playback speed" value="1.2">
+            <media-chrome-menu slot="menu">
+              <media-chrome-menuitem>Normal</media-chrome-menuitem>
+              <media-chrome-menuitem>1.5</media-chrome-menuitem>
+            </media-chrome-menu>
+          </media-chrome-submenu-menuitem>
+          <media-chrome-menuitem>Hello1</media-chrome-menuitem>
+          <media-chrome-menuitem>Hello1</media-chrome-menuitem>
+          <media-chrome-menuitem>Hello1</media-chrome-menuitem>
+          <media-chrome-menuitem>Hello1</media-chrome-menuitem>
+        </media-chrome-menu>
+      </media-settings-popup>
 
-      <player-control-bar slot="controls">
-        <player-play-button>Play</player-play-button>
-        <player-replay-button>Replay</player-replay-button>
-        <player-forward-button>Forward</player-forward-button>
-        <player-mute-button>Mute</player-mute-button>
-        <player-volume-range>Volume</player-volume-range>
-        <player-current-time-display>Current Time</player-current-time-display>
-        <player-progress-range>Progress</player-progress-range>
-        <player-duration-display>Duration</player-duration-display>
+      <media-control-bar slot="controls">
+        <media-play-button>Play</media-play-button>
+        <media-replay-button>Replay</media-replay-button>
+        <media-forward-button>Forward</media-forward-button>
+        <media-mute-button>Mute</media-mute-button>
+        <media-volume-range>Volume</media-volume-range>
+        <media-current-time-display>Current Time</media-current-time-display>
+        <media-progress-range>Progress</media-progress-range>
+        <media-duration-display>Duration</media-duration-display>
 
-        <player-settings-popup-button>X</player-settings-popup-button>
+        <media-settings-popup-button>X</media-settings-popup-button>
 
         <!-- JUST HAVE A SEPARATE SETTINGS WINDOW!! -->
-        <!-- <player-chrome-menu-button expanded>
+        <!-- <media-chrome-menu-button expanded>
           Hello1
-          <player-chrome-menu slot="menu">
-            <player-chrome-submenu-button label="Playback speed" value="1.2">
+          <media-chrome-menu slot="menu">
+            <media-chrome-submenu-button label="Playback speed" value="1.2">
               Playback speed
-              <player-chrome-menu slot="menu">
-                <player-chrome-menu-header> </player-chrome-menu-header>
-                <player-chrome-menuitem>Normal</player-chrome-menuitem>
-                <player-chrome-menuitem>1.5</player-chrome-menuitem>
-              </player-chrome-menu>
-            </player-chrome-submenu-button>
+              <media-chrome-menu slot="menu">
+                <media-chrome-menu-header> </media-chrome-menu-header>
+                <media-chrome-menuitem>Normal</media-chrome-menuitem>
+                <media-chrome-menuitem>1.5</media-chrome-menuitem>
+              </media-chrome-menu>
+            </media-chrome-submenu-button>
             Hello2<br />Hello2<br />Hello2<br />Hello2<br />Hello2<br />Hello2<br />Hello2<br />Hello2<br />
-          </player-chrome-menu>
-        </player-chrome-menu-button> -->
-        <player-fullscreen-button>Fullscreen</player-fullscreen-button>
-        <player-pip-button>PIP</player-pip-button>
-      </player-control-bar>
-    </player-chrome>
+          </media-chrome-menu>
+        </media-chrome-menu-button> -->
+        <media-fullscreen-button>Fullscreen</media-fullscreen-button>
+        <media-pip-button>PIP</media-pip-button>
+      </media-control-bar>
+    </media-chrome>
 
-    <player-play-button playing player="#ve">Play</player-play-button>
-    <player-progress-range player="#ve">Play</player-progress-range>
+    <media-play-button playing media="#ve">Play</media-play-button>
+    <media-progress-range media="#ve">Play</media-progress-range>
 
-    <player-menu-button>
-      <player-menu>
-        <player-menuitem-checkbox>Autoplay</player-menuitem-checkbox>
-        <player-menuitem-checkbox>Annotations</player-menuitem-checkbox>
+    <media-menu-button>
+      <media-menu>
+        <media-menuitem-checkbox>Autoplay</media-menuitem-checkbox>
+        <media-menuitem-checkbox>Annotations</media-menuitem-checkbox>
 
-        <player-menuitem-submenu label="Playback speed" value="1.2">
-          <player-menu>
-            <player-menuitem-radio>Normal</player-menuitem-radio>
-            <player-menuitem-radio>1.5</player-menuitem-radio>
-          </player-menu>
-        </player-menuitem-submenu>
+        <media-menuitem-submenu label="Playback speed" value="1.2">
+          <media-menu>
+            <media-menuitem-radio>Normal</media-menuitem-radio>
+            <media-menuitem-radio>1.5</media-menuitem-radio>
+          </media-menu>
+        </media-menuitem-submenu>
 
-        <player-menuitem-submenu label="Subtitles/CC" current="1.2">
-          <player-menu>
-            <player-menuitem-radio>Off</player-menuitem-radio>
-            <player-menuitem-radio>English</player-menuitem-radio>
-          </player-menu>
-        </player-menuitem-submenu>
-      </player-menu>
-    </player-menu-button>
+        <media-menuitem-submenu label="Subtitles/CC" current="1.2">
+          <media-menu>
+            <media-menuitem-radio>Off</media-menuitem-radio>
+            <media-menuitem-radio>English</media-menuitem-radio>
+          </media-menu>
+        </media-menuitem-submenu>
+      </media-menu>
+    </media-menu-button>
 
     <div class="menucontainer">
       <div id="menu1" class="menu">
@@ -194,39 +194,39 @@
       }
     </style>
 
-    <!-- <h2>Player Controls</h2>
+    <!-- <h2>Media Controls</h2>
 
     <h3>Play Button</h3>
-    <player-play-button>Play</player-play-button>
+    <media-play-button>Play</media-play-button>
 
     <h3>Replay Button</h3>
-    <player-replay-button>Replay</player-replay-button>
+    <media-replay-button>Replay</media-replay-button>
 
     <h3>Forward Button</h3>
-    <player-forward-button>Forward</player-forward-button>
+    <media-forward-button>Forward</media-forward-button>
 
     <h3>Mute Button</h3>
-    <player-mute-button>Mute</player-mute-button>
+    <media-mute-button>Mute</media-mute-button>
 
     <h3>Volume Range</h3>
-    <player-volume-range>Volume</player-volume-range>
+    <media-volume-range>Volume</media-volume-range>
 
     <h3>Progress Range</h3>
-    <player-progress-range>Progress</player-progress-range>
+    <media-progress-range>Progress</media-progress-range>
 
     <h3>Fullscreen Button</h3>
-    <player-fullscreen-button>Fullscreen</player-fullscreen-button>
+    <media-fullscreen-button>Fullscreen</media-fullscreen-button>
 
     <h3>PIP Button</h3>
-    <player-pip-button>PIP</player-pip-button>
+    <media-pip-button>PIP</media-pip-button>
 
     <h3>Inline</h3>
     Inline...<br />
     with some text
-    <player-play-button>Play</player-play-button
-    ><player-mute-button>Mute</player-mute-button
-    ><player-volume-range>Volume</player-volume-range
-    ><player-fullscreen-button>Fullscreen</player-fullscreen-button> and more
+    <media-play-button>Play</media-play-button
+    ><media-mute-button>Mute</media-mute-button
+    ><media-volume-range>Volume</media-volume-range
+    ><media-fullscreen-button>Fullscreen</media-fullscreen-button> and more
     text <br />
     And more text. <br />
     And more text. -->

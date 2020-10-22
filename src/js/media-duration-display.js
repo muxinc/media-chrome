@@ -1,4 +1,4 @@
-import PlayerChromeElement from './player-chrome-element.js';
+import MediaChromeElement from './media-chrome-element.js';
 import { formatTime } from './utils/time.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
@@ -36,7 +36,7 @@ template.innerHTML = `
   <div id="container"></div>
 `;
 
-class PlayerDurationDisplay extends PlayerChromeElement {
+class MediaDurationDisplay extends MediaChromeElement {
   constructor() {
     super();
 
@@ -50,21 +50,21 @@ class PlayerDurationDisplay extends PlayerChromeElement {
     this.container.innerHTML = formatTime(duration);
   }
 
-  playerSetCallback(player) {
-    player.addEventListener('durationchange', e => {
-      this.update(player.duration);
+  mediaSetCallback(media) {
+    media.addEventListener('durationchange', e => {
+      this.update(media.duration);
     });
-    this.update(player.duration);
+    this.update(media.duration);
   }
 
-  playerUnsetCallback() {
+  mediaUnsetCallback() {
     this.update(0);
   }
 }
 
-if (!window.customElements.get('player-duration-display')) {
-  window.customElements.define('player-duration-display', PlayerDurationDisplay);
-  window.PlayerChrome = PlayerDurationDisplay;
+if (!window.customElements.get('media-duration-display')) {
+  window.customElements.define('media-duration-display', MediaDurationDisplay);
+  window.MediaChrome = MediaDurationDisplay;
 }
 
-export default PlayerDurationDisplay;
+export default MediaDurationDisplay;

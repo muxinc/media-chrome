@@ -1,38 +1,38 @@
 <html>
   <head>
-    <!-- Media elements need to be defined before player chrome in the doc
-        so they're ready when player chrome attempts to interact with them  -->
+    <!-- Media elements need to be defined before media chrome in the doc
+        so they're ready when media chrome attempts to interact with them  -->
     <!-- <script type="module" src="./js/hls-video-element.js"></script> -->
-    <script type="module" src="./js/player-chrome.js"></script>
+    <script type="module" src="./js/media-chrome.js"></script>
   </head>
   <body>
 
     <h2>Default Controls</h2>
-    <player-chrome defaultControls>
+    <media-chrome defaultControls>
       <video
         slot="media"
         src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
         muted
         preload="none"
       ></video>
-    </player-chrome>
+    </media-chrome>
 
     <h2>Custom Controls</h2>
-    <player-chrome>
+    <media-chrome>
       <video
         slot="media"
         src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
         muted
         preload="none"
       ></video>
-      <player-control-bar>
-        <player-play-button>Play</player-play-button>
-        <player-mute-button>Mute</player-mute-button>
-        <player-volume-range>Volume</player-volume-range>
-        <player-progress-range>Progress</player-progress-range>
-        <player-pip-button>PIP</player-pip-button>
-        <player-fullscreen-button>Fullscreen</player-fullscreen-button>
-      </player-control-bar>
-    </player-chrome>
+      <media-control-bar>
+        <media-play-button>Play</media-play-button>
+        <media-mute-button>Mute</media-mute-button>
+        <media-volume-range>Volume</media-volume-range>
+        <media-progress-range>Progress</media-progress-range>
+        <media-pip-button>PIP</media-pip-button>
+        <media-fullscreen-button>Fullscreen</media-fullscreen-button>
+      </media-control-bar>
+    </media-chrome>
   </body>
 </html>

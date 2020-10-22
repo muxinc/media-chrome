@@ -1,9 +1,9 @@
 {
-  "name": "player-chrome",
+  "name": "media-chrome",
   "version": "0.0.3",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
   "type": "module",
-  "main": "dist/player-chrome.js",
+  "main": "dist/media-chrome.js",
   "files": [
     "./dist/*",
     "README.md",
@@ -13,25 +13,27 @@
     "build": "gulp",
     "dev": "gulp dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "publish-patch": "yarn run build && np patch --no-tests",
+    "publish-patch": "yarn run build && np patch --no-tests"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/muxinc/player-chrome.git"
+    "url": "git+https://github.com/muxinc/media-chrome.git"
   },
   "keywords": [
     "webcomponent",
     "html5",
     "video",
+    "audio",
+    "media",
     "player",
     "controls"
   ],
   "author": "@muxinc",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/muxinc/player-chrome/issues"
+    "url": "https://github.com/muxinc/media-chrome/issues"
   },
-  "homepage": "https://github.com/muxinc/player-chrome#readme",
+  "homepage": "https://github.com/muxinc/media-chrome#readme",
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@rollup/plugin-commonjs": "^11.0.2",

@@ -1,22 +1,23 @@
 <html>
 <head>
-  <script type="module" src="../dist/player-chrome.js"></script>
+  <script type="module" src="../dist/media-chrome.js"></script>
 </head>
 <body>
 
-<player-chrome>
+<media-chrome>
   <video
     slot="media"
     src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
   ></video>
-  <player-control-bar>
-    <player-play-button></player-play-button>
-    <player-progress-range></player-progress-range>
-    <player-mute-button></player-mute-button>
-    <player-volume-range></player-volume-range>
-    <player-fullscreen-button></player-fullscreen-button>
-  </player-control-bar>
-</player-chrome>
+  <media-control-bar>
+
+    <media-progress-range></media-progress-range>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-fullscreen-button></media-fullscreen-button>
+    <media-play-button></media-play-button>
+  </media-control-bar>
+</media-chrome>
 
 </body>
 </html>

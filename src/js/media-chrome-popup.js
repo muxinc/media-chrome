@@ -1,4 +1,4 @@
-import PlayerChromeElement from './player-chrome-element.js';
+import MediaChromeElement from './media-chrome-element.js';
 
 const template = document.createElement('template');
 
@@ -18,7 +18,7 @@ template.innerHTML = `
   <slot></slot>
 `;
 
-class PlayerChromePopup extends PlayerChromeElement {
+class MediaChromePopup extends MediaChromeElement {
   constructor() {
     super();
 
@@ -26,15 +26,15 @@ class PlayerChromePopup extends PlayerChromeElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true))
   }
 
-  playerSetCallback(player) {
+  mediaSetCallback(media) {
 
   }
 
-  playerUnsetCallback() {
+  mediaUnsetCallback() {
 
   }
 }
 
-window.customElements.define('player-chrome-popup', PlayerChromePopup);
+window.customElements.define('media-chrome-popup', MediaChromePopup);
 
-export default PlayerChromePopup;
+export default MediaChromePopup;

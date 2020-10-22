@@ -1,4 +1,4 @@
-import PlayerChromeButton from './player-chrome-button.js';
+import MediaChromeButton from './media-chrome-button.js';
 
 const volumeUp =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
@@ -9,38 +9,38 @@ const volumeOff =
 const volumeLow =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
 
-class PlayerMuteButton extends PlayerChromeButton {
+class MediaMuteButton extends MediaChromeButton {
   constructor() {
     super();
     this.icon = volumeUp;
   }
 
   onClick(e) {
-    const player = this.player;
-    player.muted = !player.muted;
+    const media = this.media;
+    media.muted = !media.muted;
   }
 
   update() {
-    const player = this.player;
+    const media = this.media;
 
-    if (player.muted || player.volume === 0) {
+    if (media.muted || media.volume === 0) {
       this.icon = volumeOff;
-    } else if (player.volume < 0.5) {
+    } else if (media.volume < 0.5) {
       this.icon = volumeLow;
     } else {
       this.icon = volumeUp;
     }
   }
 
-  playerSetCallback(player) {
-    player.addEventListener('volumechange', this.update.bind(this));
+  mediaSetCallback(media) {
+    media.addEventListener('volumechange', this.update.bind(this));
     this.update();
   }
 }
 
-if (!window.customElements.get('player-mute-button')) {
-  window.customElements.define('player-mute-button', PlayerMuteButton);
-  window.PlayerMuteButton = PlayerMuteButton;
+if (!window.customElements.get('media-mute-button')) {
+  window.customElements.define('media-mute-button', MediaMuteButton);
+  window.MediaMuteButton = MediaMuteButton;
 }
 
-export default PlayerMuteButton;
+export default MediaMuteButton;

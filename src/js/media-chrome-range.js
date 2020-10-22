@@ -1,4 +1,4 @@
-import PlayerChromeElement from './player-chrome-element.js';
+import MediaChromeElement from './media-chrome-element.js';
 
 const template = document.createElement('template');
 
@@ -6,11 +6,11 @@ const template = document.createElement('template');
 // Browsers ignore the whole rule if you do. So using templates for those.
 const thumbStyles = `
   height: var(--thumb-height);
-  width: var(--player-range-thumb-width, 10px);
-  border: var(--player-range-thumb-border, none);
-  border-radius: var(--player-range-thumb-border-radius, 10px);
-  background: var(--player-range-thumb-background, #fff);
-  box-shadow: var(--player-range-thumb-box-shadow, 1px 1px 1px transparent);
+  width: var(--media-range-thumb-width, 10px);
+  border: var(--media-range-thumb-border, none);
+  border-radius: var(--media-range-thumb-border-radius, 10px);
+  background: var(--media-range-thumb-background, #fff);
+  box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
   cursor: pointer;
 `;
 
@@ -18,20 +18,20 @@ const trackStyles = `
   width: 100%;
   min-width: 40px;
   height: var(--track-height);
-  border: var(--player-range-track-border, none);
-  border-radius: var(--player-range-track-border-radius, 0);
-  background: var(--player-range-track-background-internal, --player-range-track-background, #eee);
+  border: var(--media-range-track-border, none);
+  border-radius: var(--media-range-track-border-radius, 0);
+  background: var(--media-range-track-background-internal, --media-range-track-background, #eee);
 
-  box-shadow: var(--player-range-track-box-shadow, none);
-  transition: var(--player-range-track-transition, none);
+  box-shadow: var(--media-range-track-box-shadow, none);
+  transition: var(--media-range-track-transition, none);
   cursor: pointer;
 `;
 
 template.innerHTML = `
   <style>
     :host {
-      --thumb-height: var(--player-range-thumb-height, 10px);
-      --track-height: var(--player-range-track-height, 4px);
+      --thumb-height: var(--media-range-thumb-height, 10px);
+      --track-height: var(--media-range-track-height, 4px);
 
       display: inline-block;
       vertical-align: middle;
@@ -114,7 +114,7 @@ template.innerHTML = `
   <input id="range" type="range" min="0" max="1000" step="1" value="0">
 `;
 
-class PlayerChromeRange extends PlayerChromeElement {
+class MediaChromeRange extends MediaChromeElement {
   constructor() {
     super();
 
@@ -145,7 +145,7 @@ class PlayerChromeRange extends PlayerChromeElement {
     gradientStr = gradientStr.slice(0, gradientStr.length-1) + ')';
 
     this.style.setProperty(
-      '--player-range-track-background-internal',
+      '--media-range-track-background-internal',
       gradientStr
     );
   }
@@ -159,17 +159,17 @@ class PlayerChromeRange extends PlayerChromeElement {
     const rangePercent = (this.range.value / 1000) * 100;
 
     let colorArray = [
-      ['var(--player-range-bar-color, #fff)', rangePercent],
-      ['var(--player-range-track-background, #333)', 100]
+      ['var(--media-range-bar-color, #fff)', rangePercent],
+      ['var(--media-range-track-background, #333)', 100]
     ];
 
     return colorArray;
   }
 }
 
-if (!window.customElements.get('player-chrome-range')) {
-  window.customElements.define('player-chrome-range', PlayerChromeRange);
-  window.PlayerChromeRange = PlayerChromeRange;
+if (!window.customElements.get('media-chrome-range')) {
+  window.customElements.define('media-chrome-range', MediaChromeRange);
+  window.MediaChromeRange = MediaChromeRange;
 }
 
-export default PlayerChromeRange;
+export default MediaChromeRange;

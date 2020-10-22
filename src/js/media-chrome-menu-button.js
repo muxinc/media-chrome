@@ -1,5 +1,5 @@
-import PlayerChromeButton from './player-chrome-button.js';
-import './player-chrome-menuitem.js';
+import MediaChromeButton from './media-chrome-button.js';
+import './media-chrome-menuitem.js';
 
 const template = document.createElement('template');
 
@@ -41,7 +41,7 @@ template.innerHTML = `
 </div>
 `;
 
-class PlayerChromeMenuButton extends PlayerChromeButton {
+class MediaChromeMenuButton extends MediaChromeButton {
   constructor() {
     super();
     this.shadowRoot.prepend(template.content.cloneNode(true));
@@ -62,12 +62,12 @@ class PlayerChromeMenuButton extends PlayerChromeButton {
     }
   }
 
-  playerSetCallback(player) {}
+  mediaSetCallback(media) {}
 }
 
-if (!window.customElements.get('player-chrome-menu-button')) {
-  window.customElements.define('player-chrome-menu-button', PlayerChromeMenuButton);
-  window.PlayerChrome = PlayerChromeMenuButton;
+if (!window.customElements.get('media-chrome-menu-button')) {
+  window.customElements.define('media-chrome-menu-button', MediaChromeMenuButton);
+  window.MediaChrome = MediaChromeMenuButton;
 }
 
-export default PlayerChromeMenuButton;
+export default MediaChromeMenuButton;

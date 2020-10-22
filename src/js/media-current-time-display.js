@@ -1,4 +1,4 @@
-import PlayerChromeElement from './player-chrome-element.js';
+import MediaChromeElement from './media-chrome-element.js';
 import { formatTime } from './utils/time.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
@@ -36,7 +36,7 @@ template.innerHTML = `
   <div id="container"></div>
 `;
 
-class PlayerCurrentTimeDisplay extends PlayerChromeElement {
+class MediaCurrentTimeDisplay extends MediaChromeElement {
   constructor() {
     super();
 
@@ -50,21 +50,21 @@ class PlayerCurrentTimeDisplay extends PlayerChromeElement {
     this.container.innerHTML = formatTime(time);
   }
 
-  playerSetCallback(player) {
-    player.addEventListener('timeupdate', e => {
-      this.update(player.currentTime);
+  mediaSetCallback(media) {
+    media.addEventListener('timeupdate', e => {
+      this.update(media.currentTime);
     });
-    this.update(player.currentTime);
+    this.update(media.currentTime);
   }
 
-  playerUnsetCallback() {
+  mediaUnsetCallback() {
     this.update(0);
   }
 }
 
-if (!window.customElements.get('player-current-time-display')) {
-  window.customElements.define('player-current-time-display', PlayerCurrentTimeDisplay);
-  window.PlayerChrome = PlayerCurrentTimeDisplay;
+if (!window.customElements.get('media-current-time-display')) {
+  window.customElements.define('media-current-time-display', MediaCurrentTimeDisplay);
+  window.MediaChrome = MediaCurrentTimeDisplay;
 }
 
-export default PlayerCurrentTimeDisplay;
+export default MediaCurrentTimeDisplay;

@@ -1,4 +1,4 @@
-import PlayerChromeButton from "./player-chrome-button.js";
+import MediaChromeButton from "./media-chrome-button.js";
 
 const enterFullscreenIcon = `
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -14,16 +14,16 @@ const exitFullscreenIcon = `
 </svg>
 `;
 
-class PlayerFullscreenButton extends PlayerChromeButton {
+class MediaFullscreenButton extends MediaChromeButton {
   constructor() {
     super();
 
     this.icon = enterFullscreenIcon;
 
     this.addEventListener("click", e => {
-      const player = this.player;
+      const media = this.media;
 
-      if (this.playerChrome == document.fullscreenElement) {
+      if (this.mediaChrome == document.fullscreenElement) {
         document.exitFullscreen();
       } else {
         if (document.pictureInPictureElement) {
@@ -31,12 +31,12 @@ class PlayerFullscreenButton extends PlayerChromeButton {
           document.exitPictureInPicture();
         }
 
-        this.playerChrome.requestFullscreen();
+        this.mediaChrome.requestFullscreen();
       }
     });
 
     document.addEventListener("fullscreenchange", () => {
-      if (this.playerChrome == document.fullscreenElement) {
+      if (this.mediaChrome == document.fullscreenElement) {
         this.icon = exitFullscreenIcon;
       } else {
         this.icon = enterFullscreenIcon;
@@ -45,9 +45,9 @@ class PlayerFullscreenButton extends PlayerChromeButton {
   }
 }
 
-if (!window.customElements.get('player-fullscreen-button')) {
-  window.customElements.define('player-fullscreen-button', PlayerFullscreenButton);
-  window.PlayerChrome = PlayerFullscreenButton;
+if (!window.customElements.get('media-fullscreen-button')) {
+  window.customElements.define('media-fullscreen-button', MediaFullscreenButton);
+  window.MediaChrome = MediaFullscreenButton;
 }
 
-export default PlayerFullscreenButton;
+export default MediaFullscreenButton;

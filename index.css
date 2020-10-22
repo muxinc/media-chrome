@@ -1,6 +1,6 @@
-/* Player Chrome variable defaults */
+/* Media Chrome variable defaults */
 :root {
-  --player-icon-color: #eee;
+  --media-icon-color: #eee;
 }
 
 /* Method for avoiding flash of unstyled content (FOUC). Noting it here. */

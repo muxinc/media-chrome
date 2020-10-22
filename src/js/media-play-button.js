@@ -1,11 +1,11 @@
-import PlayerChromeButton from './player-chrome-button.js';
+import MediaChromeButton from './media-chrome-button.js';
 
 const playIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
 const pauseIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
 
-class PlayerPlayButton extends PlayerChromeButton {
+class MediaPlayButton extends MediaChromeButton {
   constructor() {
     super();
     this.icon = playIcon;
@@ -31,40 +31,40 @@ class PlayerPlayButton extends PlayerChromeButton {
   }
 
   onClick(e) {
-    const player = this.player;
+    const media = this.media;
 
-    // If not using player detection, onClick should be overridden
-    if (!player) {
+    // If not using media detection, onClick should be overridden
+    if (!media) {
       throw new Error(
-        'No player was found and an alternative onClick handler was not set.'
+        'No media was found and an alternative onClick handler was not set.'
       );
     }
 
-    if (player.paused) {
-      player.play();
+    if (media.paused) {
+      media.play();
     } else {
-      player.pause();
+      media.pause();
     }
   }
 
-  playerSetCallback() {
-    const player = this.player;
+  mediaSetCallback() {
+    const media = this.media;
 
-    if (!player) return;
+    if (!media) return;
 
-    this.player.addEventListener('play', () => {
+    this.media.addEventListener('play', () => {
       this.playing = true;
     });
 
-    this.player.addEventListener('pause', () => {
+    this.media.addEventListener('pause', () => {
       this.playing = false;
     });
   }
 }
 
-if (!window.customElements.get('player-play-button')) {
-  window.customElements.define('player-play-button', PlayerPlayButton);
-  window.PlayerChrome = PlayerPlayButton;
+if (!window.customElements.get('media-play-button')) {
+  window.customElements.define('media-play-button', MediaPlayButton);
+  window.MediaChrome = MediaPlayButton;
 }
 
-export default PlayerPlayButton;
+export default MediaPlayButton;

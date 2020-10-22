@@ -1,5 +1,5 @@
-import PlayerChromeElement from './player-chrome-element.js';
-import './player-control-bar.js';
+import MediaChromeElement from './media-chrome-element.js';
+import './media-control-bar.js';
 
 const template = document.createElement('template');
 
@@ -47,17 +47,17 @@ template.innerHTML = `
 const controlsTemplate = document.createElement('template');
 
 controlsTemplate.innerHTML = `
-  <player-control-bar>
-    <player-play-button>Play</player-play-button>
-    <player-mute-button>Mute</player-mute-button>
-    <player-volume-range>Volume</player-volume-range>
-    <player-progress-range>Progress</player-progress-range>
-    <player-pip-button>PIP</player-pip-button>
-    <player-fullscreen-button>Fullscreen</player-fullscreen-button>
-  </player-control-bar>
+  <media-control-bar>
+    <media-play-button>Play</media-play-button>
+    <media-mute-button>Mute</media-mute-button>
+    <media-volume-range>Volume</media-volume-range>
+    <media-progress-range>Progress</media-progress-range>
+    <media-pip-button>PIP</media-pip-button>
+    <media-fullscreen-button>Fullscreen</media-fullscreen-button>
+  </media-control-bar>
 `;
 
-class PlayerChrome extends HTMLElement {
+class MediaChrome extends HTMLElement {
   constructor() {
     super();
 
@@ -66,22 +66,22 @@ class PlayerChrome extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.container = this.shadowRoot.getElementById('container');
 
-    this._player = null;
+    this._media = null;
 
     const mutationCallback = function(mutationsList, observer) {
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
           mutation.removedNodes.forEach(node => {
-            if (node.player === this.player) {
-              // Undo auto-injected players
-              node.player = null;
+            if (node.media === this.media) {
+              // Undo auto-injected medias
+              node.media = null;
             }
           });
           mutation.addedNodes.forEach(node => {
-            if (node instanceof PlayerChromeElement && !node.player) {
-              // Inject the player in new children
+            if (node instanceof MediaChromeElement && !node.media) {
+              // Inject the media in new children
               // Todo: Make recursive
-              node.player = this.player;
+              node.media = this.media;
             }
           });
         }
@@ -99,26 +99,26 @@ class PlayerChrome extends HTMLElement {
 
   }
 
-  get player() {
-    return this._player;
+  get media() {
+    return this._media;
   }
 
-  set player(player) {
-    this._player = player;
+  set media(media) {
+    this._media = media;
 
-    if (player) {
+    if (media) {
       // Toggle play/pause with clicks on the media element itself
       // TODO: handle child element changes, mutationObserver
       this.addEventListener('click', e => {
-        const player = this.player;
+        const media = this.media;
 
         // instanceof HTMLMediaElement ||
         // CustomVideoElement && e.target instanceof CustomVideoElement
         if (e.target.slot == 'media') {
-          if (player.paused) {
-            player.play();
+          if (media.paused) {
+            media.play();
           } else {
-            player.pause();
+            media.pause();
           }
         }
       });
@@ -126,38 +126,38 @@ class PlayerChrome extends HTMLElement {
       this.container.classList.add('paused');
 
       // Uncomment to auto-hide controls
-      player.addEventListener('play', () => {
+      media.addEventListener('play', () => {
         this.container.classList.remove('paused');
       });
 
-      player.addEventListener('pause', () => {
+      media.addEventListener('pause', () => {
         this.container.classList.add('paused');
       });
 
-      const playerName = player.nodeName.toLowerCase();
+      const mediaName = media.nodeName.toLowerCase();
 
-      if (playerName == 'audio' || playerName == 'video') {
-        propagteNewPlayer.call(this, player);
+      if (mediaName == 'audio' || mediaName == 'video') {
+        propagteNewMedia.call(this, media);
       } else {
         // Wait for custom video element to be ready before setting it
-        window.customElements.whenDefined(playerName).then(() => {
-          propagteNewPlayer.call(this, player);
+        window.customElements.whenDefined(mediaName).then(() => {
+          propagteNewMedia.call(this, media);
         });
       }
     }
 
-    function propagteNewPlayer(player) {
+    function propagteNewMedia(media) {
       this.querySelectorAll('*').forEach(el => {
 
-        if (el instanceof PlayerChromeElement) {
-          // Player should be settable at this point.
-          el.player = this.player;
+        if (el instanceof MediaChromeElement) {
+          // Media should be settable at this point.
+          el.media = this.media;
         }
       });
 
       this.shadowRoot.querySelectorAll('*').forEach(el => {
-        if (el instanceof PlayerChromeElement) {
-          el.player = this.player;
+        if (el instanceof MediaChromeElement) {
+          el.media = this.media;
         }
       });
     }
@@ -179,10 +179,10 @@ class PlayerChrome extends HTMLElement {
       this.container.appendChild(controlsTemplate.content.cloneNode(true));
     }
 
-    let player = this.querySelector('[slot=media]');
+    let media = this.querySelector('[slot=media]');
 
-    if (player) {
-      this.player = player;
+    if (media) {
+      this.media = media;
     }
 
     const scheduleInactive = () => {
@@ -206,7 +206,7 @@ class PlayerChrome extends HTMLElement {
       window.clearTimeout(this.inactiveTimeout);
 
       // If hovering over the media element we're free to make inactive
-      if (e.target === this.player) {
+      if (e.target === this.media) {
         scheduleInactive();
       }
     });
@@ -218,9 +218,9 @@ class PlayerChrome extends HTMLElement {
   }
 }
 
-if (!window.customElements.get('player-chrome')) {
-  window.customElements.define('player-chrome', PlayerChrome);
-  window.PlayerChrome = PlayerChrome;
+if (!window.customElements.get('media-chrome')) {
+  window.customElements.define('media-chrome', MediaChrome);
+  window.MediaChrome = MediaChrome;
 }
 
-export default PlayerChrome;
+export default MediaChrome;

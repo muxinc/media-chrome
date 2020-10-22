@@ -1,4 +1,4 @@
-import PlayerChromeElement from './player-chrome-element.js';
+import MediaChromeElement from './media-chrome-element.js';
 
 const template = document.createElement('template');
 
@@ -59,14 +59,14 @@ template.innerHTML = `
   button:active {}
 
   svg {
-    width: var(--player-button-icon-width);
-    height: var(--player-button-icon-height);
-    transform: var(--player-button-icon-transform);
-    transition: var(--player-button-icon-transition);
+    width: var(--media-button-icon-width);
+    height: var(--media-button-icon-height);
+    transform: var(--media-button-icon-transform);
+    transition: var(--media-button-icon-transition);
   }
 
   svg .icon {
-    fill: var(--player-icon-color, #eee);
+    fill: var(--media-icon-color, #eee);
   }
 </style>
 <button id="icon-container">
@@ -74,7 +74,7 @@ template.innerHTML = `
 </button>
 `;
 
-class PlayerChromeButton extends PlayerChromeElement {
+class MediaChromeButton extends MediaChromeElement {
   constructor() {
     super();
 
@@ -94,9 +94,9 @@ class PlayerChromeButton extends PlayerChromeElement {
   }
 }
 
-if (!window.customElements.get('player-chrome-button')) {
-  window.customElements.define('player-chrome-button', PlayerChromeButton);
-  window.PlayerChromeButton = PlayerChromeButton;
+if (!window.customElements.get('media-chrome-button')) {
+  window.customElements.define('media-chrome-button', MediaChromeButton);
+  window.MediaChromeButton = MediaChromeButton;
 }
 
-export default PlayerChromeButton;
+export default MediaChromeButton;
