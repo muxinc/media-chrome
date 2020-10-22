@@ -35,6 +35,8 @@ Fully customizable media player controls using web components (native custom ele
 
 ## _Quick_ Demos
 
+(GIFs still use old name of `<player-chrome>` and need to be updated)
+
 ### Adding controls to a video element
 Just HTML. No javascripting required.
 
