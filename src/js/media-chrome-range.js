@@ -33,6 +33,7 @@ template.innerHTML = `
       --thumb-height: var(--media-range-thumb-height, 10px);
       --track-height: var(--media-range-track-height, 4px);
 
+      position: relative;
       display: inline-block;
       vertical-align: middle;
       box-sizing: border-box;
