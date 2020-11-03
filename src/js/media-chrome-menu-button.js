@@ -1,5 +1,6 @@
 import MediaChromeButton from './media-chrome-button.js';
 import './media-chrome-menuitem.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -62,12 +63,9 @@ class MediaChromeMenuButton extends MediaChromeButton {
     }
   }
 
-  mediaSetCallback(media) {}
+  mediaSetCallback(media) { }
 }
 
-if (!window.customElements.get('media-chrome-menu-button')) {
-  window.customElements.define('media-chrome-menu-button', MediaChromeMenuButton);
-  window.MediaChrome = MediaChromeMenuButton;
-}
+defineCustomElement('media-chrome-menu-button', MediaChromeMenuButton);
 
 export default MediaChromeMenuButton;
