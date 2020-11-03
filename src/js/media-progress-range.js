@@ -1,4 +1,5 @@
 import MediaChromeRange from './media-chrome-range.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 class MediaProgressRange extends MediaChromeRange {
   constructor() {
@@ -66,15 +67,12 @@ class MediaProgressRange extends MediaChromeRange {
     }
 
     const buffered = media.buffered;
-    const buffPercent = (buffered.end(buffered.length-1) / media.duration) * 100;
+    const buffPercent = (buffered.end(buffered.length - 1) / media.duration) * 100;
     colorsArray.splice(1, 0, ['var(--media-progress-buffered-color, #777)', buffPercent]);
     return colorsArray;
   }
 }
 
-if (!window.customElements.get('media-progress-range')) {
-  window.customElements.define('media-progress-range', MediaProgressRange);
-  window.MediaProgressRange = MediaProgressRange;
-}
+defineCustomElement('media-progress-range', MediaProgressRange);
 
 export default MediaProgressRange;

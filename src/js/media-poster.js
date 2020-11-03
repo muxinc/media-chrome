@@ -1,6 +1,7 @@
 // IN PROGRESS
 
 import MediaChromeElement from './media-chrome-element.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -76,7 +77,7 @@ class MediaPoster extends MediaChromeElement {
       return null;
     } else {
       // strip 'url()' from value
-      return val.substr(4, val.length-5);
+      return val.substr(4, val.length - 5);
     }
   }
 
@@ -89,9 +90,6 @@ class MediaPoster extends MediaChromeElement {
   }
 }
 
-if (!window.customElements.get('media-poster')) {
-  window.customElements.define('media-poster', MediaPoster);
-  window.MediaPoster = MediaPoster;
-}
+defineCustomElement('media-poster', MediaPoster);
 
 export default MediaPoster;

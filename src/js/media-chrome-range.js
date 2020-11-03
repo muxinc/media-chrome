@@ -1,4 +1,5 @@
 import MediaChromeElement from './media-chrome-element.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -140,12 +141,12 @@ class MediaChromeRange extends MediaChromeElement {
 
     let gradientStr = 'linear-gradient(to right, ';
     let prevPercent = 0;
-    colorArray.forEach((color)=>{
+    colorArray.forEach((color) => {
       if (color[1] < prevPercent) return;
       gradientStr = gradientStr + `${color[0]} ${prevPercent}%, ${color[0]} ${color[1]}%,`;
       prevPercent = color[1];
     });
-    gradientStr = gradientStr.slice(0, gradientStr.length-1) + ')';
+    gradientStr = gradientStr.slice(0, gradientStr.length - 1) + ')';
 
     this.style.setProperty(
       '--media-range-track-background-internal',
@@ -170,9 +171,6 @@ class MediaChromeRange extends MediaChromeElement {
   }
 }
 
-if (!window.customElements.get('media-chrome-range')) {
-  window.customElements.define('media-chrome-range', MediaChromeRange);
-  window.MediaChromeRange = MediaChromeRange;
-}
+defineCustomElement('media-chrome-range', MediaChromeRange);
 
 export default MediaChromeRange;

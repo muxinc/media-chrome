@@ -1,19 +1,19 @@
 import MediaChromeElement from './media-chrome-element.js';
-
-import './media-play-button.js';
-import './media-fullscreen-button.js';
-import './media-pip-button.js';
-import './media-progress-range.js';
-import './media-volume-range.js';
-import './media-mute-button.js';
-import './media-forward-button.js';
-import './media-replay-button.js';
-import './media-current-time-display.js';
-import './media-duration-display.js';
 import './media-chrome-menu-button.js';
 import './media-chrome-menu.js';
-import './media-settings-popup.js';
 import './media-chrome-popup.js';
+import './media-current-time-display.js';
+import './media-duration-display.js';
+import './media-forward-button.js';
+import './media-fullscreen-button.js';
+import './media-mute-button.js';
+import './media-pip-button.js';
+import './media-play-button.js';
+import './media-progress-range.js';
+import './media-replay-button.js';
+import './media-settings-popup.js';
+import './media-volume-range.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -80,9 +80,6 @@ class MediaControlBar extends MediaChromeElement {
   }
 }
 
-if (!window.customElements.get('media-control-bar')) {
-  window.customElements.define('media-control-bar', MediaControlBar);
-  window.MediaChrome = MediaControlBar;
-}
+defineCustomElement('media-control-bar', MediaControlBar);
 
 export default MediaControlBar;

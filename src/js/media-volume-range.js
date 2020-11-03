@@ -1,4 +1,5 @@
 import MediaChromeRange from './media-chrome-range.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 class MediaVolumeRange extends MediaChromeRange {
   constructor() {
@@ -45,7 +46,7 @@ class MediaVolumeRange extends MediaChromeRange {
           'media-chrome-pref-volume',
           media.volume.toString()
         );
-      } catch (e) {}
+      } catch (e) { }
     });
   }
 
@@ -56,7 +57,7 @@ class MediaVolumeRange extends MediaChromeRange {
     try {
       const volPref = window.localStorage.getItem('media-chrome-pref-volume');
       media.volume = volPref;
-    } catch (e) {}
+    } catch (e) { }
 
     this.update();
   }
@@ -75,9 +76,6 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 }
 
-if (!window.customElements.get('media-volume-range')) {
-  window.customElements.define('media-volume-range', MediaVolumeRange);
-  window.MediaChrome = MediaVolumeRange;
-}
+defineCustomElement('media-volume-range', MediaVolumeRange);
 
 export default MediaVolumeRange;

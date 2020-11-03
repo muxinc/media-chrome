@@ -1,16 +1,18 @@
-const { src, dest, watch, series } = require('gulp');
-const livereload = require('gulp-livereload');
-
-const pkg = require('./package.json');
-const del = require('del');
-
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
+import del from 'del';
+import fs from 'fs';
+import gulp from 'gulp';
 // rollup
-const { rollup } = require('rollup');
-const resolve = require('@rollup/plugin-node-resolve');
-const commonjs = require('@rollup/plugin-commonjs');
-const { terser } = require("rollup-plugin-terser");
+import * as rollupPkg from 'rollup';
+import rollupPluginTerser from 'rollup-plugin-terser';
 
-async function build() {
+const { series, watch } = gulp;
+const pkg = JSON.parse(fs.readFileSync('./package.json'));
+const { rollup } = rollupPkg;
+const { terser } = rollupPluginTerser;
+
+export async function build() {
   await del('dist');
 
   const bundle = await rollup({
@@ -28,11 +30,9 @@ async function build() {
   });
 }
 
-function dev() {
+export function dev() {
   // livereload.listen();
   watch('src/**/**', series('build'));
 }
 
-exports.build = build;
-exports.dev = dev;
-exports.default = series(build);
+export default series(build);
