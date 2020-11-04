@@ -8,8 +8,8 @@ template.innerHTML = `
     :host {
       box-sizing: border-box;
       background-color: #000;
-      width: 160px;
-      height: 90px;
+      width: 284px;
+      height: 160px;
     }
   </style>
 `;
@@ -48,24 +48,38 @@ class MediaThumbnailPreviewElement extends MediaChromeElement {
   }
 
   set time(time) {
-    const data = this.data;
-    const tiles = data && data.tiles;
+    // Hack to get this working, but need full URLs in the storyboard vtt
+    let baseURL = 'http://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/';
 
-    if (!data || !tiles || !tiles.length) return;
+    console.log('here', this.media)
+    if (this.media && this.media.textTracks && this.media.textTracks.length > 0) {
+      let track = Array.prototype.find.call(this.media.textTracks, (t)=>{
+        return t.label == 'thumbnails';
+      });
 
-    const lastTile = tiles[tiles.length-1];
-    let tile;
-    if (lastTile.start < time) {
-      tile = lastTile;
-    } else {
-      tile = tiles.find(t => t.start > time);
+      console.log(track);
+
+      if (!track) return;
+      console.log(track.cues);
+
+      let cue = Array.prototype.find.call(track.cues, c => time >= c.startTime);
+
+      if (cue) {
+        const url = new URL(cue.text, baseURL);
+        console.log(url);
+
+        // this.style.backgroundImage = `url(${baseURL}${cue.text})`;
+        // this.style.backgroundPosition = `left ${tile.x}px top ${tile.y}px`;
+      }
     }
-
-    this.style.backgroundPosition = `left ${tile.x}px top ${tile.y}px`;
   }
 
   get time() {
     return parseFloat(this.getAttribute('time'));
+  }
+
+  mediaSetCallback(media){
+    console.log('mediaSet');
   }
 }
 
