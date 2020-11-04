@@ -13,9 +13,12 @@ template.innerHTML = `
       background-color: #000;
       width: 160px;
       height: 90px;
+
+      /* Negative offset of half to center on the handle */
       margin-left: -80px;
-      margin-top: -90px;
-      left: var(--mouse-x, 0);
+
+      /* Negative offset to place above the control */
+      margin-top: calc(-90px - 10px);
       top: 0;
     }
 
@@ -65,8 +68,9 @@ class MediaProgressRange extends MediaChromeRange {
     };
   }
 
-  mediaSetCallback() {
-    const media = this.media;
+  mediaSetCallback(media) {
+    super.mediaSetCallback(media);
+
     const range = this.range;
 
     media.addEventListener('timeupdate', this.updateRangeWithMediaTime);
@@ -78,14 +82,22 @@ class MediaProgressRange extends MediaChromeRange {
     }
 
     media.addEventListener('progress', this.updateBar.bind(this));
+
+    // Initialize thumbnails
+    if (media.textTracks && media.textTracks.length) {
+      const thumbnailTrack = Array.prototype.find.call(media.textTracks, t => t.label == 'thumbnails');
+
+      if (thumbnailTrack) {
+        this.enableThumbnails();
+      }
+    }
   }
 
-  mediaUnsetCallback() {
-    const media = this.media;
-    const range = this.range;
+  mediaUnsetCallback(media) {
+    super.mediaUnsetCallback(media);
 
     media.removeEventListener('timeupdate', this.updateRangeWithMediaTime);
-    range.removeEventListener('change', this.playIfNotReady);
+    this.range.removeEventListener('change', this.playIfNotReady);
   }
 
   /* Add a buffered progress bar */
@@ -103,15 +115,10 @@ class MediaProgressRange extends MediaChromeRange {
     return colorsArray;
   }
 
-  set thumbnails(url) {
-    if (this.thumbnailPreview) {
-      this.shadowRoot.removeChild(this.thumbnailPreview);
-    }
-
-    if (!url) return;
+  enableThumbnails() {
+    if (this.thumbnailPreview) return;
 
     this.thumbnailPreview = document.createElement('media-thumbnail-preview');
-    this.thumbnailPreview.setAttribute('url', url);
     this.shadowRoot.appendChild(this.thumbnailPreview);
 
     let mouseMoveHandler;
@@ -142,6 +149,7 @@ class MediaProgressRange extends MediaChromeRange {
       window.removeEventListener('mousemove', mouseMoveHandler);
     };
 
+    // Trigger when the mouse moves over the range
     let rangeEntered = false;
     let rangeMouseMoveHander = (evt) => {
       if (!rangeEntered && this.media && this.media.duration) {
@@ -163,8 +171,8 @@ class MediaProgressRange extends MediaChromeRange {
     this.addEventListener('mousemove', rangeMouseMoveHander, false);
   }
 
-  get thumbnails() {
-    return this.getAttribute('thumbnails');
+  disableThumbnails() {
+
   }
 }
 

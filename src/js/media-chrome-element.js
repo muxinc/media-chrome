@@ -50,14 +50,18 @@ class MediaChromeElement extends HTMLElement {
       }
 
       this._media = media;
-      this.mediaSetCallback(this._media);
 
-      /* Might need to instead have mediaChrome fire a mediaconnected event
-         so child elements that don't have a media set can listen for that change
-         rather than find the media each time. Then it can fire that event
-         whenever the media needs to be updated. Just need to figure out a clean
-         way to handle the no media case. Maybe if you're not in MediaChrome
-         and no media has been set. */
+      if (this.nodeName == 'MEDIA-PROGRESS-RANGE') {
+        console.log(this.shadowRoot.querySelectorAll('*'));
+      }
+      this.shadowRoot.querySelectorAll('*').forEach(el => {
+        if (el instanceof MediaChromeElement) {
+          console.log('shadow', el);
+          el.media = media;
+        }
+      });
+
+      this.mediaSetCallback(media);
     }
   }
 
