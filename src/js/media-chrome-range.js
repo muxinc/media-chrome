@@ -123,6 +123,9 @@ class MediaChromeRange extends MediaChromeElement {
     this.range = this.shadowRoot.querySelector('#range');
 
     this.range.addEventListener('input', this.updateBar.bind(this));
+  }
+
+  connectedCallback() {
     this.updateBar();
   }
 
