@@ -1,6 +1,8 @@
 import MediaChromeElement from './media-chrome-element.js';
 
-// <media-thumbnail-preview player="" url="" time="0.00">
+/*
+  <media-thumbnail-preview player="" url="" time="0.00">
+*/
 const template = document.createElement('template');
 
 template.innerHTML = `
@@ -10,13 +12,21 @@ template.innerHTML = `
       background-color: #000;
       width: 284px;
       height: 160px;
+      overflow: hidden;
+    }
+
+    img {
+      position: absolute;
+      left: 0;
+      top: 0;
     }
   </style>
+  <img crossorigin loading="eager" decoding="async" />
 `;
 
 class MediaThumbnailPreviewElement extends MediaChromeElement {
   static get observedAttributes() {
-    return ['url', 'time'].concat(super.observedAttributes || []);
+    return ['time'].concat(super.observedAttributes || []);
   }
 
   constructor() {
@@ -26,50 +36,39 @@ class MediaThumbnailPreviewElement extends MediaChromeElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  set url(url) {
-    const setImageURL = async (url) => {
-      const response = await fetch(url, {});
-      const data = await response.json();
-      const urlObj = new URL(url);
-      const thumbnailDir = urlObj.href.substr(0, urlObj.href.lastIndexOf('/')) + '/';
-
-      console.log(data);
-      this.data = data;
-      this.style.backgroundImage = `url(${thumbnailDir}${data.url})`;
-    };
-
-    if (url) {
-      setImageURL(url);
-    }
-  }
-
-  get url() {
-    return this.getAttribute('url');
-  }
-
   set time(time) {
-    // Hack to get this working, but need full URLs in the storyboard vtt
-    let baseURL = 'http://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/';
-
-    console.log('here', this.media)
     if (this.media && this.media.textTracks && this.media.textTracks.length > 0) {
       let track = Array.prototype.find.call(this.media.textTracks, (t)=>{
         return t.label == 'thumbnails';
       });
 
-      console.log(track);
-
       if (!track) return;
-      console.log(track.cues);
 
-      let cue = Array.prototype.find.call(track.cues, c => time >= c.startTime);
+      let cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
 
       if (cue) {
-        const url = new URL(cue.text, baseURL);
-        console.log(url);
+        const url = new URL(cue.text);
+        const [x,y,w,h] = url.hash.split('=')[1].split(',');
+        const img = this.shadowRoot.querySelector('img');
+        const src = url.origin + url.pathname;
+        const scale = this.offsetWidth / w;
 
-        // this.style.backgroundImage = `url(${baseURL}${cue.text})`;
-        // this.style.backgroundPosition = `left ${tile.x}px top ${tile.y}px`;
+        const resize = () => {
+          img.style.width = `${scale * img.naturalWidth}px`;
+          img.style.height = `${scale * img.naturalHeight}px`;
+        };
+
+        if (img.src !== src) {
+          img.onload = resize;
+          img.src = src;
+          resize();
+        }
+
+        resize();
+        img.style.left = `-${scale * x}px`;
+        img.style.top = `-${scale * y}px`;
+        // this.style.backgroundImage = `url(${url.origin + url.pathname})`;
+        // this.style.backgroundPosition = `left ${x}px top ${y}px`;
       }
     }
   }
@@ -79,8 +78,53 @@ class MediaThumbnailPreviewElement extends MediaChromeElement {
   }
 
   mediaSetCallback(media){
-    console.log('mediaSet');
+    const trackList = media && media.textTracks;
+
+    if (!trackList || !trackList.addEventListener) return;
+
+    // Create a bound, removeable function for track changes
+    this._trackChangeHandler = (evt) => {
+      for (let i = 0; i < trackList.length; i++) {
+        let track = trackList[i];
+        if (track.label === 'thumbnails') {
+          // Prime the image when a track is added
+          if (!this.time) this.time = 0;
+        }
+      }
+    };
+
+    trackList.addEventListener('addtrack', this._trackChangeHandler, false);
+    this._trackChangeHandler();
   }
+
+  mediaUnsetCallback(media) {
+    const trackList = media && media.textTracks;
+
+    if (trackList && trackList.removeEventListener) {
+      trackList.removeEventListener('addtrack', this._trackChangeHandler);
+    }
+  }
+
+  // set url(url) {
+  //   const setImageURL = async (url) => {
+  //     const response = await fetch(url, {});
+  //     const data = await response.json();
+  //     const urlObj = new URL(url);
+  //     const thumbnailDir = urlObj.href.substr(0, urlObj.href.lastIndexOf('/')) + '/';
+  //
+  //     console.log(data);
+  //     this.data = data;
+  //     this.style.backgroundImage = `url(${thumbnailDir}${data.url})`;
+  //   };
+  //
+  //   if (url) {
+  //     setImageURL(url);
+  //   }
+  // }
+  //
+  // get url() {
+  //   return this.getAttribute('url');
+  // }
 }
 
 if (!window.customElements.get('media-thumbnail-preview')) {

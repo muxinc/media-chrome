@@ -5,28 +5,58 @@ const template = document.createElement('template');
 
 template.innerHTML = `
   <style>
-    media-thumbnail-preview {
-      /* display: none; */
+    #thumbnailContainer {
+      display: none;
       position: absolute;
       top: 0;
-      border: 1.5px solid #fff;
+    }
+
+    media-thumbnail-preview {
+      position: absolute;
+      bottom: 10px;
+      border: 2px solid #fff;
+      border-radius: 2px;
       background-color: #000;
       width: 160px;
       height: 90px;
 
       /* Negative offset of half to center on the handle */
       margin-left: -80px;
-
-      /* Negative offset to place above the control */
-      margin-top: calc(-90px - 10px);
-      top: 0;
     }
 
-    :host(:hover) media-thumbnail-preview {
+    /* Can't get this working. Trying a downward triangle. */
+    /* media-thumbnail-preview::after {
+      content: "";
       display: block;
-      border: 1.5px solid #f00;
+      width: 300px;
+      height: 300px;
+      margin: 100px;
+      background-color: #ff0;
+    } */
+
+    :host(:hover) #thumbnailContainer.enabled {
+      display: block;
+      animation: fadeIn ease 0.5s;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        /* transform-origin: bottom center; */
+        /* transform: scale(0.7); */
+        margin-top: 10px;
+        opacity: 0;
+      }
+      100% {
+        /* transform-origin: bottom center; */
+        /* transform: scale(1); */
+        margin-top: 0;
+        opacity: 1;
+      }
     }
   </style>
+  <div id="thumbnailContainer">
+    <media-thumbnail-preview></media-thumbnail-preview>
+  </div>
 `;
 
 class MediaProgressRange extends MediaChromeRange {
@@ -38,7 +68,6 @@ class MediaProgressRange extends MediaChromeRange {
     super();
 
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-
     this.setMediaTimeWithRange = () => {
       const media = this.media;
       const range = this.range;
@@ -89,6 +118,8 @@ class MediaProgressRange extends MediaChromeRange {
 
       if (thumbnailTrack) {
         this.enableThumbnails();
+      } else {
+        this.thumbnailPreview.style.display = 'none';
       }
     }
   }
@@ -116,10 +147,9 @@ class MediaProgressRange extends MediaChromeRange {
   }
 
   enableThumbnails() {
-    if (this.thumbnailPreview) return;
-
-    this.thumbnailPreview = document.createElement('media-thumbnail-preview');
-    this.shadowRoot.appendChild(this.thumbnailPreview);
+    this.thumbnailPreview = this.shadowRoot.querySelector('media-thumbnail-preview');
+    const thumbnailContainer = this.shadowRoot.querySelector('#thumbnailContainer');
+    thumbnailContainer.classList.add('enabled');
 
     let mouseMoveHandler;
     const trackMouse = () => {
@@ -137,9 +167,9 @@ class MediaProgressRange extends MediaChromeRange {
         mousePercent = Math.max(0, Math.min(1, mousePercent));
 
         // Get thumbnail center position
-        const elPadding = rangeRect.left - this.getBoundingClientRect().left;
+        const leftPadding = rangeRect.left - this.getBoundingClientRect().left;
 
-        this.thumbnailPreview.style.left = elPadding + (mousePercent * rangeRect.width);
+        this.thumbnailPreview.style.left = leftPadding + (mousePercent * rangeRect.width);
         this.thumbnailPreview.time = mousePercent * this.media.duration;
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
@@ -167,12 +197,16 @@ class MediaProgressRange extends MediaChromeRange {
         }
         window.addEventListener('mousemove', offRangeHandler, false);
       }
+
+      if (!this.media || !this.media.duration) {
+        this.thumbnailPreview.style.display = 'none';
+      }
     };
     this.addEventListener('mousemove', rangeMouseMoveHander, false);
   }
 
   disableThumbnails() {
-
+    thumbnailContainer.classList.remove('enabled');
   }
 }
 
