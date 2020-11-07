@@ -51,12 +51,8 @@ class MediaChromeElement extends HTMLElement {
 
       this._media = media;
 
-      if (this.nodeName == 'MEDIA-PROGRESS-RANGE') {
-        console.log(this.shadowRoot.querySelectorAll('*'));
-      }
       this.shadowRoot.querySelectorAll('*').forEach(el => {
         if (el instanceof MediaChromeElement) {
-          console.log('shadow', el);
           el.media = media;
         }
       });
