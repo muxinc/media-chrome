@@ -1,4 +1,5 @@
 import MediaChromeElement from './media-chrome-element.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -23,7 +24,7 @@ class MediaChromePopup extends MediaChromeElement {
     super();
 
     const shadow = this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(template.content.cloneNode(true))
+    this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
   mediaSetCallback(media) {
@@ -35,6 +36,6 @@ class MediaChromePopup extends MediaChromeElement {
   }
 }
 
-window.customElements.define('media-chrome-popup', MediaChromePopup);
+defineCustomElement('media-chrome-popup', MediaChromePopup);
 
 export default MediaChromePopup;

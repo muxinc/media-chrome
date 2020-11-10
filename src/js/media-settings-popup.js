@@ -1,6 +1,5 @@
 import MediaChromeElement from './media-chrome-element.js';
-import MediaChromeMenu from './media-chrome-menu.js';
-import MediaChromeMenuitem from './media-chrome-menuitem.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -55,6 +54,6 @@ class MediaSettingsPopup extends MediaChromeElement {
   }
 }
 
-window.customElements.define('media-settings-popup', MediaSettingsPopup);
+defineCustomElement('media-settings-popup', MediaSettingsPopup);
 
 export default MediaSettingsPopup;

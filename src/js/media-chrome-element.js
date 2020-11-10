@@ -1,3 +1,5 @@
+import { defineCustomElement } from './utils/defineCustomElement.js';
+
 class MediaChromeElement extends HTMLElement {
   constructor() {
     super();
@@ -98,9 +100,9 @@ class MediaChromeElement extends HTMLElement {
     // return mediaEl;
   }
 
-  connectedCallback() {}
-  mediaSetCallback() {}
-  mediaUnsetCallback() {}
+  connectedCallback() { }
+  mediaSetCallback() { }
+  mediaUnsetCallback() { }
 
   get mediaChrome() {
     const media = this.media;
@@ -108,9 +110,6 @@ class MediaChromeElement extends HTMLElement {
   }
 }
 
-if (!window.customElements.get('media-chrome-element')) {
-  window.customElements.define('media-chrome-element', MediaChromeElement);
-  window.MediaChromeElement = MediaChromeElement;
-}
+defineCustomElement('media-chrome-element', MediaChromeElement);
 
 export default MediaChromeElement;

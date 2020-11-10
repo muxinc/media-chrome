@@ -1,4 +1,5 @@
 import MediaChromeButton from "./media-chrome-button.js";
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const enterFullscreenIcon = `
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -45,9 +46,6 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 }
 
-if (!window.customElements.get('media-fullscreen-button')) {
-  window.customElements.define('media-fullscreen-button', MediaFullscreenButton);
-  window.MediaChrome = MediaFullscreenButton;
-}
+defineCustomElement('media-fullscreen-button', MediaFullscreenButton);
 
 export default MediaFullscreenButton;

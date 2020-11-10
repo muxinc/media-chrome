@@ -1,4 +1,5 @@
 import MediaChromeElement from './media-chrome-element.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -12,7 +13,6 @@ template.innerHTML = `
   <slot></slot>
 `;
 
-
 class MediaTitleBar extends MediaChromeElement {
   constructor() {
     super();
@@ -22,9 +22,6 @@ class MediaTitleBar extends MediaChromeElement {
   }
 }
 
-if (!window.customElements.get('media-title-bar')) {
-  window.customElements.define('media-title-bar', MediaTitleBar);
-  window.MediaChrome = MediaTitleBar;
-}
+defineCustomElement('media-title-bar', MediaTitleBar);
 
 export default MediaTitleBar;

@@ -1,4 +1,5 @@
 import MediaChromeElement from './media-chrome-element.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -89,16 +90,13 @@ class MediaChromeButton extends MediaChromeElement {
     });
   }
 
-  onClick() {}
+  onClick() { }
 
   set icon(svg) {
     this.iconContainer.innerHTML = svg;
   }
 }
 
-if (!window.customElements.get('media-chrome-button')) {
-  window.customElements.define('media-chrome-button', MediaChromeButton);
-  window.MediaChromeButton = MediaChromeButton;
-}
+defineCustomElement('media-chrome-button', MediaChromeButton);
 
 export default MediaChromeButton;

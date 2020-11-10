@@ -1,4 +1,5 @@
 import MediaChromeElement from './media-chrome-element.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 import { formatTime } from './utils/time.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
@@ -62,9 +63,6 @@ class MediaDurationDisplay extends MediaChromeElement {
   }
 }
 
-if (!window.customElements.get('media-duration-display')) {
-  window.customElements.define('media-duration-display', MediaDurationDisplay);
-  window.MediaChrome = MediaDurationDisplay;
-}
+defineCustomElement('media-duration-display', MediaDurationDisplay);
 
 export default MediaDurationDisplay;

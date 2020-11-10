@@ -1,4 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const playIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
@@ -62,9 +63,6 @@ class MediaPlayButton extends MediaChromeButton {
   }
 }
 
-if (!window.customElements.get('media-play-button')) {
-  window.customElements.define('media-play-button', MediaPlayButton);
-  window.MediaChrome = MediaPlayButton;
-}
+defineCustomElement('media-play-button', MediaPlayButton);
 
 export default MediaPlayButton;

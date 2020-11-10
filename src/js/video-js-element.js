@@ -1,4 +1,5 @@
 import videojs from 'video.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 import styles from './video-js-styles.js';
 
 const template = document.createElement('template');
@@ -33,7 +34,6 @@ class VideoJSElement extends HTMLElement {
   }
 }
 
-window.customElements.define('video-js', VideoJSElement);
-window.VideoJSElement = VideoJSElement;
+defineCustomElement('video-js', VideoJSElement);
 
 export default VideoJSElement;

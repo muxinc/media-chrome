@@ -1,6 +1,7 @@
 import MediaChromeElement from './media-chrome-element.js';
 import './media-chrome-menuitem.js';
 import './media-chrome-submenu-menuitem.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -24,12 +25,9 @@ class MediaChromeMenu extends MediaChromeElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  mediaSetCallback(media) {}
+  mediaSetCallback(media) { }
 }
 
-if (!window.customElements.get('media-chrome-menu')) {
-  window.customElements.define('media-chrome-menu', MediaChromeMenu);
-  window.MediaChromeButton = MediaChromeMenu;
-}
+defineCustomElement('media-chrome-menu', MediaChromeMenu);
 
 export default MediaChromeMenu;

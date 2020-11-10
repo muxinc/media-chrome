@@ -1,4 +1,5 @@
 import MediaChromeMenuitem from './media-chrome-menuitem.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const addTemplate = document.createElement('template');
 
@@ -43,9 +44,6 @@ class MediaChromeSubmenuMenuitem extends MediaChromeMenuitem {
   }
 }
 
-if (!window.customElements.get('media-chrome-submenu-menuitem')) {
-  window.customElements.define('media-chrome-submenu-menuitem', MediaChromeSubmenuMenuitem);
-  window.MediaChromeButton = MediaChromeSubmenuMenuitem;
-}
+defineCustomElement('media-chrome-submenu-menuitem', MediaChromeSubmenuMenuitem);
 
 export default MediaChromeSubmenuMenuitem;
