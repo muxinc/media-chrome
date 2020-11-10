@@ -1,5 +1,6 @@
 import MediaChromeElement from './media-chrome-element.js';
 import './media-control-bar.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -68,7 +69,7 @@ class MediaChrome extends HTMLElement {
 
     this._media = null;
 
-    const mutationCallback = function(mutationsList, observer) {
+    const mutationCallback = function (mutationsList, observer) {
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
           mutation.removedNodes.forEach(node => {
@@ -218,9 +219,6 @@ class MediaChrome extends HTMLElement {
   }
 }
 
-if (!window.customElements.get('media-chrome')) {
-  window.customElements.define('media-chrome', MediaChrome);
-  window.MediaChrome = MediaChrome;
-}
+defineCustomElement('media-chrome', MediaChrome);
 
 export default MediaChrome;
