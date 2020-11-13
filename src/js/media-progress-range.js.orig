@@ -1,5 +1,5 @@
 import MediaChromeRange from './media-chrome-range.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+<<<<<<< HEAD
 import MediaThumbnailPreviewElement from './media-thumbnail-preview-element.js';
 
 const template = document.createElement('template');
@@ -59,6 +59,9 @@ template.innerHTML = `
     <media-thumbnail-preview></media-thumbnail-preview>
   </div>
 `;
+=======
+import { defineCustomElement } from './utils/defineCustomElement.js';
+>>>>>>> main
 
 class MediaProgressRange extends MediaChromeRange {
   static get observedAttributes() {
@@ -142,7 +145,7 @@ class MediaProgressRange extends MediaChromeRange {
     }
 
     const buffered = media.buffered;
-    const buffPercent = (buffered.end(buffered.length-1) / media.duration) * 100;
+    const buffPercent = (buffered.end(buffered.length - 1) / media.duration) * 100;
     colorsArray.splice(1, 0, ['var(--media-progress-buffered-color, #777)', buffPercent]);
     return colorsArray;
   }

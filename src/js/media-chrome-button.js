@@ -23,6 +23,8 @@ template.innerHTML = `
     /* Min icon size is 24x24 */
     min-height: 24px;
     min-width: 24px;
+
+    transition: background-color 0.15s linear;
   }
 
   :host(:focus, :focus-within) {

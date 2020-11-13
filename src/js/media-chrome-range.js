@@ -34,10 +34,12 @@ template.innerHTML = `
       --thumb-height: var(--media-range-thumb-height, 10px);
       --track-height: var(--media-range-track-height, 4px);
 
+      position: relative;
       display: inline-block;
       vertical-align: middle;
       box-sizing: border-box;
       background-color: transparent;
+      transition: background-color 0.15s linear;
       height: 44px;
       width: 100px;
       min-height: 24px;
@@ -121,8 +123,8 @@ class MediaChromeRange extends MediaChromeElement {
 
     var shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.range = this.shadowRoot.querySelector('#range');
 
+    this.range = this.shadowRoot.querySelector('#range');
     this.range.addEventListener('input', this.updateBar.bind(this));
   }
 
