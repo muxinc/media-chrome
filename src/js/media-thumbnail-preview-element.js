@@ -1,8 +1,11 @@
+/*
+  <media-thumbnail-preview media="#myVideo" time="10.00">
+
+  Uses the "thumbnails" track of a video element to show an image relative to
+  the video time given in the `time` attribute.
+*/
 import MediaChromeElement from './media-chrome-element.js';
 
-/*
-  <media-thumbnail-preview player="" url="" time="0.00">
-*/
 const template = document.createElement('template');
 
 template.innerHTML = `
@@ -37,7 +40,7 @@ class MediaThumbnailPreviewElement extends MediaChromeElement {
   }
 
   set time(time) {
-    if (this.media && this.media.textTracks && this.media.textTracks.length > 0) {
+    if (this.media && this.media.textTracks && this.media.textTracks.length) {
       let track = Array.prototype.find.call(this.media.textTracks, (t)=>{
         return t.label == 'thumbnails';
       });
