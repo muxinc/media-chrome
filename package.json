@@ -10,8 +10,9 @@
     "./examples/*"
   ],
   "scripts": {
-    "build": "gulp",
-    "dev": "gulp dev",
+    "clean": "rimraf dist",
+    "build": "npm run clean && rollup -c",
+    "dev": "npm run clean && rollup -c --watch",
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish-patch": "yarn run build && np patch --no-tests --any-branch"
   },
@@ -37,6 +38,7 @@
   "devDependencies": {
     "@babel/core": "^7.9.0",
     "@rollup/plugin-commonjs": "^11.0.2",
+    "@rollup/plugin-multi-entry": "^4.0.0",
     "@rollup/plugin-node-resolve": "^7.1.1",
     "babel": "^6.23.0",
     "babel-core": "^6.26.3",
@@ -47,7 +49,10 @@
     "gulp-cli": "^2.2.0",
     "gulp-livereload": "^4.0.2",
     "rollup": "^2.1.0",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.33.2",
     "rollup-plugin-babel-minify": "^9.1.1",
+    "rollup-plugin-serve": "^1.1.0",
     "rollup-plugin-terser": "^5.3.0"
   },
   "dependencies": {},
