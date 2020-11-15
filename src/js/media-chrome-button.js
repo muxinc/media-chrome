@@ -17,8 +17,9 @@ template.innerHTML = `
     width: 44px;
 
     /* Vertically center any text */
-    font-size: 16px;
+    font-size: 14px;
     line-height: 24px;
+    font-weight: bold;
 
     /* Min icon size is 24x24 */
     min-height: 24px;
@@ -47,8 +48,10 @@ template.innerHTML = `
     background: transparent;
     color: #ffffff;
     font-family: sans-serif;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 24px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
     cursor: pointer;
     text-align: center;
     -webkit-appearance: none;
