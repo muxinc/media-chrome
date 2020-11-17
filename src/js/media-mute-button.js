@@ -19,6 +19,10 @@ class MediaMuteButton extends MediaChromeButton {
   onClick(e) {
     const media = this.media;
     media.muted = !media.muted;
+
+    if (!media.muted && media.volume === 0) {
+      media.volume = 0.25;
+    }
   }
 
   update() {
