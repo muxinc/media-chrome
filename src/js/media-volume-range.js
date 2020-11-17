@@ -51,15 +51,22 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 
   mediaSetCallback(media) {
-    media.addEventListener('volumechange', this.update.bind(this));
+    this._handleVolumeChange = this.update.bind(this);
+    media.addEventListener('volumechange', this._handleVolumeChange);
 
     // Update the media with the last set volume preference
+    // This would preferably live with the media element,
+    // not a control.
     try {
       const volPref = window.localStorage.getItem('media-chrome-pref-volume');
-      media.volume = volPref;
+      if (volPref !== null) media.volume = volPref;
     } catch (e) { }
 
     this.update();
+  }
+
+  mediaUnsetCallback(media) {
+    media.removeEventListener('volumechange', this._handleVolumeChange);
   }
 
   update() {
