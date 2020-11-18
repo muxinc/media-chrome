@@ -5,10 +5,10 @@ class MediaVolumeRange extends MediaChromeRange {
   constructor() {
     super();
 
-    const media = this.media;
-
     this.range.addEventListener('input', () => {
       const media = this.media;
+
+      if (!media) return;
 
       const volume = this.range.value / 1000;
       media.volume = volume;
@@ -22,22 +22,24 @@ class MediaVolumeRange extends MediaChromeRange {
     // Store the last set positive volume before a drag
     // so we have it when unmuting
     this.range.addEventListener('mousedown', () => {
-      const volume = this.media.volume;
+      const volume = this.media && this.media.volume;
 
       if (volume > 0) {
-        this.lastNonZeroVolume = volume;
+        this._lastNonZeroVolume = volume;
       }
     });
 
     this.range.addEventListener('change', () => {
       const media = this.media;
 
+      if (!media) return;
+
       // If the user is just sliding the volume to zero, we want to treat
       // that the same as muting. And when they unmute, go back to the volume
       // that was previously set.
       if (media.volume == 0) {
         media.muted = true;
-        media.volume = this.lastNonZeroVolume || 1;
+        media.volume = this._lastNonZeroVolume || 1;
       }
 
       // Store the last set volume as a local preference, if ls is supported
@@ -51,18 +53,25 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 
   mediaSetCallback(media) {
-    media.addEventListener('volumechange', this.update.bind(this));
+    this._handleVolumeChange = this._updateRange.bind(this);
+    media.addEventListener('volumechange', this._handleVolumeChange);
 
     // Update the media with the last set volume preference
+    // This would preferably live with the media element,
+    // not a control.
     try {
       const volPref = window.localStorage.getItem('media-chrome-pref-volume');
-      media.volume = volPref;
+      if (volPref !== null) media.volume = volPref;
     } catch (e) { }
 
-    this.update();
+    this._updateRange();
   }
 
-  update() {
+  mediaUnsetCallback(media) {
+    media.removeEventListener('volumechange', this._handleVolumeChange);
+  }
+
+  _updateRange() {
     const media = this.media;
     const range = this.range;
 
