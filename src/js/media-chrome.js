@@ -1,5 +1,6 @@
 import MediaChromeElement from './media-chrome-element.js';
 import './media-control-bar.js';
+import './media-playback-rate-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
