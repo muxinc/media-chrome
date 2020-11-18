@@ -20,29 +20,68 @@ class MediaFullscreenButton extends MediaChromeButton {
     super();
 
     this.icon = enterFullscreenIcon;
+  }
 
-    this.addEventListener("click", e => {
-      const media = this.media;
+  onClick() {
+    const api = this.getFullscreenApi(this.mediaChrome);
 
-      if (this.mediaChrome == document.fullscreenElement) {
-        document.exitFullscreen();
-      } else {
-        if (document.pictureInPictureElement) {
-          // Should be async
-          document.exitPictureInPicture();
-        }
-
-        this.mediaChrome.requestFullscreen();
+    if (this.mediaChrome == document[api.element]) {
+      api.exit();
+    } else {
+      if (document.pictureInPictureElement) {
+        // Should be async
+        document.exitPictureInPicture();
       }
-    });
 
-    document.addEventListener("fullscreenchange", () => {
-      if (this.mediaChrome == document.fullscreenElement) {
+      api.enter();
+    }
+  }
+
+  mediaSetCallback() {
+    const api = this.getFullscreenApi(this.mediaChrome);
+    
+    document.addEventListener(api.event, () => {
+      if (this.mediaChrome == document[api.element]) {
         this.icon = exitFullscreenIcon;
       } else {
         this.icon = enterFullscreenIcon;
       }
     });
+  }
+
+  getFullscreenApi(container) {
+    const api = {};
+    
+    if (container.webkitRequestFullScreen != null) {
+      api.enter = container.webkitRequestFullScreen.bind(container);
+      api.exit = document.webkitExitFullscreen != null ? document.webkitExitFullscreen.bind(document) : document.webkitCancelFullScreen.bind(document);
+      api.event = "webkitfullscreenchange";
+      api.element = "webkitFullscreenElement";
+      api.error = "webkitfullscreenerror";
+    }
+    else if (container.requestFullscreen != null) {
+      api.enter = container.requestFullscreen.bind(container);
+      api.exit = document.exitFullscreen != null ? document.exitFullscreen.bind(document) : document.cancelFullscreen.bind(document);
+      api.event = "fullscreenchange";
+      api.element = "fullscreenElement";
+      api.error = "fullscreenerror";
+    }
+    else if (container.mozRequestFullScreen != null) {
+      api.enter = container.mozRequestFullScreen.bind(container);
+      api.exit = document.mozCancelFullScreen.bind(document);
+      api.event = "mozfullscreenchange";
+      api.element = "mozFullscreenElement";
+      api.error = "mozfullscreenerror";
+    }
+    else if (container.msRequestFullscreen != null) {
+      api.enter = container.msRequestFullscreen.bind(container);
+      api.exit = document.msExitFullscreen.bind(document);
+      api.event = "msfullscreenchange";
+      api.element = "msFullscreenElement";
+      api.error = "MSFullscreenError";
+    }
+
+    return api;
   }
 }
 
