@@ -18,7 +18,7 @@ template.innerHTML = `
 
     /* Vertically center any text */
     font-size: 14px;
-    line-height: 24px;
+    line-height: 1;
     font-weight: bold;
 
     /* Min icon size is 24x24 */
