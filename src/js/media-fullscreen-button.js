@@ -15,31 +15,28 @@ const exitFullscreenIcon = `
 </svg>
 `;
 
+const api = {
+  enter: "requestFullscreen",
+  exit: "exitFullscreen",
+  event: "fullscreenchange",
+  element: "fullscreenElement",
+  error: "fullscreenerror",
+};
+
+if (!document.fullscreenElement) {
+  api.enter = "webkitRequestFullScreen";
+  api.exit = document.webkitExitFullscreen != null ? "webkitExitFullscreen" : "webkitCancelFullScreen";
+  api.event = "webkitfullscreenchange";
+  api.element = "webkitFullscreenElement";
+  api.error = "webkitfullscreenerror";
+}
+
 class MediaFullscreenButton extends MediaChromeButton {
   constructor() {
     super();
 
     this.icon = enterFullscreenIcon;
-  }
 
-  onClick() {
-    const api = this.getFullscreenApi(this.mediaChrome);
-
-    if (this.mediaChrome == document[api.element]) {
-      api.exit();
-    } else {
-      if (document.pictureInPictureElement) {
-        // Should be async
-        document.exitPictureInPicture();
-      }
-
-      api.enter();
-    }
-  }
-
-  mediaSetCallback() {
-    const api = this.getFullscreenApi(this.mediaChrome);
-    
     document.addEventListener(api.event, () => {
       if (this.mediaChrome == document[api.element]) {
         this.icon = exitFullscreenIcon;
@@ -49,39 +46,17 @@ class MediaFullscreenButton extends MediaChromeButton {
     });
   }
 
-  getFullscreenApi(container) {
-    const api = {};
-    
-    if (container.webkitRequestFullScreen != null) {
-      api.enter = container.webkitRequestFullScreen.bind(container);
-      api.exit = document.webkitExitFullscreen != null ? document.webkitExitFullscreen.bind(document) : document.webkitCancelFullScreen.bind(document);
-      api.event = "webkitfullscreenchange";
-      api.element = "webkitFullscreenElement";
-      api.error = "webkitfullscreenerror";
-    }
-    else if (container.requestFullscreen != null) {
-      api.enter = container.requestFullscreen.bind(container);
-      api.exit = document.exitFullscreen != null ? document.exitFullscreen.bind(document) : document.cancelFullscreen.bind(document);
-      api.event = "fullscreenchange";
-      api.element = "fullscreenElement";
-      api.error = "fullscreenerror";
-    }
-    else if (container.mozRequestFullScreen != null) {
-      api.enter = container.mozRequestFullScreen.bind(container);
-      api.exit = document.mozCancelFullScreen.bind(document);
-      api.event = "mozfullscreenchange";
-      api.element = "mozFullscreenElement";
-      api.error = "mozfullscreenerror";
-    }
-    else if (container.msRequestFullscreen != null) {
-      api.enter = container.msRequestFullscreen.bind(container);
-      api.exit = document.msExitFullscreen.bind(document);
-      api.event = "msfullscreenchange";
-      api.element = "msFullscreenElement";
-      api.error = "MSFullscreenError";
-    }
+  onClick() {
+    if (this.mediaChrome == document[api.element]) {
+      document[api.exit]();
+    } else {
+      if (document.pictureInPictureElement) {
+        // Should be async
+        document.exitPictureInPicture();
+      }
 
-    return api;
+      this.mediaChrome[api.enter]();
+    }
   }
 }
 
