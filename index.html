@@ -1,234 +1,31 @@
-<!DOCTYPE html>
 <html>
-  <head>
-    <script>
-      // window.customElements.whenDefined('media-chrome').then(() => {
-      //   console.log('Chrome Defined');
-      // });
-      // window.customElements.whenDefined('media-play-button').then(() => {
-      //   console.log('Play Defined');
-      // });
-    </script>
-    <!-- Media elements need to be defined before media chrome in the doc
-        so they're ready when media chrome attempts to interact with them  -->
-    <script type="module" src="./js/custom-video-element.js"></script>
-    <script type="module" src="./js/hls-video-element.js"></script>
-    <script type="module" src="./js/video-js-element.js"></script>
-    <script type="module" src="./js/media-chrome.js"></script>
+<head>
+  <script type="module" src="./index.js"></script>
+</head>
+<body>
 
-    <link rel="stylesheet" href="index.css" />
-    <style>
-      body {
-        background-color: #333;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- <custom-video
-      id="asdf"
-      src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-      controls="controls"
-    ></custom-video> -->
+<media-chrome>
+  <video
+    slot="media"
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+    preload="none"
+    muted
+    crossorigin
+  >
+    <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
+  </video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-forward-button></media-forward-button>
+    <media-replay-button></media-replay-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-progress-range></media-progress-range>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-pip-button></media-pip-button>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-chrome>
 
-    <!-- <video id="origHLS" controls></video> -->
-    <!-- <script>
-      const origHLS = document.getElementById('origHLS');
-      var hls = new Hls();
-      hls.loadSource(
-        'https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8'
-      );
-      hls.attachMedia(origHLS);
-      // hls.on(Hls.Events.MANIFEST_PARSED,function() {
-      //   video.play();
-      // });
-    </script> -->
-
-    <!-- src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4" -->
-
-    <!-- <video-js
-      width="640"
-      height="480"
-      style="width:640px; height: 480px; border: 1px solid #fff; position: absolute;"
-    >
-    </video-js> -->
-
-    <!-- <video
-      src="http://localhost:8000/fhqwhgads.mp4"
-      controls="controls"
-      muted
-      id="ven"
-      preload="none"
-    ></video> -->
-
-    <!-- <custom-video
-      src="http://localhost:8082/fhqwhgads.mp4"
-      muted
-      controls
-      id="ve"
-      preload="none"
-    ></custom-video> -->
-
-    <!-- <hls-video
-      id="asdf"
-      src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"
-      preload="none"
-      controls="controls"
-      crossorigin=""
-      testattr=""
-      muted
-    ></hls-video> -->
-
-    <media-chrome id="my-media-chrome">
-      <!-- <hls-video
-        id="asdf"
-        src="https://playertest.longtailvideo.com/adaptive/captions/playlist.m3u8"
-        preload="none"
-        crossorigin=""
-        testattr=""
-        muted
-      ></hls-video> -->
-      <!-- <video
-        src="http://localhost:8082/fhqwhgads.mp4"
-        muted
-        id="ven"
-        preload="none"
-      ></video> -->
-      <custom-video slot="media"
-        src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-        muted
-        id="ve"
-        preload="none"
-      ></custom-video>
-
-      <media-settings-popup id="media-settings-popup">
-        <media-chrome-menu>
-          <media-chrome-submenu-menuitem label="Playback speed" value="1.2">
-            <media-chrome-menu slot="menu">
-              <media-chrome-menuitem>Normal</media-chrome-menuitem>
-              <media-chrome-menuitem>1.5</media-chrome-menuitem>
-            </media-chrome-menu>
-          </media-chrome-submenu-menuitem>
-          <media-chrome-menuitem>Hello1</media-chrome-menuitem>
-          <media-chrome-menuitem>Hello1</media-chrome-menuitem>
-          <media-chrome-menuitem>Hello1</media-chrome-menuitem>
-          <media-chrome-menuitem>Hello1</media-chrome-menuitem>
-        </media-chrome-menu>
-      </media-settings-popup>
-
-      <media-control-bar slot="controls">
-        <media-play-button>Play</media-play-button>
-        <media-replay-button>Replay</media-replay-button>
-        <media-forward-button>Forward</media-forward-button>
-        <media-mute-button>Mute</media-mute-button>
-        <media-volume-range>Volume</media-volume-range>
-        <media-current-time-display>Current Time</media-current-time-display>
-        <media-progress-range>Progress</media-progress-range>
-        <media-duration-display>Duration</media-duration-display>
-
-        <media-settings-popup-button>X</media-settings-popup-button>
-
-        <!-- JUST HAVE A SEPARATE SETTINGS WINDOW!! -->
-        <!-- <media-chrome-menu-button expanded>
-          Hello1
-          <media-chrome-menu slot="menu">
-            <media-chrome-submenu-button label="Playback speed" value="1.2">
-              Playback speed
-              <media-chrome-menu slot="menu">
-                <media-chrome-menu-header> </media-chrome-menu-header>
-                <media-chrome-menuitem>Normal</media-chrome-menuitem>
-                <media-chrome-menuitem>1.5</media-chrome-menuitem>
-              </media-chrome-menu>
-            </media-chrome-submenu-button>
-            Hello2<br />Hello2<br />Hello2<br />Hello2<br />Hello2<br />Hello2<br />Hello2<br />Hello2<br />
-          </media-chrome-menu>
-        </media-chrome-menu-button> -->
-        <media-fullscreen-button>Fullscreen</media-fullscreen-button>
-        <media-pip-button>PIP</media-pip-button>
-      </media-control-bar>
-    </media-chrome>
-
-    <media-play-button playing media="#ve">Play</media-play-button>
-    <media-progress-range media="#ve">Play</media-progress-range>
-
-    <media-menu-button>
-      <media-menu>
-        <media-menuitem-checkbox>Autoplay</media-menuitem-checkbox>
-        <media-menuitem-checkbox>Annotations</media-menuitem-checkbox>
-
-        <media-menuitem-submenu label="Playback speed" value="1.2">
-          <media-menu>
-            <media-menuitem-radio>Normal</media-menuitem-radio>
-            <media-menuitem-radio>1.5</media-menuitem-radio>
-          </media-menu>
-        </media-menuitem-submenu>
-
-        <media-menuitem-submenu label="Subtitles/CC" current="1.2">
-          <media-menu>
-            <media-menuitem-radio>Off</media-menuitem-radio>
-            <media-menuitem-radio>English</media-menuitem-radio>
-          </media-menu>
-        </media-menuitem-submenu>
-      </media-menu>
-    </media-menu-button>
-
-    <div class="menucontainer">
-      <div id="menu1" class="menu">
-        <div class="menuitem">Menu Item 1</div>
-        <div class="menuitem">Menu Item 2</div>
-      </div>
-    </div>
-
-    <style>
-      .menu {
-        width: 280px;
-        background-color: #222;
-        color: #fff;
-      }
-
-      .menuitem {
-        padding: 5px;
-      }
-
-      .menuitem:hover {
-        background-color: #555;
-      }
-    </style>
-
-    <!-- <h2>Media Controls</h2>
-
-    <h3>Play Button</h3>
-    <media-play-button>Play</media-play-button>
-
-    <h3>Replay Button</h3>
-    <media-replay-button>Replay</media-replay-button>
-
-    <h3>Forward Button</h3>
-    <media-forward-button>Forward</media-forward-button>
-
-    <h3>Mute Button</h3>
-    <media-mute-button>Mute</media-mute-button>
-
-    <h3>Volume Range</h3>
-    <media-volume-range>Volume</media-volume-range>
-
-    <h3>Progress Range</h3>
-    <media-progress-range>Progress</media-progress-range>
-
-    <h3>Fullscreen Button</h3>
-    <media-fullscreen-button>Fullscreen</media-fullscreen-button>
-
-    <h3>PIP Button</h3>
-    <media-pip-button>PIP</media-pip-button>
-
-    <h3>Inline</h3>
-    Inline...<br />
-    with some text
-    <media-play-button>Play</media-play-button
-    ><media-mute-button>Mute</media-mute-button
-    ><media-volume-range>Volume</media-volume-range
-    ><media-fullscreen-button>Fullscreen</media-fullscreen-button> and more
-    text <br />
-    And more text. <br />
-    And more text. -->
-  </body>
+</body>
 </html>

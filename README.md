@@ -17,7 +17,10 @@ Fully customizable media player controls using web components (native custom ele
 <media-chrome>
   <video
     slot="media"
-    src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4">
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+    crossorigin
+  >
+    <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
   </video>
   <media-control-bar>
     <media-play-button>Play</media-play-button>
@@ -40,12 +43,12 @@ Fully customizable media player controls using web components (native custom ele
 ### Adding controls to a video element
 Just HTML. No javascripting required.
 
-![Add controls to the media](http://image.mux.com/es7LU800gmNagIAaFuV5T25Z32xrmt6Gn/animated.gif?width=640&fps=15&end=10)
+![Add controls to the media](https://image.mux.com/es7LU800gmNagIAaFuV5T25Z32xrmt6Gn/animated.gif?width=640&fps=15&end=10)
 
 ### Moving the progress bar above the controls
 Simple HTML and CSS.
 
-![Moving the playback progress bar](http://image.mux.com/NAu02gDe4qenxs8x4CKDKOb65hFcirY02p/animated.gif?width=640&fps=15&end=10)
+![Moving the playback progress bar](https://image.mux.com/NAu02gDe4qenxs8x4CKDKOb65hFcirY02p/animated.gif?width=640&fps=15&end=10)
 
 ## Usage
 
@@ -113,7 +116,7 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 <media-chrome>
   <video
     slot="media"
-    src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
   ></video>
   <media-control-bar>
     <media-play-button>Play</media-play-button>
@@ -140,6 +143,7 @@ You can then use CSS to style the controls as you would other HTML elements.
 | `<media-progress-range>`    | See how far the playhead is through the media duration, and seek to new times.                        |
 | `<media-fullscreen-button>` | Toggle fullscreen viewing                                                                             |
 | `<media-pip-button>`        | Toggle picture-in-picture mode of the video                                                           |
+| `<media-playback-rate-button>` | Change the speed of playback                                                           |
 | More to come                 | Requests and contributions welcome                                                                    |
 
 ## Compatible players
