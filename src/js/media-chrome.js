@@ -9,13 +9,18 @@ template.innerHTML = `
   <style>
     :host {
       box-sizing: border-box;
-
       position: relative;
       display: flex;
       width: 720px;
       height: 480px;
       background-color: #000;
       flex-direction: column-reverse;
+    }
+
+    :host(:-webkit-full-screen) {
+      /* Needs to use !important otherwise easy to break */
+      width: 100% !important;
+      height: 100% !important;
     }
 
     ::slotted([slot=media]) {
