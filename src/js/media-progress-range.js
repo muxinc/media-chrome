@@ -169,8 +169,9 @@ class MediaProgressRange extends MediaChromeRange {
 
         // Get thumbnail center position
         const leftPadding = rangeRect.left - this.getBoundingClientRect().left;
+        const thumbnailLeft = leftPadding + (mousePercent * rangeRect.width);
 
-        this.thumbnailPreview.style.left = leftPadding + (mousePercent * rangeRect.width);
+        this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
         this.thumbnailPreview.time = mousePercent * this.media.duration;
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
