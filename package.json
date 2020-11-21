@@ -13,7 +13,7 @@
     "build": "gulp",
     "dev": "gulp dev",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "publish-patch": "yarn run build && np patch --no-tests"
+    "publish-patch": "yarn run build && np patch --no-tests --any-branch"
   },
   "repository": {
     "type": "git",
