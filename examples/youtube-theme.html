@@ -1,0 +1,123 @@
+<html>
+<head>
+  <script type="module" src="../dist/media-chrome.js"></script>
+  <!-- <script type="module" src="https://unpkg.com/youtube-video-element"></script> -->
+</head>
+<body>
+
+<style>
+  .media-theme-youtube {
+    --media-range-thumb-background: rgba(255,0,0, 1);
+    --media-range-track-height: 3px;
+    /* --media-range-track-transition: height .2s ease; */
+    --media-range-track-background: #555;
+    --media-range-bar-color: rgb(229, 9, 20);
+  }
+
+  .media-theme-youtube media-duration-display,
+  .media-theme-youtube media-current-time-display {
+    font-size: 13px;
+    font-family: Roboto, Arial, sans-serif;
+  }
+
+  .media-theme-youtube media-progress-range {
+    width: 100%;
+    height: 20px;
+    padding-bottom: 0;
+
+    --media-range-track-height: 3px;
+    /* --media-range-track-transition: height .2s ease; */
+    --media-range-track-background: #555;
+
+    --media-range-bar-color: rgb(229, 9, 20);
+    --media-progress-buffered-color: #777;
+
+    --media-range-thumb-background: rgba(255,0,0, 1);
+    --media-range-thumb-height: 13px;
+    --media-range-thumb-width: 13px;
+    --media-range-thumb-border-radius: 13px;
+    /* --media-range-thumb-transition: all .2s ease; */
+  }
+
+  .media-theme-youtube media-progress-range:hover {
+    --media-range-track-height: 5px;
+    --media-range-thumb-height: 13px;
+    --media-range-thumb-width: 13px;
+    /* --media-range-thumb-transform: scale(10) translate(-100%, -100%) */
+  }
+
+  .media-theme-youtube media-volume-range {
+    padding-left: 0px;
+
+    --media-range-track-height: 3px;
+    --media-range-track-background: #fff;
+    --media-range-bar-color: #fff;
+
+    --media-range-thumb-background: #fff;
+    --media-range-thumb-height: 13px;
+    --media-range-thumb-width: 13px;
+    --media-range-thumb-border-radius: 13px;
+    /* --media-range-thumb-transition: all .2s ease; */
+  }
+
+  .media-theme-youtube .control-spacer {
+    text-align: left;
+    flex-grow: 1;
+  }
+
+  .media-theme-youtube media-control-bar div {
+    line-height: 44px;
+    font-size: 13px;
+  }
+
+  .media-theme-youtube media-mute-button + media-volume-range {
+    width: 0px;
+    padding-right: 0px;
+    /* Set the internal width so it reveals, not grows */
+    --media-range-track-width: 90px;
+    overflow: hidden;
+    transition: width 0.3s ease-in;
+  }
+
+  .media-theme-youtube media-mute-button:hover + media-volume-range,
+  .media-theme-youtube media-mute-button:focus + media-volume-range,
+  .media-theme-youtube media-mute-button:focus-within + media-volume-range,
+  .media-theme-youtube media-volume-range:hover,
+  .media-theme-youtube media-volume-range:focus,
+  .media-theme-youtube media-volume-range:focus-within {
+    width: 100px;
+  }
+</style>
+
+<media-chrome class="media-theme-youtube">
+  <video
+    slot="media"
+    src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+    muted
+    preload="none"
+    crossorigin
+  >
+    <track label="thumbnails" default kind="metadata" src="http://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
+  </video>
+  <media-control-bar>
+    <media-progress-range></media-progress-range>
+    <media-play-button></media-play-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-current-time-display></media-current-time-display>
+    <div>/</div>
+    <media-duration-display></media-duration-display>
+    <span class="control-spacer"></span>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-pip-button></media-pip-button>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-chrome>
+
+<script>
+  const mediaMuteButton = document.querySelector('media-mute-button');
+
+</script>
+
+</body>
+</html>

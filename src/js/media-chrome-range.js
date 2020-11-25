@@ -13,10 +13,13 @@ const thumbStyles = `
   background: var(--media-range-thumb-background, #fff);
   box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
   cursor: pointer;
+  transition: var(--media-range-thumb-transition, none);
+  transform: var(--media-range-thumb-transform, none);
+  opacity: var(--media-range-thumb-opacity, 1);
 `;
 
 const trackStyles = `
-  width: 100%;
+  width: var(--media-range-track-width, 100%);
   min-width: 40px;
   height: var(--track-height);
   border: var(--media-range-track-border, none);
@@ -64,7 +67,7 @@ template.innerHTML = `
 
       /* Fill host with the range */
       height: 100%;
-      width: 100%; /* Specific width is required for Firefox. */
+      width: var(--media-range-track-width, 100%); /* Specific width is required for Firefox. */
 
       box-sizing: border-box;
       padding: 0;
