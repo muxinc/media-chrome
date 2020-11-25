@@ -14,16 +14,29 @@
     --media-range-bar-color: rgb(229, 9, 20);
   }
 
+  .media-theme-youtube media-control-bar > * {
+    height: 36px;
+    line-height: 36px;
+  }
+
+  .media-theme-youtube media-play-button {
+    width: 46px;
+    --media-button-icon-width: 30px;
+    --media-button-icon-height: 30px;
+  }
+
   .media-theme-youtube media-duration-display,
   .media-theme-youtube media-current-time-display {
     font-size: 13px;
     font-family: Roboto, Arial, sans-serif;
+    color: #ddd;
   }
 
   .media-theme-youtube media-progress-range {
     width: 100%;
-    height: 20px;
+    height: 13px;
     padding-bottom: 0;
+    min-height: 0;
 
     --media-range-track-height: 3px;
     /* --media-range-track-transition: height .2s ease; */
@@ -66,7 +79,6 @@
   }
 
   .media-theme-youtube media-control-bar div {
-    line-height: 44px;
     font-size: 13px;
   }
 
@@ -86,6 +98,20 @@
   .media-theme-youtube media-volume-range:focus,
   .media-theme-youtube media-volume-range:focus-within {
     width: 100px;
+  }
+
+  .media-theme-youtube media-fullscreen-button {
+    --media-icon-color: #ddd;
+    transition: all 1s;
+  }
+
+  /* Probably need to try parts for this, and scale the icon */
+  .media-theme-youtube media-fullscreen-button:hover,
+  .media-theme-youtube media-fullscreen-button:focus,
+  .media-theme-youtube media-fullscreen-button:focus-within {
+    --media-button-icon-width: 30px;
+    --media-button-icon-height: 30px;
+    --media-icon-color: #fff;
   }
 </style>
 
