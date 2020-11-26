@@ -7,11 +7,7 @@
 
 <style>
   .media-theme-youtube {
-    --media-range-thumb-background: rgba(255,0,0, 1);
-    --media-range-track-height: 3px;
-    /* --media-range-track-transition: height .2s ease; */
-    --media-range-track-background: #555;
-    --media-range-bar-color: rgb(229, 9, 20);
+
   }
 
   .media-theme-youtube media-control-bar > * {
@@ -38,18 +34,19 @@
     padding-bottom: 0;
     min-height: 0;
 
+    --media-range-bar-color: rgb(229, 9, 20);
     --media-range-track-height: 3px;
-    /* --media-range-track-transition: height .2s ease; */
+    --media-range-track-transition: none; /* height .2s ease; */
     --media-range-track-background: #555;
 
     --media-range-bar-color: rgb(229, 9, 20);
     --media-progress-buffered-color: #777;
 
     --media-range-thumb-background: rgba(255,0,0, 1);
-    --media-range-thumb-height: 13px;
-    --media-range-thumb-width: 13px;
+    --media-range-thumb-height: 0;
+    --media-range-thumb-width: 0;
     --media-range-thumb-border-radius: 13px;
-    /* --media-range-thumb-transition: all .2s ease; */
+    --media-range-thumb-transition: none; /* all .2s ease; */
   }
 
   .media-theme-youtube media-progress-range:hover {

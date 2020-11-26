@@ -80,7 +80,7 @@ template.innerHTML = `
       ${thumbStyles}
       /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
       margin-top: calc(calc(0px - var(--thumb-height) + var(--track-height)) / 2);
-      transition: margin .2s ease;
+      /*transition: margin .2s ease;*/
     }
     input[type=range]::-moz-range-thumb { ${thumbStyles} }
 
