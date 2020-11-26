@@ -43,6 +43,12 @@ template.innerHTML = `
       opacity: 0;
       transition: opacity 1s;
     }
+
+    .media-keyboard-focus ::slotted(media-play-button:focus),
+    .media-keyboard-focus ::slotted(media-play-button:focus-within) {
+      box-shadow: inset 0 0 0 2px rgba(27,127,204,.8);
+    }
+
   </style>
   <slot name="media"></slot>
   <div id="container">
@@ -203,6 +209,14 @@ class MediaChrome extends HTMLElement {
     // Unhide for keyboard controlling
     this.addEventListener('keyup', e => {
       scheduleInactive();
+    });
+
+    // Allow for keyboard focus specfic styles
+    this.addEventListener('keyup', e => {
+      this.container.classList.add('media-keyboard-focus');
+    });
+    this.addEventListener('click', e => {
+      this.container.classList.remove('media-keyboard-focus');
     });
 
     this.addEventListener('mousemove', e => {

@@ -28,32 +28,43 @@
     color: #ddd;
   }
 
+  .media-theme-youtube media-duration-display:hover,
+  .media-theme-youtube media-current-time-display:hover {
+    color: #fff;
+  }
+
   .media-theme-youtube media-progress-range {
     width: 100%;
     height: 13px;
     padding-bottom: 0;
     min-height: 0;
+    transition: none;
 
-    --media-range-bar-color: rgb(229, 9, 20);
     --media-range-track-height: 3px;
-    --media-range-track-transition: none; /* height .2s ease; */
-    --media-range-track-background: #555;
+    --media-range-track-transition: height .1s linear;
+    --media-range-track-background: #444;
 
     --media-range-bar-color: rgb(229, 9, 20);
-    --media-progress-buffered-color: #777;
+    --media-progress-buffered-color: #999;
 
-    --media-range-thumb-background: rgba(255,0,0, 1);
-    --media-range-thumb-height: 0;
-    --media-range-thumb-width: 0;
+    --media-range-thumb-width: 13px;
+    --media-range-thumb-height: 13px;
     --media-range-thumb-border-radius: 13px;
-    --media-range-thumb-transition: none; /* all .2s ease; */
+    --media-range-thumb-background: #f00;
+
+    --media-range-thumb-transition: transform .1s linear;
+    --media-range-thumb-transform: scale(0) translate(0%, 0%);
   }
 
   .media-theme-youtube media-progress-range:hover {
+    background: transparent;
+
     --media-range-track-height: 5px;
     --media-range-thumb-height: 13px;
     --media-range-thumb-width: 13px;
-    /* --media-range-thumb-transform: scale(10) translate(-100%, -100%) */
+
+    /* --media-range-thumb-transition: transform .2s ease; */
+    --media-range-thumb-transform: scale(1) translate(0%, 0%);
   }
 
   .media-theme-youtube media-volume-range {
@@ -83,9 +94,9 @@
     width: 0px;
     padding-right: 0px;
     /* Set the internal width so it reveals, not grows */
-    --media-range-track-width: 90px;
+    --media-range-track-width: 60px;
     overflow: hidden;
-    transition: width 0.3s ease-in;
+    transition: width 0.2s ease-in;
   }
 
   .media-theme-youtube media-mute-button:hover + media-volume-range,
@@ -94,20 +105,41 @@
   .media-theme-youtube media-volume-range:hover,
   .media-theme-youtube media-volume-range:focus,
   .media-theme-youtube media-volume-range:focus-within {
-    width: 100px;
+    width: 70px;
+    background: transparent;
   }
 
-  .media-theme-youtube media-fullscreen-button {
+  .media-theme-youtube media-control-bar > * {
     --media-icon-color: #ddd;
-    transition: all 1s;
   }
 
-  /* Probably need to try parts for this, and scale the icon */
+  .media-theme-youtube media-control-bar > *:focus,
+  .media-theme-youtube media-control-bar > *:focus-within {
+    outline: 0;
+  }
+
+  .media-keyboard-focus media-control-bar > *:focus,
+  .media-keyboard-focus media-control-bar > *:focus-within {
+    box-shadow: inset 0 0 0 2px rgba(27,127,204,.8);
+  }
+
+  /* .media-theme-youtube .media-keyboard-focus {
+    box-shadow: inset 0 0 0 2px rgba(27,127,204,.8);
+  } */
+
+
+  /* For some reason `media-control-bar > *:hover` doesn't work...
+  while `media-control-bar > *:focus-within` does. Really annoying.
+  Need to submit a bug. */
+  .media-theme-youtube media-control-bar > *:hover,
+  .media-theme-youtube media-play-button:hover,
+  .media-theme-youtube media-replay-button:hover,
+  .media-theme-youtube media-forward-button:hover,
+  .media-theme-youtube media-mute-button:hover,
   .media-theme-youtube media-fullscreen-button:hover,
-  .media-theme-youtube media-fullscreen-button:focus,
-  .media-theme-youtube media-fullscreen-button:focus-within {
-    --media-button-icon-width: 30px;
-    --media-button-icon-height: 30px;
+  .media-theme-youtube media-playback-rate-button:hover,
+  .media-theme-youtube media-pip-button:hover {
+    background: transparent;
     --media-icon-color: #fff;
   }
 </style>
