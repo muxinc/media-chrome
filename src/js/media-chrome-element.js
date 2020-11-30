@@ -59,7 +59,10 @@ class MediaChromeElement extends HTMLElement {
         }
       });
 
-      this.mediaSetCallback(media);
+      // Don't fire callback if null
+      if (media) {
+        this.mediaSetCallback(media);
+      }
     }
   }
 
