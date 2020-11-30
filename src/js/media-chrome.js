@@ -1,4 +1,4 @@
-import MediaChromeElement from './media-chrome-element.js';
+import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import './media-control-bar.js';
 import './media-playback-rate-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
@@ -86,7 +86,7 @@ class MediaChrome extends HTMLElement {
             }
           });
           mutation.addedNodes.forEach(node => {
-            if (node instanceof MediaChromeElement && !node.media) {
+            if (node instanceof MediaChromeHTMLElement && !node.media) {
               // Inject the media in new children
               // Todo: Make recursive
               node.media = this.media;
@@ -153,14 +153,14 @@ class MediaChrome extends HTMLElement {
     function propagteNewMedia(media) {
       this.querySelectorAll('*').forEach(el => {
 
-        if (el instanceof MediaChromeElement) {
+        if (el instanceof MediaChromeHTMLElement) {
           // Media should be settable at this point.
           el.media = this.media;
         }
       });
 
       this.shadowRoot.querySelectorAll('*').forEach(el => {
-        if (el instanceof MediaChromeElement) {
+        if (el instanceof MediaChromeHTMLElement) {
           el.media = this.media;
         }
       });

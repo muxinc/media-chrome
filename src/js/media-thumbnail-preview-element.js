@@ -4,7 +4,7 @@
   Uses the "thumbnails" track of a video element to show an image relative to
   the video time given in the `time` attribute.
 */
-import MediaChromeElement from './media-chrome-element.js';
+import MediaChromeHTMLElement from './media-chrome-html-element.js';
 
 const template = document.createElement('template');
 
@@ -27,7 +27,7 @@ template.innerHTML = `
   <img crossorigin loading="eager" decoding="async" />
 `;
 
-class MediaThumbnailPreviewElement extends MediaChromeElement {
+class MediaThumbnailPreviewElement extends MediaChromeHTMLElement {
   static get observedAttributes() {
     return ['time'].concat(super.observedAttributes || []);
   }

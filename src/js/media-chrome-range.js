@@ -1,4 +1,4 @@
-import MediaChromeElement from './media-chrome-element.js';
+import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
@@ -122,7 +122,7 @@ template.innerHTML = `
   <input id="range" type="range" min="0" max="1000" step="1" value="0">
 `;
 
-class MediaChromeRange extends MediaChromeElement {
+class MediaChromeRange extends MediaChromeHTMLElement {
   constructor() {
     super();
 

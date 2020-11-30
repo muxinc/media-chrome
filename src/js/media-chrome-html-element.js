@@ -1,6 +1,6 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
 
-class MediaChromeElement extends HTMLElement {
+class MediaChromeHTMLElement extends HTMLElement {
   constructor() {
     super();
     this._media = null;
@@ -54,7 +54,7 @@ class MediaChromeElement extends HTMLElement {
       this._media = media;
 
       this.shadowRoot.querySelectorAll('*').forEach(el => {
-        if (el instanceof MediaChromeElement) {
+        if (el instanceof MediaChromeHTMLElement) {
           el.media = media;
         }
       });
@@ -113,6 +113,6 @@ class MediaChromeElement extends HTMLElement {
   }
 }
 
-defineCustomElement('media-chrome-element', MediaChromeElement);
+defineCustomElement('media-chrome-html-element', MediaChromeHTMLElement);
 
-export default MediaChromeElement;
+export default MediaChromeHTMLElement;

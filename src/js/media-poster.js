@@ -1,6 +1,6 @@
 // IN PROGRESS
 
-import MediaChromeElement from './media-chrome-element.js';
+import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
@@ -36,7 +36,7 @@ template.innerHTML = `
 <div id="poster"></div>
 `;
 
-class MediaPoster extends MediaChromeElement {
+class MediaPoster extends MediaChromeHTMLElement {
   constructor() {
     super();
 

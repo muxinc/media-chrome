@@ -1,4 +1,4 @@
-import MediaChromeElement from './media-chrome-element.js';
+import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import './media-chrome-menu-button.js';
 import './media-chrome-menu.js';
 import './media-chrome-popup.js';
@@ -65,7 +65,7 @@ controlsTemplate.innerHTML = `
   <media-fullscreen-button>Fullscreen</media-fullscreen-button>
 `;
 
-class MediaControlBar extends MediaChromeElement {
+class MediaControlBar extends MediaChromeHTMLElement {
   constructor() {
     super();
 

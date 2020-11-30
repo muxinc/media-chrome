@@ -1,4 +1,4 @@
-import MediaChromeElement from './media-chrome-element.js';
+import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
@@ -83,7 +83,7 @@ template.innerHTML = `
 </button>
 `;
 
-class MediaChromeButton extends MediaChromeElement {
+class MediaChromeButton extends MediaChromeHTMLElement {
   constructor() {
     super();
 

@@ -1,4 +1,4 @@
-import MediaChromeElement from './media-chrome-element.js';
+import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { formatTime } from './utils/time.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
@@ -37,7 +37,7 @@ template.innerHTML = `
   <div id="container"></div>
 `;
 
-class MediaDurationDisplay extends MediaChromeElement {
+class MediaDurationDisplay extends MediaChromeHTMLElement {
   constructor() {
     super();
 

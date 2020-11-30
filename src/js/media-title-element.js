@@ -1,4 +1,4 @@
-import MediaChromeElement from './media-chrome-element.js';
+import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
@@ -13,7 +13,7 @@ template.innerHTML = `
   <slot></slot>
 `;
 
-class MediaTitleBar extends MediaChromeElement {
+class MediaTitleBar extends MediaChromeHTMLElement {
   constructor() {
     super();
 

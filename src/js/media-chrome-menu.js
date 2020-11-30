@@ -1,4 +1,4 @@
-import MediaChromeElement from './media-chrome-element.js';
+import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import './media-chrome-menuitem.js';
 import './media-chrome-submenu-menuitem.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
@@ -18,7 +18,7 @@ template.innerHTML = `
   <slot></slot>
 `;
 
-class MediaChromeMenu extends MediaChromeElement {
+class MediaChromeMenu extends MediaChromeHTMLElement {
   constructor() {
     super();
     const shadow = this.attachShadow({ mode: 'open' });
