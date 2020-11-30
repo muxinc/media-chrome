@@ -48,8 +48,6 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   mediaSetCallback(media) {
-    if (!media) return;
-
     this._rateChangeHandler = () => {
       const newRate = media.playbackRate.toString().substring(0,4);
       this.shadowRoot.querySelector('button').innerHTML = `${newRate}x`;

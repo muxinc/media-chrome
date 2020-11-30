@@ -48,12 +48,8 @@ class MediaPoster extends MediaChromeElement {
     });
   }
 
-  mediaSetCallback() {
-    const media = this.media;
-
-    if (!media) return;
-
-    this.media.addEventListener('play', () => {
+  mediaSetCallback(media) {
+    media.addEventListener('play', () => {
       this.hide();
     });
   }

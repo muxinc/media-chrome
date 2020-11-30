@@ -48,16 +48,12 @@ class MediaPlayButton extends MediaChromeButton {
     }
   }
 
-  mediaSetCallback() {
-    const media = this.media;
-
-    if (!media) return;
-
-    this.media.addEventListener('play', () => {
+  mediaSetCallback(media) {
+    media.addEventListener('play', () => {
       this.playing = true;
     });
 
-    this.media.addEventListener('pause', () => {
+    media.addEventListener('pause', () => {
       this.playing = false;
     });
   }
