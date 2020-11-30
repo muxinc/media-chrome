@@ -44,11 +44,6 @@ template.innerHTML = `
       transition: opacity 1s;
     }
 
-    .media-keyboard-focus ::slotted(media-play-button:focus),
-    .media-keyboard-focus ::slotted(media-play-button:focus-within) {
-      box-shadow: inset 0 0 0 2px rgba(27,127,204,.8);
-    }
-
   </style>
   <slot name="media"></slot>
   <div id="container">
@@ -106,10 +101,6 @@ class MediaChrome extends HTMLElement {
 
     // Start observing the target node for configured mutations
     observer.observe(this, { childList: true, subtree: true });
-
-    // -=----------------------------
-
-
   }
 
   get media() {
@@ -213,10 +204,10 @@ class MediaChrome extends HTMLElement {
 
     // Allow for keyboard focus specfic styles
     this.addEventListener('keyup', e => {
-      this.container.classList.add('media-keyboard-focus');
+      this.container.classList.add('media-focus-visible');
     });
-    this.addEventListener('click', e => {
-      this.container.classList.remove('media-keyboard-focus');
+    this.addEventListener('mouseup', e => {
+      this.container.classList.remove('media-focus-visible');
     });
 
     this.addEventListener('mousemove', e => {
