@@ -1,1 +1,1 @@
-import './src/js/media-chrome.js';
+import './src/js/media-chrome-container.js';
