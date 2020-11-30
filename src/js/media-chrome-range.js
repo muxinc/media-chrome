@@ -51,12 +51,10 @@ template.innerHTML = `
       padding: 0 10px;
     }
 
-    /* :host(:focus, :focus-within) {
-      outline: 2px solid rgba(0,150,255, 0.33);
-      outline-offset: -2px;
-    } */
-
-    /* https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo */
+    /*
+      Only show outline when keyboard focusing.
+      https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+    */
     :host-context(.media-focus-visible):host(:focus, :focus-within) {
       box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.8);
     }
@@ -85,7 +83,6 @@ template.innerHTML = `
       ${thumbStyles}
       /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
       margin-top: calc(calc(0px - var(--thumb-height) + var(--track-height)) / 2);
-      /*transition: margin .2s ease;*/
     }
     input[type=range]::-moz-range-thumb { ${thumbStyles} }
 

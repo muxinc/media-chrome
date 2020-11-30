@@ -202,7 +202,7 @@ class MediaChrome extends HTMLElement {
       scheduleInactive();
     });
 
-    // Allow for keyboard focus specfic styles
+    // Allow for focus styles only when using the keyboard to navigate
     this.addEventListener('keyup', e => {
       this.container.classList.add('media-focus-visible');
     });

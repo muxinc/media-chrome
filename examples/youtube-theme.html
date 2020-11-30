@@ -6,10 +6,6 @@
 <body>
 
 <style>
-  .media-theme-youtube {
-
-  }
-
   .media-theme-youtube media-control-bar > * {
     height: 36px;
     line-height: 36px;
@@ -63,7 +59,6 @@
     --media-range-thumb-height: 13px;
     --media-range-thumb-width: 13px;
 
-    /* --media-range-thumb-transition: transform .2s ease; */
     --media-range-thumb-transform: scale(1) translate(0%, 0%);
   }
 
@@ -78,7 +73,6 @@
     --media-range-thumb-height: 13px;
     --media-range-thumb-width: 13px;
     --media-range-thumb-border-radius: 13px;
-    /* --media-range-thumb-transition: all .2s ease; */
   }
 
   .media-theme-youtube .control-spacer {
@@ -92,13 +86,15 @@
 
   .media-theme-youtube media-mute-button + media-volume-range {
     width: 0px;
+    overflow: hidden;
     padding-right: 0px;
+
     /* Set the internal width so it reveals, not grows */
     --media-range-track-width: 60px;
-    overflow: hidden;
     transition: width 0.2s ease-in;
   }
 
+  /* Expand volume control in all relevant states */
   .media-theme-youtube media-mute-button:hover + media-volume-range,
   .media-theme-youtube media-mute-button:focus + media-volume-range,
   .media-theme-youtube media-mute-button:focus-within + media-volume-range,

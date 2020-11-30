@@ -28,7 +28,10 @@ template.innerHTML = `
     transition: background-color 0.15s linear;
   }
 
-  /* https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo */
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
   :host-context(.media-focus-visible):host(:focus, :focus-within) {
     box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.8);
   }
