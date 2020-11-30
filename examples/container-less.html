@@ -1,23 +1,30 @@
 <html>
 <head>
   <script type="module" src="../dist/media-chrome.js"></script>
+  <style>
+    body {
+      background-color: #000;
+    }
+  </style>
 </head>
 <body>
 
-<media-chrome>
-  <video
-    slot="media"
-    src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-  ></video>
-  <media-control-bar>
+<p>Controls without the container. Should look good on their own.</p>
+
     <media-play-button></media-play-button>
     <media-mute-button></media-mute-button>
+    <media-replay-button></media-replay-button>
+    <media-forward-button></media-forward-button>
     <media-volume-range></media-volume-range>
     <media-progress-range></media-progress-range>
     <media-playback-rate-button></media-playback-rate-button>
+    <media-pip-button></media-pip-button>
     <media-fullscreen-button></media-fullscreen-button>
-  </media-control-bar>
-</media-chrome>
+
+<p>Native HTML controls for reference</p>
+
+    <input type=button value="button" />
+    <input type=range />
 
 </body>
 </html>

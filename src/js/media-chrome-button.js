@@ -28,9 +28,12 @@ template.innerHTML = `
     transition: background-color 0.15s linear;
   }
 
-  :host(:focus, :focus-within) {
-    outline: 2px solid rgba(0,150,255, 0.33);
-    outline-offset: -2px;
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
+  :host-context(.media-focus-visible):host(:focus, :focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.8);
   }
 
   :host(:hover) {
@@ -75,7 +78,7 @@ template.innerHTML = `
     fill: var(--media-icon-color, #eee);
   }
 </style>
-<button id="icon-container">
+<button id="container">
   <slot></slot>
 </button>
 `;
@@ -86,7 +89,7 @@ class MediaChromeButton extends MediaChromeElement {
 
     var shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.iconContainer = this.shadowRoot.querySelector('#icon-container');
+    this.container = this.shadowRoot.querySelector('#container');
 
     this.addEventListener('click', e => {
       this.onClick(e);
@@ -96,7 +99,7 @@ class MediaChromeButton extends MediaChromeElement {
   onClick() { }
 
   set icon(svg) {
-    this.iconContainer.innerHTML = svg;
+    this.container.innerHTML = svg;
   }
 }
 

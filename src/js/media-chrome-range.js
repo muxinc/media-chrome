@@ -13,10 +13,13 @@ const thumbStyles = `
   background: var(--media-range-thumb-background, #fff);
   box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
   cursor: pointer;
+  transition: var(--media-range-thumb-transition, none);
+  transform: var(--media-range-thumb-transform, none);
+  opacity: var(--media-range-thumb-opacity, 1);
 `;
 
 const trackStyles = `
-  width: 100%;
+  width: var(--media-range-track-width, 100%);
   min-width: 40px;
   height: var(--track-height);
   border: var(--media-range-track-border, none);
@@ -48,9 +51,12 @@ template.innerHTML = `
       padding: 0 10px;
     }
 
-    :host(:focus, :focus-within) {
-      outline: 2px solid rgba(0,150,255, 0.33);
-      outline-offset: -2px;
+    /*
+      Only show outline when keyboard focusing.
+      https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+    */
+    :host-context(.media-focus-visible):host(:focus, :focus-within) {
+      box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.8);
     }
 
     :host(:hover) {
@@ -64,7 +70,7 @@ template.innerHTML = `
 
       /* Fill host with the range */
       height: 100%;
-      width: 100%; /* Specific width is required for Firefox. */
+      width: var(--media-range-track-width, 100%); /* Specific width is required for Firefox. */
 
       box-sizing: border-box;
       padding: 0;
@@ -77,7 +83,6 @@ template.innerHTML = `
       ${thumbStyles}
       /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
       margin-top: calc(calc(0px - var(--thumb-height) + var(--track-height)) / 2);
-      transition: margin .2s ease;
     }
     input[type=range]::-moz-range-thumb { ${thumbStyles} }
 

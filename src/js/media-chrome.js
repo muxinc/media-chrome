@@ -43,6 +43,7 @@ template.innerHTML = `
       opacity: 0;
       transition: opacity 1s;
     }
+
   </style>
   <slot name="media"></slot>
   <div id="container">
@@ -100,10 +101,6 @@ class MediaChrome extends HTMLElement {
 
     // Start observing the target node for configured mutations
     observer.observe(this, { childList: true, subtree: true });
-
-    // -=----------------------------
-
-
   }
 
   get media() {
@@ -203,6 +200,14 @@ class MediaChrome extends HTMLElement {
     // Unhide for keyboard controlling
     this.addEventListener('keyup', e => {
       scheduleInactive();
+    });
+
+    // Allow for focus styles only when using the keyboard to navigate
+    this.addEventListener('keyup', e => {
+      this.container.classList.add('media-focus-visible');
+    });
+    this.addEventListener('mouseup', e => {
+      this.container.classList.remove('media-focus-visible');
     });
 
     this.addEventListener('mousemove', e => {
