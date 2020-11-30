@@ -1,3 +1,13 @@
+/*
+  The <media-chrome-container> can contain the control elements
+  and the media element. Features:
+  * Auto-set the `media` attribute on child media chrome elements
+    * Uses the element with slot="media"
+  * Take custom controls to fullscreen
+  * Position controls at the bottom
+  * Auto-hide controls on inactivity while playing
+*/
+
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import './media-control-bar.js';
 import './media-playback-rate-button.js';
@@ -14,6 +24,8 @@ template.innerHTML = `
       width: 720px;
       height: 480px;
       background-color: #000;
+
+      /* Position controls at the bottom  */
       flex-direction: column-reverse;
     }
 
@@ -48,24 +60,10 @@ template.innerHTML = `
   <slot name="media"></slot>
   <div id="container">
     <slot></slot>
-    <slot name="controls"></slot>
   </div>
 `;
 
-const controlsTemplate = document.createElement('template');
-
-controlsTemplate.innerHTML = `
-  <media-control-bar>
-    <media-play-button>Play</media-play-button>
-    <media-mute-button>Mute</media-mute-button>
-    <media-volume-range>Volume</media-volume-range>
-    <media-progress-range>Progress</media-progress-range>
-    <media-pip-button>PIP</media-pip-button>
-    <media-fullscreen-button>Fullscreen</media-fullscreen-button>
-  </media-control-bar>
-`;
-
-class MediaChrome extends HTMLElement {
+class MediaChromeContainer extends HTMLElement {
   constructor() {
     super();
 
@@ -116,8 +114,6 @@ class MediaChrome extends HTMLElement {
       this.addEventListener('click', e => {
         const media = this.media;
 
-        // instanceof HTMLMediaElement ||
-        // CustomVideoElement && e.target instanceof CustomVideoElement
         if (e.target.slot == 'media') {
           if (media.paused) {
             media.play();
@@ -127,9 +123,11 @@ class MediaChrome extends HTMLElement {
         }
       });
 
-      this.container.classList.add('paused');
+      if (media.paused) {
+        this.container.classList.add('paused');
+      }
 
-      // Uncomment to auto-hide controls
+      // Used to auto-hide controls
       media.addEventListener('play', () => {
         this.container.classList.remove('paused');
       });
@@ -179,10 +177,6 @@ class MediaChrome extends HTMLElement {
       childList: true,
     });
 
-    if (this.attributes['defaultControls']) {
-      this.container.appendChild(controlsTemplate.content.cloneNode(true));
-    }
-
     let media = this.querySelector('[slot=media]');
 
     if (media) {
@@ -230,6 +224,8 @@ class MediaChrome extends HTMLElement {
   }
 }
 
-defineCustomElement('media-chrome', MediaChrome);
+// Define as both <media-chrome> and <media-chrome-container>
+defineCustomElement('media-chrome', MediaChromeContainer);
+defineCustomElement('media-chrome-container', MediaChromeContainer);
 
-export default MediaChrome;
+export default MediaChromeContainer;

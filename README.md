@@ -162,7 +162,7 @@ Some "players" add on to existing video and audio elements, so nothing more is n
 If using the `<media-chrome>` element, be sure to include the `slot="media"` attribute in the player's tag.
 
 ```html
-<media-chrome defaultControls>
+<media-chrome>
   <youtube-video
     slot="media"
     src="https://www.youtube.com/watch?v=rubNgGj3pYo"
