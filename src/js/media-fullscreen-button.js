@@ -40,10 +40,7 @@ class MediaFullscreenButton extends MediaChromeButton {
     this.icon = enterFullscreenIcon;
 
     document.addEventListener(api.event, () => {
-      const el = this.fullscreenElement;
-      const root = el.getRootNode();
-
-      if (el == root[api.element]) {
+      if (this.isFullscreen) {
         this.icon = exitFullscreenIcon;
       } else {
         this.icon = enterFullscreenIcon;
@@ -53,6 +50,14 @@ class MediaFullscreenButton extends MediaChromeButton {
 
   static get observedAttributes() {
     return ['fullscreen-element'].concat(super.observedAttributes || []);
+  }
+
+  get isFullscreen() {
+    const el = this.fullscreenElement;
+
+    if (!el) return false;
+
+    return el.getRootNode()[api.element] == el;
   }
 
   get fullscreenElement() {
@@ -66,10 +71,7 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   onClick() {
-    const el = this.fullscreenElement;
-    const root = el.getRootNode();
-
-    if (root[api.element] == el) {
+    if (this.isFullscreen) {
       document[api.exit]();
     } else {
       if (document.pictureInPictureElement) {
@@ -77,7 +79,7 @@ class MediaFullscreenButton extends MediaChromeButton {
         document.exitPictureInPicture();
       }
 
-      el[api.enter]();
+      this.fullscreenElement && this.fullscreenElement[api.enter]();
     }
   }
 }
