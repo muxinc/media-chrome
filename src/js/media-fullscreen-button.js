@@ -1,3 +1,6 @@
+/*
+  <media-fullscreen-button fullscreen-element="#myVideo">
+*/
 import MediaChromeButton from "./media-chrome-button.js";
 import { defineCustomElement } from './utils/defineCustomElement.js';
 
@@ -53,7 +56,9 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   get fullscreenElement() {
-    return this._fullscreenElement || this.mediaChrome || null;
+    return this._fullscreenElement
+      || (this.media && this.media.closest('media-chrome'))
+      || this.media;
   }
 
   set fullscreenElement(val) {

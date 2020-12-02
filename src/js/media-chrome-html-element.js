@@ -10,7 +10,7 @@ class MediaChromeHTMLElement extends HTMLElement {
   static get observedAttributes() {
     return ['media'].concat(super.observedAttributes || []);
   }
-
+ 
   // Model the basic HTML attribute functionality of matching props
   attributeChangedCallback(attrName, oldValue, newValue) {
     // Assume attrs with dashes match camelCase props
@@ -76,10 +76,6 @@ class MediaChromeHTMLElement extends HTMLElement {
   connectedCallback() { }
   mediaSetCallback() { }
   mediaUnsetCallback() { }
-
-  get mediaChrome() {
-    return this.media && this.media.closest('media-chrome');
-  }
 }
 
 defineCustomElement('media-chrome-html-element', MediaChromeHTMLElement);

@@ -16,8 +16,10 @@ class MediaPIPButton extends MediaChromeButton {
       if (document.pictureInPictureElement) {
         document.exitPictureInPicture();
       } else {
-        if (this.mediaChrome == document.fullscreenElement) {
+        if (document.fullscreenElement) {
           document.exitFullscreen();
+        } else if (document.webkitFullscreenElement) {
+          document.webkitExitFullscreen();
         }
 
         media.requestPictureInPicture();
