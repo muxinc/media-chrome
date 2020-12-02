@@ -34,11 +34,13 @@ if (document.fullscreenElement === undefined) {
 class MediaFullscreenButton extends MediaChromeButton {
   constructor() {
     super();
-
     this.icon = enterFullscreenIcon;
 
     document.addEventListener(api.event, () => {
-      if (this.mediaChrome == document[api.element]) {
+      const el = this.fullscreenElement;
+      const root = el.getRootNode();
+
+      if (el == root[api.element]) {
         this.icon = exitFullscreenIcon;
       } else {
         this.icon = enterFullscreenIcon;
@@ -46,10 +48,23 @@ class MediaFullscreenButton extends MediaChromeButton {
     });
   }
 
-  onClick() {
-    const root = this.mediaChrome.getRootNode();
+  static get observedAttributes() {
+    return ['fullscreen-element'].concat(super.observedAttributes || []);
+  }
 
-    if (root[api.element] == this.mediaChrome) {
+  get fullscreenElement() {
+    return this._fullscreenElement || this.mediaChrome || null;
+  }
+
+  set fullscreenElement(val) {
+    this._fullscreenElement = document.querySelector(val);
+  }
+
+  onClick() {
+    const el = this.fullscreenElement;
+    const root = el.getRootNode();
+
+    if (root[api.element] == el) {
       document[api.exit]();
     } else {
       if (document.pictureInPictureElement) {
@@ -57,7 +72,7 @@ class MediaFullscreenButton extends MediaChromeButton {
         document.exitPictureInPicture();
       }
 
-      this.mediaChrome[api.enter]();
+      el[api.enter]();
     }
   }
 }
