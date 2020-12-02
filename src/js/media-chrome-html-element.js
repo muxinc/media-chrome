@@ -1,4 +1,5 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { dashedToCamel } from './utils/dashedToCamel.js';
 
 class MediaChromeHTMLElement extends HTMLElement {
   constructor() {
@@ -12,7 +13,10 @@ class MediaChromeHTMLElement extends HTMLElement {
 
   // Model the basic HTML attribute functionality of matching props
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName == 'media') {
+    // Assume attrs with dashes match camelCase props
+    const propName = dashedToCamel(attrName);
+
+    if (propName == 'media') {
       if (newValue === null) {
         this.media = null;
         return;
@@ -31,17 +35,17 @@ class MediaChromeHTMLElement extends HTMLElement {
     }
 
     // Boolean props should never start as null
-    if (typeof this[attrName] == 'boolean') {
+    if (typeof this[propName] == 'boolean') {
       // null is returned when attributes are removed i.e. boolean attrs
       if (newValue === null) {
-        this[attrName] = false;
+        this[propName] = false;
       } else {
         // The new value might be an empty string, which is still true
         // for boolean attributes
-        this[attrName] = true;
+        this[propName] = true;
       }
     } else {
-      this[attrName] = newValue;
+      this[propName] = newValue;
     }
   }
 
@@ -59,7 +63,6 @@ class MediaChromeHTMLElement extends HTMLElement {
         }
       });
 
-      // Don't fire callback if null
       if (media) {
         this.mediaSetCallback(media);
       }
@@ -68,49 +71,11 @@ class MediaChromeHTMLElement extends HTMLElement {
 
   get media() {
     return this._media;
-
-    // if (this._media) return this._media;
-
-    // const parentNode = this.parentNode;
-    //
-    // const mediaChrome = this.closest('media-chrome');
-    //
-    // // Can't rely on any custom properties/functions of Media-Chrome
-    // // because the custom element might not have been defined yet
-    // // due to source loading order
-    // const chromeChilds = mediaChrome.children;
-    // let mediaEl;
-    //
-    // // Find the first media element inside media-chrome and use as media
-    // for (let i = 0; i < chromeChilds.length; i++) {
-    //   const child = chromeChilds[i];
-    //
-    //   if (
-    //     child instanceof HTMLMediaElement ||
-    //     child instanceof CustomVideoElement ||
-    //     child instanceof CustomAudioElement ||
-    //     child.className.indexOf('custom-media-element') !== -1
-    //   ) {
-    //     mediaEl = child;
-    //     break;
-    //   }
-    // }
-    //
-    // if (!mediaEl) {
-    //   throw new Error('No media element found in media-chrome');
-    // }
-    //
-    // return mediaEl;
   }
 
   connectedCallback() { }
   mediaSetCallback() { }
   mediaUnsetCallback() { }
-
-  get mediaChrome() {
-    const media = this.media;
-    return media.closest('media-chrome');
-  }
 }
 
 defineCustomElement('media-chrome-html-element', MediaChromeHTMLElement);
