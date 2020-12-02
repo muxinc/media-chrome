@@ -10,7 +10,7 @@ class MediaChromeHTMLElement extends HTMLElement {
   static get observedAttributes() {
     return ['media'].concat(super.observedAttributes || []);
   }
- 
+
   // Model the basic HTML attribute functionality of matching props
   attributeChangedCallback(attrName, oldValue, newValue) {
     // Assume attrs with dashes match camelCase props
