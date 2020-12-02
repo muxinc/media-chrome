@@ -10,24 +10,6 @@
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 
-// Need to figure out how to remove these and only
-// rely on the main index.js, but a media set error happens
-// without them
-import './media-control-bar.js';
-import './media-play-button.js';
-import './media-forward-button.js';
-import './media-replay-button.js';
-import './media-progress-range.js';
-import './media-thumbnail-preview-element.js';
-import './media-mute-button.js';
-import './media-volume-range.js';
-import './media-current-time-display.js';
-import './media-duration-display.js';
-import './media-playback-rate-button.js';
-import './media-fullscreen-button.js';
-import './media-pip-button.js';
-import './media-title-element.js';
-
 const template = document.createElement('template');
 
 template.innerHTML = `
