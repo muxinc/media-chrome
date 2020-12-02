@@ -47,7 +47,9 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   onClick() {
-    if (this.mediaChrome == document[api.element]) {
+    const root = this.mediaChrome.getRootNode();
+
+    if (root[api.element] == this.mediaChrome) {
       document[api.exit]();
     } else {
       if (document.pictureInPictureElement) {
