@@ -9,7 +9,7 @@
 */
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { propagateMedia, setMedia } from './utils/propagateMedia.js';
+import { propagateMedia, setAndPropagateMedia } from './utils/propagateMedia.js';
 
 const template = document.createElement('template');
 
@@ -109,7 +109,7 @@ class MediaChromeContainer extends HTMLElement {
             } else {
               // This is not a media el being removed so
               // undo auto-injected medias from it and children
-              setMedia(node, null);
+              setAndPropagateMedia(node, null);
             }
           });
 
@@ -121,7 +121,7 @@ class MediaChromeContainer extends HTMLElement {
                 // Update all controls with new media if this is the new media
                 this.mediaSetCallback(node);
               } else {
-                setMedia(node, media);
+                setAndPropagateMedia(node, media);
               }
             });
           }
