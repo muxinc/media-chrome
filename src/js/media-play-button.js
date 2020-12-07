@@ -36,9 +36,8 @@ class MediaPlayButton extends MediaChromeButton {
 
     // If not using media detection, onClick should be overridden
     if (!media) {
-      throw new Error(
-        'No media was found and an alternative onClick handler was not set.'
-      );
+      console.warn('<media-play-button>: No media was found and an alternative onClick handler was not set.');
+      return;
     }
 
     if (media.paused) {

@@ -111,6 +111,8 @@ class MediaProgressRange extends MediaChromeRange {
       // range.addEventListener('change', this.playIfNotReady);
     }
 
+    // TODO: Update value if video already played
+
     media.addEventListener('progress', this.updateBar.bind(this));
 
     // Initialize thumbnails
@@ -130,6 +132,8 @@ class MediaProgressRange extends MediaChromeRange {
 
     media.removeEventListener('timeupdate', this.updateRangeWithMediaTime);
     this.range.removeEventListener('change', this.playIfNotReady);
+
+    // TODO: Reset value after media is unset
   }
 
   /* Add a buffered progress bar */

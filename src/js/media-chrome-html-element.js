@@ -1,5 +1,6 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { dashedToCamel } from './utils/dashedToCamel.js';
+import { propagateMedia }  from './utils/propagateMedia.js';
 
 class MediaChromeHTMLElement extends HTMLElement {
   constructor() {
@@ -50,20 +51,27 @@ class MediaChromeHTMLElement extends HTMLElement {
   }
 
   set media(media) {
-    if (media !== this._media) {
-      if (this._media) {
-        this.mediaUnsetCallback(this._media);
-      }
+    if (media === this._media) return;
 
-      this._media = media;
+    if (this._media) {
+      this.mediaUnsetCallback(this._media);
+    }
 
-      this.shadowRoot.querySelectorAll('*').forEach(el => {
-        if (el instanceof MediaChromeHTMLElement) {
-          el.media = media;
-        }
-      });
+    this._media = media;
 
-      if (media) {
+    // Update light and shadow children even if null
+    // Media-chrome can't access shadow dom of separately loaded els
+    propagateMedia(this, media);
+    propagateMedia(this.shadowRoot, media);
+
+    if (media) {
+      const mediaName = media.nodeName.toLowerCase();
+
+      if (mediaName.includes('-')) {
+        window.customElements.whenDefined(mediaName).then(()=>{
+          this.mediaSetCallback(media);
+        });
+      } else {
         this.mediaSetCallback(media);
       }
     }
