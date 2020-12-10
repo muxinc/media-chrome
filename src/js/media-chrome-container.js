@@ -1,5 +1,5 @@
 /*
-  The <media-chrome-container> can contain the control elements
+  The <media-chrome> can contain the control elements
   and the media element. Features:
   * Auto-set the `media` attribute on child media chrome elements
     * Uses the element with slot="media"
@@ -9,6 +9,7 @@
 */
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { propagateMedia, setAndPropagateMedia } from './utils/propagateMedia.js';
 
 const template = document.createElement('template');
 
@@ -17,42 +18,44 @@ template.innerHTML = `
     :host {
       box-sizing: border-box;
       position: relative;
+
+      /* Position controls at the bottom  */
       display: flex;
+      flex-direction: column-reverse;
+
+      /* Default dimensions */
       width: 720px;
       height: 480px;
       background-color: #000;
-
-      /* Position controls at the bottom  */
-      flex-direction: column-reverse;
     }
 
+    /* Safari needs this to actually make the element fill the window */
     :host(:-webkit-full-screen) {
       /* Needs to use !important otherwise easy to break */
       width: 100% !important;
       height: 100% !important;
     }
 
+    /* Position the media element to fill the container */
     ::slotted([slot=media]) {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: #000;
     }
 
+    /* Hide controls when inactive and not paused */
     #container ::slotted(*) {
       opacity: 1;
       transition: opacity 0.25s;
       visibility: visible;
     }
 
-    /* Hide controls when inactive and not paused */
     #container.inactive:not(.paused) ::slotted(*) {
       opacity: 0;
       transition: opacity 1s;
     }
-
   </style>
   <slot name="media"></slot>
   <div id="container">
@@ -69,115 +72,133 @@ class MediaChromeContainer extends HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.container = this.shadowRoot.getElementById('container');
 
-    this._media = null;
+    // Update the media prop of child elements when added/removed
+    // and react to adds/removals of media elements.
+    // This has turned into a meaty piece of logic...documenting verbosely
+    const mutationCallback = (mutationsList, observer) => {
+      const media = this.media;
 
-    const mutationCallback = function (mutationsList, observer) {
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
+
+          // Controls or media elements being removed
           mutation.removedNodes.forEach(node => {
-            if (node.media === this.media) {
-              // Undo auto-injected medias
-              node.media = null;
+            // Is this a direct child media element of media-chrome
+            if (node.slot == 'media' && mutation.target == this) {
+              // Check if this was the current media by if it was the first
+              // el with slot=media in the child list. There can be multiple.
+              const previousSibling = mutation.previousSibling && mutation.previousSibling.previousElementSibling;
+
+              // Must have been first if no prev sibling or new media
+              if (!previousSibling || !media) {
+                this.mediaUnsetCallback(node);
+              } else {
+                // Check if any prev siblings had a slot=media
+                // Should remain true otherwise
+                let wasFirst = previousSibling.slot !== 'media';
+                while ((previousSibling = previousSibling.previousSibling) !== null) {
+                  if (previousSibling.slot == 'media') wasFirst = false;
+                }
+                if (wasFirst) this.mediaUnsetCallback(node);
+              }
+
+              // Update all controls with new media if there is one
+              if (media) {
+                this.mediaSetCallback(this, media);
+              }
+            } else {
+              // This is not a media el being removed so
+              // undo auto-injected medias from it and children
+              setAndPropagateMedia(node, null);
             }
           });
-          mutation.addedNodes.forEach(node => {
-            if (node instanceof MediaChromeHTMLElement && !node.media) {
-              // Inject the media in new children
-              // Todo: Make recursive
-              node.media = this.media;
-            }
-          });
+
+          // Controls or media element being added
+          // No need to inject anything if media=null
+          if (media) {
+            mutation.addedNodes.forEach(node => {
+              if (node == media) {
+                // Update all controls with new media if this is the new media
+                this.mediaSetCallback(node);
+              } else {
+                setAndPropagateMedia(node, media);
+              }
+            });
+          }
         }
       }
     };
 
-    // Create an observer instance linked to the callback function
     const observer = new MutationObserver(mutationCallback);
-
-    // Start observing the target node for configured mutations
     observer.observe(this, { childList: true, subtree: true });
   }
 
+  // First direct child with slot=media, or null
   get media() {
-    return this._media;
+    return this.querySelector(':scope > [slot=media]');
   }
 
-  set media(media) {
-    this._media = media;
+  mediaSetCallback(media) {
+    // Should only ever be set with a compatible media element, never null
+    if (!media || !media.play) {
+      console.error('<media-chrome>: Media element set with slot="media" does not appear to be compatible.', media);
+      return;
+    }
 
-    if (media) {
-      // Toggle play/pause with clicks on the media element itself
-      // TODO: handle child element changes, mutationObserver
-      this.addEventListener('click', e => {
-        const media = this.media;
+    // Wait until custom media elements are ready
+    const mediaName = media.nodeName.toLowerCase();
 
-        if (e.target.slot == 'media') {
-          if (media.paused) {
-            media.play();
-          } else {
-            media.pause();
-          }
-        }
+    if (mediaName.includes('-')) {
+      window.customElements.whenDefined(mediaName).then(()=>{
+        this.mediaSetCallback(this.media);
       });
+      return;
+    }
 
+    // Set the media property of all children
+    propagateMedia(this, media);
+
+    // Auto-show/hide controls
+    if (media.paused) {
+      this.container.classList.add('paused');
+    }
+
+    this._mediaPlayHandler = e => {
+      this.container.classList.remove('paused');
+    };
+    media.addEventListener('play', this._mediaPlayHandler);
+
+    this._mediaPauseHandler = e => {
+      this.container.classList.add('paused');
+    };
+    media.addEventListener('pause', this._mediaPauseHandler);
+
+    // Toggle play/pause with clicks on the media element itself
+    this._mediaClickHandler = e => {
       if (media.paused) {
-        this.container.classList.add('paused');
-      }
-
-      // Used to auto-hide controls
-      media.addEventListener('play', () => {
-        this.container.classList.remove('paused');
-      });
-
-      media.addEventListener('pause', () => {
-        this.container.classList.add('paused');
-      });
-
-      const mediaName = media.nodeName.toLowerCase();
-
-      if (mediaName == 'audio' || mediaName == 'video') {
-        propagteNewMedia.call(this, media);
+        media.play();
       } else {
-        // Wait for custom video element to be ready before setting it
-        window.customElements.whenDefined(mediaName).then(() => {
-          propagteNewMedia.call(this, media);
-        });
+        media.pause();
       }
     }
+    media.addEventListener('click', this._mediaClickHandler, false);
+  }
 
-    function propagteNewMedia(media) {
-      this.querySelectorAll('*').forEach(el => {
+  mediaUnsetCallback(media) {
+    media.removeEventListener('click', this._mediaClickHandler);
+    media.removeEventListener('play', this._mediaPlayHandler);
+    media.removeEventListener('pause', this._mediaPauseHandler);
 
-        if (el instanceof MediaChromeHTMLElement) {
-          // Media should be settable at this point.
-          el.media = this.media;
-        }
-      });
+    // Unset media for all child controls
+    propagateMedia(this, null);
 
-      this.shadowRoot.querySelectorAll('*').forEach(el => {
-        if (el instanceof MediaChromeHTMLElement) {
-          el.media = this.media;
-        }
-      });
-    }
+    // Unhide controls
+    this.container.classList.add('paused');
   }
 
   connectedCallback() {
-    // Don't know child components until the el finishes displaying
-    const observer = new MutationObserver((mutationsList, observer) => {
-      // Set this up to track what media elements are available.
-      // This could be much faster than doing a querySelector
-      // for the mediaElement each time, but that might also be
-      // premature optimization.
-    });
-    observer.observe(this, {
-      childList: true,
-    });
-
-    let media = this.querySelector('[slot=media]');
-
-    if (media) {
-      this.media = media;
+    if (this.media) {
+      this.mediaSetCallback(this.media);
     }
 
     const scheduleInactive = () => {
@@ -219,6 +240,8 @@ class MediaChromeContainer extends HTMLElement {
       this.container.classList.add('inactive');
     });
   }
+
+  autoHide(seconds) {}
 }
 
 // Define as both <media-chrome>
