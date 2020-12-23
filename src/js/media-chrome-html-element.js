@@ -1,6 +1,5 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { dashedToCamel } from './utils/dashedToCamel.js';
-import { propagateMedia }  from './utils/propagateMedia.js';
 
 class MediaChromeHTMLElement extends HTMLElement {
   constructor() {
@@ -8,6 +7,7 @@ class MediaChromeHTMLElement extends HTMLElement {
     this._media = null;
   }
 
+  // Observe changes to the media attribute
   static get observedAttributes() {
     return ['media'].concat(super.observedAttributes || []);
   }
@@ -82,8 +82,43 @@ class MediaChromeHTMLElement extends HTMLElement {
   }
 
   connectedCallback() { }
+  disconnectedCallback() { }
   mediaSetCallback() { }
   mediaUnsetCallback() { }
+}
+
+/*
+  Recursively set the media prop of all child MediaChromeHTMLElements
+*/
+export function setAndPropagateMedia(el, media) {
+  const elName = el.nodeName.toLowerCase();
+
+  // Can't set <media-chrome> media
+  // and shouldn't propagate into a child media-chrome
+  if (elName == 'media-chrome') return;
+
+  // Only custom elements might have the correct media attribute
+  if (elName.includes('-')) {
+    window.customElements.whenDefined(elName).then(()=>{
+      if (el instanceof MediaChromeHTMLElement) {
+        // Media-chrome html els propogate to their children automatically
+        // including to shadow dom children
+        el.media = media;
+      } else {
+        // Otherwise continue to this el's children
+        propagateMedia(el, media);
+      }
+    });
+  } else if (el.slot !== 'media') {
+    // If not a custom element or media element, continue to children
+    propagateMedia(el, media);
+  }
+};
+
+export function propagateMedia(parent, media) {
+  Array.prototype.forEach.call(parent.children, (child)=>{
+    setAndPropagateMedia(child, media);
+  });
 }
 
 defineCustomElement('media-chrome-html-element', MediaChromeHTMLElement);

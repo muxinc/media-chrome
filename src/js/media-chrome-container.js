@@ -7,9 +7,8 @@
   * Position controls at the bottom
   * Auto-hide controls on inactivity while playing
 */
-import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { propagateMedia, setAndPropagateMedia } from './utils/propagateMedia.js';
+import { propagateMedia, setAndPropagateMedia } from './media-chrome-html-element.js';
 
 const template = document.createElement('template');
 
