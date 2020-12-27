@@ -86,7 +86,7 @@ class MediaChromeContainer extends HTMLElement {
             if (node.slot == 'media' && mutation.target == this) {
               // Check if this was the current media by if it was the first
               // el with slot=media in the child list. There can be multiple.
-              const previousSibling = mutation.previousSibling && mutation.previousSibling.previousElementSibling;
+              let previousSibling = mutation.previousSibling && mutation.previousSibling.previousElementSibling;
 
               // Must have been first if no prev sibling or new media
               if (!previousSibling || !media) {
