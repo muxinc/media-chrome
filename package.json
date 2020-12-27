@@ -2,7 +2,6 @@
   "name": "media-chrome",
   "version": "0.0.5",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
-  "type": "module",
   "main": "dist/media-chrome.js",
   "files": [
     "./dist/*",
@@ -11,8 +10,8 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean && node build.js",
-    "dev": "npm run clean && node build.js --dev",
+    "build": "npm run clean && node build.mjs",
+    "dev": "npm run clean && node build.mjs --dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish-patch": "yarn run build && np patch --no-tests"
   },

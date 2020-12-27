@@ -1,5 +1,5 @@
 import MediaChromeRange from './media-chrome-range.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { defineCustomElement } from './utils/document.js';
 
 class MediaProgressRange extends MediaChromeRange {
   constructor() {
@@ -61,6 +61,8 @@ class MediaProgressRange extends MediaChromeRange {
   getBarColors() {
     const media = this.media;
     let colorsArray = super.getBarColors();
+
+    console.log(media);
 
     if (!media || !media.buffered || !media.buffered.length || media.duration <= 0) {
       return colorsArray;

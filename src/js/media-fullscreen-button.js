@@ -1,5 +1,5 @@
 import MediaChromeButton from "./media-chrome-button.js";
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { defineCustomElement } from './utils/document.js';
 
 import enterFullscreenIcon from '../svgs/fullscreen.svg';
 import exitFullscreenIcon from '../svgs/fullscreen_exit.svg';

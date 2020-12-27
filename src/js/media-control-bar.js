@@ -13,9 +13,9 @@ import './media-progress-range.js';
 import './media-replay-button.js';
 import './media-settings-popup.js';
 import './media-volume-range.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { createTemplateElement, defineCustomElement } from './utils/document.js';
 
-const template = document.createElement('template');
+const template = createTemplateElement();
 
 template.innerHTML = `
   <style>
@@ -47,7 +47,7 @@ template.innerHTML = `
   <slot></slot>
 `;
 
-const controlsTemplate = document.createElement('template');
+const controlsTemplate = createTemplateElement();
 
 /*
 Before this can work, the media needs to propogate from the control bar

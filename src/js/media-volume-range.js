@@ -1,5 +1,5 @@
 import MediaChromeRange from './media-chrome-range.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { defineCustomElement } from './utils/document.js';
 
 class MediaVolumeRange extends MediaChromeRange {
   constructor() {

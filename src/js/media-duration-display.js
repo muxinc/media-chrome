@@ -1,9 +1,9 @@
 import MediaChromeElement from './media-chrome-element.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
 import { formatTime } from './utils/time.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
+import { createTemplateElement, defineCustomElement } from './utils/document.js';
 
-const template = document.createElement('template');
+const template = createTemplateElement();
 
 template.innerHTML = `
   <style>

@@ -1,8 +1,8 @@
 import MediaChromeElement from './media-chrome-element.js';
 import './media-control-bar.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { BaseElement, createTemplateElement, defineCustomElement } from './utils/document.js';
 
-const template = document.createElement('template');
+const template = createTemplateElement();
 
 template.innerHTML = `
   <style>
@@ -45,7 +45,7 @@ template.innerHTML = `
   </div>
 `;
 
-const controlsTemplate = document.createElement('template');
+const controlsTemplate = createTemplateElement();
 
 controlsTemplate.innerHTML = `
   <media-control-bar>
@@ -58,7 +58,7 @@ controlsTemplate.innerHTML = `
   </media-control-bar>
 `;
 
-class MediaChrome extends HTMLElement {
+class MediaChrome extends BaseElement {
   constructor() {
     super();
 

@@ -1,8 +1,8 @@
 import MediaChromeButton from './media-chrome-button.js';
 import './media-chrome-menuitem.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { createTemplateElement, defineCustomElement } from './utils/document.js';
 
-const template = document.createElement('template');
+const template = createTemplateElement();
 
 template.innerHTML = `
 <style>

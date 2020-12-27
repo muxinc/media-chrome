@@ -1,9 +1,9 @@
 import MediaChromeElement from './media-chrome-element.js';
 import './media-chrome-menuitem.js';
 import './media-chrome-submenu-menuitem.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { createTemplateElement, defineCustomElement } from './utils/document.js';
 
-const template = document.createElement('template');
+const template = createTemplateElement();
 
 template.innerHTML = `
   <style>

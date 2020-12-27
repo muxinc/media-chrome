@@ -1,6 +1,6 @@
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { BaseElement, defineCustomElement } from './utils/document.js';
 
-class MediaChromeElement extends HTMLElement {
+class MediaChromeElement extends BaseElement {
   constructor() {
     super();
     this._media = null;
