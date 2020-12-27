@@ -7,7 +7,7 @@ import http from 'http';
 
 const args = process.argv;
 
-async function build() {
+async function build(opts = {}) {
   const start = Date.now();
 
   let entryPoints = await glob('./src/js/media-*.js');
@@ -15,6 +15,8 @@ async function build() {
     entryPoints,
     bundle: true,
     outdir: 'dist',
+    loader: { '.svg': 'text' },
+    ...opts,
   });
 
   console.log(`👏 Built ${entryPoints.length} files in ${Date.now() - start}ms`);
@@ -40,5 +42,5 @@ if (args.includes('--dev')) {
     await build();
   }, 250, { trailing: false }));
 } else {
-  build();
+  build({ minify: true });
 }
