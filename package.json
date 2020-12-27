@@ -11,8 +11,8 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean && rollup -c",
-    "dev": "npm run clean && rollup -c --watch",
+    "build": "npm run clean && node build.js",
+    "dev": "npm run clean && node build.js --dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish-patch": "yarn run build && np patch --no-tests"
   },
@@ -37,14 +37,12 @@
   "homepage": "https://github.com/muxinc/media-chrome#readme",
   "devDependencies": {
     "@babel/core": "^7.9.0",
-    "@rollup/plugin-commonjs": "^11.0.2",
-    "@rollup/plugin-multi-entry": "^4.0.0",
-    "@rollup/plugin-node-resolve": "^7.1.1",
     "babel-loader": "^8.1.0",
+    "chokidar": "^3.4.3",
+    "esbuild": "^0.8.26",
+    "lodash": "^4.17.20",
     "rimraf": "^3.0.2",
-    "rollup": "^2.33.2",
-    "rollup-plugin-babel-minify": "^9.1.1",
-    "rollup-plugin-serve": "^1.1.0",
-    "rollup-plugin-terser": "^5.3.0"
+    "serve-handler": "^6.1.3",
+    "tiny-glob": "^0.2.8"
   }
 }
