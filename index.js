@@ -1,24 +1,53 @@
-import './src/js/media-play-button.js';
-import './src/js/media-forward-button.js';
-import './src/js/media-replay-button.js';
+import MediaChromeButton from './src/js/media-chrome-button.js';
+import MediaChromeContainer from './src/js/media-chrome-container.js';
+import MediaChromeHTMLElement from './src/js/media-chrome-html-element.js';
+import MediaChromeMenuButton from './src/js/media-chrome-menu-button.js';
+import MediaChromeMenu from './src/js/media-chrome-menu.js';
+import MediaChromeMenuitem from './src/js/media-chrome-menuitem.js';
+import MediaChromePopup from './src/js/media-chrome-popup.js';
+import MediaChromeRange from './src/js/media-chrome-range.js';
+import MediaChromeSubmenuMenuitem from './src/js/media-chrome-submenu-menuitem.js';
+import MediaControlBar from './src/js/media-control-bar.js';
+import MediaCurrentTimeDisplay from './src/js/media-current-time-display.js';
+import MediaDurationDisplay from './src/js/media-duration-display.js';
+import MediaForwardButton from './src/js/media-forward-button.js';
+import MediaFullscreenButton from './src/js/media-fullscreen-button.js';
+import MediaMuteButton from './src/js/media-mute-button.js';
+import MediaPipButton from './src/js/media-pip-button.js';
+import MediaPlayButton from './src/js/media-play-button.js';
+import MediaPlaybackRateButton from './src/js/media-playback-rate-button.js';
+import MediaPoster from './src/js/media-poster.js';
+import MediaProgressRange from './src/js/media-progress-range.js';
+import MediaReplayButton from './src/js/media-replay-button.js';
+import MediaSettingsPopup from './src/js/media-settings-popup.js';
+import MediaThumbnailPreviewElement from './src/js/media-thumbnail-preview-element.js';
+import MediaTitleElement from './src/js/media-title-element.js';
+import MediaVolumeRange from './src/js/media-volume-range.js';
 
-import './src/js/media-thumbnail-preview-element.js';
-import './src/js/media-progress-range.js';
-
-import './src/js/media-mute-button.js';
-import './src/js/media-volume-range.js';
-
-
-import './src/js/media-current-time-display.js';
-import './src/js/media-duration-display.js';
-
-import './src/js/media-playback-rate-button.js';
-import './src/js/media-fullscreen-button.js';
-import './src/js/media-pip-button.js';
-
-import './src/js/media-title-element.js';
-
-import './src/js/media-control-bar.js';
-
-// Main <media-chrome> element
-import './src/js/media-chrome-container.js';
+export {
+  MediaChromeButton,
+  MediaChromeContainer,
+  MediaChromeHTMLElement,
+  MediaChromeMenuButton,
+  MediaChromeMenu,
+  MediaChromeMenuitem,
+  MediaChromePopup,
+  MediaChromeRange,
+  MediaChromeSubmenuMenuitem,
+  MediaControlBar,
+  MediaCurrentTimeDisplay,
+  MediaDurationDisplay,
+  MediaForwardButton,
+  MediaFullscreenButton,
+  MediaMuteButton,
+  MediaPipButton,
+  MediaPlayButton,
+  MediaPlaybackRateButton,
+  MediaPoster,
+  MediaProgressRange,
+  MediaReplayButton,
+  MediaSettingsPopup,
+  MediaThumbnailPreviewElement,
+  MediaTitleElement,
+  MediaVolumeRange,
+}

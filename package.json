@@ -2,8 +2,7 @@
   "name": "media-chrome",
   "version": "0.0.11",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
-  "type": "module",
-  "main": "dist/media-chrome.js",
+  "main": "dist/index.js",
   "files": [
     "./dist/*",
     "README.md",
@@ -41,11 +40,12 @@
     "babel-core": "^6.26.3",
     "babel-loader": "^8.1.0",
     "babel-preset-es2015": "^6.24.1",
-    "rimraf": "^3.0.2",
     "chokidar": "^3.4.3",
     "esbuild": "^0.8.26",
     "lodash": "^4.17.20",
+    "rimraf": "^3.0.2",
     "serve-handler": "^6.1.3",
+    "ssr-window": "^3.0.0",
     "tiny-glob": "^0.2.8"
   },
   "dependencies": {},

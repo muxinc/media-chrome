@@ -1,19 +1,25 @@
-import _ from 'lodash';
-import chokidar from 'chokidar';
-import esbuild from 'esbuild';
-import glob from 'tiny-glob';
-import serveHandler from 'serve-handler';
-import http from 'http';
+const _ = require('lodash');
+const chokidar = require('chokidar');
+const esbuild = require('esbuild');
+const glob = require('tiny-glob');
+const serveHandler = require('serve-handler');
+const http = require('http');
 
 const args = process.argv;
+const PORT = 3001;
 
 async function build(opts = {}) {
   const start = Date.now();
 
+  await esbuild.build({
+    entryPoints: ['./index.js'],
+    bundle: true,
+    outfile: './dist/index.js',
+  });
+
   let entryPoints = await glob('./src/js/media-*.js');
   await esbuild.build({
     entryPoints,
-    bundle: true,
     outdir: 'dist',
     loader: { '.svg': 'text' },
     ...opts,
@@ -29,8 +35,8 @@ if (args.includes('--dev')) {
     return serveHandler(request, response);
   })
 
-  server.listen(3000, () => {
-    console.log('💫 Preview server running at http://localhost:3000');
+  server.listen(PORT, () => {
+    console.log(`💫 Preview server running at http://localhost:${PORT}`);
   });
 
   const watcher = chokidar.watch('./src', {
