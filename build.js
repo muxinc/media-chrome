@@ -11,17 +11,23 @@ const PORT = 3001;
 async function build(opts = {}) {
   const start = Date.now();
 
+  /*
+  index.js is the entire library bundled up + exported in one file.
+  */
   await esbuild.build({
     entryPoints: ['./index.js'],
     bundle: true,
     outfile: './dist/index.js',
+    ...opts,
   });
 
-  let entryPoints = await glob('./src/js/media-*.js');
+  /*
+  For all the other files, we'll just export them to dist so folks can import the modules individually if they want.
+  */
+  let entryPoints = await glob('./src/js/**/*.js');
   await esbuild.build({
     entryPoints,
     outdir: 'dist',
-    loader: { '.svg': 'text' },
     ...opts,
   });
 
