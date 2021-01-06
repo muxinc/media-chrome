@@ -14,7 +14,7 @@ Fully customizable media player controls using web components (native custom ele
 ```html
 <script type="module" src="https://unpkg.com/media-chrome"></script>
 
-<media-chrome>
+<media-container>
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -30,7 +30,7 @@ Fully customizable media player controls using web components (native custom ele
     <media-pip-button>PIP</media-pip-button>
     <media-fullscreen-button>Fullscreen</media-fullscreen-button>
   </media-control-bar>
-</media-chrome>
+</media-container>
 ```
 
 #### Results (<a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank">Try the CodePen example</a>)
@@ -83,7 +83,7 @@ This will register the custom elements with the browser so they can be used as H
 
 ### Using in your HTML
 
-Each control element can be used independently. When using outside of a `<media-chrome>` element, a control needs to be told which media it's controlling via the `media` attribute or property.
+Each control element can be used independently. When using outside of a `<media-container>` element, a control needs to be told which media it's controlling via the `media` attribute or property.
 
 Using the `media` attribute and CSS selector.
 
@@ -100,20 +100,20 @@ const playButton = document.createElement('media-play-button');
 playButton.media = video;
 ```
 
-Or set automatically by wrapping both the media element and control element in a `<media-chrome>` element. Include the `slot="media"` attribute in the tag of your [compatible player](#compatible-players)'s element.
+Or set automatically by wrapping both the media element and control element in a `<media-container>` element. Include the `slot="media"` attribute in the tag of your [compatible player](#compatible-players)'s element.
 
 ```javascript
-<media-chrome>
+<media-container>
   <video slot="media"></video>
   <media-play-button>Play</media-play-button>
-</media-chrome>
+</media-container>
 ```
 
 ## Customizing the controls
 Use HTML to add or remove any of the controls. Then you can use CSS to style the controls as you would other HTML elements.
 
 ```html
-<media-chrome>
+<media-container>
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -126,7 +126,7 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
     <media-pip-button>PIP</media-pip-button>
     <media-fullscreen-button>Fullscreen</media-fullscreen-button>
   </media-control-bar>
-</media-chrome>
+</media-container>
 ```
 
 You can then use CSS to style the controls as you would other HTML elements.
@@ -135,7 +135,7 @@ You can then use CSS to style the controls as you would other HTML elements.
 
 | Element                      | Description                                                                                           |
 |------------------------------|-------------------------------------------------------------------------------------------------------|
-| `<media-chrome>`       | An optional container for the other controls and media elements.
+| `<media-container>`       | An optional container for the other controls and media elements.
 | `<media-control-bar>`       | Optional controls container to help align the controls in the standard fashion.                       |
 | `<media-play-button>`       | Toggle media playback                                                                                 |
 | `<media-mute-button>`       | Toggle the sound. The icon responds to volume changes and acts as part of the typical volume control. |
@@ -159,16 +159,16 @@ Some "players" add on to existing video and audio elements, so nothing more is n
 | [Shaka Player](https://github.com/google/shaka-player)    | Nothing else needed.                                                                                        |
 | YouTube                                                   | Requires the [`<youtube-video>` element](https://github.com/muxinc/youtube-video-element).                  |
 
-If using the `<media-chrome>` element, be sure to include the `slot="media"` attribute in the player's tag.
+If using the `<media-container>` element, be sure to include the `slot="media"` attribute in the player's tag.
 
 ```html
-<media-chrome>
+<media-container>
   <youtube-video
     slot="media"
     src="https://www.youtube.com/watch?v=rubNgGj3pYo"
   >
   </youtube-video>
-</media-chrome>
+</media-container>
 ```
 
 ## Why?
