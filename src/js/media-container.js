@@ -62,7 +62,7 @@ template.innerHTML = `
   </div>
 `;
 
-class MediaChromeContainer extends HTMLElement {
+class MediaContainer extends HTMLElement {
   constructor() {
     super();
 
@@ -243,7 +243,6 @@ class MediaChromeContainer extends HTMLElement {
   autoHide(seconds) {}
 }
 
-// Define as both <media-chrome>
-defineCustomElement('media-chrome', MediaChromeContainer);
+defineCustomElement('media-container', MediaContainer);
 
-export default MediaChromeContainer;
+export default MediaContainer;

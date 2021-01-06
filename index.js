@@ -1,5 +1,5 @@
 import MediaChromeButton from './src/js/media-chrome-button.js';
-import MediaChromeContainer from './src/js/media-chrome-container.js';
+import MediaContainer from './src/js/media-container.js';
 import MediaChromeHTMLElement from './src/js/media-chrome-html-element.js';
 import MediaChromeMenuButton from './src/js/media-chrome-menu-button.js';
 import MediaChromeMenu from './src/js/media-chrome-menu.js';
@@ -24,9 +24,16 @@ import MediaThumbnailPreviewElement from './src/js/media-thumbnail-preview-eleme
 import MediaTitleElement from './src/js/media-title-element.js';
 import MediaVolumeRange from './src/js/media-volume-range.js';
 
+// Alias <media-container> as <media-chrome>
+// and deprecate <media-chrome> as the main element
+class MediaChrome extends MediaContainer {};
+if (window && !window.customElements.get('media-chrome')) {
+  window.customElements.define('media-chrome', MediaChrome);
+}
+
 export {
   MediaChromeButton,
-  MediaChromeContainer,
+  MediaContainer,
   MediaChromeHTMLElement,
   MediaChromeMenuButton,
   MediaChromeMenu,
