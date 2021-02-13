@@ -1,16 +1,12 @@
 # Architecture Notes
 
-## Element Media Discovery
+## Connecting elements to the media
 
-Media elements can rely on their `media` attribute to set the media element they will interact with. Otherwise they will find the closest `media-chrome` element, and interact with the contained media element. This roughly matches the pattern of form elements (a submit button will submit its parent form).
+Media chrome elements rely on their `media=''` attribute to set the media element (`<video>` or `<audio>`) they will interact with.
 
-This search happens every time the media is needed, meaning the parent (and media) can be changed easily, and also we might look for _noticeable_ inefficiencies in high frequency operations.
+Any media chrome element inside of a `<media-container>` element will have the media element automaticallly injected via their `el.media` property (by the media-container's mutation observer). This roughly matches the pattern of HTML `<form>` elements (a submit button will submit its parent form if no `form=''` attribute is set).
 
-An alternate approach would have been to have the media-chrome inject the media into any new children using mutation observers, but that seemed less elegant.
-
----
-
-Changing to have media-chrome push the media into its children. This keeps the media chrome and media loading logic in media chrome and not in control elements.
+Note: Originally it was built into the media-chrome-element to find the media via a parent media-container, but switched this to have the logic in media-container to simplify the relationhip and avoid a search everytime the media API is needed.
 
 ## Element Independence
 
@@ -18,6 +14,6 @@ A goal of this project is that each UI element could be used independently of th
 
 ## Support Unidirectional Data Flow
 
-Many js application frameworks today like React follow a "unidirectional data flow" pattern. We want media chrome elements to be smart by default, e.g. understanding how to listen to media events without a ton of extra overhead, however we don't want to prohibit using them in a react-style app.
+Many js application frameworks today like React follow a "unidirectional data flow" pattern. We want media chrome elements to be smart by default, understanding how to listen to media events without a ton of extra overhead, however we don't want to prohibit using them in a react-style app.
 
-To do this the elements will have the option of being passed a media to attach listeners to, or will discover a parent element's media or media-chrome element. If those don't exist the element will assume state will be externally provided.
+To do this the elements will have the option of being passed a media to attach listeners to. And alternatively allow the element state to be set externally.
