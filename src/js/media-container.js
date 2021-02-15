@@ -147,9 +147,9 @@ class MediaContainer extends HTMLElement {
     // Wait until custom media elements are ready
     const mediaName = media.nodeName.toLowerCase();
 
-    if (mediaName.includes('-')) {
+    if (mediaName.includes('-') && !window.customElements.get(mediaName)) {
       window.customElements.whenDefined(mediaName).then(()=>{
-        this.mediaSetCallback(this.media);
+        this.mediaSetCallback(media);
       });
       return;
     }
