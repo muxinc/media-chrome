@@ -1,15 +1,16 @@
 <html>
 <head>
-  <script type="module" src="../dist/index.js"></script>
-  <script type="module" src="https://unpkg.com/youtube-video-element"></script>
+  <title>Media Chrome DASH Media Example</title>
+  <script type="module" src="https://unpkg.com/dash-video-element"></script>
+  <script type="module" src="../../dist/index.js"></script>  
 </head>
 <body>
 
 <media-container>
-  <youtube-video
-    src="https://www.youtube.com/watch?v=rubNgGj3pYo"
+  <dash-video
     slot="media"
-  ></youtube-video>
+    src="https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd"
+  ></dash-video>
   <media-control-bar>
     <media-play-button></media-play-button>
     <media-progress-range></media-progress-range>

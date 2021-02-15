@@ -3,7 +3,7 @@
 
   The fullscreen-element attribute can be used to say which element
   to make fullscreen.
-  If none, the button will look for the closest media-chrome element to the media.
+  If none, the button will look for the closest media-container element to the media.
   If none, the button will make the media fullscreen.
 */
 import MediaChromeButton from "./media-chrome-button.js";
@@ -63,7 +63,7 @@ class MediaFullscreenButton extends MediaChromeButton {
 
   get fullscreenElement() {
     return this._fullscreenElement
-      || (this.media && this.media.closest('media-chrome'))
+      || (this.media && this.media.closest('media-container, media-chrome'))
       || this.media;
   }
 
