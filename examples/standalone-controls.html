@@ -1,0 +1,49 @@
+<html>
+<head>
+  <script type="module" src="../dist/index.js"></script>
+  <style>
+    body {
+      /* background-color: #000; */
+    }
+
+    video {
+      width: 640px;
+      height: 360px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Standalone Controls Example</h1>
+<p>This example shows how individual controls can be used without the <code>media-container</code> element.</p>
+
+<video id="media" src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"></video>
+
+<h2>Outside the control-bar element</h2>
+<media-play-button media="#media"></media-play-button>
+<media-mute-button media="#media"></media-mute-button>
+<media-replay-button media="#media"></media-replay-button>
+<media-forward-button media="#media"></media-forward-button>
+<media-volume-range media="#media"></media-volume-range>
+<media-progress-range media="#media"></media-progress-range>
+<media-playback-rate-button media="#media"></media-playback-rate-button>
+<media-pip-button media="#media"></media-pip-button>
+<media-fullscreen-button  media="#media"></media-fullscreen-button>
+
+<h2>Inside the control-bar element</h2>
+<p>Note: You only need to set the <code>media=</code> attribute on the <code>media-control-bar</code>. Media-chrome elements will pass the media reference to their child media-chrome elements automatically.</p>
+
+<media-control-bar media="#media">
+  <media-play-button></media-play-button>
+  <media-mute-button></media-mute-button>
+  <media-replay-button></media-replay-button>
+  <media-forward-button></media-forward-button>
+  <media-volume-range></media-volume-range>
+  <media-progress-range></media-progress-range>
+  <media-playback-rate-button></media-playback-rate-button>
+  <media-pip-button></media-pip-button>
+  <media-fullscreen-button></media-fullscreen-button>
+</media-control-bar>
+
+</body>
+</html>
