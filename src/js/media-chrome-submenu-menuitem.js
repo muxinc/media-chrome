@@ -1,9 +1,10 @@
 import MediaChromeMenuitem from './media-chrome-menuitem.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { createTemplate } from './utils/createTemplate.js';
 
-const addTemplate = document.createElement('template');
+const template = createTemplate();
 
-addTemplate.innerHTML = `
+template.innerHTML = `
 <style>
   :host {
     background-position: right 9px center;

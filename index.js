@@ -23,11 +23,12 @@ import MediaSettingsPopup from './src/js/media-settings-popup.js';
 import MediaThumbnailPreviewElement from './src/js/media-thumbnail-preview-element.js';
 import MediaTitleElement from './src/js/media-title-element.js';
 import MediaVolumeRange from './src/js/media-volume-range.js';
+import { isServer } from './src/js/utils/browser-env.js';
 
 // Alias <media-container> as <media-chrome>
 // and deprecate <media-chrome> as the main element
 class MediaChrome extends MediaContainer {};
-if (window && !window.customElements.get('media-chrome')) {
+if (!isServer() && !window.customElements.get('media-chrome')) {
   window.customElements.define('media-chrome', MediaChrome);
 }
 

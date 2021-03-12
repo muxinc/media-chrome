@@ -1,7 +1,8 @@
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { createTemplate } from './utils/createTemplate.js';
 
-const template = document.createElement('template');
+const template = createTemplate();
 
 // Can't comma-separate selectors like ::-webkit-slider-thumb, ::-moz-range-thumb
 // Browsers ignore the whole rule if you do. So using templates for those.

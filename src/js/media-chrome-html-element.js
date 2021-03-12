@@ -1,5 +1,6 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { dashedToCamel } from './utils/dashedToCamel.js';
+import { HTMLElement } from './utils/browser-env.js';
 
 class MediaChromeHTMLElement extends HTMLElement {
   constructor() {

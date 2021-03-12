@@ -8,6 +8,7 @@
 */
 import MediaChromeButton from "./media-chrome-button.js";
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { isServer } from './utils/browser-env.js';
 
 const enterFullscreenIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
   <path d="M0 0h24v24H0z" fill="none"/>
@@ -27,7 +28,7 @@ const api = {
   error: "fullscreenerror",
 };
 
-if (document.fullscreenElement === undefined) {
+if (!isServer() && document.fullscreenElement === undefined) {
   api.enter = "webkitRequestFullScreen";
   api.exit = document.webkitExitFullscreen != null ? "webkitExitFullscreen" : "webkitCancelFullScreen";
   api.event = "webkitfullscreenchange";

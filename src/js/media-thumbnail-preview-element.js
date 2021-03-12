@@ -5,8 +5,10 @@
   the video time given in the `time` attribute.
 */
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
+import { createTemplate } from './utils/createTemplate.js';
+import { isServer } from './utils/browser-env.js';
 
-const template = document.createElement('template');
+const template = createTemplate();
 
 template.innerHTML = `
   <style>
@@ -46,6 +48,7 @@ class MediaThumbnailPreviewElement extends MediaChromeHTMLElement {
       });
 
       if (!track) return;
+      if (!track.cues) return;
 
       let cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
 
@@ -130,7 +133,7 @@ class MediaThumbnailPreviewElement extends MediaChromeHTMLElement {
   // }
 }
 
-if (!window.customElements.get('media-thumbnail-preview')) {
+if (!isServer() && !window.customElements.get('media-thumbnail-preview')) {
   window.customElements.define('media-thumbnail-preview', MediaThumbnailPreviewElement);
   window.MediaThumbnailPreviewElement = MediaThumbnailPreviewElement;
 }
