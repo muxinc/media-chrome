@@ -127,7 +127,7 @@ class MediaChromeRange extends MediaChromeHTMLElement {
   constructor() {
     super();
 
-    var shadow = this.attachShadow({ mode: 'open' });
+    const shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.range = this.shadowRoot.querySelector('#range');

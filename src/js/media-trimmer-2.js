@@ -1,4 +1,4 @@
-import MediaChromeHTMLElement from './media-chrome-html-element.js';
+import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { createTemplate } from './utils/createTemplate.js';
 import { Window } from './utils/browser-env.js';
@@ -8,12 +8,6 @@ const template = createTemplate();
 
 template.innerHTML = `
   <style>
-    #trimmerContainer {
-      cursor: pointer;
-      background-color: #ccc;
-      height: 100%;
-    }
-
     #thumbnailContainer {
       display: none;
       position: absolute;
@@ -66,11 +60,9 @@ template.innerHTML = `
   <div id="thumbnailContainer">
     <media-thumbnail-preview></media-thumbnail-preview>
   </div>
-  <div id="trimmerContainer">
-  </div>
 `;
 
-class MediaTrimmer extends MediaChromeHTMLElement {
+class MediaTrimmer extends MediaChromeRange {
   static get observedAttributes() {
     return ['thumbnails'].concat(super.observedAttributes || []);
   }
@@ -78,11 +70,7 @@ class MediaTrimmer extends MediaChromeHTMLElement {
   constructor() {
     super();
 
-    var shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.wrapper = this.shadowRoot.querySelector('#trimmerContainer');
-
-    /*
     this.setMediaTimeWithRange = () => {
       const media = this.media;
       const range = this.range;
@@ -93,7 +81,7 @@ class MediaTrimmer extends MediaChromeHTMLElement {
         media.currentTime = Math.round((range.value / 1000) * media.duration);
       }
     };
-    // this.range.addEventListener('input', this.setMediaTimeWithRange);
+    this.range.addEventListener('input', this.setMediaTimeWithRange);
 
     // The following listeners need to be removeable
     this.updateRangeWithMediaTime = () => {
@@ -110,7 +98,6 @@ class MediaTrimmer extends MediaChromeHTMLElement {
       const media = this.media;
       media.play().then(this.setMediaTimeWithRange);
     };
-    */
   }
 
   mediaSetCallback(media) {
@@ -128,7 +115,7 @@ class MediaTrimmer extends MediaChromeHTMLElement {
 
     // TODO: Update value if video already played
 
-    // media.addEventListener('progress', this.updateBar.bind(this));
+    media.addEventListener('progress', this.updateBar.bind(this));
 
     // Initialize thumbnails
     if (media.textTracks && media.textTracks.length) {
@@ -180,7 +167,7 @@ class MediaTrimmer extends MediaChromeHTMLElement {
         if (!duration) return;
 
         // Get mouse position percent
-        const rangeRect = this.wrapper.getBoundingClientRect();
+        const rangeRect = this.range.getBoundingClientRect();
         let mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
 
         // Lock between 0 and 1
