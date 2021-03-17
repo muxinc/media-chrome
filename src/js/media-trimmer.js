@@ -9,9 +9,29 @@ const template = createTemplate();
 template.innerHTML = `
   <style>
     #trimmerContainer {
-      cursor: pointer;
       background-color: #ccc;
       height: 100%;
+      width: 100%;
+      display: flex;
+    }
+
+    #selection {
+      height: 100%;
+      background-color: red;
+      width: 25%;
+      margin-left: 25%;
+      display: flex;
+    }
+
+    #startHandle, #endHandle {
+      cursor: pointer;
+      height: 110%;
+      width: 5px;
+      background-color: blue;
+    }
+
+    .spacer {
+      flex: 1;
     }
 
     #thumbnailContainer {
@@ -67,6 +87,13 @@ template.innerHTML = `
     <media-thumbnail-preview></media-thumbnail-preview>
   </div>
   <div id="trimmerContainer">
+    <div id="selection">
+      <div id="startHandle">
+      </div>
+      <div class="spacer"></div>
+      <div id="endHandle">
+      </div>
+    </div>
   </div>
 `;
 
@@ -81,6 +108,12 @@ class MediaTrimmer extends MediaChromeHTMLElement {
     var shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.wrapper = this.shadowRoot.querySelector('#trimmerContainer');
+    this._clickHandler = this.handleClick.bind(this);
+    /*
+     * TODO - teardown this click handler
+     */
+    this.wrapper.addEventListener('click', this._clickHandler);
+
 
     /*
     this.setMediaTimeWithRange = () => {
@@ -111,6 +144,31 @@ class MediaTrimmer extends MediaChromeHTMLElement {
       media.play().then(this.setMediaTimeWithRange);
     };
     */
+  }
+
+  /*
+   * pass in a mouse event (evt.clientX)
+   * calculates the percentage progress based on the bounding rectang
+   * converts the percentage progress into a duration in seconds
+   */
+  getPlayheadBasedOnMouseEvent (evt) {
+    const duration = this.media && this.media.duration;
+    if (!duration) return;
+    let mousePercent = this.getMousePercent(evt);
+    mousePercent = Math.max(0, Math.min(1, mousePercent));
+    return (mousePercent * duration);
+  }
+
+  getMousePercent (evt) {
+    const rangeRect = this.wrapper.getBoundingClientRect();
+    const mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
+    // Lock between 0 and 1
+    return Math.max(0, Math.min(1, mousePercent));
+  }
+
+  handleClick (evt) {
+    const playhead = this.getPlayheadBasedOnMouseEvent(evt);
+    console.log('debug', playhead);
   }
 
   mediaSetCallback(media) {
@@ -181,10 +239,7 @@ class MediaTrimmer extends MediaChromeHTMLElement {
 
         // Get mouse position percent
         const rangeRect = this.wrapper.getBoundingClientRect();
-        let mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
-
-        // Lock between 0 and 1
-        mousePercent = Math.max(0, Math.min(1, mousePercent));
+        const mousePercent = this.getMousePercent(evt);
 
         // Get thumbnail center position
         const leftPadding = rangeRect.left - this.getBoundingClientRect().left;
