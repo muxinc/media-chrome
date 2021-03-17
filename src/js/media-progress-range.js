@@ -1,6 +1,7 @@
 import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { createTemplate } from './utils/createTemplate.js';
+import { Window } from './utils/browser-env.js';
 import MediaThumbnailPreviewElement from './media-thumbnail-preview-element.js';
 
 const template = createTemplate();
@@ -179,11 +180,11 @@ class MediaProgressRange extends MediaChromeRange {
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
         this.thumbnailPreview.time = mousePercent * this.media.duration;
       };
-      window.addEventListener('mousemove', mouseMoveHandler, false);
+      Window.addEventListener('mousemove', mouseMoveHandler, false);
     };
 
     const stopTrackingMouse = () => {
-      window.removeEventListener('mousemove', mouseMoveHandler);
+      Window.removeEventListener('mousemove', mouseMoveHandler);
     };
 
     // Trigger when the mouse moves over the range
@@ -197,12 +198,12 @@ class MediaProgressRange extends MediaChromeRange {
         let offRangeHandler = (evt) => {
           if (evt.target != this && !this.contains(evt.target)) {
             this.thumbnailPreview.style.display = 'none';
-            window.removeEventListener('mousemove', offRangeHandler);
+            Window.removeEventListener('mousemove', offRangeHandler);
             rangeEntered = false;
             stopTrackingMouse();
           }
         }
-        window.addEventListener('mousemove', offRangeHandler, false);
+        Window.addEventListener('mousemove', offRangeHandler, false);
       }
 
       if (!this.media || !this.media.duration) {

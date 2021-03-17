@@ -9,7 +9,7 @@
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { propagateMedia, setAndPropagateMedia } from './media-chrome-html-element.js';
-import { HTMLElement, isServer } from './utils/browser-env.js';
+import { HTMLElement, Window, isServer } from './utils/browser-env.js';
 import { createTemplate } from './utils/createTemplate.js';
 
 const template = createTemplate();
@@ -149,8 +149,8 @@ class MediaContainer extends HTMLElement {
     // Wait until custom media elements are ready
     const mediaName = media.nodeName.toLowerCase();
 
-    if (mediaName.includes('-') && !window.customElements.get(mediaName)) {
-      window.customElements.whenDefined(mediaName).then(()=>{
+    if (mediaName.includes('-') && !Window.customElements.get(mediaName)) {
+      Window.customElements.whenDefined(mediaName).then(()=>{
         this.mediaSetCallback(media);
       });
       return;
@@ -204,8 +204,8 @@ class MediaContainer extends HTMLElement {
 
     const scheduleInactive = () => {
       this.container.classList.remove('inactive');
-      window.clearTimeout(this.inactiveTimeout);
-      this.inactiveTimeout = window.setTimeout(() => {
+      Window.clearTimeout(this.inactiveTimeout);
+      this.inactiveTimeout = Window.setTimeout(() => {
         this.container.classList.add('inactive');
       }, 2000);
     };
@@ -228,7 +228,7 @@ class MediaContainer extends HTMLElement {
 
       // Stay visible if hovered over control bar
       this.container.classList.remove('inactive');
-      window.clearTimeout(this.inactiveTimeout);
+      Window.clearTimeout(this.inactiveTimeout);
 
       // If hovering over the media element we're free to make inactive
       if (e.target === this.media) {

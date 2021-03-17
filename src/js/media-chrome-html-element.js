@@ -1,6 +1,6 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { dashedToCamel } from './utils/dashedToCamel.js';
-import { HTMLElement } from './utils/browser-env.js';
+import { HTMLElement, Window, Document } from './utils/browser-env.js';
 
 class MediaChromeHTMLElement extends HTMLElement {
   constructor() {
@@ -24,7 +24,7 @@ class MediaChromeHTMLElement extends HTMLElement {
         return;
       }
 
-      let media = document.querySelector(newValue);
+      let media = Document.querySelector(newValue);
 
       if (!media || !media.play) {
         throw new Error(
@@ -69,7 +69,7 @@ class MediaChromeHTMLElement extends HTMLElement {
       const mediaName = media.nodeName.toLowerCase();
 
       if (mediaName.includes('-')) {
-        window.customElements.whenDefined(mediaName).then(()=>{
+        Window.customElements.whenDefined(mediaName).then(()=>{
           this.mediaSetCallback(media);
         });
       } else {
@@ -100,7 +100,7 @@ export function setAndPropagateMedia(el, media) {
 
   // Only custom elements might have the correct media attribute
   if (elName.includes('-')) {
-    window.customElements.whenDefined(elName).then(()=>{
+    Window.customElements.whenDefined(elName).then(()=>{
       if (el instanceof MediaChromeHTMLElement) {
         // Media-chrome html els propogate to their children automatically
         // including to shadow dom children

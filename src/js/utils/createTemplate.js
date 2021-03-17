@@ -1,8 +1,8 @@
-import { isServer } from './browser-env.js';
+import { isServer, Document } from './browser-env.js';
 
 export function createTemplate(name, element) {
   if (isServer()) {
     return {};
   }
-  return document.createElement('template');
+  return Document.createElement('template');
 }

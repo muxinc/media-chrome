@@ -1,11 +1,11 @@
-import { isServer } from './browser-env.js';
+import { isServer, Window } from './browser-env.js';
 
 export function defineCustomElement(name, element) {
   if (isServer()) {
     return;
   }
-  if (!window.customElements.get(name)) {
-    window.customElements.define(name, element);
-    window[element.name] = element;
+  if (!Window.customElements.get(name)) {
+    Window.customElements.define(name, element);
+    Window[element.name] = element;
   }
 }

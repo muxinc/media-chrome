@@ -1,15 +1,11 @@
+const windowShim = {};
+const documentShim = {};
 class HTMLElementShim { };
 
 export function isServer () {
   return (typeof window === 'undefined');
 }
 
-let element
-
-if (isServer()) {
-  element = HTMLElementShim;
-} else {
-  element = window.HTMLElement;
-}
-
-export const HTMLElement = element;
+export const Window = isServer() ? windowShim : window;
+export const Document = isServer() ? documentShim : window.document;
+export const HTMLElement = isServer() ? HTMLElementShim : window.HTMLElement;
