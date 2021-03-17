@@ -6,6 +6,12 @@ import MediaThumbnailPreviewElement from './media-thumbnail-preview-element.js';
 
 const template = createTemplate();
 
+const HANDLE_W = 10;
+
+function lockBetweenZeroAndOne (num) {
+  return Math.max(0, Math.min(1, num));
+}
+
 template.innerHTML = `
   <style>
     #trimmerContainer {
@@ -13,25 +19,36 @@ template.innerHTML = `
       height: 100%;
       width: 100%;
       display: flex;
-    }
-
-    #selection {
-      height: 100%;
-      background-color: red;
-      width: 25%;
-      margin-left: 25%;
-      display: flex;
+      position: relative;
     }
 
     #startHandle, #endHandle {
       cursor: pointer;
       height: 110%;
-      width: 5px;
-      background-color: blue;
+      width: ${HANDLE_W}px;
+      background-color: royalblue;
     }
 
-    .spacer {
+    #playhead {
+      height: 100%;
+      width: 3px;
+      background-color: #aaa;
+      position: absolute;
+      display: none;
+    }
+
+    #selection {
+      display: flex;
+      width: 25%;
+    }
+
+    #leftTrim {
+      width: 25%;
+    }
+
+    #spacer {
       flex: 1;
+      background-color: cornflowerblue;
     }
 
     #thumbnailContainer {
@@ -87,12 +104,12 @@ template.innerHTML = `
     <media-thumbnail-preview></media-thumbnail-preview>
   </div>
   <div id="trimmerContainer">
+    <div id="playhead"></div>
+    <div id="leftTrim"></div>
     <div id="selection">
-      <div id="startHandle">
-      </div>
-      <div class="spacer"></div>
-      <div id="endHandle">
-      </div>
+      <div id="startHandle"></div>
+      <div id="spacer"></div>
+      <div id="endHandle"></div>
     </div>
   </div>
 `;
@@ -107,12 +124,35 @@ class MediaTrimmer extends MediaChromeHTMLElement {
 
     var shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    this.draggingEl = null;
+
     this.wrapper = this.shadowRoot.querySelector('#trimmerContainer');
+    this.selection = this.shadowRoot.querySelector('#selection');
+    this.playhead = this.shadowRoot.querySelector('#playhead');
+    this.leftTrim = this.shadowRoot.querySelector('#leftTrim');
+    this.spacerFirst = this.shadowRoot.querySelector('#spacerFirst');
+    this.startHandle = this.shadowRoot.querySelector('#startHandle');
+    this.spacerMiddle = this.shadowRoot.querySelector('#spacerMiddle');
+    this.endHandle = this.shadowRoot.querySelector('#endHandle');
+    this.spacerLast = this.shadowRoot.querySelector('#spacerLast');
+
     this._clickHandler = this.handleClick.bind(this);
+    this._dragStart = this.dragStart.bind(this);
+    this._dragEnd = this.dragEnd.bind(this);
+    this._drag = this.drag.bind(this);
     /*
-     * TODO - teardown this click handler
+     * TODO - teardown these handlers later
      */
-    this.wrapper.addEventListener('click', this._clickHandler);
+    this.wrapper.addEventListener('click', this._clickHandler, false);
+
+    this.wrapper.addEventListener('touchstart', this._dragStart, false);
+    this.wrapper.addEventListener('touchend', this._dragEnd, false);
+    this.wrapper.addEventListener('touchmove', this._drag, false);
+
+    this.wrapper.addEventListener('mousedown', this._dragStart, false);
+    this.wrapper.addEventListener('mouseup', this._dragEnd, false);
+    this.wrapper.addEventListener('mousemove', this._drag, false);
 
 
     /*
@@ -154,30 +194,123 @@ class MediaTrimmer extends MediaChromeHTMLElement {
   getPlayheadBasedOnMouseEvent (evt) {
     const duration = this.media && this.media.duration;
     if (!duration) return;
-    let mousePercent = this.getMousePercent(evt);
-    mousePercent = Math.max(0, Math.min(1, mousePercent));
+    const mousePercent = lockBetweenZeroAndOne(this.getMousePercent(evt));
     return (mousePercent * duration);
+  }
+
+  getXPositionFromMouse (evt) {
+    /*
+      if (evt.type === "touchstart") {
+        initialX = evt.touches[0].clientX - xOffset;
+      } else {
+        initialX = evt.clientX - xOffset;
+      }
+    */
+    return evt.clientX
   }
 
   getMousePercent (evt) {
     const rangeRect = this.wrapper.getBoundingClientRect();
-    const mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
-    // Lock between 0 and 1
-    return Math.max(0, Math.min(1, mousePercent));
+    const mousePercent = (this.getXPositionFromMouse(evt) - rangeRect.left) / rangeRect.width;
+    return lockBetweenZeroAndOne(mousePercent);
+  }
+
+  dragStart (evt) {
+    if (evt.target === this.startHandle) {
+      this.draggingEl = this.startHandle;
+    }
+    if (evt.target === this.endHandle) {
+      this.draggingEl = this.endHandle;
+    }
+
+    /*
+    if (evt.type === "touchstart") {
+      initialX = evt.touches[0].clientX - xOffset;
+    } else {
+      initialX = evt.clientX - xOffset;
+    }
+    */
+
+    this.initialX = this.getXPositionFromMouse(evt);
+  }
+
+  dragEnd (evt) {
+    this.initialX = null;
+    this.draggingEl = null;
+  }
+
+  drag (evt) {
+    if (!this.draggingEl) {
+      return;
+    }
+    evt.preventDefault();
+
+    const rangeRect = this.wrapper.getBoundingClientRect();
+    const fullWidth = rangeRect.width;
+
+    const endXPosition = this.getXPositionFromMouse(evt);
+    const xDelta = endXPosition - this.initialX;
+    const percent = this.getMousePercent(evt);
+    const selectionW = this.selection.getBoundingClientRect().width;
+
+    if (this.draggingEl === this.startHandle) {
+      this.initialX = this.getXPositionFromMouse(evt);
+      const leftTrimW = percent * fullWidth;
+      this.leftTrim.style.width = `${leftTrimW}px`;
+      this.selection.style.width = `${selectionW - xDelta}px`;
+    }
+    if (this.draggingEl === this.endHandle) {
+      this.initialX = this.getXPositionFromMouse(evt);
+      this.selection.style.width = `${selectionW + xDelta}px`;
+    }
+  }
+
+  getCurrentClipBounds () {
+    const rangeRect = this.wrapper.getBoundingClientRect();
+    const leftTrimRect = this.leftTrim.getBoundingClientRect();
+    const selectionRect = this.selection.getBoundingClientRect();
+
+    const percentStart = lockBetweenZeroAndOne(leftTrimRect.width / rangeRect.width);
+    const percentEnd = lockBetweenZeroAndOne((leftTrimRect.width + HANDLE_W) + selectionRect.width);
+
+    return {
+      startTime: percentStart * this.media.duration,
+      endTime: percentEnd * this.media.duration,
+    };
   }
 
   handleClick (evt) {
-    const playhead = this.getPlayheadBasedOnMouseEvent(evt);
-    console.log('debug', playhead);
+    /*
+    const { startTime, endTime } = this.getCurrentClipBounds();
+    if (evt.target == this.wrapper) {
+      console.log('debug we in the wrapper', evt.target);
+    }
+    if (evt.target == this.startHandle) {
+      if (this.media) {
+        this.media.currentTime = startTime;
+        return;
+      }
+    }
+    if (evt.target == this.endHandle) {
+      if (this.media) {
+        this.media.currentTime = endTime;
+      }
+    }
+    */
+
+    if (this.media) {
+      const mousePercent = this.getMousePercent(evt);
+      this.media.currentTime = mousePercent * this.media.duration;
+    }
   }
 
   mediaSetCallback(media) {
     super.mediaSetCallback(media);
 
-    const range = this.range;
+    this._timeUpdated = this.timeUpdated.bind(this);
+    media.addEventListener('timeupdate', this._timeUpdated);
 
-    media.addEventListener('timeupdate', this.updateRangeWithMediaTime);
-
+    /*
     // If readyState is supported, and the range is used before
     // the media is ready, use the play promise to set the time.
     if (media.readyState !== undefined && media.readyState == 0) {
@@ -185,8 +318,8 @@ class MediaTrimmer extends MediaChromeHTMLElement {
     }
 
     // TODO: Update value if video already played
-
-    // media.addEventListener('progress', this.updateBar.bind(this));
+    media.addEventListener('progress', this.updateBar.bind(this));
+    */
 
     // Initialize thumbnails
     if (media.textTracks && media.textTracks.length) {
@@ -200,13 +333,18 @@ class MediaTrimmer extends MediaChromeHTMLElement {
     }
   }
 
+  timeUpdated (evt) {
+    const percentComplete = lockBetweenZeroAndOne(this.media.currentTime / this.media.duration);
+    const fullW = this.wrapper.getBoundingClientRect().width;
+    const progressW = (percentComplete * fullW);
+    this.playhead.style.left = `${progressW}px`;
+    this.playhead.style.display = 'block';
+  }
+
   mediaUnsetCallback(media) {
     super.mediaUnsetCallback(media);
 
-    media.removeEventListener('timeupdate', this.updateRangeWithMediaTime);
-    this.range.removeEventListener('change', this.playIfNotReady);
-
-    // TODO: Reset value after media is unset
+    media.removeEventListener('timeupdate', this._timeUpdated);
   }
 
   /* Add a buffered progress bar */
