@@ -31,7 +31,8 @@ template.innerHTML = `
     }
 
     media-progress-range,
-    ::slotted(media-progress-range) {
+    ::slotted(media-progress-range),
+    ::slotted(media-trimmer) {
       flex-grow: 1;
     }
   </style>
