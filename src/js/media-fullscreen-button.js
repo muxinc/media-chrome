@@ -28,7 +28,7 @@ const api = {
   error: "fullscreenerror",
 };
 
-if (!isServer() && Document.fullscreenElement === undefined) {
+if (!isServer && Document.fullscreenElement === undefined) {
   api.enter = "webkitRequestFullScreen";
   api.exit = Document.webkitExitFullscreen != null ? "webkitExitFullscreen" : "webkitCancelFullScreen";
   api.event = "webkitfullscreenchange";

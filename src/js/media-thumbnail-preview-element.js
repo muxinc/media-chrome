@@ -133,7 +133,7 @@ class MediaThumbnailPreviewElement extends MediaChromeHTMLElement {
   // }
 }
 
-if (!isServer() && !Window.customElements.get('media-thumbnail-preview')) {
+if (!isServer && !Window.customElements.get('media-thumbnail-preview')) {
   Window.customElements.define('media-thumbnail-preview', MediaThumbnailPreviewElement);
   Window.MediaThumbnailPreviewElement = MediaThumbnailPreviewElement;
 }

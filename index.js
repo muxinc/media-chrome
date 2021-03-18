@@ -28,7 +28,7 @@ import { isServer, Window } from './src/js/utils/browser-env.js';
 // Alias <media-container> as <media-chrome>
 // and deprecate <media-chrome> as the main element
 class MediaChrome extends MediaContainer {};
-if (!isServer() && !Window.customElements.get('media-chrome')) {
+if (!isServer && !Window.customElements.get('media-chrome')) {
   Window.customElements.define('media-chrome', MediaChrome);
 }
 

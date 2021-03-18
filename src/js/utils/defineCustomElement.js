@@ -1,7 +1,7 @@
 import { isServer, Window } from './browser-env.js';
 
 export function defineCustomElement(name, element) {
-  if (isServer()) {
+  if (isServer) {
     return;
   }
   if (!Window.customElements.get(name)) {
