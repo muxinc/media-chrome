@@ -1,6 +1,5 @@
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { isServer } from './utils/browser-env.js';
 import { createTemplate } from './utils/createTemplate.js';
 
 const template = createTemplate();

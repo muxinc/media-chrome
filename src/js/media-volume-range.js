@@ -1,6 +1,6 @@
 import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window } from './utils/browser-env.js';
+import { Window as window } from './utils/browser-env.js';
 
 class MediaVolumeRange extends MediaChromeRange {
   constructor() {
@@ -45,7 +45,7 @@ class MediaVolumeRange extends MediaChromeRange {
 
       // Store the last set volume as a local preference, if ls is supported
       try {
-        Window.localStorage.setItem(
+        window.localStorage.setItem(
           'media-chrome-pref-volume',
           media.volume.toString()
         );
@@ -61,7 +61,7 @@ class MediaVolumeRange extends MediaChromeRange {
     // This would preferably live with the media element,
     // not a control.
     try {
-      const volPref = Window.localStorage.getItem('media-chrome-pref-volume');
+      const volPref = window.localStorage.getItem('media-chrome-pref-volume');
       if (volPref !== null) media.volume = volPref;
     } catch (e) { }
 
