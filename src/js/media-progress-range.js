@@ -1,10 +1,9 @@
 import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { createTemplate } from './utils/createTemplate.js';
-import { Window as window } from './utils/browser-env.js';
+import { Window as window } from './utils/server-safe-globals.js';
 import MediaThumbnailPreviewElement from './media-thumbnail-preview-element.js';
 
-const template = createTemplate();
+const template = document.createElement('template');
 
 template.innerHTML = `
   <style>

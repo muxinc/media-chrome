@@ -9,10 +9,9 @@
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { propagateMedia, setAndPropagateMedia } from './media-chrome-html-element.js';
-import { Window as window } from './utils/browser-env.js';
-import { createTemplate } from './utils/createTemplate.js';
+import { Window as window } from './utils/server-safe-globals.js';
 
-const template = createTemplate();
+const template = document.createElement('template');
 
 template.innerHTML = `
   <style>
