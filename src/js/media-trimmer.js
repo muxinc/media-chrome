@@ -8,6 +8,12 @@ const template = createTemplate();
 
 const HANDLE_W = 10;
 
+const Z = {
+  '100': 100,
+  '200': 200,
+  '300': 300,
+};
+
 function lockBetweenZeroAndOne (num) {
   return Math.max(0, Math.min(1, num));
 }
@@ -15,16 +21,25 @@ function lockBetweenZeroAndOne (num) {
 template.innerHTML = `
   <style>
     #trimmerContainer {
-      background-color: #ccc;
+      background-color: transparent;
       height: 100%;
       width: 100%;
       display: flex;
       position: relative;
     }
 
+    #timeline {
+      width: 100%;
+      height: 10px;
+      background: #ccc;
+      position: absolute;
+      top: 16px;
+      z-index: ${Z['100']};
+    }
+
     #startHandle, #endHandle {
       cursor: pointer;
-      height: 110%;
+      height: 100%;
       width: ${HANDLE_W}px;
       background-color: royalblue;
     }
@@ -35,10 +50,12 @@ template.innerHTML = `
       background-color: #aaa;
       position: absolute;
       display: none;
+      z-index: ${Z['300']};
     }
 
     #selection {
       display: flex;
+      z-index: ${Z['200']};
       width: 25%;
     }
 
@@ -49,6 +66,8 @@ template.innerHTML = `
     #spacer {
       flex: 1;
       background-color: cornflowerblue;
+      height: 50%;
+      margin-top: 12px;
     }
 
     #thumbnailContainer {
@@ -104,6 +123,7 @@ template.innerHTML = `
     <media-thumbnail-preview></media-thumbnail-preview>
   </div>
   <div id="trimmerContainer">
+    <div id="timeline"></div>
     <div id="playhead"></div>
     <div id="leftTrim"></div>
     <div id="selection">
@@ -263,6 +283,14 @@ class MediaTrimmer extends MediaChromeHTMLElement {
       this.initialX = this.getXPositionFromMouse(evt);
       this.selection.style.width = `${selectionW + xDelta}px`;
     }
+    this.dispatchUpdated();
+  }
+
+  dispatchUpdated () {
+    const updatedEvent = new CustomEvent('updated', {
+      detail: this.getCurrentClipBounds(),
+    });
+    this.dispatchEvent(updatedEvent);
   }
 
   getCurrentClipBounds () {
@@ -271,12 +299,20 @@ class MediaTrimmer extends MediaChromeHTMLElement {
     const selectionRect = this.selection.getBoundingClientRect();
 
     const percentStart = lockBetweenZeroAndOne(leftTrimRect.width / rangeRect.width);
-    const percentEnd = lockBetweenZeroAndOne((leftTrimRect.width + HANDLE_W) + selectionRect.width);
+    const percentEnd = lockBetweenZeroAndOne((leftTrimRect.width + selectionRect.width) / rangeRect.width);
 
+    /*
+     * TODO - maybe don't round to nearest integer? Round to 1 or 2 decimails?
+     */
     return {
-      startTime: percentStart * this.media.duration,
-      endTime: percentEnd * this.media.duration,
+      startTime: Math.round(percentStart * this.media.duration),
+      endTime: Math.round(percentEnd * this.media.duration),
     };
+  }
+
+  isTimestampInBounds (timestamp) {
+    const { startTime, endTime } = this.getCurrentClipBounds();
+    return (startTime <= timestamp && endTime >= timestamp);
   }
 
   handleClick (evt) {
@@ -298,9 +334,11 @@ class MediaTrimmer extends MediaChromeHTMLElement {
     }
     */
 
-    if (this.media) {
-      const mousePercent = this.getMousePercent(evt);
-      this.media.currentTime = mousePercent * this.media.duration;
+    const mousePercent = this.getMousePercent(evt);
+    const timestampForClick = mousePercent * this.media.duration;
+
+    if (this.media && this.isTimestampInBounds(timestampForClick)) {
+      this.media.currentTime = timestampForClick;
     }
   }
 
@@ -337,14 +375,40 @@ class MediaTrimmer extends MediaChromeHTMLElement {
     const percentComplete = lockBetweenZeroAndOne(this.media.currentTime / this.media.duration);
     const fullW = this.wrapper.getBoundingClientRect().width;
     const progressW = (percentComplete * fullW);
+
     this.playhead.style.left = `${progressW}px`;
     this.playhead.style.display = 'block';
+
+    /*
+     * if paused, we don't need to do anything else
+     */
+    if (!this.media.paused) {
+      const { startTime, endTime } = this.getCurrentClipBounds();
+
+      if (this.media.currentTime < startTime) {
+        this.media.currentTime = startTime;
+      }
+      if (this.media.currentTime > endTime) {
+        this.media.currentTime = startTime;
+      }
+      console.log('debug timeUpdated', this.media.currentTime, startTime, endTime);
+    }
   }
 
   mediaUnsetCallback(media) {
     super.mediaUnsetCallback(media);
 
     media.removeEventListener('timeupdate', this._timeUpdated);
+    this.wrapper.removeEventListener('click', this._clickHandler);
+
+    this.wrapper.removeEventListener('touchstart', this._dragStart);
+    this.wrapper.removeEventListener('touchend', this._dragEnd);
+    this.wrapper.removeEventListener('touchmove', this._drag);
+
+    this.wrapper.removeEventListener('mousedown', this._dragStart);
+    this.wrapper.removeEventListener('mouseup', this._dragEnd);
+    this.wrapper.removeEventListener('mousemove', this._drag);
+
   }
 
   /* Add a buffered progress bar */

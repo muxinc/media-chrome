@@ -20,5 +20,27 @@
   </media-control-bar>
 </media-container>
 
+<p id="current-time"></p>
+<p id="start-time"></p>
+<p id="end-time"></p>
+
 </body>
+
+<script>
+  const mediaRangeSelect = document.querySelector('media-trimmer');
+  const startTimeEl = document.querySelector('#start-time');
+  const endTimeEl = document.querySelector('#end-time');
+  const currentTimeEl = document.querySelector('#current-time');
+  const videoEl = document.querySelector('video');
+
+  mediaRangeSelect.addEventListener('updated', (evt) => {
+    const { startTime, endTime } = evt.detail;
+    startTimeEl.innerHTML = `Start time seconds: ${startTime}`;
+    endTimeEl.innerHTML = `End time seconds: ${endTime}`;
+  });
+
+  videoEl.addEventListener('timeupdate', () => {
+    currentTimeEl.innerHTML = `Current time: ${Math.round(videoEl.currentTime)}`;
+  });
+</script>
 </html>

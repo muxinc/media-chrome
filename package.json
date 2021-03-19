@@ -48,7 +48,9 @@
     "ssr-window": "^3.0.0",
     "tiny-glob": "^0.2.8"
   },
-  "dependencies": {},
+  "dependencies": {
+    "event-target-shim": "^6.0.2"
+  },
   "babel": {
     "presets": [
       "es2015"
