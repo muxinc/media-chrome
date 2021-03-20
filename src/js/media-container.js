@@ -9,7 +9,7 @@
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { propagateMedia, setAndPropagateMedia } from './media-chrome-html-element.js';
-import { Window as window } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 

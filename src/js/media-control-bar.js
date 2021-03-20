@@ -5,6 +5,7 @@
 */
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { Document as document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
