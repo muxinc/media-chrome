@@ -1,11 +1,8 @@
-import { isServer, Window } from './browser-env.js';
+import { Window as window } from './server-safe-globals.js';
 
 export function defineCustomElement(name, element) {
-  if (isServer) {
-    return;
-  }
-  if (!Window.customElements.get(name)) {
-    Window.customElements.define(name, element);
-    Window[element.name] = element;
+  if (!window.customElements.get(name)) {
+    window.customElements.define(name, element);
+    window[element.name] = element;
   }
 }
