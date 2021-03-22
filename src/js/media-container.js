@@ -9,6 +9,7 @@
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { propagateMedia, setAndPropagateMedia } from './media-chrome-html-element.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -62,7 +63,7 @@ template.innerHTML = `
   </div>
 `;
 
-class MediaContainer extends HTMLElement {
+class MediaContainer extends window.HTMLElement {
   constructor() {
     super();
 

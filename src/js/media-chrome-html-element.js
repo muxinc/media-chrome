@@ -1,7 +1,8 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { dashedToCamel } from './utils/dashedToCamel.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
-class MediaChromeHTMLElement extends HTMLElement {
+class MediaChromeHTMLElement extends window.HTMLElement {
   constructor() {
     super();
     this._media = null;

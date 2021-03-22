@@ -5,6 +5,7 @@
   the video time given in the `time` attribute.
 */
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -46,6 +47,7 @@ class MediaThumbnailPreviewElement extends MediaChromeHTMLElement {
       });
 
       if (!track) return;
+      if (!track.cues) return;
 
       let cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
 
