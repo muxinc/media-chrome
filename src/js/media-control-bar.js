@@ -32,7 +32,7 @@ template.innerHTML = `
 
     media-progress-range,
     ::slotted(media-progress-range),
-    ::slotted(media-trimmer) {
+    ::slotted(media-range-selector) {
       flex-grow: 1;
     }
   </style>

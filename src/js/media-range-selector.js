@@ -19,7 +19,7 @@ function lockBetweenZeroAndOne (num) {
 
 template.innerHTML = `
   <style>
-    #trimmerContainer {
+    #selectorContainer {
       background-color: transparent;
       height: 100%;
       width: 100%;
@@ -121,7 +121,7 @@ template.innerHTML = `
   <div id="thumbnailContainer">
     <media-thumbnail-preview></media-thumbnail-preview>
   </div>
-  <div id="trimmerContainer">
+  <div id="selectorContainer">
     <div id="timeline"></div>
     <div id="playhead"></div>
     <div id="leftTrim"></div>
@@ -133,7 +133,7 @@ template.innerHTML = `
   </div>
 `;
 
-class MediaTrimmer extends MediaChromeHTMLElement {
+class MediaRangeSelector extends MediaChromeHTMLElement {
   static get observedAttributes() {
     return ['thumbnails'].concat(super.observedAttributes || []);
   }
@@ -146,7 +146,7 @@ class MediaTrimmer extends MediaChromeHTMLElement {
 
     this.draggingEl = null;
 
-    this.wrapper = this.shadowRoot.querySelector('#trimmerContainer');
+    this.wrapper = this.shadowRoot.querySelector('#selectorContainer');
     this.selection = this.shadowRoot.querySelector('#selection');
     this.playhead = this.shadowRoot.querySelector('#playhead');
     this.leftTrim = this.shadowRoot.querySelector('#leftTrim');
@@ -280,14 +280,14 @@ class MediaTrimmer extends MediaChromeHTMLElement {
       this.initialX = this.getXPositionFromMouse(evt);
       this.selection.style.width = `${selectionW + xDelta}px`;
     }
-    this.dispatchUpdated();
+    this.dispatchUpdate();
   }
 
-  dispatchUpdated () {
-    const updatedEvent = new CustomEvent('updated', {
+  dispatchUpdate () {
+    const updateEvent = new CustomEvent('update', {
       detail: this.getCurrentClipBounds(),
     });
-    this.dispatchEvent(updatedEvent);
+    this.dispatchEvent(updateEvent);
   }
 
   getCurrentClipBounds () {
@@ -342,8 +342,8 @@ class MediaTrimmer extends MediaChromeHTMLElement {
   mediaSetCallback(media) {
     super.mediaSetCallback(media);
 
-    this._timeUpdated = this.timeUpdated.bind(this);
-    media.addEventListener('timeupdate', this._timeUpdated);
+    this._timeUpdate = this.timeUpdate.bind(this);
+    media.addEventListener('timeupdate', this._timeUpdate);
 
     /*
     // If readyState is supported, and the range is used before
@@ -368,7 +368,7 @@ class MediaTrimmer extends MediaChromeHTMLElement {
     }
   }
 
-  timeUpdated (evt) {
+  timeUpdate (evt) {
     const percentComplete = lockBetweenZeroAndOne(this.media.currentTime / this.media.duration);
     const fullW = this.wrapper.getBoundingClientRect().width;
     const progressW = (percentComplete * fullW);
@@ -388,14 +388,13 @@ class MediaTrimmer extends MediaChromeHTMLElement {
       if (this.media.currentTime > endTime) {
         this.media.currentTime = startTime;
       }
-      console.log('debug timeUpdated', this.media.currentTime, startTime, endTime);
     }
   }
 
   mediaUnsetCallback(media) {
     super.mediaUnsetCallback(media);
 
-    media.removeEventListener('timeupdate', this._timeUpdated);
+    media.removeEventListener('timeupdate', this._timeUpdate);
     this.wrapper.removeEventListener('click', this._clickHandler);
 
     this.wrapper.removeEventListener('touchstart', this._dragStart);
@@ -485,6 +484,6 @@ class MediaTrimmer extends MediaChromeHTMLElement {
   }
 }
 
-defineCustomElement('media-trimmer', MediaTrimmer);
+defineCustomElement('media-range-selector', MediaRangeSelector);
 
-export default MediaTrimmer;
+export default MediaRangeSelector;

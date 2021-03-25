@@ -18,7 +18,7 @@ import MediaPlayButton from './src/js/media-play-button.js';
 import MediaPlaybackRateButton from './src/js/media-playback-rate-button.js';
 import MediaPoster from './src/js/media-poster.js';
 import MediaProgressRange from './src/js/media-progress-range.js';
-import MediaTrimmer from './src/js/media-trimmer.js';
+import MediaRangeSelector from './src/js/media-range-selector.js';
 import MediaReplayButton from './src/js/media-replay-button.js';
 import MediaSettingsPopup from './src/js/media-settings-popup.js';
 import MediaThumbnailPreviewElement from './src/js/media-thumbnail-preview-element.js';
@@ -54,7 +54,7 @@ export {
   MediaPlaybackRateButton,
   MediaPoster,
   MediaProgressRange,
-  MediaTrimmer,
+  MediaRangeSelector,
   MediaReplayButton,
   MediaSettingsPopup,
   MediaThumbnailPreviewElement,
