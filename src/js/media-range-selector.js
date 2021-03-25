@@ -170,37 +170,6 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
     this.wrapper.addEventListener('mousedown', this._dragStart, false);
     this.wrapper.addEventListener('mouseup', this._dragEnd, false);
     this.wrapper.addEventListener('mousemove', this._drag, false);
-
-
-    /*
-    this.setMediaTimeWithRange = () => {
-      const media = this.media;
-      const range = this.range;
-
-      // Can't set the time before the media is ready
-      // Ignore if readyState isn't supported
-      if (media.readyState > 0 || media.readyState === undefined) {
-        media.currentTime = Math.round((range.value / 1000) * media.duration);
-      }
-    };
-    // this.range.addEventListener('input', this.setMediaTimeWithRange);
-
-    // The following listeners need to be removeable
-    this.updateRangeWithMediaTime = () => {
-      const media = this.media;
-      this.range.value = Math.round(
-        (media.currentTime / media.duration) * 1000
-      );
-
-      this.updateBar();
-    };
-
-    this.playIfNotReady = e => {
-      this.range.removeEventListener('change', this.playIfNotReady);
-      const media = this.media;
-      media.play().then(this.setMediaTimeWithRange);
-    };
-    */
   }
 
   /*
@@ -270,12 +239,20 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
     const percent = this.getMousePercent(evt);
     const selectionW = this.selection.getBoundingClientRect().width;
 
+    /*
+     * When dragging the start handle, change the leftTrim width
+     * and the selection width
+     */
     if (this.draggingEl === this.startHandle) {
       this.initialX = this.getXPositionFromMouse(evt);
       const leftTrimW = percent * fullWidth;
       this.leftTrim.style.width = `${leftTrimW}px`;
       this.selection.style.width = `${selectionW - xDelta}px`;
     }
+    /*
+     * When dragging the end handle all we need to do is change
+     * the selection width
+     */
     if (this.draggingEl === this.endHandle) {
       this.initialX = this.getXPositionFromMouse(evt);
       this.selection.style.width = `${selectionW + xDelta}px`;
@@ -299,7 +276,7 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
     const percentEnd = lockBetweenZeroAndOne((leftTrimRect.width + selectionRect.width) / rangeRect.width);
 
     /*
-     * TODO - maybe don't round to nearest integer? Round to 1 or 2 decimails?
+     * Currently we round to the nearest integer? Might want to change later to round to 1 or 2 decimails?
      */
     return {
       startTime: Math.round(percentStart * this.media.duration),
@@ -313,27 +290,13 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
   }
 
   handleClick (evt) {
-    /*
-    const { startTime, endTime } = this.getCurrentClipBounds();
-    if (evt.target == this.wrapper) {
-      console.log('debug we in the wrapper', evt.target);
-    }
-    if (evt.target == this.startHandle) {
-      if (this.media) {
-        this.media.currentTime = startTime;
-        return;
-      }
-    }
-    if (evt.target == this.endHandle) {
-      if (this.media) {
-        this.media.currentTime = endTime;
-      }
-    }
-    */
-
     const mousePercent = this.getMousePercent(evt);
     const timestampForClick = mousePercent * this.media.duration;
 
+    /*
+     * Clicking outside the selection (out of bounds), does not change the
+     * currentTime of the underlying media, only clicking in bounds does that
+     */
     if (this.media && this.isTimestampInBounds(timestampForClick)) {
       this.media.currentTime = timestampForClick;
     }
@@ -344,17 +307,6 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
 
     this._timeUpdate = this.timeUpdate.bind(this);
     media.addEventListener('timeupdate', this._timeUpdate);
-
-    /*
-    // If readyState is supported, and the range is used before
-    // the media is ready, use the play promise to set the time.
-    if (media.readyState !== undefined && media.readyState == 0) {
-      // range.addEventListener('change', this.playIfNotReady);
-    }
-
-    // TODO: Update value if video already played
-    media.addEventListener('progress', this.updateBar.bind(this));
-    */
 
     // Initialize thumbnails
     if (media.textTracks && media.textTracks.length) {
@@ -377,7 +329,8 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
     this.playhead.style.display = 'block';
 
     /*
-     * if paused, we don't need to do anything else
+     * if paused, we don't need to do anything else, but if it is playing
+     * we want to loop within the selection range
      */
     if (!this.media.paused) {
       const { startTime, endTime } = this.getCurrentClipBounds();
@@ -407,21 +360,10 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
 
   }
 
-  /* Add a buffered progress bar */
-  getBarColors() {
-    const media = this.media;
-    let colorsArray = super.getBarColors();
-
-    if (!media || !media.buffered || !media.buffered.length || media.duration <= 0) {
-      return colorsArray;
-    }
-
-    const buffered = media.buffered;
-    const buffPercent = (buffered.end(buffered.length-1) / media.duration) * 100;
-    colorsArray.splice(1, 0, ['var(--media-progress-buffered-color, #777)', buffPercent]);
-    return colorsArray;
-  }
-
+  /*
+   * This was copied over from media-progress-range, we should have a way of making
+   * this code shared between the two components
+   */
   enableThumbnails() {
     this.thumbnailPreview = this.shadowRoot.querySelector('media-thumbnail-preview');
     const thumbnailContainer = this.shadowRoot.querySelector('#thumbnailContainer');
