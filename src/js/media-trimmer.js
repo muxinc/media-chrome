@@ -1,10 +1,9 @@
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { createTemplate } from './utils/createTemplate.js';
-import { Window } from './utils/browser-env.js';
+import { Window as window } from './utils/server-safe-globals.js';
 import MediaThumbnailPreviewElement from './media-thumbnail-preview-element.js';
 
-const template = createTemplate();
+const template = document.createElement('template');
 
 const HANDLE_W = 10;
 
@@ -161,9 +160,7 @@ class MediaTrimmer extends MediaChromeHTMLElement {
     this._dragStart = this.dragStart.bind(this);
     this._dragEnd = this.dragEnd.bind(this);
     this._drag = this.drag.bind(this);
-    /*
-     * TODO - teardown these handlers later
-     */
+
     this.wrapper.addEventListener('click', this._clickHandler, false);
 
     this.wrapper.addEventListener('touchstart', this._dragStart, false);
@@ -450,11 +447,11 @@ class MediaTrimmer extends MediaChromeHTMLElement {
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
         this.thumbnailPreview.time = mousePercent * this.media.duration;
       };
-      Window.addEventListener('mousemove', mouseMoveHandler, false);
+      window.addEventListener('mousemove', mouseMoveHandler, false);
     };
 
     const stopTrackingMouse = () => {
-      Window.removeEventListener('mousemove', mouseMoveHandler);
+      window.removeEventListener('mousemove', mouseMoveHandler);
     };
 
     // Trigger when the mouse moves over the range
@@ -468,12 +465,12 @@ class MediaTrimmer extends MediaChromeHTMLElement {
         let offRangeHandler = (evt) => {
           if (evt.target != this && !this.contains(evt.target)) {
             this.thumbnailPreview.style.display = 'none';
-            Window.removeEventListener('mousemove', offRangeHandler);
+            window.removeEventListener('mousemove', offRangeHandler);
             rangeEntered = false;
             stopTrackingMouse();
           }
         }
-        Window.addEventListener('mousemove', offRangeHandler, false);
+        window.addEventListener('mousemove', offRangeHandler, false);
       }
 
       if (!this.media || !this.media.duration) {

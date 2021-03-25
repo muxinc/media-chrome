@@ -5,10 +5,9 @@
   the video time given in the `time` attribute.
 */
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
-import { createTemplate } from './utils/createTemplate.js';
-import { isServer, Window } from './utils/browser-env.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
-const template = createTemplate();
+const template = document.createElement('template');
 
 template.innerHTML = `
   <style>
@@ -133,9 +132,9 @@ class MediaThumbnailPreviewElement extends MediaChromeHTMLElement {
   // }
 }
 
-if (!isServer() && !Window.customElements.get('media-thumbnail-preview')) {
-  Window.customElements.define('media-thumbnail-preview', MediaThumbnailPreviewElement);
-  Window.MediaThumbnailPreviewElement = MediaThumbnailPreviewElement;
+if (!window.customElements.get('media-thumbnail-preview')) {
+  window.customElements.define('media-thumbnail-preview', MediaThumbnailPreviewElement);
+  window.MediaThumbnailPreviewElement = MediaThumbnailPreviewElement;
 }
 
 export default MediaThumbnailPreviewElement;

@@ -8,7 +8,7 @@
 */
 import MediaChromeButton from "./media-chrome-button.js";
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { isServer, Document } from './utils/browser-env.js';
+import { Document as document } from './utils/server-safe-globals.js';
 
 const enterFullscreenIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
   <path d="M0 0h24v24H0z" fill="none"/>
@@ -28,9 +28,9 @@ const api = {
   error: "fullscreenerror",
 };
 
-if (!isServer() && Document.fullscreenElement === undefined) {
+if (document.fullscreenElement === undefined) {
   api.enter = "webkitRequestFullScreen";
-  api.exit = Document.webkitExitFullscreen != null ? "webkitExitFullscreen" : "webkitCancelFullScreen";
+  api.exit = document.webkitExitFullscreen != null ? "webkitExitFullscreen" : "webkitCancelFullScreen";
   api.event = "webkitfullscreenchange";
   api.element = "webkitFullscreenElement";
   api.error = "webkitfullscreenerror";
@@ -41,7 +41,7 @@ class MediaFullscreenButton extends MediaChromeButton {
     super();
     this.icon = enterFullscreenIcon;
 
-    Document.addEventListener(api.event, () => {
+    document.addEventListener(api.event, () => {
       if (this.isFullscreen) {
         this.icon = exitFullscreenIcon;
       } else {
@@ -69,16 +69,16 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   set fullscreenElement(val) {
-    this._fullscreenElement = Document.querySelector(val);
+    this._fullscreenElement = document.querySelector(val);
   }
 
   onClick() {
     if (this.isFullscreen) {
-      Document[api.exit]();
+      document[api.exit]();
     } else {
-      if (Document.pictureInPictureElement) {
+      if (document.pictureInPictureElement) {
         // Should be async
-        Document.exitPictureInPicture();
+        document.exitPictureInPicture();
       }
 
       this.fullscreenElement && this.fullscreenElement[api.enter]();

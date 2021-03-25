@@ -1,8 +1,8 @@
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { createTemplate } from './utils/createTemplate.js';
+import { Document as document } from './utils/server-safe-globals.js';
 
-const template = createTemplate();
+const template = document.createElement('template');
 
 // Can't comma-separate selectors like ::-webkit-slider-thumb, ::-moz-range-thumb
 // Browsers ignore the whole rule if you do. So using templates for those.
@@ -127,7 +127,7 @@ class MediaChromeRange extends MediaChromeHTMLElement {
   constructor() {
     super();
 
-    const shadow = this.attachShadow({ mode: 'open' });
+    var shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.range = this.shadowRoot.querySelector('#range');
