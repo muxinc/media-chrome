@@ -133,6 +133,17 @@ class MediaContainer extends window.HTMLElement {
     observer.observe(this, { childList: true, subtree: true });
   }
 
+  static get observedAttributes() {
+    return ['autohide'].concat(super.observedAttributes || []);
+  }
+
+  // Could share this code with media-chrome-html-element instead
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName.toLowerCase() == 'autohide') {
+      this.autoHide = newValue;
+    }
+  }
+
   // First direct child with slot=media, or null
   get media() {
     return this.querySelector(':scope > [slot=media]');
@@ -204,9 +215,13 @@ class MediaContainer extends window.HTMLElement {
     const scheduleInactive = () => {
       this.container.classList.remove('inactive');
       window.clearTimeout(this.inactiveTimeout);
+
+      // Setting autoHide to -1 turns off autoHide
+      if (this.autoHide < 0) return;
+
       this.inactiveTimeout = window.setTimeout(() => {
         this.container.classList.add('inactive');
-      }, 2000);
+      }, this.autoHide * 1000);
     };
 
     // Unhide for keyboard controlling
@@ -241,7 +256,14 @@ class MediaContainer extends window.HTMLElement {
     });
   }
 
-  autoHide(seconds) {}
+  set autoHide(seconds) {
+    seconds = Number(seconds);
+    this._autoHide = isNaN(seconds) ? 0 : seconds;
+  }
+
+  get autoHide() {
+    return this._autoHide === undefined ? 2 : this._autoHide;
+  }
 }
 
 defineCustomElement('media-container', MediaContainer);
