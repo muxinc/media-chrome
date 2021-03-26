@@ -5,7 +5,7 @@ import MediaThumbnailPreviewElement from './media-thumbnail-preview-element.js';
 
 const template = document.createElement('template');
 
-const HANDLE_W = 10;
+const HANDLE_W = 8;
 
 const Z = {
   '100': 100,
@@ -38,8 +38,9 @@ template.innerHTML = `
 
     #startHandle, #endHandle {
       cursor: pointer;
-      height: 100%;
+      height: 80%;
       width: ${HANDLE_W}px;
+      border-radius: 4px;
       background-color: royalblue;
     }
 
@@ -56,6 +57,8 @@ template.innerHTML = `
       display: flex;
       z-index: ${Z['200']};
       width: 25%;
+      height: 100%;
+      align-items: center;
     }
 
     #leftTrim {
@@ -65,8 +68,7 @@ template.innerHTML = `
     #spacer {
       flex: 1;
       background-color: cornflowerblue;
-      height: 50%;
-      margin-top: 12px;
+      height: 40%;
     }
 
     #thumbnailContainer {
@@ -164,11 +166,11 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
     this.wrapper.addEventListener('click', this._clickHandler, false);
 
     this.wrapper.addEventListener('touchstart', this._dragStart, false);
-    this.wrapper.addEventListener('touchend', this._dragEnd, false);
+    window.addEventListener('touchend', this._dragEnd, false);
     this.wrapper.addEventListener('touchmove', this._drag, false);
 
     this.wrapper.addEventListener('mousedown', this._dragStart, false);
-    this.wrapper.addEventListener('mouseup', this._dragEnd, false);
+    window.addEventListener('mouseup', this._dragEnd, false);
     this.wrapper.addEventListener('mousemove', this._drag, false);
   }
 
@@ -185,14 +187,13 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
   }
 
   getXPositionFromMouse (evt) {
-    /*
-      if (evt.type === "touchstart") {
-        initialX = evt.touches[0].clientX - xOffset;
-      } else {
-        initialX = evt.clientX - xOffset;
-      }
-    */
-    return evt.clientX
+    let clientX;
+
+    if (['touchstart', 'touchmove'].includes(evt.type)) {
+      clientX = evt.touches[0].clientX;
+    }
+
+    return clientX || evt.clientX;
   }
 
   getMousePercent (evt) {
@@ -209,20 +210,33 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
       this.draggingEl = this.endHandle;
     }
 
-    /*
-    if (evt.type === "touchstart") {
-      initialX = evt.touches[0].clientX - xOffset;
-    } else {
-      initialX = evt.clientX - xOffset;
-    }
-    */
-
     this.initialX = this.getXPositionFromMouse(evt);
   }
 
   dragEnd (evt) {
     this.initialX = null;
     this.draggingEl = null;
+  }
+
+  setSelectionWidth (selectionPercent, fullTimelineWidth) {
+    let percent = selectionPercent;
+
+    const minWidthPx = HANDLE_W * 3;
+    const minWidthPercent = lockBetweenZeroAndOne(minWidthPx / fullTimelineWidth);
+
+    if (percent < minWidthPercent) {
+      percent = minWidthPercent;
+    }
+
+    /*
+     * The selection can never be smaller than the width
+     * of 3 handles
+    if (percent === 0) {
+      percent = minWidthPercent;
+    }
+     */
+
+    this.selection.style.width = `${percent * 100}%`;
   }
 
   drag (evt) {
@@ -232,7 +246,7 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
     evt.preventDefault();
 
     const rangeRect = this.wrapper.getBoundingClientRect();
-    const fullWidth = rangeRect.width;
+    const fullTimelineWidth = rangeRect.width;
 
     const endXPosition = this.getXPositionFromMouse(evt);
     const xDelta = endXPosition - this.initialX;
@@ -245,9 +259,10 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
      */
     if (this.draggingEl === this.startHandle) {
       this.initialX = this.getXPositionFromMouse(evt);
-      const leftTrimW = percent * fullWidth;
-      this.leftTrim.style.width = `${leftTrimW}px`;
-      this.selection.style.width = `${selectionW - xDelta}px`;
+      this.leftTrim.style.width = `${percent * 100}%`;
+
+      const selectionPercent = lockBetweenZeroAndOne((selectionW - xDelta) / fullTimelineWidth);
+      this.setSelectionWidth(selectionPercent, fullTimelineWidth);
     }
     /*
      * When dragging the end handle all we need to do is change
@@ -255,7 +270,8 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
      */
     if (this.draggingEl === this.endHandle) {
       this.initialX = this.getXPositionFromMouse(evt);
-      this.selection.style.width = `${selectionW + xDelta}px`;
+      const selectionPercent = lockBetweenZeroAndOne((selectionW + xDelta) / fullTimelineWidth);
+      this.setSelectionWidth(selectionPercent, fullTimelineWidth);
     }
     this.dispatchUpdate();
   }
@@ -325,7 +341,7 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
     const fullW = this.wrapper.getBoundingClientRect().width;
     const progressW = (percentComplete * fullW);
 
-    this.playhead.style.left = `${progressW}px`;
+    this.playhead.style.left = `${percentComplete * 100}%`;
     this.playhead.style.display = 'block';
 
     /*
