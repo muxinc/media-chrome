@@ -171,7 +171,7 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
 
     this.wrapper.addEventListener('mousedown', this._dragStart, false);
     window.addEventListener('mouseup', this._dragEnd, false);
-    this.wrapper.addEventListener('mousemove', this._drag, false);
+    window.addEventListener('mousemove', this._drag, false);
   }
 
   /*
@@ -371,8 +371,8 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
     this.wrapper.removeEventListener('touchmove', this._drag);
 
     this.wrapper.removeEventListener('mousedown', this._dragStart);
-    this.wrapper.removeEventListener('mouseup', this._dragEnd);
-    this.wrapper.removeEventListener('mousemove', this._drag);
+    window.removeEventListener('mouseup', this._dragEnd);
+    window.removeEventListener('mousemove', this._drag);
 
   }
 
