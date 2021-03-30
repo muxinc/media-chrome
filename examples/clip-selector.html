@@ -24,7 +24,7 @@
   </video>
   <media-control-bar>
     <media-play-button></media-play-button>
-    <media-range-selector></media-range-selector>
+    <media-clip-selector></media-clip-selector>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
   </media-control-bar>
@@ -37,13 +37,13 @@
 </body>
 
 <script>
-  const mediaRangeSelect = document.querySelector('media-range-selector');
+  const mediaClipSelect = document.querySelector('media-clip-selector');
   const startTimeEl = document.querySelector('#start-time');
   const endTimeEl = document.querySelector('#end-time');
   const currentTimeEl = document.querySelector('#current-time');
   const videoEl = document.querySelector('video');
 
-  mediaRangeSelect.addEventListener('update', (evt) => {
+  mediaClipSelect.addEventListener('update', (evt) => {
     const { startTime, endTime } = evt.detail;
     startTimeEl.innerHTML = `Start time seconds: ${startTime}`;
     endTimeEl.innerHTML = `End time seconds: ${endTime}`;

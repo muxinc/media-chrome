@@ -50,13 +50,13 @@ Simple HTML and CSS.
 
 ![Moving the playback progress bar](https://image.mux.com/NAu02gDe4qenxs8x4CKDKOb65hFcirY02p/animated.gif?width=640&fps=15&end=10)
 
-### Use `media-range-selector` to select segments of a video
+### Use `media-clip-selector` to select segments of a video
 
-`media-range-selector` is a built-in component that can build a UI for selecting portions of your media.
+`media-clip-selector` is a built-in component that can build a UI for selecting portions of your media.
 
-Listen for the `update` event on the element to get the selected start and end timestamps. Full example in examples/range-selector.html.
+Listen for the `update` event on the element to get the selected start and end timestamps. Full example in examples/clip-selector.html.
 
-![media range selector example](/screenshots/media-range-selector.gif?raw=true)
+![media range selector example](/screenshots/media-clip-selector.gif?raw=true)
 
 
 ## Usage
@@ -153,7 +153,7 @@ You can then use CSS to style the controls as you would other HTML elements.
 | `<media-fullscreen-button>` | Toggle fullscreen viewing                                                                             |
 | `<media-pip-button>`        | Toggle picture-in-picture mode of the video                                                           |
 | `<media-playback-rate-button>` | Change the speed of playback                                                           |
-| `<media-range-selector>` | Create selector handles that allow a user to select a sub-section of the media element. |
+| `<media-clip-selector>` | Create selector handles that allow a user to select a sub-section of the media element. |
 | More to come                 | Requests and contributions welcome                                                                    |
 
 ## Compatible players

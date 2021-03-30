@@ -135,7 +135,7 @@ template.innerHTML = `
   </div>
 `;
 
-class MediaRangeSelector extends MediaChromeHTMLElement {
+class MediaClipSelector extends MediaChromeHTMLElement {
   static get observedAttributes() {
     return ['thumbnails'].concat(super.observedAttributes || []);
   }
@@ -442,6 +442,6 @@ class MediaRangeSelector extends MediaChromeHTMLElement {
   }
 }
 
-defineCustomElement('media-range-selector', MediaRangeSelector);
+defineCustomElement('media-clip-selector', MediaClipSelector);
 
-export default MediaRangeSelector;
+export default MediaClipSelector;
