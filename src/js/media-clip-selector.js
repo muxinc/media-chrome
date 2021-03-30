@@ -21,7 +21,7 @@ template.innerHTML = `
   <style>
     #selectorContainer {
       background-color: transparent;
-      height: 100%;
+      height: 44px;
       width: 100%;
       display: flex;
       position: relative;
@@ -143,7 +143,7 @@ class MediaClipSelector extends MediaChromeHTMLElement {
   constructor() {
     super();
 
-    var shadow = this.attachShadow({ mode: 'open' });
+    const shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.draggingEl = null;
