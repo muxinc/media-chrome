@@ -1,0 +1,56 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width">
+  <script type="module" src="../dist/index.js"></script>
+</head>
+<style>
+  /*
+     over-ride the opacity rule so that the media-control-bar is always
+     showing (the default behavior is to hide it when media is playing)
+   */
+  media-control-bar {
+    opacity: 1;
+  }
+</style>
+<body>
+
+<media-container>
+  <video
+    slot="media"
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+    crossorigin
+  >
+    <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
+  </video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-clip-selector></media-clip-selector>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+  </media-control-bar>
+</media-container>
+
+<p id="current-time"></p>
+<p id="start-time"></p>
+<p id="end-time"></p>
+
+</body>
+
+<script>
+  const mediaClipSelect = document.querySelector('media-clip-selector');
+  const startTimeEl = document.querySelector('#start-time');
+  const endTimeEl = document.querySelector('#end-time');
+  const currentTimeEl = document.querySelector('#current-time');
+  const videoEl = document.querySelector('video');
+
+  mediaClipSelect.addEventListener('update', (evt) => {
+    const { startTime, endTime } = evt.detail;
+    startTimeEl.innerHTML = `Start time seconds: ${startTime}`;
+    endTimeEl.innerHTML = `End time seconds: ${endTime}`;
+  });
+
+  videoEl.addEventListener('timeupdate', () => {
+    currentTimeEl.innerHTML = `Current time: ${Math.round(videoEl.currentTime)}`;
+  });
+</script>
+</html>
