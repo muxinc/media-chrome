@@ -56,7 +56,7 @@ Simple HTML and CSS.
 
 Listen for the `update` event on the element to get the selected start and end timestamps. Full example in examples/clip-selector.html.
 
-![media range selector example](/screenshots/media-clip-selector.gif?raw=true)
+![media range selector example](./screenshots/media-clip-selector.gif?raw=true)
 
 
 ## Usage
