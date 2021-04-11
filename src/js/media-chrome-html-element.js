@@ -104,6 +104,8 @@ class MediaChromeHTMLElement extends window.HTMLElement {
 
     if (controller) { 
       this._mediaController = controller;
+      // Potential memory leak issue here
+      // TODO: Unassociate in disconnectedCallback
       controller.associateElement(this);
     }
   }

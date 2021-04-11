@@ -1,6 +1,6 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import {  MEDIA_PLAY_REQUEST, MEDIA_PAUSE_REQUEST } from './media-ui-events.js';
+import { MEDIA_PLAY_REQUEST, MEDIA_PAUSE_REQUEST } from './media-ui-events.js';
 import { Window as window } from './utils/server-safe-globals.js';
 
 const playIcon =

@@ -10,7 +10,7 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { propagateMedia, setAndPropagateMedia } from './media-chrome-html-element.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
-import {  MEDIA_PLAY_REQUEST, MEDIA_PAUSE_REQUEST } from './media-ui-events.js';
+import { MEDIA_PLAY_REQUEST, MEDIA_PAUSE_REQUEST } from './media-ui-events.js';
 
 const template = document.createElement('template');
 
@@ -102,21 +102,21 @@ class MediaController extends window.HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.container = this.shadowRoot.getElementById('container');
 
-    // Update the media prop of child elements when added/removed
-    // and react to adds/removals of media elements.
-    // This has turned into a meaty piece of logic...documenting verbosely
+    // Watch for child adds/removes and update the media element if necessary
     const mutationCallback = (mutationsList, observer) => {
       const media = this.media;
 
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
 
-          // Controls or media elements being removed
+          // Media element being removed
           mutation.removedNodes.forEach(node => {
-            // Is this a direct child media element of media-chrome
+            // Is this a direct child media element of media-controller?
+            // TODO: This accuracy doesn't matter after moving away from media attrs.
+            // Could refactor so we can always just call 'dispose' on any removed media el.
             if (node.slot == 'media' && mutation.target == this) {
               // Check if this was the current media by if it was the first
-              // el with slot=media in the child list. There can be multiple.
+              // el with slot=media in the child list. There could be multiple.
               let previousSibling = mutation.previousSibling && mutation.previousSibling.previousElementSibling;
 
               // Must have been first if no prev sibling or new media
@@ -131,10 +131,6 @@ class MediaController extends window.HTMLElement {
                 }
                 if (wasFirst) this.mediaUnsetCallback(node);
               }
-            } else {
-              // This is not a media el being removed so
-              // undo auto-injected medias from it and children
-              setAndPropagateMedia(node, null);
             }
           });
 
@@ -145,8 +141,6 @@ class MediaController extends window.HTMLElement {
               if (node == media) {
                 // Update all controls with new media if this is the new media
                 this.mediaSetCallback(node);
-              } else {
-                setAndPropagateMedia(node, media);
               }
             });
           }
@@ -157,16 +151,15 @@ class MediaController extends window.HTMLElement {
     const observer = new MutationObserver(mutationCallback);
     observer.observe(this, { childList: true, subtree: true });
 
-    // Capture requests from internal controls
+    // Capture requests from internal control events
     this._handlePlayRequest = () => {
       this.media && this.media.play();
     };
+    this.addEventListener(MEDIA_PLAY_REQUEST, this._handlePlayRequest);
   
     this._handlePauseRequest = () => {
       this.media && this.media.pause();
     };
-
-    this.addEventListener(MEDIA_PLAY_REQUEST, this._handlePlayRequest);
     this.addEventListener(MEDIA_PAUSE_REQUEST, this._handlePauseRequest);
 
     // Track externally associated control elements
@@ -195,10 +188,11 @@ class MediaController extends window.HTMLElement {
       return;
     }
 
-    // Listen for state changes and propagate them
+    // Listen for state changes and propagate them to children and associated els
     this._handleMediaPausedState = () => {
       const paused = media.paused;
       propagateMediaState(this, 'mediaPaused', paused);
+      // TODO: Make propagateMediaState support this so this is less hacky
       propagateMediaState({ children: this.associatedElements }, 'mediaPaused', paused);
     };
 
