@@ -10,7 +10,7 @@ class MediaChromeHTMLElement extends window.HTMLElement {
 
   // Observe changes to the media attribute
   static get observedAttributes() {
-    return ['media'].concat(super.observedAttributes || []);
+    return ['media', 'media-controller'].concat(super.observedAttributes || []);
   }
 
   // Model the basic HTML attribute functionality of matching props
@@ -18,6 +18,7 @@ class MediaChromeHTMLElement extends window.HTMLElement {
     // Assume attrs with dashes match camelCase props
     const propName = dashedToCamel(attrName);
 
+    // Deprecate
     if (propName == 'media') {
       if (newValue === null) {
         this.media = null;
@@ -33,6 +34,11 @@ class MediaChromeHTMLElement extends window.HTMLElement {
       }
 
       this.media = media;
+      return;
+    }
+
+    if (propName == 'mediaController') {
+      this[propName] = document.getElementById(newValue);
       return;
     }
 
@@ -86,6 +92,21 @@ class MediaChromeHTMLElement extends window.HTMLElement {
   disconnectedCallback() { }
   mediaSetCallback() { }
   mediaUnsetCallback() { }
+
+  get mediaController() {
+    return this._mediaController || null;
+  }
+
+  set mediaController(controller) {
+    if (controller === this._mediaController) return;
+
+    if (this._mediaController) this._mediaController.unassociateElement(this);
+
+    if (controller) { 
+      this._mediaController = controller;
+      controller.associateElement(this);
+    }
+  }
 }
 
 /*

@@ -11,7 +11,7 @@ template.innerHTML = `
     display: inline-block;
     vertical-align: middle;
     box-sizing: border-box;
-    background-color: transparent;
+    background-color: rgba(0,0,0,0.7);
 
     /* Default width and height can be overridden externally */
     height: 44px;
@@ -38,7 +38,7 @@ template.innerHTML = `
   }
 
   :host(:hover) {
-    background: rgba(255,255,255, 0.10);
+    background-color: rgba(0,0,0,0.5);
   }
 
   button {
@@ -92,12 +92,20 @@ class MediaChromeButton extends MediaChromeHTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.container = this.shadowRoot.querySelector('#container');
 
+    // Deprecate
     this.addEventListener('click', e => {
       this.onClick(e);
     });
+
+    this.addEventListener('click', e => {
+      this.handleClick(e);
+    });
   }
 
-  onClick() { }
+  handleClick() {}
+
+  // Should remove this version to avoid overwriting internal click handlers
+  onClick() {}
 
   set icon(svg) {
     this.container.innerHTML = svg;

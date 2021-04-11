@@ -1,5 +1,7 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import {  MEDIA_PLAY_REQUEST, MEDIA_PAUSE_REQUEST } from './media-ui-events.js';
+import { Window as window } from './utils/server-safe-globals.js';
 
 const playIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
@@ -9,53 +11,62 @@ const pauseIcon =
 class MediaPlayButton extends MediaChromeButton {
   constructor() {
     super();
+
+    // TODO: Move to supporting icon slots to allow overriding default icons
     this.icon = playIcon;
-    this._playing = false;
+
+    // False unless media-paused attr exists
+    this._mediaPaused = false;
   }
 
   static get observedAttributes() {
-    return ['playing'].concat(super.observedAttributes || []);
+    return ['media-paused', 'media-controller'].concat(super.observedAttributes || []);
   }
 
-  get playing() {
-    return this._playing;
+  get mediaPaused() {
+    return this._mediaPaused;
   }
 
-  set playing(val) {
-    this._playing = !!val;
+  set mediaPaused(paused) {
+    this._mediaPaused = !!paused;
 
-    if (val) {
-      this.icon = pauseIcon;
-    } else {
+    if (paused) {
       this.icon = playIcon;
-    }
-  }
-
-  onClick(e) {
-    const media = this.media;
-
-    // If not using media detection, onClick should be overridden
-    if (!media) {
-      console.warn('<media-play-button>: No media was found and an alternative onClick handler was not set.');
-      return;
-    }
-
-    if (media.paused) {
-      media.play();
     } else {
-      media.pause();
+      this.icon = pauseIcon;
     }
   }
 
-  mediaSetCallback(media) {
-    media.addEventListener('play', () => {
-      this.playing = true;
-    });
+  handleClick(e) {
+    const paused = this.mediaPaused;
+    const eventName = (paused) ? MEDIA_PLAY_REQUEST : MEDIA_PAUSE_REQUEST;
 
-    media.addEventListener('pause', () => {
-      this.playing = false;
-    });
+    // Allow for `oneventname` props on el like in native HTML
+    const cancelled = (this[`on${eventName}`] && this[`on${eventName}`](e)) === false;
+
+    if (!cancelled) {
+      this.dispatchEvent(new window.CustomEvent(eventName, { bubbles: true }));
+    }
   }
+
+  // Deprecate in favor of passing state directly to the media-prefixed properties
+  // and dispatching events to trigger media updates
+  // mediaSetCallback(media) {
+  //   this._mediaPlayHandler = () => {
+  //     this.playing = true;
+  //   };
+  //   media.addEventListener('play', this._mediaPlayHandler);
+
+  //   this._mediaPauseHandler = () => {
+  //     this.playing = false;
+  //   };
+  //   media.addEventListener('pause', this._mediaPauseHandler);
+  // }
+
+  // mediaUnsetCallback(media) {
+  //   media.removeEventHandler('play', this._mediaPlayHandler);
+  //   media.removeEventHandler('pause', this._mediaPauseHandler);
+  // }
 }
 
 defineCustomElement('media-play-button', MediaPlayButton);

@@ -1,5 +1,6 @@
 import MediaChromeButton from './src/js/media-chrome-button.js';
 import MediaContainer from './src/js/media-container.js';
+import MediaController from './src/js/media-controller.js';
 import MediaChromeHTMLElement from './src/js/media-chrome-html-element.js';
 import MediaChromeMenuButton from './src/js/media-chrome-menu-button.js';
 import MediaChromeMenu from './src/js/media-chrome-menu.js';
@@ -36,6 +37,7 @@ if (!window.customElements.get('media-chrome')) {
 export {
   MediaChromeButton,
   MediaContainer,
+  MediaController,
   MediaChromeHTMLElement,
   MediaChromeMenuButton,
   MediaChromeMenu,
