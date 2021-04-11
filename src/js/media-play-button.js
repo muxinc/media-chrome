@@ -48,25 +48,6 @@ class MediaPlayButton extends MediaChromeButton {
       this.dispatchEvent(new window.CustomEvent(eventName, { bubbles: true }));
     }
   }
-
-  // Deprecate in favor of passing state directly to the media-prefixed properties
-  // and dispatching events to trigger media updates
-  // mediaSetCallback(media) {
-  //   this._mediaPlayHandler = () => {
-  //     this.playing = true;
-  //   };
-  //   media.addEventListener('play', this._mediaPlayHandler);
-
-  //   this._mediaPauseHandler = () => {
-  //     this.playing = false;
-  //   };
-  //   media.addEventListener('pause', this._mediaPauseHandler);
-  // }
-
-  // mediaUnsetCallback(media) {
-  //   media.removeEventHandler('play', this._mediaPlayHandler);
-  //   media.removeEventHandler('pause', this._mediaPauseHandler);
-  // }
 }
 
 defineCustomElement('media-play-button', MediaPlayButton);
