@@ -285,6 +285,11 @@ class MediaController extends window.HTMLElement {
   associateElement(el) {
     this.associatedElements.push(el);
 
+    // Could just attach all releveant listeners to every associated el
+    // or could use the `on${eventName}` prop detection method to know
+    // which events the el intends to dispatch
+    // The latter requires authors to actually follow that paradigm
+    // which is probably a stretch
     el.addEventListener(MEDIA_PLAY_REQUEST, this._handlePlayRequest);
     el.addEventListener(MEDIA_PAUSE_REQUEST, this._handlePauseRequest);
 
