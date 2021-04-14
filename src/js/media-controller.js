@@ -68,10 +68,15 @@ template.innerHTML = `
 /*
   Loop through child nodes and set the media[State] on every child.
 */
-function propagateMediaState(el, stateName, val) {
-  Array.prototype.forEach.call(el.children, (child) => {
+function propagateMediaState(nodeList, stateName, val) {
+  Array.from(nodeList).forEach(child => {
+    // All elements we care about at least have an empty children list (i.e. not <style>)
+    if (!child.children) return;
+
     const childName = child.nodeName.toLowerCase();
 
+    // Don't propagate into media elements, UI can't live in <video>
+    // so just avoid potential conflicts
     if (child.slot == 'media') return;
 
     function setAndPropagate() {
@@ -81,7 +86,11 @@ function propagateMediaState(el, stateName, val) {
       if (typeof child[stateName] !== 'undefined') {
         child[stateName] = val;
       }
-      propagateMediaState(child, stateName, val);
+
+      propagateMediaState(child.children, stateName, val);
+
+      // We might consider an option to block piercing the shadow dom
+      if (child.shadowRoot) propagateMediaState(child.shadowRoot.childNodes, stateName, val);
     }
 
     // Make sure custom els are ready
@@ -191,9 +200,8 @@ class MediaController extends window.HTMLElement {
     // Listen for state changes and propagate them to children and associated els
     this._handleMediaPausedState = () => {
       const paused = media.paused;
-      propagateMediaState(this, 'mediaPaused', paused);
-      // TODO: Make propagateMediaState support this so this is less hacky
-      propagateMediaState({ children: this.associatedElements }, 'mediaPaused', paused);
+      propagateMediaState(this.children, 'mediaPaused', paused);
+      propagateMediaState(this.associatedElements, 'mediaPaused', paused);
     };
 
     media.addEventListener('play', this._handleMediaPausedState);
@@ -293,7 +301,7 @@ class MediaController extends window.HTMLElement {
     el.addEventListener(MEDIA_PLAY_REQUEST, this._handlePlayRequest);
     el.addEventListener(MEDIA_PAUSE_REQUEST, this._handlePauseRequest);
 
-    propagateMediaState({ children: [el] }, 'mediaPaused', this.media.paused);
+    propagateMediaState([el], 'mediaPaused', this.media.paused);
   }
 
   unassociateElement(el) {
