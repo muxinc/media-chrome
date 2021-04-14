@@ -45,7 +45,10 @@ class MediaPlayButton extends MediaChromeButton {
     const cancelled = (this[`on${eventName}`] && this[`on${eventName}`](e)) === false;
 
     if (!cancelled) {
-      this.dispatchEvent(new window.CustomEvent(eventName, { bubbles: true }));
+      this.dispatchEvent(new window.CustomEvent(eventName, {
+        bubbles: true,
+        composed: true 
+      }));
     }
   }
 }
