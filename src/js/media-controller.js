@@ -13,7 +13,9 @@ import {
   MEDIA_PLAY_REQUEST,
   MEDIA_PAUSE_REQUEST,
   MEDIA_MUTE_REQUEST,
-  MEDIA_UNMUTE_REQUEST
+  MEDIA_UNMUTE_REQUEST,
+  MEDIA_VOLUME_REQUEST,
+  MEDIA_SEEK_REQUEST
 } from './media-ui-events.js';
 
 const template = document.createElement('template');
@@ -204,6 +206,32 @@ class MediaController extends window.HTMLElement {
       }
     }
     this.addEventListener(MEDIA_UNMUTE_REQUEST, this._handleUnmuteRequest);
+
+    this._handleVolumeRequest = (e) => {
+      const media = this.media;
+      const volume = e.detail;
+
+      e.stopPropagation();
+
+      if (!media) return;
+
+      media.volume = volume;
+
+      // If the viewer moves the volume we should unmute for them.
+      if (volume > 0 && media.muted) {
+        media.muted = false;
+      }
+
+      // Store the last set volume as a local preference, if ls is supported
+      try {
+        window.localStorage.setItem(
+          'media-chrome-pref-volume',
+          volume.toString()
+        );
+      } catch (e) {}
+    }
+    this.addEventListener(MEDIA_VOLUME_REQUEST, this._handleVolumeRequest);
+
   }
 
   // First direct child with slot=media, or null
@@ -278,6 +306,14 @@ class MediaController extends window.HTMLElement {
       }
     }
     media.addEventListener('click', this._mediaClickHandler, false);
+
+    // Update the media with the last set volume preference
+    // This would preferably live with the media element,
+    // not a control.
+    try {
+      const volPref = window.localStorage.getItem('media-chrome-pref-volume');
+      if (volPref !== null) media.volume = volPref;
+    } catch (e) { }
   }
 
   mediaUnsetCallback(media) {
