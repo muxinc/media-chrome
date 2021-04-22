@@ -109,24 +109,12 @@ class MediaChromeButton extends MediaChromeHTMLElement {
 
     shadow.appendChild(buttonHTML);
 
-    // Deprecate
-    this.addEventListener('click', e => {
-      this.onClick(e);
-    });
-
     this.addEventListener('click', e => {
       this.handleClick(e);
     });
   }
 
   handleClick() {}
-
-  // Should remove this version to avoid overwriting internal click handlers
-  onClick() {}
-
-  set icon(svg) {
-    this.container.innerHTML = svg;
-  }
 }
 
 defineCustomElement('media-chrome-button', MediaChromeButton);

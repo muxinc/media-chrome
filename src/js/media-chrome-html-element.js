@@ -6,11 +6,22 @@ class MediaChromeHTMLElement extends window.HTMLElement {
   constructor() {
     super();
     this._media = null;
+    this._mediaMuted = false;
+    this._mediaVolume = 1;
+    this._mediaVolumeLevel = 'high';
+    this._mediaFullscreen = false;
   }
 
   // Observe changes to the media attribute
   static get observedAttributes() {
-    return ['media', 'media-controller'].concat(super.observedAttributes || []);
+    return [
+      'media', 
+      'media-controller',
+      'media-muted',
+      'media-volume',
+      'media-volume-level',
+      'media-is-fullscreen',
+    ].concat(super.observedAttributes || []);
   }
 
   // Model the basic HTML attribute functionality of matching props
@@ -42,56 +53,18 @@ class MediaChromeHTMLElement extends window.HTMLElement {
       return;
     }
 
+    let typedValue = newValue;
+
     // Boolean props should never start as null
     if (typeof this[propName] == 'boolean') {
       // null is returned when attributes are removed i.e. boolean attrs
-      if (newValue === null) {
-        this[propName] = false;
-      } else {
-        // The new value might be an empty string, which is still true
-        // for boolean attributes
-        this[propName] = true;
-      }
-    } else {
-      this[propName] = newValue;
-    }
-  }
-
-  set media(media) {
-    if (media === this._media) return;
-
-    if (this._media) {
-      this.mediaUnsetCallback(this._media);
+      // The new value might be an empty string, which is still true
+      // for boolean attributes
+      const typedValue = !(newValue === null);
     }
 
-    this._media = media;
-
-    // Update light and shadow children even if null
-    // Media-chrome can't access shadow dom of separately loaded els
-    propagateMedia(this, media);
-    propagateMedia(this.shadowRoot, media);
-
-    if (media) {
-      const mediaName = media.nodeName.toLowerCase();
-
-      if (mediaName.includes('-')) {
-        window.customElements.whenDefined(mediaName).then(()=>{
-          this.mediaSetCallback(media);
-        });
-      } else {
-        this.mediaSetCallback(media);
-      }
-    }
+    this[propName] = typedValue;
   }
-
-  get media() {
-    return this._media;
-  }
-
-  connectedCallback() { }
-  disconnectedCallback() { }
-  mediaSetCallback() { }
-  mediaUnsetCallback() { }
 
   get mediaController() {
     return this._mediaController || null;
@@ -108,6 +81,87 @@ class MediaChromeHTMLElement extends window.HTMLElement {
       // TODO: Unassociate in disconnectedCallback
       controller.associateElement(this);
     }
+  }
+
+  get mediaMuted() {
+    return this._mediaMuted;
+  }
+
+  set mediaMuted(muted) {
+    muted = !!muted;
+
+    this._mediaMuted = muted;
+
+    // Update the attribute first if needed, but don't inf loop
+    const attrBoolValue = this.getAttribute('media-muted') !== null;
+
+    if (muted !== attrBoolValue) {
+      if (muted) {
+        this.setAttribute('media-muted', 'media-muted');
+      } else {
+        this.removeAttribute('media-muted');
+      }      
+    }
+
+    if (this.mediaMutedSet) this.mediaMutedSet(muted);
+  }
+
+  get mediaVolume() {
+    return this._mediaVolume;
+  }
+
+  set mediaVolume(volume) {
+    volume = parseFloat(volume);
+
+    this._mediaVolume = volume;
+
+    const attrValue = parseFloat(this.getAttribute('media-volume'));
+
+    if (attrValue !== volume) {
+      this.setAttribute('media-volume', volume);
+    }
+  }
+
+  get mediaVolumeLevel() {
+    return this._mediaVolumeLevel;
+  }
+
+  set mediaVolumeLevel(volumeLevel) {
+    volumeLevel = volumeLevel.toLowerCase();
+
+    if (['off', 'low','medium','high'].indexOf(volumeLevel) === -1) {
+      volumeLevel = 'high';
+    }
+
+    this._mediaVolumeLevel = volumeLevel;
+
+    const attrValue = this.getAttribute('media-volume-level');
+
+    if (volumeLevel !== attrValue) {
+      this.setAttribute('media-volume-level', volumeLevel);
+    }
+  }
+
+  get mediaIsFullscreen() {
+    return this._mediaFullscreen;
+  }
+
+  set mediaIsFullscreen(fullscreen) {
+    fullscreen = !!fullscreen;
+
+    this._mediaFullscreen = fullscreen;
+
+    const attrBoolValue = this.getAttribute('media-is-fullscreen') !== null;
+
+    if (fullscreen !== attrBoolValue) {
+      if (fullscreen) {
+        this.setAttribute('media-is-fullscreen', 'media-is-fullscreen');
+      } else {
+        this.removeAttribute('media-is-fullscreen');
+      }      
+    }
+
+    if (this.mediaFullscreenSet) this.mediaFullscreenSet(fullscreen);
   }
 }
 

@@ -15,8 +15,11 @@ import {
   MEDIA_MUTE_REQUEST,
   MEDIA_UNMUTE_REQUEST,
   MEDIA_VOLUME_REQUEST,
-  MEDIA_SEEK_REQUEST
+  MEDIA_ENTER_FULLSCREEN_REQUEST,
+  MEDIA_EXIT_FULLSCREEN_REQUEST,
 } from './media-ui-events.js';
+import { fullscreenApi } from './utils/fullscreenApi.js';
+
 
 const template = document.createElement('template');
 
@@ -232,6 +235,27 @@ class MediaController extends window.HTMLElement {
     }
     this.addEventListener(MEDIA_VOLUME_REQUEST, this._handleVolumeRequest);
 
+    // This current assumes that the media controller is the fullscreen element
+    // which may be true in most cases but not all.
+    // The prior version of media-chrome support alt fullscreen elements
+    // and that's something we can work towards here
+    this._handleEnterFullscreenRequest = (e) => {
+      e.stopPropagation();
+      
+      if (document.pictureInPictureElement) {
+        // Should be async
+        document.exitPictureInPicture();
+      }
+
+      this[fullscreenApi.enter]();
+    }
+    this.addEventListener(MEDIA_ENTER_FULLSCREEN_REQUEST, this._handleEnterFullscreenRequest);
+
+    this._handleExitFullscreenRequest = (e) => {
+      e.stopPropagation();
+      document[fullscreenApi.exit]();
+    }
+    this.addEventListener(MEDIA_EXIT_FULLSCREEN_REQUEST, this._handleExitFullscreenRequest);
   }
 
   // First direct child with slot=media, or null
@@ -283,6 +307,14 @@ class MediaController extends window.HTMLElement {
     media.addEventListener('volumechange', this._handleMediaVolumeState);
     this._handleMediaVolumeState();
 
+    // Fullscreen updates
+    this._handleDocFullscreenChanges = () => {
+      // Might be in the shadow dom
+      const fullscreenEl = this.getRootNode()[fullscreenApi.element];
+      this.propagateMediaState('mediaIsFullscreen', fullscreenEl == this);
+    };
+    document.addEventListener(fullscreenApi.event, this._handleDocFullscreenChanges);
+
     // Auto-show/hide controls
     if (media.paused) {
       this.container.classList.add('paused');
@@ -319,6 +351,7 @@ class MediaController extends window.HTMLElement {
   mediaUnsetCallback(media) {
     media.removeEventListener('play', this._handleMediaPausedState);
     media.removeEventListener('pause', this._handleMediaPausedState);
+    document.removeEventListener(fullscreenApi.event, this._handleDocFullscreenChanges);
 
     media.removeEventListener('click', this._mediaClickHandler);
     media.removeEventListener('play', this._mediaPlayHandler);

@@ -48,55 +48,7 @@ class MediaMuteButton extends MediaChromeButton {
       slotTemplate: slotTemplate
     }, options);
 
-    super(options);
-
-    this._mediaMuted = false;
-    this._mediaVolumeLevel = 'high';   
-  }
-
-  static get observedAttributes() {
-    return ['media-muted', 'media-volume-level'].concat(super.observedAttributes || []);
-  }
-
-  get mediaMuted() {
-    return this._mediaMuted;
-  }
-
-  set mediaMuted(muted) {
-    muted = !!muted;
-
-    this._mediaMuted = muted;
-
-    // Update the attribute first if needed, but don't inf loop
-    const attrBoolValue = this.getAttribute('media-muted') !== null;
-
-    if (muted !== attrBoolValue) {
-      if (muted) {
-        this.setAttribute('media-muted', 'media-muted');
-      } else {
-        this.removeAttribute('media-muted');
-      }      
-    }
-  }
-
-  get mediaVolumeLevel() {
-    return this._mediaVolumeLevel;
-  }
-
-  set mediaVolumeLevel(volumeLevel) {
-    volumeLevel = volumeLevel.toLowerCase();
-
-    if (['off', 'low','medium','high'].indexOf(volumeLevel) === -1) {
-      volumeLevel = 'high';
-    }
-
-    this._mediaVolumeLevel = volumeLevel;
-
-    const attrValue = this.getAttribute('media-volume-level');
-
-    if (volumeLevel !== attrValue) {
-      this.setAttribute('media-volume-level', volumeLevel);
-    }
+    super(options); 
   }
 
   handleClick(e) {
@@ -112,23 +64,6 @@ class MediaMuteButton extends MediaChromeButton {
         composed: true 
       }));
     }
-  }
-
-  update() {
-    const media = this.media;
-
-    if (media.muted || media.volume === 0) {
-      this.icon = volumeOff;
-    } else if (media.volume < 0.5) {
-      this.icon = volumeLow;
-    } else {
-      this.icon = volumeUp;
-    }
-  }
-
-  mediaSetCallback(media) {
-    media.addEventListener('volumechange', this.update.bind(this));
-    this.update();
   }
 }
 

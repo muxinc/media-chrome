@@ -9,6 +9,7 @@
 import MediaChromeButton from "./media-chrome-button.js";
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Document as document } from './utils/server-safe-globals.js';
+import { MEDIA_ENTER_FULLSCREEN_REQUEST, MEDIA_EXIT_FULLSCREEN_REQUEST } from './media-ui-events.js';
 
 const enterFullscreenIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
   <path d="M0 0h24v24H0z" fill="none"/>
@@ -20,69 +21,60 @@ const exitFullscreenIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" h
   <path class="icon" d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
 </svg>`;
 
-const api = {
-  enter: "requestFullscreen",
-  exit: "exitFullscreen",
-  event: "fullscreenchange",
-  element: "fullscreenElement",
-  error: "fullscreenerror",
-};
-
-if (document.fullscreenElement === undefined) {
-  api.enter = "webkitRequestFullScreen";
-  api.exit = document.webkitExitFullscreen != null ? "webkitExitFullscreen" : "webkitCancelFullScreen";
-  api.event = "webkitfullscreenchange";
-  api.element = "webkitFullscreenElement";
-  api.error = "webkitfullscreenerror";
-}
-
-class MediaFullscreenButton extends MediaChromeButton {
-  constructor() {
-    super();
-    this.icon = enterFullscreenIcon;
-
-    document.addEventListener(api.event, () => {
-      if (this.isFullscreen) {
-        this.icon = exitFullscreenIcon;
-      } else {
-        this.icon = enterFullscreenIcon;
-      }
-    });
+const slotTemplate = document.createElement('template');
+slotTemplate.innerHTML = `
+  <style>
+  :host([media-is-fullscreen]) slot:not([name=exit]) > *, 
+  :host([media-is-fullscreen]) ::slotted(:not([slot=exit])) {
+    display: none;
   }
 
+  /* Double negative, but safer if display doesn't equal 'block' */
+  :host(:not([media-is-fullscreen])) slot:not([name=enter]) > *, 
+  :host(:not([media-is-fullscreen])) ::slotted(:not([slot=enter])) {
+    display: none;
+  }
+  </style>
+
+  <slot name="enter">${enterFullscreenIcon}</slot>
+  <slot name="exit">${exitFullscreenIcon}</slot>
+`;
+
+class MediaFullscreenButton extends MediaChromeButton {
+  constructor(options={}) {
+    options = Object.assign({
+      slotTemplate: slotTemplate
+    }, options);
+
+    super(options); 
+  }
+
+  handleClick(e) {
+    const fullscreen = this.mediaIsFullscreen;
+    const eventName = (fullscreen) ? MEDIA_EXIT_FULLSCREEN_REQUEST : MEDIA_ENTER_FULLSCREEN_REQUEST;
+
+    // Allow for `oneventname` props on el like in native HTML
+    const cancelled = (this[`on${eventName}`] && this[`on${eventName}`](e)) === false;
+
+    if (!cancelled) {
+      this.dispatchEvent(new window.CustomEvent(eventName, {
+        bubbles: true,
+        composed: true 
+      }));
+    }
+  }
+
+  // Need to update fullscreenElement setting for media-controller
   static get observedAttributes() {
     return ['fullscreen-element'].concat(super.observedAttributes || []);
   }
-
-  get isFullscreen() {
-    const el = this.fullscreenElement;
-
-    if (!el) return false;
-
-    return el.getRootNode()[api.element] == el;
-  }
-
   get fullscreenElement() {
     return this._fullscreenElement
       || (this.media && this.media.closest('media-container, media-chrome'))
       || this.media;
   }
-
   set fullscreenElement(val) {
     this._fullscreenElement = document.querySelector(val);
-  }
-
-  onClick() {
-    if (this.isFullscreen) {
-      document[api.exit]();
-    } else {
-      if (document.pictureInPictureElement) {
-        // Should be async
-        document.exitPictureInPicture();
-      }
-
-      this.fullscreenElement && this.fullscreenElement[api.enter]();
-    }
   }
 }
 

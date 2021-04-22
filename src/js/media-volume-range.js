@@ -10,8 +10,6 @@ class MediaVolumeRange extends MediaChromeRange {
     this.range.addEventListener('input', () => {
       const volume = this.range.value / 1000;
 
-      console.log(volume);
-
       this.dispatchEvent(new window.CustomEvent(MEDIA_VOLUME_REQUEST, {
         bubbles: true,
         composed: true,
@@ -29,7 +27,7 @@ class MediaVolumeRange extends MediaChromeRange {
     //   }
     // });
 
-    // Come back to this
+    // Come back to this and move to controller if possible
     // this.range.addEventListener('change', () => {
     //   // If the user is just sliding the volume to zero, we want to treat
     //   // that the same as muting. And when they unmute, go back to the volume
@@ -41,44 +39,11 @@ class MediaVolumeRange extends MediaChromeRange {
     // });
   }
 
-  get mediaVolume() {
-    return this._mediaVolume;
-  }
-
-  set mediaVolume(volume) {
-    volume = parseFloat(volume);
-
-    this._mediaVolume = volume;
-
-    const attrValue = parseFloat(this.getAttribute('media-volume'));
-
-    if (attrValue !== volume) {
-      this.setAttribute('media-volume', volume);
-    }
-
+  mediaVolumeSet(volume) {
     this._updateRange();
   }
 
-  get mediaMuted() {
-    return this._mediaMuted;
-  }
-
-  set mediaMuted(muted) {
-    muted = !!muted;
-
-    this._mediaMuted = muted;
-
-    // Update the attribute first if needed, but don't inf loop
-    const attrBoolValue = this.getAttribute('media-muted') !== null;
-
-    if (muted !== attrBoolValue) {
-      if (muted) {
-        this.setAttribute('media-muted', 'media-muted');
-      } else {
-        this.removeAttribute('media-muted');
-      }      
-    }
-
+  mediaMutedSet(muted) {
     this._updateRange();
   }
 
