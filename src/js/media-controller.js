@@ -8,9 +8,13 @@
   * Auto-hide controls on inactivity while playing
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { propagateMedia, setAndPropagateMedia } from './media-chrome-html-element.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
-import { MEDIA_PLAY_REQUEST, MEDIA_PAUSE_REQUEST } from './media-ui-events.js';
+import { 
+  MEDIA_PLAY_REQUEST,
+  MEDIA_PAUSE_REQUEST,
+  MEDIA_MUTE_REQUEST,
+  MEDIA_UNMUTE_REQUEST
+} from './media-ui-events.js';
 
 const template = document.createElement('template');
 
@@ -52,6 +56,10 @@ template.innerHTML = `
       opacity: 1;
       transition: opacity 0.25s;
       visibility: visible;
+    }
+
+    [media-test] #container {
+      display:none !important;
     }
 
     #container.inactive:not(.paused) ::slotted(*) {
@@ -160,19 +168,42 @@ class MediaController extends window.HTMLElement {
     const observer = new MutationObserver(mutationCallback);
     observer.observe(this, { childList: true, subtree: true });
 
+    // Track externally associated control elements
+    this.associatedElements = [];
+
     // Capture requests from internal control events
-    this._handlePlayRequest = () => {
+    this._handlePlayRequest = (e) => {
+      e.stopPropagation();
       this.media && this.media.play();
     };
     this.addEventListener(MEDIA_PLAY_REQUEST, this._handlePlayRequest);
   
-    this._handlePauseRequest = () => {
+    this._handlePauseRequest = (e) => {
+      e.stopPropagation();
       this.media && this.media.pause();
     };
     this.addEventListener(MEDIA_PAUSE_REQUEST, this._handlePauseRequest);
 
-    // Track externally associated control elements
-    this.associatedElements = [];
+    this._handleMuteRequest = (e) => {
+      e.stopPropagation();
+      if (this.media) this.media.muted = true;
+    }
+    this.addEventListener(MEDIA_MUTE_REQUEST, this._handleMuteRequest);
+
+    this._handleUnmuteRequest = (e) => {
+      e.stopPropagation();
+      const media = this.media;
+
+      if (!media) return;
+
+      media.muted = false;
+
+      // Avoid confusion by bumping the volume on unmute
+      if (media.volume === 0) {
+        media.volume = 0.25;
+      }
+    }
+    this.addEventListener(MEDIA_UNMUTE_REQUEST, this._handleUnmuteRequest);
   }
 
   // First direct child with slot=media, or null
@@ -199,14 +230,30 @@ class MediaController extends window.HTMLElement {
 
     // Listen for state changes and propagate them to children and associated els
     this._handleMediaPausedState = () => {
-      const paused = media.paused;
-      propagateMediaState(this.children, 'mediaPaused', paused);
-      propagateMediaState(this.associatedElements, 'mediaPaused', paused);
+      this.propagateMediaState('mediaPaused', media.paused);
     };
-
     media.addEventListener('play', this._handleMediaPausedState);
-    media.addEventListener('pause', this._handleMediaPausedState)
+    media.addEventListener('pause', this._handleMediaPausedState);
     this._handleMediaPausedState();
+
+    this._handleMediaVolumeState = () => {
+      const { muted, volume } = media;
+
+      let level = 'high';
+      if (volume == 0 || muted) {
+        level = 'off';
+      } else if (volume < 0.5) {
+        level = 'low';
+      } else if (volume < 0.75) {
+        level = 'medium';
+      }
+
+      this.propagateMediaState('mediaMuted', muted);
+      this.propagateMediaState('mediaVolume', volume);
+      this.propagateMediaState('mediaVolumeLevel', level);
+    };
+    media.addEventListener('volumechange', this._handleMediaVolumeState);
+    this._handleMediaVolumeState();
 
     // Auto-show/hide controls
     if (media.paused) {
@@ -243,6 +290,11 @@ class MediaController extends window.HTMLElement {
 
     // Unhide controls
     this.container.classList.add('paused');
+  }
+
+  propagateMediaState(stateName, state) {
+    propagateMediaState(this.children, stateName, state);
+    propagateMediaState(this.associatedElements, stateName, state);
   }
 
   connectedCallback() {

@@ -41,6 +41,7 @@ template.innerHTML = `
     background-color: rgba(0,0,0,0.5);
   }
 
+  /* Undo the default button styles and fill the parent element */
   button {
     width: 100%;
     height: 100%;
@@ -78,19 +79,35 @@ template.innerHTML = `
   svg .icon {
     fill: var(--media-icon-color, #eee);
   }
+
+  button:not([aria-pressed]) slot[name="pressed"],
+  button[aria-pressed=false] slot[name="pressed"] {
+    display: none;
+  }
+
+  button[aria-pressed=true] slot:not([name]) {
+    display: none;
+  }
 </style>
-<button id="container">
-  <slot></slot>
-</button>
+
+<button></button>
 `;
 
+const defaultSlotTemplate = document.createElement('template');
+defaultSlotTemplate.innerHTML = `<slot></slot>`;
+
 class MediaChromeButton extends MediaChromeHTMLElement {
-  constructor() {
+  constructor(options={}) {
     super();
 
-    var shadow = this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.container = this.shadowRoot.querySelector('#container');
+    const shadow = this.attachShadow({ mode: 'open' });
+
+    const buttonHTML = template.content.cloneNode(true);
+    this.nativeEl = buttonHTML.querySelector('button');
+    const slotTemplate = options.slotTemplate || defaultSlotTemplate;
+    this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
+
+    shadow.appendChild(buttonHTML);
 
     // Deprecate
     this.addEventListener('click', e => {
