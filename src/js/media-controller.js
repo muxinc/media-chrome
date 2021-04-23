@@ -21,6 +21,7 @@ import {
   MEDIA_PREVIEW_REQUEST,
   MEDIA_ENTER_PIP_REQUEST,
   MEDIA_EXIT_PIP_REQUEST,
+  MEDIA_PLAYBACK_RATE_REQUEST,
 } from './media-ui-events.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 
@@ -290,7 +291,15 @@ class MediaController extends window.HTMLElement {
         media.currentTime = time;
       }
     });
-    
+
+    this.addEventListener(MEDIA_PLAYBACK_RATE_REQUEST, (e) => {
+      e.stopPropagation();
+
+      const media = this.media;
+
+      if (media) media.playbackRate = e.detail;
+    });
+
     this.addEventListener(MEDIA_PREVIEW_REQUEST, (e) => {
       e.stopPropagation();
 
@@ -408,6 +417,13 @@ class MediaController extends window.HTMLElement {
     media.addEventListener('durationchange', this._propagateDuration);
     media.addEventListener('loadedmetadata', this._propagateDuration);
     this._propagateDuration();
+
+    // Rate updates
+    this._propagateRate = () => {
+      this.propagateMediaState('mediaPlaybackRate', media.playbackRate);
+    };
+    media.addEventListener('ratechange', this._propagateRate);
+    this._propagateRate();
 
 
     // Auto-show/hide controls

@@ -16,6 +16,8 @@ class MediaChromeHTMLElement extends window.HTMLElement {
     this._mediaBuffered = null;
     this._mediaPreviewImage = null;
     this._mediaPreviewCoords = null;
+    this._mediaPlaybackRate = 1;
+    
   }
 
   // Observe changes to the media attribute
@@ -33,6 +35,7 @@ class MediaChromeHTMLElement extends window.HTMLElement {
       'media-preview-image',
       'media-preview-coords',
       'media-is-pip',
+      'media-playback-rate',
     ].concat(super.observedAttributes || []);
   }
 
@@ -209,6 +212,26 @@ class MediaChromeHTMLElement extends window.HTMLElement {
     }
 
     if (this.mediaDurationSet) this.mediaDurationSet(duration);
+  }
+
+  get mediaPlaybackRate() {
+    return this._mediaPlaybackRate;
+  }
+
+  set mediaPlaybackRate(rate) {
+    rate = parseFloat(rate);
+
+    this._mediaPlaybackRate = rate;
+
+    const attrValue = parseFloat(this.getAttribute('media-playback-rate'));
+
+    if (isNaN(attrValue)) {
+      this.removeAttribute('media-playback-rate');
+    } else if (attrValue !== rate) {
+      this.setAttribute('media-playback-rate', rate);
+    }
+
+    if (this.mediaPlaybackRateSet) this.mediaPlaybackRateSet(rate);
   }
 
   get mediaIsFullscreen() {
