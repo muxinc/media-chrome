@@ -11,7 +11,8 @@ class MediaChromeHTMLElement extends window.HTMLElement {
     this._mediaVolumeLevel = 'high';
     this._mediaCurrentTime = 0;
     this._mediaDuration = NaN;
-    this._mediaFullscreen = false;
+    this._mediaIsFullscreen = false;
+    this._mediaIsPip = false;
     this._mediaBuffered = null;
     this._mediaPreviewImage = null;
     this._mediaPreviewCoords = null;
@@ -31,7 +32,24 @@ class MediaChromeHTMLElement extends window.HTMLElement {
       'media-buffered',
       'media-preview-image',
       'media-preview-coords',
+      'media-is-pip',
     ].concat(super.observedAttributes || []);
+  }
+
+  dispatchMediaEvent(eventName, eventSettings) {
+    eventSettings = Object.assign({
+      bubbles: true,
+      composed: true
+    }, eventSettings);
+
+    const event = new window.CustomEvent(eventName, eventSettings);
+
+    // Allow for `oneventname` props on el like in native HTML
+    const cancelled = (this[`on${eventName}`] && this[`on${eventName}`](event)) === false;
+
+    if (!cancelled) {
+      this.dispatchEvent(event);
+    }
   }
 
   // Model the basic HTML attribute functionality of matching props
@@ -159,6 +177,9 @@ class MediaChromeHTMLElement extends window.HTMLElement {
   set mediaCurrentTime(currentTime) {
     currentTime = parseFloat(currentTime);
 
+    // Default to zero (not null or NaN)
+    if (!currentTime) currentTime = 0;
+
     this._mediaCurrentTime = currentTime;
 
     const attrValue = parseFloat(this.getAttribute('media-current-time'));
@@ -191,13 +212,13 @@ class MediaChromeHTMLElement extends window.HTMLElement {
   }
 
   get mediaIsFullscreen() {
-    return this._mediaFullscreen;
+    return this._mediaIsFullscreen;
   }
 
   set mediaIsFullscreen(fullscreen) {
     fullscreen = !!fullscreen;
 
-    this._mediaFullscreen = fullscreen;
+    this._mediaIsFullscreen = fullscreen;
 
     const attrBoolValue = this.getAttribute('media-is-fullscreen') !== null;
 
@@ -209,7 +230,29 @@ class MediaChromeHTMLElement extends window.HTMLElement {
       }      
     }
 
-    if (this.mediaFullscreenSet) this.mediaFullscreenSet(fullscreen);
+    if (this.mediaIsFullscreenSet) this.mediaIsFullscreenSet(fullscreen);
+  }
+
+  get mediaIsPip() {
+    return this._mediaIsPip;
+  }
+
+  set mediaIsPip(isPip) {
+    isPip = !!isPip;
+
+    this._mediaIsPip = isPip;
+
+    const attrBoolValue = this.getAttribute('media-is-pip') !== null;
+
+    if (isPip !== attrBoolValue) {
+      if (isPip) {
+        this.setAttribute('media-is-pip', 'media-is-pip');
+      } else {
+        this.removeAttribute('media-is-pip');
+      }      
+    }
+
+    if (this.mediaIsPipSet) this.mediaIsPipSet(isPip);
   }
 
   get mediaPreviewImage() {

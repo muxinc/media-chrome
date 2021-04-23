@@ -64,18 +64,8 @@ class MediaPlayButton extends MediaChromeButton {
   }
 
   handleClick(e) {
-    const paused = this.mediaPaused;
-    const eventName = (paused) ? MEDIA_PLAY_REQUEST : MEDIA_PAUSE_REQUEST;
-
-    // Allow for `oneventname` props on el like in native HTML
-    const cancelled = (this[`on${eventName}`] && this[`on${eventName}`](e)) === false;
-
-    if (!cancelled) {
-      this.dispatchEvent(new window.CustomEvent(eventName, {
-        bubbles: true,
-        composed: true 
-      }));
-    }
+    const eventName = (this.mediaPaused) ? MEDIA_PLAY_REQUEST : MEDIA_PAUSE_REQUEST;
+    this.dispatchMediaEvent(eventName);
   }
 }
 

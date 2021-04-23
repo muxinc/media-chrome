@@ -1,3 +1,5 @@
+// Working on deprecating, but may keep the concept around in some form
+
 /*
   The <media-chrome> can contain the control elements
   and the media element. Features:

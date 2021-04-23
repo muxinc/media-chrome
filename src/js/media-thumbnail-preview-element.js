@@ -6,6 +6,7 @@
 */
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
 
 const template = document.createElement('template');
 
@@ -73,9 +74,6 @@ class MediaThumbnailPreviewElement extends MediaChromeHTMLElement {
   }
 }
 
-if (!window.customElements.get('media-thumbnail-preview')) {
-  window.customElements.define('media-thumbnail-preview', MediaThumbnailPreviewElement);
-  window.MediaThumbnailPreviewElement = MediaThumbnailPreviewElement;
-}
+defineCustomElement('media-thumbnail-preview', MediaThumbnailPreviewElement);
 
 export default MediaThumbnailPreviewElement;

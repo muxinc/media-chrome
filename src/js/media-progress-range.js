@@ -72,18 +72,11 @@ class MediaProgressRange extends MediaChromeRange {
 
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.setMediaTimeWithRange = () => {
-      const time = Math.round((this.range.value / 1000) * this.mediaDuration)
-      const event = new window.CustomEvent(MEDIA_SEEK_REQUEST, {
-        bubbles: true,
-        composed: true,
+      const time = Math.round((this.range.value / 1000) * this.mediaDuration);
+
+      this.dispatchMediaEvent(MEDIA_SEEK_REQUEST, {
         detail: time
-      })
-
-      const cancelled = (this[`on${MEDIA_SEEK_REQUEST}`] && this[`on${MEDIA_SEEK_REQUEST}`](event)) === false;
-
-      if (!cancelled) {
-        this.dispatchEvent(event);
-      }
+      });
     };
     this.range.addEventListener('input', this.setMediaTimeWithRange);
 
@@ -168,17 +161,9 @@ class MediaProgressRange extends MediaChromeRange {
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
 
-        const event = new window.CustomEvent(MEDIA_PREVIEW_REQUEST, {
-          bubbles: true,
-          composed: true,
+        this.dispatchMediaEvent(MEDIA_PREVIEW_REQUEST, {
           detail: mousePercent * duration
-        })
-  
-        const cancelled = (this[`on${MEDIA_PREVIEW_REQUEST}`] && this[`on${MEDIA_PREVIEW_REQUEST}`](event)) === false;
-  
-        if (!cancelled) {
-          this.dispatchEvent(event);
-        }
+        });
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
     };

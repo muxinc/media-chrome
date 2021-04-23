@@ -19,6 +19,8 @@ import {
   MEDIA_EXIT_FULLSCREEN_REQUEST,
   MEDIA_SEEK_REQUEST,
   MEDIA_PREVIEW_REQUEST,
+  MEDIA_ENTER_PIP_REQUEST,
+  MEDIA_EXIT_PIP_REQUEST,
 } from './media-ui-events.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 
@@ -251,6 +253,29 @@ class MediaController extends window.HTMLElement {
       document[fullscreenApi.exit]();
     });
 
+    this.addEventListener(MEDIA_ENTER_PIP_REQUEST, (e) => {
+      e.stopPropagation();
+
+      const docOrRoot = this.getRootNode();
+      const media = this.media;
+
+      if (!docOrRoot.pictureInPictureEnabled) return;
+
+      // Exit fullscreen if needed
+      if (docOrRoot[fullscreenApi.element]) {
+        docOrRoot[fullscreenApi.exit]();
+      }
+
+      media.requestPictureInPicture();
+    });
+
+    this.addEventListener(MEDIA_EXIT_PIP_REQUEST, (e) => {
+      e.stopPropagation();
+
+      const docOrRoot = this.getRootNode();
+      if (docOrRoot.exitPictureInPicture) docOrRoot.exitPictureInPicture();
+    });
+
     this.addEventListener(MEDIA_SEEK_REQUEST, (e) => {
       e.stopPropagation();
 
@@ -353,6 +378,22 @@ class MediaController extends window.HTMLElement {
     document.addEventListener(fullscreenApi.event, this._propagateFullscreenState);
     this._propagateFullscreenState();
 
+    // PIP updates
+    this._propagatePipState = (e) => {
+      // Rely on event type for state first
+      // in case this doesn't work well for custom elements using internal <video>
+      if (e) {
+        const isPip = e.type == 'enterpictureinpicture';
+        this.propagateMediaState('mediaIsPip', isPip);
+      } else {
+        const docOrRoot = this.getRootNode();
+        this.propagateMediaState('mediaIsPip', media == docOrRoot.pictureInPictureElement);
+      }
+    };
+    media.addEventListener('enterpictureinpicture', this._propagatePipState);
+    media.addEventListener('leavepictureinpicture', this._propagatePipState);
+    this._propagatePipState();
+
     // Time updates
     this._propagateCurrentTime = () => {
       this.propagateMediaState('mediaCurrentTime', media.currentTime);
@@ -365,16 +406,12 @@ class MediaController extends window.HTMLElement {
       this.propagateMediaState('mediaDuration', media.duration);
     };
     media.addEventListener('durationchange', this._propagateDuration);
+    media.addEventListener('loadedmetadata', this._propagateDuration);
     this._propagateDuration();
-
-    // Initialize thumbnails
-    if (media.textTracks && media.textTracks.length) {
-      const thumbnailTrack = Array.prototype.find.call(media.textTracks, t => t.label == 'thumbnails');
-
-    }
 
 
     // Auto-show/hide controls
+    // Todo: Move this to using a media-paused attribute
     if (media.paused) {
       this.container.classList.add('paused');
     }
@@ -389,14 +426,14 @@ class MediaController extends window.HTMLElement {
     media.addEventListener('pause', this._mediaPauseHandler);
 
     // Toggle play/pause with clicks on the media element itself
-    this._mediaClickHandler = e => {
+    this._mediaClickPlayToggle = e => {
       if (media.paused) {
         media.play();
       } else {
         media.pause();
       }
     }
-    media.addEventListener('click', this._mediaClickHandler, false);
+    media.addEventListener('click', this._mediaClickPlayToggle, false);
 
     // Update the media with the last set volume preference
     // This would preferably live with the media element,
@@ -408,11 +445,15 @@ class MediaController extends window.HTMLElement {
   }
 
   mediaUnsetCallback(media) {
-    media.removeEventListener('play', this._handleMediaPausedState);
-    media.removeEventListener('pause', this._handleMediaPausedState);
+    media.removeEventListener('play', this._propagatePausedState);
+    media.removeEventListener('pause', this._propagatePausedState);
+    media.removeEventListener('volumechange', this._propagateVolume);
+    media.removeEventListener('timeupdate', this._propagateCurrentTime);
+    media.removeEventListener('durationchange', this._propagateDuration);
+    media.removeEventListener('loadedmetadata', this._propagateDuration);
     document.removeEventListener(fullscreenApi.event, this._handleDocFullscreenChanges);
 
-    media.removeEventListener('click', this._mediaClickHandler);
+    media.removeEventListener('click', this._mediaClickPlayToggle);
     media.removeEventListener('play', this._mediaPlayHandler);
     media.removeEventListener('pause', this._mediaPauseHandler);
 

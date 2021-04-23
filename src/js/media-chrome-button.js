@@ -79,22 +79,10 @@ template.innerHTML = `
   svg .icon {
     fill: var(--media-icon-color, #eee);
   }
-
-  button:not([aria-pressed]) slot[name="pressed"],
-  button[aria-pressed=false] slot[name="pressed"] {
-    display: none;
-  }
-
-  button[aria-pressed=true] slot:not([name]) {
-    display: none;
-  }
 </style>
 
 <button></button>
 `;
-
-const defaultSlotTemplate = document.createElement('template');
-defaultSlotTemplate.innerHTML = `<slot></slot>`;
 
 class MediaChromeButton extends MediaChromeHTMLElement {
   constructor(options={}) {
@@ -104,7 +92,15 @@ class MediaChromeButton extends MediaChromeHTMLElement {
 
     const buttonHTML = template.content.cloneNode(true);
     this.nativeEl = buttonHTML.querySelector('button');
-    const slotTemplate = options.slotTemplate || defaultSlotTemplate;
+
+    // Slots
+    let slotTemplate = options.slotTemplate;
+
+    if (!slotTemplate) {
+      slotTemplate = document.createElement('template');
+      slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
+    }
+
     this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
     shadow.appendChild(buttonHTML);

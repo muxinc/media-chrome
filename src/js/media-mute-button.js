@@ -52,18 +52,8 @@ class MediaMuteButton extends MediaChromeButton {
   }
 
   handleClick(e) {
-    const muted = this.mediaMuted;
-    const eventName = (muted) ? MEDIA_UNMUTE_REQUEST : MEDIA_MUTE_REQUEST;
-
-    // Allow for `oneventname` props on el like in native HTML
-    const cancelled = (this[`on${eventName}`] && this[`on${eventName}`](e)) === false;
-
-    if (!cancelled) {
-      this.dispatchEvent(new window.CustomEvent(eventName, {
-        bubbles: true,
-        composed: true 
-      }));
-    }
+    const eventName = (this.mediaMuted) ? MEDIA_UNMUTE_REQUEST : MEDIA_MUTE_REQUEST;
+    this.dispatchMediaEvent(eventName);
   }
 }
 

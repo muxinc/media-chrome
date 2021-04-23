@@ -10,11 +10,9 @@ class MediaVolumeRange extends MediaChromeRange {
     this.range.addEventListener('input', () => {
       const volume = this.range.value / 1000;
 
-      this.dispatchEvent(new window.CustomEvent(MEDIA_VOLUME_REQUEST, {
-        bubbles: true,
-        composed: true,
+      this.dispatchMediaEvent(MEDIA_VOLUME_REQUEST, {
         detail: volume
-      }));
+      });
     });
 
     // Store the last set positive volume before a drag

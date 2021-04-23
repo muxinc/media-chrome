@@ -50,18 +50,11 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   handleClick(e) {
-    const fullscreen = this.mediaIsFullscreen;
-    const eventName = (fullscreen) ? MEDIA_EXIT_FULLSCREEN_REQUEST : MEDIA_ENTER_FULLSCREEN_REQUEST;
+    const eventName = (this.mediaIsFullscreen)
+     ? MEDIA_EXIT_FULLSCREEN_REQUEST 
+     : MEDIA_ENTER_FULLSCREEN_REQUEST;
 
-    // Allow for `oneventname` props on el like in native HTML
-    const cancelled = (this[`on${eventName}`] && this[`on${eventName}`](e)) === false;
-
-    if (!cancelled) {
-      this.dispatchEvent(new window.CustomEvent(eventName, {
-        bubbles: true,
-        composed: true 
-      }));
-    }
+    this.dispatchMediaEvent(eventName);
   }
 
   // Need to update fullscreenElement setting for media-controller

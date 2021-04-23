@@ -7,3 +7,5 @@ export const MEDIA_SEEK_REQUEST = 'mediaseekrequest';
 export const MEDIA_ENTER_FULLSCREEN_REQUEST = 'mediaenterfullscreenrequest';
 export const MEDIA_EXIT_FULLSCREEN_REQUEST = 'mediaexitfullscreenrequest';
 export const MEDIA_PREVIEW_REQUEST = 'mediapreviewrequest';
+export const MEDIA_ENTER_PIP_REQUEST = 'mediaenterpiprequest';
+export const MEDIA_EXIT_PIP_REQUEST = 'mediaexitpiprequest';
