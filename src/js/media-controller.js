@@ -408,6 +408,7 @@ class MediaController extends window.HTMLElement {
       this.propagateMediaState('mediaCurrentTime', media.currentTime);
     };
     media.addEventListener('timeupdate', this._propagateCurrentTime);
+    media.addEventListener('loadedmetadata', this._propagateCurrentTime);
     this._propagateCurrentTime();
 
     // Duration updates
@@ -465,6 +466,7 @@ class MediaController extends window.HTMLElement {
     media.removeEventListener('pause', this._propagatePausedState);
     media.removeEventListener('volumechange', this._propagateVolume);
     media.removeEventListener('timeupdate', this._propagateCurrentTime);
+    media.removeEventListener('loadedmetadata', this._propagateCurrentTime);
     media.removeEventListener('durationchange', this._propagateDuration);
     media.removeEventListener('loadedmetadata', this._propagateDuration);
     document.removeEventListener(fullscreenApi.event, this._handleDocFullscreenChanges);
