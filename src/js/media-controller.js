@@ -17,9 +17,10 @@ import {
   MEDIA_VOLUME_REQUEST,
   MEDIA_ENTER_FULLSCREEN_REQUEST,
   MEDIA_EXIT_FULLSCREEN_REQUEST,
+  MEDIA_SEEK_REQUEST,
+  MEDIA_PREVIEW_REQUEST,
 } from './media-ui-events.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
-
 
 const template = document.createElement('template');
 
@@ -177,25 +178,22 @@ class MediaController extends window.HTMLElement {
     this.associatedElements = [];
 
     // Capture requests from internal control events
-    this._handlePlayRequest = (e) => {
+    this.addEventListener(MEDIA_PLAY_REQUEST, (e) => {
       e.stopPropagation();
       this.media && this.media.play();
-    };
-    this.addEventListener(MEDIA_PLAY_REQUEST, this._handlePlayRequest);
+    });
   
-    this._handlePauseRequest = (e) => {
+    this.addEventListener(MEDIA_PAUSE_REQUEST, (e) => {
       e.stopPropagation();
       this.media && this.media.pause();
-    };
-    this.addEventListener(MEDIA_PAUSE_REQUEST, this._handlePauseRequest);
+    });
 
-    this._handleMuteRequest = (e) => {
+    this.addEventListener(MEDIA_MUTE_REQUEST, (e) => {
       e.stopPropagation();
       if (this.media) this.media.muted = true;
-    }
-    this.addEventListener(MEDIA_MUTE_REQUEST, this._handleMuteRequest);
+    });
 
-    this._handleUnmuteRequest = (e) => {
+    this.addEventListener(MEDIA_UNMUTE_REQUEST, (e) => {
       e.stopPropagation();
       const media = this.media;
 
@@ -207,10 +205,9 @@ class MediaController extends window.HTMLElement {
       if (media.volume === 0) {
         media.volume = 0.25;
       }
-    }
-    this.addEventListener(MEDIA_UNMUTE_REQUEST, this._handleUnmuteRequest);
+    });
 
-    this._handleVolumeRequest = (e) => {
+    this.addEventListener(MEDIA_VOLUME_REQUEST, (e) => {
       const media = this.media;
       const volume = e.detail;
 
@@ -232,14 +229,13 @@ class MediaController extends window.HTMLElement {
           volume.toString()
         );
       } catch (e) {}
-    }
-    this.addEventListener(MEDIA_VOLUME_REQUEST, this._handleVolumeRequest);
+    });
 
     // This current assumes that the media controller is the fullscreen element
     // which may be true in most cases but not all.
     // The prior version of media-chrome support alt fullscreen elements
     // and that's something we can work towards here
-    this._handleEnterFullscreenRequest = (e) => {
+    this.addEventListener(MEDIA_ENTER_FULLSCREEN_REQUEST, (e) => {
       e.stopPropagation();
       
       if (document.pictureInPictureElement) {
@@ -248,14 +244,54 @@ class MediaController extends window.HTMLElement {
       }
 
       this[fullscreenApi.enter]();
-    }
-    this.addEventListener(MEDIA_ENTER_FULLSCREEN_REQUEST, this._handleEnterFullscreenRequest);
+    });
 
-    this._handleExitFullscreenRequest = (e) => {
+    this.addEventListener(MEDIA_EXIT_FULLSCREEN_REQUEST, (e) => {
       e.stopPropagation();
       document[fullscreenApi.exit]();
-    }
-    this.addEventListener(MEDIA_EXIT_FULLSCREEN_REQUEST, this._handleExitFullscreenRequest);
+    });
+
+    this.addEventListener(MEDIA_SEEK_REQUEST, (e) => {
+      e.stopPropagation();
+
+      const media = this.media;
+      const time = e.detail;
+
+      if (!media) return;
+
+      // Can't set the time before the media is ready
+      // Ignore if readyState isn't supported
+      if (media.readyState > 0 || media.readyState === undefined) {
+        media.currentTime = time;
+      }
+    });
+    
+    this.addEventListener(MEDIA_PREVIEW_REQUEST, (e) => {
+      e.stopPropagation();
+
+      const time = e.detail;
+      const media = this.media;
+
+      if (media && media.textTracks && media.textTracks.length) {
+        let track = Array.prototype.find.call(media.textTracks, (t)=>{
+          return t.label == 'thumbnails';
+        });
+  
+        if (!track) return;
+        if (!track.cues) return;
+  
+        let cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
+  
+        if (cue) {
+          const url = new URL(cue.text);
+          const [x,y,w,h] = url.hash.split('=')[1].split(',');
+          const src = url.origin + url.pathname;
+  
+          this.propagateMediaState('mediaPreviewImage', src);
+          this.propagateMediaState('mediaPreviewCoords', `${x},${y},${w},${h}`);
+        }
+      }
+    });
   }
 
   // First direct child with slot=media, or null
@@ -281,14 +317,15 @@ class MediaController extends window.HTMLElement {
     }
 
     // Listen for state changes and propagate them to children and associated els
-    this._handleMediaPausedState = () => {
+    this._propagatePausedState = () => {
       this.propagateMediaState('mediaPaused', media.paused);
     };
-    media.addEventListener('play', this._handleMediaPausedState);
-    media.addEventListener('pause', this._handleMediaPausedState);
-    this._handleMediaPausedState();
+    media.addEventListener('play', this._propagatePausedState);
+    media.addEventListener('pause', this._propagatePausedState);
+    this._propagatePausedState();
 
-    this._handleMediaVolumeState = () => {
+    // Volume updates
+    this._propagateVolume = () => {
       const { muted, volume } = media;
 
       let level = 'high';
@@ -304,16 +341,38 @@ class MediaController extends window.HTMLElement {
       this.propagateMediaState('mediaVolume', volume);
       this.propagateMediaState('mediaVolumeLevel', level);
     };
-    media.addEventListener('volumechange', this._handleMediaVolumeState);
-    this._handleMediaVolumeState();
+    media.addEventListener('volumechange', this._propagateVolume);
+    this._propagateVolume();
 
     // Fullscreen updates
-    this._handleDocFullscreenChanges = () => {
+    this._propagateFullscreenState = () => {
       // Might be in the shadow dom
       const fullscreenEl = this.getRootNode()[fullscreenApi.element];
       this.propagateMediaState('mediaIsFullscreen', fullscreenEl == this);
     };
-    document.addEventListener(fullscreenApi.event, this._handleDocFullscreenChanges);
+    document.addEventListener(fullscreenApi.event, this._propagateFullscreenState);
+    this._propagateFullscreenState();
+
+    // Time updates
+    this._propagateCurrentTime = () => {
+      this.propagateMediaState('mediaCurrentTime', media.currentTime);
+    };
+    media.addEventListener('timeupdate', this._propagateCurrentTime);
+    this._propagateCurrentTime();
+
+    // Duration updates
+    this._propagateDuration = () => {
+      this.propagateMediaState('mediaDuration', media.duration);
+    };
+    media.addEventListener('durationchange', this._propagateDuration);
+    this._propagateDuration();
+
+    // Initialize thumbnails
+    if (media.textTracks && media.textTracks.length) {
+      const thumbnailTrack = Array.prototype.find.call(media.textTracks, t => t.label == 'thumbnails');
+
+    }
+
 
     // Auto-show/hide controls
     if (media.paused) {

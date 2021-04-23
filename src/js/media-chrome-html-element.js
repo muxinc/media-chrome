@@ -9,7 +9,12 @@ class MediaChromeHTMLElement extends window.HTMLElement {
     this._mediaMuted = false;
     this._mediaVolume = 1;
     this._mediaVolumeLevel = 'high';
+    this._mediaCurrentTime = 0;
+    this._mediaDuration = NaN;
     this._mediaFullscreen = false;
+    this._mediaBuffered = null;
+    this._mediaPreviewImage = null;
+    this._mediaPreviewCoords = null;
   }
 
   // Observe changes to the media attribute
@@ -21,6 +26,11 @@ class MediaChromeHTMLElement extends window.HTMLElement {
       'media-volume',
       'media-volume-level',
       'media-is-fullscreen',
+      'media-current-time',
+      'media-duration',
+      'media-buffered',
+      'media-preview-image',
+      'media-preview-coords',
     ].concat(super.observedAttributes || []);
   }
 
@@ -142,6 +152,44 @@ class MediaChromeHTMLElement extends window.HTMLElement {
     }
   }
 
+  get mediaCurrentTime() {
+    return this._mediaCurrentTime;
+  }
+
+  set mediaCurrentTime(currentTime) {
+    currentTime = parseFloat(currentTime);
+
+    this._mediaCurrentTime = currentTime;
+
+    const attrValue = parseFloat(this.getAttribute('media-current-time'));
+
+    if (attrValue !== currentTime) {
+      this.setAttribute('media-current-time', currentTime);
+    }
+
+    if (this.mediaCurrentTimeSet) this.mediaCurrentTimeSet(currentTime);
+  }
+
+  get mediaDuration() {
+    return this._mediaDuration;
+  }
+
+  set mediaDuration(duration) {
+    duration = parseFloat(duration);
+
+    this._mediaDuration = duration;
+
+    const attrValue = parseFloat(this.getAttribute('media-duration'));
+
+    if (isNaN(attrValue)) {
+      this.removeAttribute('media-duration');
+    } else if (attrValue !== duration) {
+      this.setAttribute('media-duration', duration);
+    }
+
+    if (this.mediaDurationSet) this.mediaDurationSet(duration);
+  }
+
   get mediaIsFullscreen() {
     return this._mediaFullscreen;
   }
@@ -162,6 +210,42 @@ class MediaChromeHTMLElement extends window.HTMLElement {
     }
 
     if (this.mediaFullscreenSet) this.mediaFullscreenSet(fullscreen);
+  }
+
+  get mediaPreviewImage() {
+    return this._mediaPreviewImage;
+  }
+
+  set mediaPreviewImage(image) {
+    this._mediaPreviewImage = image;
+
+    const attrValue = this.getAttribute('media-preview-image');
+    
+    if (attrValue !== image) {
+      this.setAttribute('media-preview-image', image);
+    }
+
+    if (this.mediaPreviewImageSet) this.mediaPreviewImageSet(image);
+  }
+
+  get mediaPreviewCoords() {
+    return this._mediaPreviewCoords;
+  }
+
+  set mediaPreviewCoords(coords) {
+    if (typeof coords == 'string') {
+      coords = coords.split(',');
+    }
+
+    this._mediaPreviewCoords = coords;
+
+    const attrValue = this.getAttribute('media-preview-coords');
+    
+    if (attrValue !== coords.join(',')) {
+      this.setAttribute('media-preview-coords', coords.join(','));
+    }
+
+    if (this.mediaPreviewCoordsSet) this.mediaPreviewCoordsSet(coords);
   }
 }
 

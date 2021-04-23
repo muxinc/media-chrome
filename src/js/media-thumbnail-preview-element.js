@@ -40,96 +40,37 @@ class MediaThumbnailPreviewElement extends MediaChromeHTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  set time(time) {
-    if (this.media && this.media.textTracks && this.media.textTracks.length) {
-      let track = Array.prototype.find.call(this.media.textTracks, (t)=>{
-        return t.label == 'thumbnails';
-      });
-
-      if (!track) return;
-      if (!track.cues) return;
-
-      let cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
-
-      if (cue) {
-        const url = new URL(cue.text);
-        const [x,y,w,h] = url.hash.split('=')[1].split(',');
-        const img = this.shadowRoot.querySelector('img');
-        const src = url.origin + url.pathname;
-        const scale = this.offsetWidth / w;
-
-        const resize = () => {
-          img.style.width = `${scale * img.naturalWidth}px`;
-          img.style.height = `${scale * img.naturalHeight}px`;
-        };
-
-        if (img.src !== src) {
-          img.onload = resize;
-          img.src = src;
-          resize();
-        }
-
-        resize();
-        img.style.left = `-${scale * x}px`;
-        img.style.top = `-${scale * y}px`;
-        // this.style.backgroundImage = `url(${url.origin + url.pathname})`;
-        // this.style.backgroundPosition = `left ${x}px top ${y}px`;
-      }
-    }
+  mediaPreviewImageSet(imageSrc) {
+    this.update();
   }
 
-  get time() {
-    return parseFloat(this.getAttribute('time'));
+  mediaPreviewCoordsSet(coords) {
+    this.update();
   }
 
-  mediaSetCallback(media){
-    const trackList = media && media.textTracks;
+  update() {
+    if (!this.mediaPreviewCoords || !this.mediaPreviewImage) return;
 
-    if (!trackList || !trackList.addEventListener) return;
+    const img = this.shadowRoot.querySelector('img');
+    const [x,y,w,h] = this.mediaPreviewCoords;
+    const src = this.mediaPreviewImage;
+    const scale = this.offsetWidth / w;
 
-    // Create a bound, removeable function for track changes
-    this._trackChangeHandler = (evt) => {
-      for (let i = 0; i < trackList.length; i++) {
-        let track = trackList[i];
-        if (track.label === 'thumbnails') {
-          // Prime the image when a track is added
-          if (!this.time) this.time = 0;
-        }
-      }
+    const resize = () => {
+      img.style.width = `${scale * img.naturalWidth}px`;
+      img.style.height = `${scale * img.naturalHeight}px`;
     };
 
-    trackList.addEventListener('addtrack', this._trackChangeHandler, false);
-    this._trackChangeHandler();
-  }
-
-  mediaUnsetCallback(media) {
-    const trackList = media && media.textTracks;
-
-    if (trackList && trackList.removeEventListener) {
-      trackList.removeEventListener('addtrack', this._trackChangeHandler);
+    if (img.src !== src) {
+      img.onload = resize;
+      img.src = src;
+      resize();
     }
-  }
 
-  // set url(url) {
-  //   const setImageURL = async (url) => {
-  //     const response = await fetch(url, {});
-  //     const data = await response.json();
-  //     const urlObj = new URL(url);
-  //     const thumbnailDir = urlObj.href.substr(0, urlObj.href.lastIndexOf('/')) + '/';
-  //
-  //     console.log(data);
-  //     this.data = data;
-  //     this.style.backgroundImage = `url(${thumbnailDir}${data.url})`;
-  //   };
-  //
-  //   if (url) {
-  //     setImageURL(url);
-  //   }
-  // }
-  //
-  // get url() {
-  //   return this.getAttribute('url');
-  // }
+    resize();
+    img.style.left = `-${scale * x}px`;
+    img.style.top = `-${scale * y}px`;
+  }
 }
 
 if (!window.customElements.get('media-thumbnail-preview')) {
