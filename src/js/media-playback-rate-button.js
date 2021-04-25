@@ -1,6 +1,6 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { MEDIA_PLAYBACK_RATE_REQUEST } from './media-ui-events.js';
+import { mediaUIEvents } from './media-chrome-html-element.js';
 
 /*
   <media-playback-rate-button rates="1,1.5,2">
@@ -41,7 +41,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
     if (!newRate) newRate = this.rates[0];
 
-    this.dispatchMediaEvent(MEDIA_PLAYBACK_RATE_REQUEST, {
+    this.dispatchMediaEvent(mediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST, {
       detail: newRate
     })
   }

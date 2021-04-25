@@ -2,7 +2,7 @@ import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import MediaThumbnailPreviewElement from './media-thumbnail-preview-element.js';
-import { MEDIA_SEEK_REQUEST, MEDIA_PREVIEW_REQUEST } from './media-ui-events.js';
+import { mediaUIEvents } from './media-chrome-html-element.js';
 
 const template = document.createElement('template');
 
@@ -74,7 +74,7 @@ class MediaProgressRange extends MediaChromeRange {
     this.setMediaTimeWithRange = () => {
       const time = Math.round((this.range.value / 1000) * this.mediaDuration);
 
-      this.dispatchMediaEvent(MEDIA_SEEK_REQUEST, {
+      this.dispatchMediaEvent(mediaUIEvents.MEDIA_SEEK_REQUEST, {
         detail: time
       });
     };
@@ -161,7 +161,7 @@ class MediaProgressRange extends MediaChromeRange {
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
 
-        this.dispatchMediaEvent(MEDIA_PREVIEW_REQUEST, {
+        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PREVIEW_REQUEST, {
           detail: mousePercent * duration
         });
       };

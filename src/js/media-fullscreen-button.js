@@ -9,7 +9,7 @@
 import MediaChromeButton from "./media-chrome-button.js";
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Document as document } from './utils/server-safe-globals.js';
-import { MEDIA_ENTER_FULLSCREEN_REQUEST, MEDIA_EXIT_FULLSCREEN_REQUEST } from './media-ui-events.js';
+import { mediaUIEvents } from './media-chrome-html-element.js';
 
 const enterFullscreenIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
   <path d="M0 0h24v24H0z" fill="none"/>
@@ -51,8 +51,8 @@ class MediaFullscreenButton extends MediaChromeButton {
 
   handleClick(e) {
     const eventName = (this.mediaIsFullscreen)
-     ? MEDIA_EXIT_FULLSCREEN_REQUEST 
-     : MEDIA_ENTER_FULLSCREEN_REQUEST;
+     ? mediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST 
+     : mediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
 
     this.dispatchMediaEvent(eventName);
   }

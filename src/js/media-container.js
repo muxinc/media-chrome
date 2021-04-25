@@ -1,5 +1,3 @@
-// Working on deprecating, but may keep the concept around in some form
-
 /*
   The <media-chrome> can contain the control elements
   and the media element. Features:
@@ -10,8 +8,8 @@
   * Auto-hide controls on inactivity while playing
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { propagateMedia, setAndPropagateMedia } from './media-chrome-html-element.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import { MediaChromeHTMLElement, mediaUIEvents } from './media-chrome-html-element.js';
 
 const template = document.createElement('template');
 
@@ -55,6 +53,10 @@ template.innerHTML = `
       visibility: visible;
     }
 
+    [media-test] #container {
+      display:none !important;
+    }
+
     #container.inactive:not(.paused) ::slotted(*) {
       opacity: 0;
       transition: opacity 1s;
@@ -66,7 +68,7 @@ template.innerHTML = `
   </div>
 `;
 
-class MediaContainer extends window.HTMLElement {
+class MediaContainer extends MediaChromeHTMLElement {
   constructor() {
     super();
 
@@ -75,21 +77,21 @@ class MediaContainer extends window.HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.container = this.shadowRoot.getElementById('container');
 
-    // Update the media prop of child elements when added/removed
-    // and react to adds/removals of media elements.
-    // This has turned into a meaty piece of logic...documenting verbosely
+    // Watch for child adds/removes and update the media element if necessary
     const mutationCallback = (mutationsList, observer) => {
       const media = this.media;
 
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
 
-          // Controls or media elements being removed
+          // Media element being removed
           mutation.removedNodes.forEach(node => {
-            // Is this a direct child media element of media-chrome
+            // Is this a direct child media element of media-controller?
+            // TODO: This accuracy doesn't matter after moving away from media attrs.
+            // Could refactor so we can always just call 'dispose' on any removed media el.
             if (node.slot == 'media' && mutation.target == this) {
               // Check if this was the current media by if it was the first
-              // el with slot=media in the child list. There can be multiple.
+              // el with slot=media in the child list. There could be multiple.
               let previousSibling = mutation.previousSibling && mutation.previousSibling.previousElementSibling;
 
               // Must have been first if no prev sibling or new media
@@ -104,15 +106,6 @@ class MediaContainer extends window.HTMLElement {
                 }
                 if (wasFirst) this.mediaUnsetCallback(node);
               }
-
-              // Update all controls with new media if there is one
-              if (media) {
-                this.mediaSetCallback(this, media);
-              }
-            } else {
-              // This is not a media el being removed so
-              // undo auto-injected medias from it and children
-              setAndPropagateMedia(node, null);
             }
           });
 
@@ -123,8 +116,6 @@ class MediaContainer extends window.HTMLElement {
               if (node == media) {
                 // Update all controls with new media if this is the new media
                 this.mediaSetCallback(node);
-              } else {
-                setAndPropagateMedia(node, media);
               }
             });
           }
@@ -145,7 +136,7 @@ class MediaContainer extends window.HTMLElement {
     // Should only ever be set with a compatible media element, never null
     if (!media || !media.play) {
       console.error('<media-chrome>: Media element set with slot="media" does not appear to be compatible.', media);
-      return;
+      return false;
     }
 
     // Wait until custom media elements are ready
@@ -155,17 +146,14 @@ class MediaContainer extends window.HTMLElement {
       window.customElements.whenDefined(mediaName).then(()=>{
         this.mediaSetCallback(media);
       });
-      return;
+      return false;
     }
 
-    // Set the media property of all children
-    propagateMedia(this, media);
-
     // Auto-show/hide controls
+    // Todo: Move this to using a media-paused attribute
     if (media.paused) {
       this.container.classList.add('paused');
     }
-
     this._mediaPlayHandler = e => {
       this.container.classList.remove('paused');
     };
@@ -177,23 +165,22 @@ class MediaContainer extends window.HTMLElement {
     media.addEventListener('pause', this._mediaPauseHandler);
 
     // Toggle play/pause with clicks on the media element itself
-    this._mediaClickHandler = e => {
+    this._mediaClickPlayToggle = e => {
       if (media.paused) {
-        media.play();
+        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PLAY_REQUEST);
       } else {
-        media.pause();
+        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PAUSE_REQUEST);
       }
     }
-    media.addEventListener('click', this._mediaClickHandler, false);
+    media.addEventListener('click', this._mediaClickPlayToggle, false);
+
+    return true;
   }
 
   mediaUnsetCallback(media) {
-    media.removeEventListener('click', this._mediaClickHandler);
+    media.removeEventListener('click', this._mediaClickPlayToggle);
     media.removeEventListener('play', this._mediaPlayHandler);
     media.removeEventListener('pause', this._mediaPauseHandler);
-
-    // Unset media for all child controls
-    propagateMedia(this, null);
 
     // Unhide controls
     this.container.classList.add('paused');
@@ -244,7 +231,23 @@ class MediaContainer extends window.HTMLElement {
     });
   }
 
-  autoHide(seconds) {}
+  dispatchMediaEvent(eventName, eventSettings) {
+    eventSettings = Object.assign({
+      // Control element events bubble so the controller can catch them
+      // The controller shouldn't bubble events
+      bubbles: false,
+      composed: true
+    }, eventSettings);
+
+    const event = new window.CustomEvent(eventName, eventSettings);
+
+    // Allow for `oneventname` props on el like in native HTML
+    const cancelled = (this[`on${eventName}`] && this[`on${eventName}`](event)) === false;
+
+    if (!cancelled) {
+      this.dispatchEvent(event);
+    }
+  }
 }
 
 defineCustomElement('media-container', MediaContainer);

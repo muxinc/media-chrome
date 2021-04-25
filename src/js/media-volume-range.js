@@ -1,7 +1,7 @@
 import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window } from './utils/server-safe-globals.js';
-import { MEDIA_VOLUME_REQUEST } from './media-ui-events.js';
+import { mediaUIEvents } from './media-chrome-html-element.js';
 
 class MediaVolumeRange extends MediaChromeRange {
   constructor() {
@@ -10,7 +10,7 @@ class MediaVolumeRange extends MediaChromeRange {
     this.range.addEventListener('input', () => {
       const volume = this.range.value / 1000;
 
-      this.dispatchMediaEvent(MEDIA_VOLUME_REQUEST, {
+      this.dispatchMediaEvent(mediaUIEvents.MEDIA_VOLUME_REQUEST, {
         detail: volume
       });
     });

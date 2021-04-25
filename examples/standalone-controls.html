@@ -7,7 +7,7 @@
       /* background-color: #000; */
     }
 
-    video {
+    media-controller {
       width: 640px;
       height: 360px;
     }
@@ -33,8 +33,8 @@
 <media-pip-button media-controller="controller"></media-pip-button>
 <media-fullscreen-button media-controller="controller"></media-fullscreen-button>
 
-<!-- <h2>Inside the control-bar element</h2>
-<p>Note: You only need to set the <code>media=</code> attribute on the <code>media-control-bar</code>. Media-chrome elements will pass the media reference to their child media-chrome elements automatically.</p>
+<h2>Inside the control-bar element</h2>
+<p>Note: You only need to set the <code>media-controller=</code> attribute on the <code>media-control-bar</code>. The media-controller will pass the media state details to their child media-chrome elements automatically.</p>
 
 <media-control-bar media-controller="controller">
   <media-play-button></media-play-button>
@@ -46,7 +46,7 @@
   <media-playback-rate-button></media-playback-rate-button>
   <media-pip-button></media-pip-button>
   <media-fullscreen-button></media-fullscreen-button>
-</media-control-bar> -->
+</media-control-bar>
 
 </body>
 </html>

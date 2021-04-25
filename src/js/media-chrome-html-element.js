@@ -1,11 +1,27 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { dashedToCamel } from './utils/dashedToCamel.js';
+import { dashedToCamel } from './utils/stringUtils.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
-class MediaChromeHTMLElement extends window.HTMLElement {
+export const mediaUIEvents = {
+  MEDIA_PLAY_REQUEST: 'mediaplayrequest',
+  MEDIA_PAUSE_REQUEST: 'mediapauserequest',
+  MEDIA_MUTE_REQUEST: 'mediamuterequest',
+  MEDIA_UNMUTE_REQUEST: 'mediaunmuterequest',
+  MEDIA_VOLUME_REQUEST: 'mediavolumerequest',
+  MEDIA_SEEK_REQUEST: 'mediaseekrequest',
+  MEDIA_ENTER_FULLSCREEN_REQUEST: 'mediaenterfullscreenrequest',
+  MEDIA_EXIT_FULLSCREEN_REQUEST: 'mediaexitfullscreenrequest',
+  MEDIA_PREVIEW_REQUEST: 'mediapreviewrequest',
+  MEDIA_ENTER_PIP_REQUEST: 'mediaenterpiprequest',
+  MEDIA_EXIT_PIP_REQUEST: 'mediaexitpiprequest',
+  MEDIA_PLAYBACK_RATE_REQUEST:  'mediaplaybackraterequest',
+};
+
+export class MediaChromeHTMLElement extends window.HTMLElement {
   constructor() {
     super();
-    this._media = null;
+
+    // Media attribute property defaults
     this._mediaMuted = false;
     this._mediaVolume = 1;
     this._mediaVolumeLevel = 'high';
@@ -17,13 +33,11 @@ class MediaChromeHTMLElement extends window.HTMLElement {
     this._mediaPreviewImage = null;
     this._mediaPreviewCoords = null;
     this._mediaPlaybackRate = 1;
-    
   }
 
   // Observe changes to the media attribute
   static get observedAttributes() {
     return [
-      'media', 
       'media-controller',
       'media-muted',
       'media-volume',
@@ -313,40 +327,6 @@ class MediaChromeHTMLElement extends window.HTMLElement {
 
     if (this.mediaPreviewCoordsSet) this.mediaPreviewCoordsSet(coords);
   }
-}
-
-/*
-  Recursively set the media prop of all child MediaChromeHTMLElements
-*/
-export function setAndPropagateMedia(el, media) {
-  const elName = el.nodeName.toLowerCase();
-
-  // Can't set <media-chrome> media
-  // and shouldn't propagate into a child media-chrome
-  if (elName == 'media-chrome') return;
-
-  // Only custom elements might have the correct media attribute
-  if (elName.includes('-')) {
-    window.customElements.whenDefined(elName).then(()=>{
-      if (el instanceof MediaChromeHTMLElement) {
-        // Media-chrome html els propogate to their children automatically
-        // including to shadow dom children
-        el.media = media;
-      } else {
-        // Otherwise continue to this el's children
-        propagateMedia(el, media);
-      }
-    });
-  } else if (el.slot !== 'media') {
-    // If not a custom element or media element, continue to children
-    propagateMedia(el, media);
-  }
-};
-
-export function propagateMedia(parent, media) {
-  Array.prototype.forEach.call(parent.children, (child)=>{
-    setAndPropagateMedia(child, media);
-  });
 }
 
 defineCustomElement('media-chrome-html-element', MediaChromeHTMLElement);

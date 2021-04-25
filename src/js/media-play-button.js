@@ -1,7 +1,6 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { MEDIA_PLAY_REQUEST, MEDIA_PAUSE_REQUEST } from './media-ui-events.js';
-import { Window as window } from './utils/server-safe-globals.js';
+import { mediaUIEvents } from './media-chrome-html-element.js';
 
 const playIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
@@ -64,7 +63,9 @@ class MediaPlayButton extends MediaChromeButton {
   }
 
   handleClick(e) {
-    const eventName = (this.mediaPaused) ? MEDIA_PLAY_REQUEST : MEDIA_PAUSE_REQUEST;
+    const eventName = (this.mediaPaused)
+      ? mediaUIEvents.MEDIA_PLAY_REQUEST
+      : mediaUIEvents.MEDIA_PAUSE_REQUEST;
     this.dispatchMediaEvent(eventName);
   }
 }
