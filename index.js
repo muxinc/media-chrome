@@ -29,7 +29,7 @@ import { Window as window } from './src/js/utils/server-safe-globals.js';
 
 // Alias <media-container> as <media-chrome>
 // and deprecate <media-chrome> as the main element
-class MediaChrome extends MediaContainer {};
+class MediaChrome extends MediaController {};
 if (!window.customElements.get('media-chrome')) {
   window.customElements.define('media-chrome', MediaChrome);
 }
