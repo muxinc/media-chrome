@@ -14,7 +14,7 @@ Fully customizable media player controls using web components (native custom ele
 ```html
 <script type="module" src="https://unpkg.com/media-chrome"></script>
 
-<media-container>
+<media-controller>
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -26,11 +26,11 @@ Fully customizable media player controls using web components (native custom ele
     <media-play-button>Play</media-play-button>
     <media-mute-button>Mute</media-mute-button>
     <media-volume-range>Volume</media-volume-range>
-    <media-progress-range>Progress</media-progress-range>
+    <media-time-range>Time</media-time-range>
     <media-pip-button>PIP</media-pip-button>
     <media-fullscreen-button>Fullscreen</media-fullscreen-button>
   </media-control-bar>
-</media-container>
+</media-controller>
 ```
 
 #### Results (<a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank">Try the CodePen example</a>)
@@ -92,37 +92,30 @@ This will register the custom elements with the browser so they can be used as H
 
 ### Using in your HTML
 
-Each control element can be used independently. When using outside of a `<media-container>` element, a control needs to be told which media it's controlling via the `media` attribute or property.
-
-Using the `media` attribute and CSS selector.
+The `<media-controller>` is the star of the show. It handles the communication between control elements and the media. Start by wrapping your media element with a `<media-controller>`, and adding `slot="media"` to your video or audio tag, or other [compatible player](#compatible-players).
 
 ```html
-<video id="my-media"></video>
-<media-play-button media="#my-media">
-```
-
-Using the `media` property and a direct reference to the media element.
-
-```javascript
-const video = document.createElement('video');
-const playButton = document.createElement('media-play-button');
-playButton.media = video;
-```
-
-Or set automatically by wrapping both the media element and control element in a `<media-container>` element. Include the `slot="media"` attribute in the tag of your [compatible player](#compatible-players)'s element.
-
-```javascript
-<media-container>
+<media-controller>
   <video slot="media"></video>
-  <media-play-button>Play</media-play-button>
-</media-container>
+</media-controller>
+```
+
+After that, each control element can be used independently. When using outside of a `<media-controller>` element, a control needs to be told which media controller it's associated with via the `media-controller` attribute or property.
+
+```html
+<media-controller id="myController">
+  <video slot="media"></video>
+  <media-play-button></media-play-button>
+</media-controller>
+
+<media-play-button media-controller="myController"></media-play-button>
 ```
 
 ## Customizing the controls
 Use HTML to add or remove any of the controls. Then you can use CSS to style the controls as you would other HTML elements.
 
 ```html
-<media-container>
+<media-controller>
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -131,30 +124,28 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
     <media-play-button>Play</media-play-button>
     <media-mute-button>Mute</media-mute-button>
     <media-volume-range>Volume</media-volume-range>
-    <media-progress-range>Progress</media-progress-range>
+    <media-time-range>Progress</media-time-range>
     <media-pip-button>PIP</media-pip-button>
     <media-fullscreen-button>Fullscreen</media-fullscreen-button>
   </media-control-bar>
-</media-container>
+</media-controller>
 ```
-
-You can then use CSS to style the controls as you would other HTML elements.
 
 ### Included elements
 
 | Element                      | Description                                                                                           |
 |------------------------------|-------------------------------------------------------------------------------------------------------|
-| `<media-container>`       | An optional container for the other controls and media elements.
+| `<media-controller>`       | Wraps controls and the media element, and handles communication between them.                          |
 | `<media-control-bar>`       | Optional controls container to help align the controls in the standard fashion.                       |
 | `<media-play-button>`       | Toggle media playback                                                                                 |
 | `<media-mute-button>`       | Toggle the sound. The icon responds to volume changes and acts as part of the typical volume control. |
 | `<media-volume-range>`      | Change the volume of the sound.                                                                       |
-| `<media-progress-range>`    | See how far the playhead is through the media duration, and seek to new times.                        |
+| `<media-time-range>`    | See how far the playhead is through the media duration, and seek to new times.                            |
 | `<media-fullscreen-button>` | Toggle fullscreen viewing                                                                             |
 | `<media-pip-button>`        | Toggle picture-in-picture mode of the video                                                           |
-| `<media-playback-rate-button>` | Change the speed of playback                                                           |
-| `<media-clip-selector>` | Create selector handles that allow a user to select a sub-section of the media element. |
-| More to come                 | Requests and contributions welcome                                                                    |
+| `<media-playback-rate-button>` | Change the speed of playback                                                                       |
+| `<media-clip-selector>` | Create selector handles that allow a user to select a sub-section of the media element.                   |
+| More to come                 | Requests and contributions welcome                                                                   |
 
 ## Compatible players
 
@@ -169,16 +160,16 @@ Some "players" add on to existing video and audio elements, so nothing more is n
 | [Shaka Player](https://github.com/google/shaka-player)    | Nothing else needed.                                                                                        |
 | YouTube                                                   | Requires the [`<youtube-video>` element](https://github.com/muxinc/youtube-video-element).                  |
 
-If using the `<media-container>` element, be sure to include the `slot="media"` attribute in the player's tag.
+Be sure to include the `slot="media"` attribute in the player's tag.
 
 ```html
-<media-container>
+<media-controller>
   <youtube-video
     slot="media"
     src="https://www.youtube.com/watch?v=rubNgGj3pYo"
   >
   </youtube-video>
-</media-container>
+</media-controller>
 ```
 
 ## Why?

@@ -29,7 +29,8 @@ template.innerHTML = `
       /* position: relative; */
     }
 
-    media-progress-range,
+    media-time-range,
+    ::slotted(media-time-range),
     ::slotted(media-progress-range),
     ::slotted(media-clip-selector) {
       flex-grow: 1;
