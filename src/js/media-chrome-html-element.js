@@ -22,6 +22,7 @@ export class MediaChromeHTMLElement extends window.HTMLElement {
     super();
 
     // Media attribute property defaults
+    this._mediaPaused = false;
     this._mediaMuted = false;
     this._mediaVolume = 1;
     this._mediaVolumeLevel = 'high';
@@ -39,6 +40,7 @@ export class MediaChromeHTMLElement extends window.HTMLElement {
   static get observedAttributes() {
     return [
       'media-controller',
+      'media-paused',
       'media-muted',
       'media-volume',
       'media-volume-level',
@@ -105,7 +107,7 @@ export class MediaChromeHTMLElement extends window.HTMLElement {
       // null is returned when attributes are removed i.e. boolean attrs
       // The new value might be an empty string, which is still true
       // for boolean attributes
-      const typedValue = !(newValue === null);
+      typedValue = !(newValue === null);
     }
 
     this[propName] = typedValue;
@@ -126,6 +128,29 @@ export class MediaChromeHTMLElement extends window.HTMLElement {
       // TODO: Unassociate in disconnectedCallback
       controller.associateElement(this);
     }
+  }
+
+  get mediaPaused() {
+    return this._mediaPaused;
+  }
+
+  set mediaPaused(paused) {
+    paused = !!paused;
+
+    this._mediaPaused = paused;
+
+    // Update the attribute first if needed, but don't inf loop
+    const attrBoolValue = this.getAttribute('media-paused') !== null;
+
+    if (paused !== attrBoolValue) {
+      if (paused) {
+        this.setAttribute('media-paused', 'media-paused');
+      } else {
+        this.removeAttribute('media-paused');
+      }      
+    }
+
+    if (this.mediaPausedSet) this.mediaPausedSet(paused);
   }
 
   get mediaMuted() {
@@ -165,6 +190,8 @@ export class MediaChromeHTMLElement extends window.HTMLElement {
     if (attrValue !== volume) {
       this.setAttribute('media-volume', volume);
     }
+
+    if (this.mediaVolumeSet) this.mediaVolumeSet(volume);
   }
 
   get mediaVolumeLevel() {
@@ -185,6 +212,8 @@ export class MediaChromeHTMLElement extends window.HTMLElement {
     if (volumeLevel !== attrValue) {
       this.setAttribute('media-volume-level', volumeLevel);
     }
+
+    if (this.mediaVolumeLevelSet) this.mediaVolumeLevelSet(volumeLevel);
   }
 
   get mediaCurrentTime() {

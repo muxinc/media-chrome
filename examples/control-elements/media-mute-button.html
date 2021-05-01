@@ -1,0 +1,93 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width">
+  <script type="module" src="../../dist/index.js"></script>
+</head>
+<body>
+
+<h1>&lt;media-mute-button&gt;</h1>
+
+<table>
+  <tr>
+    <th>Default
+    </th>
+    <td>
+      <media-mute-button></media-mute-button>
+    </td>
+  </tr>
+  <tr>
+    <th>Volume Off / Muted</th>
+    <td>
+      <media-mute-button media-volume-level="off"></media-mute-button>
+    </td>
+  </tr>
+  <tr>
+    <th>Volume Low</th>
+    <td><media-mute-button media-volume-level="low"></media-mute-button></td>
+  </tr>
+  <tr>
+    <th>Volume Medium</th>
+    <td>
+      <media-mute-button media-volume-level="medium"></media-mute-button>
+    </td>
+  </tr>
+  <tr>
+    <th>Volume High</th>
+    <td>
+      <media-mute-button media-volume-level="high"></media-mute-button>
+    </td>
+  </tr>
+</table>
+
+<h3>Alternate content</h3>
+
+<table>
+  <tr>
+    <th>Default</th>
+    <td>
+      <media-mute-button>
+        <span slot="high">High</span>
+      </media-mute-button>
+    </td>
+  </tr>
+  <tr>
+    <th>Volume Off / Muted</th>
+    <td>
+      <media-mute-button media-volume-level="off">
+        <span slot="off">Off</span>
+      </media-mute-button>
+    </td>
+  </tr>
+  <tr>
+    <th>Volume Low</th>
+    <td>
+      <media-mute-button media-volume-level="low">
+        <span slot="low">Low</span>
+      </media-mute-button>
+    </td>
+  </tr>
+  <tr>
+    <th>Volume Medium</th>
+    <td>
+      <media-mute-button media-volume-level="medium">
+        <span slot="medium">Med</span>
+      </media-mute-button>
+    </td>
+  </tr>
+  <tr>
+    <th>Volume High</th>
+    <td>
+      <media-mute-button media-volume-level="high">
+        <span slot="high">High</span>
+      </media-mute-button>
+    </td>
+  </tr>
+</table>
+
+<h3>In control bar</h3>
+<media-control-bar>
+  <media-mute-button></media-mute-button>
+</media-control-bar>
+
+</body>
+</html>

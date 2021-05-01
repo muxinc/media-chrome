@@ -15,6 +15,8 @@ class MediaVolumeRange extends MediaChromeRange {
       });
     });
 
+    this._updateRange();
+
     // Store the last set positive volume before a drag
     // so we have it when unmuting
     // this.range.addEventListener('mousedown', () => {
@@ -46,6 +48,7 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 
   _updateRange() {
+
     const range = this.range;
     const muted = this.mediaMuted;
     const volume = this.mediaVolume;

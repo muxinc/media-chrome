@@ -14,6 +14,14 @@ const highIcon =
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
   <style>
+  /* Default to High slot/icon. */
+  :host(:not([media-volume-level])) slot:not([name=high]) > *, 
+  :host(:not([media-volume-level])) ::slotted(:not([slot=high])),
+  :host([media-volume-level=high]) slot:not([name=high]) > *, 
+  :host([media-volume-level=high]) ::slotted(:not([slot=high])) {
+    display: none;
+  }
+
   :host([media-volume-level=off]) slot:not([name=off]) > *, 
   :host([media-volume-level=off]) ::slotted(:not([slot=off])) {
     display: none;
@@ -28,14 +36,8 @@ slotTemplate.innerHTML = `
   :host([media-volume-level=medium]) ::slotted(:not([slot=medium])) {
     display: none;
   }
-
-  :host([media-volume-level=high]) slot:not([name=high]) > *, 
-  :host([media-volume-level=high]) ::slotted(:not([slot=high])) {
-    display: none;
-  }
   </style>
 
-  <slot name="muted">${offIcon}</slot>
   <slot name="off">${offIcon}</slot>
   <slot name="low">${lowIcon}</slot>
   <slot name="medium">${lowIcon}</slot>
@@ -48,7 +50,7 @@ class MediaMuteButton extends MediaChromeButton {
       slotTemplate: slotTemplate
     }, options);
 
-    super(options); 
+    super(options);
   }
 
   handleClick(e) {

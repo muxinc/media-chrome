@@ -1,0 +1,27 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width">
+  <script type="module" src="../../dist/index.js"></script>
+</head>
+<body>
+
+<h1>&lt;media-fullscreen-button&gt;</h1>
+
+<h3>Enter fullscreen</h3>
+<media-fullscreen-button></media-fullscreen-button>
+
+<h3>Exit fullscreen</h3>
+<media-fullscreen-button media-is-fullscreen></media-fullscreen-button>
+
+<h3>Alternate content</h3>
+<media-fullscreen-button media-paused>
+  <span slot="enter">Enter</span>
+  <span slot="exit">Exit</span>
+</media-fullscreen-button>
+<media-fullscreen-button media-is-fullscreen>
+  <span slot="enter">Enter</span>
+  <span slot="exit">Exit</span>
+</media-fullscreen-button>
+
+</body>
+</html>

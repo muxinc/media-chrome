@@ -15,15 +15,14 @@ template.innerHTML = `
       /* Need position to display above video for some reason */
       position: relative;
       box-sizing: border-box;
-      display: flex;
+      display: inline-flex;
 
       /* All putting the progress range at full width on other lines */
       flex-wrap: wrap;
 
-      width: 100%;
       color: var(--media-icon-color, #eee);
 
-      background-color: var(--media-control-bar-background, rgba(20,20,30, 0.7));
+      /* background-color: var(--media-control-bar-background, rgba(20,20,30, 0.7)); */
     }
 
     ::slotted(*), :host > * {

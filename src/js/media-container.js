@@ -61,6 +61,10 @@ template.innerHTML = `
       opacity: 0;
       transition: opacity 1s;
     }
+
+    #container ::slotted(media-control-bar)  {
+      width: 100%;
+    }
   </style>
   <slot name="media"></slot>
   <div id="container">

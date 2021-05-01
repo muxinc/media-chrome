@@ -11,7 +11,8 @@ template.innerHTML = `
     display: inline-block;
     vertical-align: middle;
     box-sizing: border-box;
-    background-color: rgba(0,0,0,0.7);
+    /* background-color: rgba(0,0,0,0.7); */
+    background-color: var(--media-control-background, rgba(20,20,30, 0.7));
 
     /* Default width and height can be overridden externally */
     height: 44px;
@@ -38,7 +39,7 @@ template.innerHTML = `
   }
 
   :host(:hover) {
-    background-color: rgba(0,0,0,0.5);
+    background-color: var(--media-control-hover-background, rgba(50,50,70, 0.7));
   }
 
   /* Undo the default button styles and fill the parent element */

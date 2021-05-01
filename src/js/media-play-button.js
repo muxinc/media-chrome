@@ -32,34 +32,6 @@ class MediaPlayButton extends MediaChromeButton {
     }, options);
 
     super(options);
-
-    // False unless media-paused attr exists
-    this._mediaPaused = false;    
-  }
-
-  static get observedAttributes() {
-    return ['media-paused'].concat(super.observedAttributes || []);
-  }
-
-  get mediaPaused() {
-    return this._mediaPaused;
-  }
-
-  set mediaPaused(paused) {
-    paused = !!paused;
-
-    this._mediaPaused = paused;
-
-    // Update the attribute first if needed, but don't inf loop
-    const attrBoolValue = this.getAttribute('media-paused') !== null;
-
-    if (paused !== attrBoolValue) {
-      if (paused) {
-        this.setAttribute('media-paused', 'media-paused');
-      } else {
-        this.removeAttribute('media-paused');
-      }      
-    }
   }
 
   handleClick(e) {
