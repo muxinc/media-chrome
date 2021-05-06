@@ -254,6 +254,8 @@ class MediaContainer extends MediaChromeHTMLElement {
   }
 }
 
-defineCustomElement('media-container', MediaContainer);
+// Aliasing media-controller to media-container until we know
+// we're not breaking people with the change.
+// defineCustomElement('media-container', MediaContainer);
 
 export default MediaContainer;

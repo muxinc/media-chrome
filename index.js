@@ -1,5 +1,5 @@
 import MediaChromeButton from './src/js/media-chrome-button.js';
-import MediaContainer from './src/js/media-container.js';
+// import MediaContainer from './src/js/media-container.js';
 import MediaController from './src/js/media-controller.js';
 import MediaChromeHTMLElement from './src/js/media-chrome-html-element.js';
 import MediaChromeMenuButton from './src/js/media-chrome-menu-button.js';
@@ -28,11 +28,24 @@ import MediaTitleElement from './src/js/media-title-element.js';
 import MediaVolumeRange from './src/js/media-volume-range.js';
 import { Window as window } from './src/js/utils/server-safe-globals.js';
 
-// Alias <media-container> as <media-chrome>
-// and deprecate <media-chrome> as the main element
+// Alias <media-controller> as <media-chrome>
+// Might move MediaChrome to include default controls
 class MediaChrome extends MediaController {};
 if (!window.customElements.get('media-chrome')) {
   window.customElements.define('media-chrome', MediaChrome);
+}
+
+// Alias <media-controller> as <media-container>
+// to not break existing installs in transition.
+// Eventually expose media-container as unique element
+class MediaContainer extends MediaController {
+  constructor() {
+    super();
+    console.warn('MediaChrome: <media-container> is deprecated. Use <media-controller>.');
+  }
+};
+if (!window.customElements.get('media-container')) {
+  window.customElements.define('media-container', MediaContainer);
 }
 
 export {
