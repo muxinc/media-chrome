@@ -373,7 +373,7 @@ class MediaClipSelector extends MediaChromeHTMLElement {
   }
 
   /*
-   * This was copied over from media-progress-range, we should have a way of making
+   * This was copied over from media-time-range, we should have a way of making
    * this code shared between the two components
    */
   enableThumbnails() {

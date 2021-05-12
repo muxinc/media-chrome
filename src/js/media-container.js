@@ -25,7 +25,6 @@ template.innerHTML = `
 
       /* Default dimensions */
       width: 100%;
-      max-width: 720px;
       height: 480px;
       background-color: #000;
     }

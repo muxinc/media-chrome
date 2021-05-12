@@ -11,8 +11,10 @@
     font-family: "Helvetica Neue", sans-serif;
   }
 
-  media-container {
-    width: 1280px;
+  media-controller {
+    width: 100%;
+    /* Keep the buttons from overflowing */
+    min-width: 420px;
     height: 720px;
 
     --media-range-thumb-background: rgba(255,0,0, 1);
@@ -21,20 +23,21 @@
     --media-range-track-background: #555;
     --media-range-bar-color: rgb(229, 9, 20);
 
-    --media-button-icon-width: 35px;
-    --media-button-icon-height: 35px;
+    --media-button-icon-width: 50px;
+    --media-button-icon-height: 50px;
   }
 
-  media-control-bar > media-progress-range {
+  media-time-range {
     width: 100%;
     height: 25px;
+    margin-bottom: 10px;
     --media-range-thumb-height: 20px;
     --media-range-thumb-width: 20px;
     --media-range-thumb-border-radius: 20px;
-    --media-progress-buffered-color: #777;
+    --media-time-buffered-color: #777;
   }
 
-  media-progress-range:hover {
+  media-time-range:hover {
     --media-range-track-height: 9px;
   }
 
@@ -46,6 +49,7 @@
     align-items: center;
     display: flex;
     -webkit-box-pack: justify;
+    flex-wrap: nowrap;
   }
 
   media-control-bar > * {
@@ -53,8 +57,10 @@
     display: flex;
     flex: 0 1 auto;
     width: 60px;
+    min-width: 60px;
     height: 60px;
     padding-bottom: 10px;
+    margin: 0 3px;
     --media-button-icon-transform: scale(1);
     --media-button-icon-transition: transform .2s ease;
   }
@@ -73,7 +79,7 @@
   media-forward-button:hover,
   media-mute-button:hover,
   media-fullscreen-button:hover {
-    --media-button-icon-transform: scale(1.25);
+    --media-button-icon-transform: scale(1.2);
     --media-button-icon-transition: transform .2s ease;
   }
 
@@ -89,6 +95,7 @@
     vertical-align: middle;
     overflow: hidden;
     padding: 0 10px;
+    min-width: 0;
   }
 
   .videoTitleText {
@@ -120,8 +127,8 @@
     muted
     preload="none"
   ></video>
+  <media-time-range></media-time-range>
   <media-control-bar>
-    <media-progress-range></media-progress-range>
     <media-play-button></media-play-button>
     <media-replay-button></media-replay-button>
     <media-forward-button></media-forward-button>
@@ -132,7 +139,10 @@
         <h4>My Title</h4><span>P2:E4 Episode 4</span>
       </div>
     </div>
-    <media-fullscreen-button></media-fullscreen-button>
+    <media-fullscreen-button>
+      <svg slot="enter" viewBox="0 0 28 28"><g transform="translate(2, 6)"><polygon points="8 0 6 0 5.04614258 0 0 0 0 5 2 5 2 2 8 2"></polygon><polygon transform="translate(4, 13.5) scale(1, -1) translate(-4, -13.5) " points="8 11 6 11 5.04614258 11 0 11 0 16 2 16 2 13 8 13"></polygon><polygon transform="translate(20, 2.5) scale(-1, 1) translate(-20, -2.5) " points="24 0 22 0 21.0461426 0 16 0 16 5 18 5 18 2 24 2"></polygon><polygon transform="translate(20, 13.5) scale(-1, -1) translate(-20, -13.5) " points="24 11 22 11 21.0461426 11 16 11 16 16 18 16 18 13 24 13"></polygon></g></svg>
+      <svg slot="exit" viewBox="0 0 28 28"><g transform="translate(3, 6)"><polygon transform="translate(19.000000, 3.000000) scale(-1, 1) translate(-19.000000, -3.000000) " points="22 0 20 0 20 4 16 4 16 6 22 6"></polygon><polygon transform="translate(19.000000, 13.000000) scale(-1, -1) translate(-19.000000, -13.000000) " points="22 10 20 10 20 14 16 14 16 16 22 16"></polygon><polygon points="6 0 4 0 4 4 0 4 0 6 6 6"></polygon><polygon transform="translate(3.000000, 13.000000) scale(1, -1) translate(-3.000000, -13.000000) " points="6 10 4 10 4 14 0 14 0 16 6 16"></polygon></g></svg>
+    </media-fullscreen-button>
   </media-control-bar>
 </media-controller>
 

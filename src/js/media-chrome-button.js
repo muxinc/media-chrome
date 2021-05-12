@@ -70,14 +70,12 @@ template.innerHTML = `
   }
   button:active {}
 
-  svg {
+  svg,
+  ::slotted(*) {
     width: var(--media-button-icon-width);
     height: var(--media-button-icon-height);
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);
-  }
-
-  svg .icon {
     fill: var(--media-icon-color, #eee);
   }
 </style>
