@@ -130,6 +130,19 @@ class MediaContainer extends MediaChromeHTMLElement {
     observer.observe(this, { childList: true, subtree: true });
   }
 
+  static get observedAttributes() {
+    return ['autohide'].concat(super.observedAttributes || []);
+  }
+
+  // Could share this code with media-chrome-html-element instead
+  // attributeChangedCallback(attrName, oldValue, newValue) {
+  //   if (attrName.toLowerCase() == 'autohide') {
+  //     this.autohide = newValue;
+  //   } else {
+  //     super.attributeChangedCallback(attrName, oldValue, newValue);
+  //   }
+  // }
+
   // First direct child with slot=media, or null
   get media() {
     return this.querySelector(':scope > [slot=media]');
@@ -197,9 +210,13 @@ class MediaContainer extends MediaChromeHTMLElement {
     const scheduleInactive = () => {
       this.container.classList.remove('inactive');
       window.clearTimeout(this.inactiveTimeout);
+
+      // Setting autohide to -1 turns off autohide
+      if (this.autohide < 0) return;
+
       this.inactiveTimeout = window.setTimeout(() => {
         this.container.classList.add('inactive');
-      }, 2000);
+      }, this.autohide * 1000);
     };
 
     // Unhide for keyboard controlling
@@ -230,31 +247,22 @@ class MediaContainer extends MediaChromeHTMLElement {
 
     // Immediately hide if mouse leaves the container
     this.addEventListener('mouseout', e => {
-      this.container.classList.add('inactive');
+      if (this.autohide > -1) this.container.classList.add('inactive');
     });
   }
 
-  dispatchMediaEvent(eventName, eventSettings) {
-    eventSettings = Object.assign({
-      // Control element events bubble so the controller can catch them
-      // The controller shouldn't bubble events
-      bubbles: false,
-      composed: true
-    }, eventSettings);
+  set autohide(seconds) {
+    seconds = Number(seconds);
+    this._autohide = isNaN(seconds) ? 0 : seconds;
+  }
 
-    const event = new window.CustomEvent(eventName, eventSettings);
-
-    // Allow for `oneventname` props on el like in native HTML
-    const cancelled = (this[`on${eventName}`] && this[`on${eventName}`](event)) === false;
-
-    if (!cancelled) {
-      this.dispatchEvent(event);
-    }
+  get autohide() {
+    return this._autohide === undefined ? 2 : this._autohide;
   }
 }
 
-// Aliasing media-controller to media-container until we know
+// Aliasing media-controller to media-container in main index until we know
 // we're not breaking people with the change.
-// defineCustomElement('media-container', MediaContainer);
+defineCustomElement('media-container-temp', MediaContainer);
 
 export default MediaContainer;

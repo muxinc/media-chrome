@@ -1,0 +1,46 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width">
+  <script type="module" src="../../dist/index.js"></script>
+</head>
+<body>
+
+<h3>Media Container</h3>
+<p>
+  The media-container element is the parent class of media-controller and handles identifying the child media element via
+  the slot="media" attribute, and also handles hiding and showing of controls.
+  Controls will not work inside the media-container without extra code.
+  Use media-controller if you want the controls to work automatically.
+</p>
+
+<p>
+  Use the autohide="[seconds]" to change how quickly control elements will hide.
+  Set to -1 to stop hiding.
+</p>
+
+<media-container-temp autohide="2">
+  <video
+    slot="media"
+    src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+    preload="none"
+    muted
+    crossorigin
+    id="vid"
+  >
+  </video>
+  <media-play-button media-paused></media-play-button>
+</media-container-temp>
+
+<script>
+  const pb = document.querySelector('media-play-button');
+  const vid = document.querySelector('video');
+
+  // Wire up the play button
+  pb.addEventListener('mediaplayrequest', e => vid.play());
+  pb.addEventListener('mediapauserequest', e => vid.pause());
+  vid.addEventListener('play', e => pb.removeAttribute('media-paused'));
+  vid.addEventListener('pause', e => pb.setAttribute('media-paused', 'media-paused'));
+</script>
+
+</body>
+</html>

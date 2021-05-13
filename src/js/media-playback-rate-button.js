@@ -12,6 +12,9 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   constructor() {
     super();
     this._rates = DEFAULT_RATES;
+
+    // Default
+    this.mediaPlaybackRateSet(1);
   }
 
   static get observedAttributes() {
