@@ -254,6 +254,9 @@ class MediaController extends MediaContainer {
         target.removeEventListener(event, handler);
       });
     });
+
+    // Reset to paused state
+    this.propagateMediaState('mediaPaused', true);
   }
 
   propagateMediaState(stateName, state) {

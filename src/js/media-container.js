@@ -52,7 +52,7 @@ template.innerHTML = `
       visibility: visible;
     }
 
-    :host([user-inactive]) #container:not(.paused) ::slotted(*) {
+    :host([user-inactive]:not([media-paused])) #container ::slotted(*) {
       opacity: 0;
       transition: opacity 1s;
     }
@@ -161,21 +161,6 @@ class MediaContainer extends MediaChromeHTMLElement {
       return false;
     }
 
-    // Auto-show/hide controls
-    // Todo: Move this to using a media-paused attribute
-    if (media.paused) {
-      this.container.classList.add('paused');
-    }
-    this._mediaPlayHandler = e => {
-      this.container.classList.remove('paused');
-    };
-    media.addEventListener('play', this._mediaPlayHandler);
-
-    this._mediaPauseHandler = e => {
-      this.container.classList.add('paused');
-    };
-    media.addEventListener('pause', this._mediaPauseHandler);
-
     // Toggle play/pause with clicks on the media element itself
     this._mediaClickPlayToggle = e => {
       if (media.paused) {
@@ -191,11 +176,6 @@ class MediaContainer extends MediaChromeHTMLElement {
 
   mediaUnsetCallback(media) {
     media.removeEventListener('click', this._mediaClickPlayToggle);
-    media.removeEventListener('play', this._mediaPlayHandler);
-    media.removeEventListener('pause', this._mediaPauseHandler);
-
-    // Unhide controls
-    this.container.classList.add('paused');
   }
 
   connectedCallback() {
