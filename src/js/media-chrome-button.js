@@ -34,8 +34,9 @@ template.innerHTML = `
     Only show outline when keyboard focusing.
     https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
   */
-  :host-context(.media-focus-visible):host(:focus, :focus-within) {
-    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.8);
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
   }
 
   :host(:hover) {

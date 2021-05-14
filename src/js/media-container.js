@@ -52,11 +52,7 @@ template.innerHTML = `
       visibility: visible;
     }
 
-    [media-test] #container {
-      display:none !important;
-    }
-
-    #container.inactive:not(.paused) ::slotted(*) {
+    :host([user-inactive]) #container:not(.paused) ::slotted(*) {
       opacity: 0;
       transition: opacity 1s;
     }
@@ -208,14 +204,14 @@ class MediaContainer extends MediaChromeHTMLElement {
     }
 
     const scheduleInactive = () => {
-      this.container.classList.remove('inactive');
+      this.removeAttribute('user-inactive');
       window.clearTimeout(this.inactiveTimeout);
 
       // Setting autohide to -1 turns off autohide
       if (this.autohide < 0) return;
 
       this.inactiveTimeout = window.setTimeout(() => {
-        this.container.classList.add('inactive');
+        this.setAttribute('user-inactive', 'user-inactive');
       }, this.autohide * 1000);
     };
 
@@ -226,17 +222,19 @@ class MediaContainer extends MediaChromeHTMLElement {
 
     // Allow for focus styles only when using the keyboard to navigate
     this.addEventListener('keyup', e => {
-      this.container.classList.add('media-focus-visible');
+      this.setAttribute('media-keyboard-control', 'media-keyboard-control');
+      // this.container.classList.add('media-focus-visible');
     });
     this.addEventListener('mouseup', e => {
-      this.container.classList.remove('media-focus-visible');
+      this.removeAttribute('media-keyboard-control');
+      // this.container.classList.remove('media-focus-visible');
     });
 
     this.addEventListener('mousemove', e => {
       if (e.target === this) return;
 
       // Stay visible if hovered over control bar
-      this.container.classList.remove('inactive');
+      this.removeAttribute('user-inactive');
       window.clearTimeout(this.inactiveTimeout);
 
       // If hovering over the media element we're free to make inactive
@@ -247,7 +245,7 @@ class MediaContainer extends MediaChromeHTMLElement {
 
     // Immediately hide if mouse leaves the container
     this.addEventListener('mouseout', e => {
-      if (this.autohide > -1) this.container.classList.add('inactive');
+      if (this.autohide > -1) this.setAttribute('user-inactive', 'user-inactive');
     });
   }
 

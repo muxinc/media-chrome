@@ -47,14 +47,6 @@ class MediaSettingsPopup extends MediaChromeHTMLElement {
     const shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
-
-  mediaSetCallback(media) {
-
-  }
-
-  mediaUnsetCallback() {
-
-  }
 }
 
 defineCustomElement('media-settings-popup', MediaSettingsPopup);
