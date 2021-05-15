@@ -128,7 +128,7 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 | `<media-fullscreen-button>` | Toggle fullscreen viewing                                                                             |
 | `<media-pip-button>`        | Toggle picture-in-picture mode of the video                                                           |
 | `<media-playback-rate-button>` | Change the speed of playback                                                                       |
-| `<media-seek-back-button>` | Jump back 30 seconds in the media                                                                      |
+| `<media-seek-backward-button>` | Jump back 30 seconds in the media                                                                      |
 | `<media-seek-forward-button>` | Jump ahead 30 seconds in the media                                                                  |
 | `<media-clip-selector>` | Create selector handles that allow a user to select a sub-section of the media element.                   |
 | More to come                 | Requests and contributions welcome                                                                   |

@@ -6,7 +6,7 @@ import MediaChromeRange from './src/js/media-chrome-range.js';
 import MediaControlBar from './src/js/media-control-bar.js';
 import MediaCurrentTimeDisplay from './src/js/media-current-time-display.js';
 import MediaDurationDisplay from './src/js/media-duration-display.js';
-import MediaForwardButton from './src/js/media-forward-button.js';
+import MediaSeekForwardButton from './src/js/media-seek-forward-button.js';
 import MediaFullscreenButton from './src/js/media-fullscreen-button.js';
 import MediaMuteButton from './src/js/media-mute-button.js';
 import MediaPipButton from './src/js/media-pip-button.js';
@@ -15,7 +15,7 @@ import MediaPlaybackRateButton from './src/js/media-playback-rate-button.js';
 import MediaPoster from './src/js/media-poster.js';
 import MediaProgressRange from './src/js/media-progress-range.js';
 import MediaClipSelector from './src/js/media-clip-selector.js';
-import MediaReplayButton from './src/js/media-replay-button.js';
+import MediaSeekBackwardButton from './src/js/media-seek-backward-button.js';
 import MediaThumbnailPreviewElement from './src/js/media-thumbnail-preview-element.js';
 import MediaTimeRange from './src/js/media-time-range.js';
 import MediaTitleElement from './src/js/media-title-element.js';
@@ -51,7 +51,7 @@ export {
   MediaControlBar,
   MediaCurrentTimeDisplay,
   MediaDurationDisplay,
-  MediaForwardButton,
+  MediaSeekForwardButton,
   MediaFullscreenButton,
   MediaMuteButton,
   MediaPipButton,
@@ -60,7 +60,7 @@ export {
   MediaPoster,
   MediaProgressRange,
   MediaClipSelector,
-  MediaReplayButton,
+  MediaSeekBackwardButton,
   MediaThumbnailPreviewElement,
   MediaTimeRange,
   MediaTitleElement,
