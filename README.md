@@ -23,12 +23,12 @@ Fully customizable media player controls using web components (native custom ele
     <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
   </video>
   <media-control-bar>
-    <media-play-button>Play</media-play-button>
-    <media-mute-button>Mute</media-mute-button>
-    <media-volume-range>Volume</media-volume-range>
-    <media-time-range>Time</media-time-range>
-    <media-pip-button>PIP</media-pip-button>
-    <media-fullscreen-button>Fullscreen</media-fullscreen-button>
+    <media-play-button></media-play-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-range></media-time-range>
+    <media-pip-button></media-pip-button>
+    <media-fullscreen-button></media-fullscreen-button>
   </media-control-bar>
 </media-controller>
 ```
@@ -36,34 +36,21 @@ Fully customizable media player controls using web components (native custom ele
 #### Results (<a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank">Try the CodePen example</a>)
 <a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank"><img width="719" alt="Media Chrome Demo" src="https://user-images.githubusercontent.com/166/78526967-834bcb80-7790-11ea-98a3-a5b355e7a55a.png"></a>
 
-## _Quick_ Demos
+## _Quick_ Demo
 
 (GIFs still use old name of `<player-chrome>` and need to be updated)
 
 ### Adding controls to a video element
 Just HTML. No javascripting required.
 
-![Add controls to the media](https://image.mux.com/es7LU800gmNagIAaFuV5T25Z32xrmt6Gn/animated.gif?width=640&fps=15&end=10)
-
-### Moving the progress bar above the controls
-Simple HTML and CSS.
-
-![Moving the playback progress bar](https://image.mux.com/NAu02gDe4qenxs8x4CKDKOb65hFcirY02p/animated.gif?width=640&fps=15&end=10)
-
-### Use `media-clip-selector` to select segments of a video
-
-`media-clip-selector` is a built-in component that can build a UI for selecting portions of your media.
-
-Listen for the `update` event on the element to get the selected start and end timestamps. Full example in examples/clip-selector.html.
-
-![media range selector example](./screenshots/media-clip-selector.gif?raw=true)
+[![Add controls to the media](https://image.mux.com/fbrV01YkyMrnp01BItrdWL029IurCj2gxlS/animated.gif?width=640&end=10&fps=15)](https://stream.new/v/fhRqeSkHntHb2IZ3AyduTK02l3b9j1EyZTjGHdyERg018)
 
 
-## Usage
+## Using/installing
 
 `<media-chrome>` is only packaged as a javascript module (es6), which is supported by all evergreen browsers and Node v12+. The package includes all of the existing media controls.
 
-### Include with `<script>`
+### Option 1: Hosted
 
 Load the module in the `<head>` of your HTML page. Note the `type="module"`, that's important.
 
@@ -73,15 +60,10 @@ Load the module in the `<head>` of your HTML page. Note the `type="module"`, tha
 <script type="module" src="https://unpkg.com/media-chrome@0"></script>
 ```
 
-### Include with `import` and npm.
+### Option 2: Bundled via npm
 
 ```bash
 npm install media-chrome --save
-```
-
-Or `yarn`
-```bash
-yarn add media-chrome
 ```
 
 Include in your app javascript (e.g. src/App.js)
@@ -96,7 +78,7 @@ The `<media-controller>` is the star of the show. It handles the communication b
 
 ```html
 <media-controller>
-  <video slot="media"></video>
+  <video slot="media" src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"></video>
 </media-controller>
 ```
 
@@ -104,7 +86,7 @@ After that, each control element can be used independently. When using outside o
 
 ```html
 <media-controller id="myController">
-  <video slot="media"></video>
+  <video slot="media" src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"></video>
   <media-play-button></media-play-button>
 </media-controller>
 
@@ -121,29 +103,33 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
   ></video>
   <media-control-bar>
-    <media-play-button>Play</media-play-button>
-    <media-mute-button>Mute</media-mute-button>
-    <media-volume-range>Volume</media-volume-range>
-    <media-time-range>Progress</media-time-range>
-    <media-pip-button>PIP</media-pip-button>
-    <media-fullscreen-button>Fullscreen</media-fullscreen-button>
+    <media-play-button></media-play-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-range></media-time-range>
+    <media-pip-button></media-pip-button>
+    <media-fullscreen-button></media-fullscreen-button>
   </media-control-bar>
 </media-controller>
 ```
 
 ### Included elements
 
-| Element                      | Description                                                                                           |
-|------------------------------|-------------------------------------------------------------------------------------------------------|
+| Element                      | Description                                                                                          |
+|------------------------------|------------------------------------------------------------------------------------------------------|
 | `<media-controller>`       | Wraps controls and the media element, and handles communication between them.                          |
 | `<media-control-bar>`       | Optional controls container to help align the controls in the standard fashion.                       |
 | `<media-play-button>`       | Toggle media playback                                                                                 |
 | `<media-mute-button>`       | Toggle the sound. The icon responds to volume changes and acts as part of the typical volume control. |
 | `<media-volume-range>`      | Change the volume of the sound.                                                                       |
 | `<media-time-range>`    | See how far the playhead is through the media duration, and seek to new times.                            |
+| `<media-current-time-display>` | Show the time of the playhead                                                                      |
+| `<media-duration-display>` | Show the duration of the media                                                                         |
 | `<media-fullscreen-button>` | Toggle fullscreen viewing                                                                             |
 | `<media-pip-button>`        | Toggle picture-in-picture mode of the video                                                           |
 | `<media-playback-rate-button>` | Change the speed of playback                                                                       |
+| `<media-seek-back-button>` | Jump back 30 seconds in the media                                                                      |
+| `<media-seek-forward-button>` | Jump ahead 30 seconds in the media                                                                  |
 | `<media-clip-selector>` | Create selector handles that allow a user to select a sub-section of the media element.                   |
 | More to come                 | Requests and contributions welcome                                                                   |
 
@@ -183,8 +169,18 @@ It should be easier... `<media-chrome>` is an attempt at solving that.
 
 ## Why now?
 
-Web components. @heff spoke about [the potential of web components for video](https://youtu.be/TwnygSWmToc?t=859) at Demuxed 2015. They allow us to extend the browser's base HTML functionality, meaning we can now build media player controls as simple HTML tags that:
+Web components. @heff spoke about [the potential of web components for video](https://youtu.be/TwnygSWmToc?t=859) at Demuxed 2015, and [again in 2020](https://www.youtube.com/watch?v=qMcNDWyRw20). They allow us to extend the browser's base HTML functionality, meaning we can now build media player controls as simple HTML tags that:
 
 * Can be used like any native HTML tag in HTML, Javascript, and CSS (unleash your designer)
 * Are compatible by default with Javascript frameworks (React, Angular, Svelte)
 * Can be used across players when using multiple in the same site, e.g Youtube & `<video>`. (Could even be used by players as their own built-in controls)
+
+## Other demos
+
+### Use `media-clip-selector` to select segments of a video
+
+`media-clip-selector` is a built-in component that can build a UI for selecting portions of your media.
+
+Listen for the `update` event on the element to get the selected start and end timestamps. Full example in examples/clip-selector.html.
+
+![media range selector example](./screenshots/media-clip-selector.gif?raw=true)
