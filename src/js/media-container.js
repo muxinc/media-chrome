@@ -24,7 +24,7 @@ template.innerHTML = `
       flex-direction: column-reverse;
 
       /* Default dimensions */
-      width: 100%;
+      width: 720px;
       height: 480px;
       background-color: #000;
     }
