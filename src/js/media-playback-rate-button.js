@@ -1,5 +1,6 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { mediaUIEvents } from './media-chrome-html-element.js';
 
 /*
   <media-playback-rate-button rates="1,1.5,2">
@@ -11,6 +12,9 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   constructor() {
     super();
     this._rates = DEFAULT_RATES;
+
+    // Default
+    this.mediaPlaybackRateSet(1);
   }
 
   static get observedAttributes() {
@@ -34,32 +38,19 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     return this._rates;
   }
 
-  onClick(e) {
-    const media = this.media;
-
-    if (!media) return;
-
-    const currentRate = media.playbackRate;
+  handleClick(e) {
+    const currentRate = this.mediaPlaybackRate;
     let newRate = this.rates.find(r => r > currentRate);
 
     if (!newRate) newRate = this.rates[0];
 
-    media.playbackRate = newRate;
+    this.dispatchMediaEvent(mediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST, {
+      detail: newRate
+    })
   }
 
-  mediaSetCallback(media) {
-    this._rateChangeHandler = () => {
-      const newRate = media.playbackRate.toString().substring(0,4);
-      this.shadowRoot.querySelector('button').innerHTML = `${newRate}x`;
-    };
-
-    media.addEventListener('ratechange', this._rateChangeHandler);
-    this._rateChangeHandler();
-  }
-
-  mediaUnsetCallback(media) {
-    if (!media) return;
-    media.removeEventListener('ratechange', this._rateChangeHandler);
+  mediaPlaybackRateSet(rate) {
+    this.nativeEl.innerHTML = `${rate}x`;
   }
 }
 

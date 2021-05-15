@@ -1,0 +1,29 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width">
+  <script type="module" src="../../dist/index.js"></script>
+</head>
+<body>
+
+<h1>&lt;media-play-button&gt;</h1>
+
+<h3>Play</h3>
+<p>&lt;media-play-button media-paused&gt;</p>
+<media-play-button media-paused></media-play-button>
+
+<h3>Pause</h3>
+<p>&lt;media-play-button&gt;</p>
+<media-play-button></media-play-button>
+
+<h3>Alternate content</h3>
+<media-play-button media-paused>
+  <span slot="play">Play</span>
+  <span slot="pause">Pause</span>
+</media-play-button>
+<media-play-button>
+  <span slot="play">Play</span>
+  <span slot="pause">Pause</span>
+</media-play-button>
+
+</body>
+</html>

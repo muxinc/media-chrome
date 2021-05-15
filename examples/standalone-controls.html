@@ -3,11 +3,7 @@
   <meta name="viewport" content="width=device-width">
   <script type="module" src="../dist/index.js"></script>
   <style>
-    body {
-      /* background-color: #000; */
-    }
-
-    video {
+    media-controller {
       width: 640px;
       height: 360px;
     }
@@ -18,29 +14,31 @@
 <h1>Standalone Controls Example</h1>
 <p>This example shows how individual controls can be used without the <code>media-container</code> element.</p>
 
-<video id="media" src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"></video>
+<media-controller id="controller">
+  <video slot="media" src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"></video>
+</media-controller>
 
 <h2>Outside the control-bar element</h2>
-<media-play-button media="#media"></media-play-button>
-<media-mute-button media="#media"></media-mute-button>
-<media-replay-button media="#media"></media-replay-button>
-<media-forward-button media="#media"></media-forward-button>
-<media-volume-range media="#media"></media-volume-range>
-<media-progress-range media="#media"></media-progress-range>
-<media-playback-rate-button media="#media"></media-playback-rate-button>
-<media-pip-button media="#media"></media-pip-button>
-<media-fullscreen-button  media="#media"></media-fullscreen-button>
+<media-play-button media-controller="controller"></media-play-button>
+<media-mute-button media-controller="controller"></media-mute-button>
+<media-replay-button media-controller="controller"></media-replay-button>
+<media-forward-button media-controller="controller"></media-forward-button>
+<media-volume-range media-controller="controller"></media-volume-range>
+<media-time-range media-controller="controller"></media-time-range>
+<media-playback-rate-button media-controller="controller"></media-playback-rate-button>
+<media-pip-button media-controller="controller"></media-pip-button>
+<media-fullscreen-button media-controller="controller"></media-fullscreen-button>
 
 <h2>Inside the control-bar element</h2>
-<p>Note: You only need to set the <code>media=</code> attribute on the <code>media-control-bar</code>. Media-chrome elements will pass the media reference to their child media-chrome elements automatically.</p>
+<p>Note: You only need to set the <code>media-controller=</code> attribute on the <code>media-control-bar</code>. The media-controller will pass the media state details to their child media-chrome elements automatically.</p>
 
-<media-control-bar media="#media">
+<media-control-bar media-controller="controller">
   <media-play-button></media-play-button>
   <media-mute-button></media-mute-button>
   <media-replay-button></media-replay-button>
   <media-forward-button></media-forward-button>
   <media-volume-range></media-volume-range>
-  <media-progress-range></media-progress-range>
+  <media-time-range></media-time-range>
   <media-playback-rate-button></media-playback-rate-button>
   <media-pip-button></media-pip-button>
   <media-fullscreen-button></media-fullscreen-button>

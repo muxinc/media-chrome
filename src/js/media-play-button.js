@@ -1,60 +1,44 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { mediaUIEvents } from './media-chrome-html-element.js';
 
 const playIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
 const pauseIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
 
+const slotTemplate = document.createElement('template');
+slotTemplate.innerHTML = `
+  <style>
+  :host([media-paused]) slot[name=pause] > *, 
+  :host([media-paused]) ::slotted([slot=pause]) {
+    display: none;
+  }
+
+  :host(:not([media-paused])) slot[name=play] > *, 
+  :host(:not([media-paused])) ::slotted([slot=play]) {
+    display: none;
+  }
+  </style>
+
+  <slot name="play">${playIcon}</slot>
+  <slot name="pause">${pauseIcon}</slot>
+`;
+
 class MediaPlayButton extends MediaChromeButton {
-  constructor() {
-    super();
-    this.icon = playIcon;
-    this._playing = false;
+  constructor(options={}) {
+    options = Object.assign({
+      slotTemplate: slotTemplate
+    }, options);
+
+    super(options);
   }
 
-  static get observedAttributes() {
-    return ['playing'].concat(super.observedAttributes || []);
-  }
-
-  get playing() {
-    return this._playing;
-  }
-
-  set playing(val) {
-    this._playing = !!val;
-
-    if (val) {
-      this.icon = pauseIcon;
-    } else {
-      this.icon = playIcon;
-    }
-  }
-
-  onClick(e) {
-    const media = this.media;
-
-    // If not using media detection, onClick should be overridden
-    if (!media) {
-      console.warn('<media-play-button>: No media was found and an alternative onClick handler was not set.');
-      return;
-    }
-
-    if (media.paused) {
-      media.play();
-    } else {
-      media.pause();
-    }
-  }
-
-  mediaSetCallback(media) {
-    media.addEventListener('play', () => {
-      this.playing = true;
-    });
-
-    media.addEventListener('pause', () => {
-      this.playing = false;
-    });
+  handleClick(e) {
+    const eventName = (this.mediaPaused)
+      ? mediaUIEvents.MEDIA_PLAY_REQUEST
+      : mediaUIEvents.MEDIA_PAUSE_REQUEST;
+    this.dispatchMediaEvent(eventName);
   }
 }
 

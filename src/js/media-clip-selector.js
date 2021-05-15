@@ -2,6 +2,7 @@ import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import MediaThumbnailPreviewElement from './media-thumbnail-preview-element.js';
+import { mediaUIEvents } from './media-chrome-html-element.js';
 
 const template = document.createElement('template');
 
@@ -180,7 +181,7 @@ class MediaClipSelector extends MediaChromeHTMLElement {
    * converts the percentage progress into a duration in seconds
    */
   getPlayheadBasedOnMouseEvent (evt) {
-    const duration = this.media && this.media.duration;
+    const duration = this.mediaDuration;
     if (!duration) return;
     const mousePercent = lockBetweenZeroAndOne(this.getMousePercent(evt));
     return (mousePercent * duration);
@@ -295,8 +296,8 @@ class MediaClipSelector extends MediaChromeHTMLElement {
      * Currently we round to the nearest integer? Might want to change later to round to 1 or 2 decimails?
      */
     return {
-      startTime: Math.round(percentStart * this.media.duration),
-      endTime: Math.round(percentEnd * this.media.duration),
+      startTime: Math.round(percentStart * this.mediaDuration),
+      endTime: Math.round(percentEnd * this.mediaDuration),
     };
   }
 
@@ -307,22 +308,21 @@ class MediaClipSelector extends MediaChromeHTMLElement {
 
   handleClick (evt) {
     const mousePercent = this.getMousePercent(evt);
-    const timestampForClick = mousePercent * this.media.duration;
+    const timestampForClick = mousePercent * this.mediaDuration;
 
     /*
      * Clicking outside the selection (out of bounds), does not change the
      * currentTime of the underlying media, only clicking in bounds does that
      */
-    if (this.media && this.isTimestampInBounds(timestampForClick)) {
-      this.media.currentTime = timestampForClick;
+    if (this.isTimestampInBounds(timestampForClick)) {
+      this.dispatchMediaEvent(mediaUIEvents.MEDIA_SEEK_REQUEST, {
+        detail: timestampForClick
+      });
     }
   }
 
   mediaSetCallback(media) {
     super.mediaSetCallback(media);
-
-    this._timeUpdate = this.timeUpdate.bind(this);
-    media.addEventListener('timeupdate', this._timeUpdate);
 
     // Initialize thumbnails
     if (media.textTracks && media.textTracks.length) {
@@ -336,8 +336,8 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     }
   }
 
-  timeUpdate (evt) {
-    const percentComplete = lockBetweenZeroAndOne(this.media.currentTime / this.media.duration);
+  mediaCurrentTimeSet(time) {
+    const percentComplete = lockBetweenZeroAndOne(this.mediaCurrentTime / this.mediaDuration);
     const fullW = this.wrapper.getBoundingClientRect().width;
     const progressW = (percentComplete * fullW);
 
@@ -348,23 +348,19 @@ class MediaClipSelector extends MediaChromeHTMLElement {
      * if paused, we don't need to do anything else, but if it is playing
      * we want to loop within the selection range
      */
-    if (!this.media.paused) {
+    if (!this.mediaPaused) {
       const { startTime, endTime } = this.getCurrentClipBounds();
 
-      if (this.media.currentTime < startTime) {
-        this.media.currentTime = startTime;
-      }
-      if (this.media.currentTime > endTime) {
-        this.media.currentTime = startTime;
+      if (this.mediaCurrentTime < startTime || this.mediaCurrentTime > endTime) {
+        this.dispatchMediaEvent(mediaUIEvents.MEDIA_SEEK_REQUEST, {
+          detail: startTime
+        });
       }
     }
   }
 
   mediaUnsetCallback(media) {
     super.mediaUnsetCallback(media);
-
-    media.removeEventListener('timeupdate', this._timeUpdate);
-    this.wrapper.removeEventListener('click', this._clickHandler);
 
     this.wrapper.removeEventListener('touchstart', this._dragStart);
     this.wrapper.removeEventListener('touchend', this._dragEnd);
@@ -377,7 +373,7 @@ class MediaClipSelector extends MediaChromeHTMLElement {
   }
 
   /*
-   * This was copied over from media-progress-range, we should have a way of making
+   * This was copied over from media-time-range, we should have a way of making
    * this code shared between the two components
    */
   enableThumbnails() {
@@ -388,7 +384,7 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     let mouseMoveHandler;
     const trackMouse = () => {
       mouseMoveHandler = (evt) => {
-        const duration = this.media && this.media.duration;
+        const duration = this.mediaDuration;
 
         // If no duration we can't calculate which time to show
         if (!duration) return;
@@ -402,7 +398,7 @@ class MediaClipSelector extends MediaChromeHTMLElement {
         const thumbnailLeft = leftPadding + (mousePercent * rangeRect.width);
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
-        this.thumbnailPreview.time = mousePercent * this.media.duration;
+        this.thumbnailPreview.time = mousePercent * this.mediaDuration;
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
     };
@@ -414,7 +410,7 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     // Trigger when the mouse moves over the range
     let rangeEntered = false;
     let rangeMouseMoveHander = (evt) => {
-      if (!rangeEntered && this.media && this.media.duration) {
+      if (!rangeEntered && this.media && this.mediaDuration) {
         rangeEntered = true;
         this.thumbnailPreview.style.display = 'block';
         trackMouse();
@@ -430,7 +426,7 @@ class MediaClipSelector extends MediaChromeHTMLElement {
         window.addEventListener('mousemove', offRangeHandler, false);
       }
 
-      if (!this.media || !this.media.duration) {
+      if (!this.media || !this.mediaDuration) {
         this.thumbnailPreview.style.display = 'none';
       }
     };

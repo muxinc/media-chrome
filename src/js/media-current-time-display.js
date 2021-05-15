@@ -45,22 +45,11 @@ class MediaCurrentTimeDisplay extends MediaChromeHTMLElement {
     const shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.container = this.shadowRoot.querySelector('#container');
-    this.update(6000);
+    // this.update(6000);
   }
 
-  update(time) {
+  mediaCurrentTimeSet(time) {
     this.container.innerHTML = formatTime(time);
-  }
-
-  mediaSetCallback(media) {
-    media.addEventListener('timeupdate', e => {
-      this.update(media.currentTime);
-    });
-    this.update(media.currentTime);
-  }
-
-  mediaUnsetCallback() {
-    this.update(0);
   }
 }
 

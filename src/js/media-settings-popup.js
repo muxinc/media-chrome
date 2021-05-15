@@ -1,3 +1,5 @@
+// Work in progress
+
 import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Document as document } from './utils/server-safe-globals.js';
@@ -44,14 +46,6 @@ class MediaSettingsPopup extends MediaChromeHTMLElement {
 
     const shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-  }
-
-  mediaSetCallback(media) {
-
-  }
-
-  mediaUnsetCallback() {
-
   }
 }
 

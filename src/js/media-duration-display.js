@@ -45,22 +45,10 @@ class MediaDurationDisplay extends MediaChromeHTMLElement {
     const shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.container = this.shadowRoot.querySelector('#container');
-    this.update(0);
   }
 
-  update(duration) {
+  mediaDurationSet(duration) {
     this.container.innerHTML = formatTime(duration);
-  }
-
-  mediaSetCallback(media) {
-    media.addEventListener('durationchange', e => {
-      this.update(media.duration);
-    });
-    this.update(media.duration);
-  }
-
-  mediaUnsetCallback() {
-    this.update(0);
   }
 }
 

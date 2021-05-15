@@ -11,7 +11,8 @@ template.innerHTML = `
     display: inline-block;
     vertical-align: middle;
     box-sizing: border-box;
-    background-color: transparent;
+    /* background-color: rgba(0,0,0,0.7); */
+    background-color: var(--media-control-background, rgba(20,20,30, 0.7));
 
     /* Default width and height can be overridden externally */
     height: 44px;
@@ -33,14 +34,16 @@ template.innerHTML = `
     Only show outline when keyboard focusing.
     https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
   */
-  :host-context(.media-focus-visible):host(:focus, :focus-within) {
-    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.8);
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
   }
 
   :host(:hover) {
-    background: rgba(255,255,255, 0.10);
+    background-color: var(--media-control-hover-background, rgba(50,50,70, 0.7));
   }
 
+  /* Undo the default button styles and fill the parent element */
   button {
     width: 100%;
     height: 100%;
@@ -68,40 +71,46 @@ template.innerHTML = `
   }
   button:active {}
 
-  svg {
+  svg,
+  ::slotted(*) {
     width: var(--media-button-icon-width);
     height: var(--media-button-icon-height);
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);
-  }
-
-  svg .icon {
     fill: var(--media-icon-color, #eee);
   }
 </style>
-<button id="container">
-  <slot></slot>
-</button>
+
+<button></button>
 `;
 
 class MediaChromeButton extends MediaChromeHTMLElement {
-  constructor() {
+  constructor(options={}) {
     super();
 
-    var shadow = this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.container = this.shadowRoot.querySelector('#container');
+    const shadow = this.attachShadow({ mode: 'open' });
+
+    const buttonHTML = template.content.cloneNode(true);
+    this.nativeEl = buttonHTML.querySelector('button');
+
+    // Slots
+    let slotTemplate = options.slotTemplate;
+
+    if (!slotTemplate) {
+      slotTemplate = document.createElement('template');
+      slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
+    }
+
+    this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
+
+    shadow.appendChild(buttonHTML);
 
     this.addEventListener('click', e => {
-      this.onClick(e);
+      this.handleClick(e);
     });
   }
 
-  onClick() { }
-
-  set icon(svg) {
-    this.container.innerHTML = svg;
-  }
+  handleClick() {}
 }
 
 defineCustomElement('media-chrome-button', MediaChromeButton);
