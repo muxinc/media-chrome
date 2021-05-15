@@ -18,7 +18,7 @@
   Set to -1 to stop hiding.
 </p>
 
-<media-container-temp autohide="2">
+<media-container-temp autohide="2" media-paused>
   <video
     slot="media"
     src="http://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -32,14 +32,20 @@
 </media-container-temp>
 
 <script>
-  const pb = document.querySelector('media-play-button');
+  const container = document.querySelector('media-container');
+  const playButton = document.querySelector('media-play-button');
   const vid = document.querySelector('video');
 
+  // Wire up the container to know media state
+  // media-controller does this as a subclass
+  vid.addEventListener('play', e => container.removeAttribute('media-paused'));
+  vid.addEventListener('pause', e => container.setAttribute('media-paused', 'media-paused'));
+
   // Wire up the play button
-  pb.addEventListener('mediaplayrequest', e => vid.play());
-  pb.addEventListener('mediapauserequest', e => vid.pause());
-  vid.addEventListener('play', e => pb.removeAttribute('media-paused'));
-  vid.addEventListener('pause', e => pb.setAttribute('media-paused', 'media-paused'));
+  playButton.addEventListener('mediaplayrequest', e => vid.play());
+  playButton.addEventListener('mediapauserequest', e => vid.pause());
+  vid.addEventListener('play', e => playButton.removeAttribute('media-paused'));
+  vid.addEventListener('pause', e => playButton.setAttribute('media-paused', 'media-paused'));
 </script>
 
 </body>
