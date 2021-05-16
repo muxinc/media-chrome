@@ -11,12 +11,11 @@ template.innerHTML = `
     display: inline-block;
     vertical-align: middle;
     box-sizing: border-box;
-    /* background-color: rgba(0,0,0,0.7); */
     background-color: var(--media-control-background, rgba(20,20,30, 0.7));
 
     /* Default width and height can be overridden externally */
-    height: 44px;
-    width: 44px;
+    padding: 10px;
+    
 
     /* Vertically center any text */
     font-size: 14px;
@@ -46,7 +45,6 @@ template.innerHTML = `
   /* Undo the default button styles and fill the parent element */
   button {
     width: 100%;
-    height: 100%;
     vertical-align: middle;
     border: none;
     margin: 0;
@@ -73,7 +71,7 @@ template.innerHTML = `
 
   svg,
   ::slotted(*) {
-    width: var(--media-button-icon-width);
+    width: var(--media-button-icon-width, 24px);
     height: var(--media-button-icon-height);
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);

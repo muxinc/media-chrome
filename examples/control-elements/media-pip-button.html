@@ -1,0 +1,27 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width">
+  <script type="module" src="../../dist/index.js"></script>
+</head>
+<body>
+
+<h1>&lt;media-pip-button&gt;</h1>
+
+<h3>Enter pip</h3>
+<media-pip-button></media-pip-button>
+
+<h3>Exit pip</h3>
+<media-pip-button media-is-pip></media-pip-button>
+
+<h3>Alternate content</h3>
+<media-pip-button>
+  <span slot="enter">PIP</span>
+  <span slot="exit">Off</span>
+</media-pip-button>
+<media-pip-button media-is-pip>
+  <span slot="enter">Enter</span>
+  <span slot="exit">Exit</span>
+</media-pip-button>
+
+</body>
+</html>
