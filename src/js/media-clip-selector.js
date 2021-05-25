@@ -173,6 +173,8 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     this.wrapper.addEventListener('mousedown', this._dragStart, false);
     window.addEventListener('mouseup', this._dragEnd, false);
     window.addEventListener('mousemove', this._drag, false);
+
+    this.enableThumbnails();
   }
 
   /*
@@ -321,21 +323,6 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     }
   }
 
-  mediaSetCallback(media) {
-    super.mediaSetCallback(media);
-
-    // Initialize thumbnails
-    if (media.textTracks && media.textTracks.length) {
-      const thumbnailTrack = Array.prototype.find.call(media.textTracks, t => t.label == 'thumbnails');
-
-      if (thumbnailTrack) {
-        this.enableThumbnails();
-      } else {
-        this.thumbnailPreview.style.display = 'none';
-      }
-    }
-  }
-
   mediaCurrentTimeSet(time) {
     const percentComplete = lockBetweenZeroAndOne(this.mediaCurrentTime / this.mediaDuration);
     const fullW = this.wrapper.getBoundingClientRect().width;
@@ -398,7 +385,10 @@ class MediaClipSelector extends MediaChromeHTMLElement {
         const thumbnailLeft = leftPadding + (mousePercent * rangeRect.width);
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
-        this.thumbnailPreview.time = mousePercent * this.mediaDuration;
+
+        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PREVIEW_REQUEST, {
+          detail: mousePercent * duration
+        });
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
     };
@@ -410,7 +400,7 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     // Trigger when the mouse moves over the range
     let rangeEntered = false;
     let rangeMouseMoveHander = (evt) => {
-      if (!rangeEntered && this.media && this.mediaDuration) {
+      if (!rangeEntered && this.mediaDuration) {
         rangeEntered = true;
         this.thumbnailPreview.style.display = 'block';
         trackMouse();
@@ -426,10 +416,11 @@ class MediaClipSelector extends MediaChromeHTMLElement {
         window.addEventListener('mousemove', offRangeHandler, false);
       }
 
-      if (!this.media || !this.mediaDuration) {
+      if (!this.mediaDuration) {
         this.thumbnailPreview.style.display = 'none';
       }
     };
+
     this.addEventListener('mousemove', rangeMouseMoveHander, false);
   }
 
