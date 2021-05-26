@@ -136,9 +136,7 @@ class MediaController extends MediaContainer {
           if (cue) {
             const url = new URL(cue.text);
             const [x,y,w,h] = url.hash.split('=')[1].split(',');
-            const src = url.origin + url.pathname;
-
-            this.propagateMediaState('mediaPreviewImage', src);
+            this.propagateMediaState('mediaPreviewImage', url.href);
             this.propagateMediaState('mediaPreviewCoords', `${x},${y},${w},${h}`);
           }
         }
