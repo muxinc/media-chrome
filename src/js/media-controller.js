@@ -43,9 +43,9 @@ class MediaController extends MediaContainer {
       MEDIA_MUTE_REQUEST: () => this.media.muted = true,
       MEDIA_UNMUTE_REQUEST: () => {
         const media = this.media;
-  
+
         media.muted = false;
-  
+
         // Avoid confusion by bumping the volume on unmute
         if (media.volume === 0) {
           media.volume = 0.25;
@@ -54,14 +54,14 @@ class MediaController extends MediaContainer {
       MEDIA_VOLUME_REQUEST: (e) => {
         const media = this.media;
         const volume = e.detail;
- 
+
         media.volume = volume;
-  
+
         // If the viewer moves the volume we should unmute for them.
         if (volume > 0 && media.muted) {
           media.muted = false;
         }
-  
+
         // Store the last set volume as a local preference, if ls is supported
         try {
           window.localStorage.setItem(
@@ -75,14 +75,14 @@ class MediaController extends MediaContainer {
       // which may be true in most cases but not all.
       // The prior version of media-chrome support alt fullscreen elements
       // and that's something we can work towards here
-      MEDIA_ENTER_FULLSCREEN_REQUEST: () => {        
+      MEDIA_ENTER_FULLSCREEN_REQUEST: () => {
         const docOrRoot = this.getRootNode();
 
         if (docOrRoot.pictureInPictureElement) {
           // Should be async
           docOrRoot.exitPictureInPicture();
         }
-  
+
         super[fullscreenApi.enter]();
       },
       MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
@@ -91,14 +91,14 @@ class MediaController extends MediaContainer {
       MEDIA_ENTER_PIP_REQUEST: () => {
         const docOrRoot = this.getRootNode();
         const media = this.media;
-  
+
         if (!docOrRoot.pictureInPictureEnabled) return;
-  
+
         // Exit fullscreen if needed
         if (docOrRoot[fullscreenApi.element]) {
           docOrRoot[fullscreenApi.exit]();
         }
-  
+
         media.requestPictureInPicture();
       },
       MEDIA_EXIT_PIP_REQUEST: () => {
@@ -109,7 +109,7 @@ class MediaController extends MediaContainer {
       MEDIA_SEEK_REQUEST: (e) => {
         const media = this.media;
         const time = e.detail;
-  
+
         // Can't set the time before the media is ready
         // Ignore if readyState isn't supported
         if (media.readyState > 0 || media.readyState === undefined) {
@@ -122,22 +122,22 @@ class MediaController extends MediaContainer {
       MEDIA_PREVIEW_REQUEST: (e) => {
         const media = this.media;
         const time = e.detail;
-  
+
         if (media && media.textTracks && media.textTracks.length) {
           let track = Array.prototype.find.call(media.textTracks, (t)=>{
             return t.label == 'thumbnails';
           });
-    
+
           if (!track) return;
           if (!track.cues) return;
-    
+
           let cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
-    
+
           if (cue) {
             const url = new URL(cue.text);
             const [x,y,w,h] = url.hash.split('=')[1].split(',');
             const src = url.origin + url.pathname;
-    
+
             this.propagateMediaState('mediaPreviewImage', src);
             this.propagateMediaState('mediaPreviewCoords', `${x},${y},${w},${h}`);
           }
@@ -170,7 +170,7 @@ class MediaController extends MediaContainer {
       },
       'volumechange': () => {
         const { muted, volume } = this.media;
-  
+
         let level = 'high';
         if (volume == 0 || muted) {
           level = 'off';
@@ -179,7 +179,7 @@ class MediaController extends MediaContainer {
         } else if (volume < 0.75) {
           level = 'medium';
         }
-  
+
         this.propagateMediaState('mediaMuted', muted);
         this.propagateMediaState('mediaVolume', volume);
         this.propagateMediaState('mediaVolumeLevel', level);
@@ -239,7 +239,9 @@ class MediaController extends MediaContainer {
     try {
       const volPref = window.localStorage.getItem('media-chrome-pref-volume');
       if (volPref !== null) media.volume = volPref;
-    } catch (e) { }
+    } catch (e) {
+      console.error('Error getting volume pref', e);
+    }
   }
 
   mediaUnsetCallback(media) {
@@ -274,7 +276,7 @@ class MediaController extends MediaContainer {
     // The latter requires authors to actually follow that paradigm
     // which is probably a stretch
     Object.keys(mediaUIEvents).forEach((key)=>{
-      el.addEventListener(mediaUIEvents[key], this[`_handle${constToCamel(key, true)}`]);  
+      el.addEventListener(mediaUIEvents[key], this[`_handle${constToCamel(key, true)}`]);
     });
 
     // TODO: Update to propagate all states when registered
@@ -293,7 +295,7 @@ class MediaController extends MediaContainer {
 
     // Remove all media UI event listeners
     Object.keys(mediaUIEvents).forEach((key)=>{
-      el.addEventListener(mediaUIEvents[key], this[`_handle${constToCamel(key, true)}`]);  
+      el.addEventListener(mediaUIEvents[key], this[`_handle${constToCamel(key, true)}`]);
     });
   }
 
@@ -392,7 +394,7 @@ function propagateMediaState(nodeList, stateName, val) {
 
     // Don't propagate into media elements, UI can't live in <video>
     // so just avoid potential conflicts
-    if (child.slot == 'media') return;
+    if (child.slot === 'media') return;
 
     function setAndPropagate() {
       // Only set if previously defined, at least as null
