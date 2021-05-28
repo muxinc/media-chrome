@@ -183,11 +183,12 @@ class MediaContainer extends MediaChromeHTMLElement {
      */
     if (media.textTracks && media.textTracks.length) {
       const thumbnailTrack = Array.prototype.find.call(media.textTracks, (t)=>{
-        return t.label == 'thumbnails';
+        return (t.kind === 'metadata' && t.label == 'thumbnails');
       });
 
+      console.log('debug', thumbnailTrack);
       if (thumbnailTrack && thumbnailTrack.mode === "disabled") {
-        thumbnailTrack.mode = "hidden";
+        // thumbnailTrack.mode = "hidden";
       }
     }
 

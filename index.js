@@ -14,7 +14,6 @@ import MediaPlayButton from './src/js/media-play-button.js';
 import MediaPlaybackRateButton from './src/js/media-playback-rate-button.js';
 import MediaPoster from './src/js/media-poster.js';
 import MediaProgressRange from './src/js/media-progress-range.js';
-import MediaClipSelector from './src/js/media-clip-selector.js';
 import MediaSeekBackwardButton from './src/js/media-seek-backward-button.js';
 import MediaThumbnailPreviewElement from './src/js/media-thumbnail-preview-element.js';
 import MediaTimeRange from './src/js/media-time-range.js';
@@ -59,7 +58,6 @@ export {
   MediaPlaybackRateButton,
   MediaPoster,
   MediaProgressRange,
-  MediaClipSelector,
   MediaSeekBackwardButton,
   MediaThumbnailPreviewElement,
   MediaTimeRange,
