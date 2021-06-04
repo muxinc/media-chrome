@@ -132,12 +132,12 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 | `<media-seek-forward-button>` | Jump ahead 30 seconds in the media                                                                  |
 | More to come                 | Requests and contributions welcome                                                                   |
 
-### Plugins
+### Extras
 
-Plugins are not shipped with the core library, but can be imported as-needed by importing the plugin from the dist direcotry, for example:
+Extras are not shipped with the core library, but can be imported as-needed by importing the element from the dist direcotry, for example:
 
 ```js
-import 'media-chrome/dist/plugins/media-clip-selector'
+import 'media-chrome/dist/extras/media-clip-selector'
 ```
 
 | Element                      | Description                                                                                          |

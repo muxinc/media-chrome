@@ -2,6 +2,7 @@
 <head>
   <meta name="viewport" content="width=device-width">
   <script type="module" src="../../dist/index.js"></script>
+  <script type="module" src="../../dist/extras/media-clip-selector/index.js"></script>
 </head>
 <body>
 
@@ -34,6 +35,7 @@
   const currentTimeEl = document.querySelector('#current-time');
   const videoEl = document.querySelector('video');
 
+  console.log('debug', videoEl.textTracks[0].mode);
   mediaClipSelect.addEventListener('update', (evt) => {
     const { startTime, endTime } = evt.detail;
     startTimeEl.innerHTML = `Start time seconds: ${startTime}`;
