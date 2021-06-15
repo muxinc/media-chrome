@@ -171,27 +171,6 @@ class MediaContainer extends MediaChromeHTMLElement {
     }
     media.addEventListener('click', this._mediaClickPlayToggle, false);
 
-    /*
-     * If the thumbnail track is disabled, then we won't be able to get cues from it
-     * Let's enable it.
-     *
-     * It appears that when Hls.js is attached to the media element that the thumbnails
-     * track we use for media-thumbnail-preview was being disabled
-     *
-     * https://github.com/muxinc/media-chrome/issues/29
-     *
-     */
-    if (media.textTracks && media.textTracks.length) {
-      const thumbnailTrack = Array.prototype.find.call(media.textTracks, (t)=>{
-        return (t.kind === 'metadata' && t.label == 'thumbnails');
-      });
-
-      console.log('debug', thumbnailTrack);
-      if (thumbnailTrack && thumbnailTrack.mode === "disabled") {
-        // thumbnailTrack.mode = "hidden";
-      }
-    }
-
     return true;
   }
 
