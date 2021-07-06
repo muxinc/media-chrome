@@ -20,7 +20,7 @@ Fully customizable media player controls using web components (native custom ele
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
     crossorigin
   >
-    <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
+    <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt">
   </video>
   <media-control-bar>
     <media-play-button></media-play-button>
