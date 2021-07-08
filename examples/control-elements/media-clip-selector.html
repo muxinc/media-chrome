@@ -35,7 +35,6 @@
   const currentTimeEl = document.querySelector('#current-time');
   const videoEl = document.querySelector('video');
 
-  console.log('debug', videoEl.textTracks[0].mode);
   mediaClipSelect.addEventListener('update', (evt) => {
     const { startTime, endTime } = evt.detail;
     startTimeEl.innerHTML = `Start time seconds: ${startTime}`;
