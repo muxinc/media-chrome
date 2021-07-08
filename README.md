@@ -130,8 +130,24 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 | `<media-playback-rate-button>` | Change the speed of playback                                                                       |
 | `<media-seek-backward-button>` | Jump back 30 seconds in the media                                                                      |
 | `<media-seek-forward-button>` | Jump ahead 30 seconds in the media                                                                  |
-| `<media-clip-selector>` | Create selector handles that allow a user to select a sub-section of the media element.                   |
 | More to come                 | Requests and contributions welcome                                                                   |
+
+### Extras
+
+Extras are not shipped with the core library, but can be imported as-needed by importing the element from the dist direcotry, for example:
+
+```js
+import 'media-chrome/dist/extras/media-clip-selector'
+```
+
+```html
+<script type="module" src="https://unpkg.com/media-chrome@0.1/dist/extras/media-clip-selector"></script>
+```
+
+
+| Element                      | Description                                                                                          |
+|------------------------------|------------------------------------------------------------------------------------------------------|
+| `<media-clip-selector>` | Create selector handles that allow a user to select a sub-section of the media element.                   |
 
 ## Compatible players
 
@@ -183,4 +199,4 @@ Web components. @heff spoke about [the potential of web components for video](ht
 
 Listen for the `update` event on the element to get the selected start and end timestamps. Full example in examples/clip-selector.html.
 
-![media range selector example](./screenshots/media-clip-selector.gif?raw=true)
+![media clip selector example](./screenshots/media-clip-selector.gif?raw=true)

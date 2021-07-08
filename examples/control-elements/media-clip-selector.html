@@ -2,19 +2,11 @@
 <head>
   <meta name="viewport" content="width=device-width">
   <script type="module" src="../../dist/index.js"></script>
+  <script type="module" src="../../dist/extras/media-clip-selector/index.js"></script>
 </head>
-<style>
-  /*
-     over-ride the opacity rule so that the media-control-bar is always
-     showing (the default behavior is to hide it when media is playing)
-   */
-  media-control-bar {
-    opacity: 1;
-  }
-</style>
 <body>
 
-<media-controller>
+<media-controller autohide="-1">
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"

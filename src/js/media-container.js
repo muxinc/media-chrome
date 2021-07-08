@@ -23,8 +23,11 @@ template.innerHTML = `
       display: flex;
       flex-direction: column-reverse;
 
-      /* Default dimensions */
+      /* Default dimensions
+       * max out at 100% width for smaller screens (< 720px)
+       * */
       width: 720px;
+      max-width: 100%;
       height: 480px;
       background-color: #000;
     }
