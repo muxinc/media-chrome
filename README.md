@@ -140,6 +140,11 @@ Extras are not shipped with the core library, but can be imported as-needed by i
 import 'media-chrome/dist/extras/media-clip-selector'
 ```
 
+```html
+<script type="module" src="https://unpkg.com/media-chrome@0.1/dist/extras/media-clip-selector"></script>
+```
+
+
 | Element                      | Description                                                                                          |
 |------------------------------|------------------------------------------------------------------------------------------------------|
 | `<media-clip-selector>` | Create selector handles that allow a user to select a sub-section of the media element.                   |
