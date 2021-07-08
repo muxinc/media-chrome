@@ -20,6 +20,6 @@ To do this the elements will have the option of being passed a media to attach l
 
 ## Element Naming
 * Prefix with `media-` for scoping.
-* The suffix should make it clear what the primary user iteraction is with the element, mapping to the matching native HTML element when possible. e.g. `-button`, `-range`, `-image`.
+* The suffix should make it clear what the primary user iteraction is with the element, mapping to the matching native HTML element when possible. e.g. `-button`, `-range`, `-img`.
   * Use `-container` for elements that are purely for laying out other elements. More specific layout names like `-bar` are acceptible when the name is clear and intentional.
   * Use `-display` when the primary use is displaying a state or data detail. e.g. `media-duration-display`.
