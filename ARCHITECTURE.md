@@ -17,3 +17,9 @@ A goal of this project is that each UI element could be used independently of th
 Many js application frameworks today like React follow a "unidirectional data flow" pattern. We want media chrome elements to be smart by default, understanding how to listen to media events without a ton of extra overhead, however we don't want to prohibit using them in a react-style app.
 
 To do this the elements will have the option of being passed a media to attach listeners to. And alternatively allow the element state to be set externally.
+
+## Element Naming
+* Prefix with `media-` for scoping.
+* The suffix should make it clear what the primary user iteraction is with the element, mapping to the matching native HTML element when possible. e.g. `-button`, `-range`, `-image`.
+  * Use `-container` for elements that are purely for laying out other elements. More specific layout names like `-bar` are acceptible when the name is clear and intentional.
+  * Use `-display` when the primary use is displaying a state or data detail. e.g. `media-duration-display`.
