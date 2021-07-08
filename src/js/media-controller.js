@@ -238,7 +238,7 @@ class MediaController extends MediaContainer {
       const volPref = window.localStorage.getItem('media-chrome-pref-volume');
       if (volPref !== null) media.volume = volPref;
     } catch (e) {
-      console.error('Error getting volume pref', e);
+      console.debug('Error getting volume pref', e);
     }
   }
 
