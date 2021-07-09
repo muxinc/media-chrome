@@ -14,10 +14,6 @@ class MediaVolumeRange extends MediaChromeRange {
         detail: volume
       });
     });
-  }
-
-  connectedCallback () {
-    this._updateRange();
 
     // Store the last set positive volume before a drag
     // so we have it when unmuting
@@ -39,6 +35,10 @@ class MediaVolumeRange extends MediaChromeRange {
     //     media.volume = this._lastNonZeroVolume || 1;
     //   }
     // });
+  }
+
+  connectedCallback () {
+    this._updateRange();
   }
 
   mediaVolumeSet(volume) {
