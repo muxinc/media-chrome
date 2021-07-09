@@ -1,4 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
+import { Document as document } from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { mediaUIEvents } from './media-chrome-html-element.js';
 
