@@ -4,9 +4,8 @@
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
   "main": "dist/index.js",
   "files": [
-    "./dist/*",
-    "README.md",
-    "./examples/*"
+    "dist/*",
+    "README.md"
   ],
   "scripts": {
     "clean": "rimraf dist",
