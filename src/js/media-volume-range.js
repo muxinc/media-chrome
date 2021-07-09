@@ -14,7 +14,9 @@ class MediaVolumeRange extends MediaChromeRange {
         detail: volume
       });
     });
+  }
 
+  connectedCallback () {
     this._updateRange();
 
     // Store the last set positive volume before a drag
