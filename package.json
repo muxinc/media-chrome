@@ -5,7 +5,8 @@
   "main": "dist/index.js",
   "files": [
     "dist/*",
-    "README.md"
+    "README.md",
+    "examples/*"
   ],
   "scripts": {
     "clean": "rimraf dist",
