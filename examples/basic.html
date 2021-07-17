@@ -12,25 +12,22 @@
   ></audio>
   <media-control-bar>
     <media-play-button></media-play-button>
-    <media-seek-backward-button></media-seek-backward-button>
-    <media-seek-forward-button></media-seek-forward-button>
+    <media-time-display show-duration></media-time-display>
+    <media-time-range></media-time-range>
+    <media-playback-rate-button></media-playback-rate-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
-    <media-current-time-display></media-current-time-display>
-    <media-time-range></media-time-range>
-    <media-duration-display></media-duration-display>
-    <media-playback-rate-button></media-playback-rate-button>
   </media-control-bar>
 </media-controller>
 
-<br>
+<br><br>
 
 <media-controller>
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
   ></video>
-  <media-control-bar>
+  <media-control-bar reveal-volume>
     <media-play-button></media-play-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
@@ -41,6 +38,11 @@
     <media-fullscreen-button></media-fullscreen-button>
   </media-control-bar>
 </media-controller>
+
+<script>
+  document.querySelector('video').addEventListener('pause', e=>console.log('pause'));
+  document.querySelector('video').addEventListener('play', e=>console.log('play'));
+</script>
 
 </body>
 </html>

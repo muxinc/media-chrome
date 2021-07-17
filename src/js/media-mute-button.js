@@ -37,6 +37,7 @@ slotTemplate.innerHTML = `
   :host([media-volume-level=medium]) ::slotted(:not([slot=medium])) {
     display: none;
   }
+
   </style>
 
   <slot name="off">${offIcon}</slot>
