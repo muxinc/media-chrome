@@ -27,7 +27,7 @@
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
   ></video>
-  <media-control-bar reveal-volume>
+  <media-control-bar>
     <media-play-button></media-play-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
@@ -38,11 +38,6 @@
     <media-fullscreen-button></media-fullscreen-button>
   </media-control-bar>
 </media-controller>
-
-<script>
-  document.querySelector('video').addEventListener('pause', e=>console.log('pause'));
-  document.querySelector('video').addEventListener('play', e=>console.log('play'));
-</script>
 
 </body>
 </html>

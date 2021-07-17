@@ -77,7 +77,6 @@ class MediaContainer extends MediaChromeHTMLElement {
     // Set up the Shadow DOM
     const shadow = this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    // this.container = this.shadowRoot.getElementById('container');
 
     // Watch for child adds/removes and update the media element if necessary
     const mutationCallback = (mutationsList, observer) => {
