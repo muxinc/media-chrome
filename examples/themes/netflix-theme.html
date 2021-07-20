@@ -61,6 +61,16 @@
     height: 80px;
     padding-bottom: 20px;
     margin: 0 3px;
+
+    --media-button-icon-transform: scale(1.2);
+    --media-button-icon-transition: transform .2s ease;
+  }
+
+  /* For some reason `media-control-bar > *:hover` doesn't work...
+  while `media-control-bar > *:focus-within` does. 
+  And also `media-control-bar > *:not(:hover)`
+  Really annoying. Need to submit a bug.  */
+  media-control-bar > *:not(:hover) {
     --media-button-icon-transform: scale(1);
     --media-button-icon-transition: transform .2s ease;
   }
@@ -82,27 +92,9 @@
     outline: 0;
   }
 
-  /* For some reason `media-control-bar > *:hover` doesn't work...
-  while `media-control-bar > *:focus-within` does. Really annoying.
-  Need to submit a bug. */
-  media-control-bar > *:hover,
-  media-play-button:hover,
-  media-seek-backward-button:hover,
-  media-seek-forward-button:hover,
-  media-mute-button:hover,
-  media-fullscreen-button:hover {
-    --media-button-icon-transform: scale(1.2);
-    --media-button-icon-transition: transform .2s ease;
-  }
-
   media-volume-range {
     width: 100px;
   }
-
-  /* media-play-button:hover
-   {
-    --media-button-icon-transform: scale(1.5);
-  } */
 
   .videoTitle {
     flex-grow: 1;
