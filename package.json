@@ -10,8 +10,8 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "npm run clean && node build.js",
-    "dev": "npm run clean && node build.js --dev",
+    "build": "yarn clean && node build.js",
+    "dev": "yarn clean && node build.js --dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish-patch": "yarn run build && np patch --no-tests --any-branch"
   },
