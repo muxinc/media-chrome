@@ -123,7 +123,7 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 | `<media-mute-button>`       | Toggle the sound. The icon responds to volume changes and acts as part of the typical volume control. |
 | `<media-volume-range>`      | Change the volume of the sound.                                                                       |
 | `<media-time-range>`    | See how far the playhead is through the media duration, and seek to new times.                            |
-| `<media-current-time-display>` | Show the time of the playhead                                                                      |
+| `<media-time-display>` | Show the time of the playhead.<br><br>Options: <br>`<media-time-display remaining>` Show as remaining time <br>`<media-time-display show-duration>` Also show the duration after a slash. Example: `1:00 / 2:00`                                                                    |
 | `<media-duration-display>` | Show the duration of the media                                                                         |
 | `<media-fullscreen-button>` | Toggle fullscreen viewing                                                                             |
 | `<media-pip-button>`        | Toggle picture-in-picture mode of the video                                                           |
