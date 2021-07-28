@@ -1,0 +1,30 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width">
+  <script type="module" src="../../dist/index.js"></script>
+</head>
+<body>
+
+<h1>&lt;media-time-display&gt;</h1>
+
+<h3>Default</h3>
+<media-time-display></media-time-display>
+
+<h3>Current time of 2 minutes</h3>
+<p>&lt;media-time-display media-current-time="120.0"&gt;</p>
+<media-time-display media-current-time="120.0"></media-time-display>
+
+<h3>Current time of one hour</h3>
+<p>&lt;media-time-display media-current-time="3600.0"&gt;</p>
+<media-time-display media-current-time="3600.0"></media-time-display>
+
+<h3>Include duration (10 minutes)</h3>
+<p>&lt;media-time-display media-current-time="120" media-duration="600" show-duration&gt;</p>
+<media-time-display media-current-time="120" media-duration="600" show-duration></media-time-display>
+
+<h3>Show remaining time (at 2 minutes of 10)</h3>
+<p>&lt;media-time-display media-current-time="120" media-duration="600" remaining&gt;</p>
+<media-time-display media-current-time="120" media-duration="600" remaining></media-time-display>
+
+</body>
+</html>

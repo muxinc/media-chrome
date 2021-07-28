@@ -5,13 +5,16 @@ import { Document as document } from './utils/server-safe-globals.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 class MediaDurationDisplay extends MediaTextDisplay {
-  constructor() {
-    super();
-    this.mediaDurationSet(0);
+  connectedCallback() {
+    this._update();
   }
 
-  mediaDurationSet(duration) {
-    this.container.innerHTML = formatTime(duration);
+  mediaDurationSet() {
+    this._update();
+  }
+
+  _update() {
+    this.container.innerHTML = formatTime(this.mediaDuration);
   }
 }
 

@@ -1,4 +1,12 @@
 export function formatTime(seconds, guide) {
+  // Handle negative values at the end
+  let negative = false;
+
+  if (seconds < 0) {
+    negative = true;
+    seconds = 0 - seconds;
+  }
+
   seconds = seconds < 0 ? 0 : seconds;
   let s = Math.floor(seconds % 60);
   let m = Math.floor((seconds / 60) % 60);
@@ -23,5 +31,5 @@ export function formatTime(seconds, guide) {
   // Check if leading zero is need for seconds
   s = s < 10 ? '0' + s : s;
 
-  return h + m + s;
+  return (negative ? '-' : '') + h + m + s;
 }

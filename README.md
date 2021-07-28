@@ -11,8 +11,10 @@ Fully customizable media player controls using web components (native custom ele
 
 *From [Mux](https://mux.com/) and the creator of [Video.js](https://videojs.com/).*
 
+## Video Example
+
 ```html
-<script type="module" src="https://unpkg.com/media-chrome@0.2"></script>
+<script type="module" src="https://unpkg.com/media-chrome@0.3"></script>
 
 <media-controller>
   <video
@@ -36,9 +38,31 @@ Fully customizable media player controls using web components (native custom ele
 #### Results (<a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank">Try the CodePen example</a>)
 <a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank"><img width="719" alt="Media Chrome Demo" src="https://user-images.githubusercontent.com/166/78526967-834bcb80-7790-11ea-98a3-a5b355e7a55a.png"></a>
 
-## _Quick_ Demo
+## Audio Example
 
-(GIFs still use old name of `<player-chrome>` and need to be updated)
+```html
+<script type="module" src="https://unpkg.com/media-chrome@0.3"></script>
+
+<media-controller audio>
+  <audio
+    slot="media"
+    src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
+  ></audio>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display show-duration></media-time-display>
+    <media-time-range></media-time-range>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+  </media-control-bar>
+</media-controller>
+```
+
+#### Results (<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank">Try the CodePen example</a>)
+<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank"><img width="719" alt="Media Chrome Demo" src="https://user-images.githubusercontent.com/166/127259205-b36e237c-a37b-4bd1-9eff-852868e458a6.png"></a>
+
+## _Quick_ Demo
 
 ### Adding controls to a video element
 Just HTML. No javascripting required.
@@ -57,7 +81,7 @@ Load the module in the `<head>` of your HTML page. Note the `type="module"`, tha
 > Modules are always loaded asynchronously by the browser, so it's ok to load them in the head :thumbsup:, and best for registering web components quickly.
 
 ```html
-<script type="module" src="https://unpkg.com/media-chrome@0.2"></script>
+<script type="module" src="https://unpkg.com/media-chrome@0.3"></script>
 ```
 
 ### Option 2: Bundled via npm
@@ -123,7 +147,7 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 | `<media-mute-button>`       | Toggle the sound. The icon responds to volume changes and acts as part of the typical volume control. |
 | `<media-volume-range>`      | Change the volume of the sound.                                                                       |
 | `<media-time-range>`    | See how far the playhead is through the media duration, and seek to new times.                            |
-| `<media-current-time-display>` | Show the time of the playhead                                                                      |
+| `<media-time-display>` | Show the time of the playhead.<br><br>Options: <br>`<media-time-display remaining>` Show as remaining time <br>`<media-time-display show-duration>` Also show the duration after a slash. Ex: `1:00 / 2:00`                                                                    |
 | `<media-duration-display>` | Show the duration of the media                                                                         |
 | `<media-fullscreen-button>` | Toggle fullscreen viewing                                                                             |
 | `<media-pip-button>`        | Toggle picture-in-picture mode of the video                                                           |
@@ -141,7 +165,7 @@ import 'media-chrome/dist/extras/media-clip-selector'
 ```
 
 ```html
-<script type="module" src="https://unpkg.com/media-chrome@0.2/dist/extras/media-clip-selector"></script>
+<script type="module" src="https://unpkg.com/media-chrome@0.3/dist/extras/media-clip-selector"></script>
 ```
 
 
