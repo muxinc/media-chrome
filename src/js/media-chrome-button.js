@@ -75,6 +75,7 @@ template.innerHTML = `
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);
     fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
   }
 </style>
 
