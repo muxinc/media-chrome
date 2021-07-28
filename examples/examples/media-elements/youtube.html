@@ -1,17 +1,17 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width">
-  <title>Media Chrome DASH Media Example</title>
-  <script type="module" src="https://unpkg.com/dash-video-element@0"></script>
-  <script type="module" src="../../dist/index.js"></script>  
+  <title>Media Chrome Youtube Media Example</title>
+  <script type="module" src="https://unpkg.com/youtube-video-element@0"></script>
+  <script type="module" src="/media-chrome-core.js"></script>
 </head>
 <body>
 
 <media-controller>
-  <dash-video
+  <youtube-video
     slot="media"
-    src="https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd"
-  ></dash-video>
+    src="https://www.youtube.com/watch?v=rubNgGj3pYo"
+  ></youtube-video>
   <media-control-bar>
     <media-play-button></media-play-button>
     <media-time-range></media-time-range>
