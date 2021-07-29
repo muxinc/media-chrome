@@ -143,7 +143,12 @@ class MediaContainer extends MediaChromeHTMLElement {
 
   // First direct child with slot=media, or null
   get media() {
-    return this.querySelector(':scope > [slot=media]');
+    let media = this.querySelector(':scope > [slot=media]');
+
+    // Chaining media slots for media templates
+    if (media.nodeName == 'SLOT') media = media.assignedElements({flatten:true})[0];
+
+    return media;
   }
 
   mediaSetCallback(media) {

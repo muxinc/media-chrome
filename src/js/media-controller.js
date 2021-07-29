@@ -86,7 +86,10 @@ class MediaController extends MediaContainer {
         super[fullscreenApi.enter]();
       },
       MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
-        this.getRootNode()[fullscreenApi.exit]();
+        document[fullscreenApi.exit]();
+
+        // Shadow root throws an error for this function
+        // this.getRootNode()[fullscreenApi.exit]();
       },
       MEDIA_ENTER_PIP_REQUEST: () => {
         const docOrRoot = this.getRootNode();
@@ -409,7 +412,8 @@ function propagateMediaState(nodeList, stateName, val) {
     }
 
     // Make sure custom els are ready
-    if (childName.includes('-') && !window.customElements.get(childName)) {
+    // Even if customElements.get returns something, it may not be ready!
+    if (childName.includes('-')) {
       window.customElements.whenDefined(childName).then(setAndPropagate);
     } else {
       setAndPropagate();

@@ -1,0 +1,31 @@
+<html>
+<head>
+  <script type="module" src="../index.js"></script>
+  <script type="module" src="./media-theme-netflix.js"></script>
+</head>
+<body>
+
+<h2>Example 1: Using the custom element directly</h2>
+
+<media-theme-netflix>
+  <video
+    slot="media"
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+  ></video>
+</media-theme-netflix>
+
+<h2>Example 2: Using the template to clone the theme</h2>
+
+<script>
+  customElements.whenDefined('media-theme-netflix').then(()=>{
+    const theme = customElements.get('media-theme-netflix');
+
+    // myElShadow.innerHTML = theme.template;
+  });
+</script>
+
+
+
+
+</body>
+</html>
