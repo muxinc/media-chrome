@@ -1,38 +1,53 @@
 <html>
 <head>
   <meta name="viewport" content="width=device-width">
-  <script type="module" src="/index.js"></script>
-  <style>
-    .examples {
-      margin-top: 20px;
-    }
-  </style>
+  <title>Media Chrome Examples</title>
 </head>
 <body>
-  <media-controller>
-    <video
-      slot="media"
-      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-      preload="none"
-      muted
-      crossorigin
-    >
-      <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
-    </video>
-    <media-control-bar>
-      <media-play-button></media-play-button>
-      <media-seek-backward-button></media-seek-backward-button>
-      <media-seek-forward-button></media-seek-forward-button>
-      <media-mute-button></media-mute-button>
-      <media-volume-range></media-volume-range>
-      <media-time-range></media-time-range>
-      <media-playback-rate-button></media-playback-rate-button>
-      <media-pip-button></media-pip-button>
-      <media-fullscreen-button></media-fullscreen-button>
-    </media-control-bar>
-  </media-controller>
-  <div class="examples">
-    <a href="/examples">View more examples</a>
-  </div>
+
+  <h1>Explore the examples</h1>
+
+  <h2>Basic usage</h2>
+  <ul>
+    <li><a href="standard.html">Standard</a></li>
+    <li><a href="basic.html">Basic usage</a></li>
+    <li><a href="standalone-controls.html">Standalone controls</a></li>
+  </ul>
+  
+  <h2>Example themes</h2>
+  <ul>
+    <li><a href="themes/youtube-theme.html">Youtube Theme</a></li>
+    <li><a href="themes/netflix-theme.html">Netflix Theme</a></li>
+  </ul>
+  
+  <h2>Media element examples</h2>
+  <ul>
+    <li><a href="media-elements/hls.html">HLS Media Element</a></li>
+    <li><a href="media-elements/dash.html">DASH Media Element</a></li>
+    <li><a href="media-elements/youtube.html">Youtube Media Element</a></li>
+  </ul>
+  
+  <h2>Control element examples</h2>
+  
+  <h3>Core</h3>
+  <ul>
+    <li><a href="control-elements/media-play-button.html">Play button</a></li>
+    <li><a href="control-elements/media-mute-button.html">Mute button</a></li>
+    <li><a href="control-elements/media-volume-range.html">Volume range</a></li>
+    <li><a href="control-elements/media-controller.html">Media controller</a></li>
+    <li><a href="control-elements/media-time-range.html">Time range</a></li>
+    <li><a href="control-elements/media-current-time-display.html">Current time display</a></li>
+    <li><a href="control-elements/media-time-display.html">Time display</a></li>
+    <li><a href="control-elements/media-duration-display.html">Duration display</a></li>
+    <li><a href="control-elements/media-seek-backward-button.html">Seek backward button</a></li>
+    <li><a href="control-elements/media-seek-forward-button.html">Seek forward button</a></li>
+    <li><a href="control-elements/media-fullscreen-button.html">Fullscreen button</a></li>
+    <li><a href="control-elements/media-pip-button.html">Picture-in-picture button</a></li>
+  </ul>
+  
+  <h3>Extras</h3>
+  <ul>
+    <li><a href="control-elements/media-clip-selector.html">Clip selector</a></li>
+  </ul>
 </body>
 </html>
