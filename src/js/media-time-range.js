@@ -153,7 +153,7 @@ class MediaTimeRange extends MediaChromeRange {
     let mouseMoveHandler;
     const trackMouse = () => {
       mouseMoveHandler = (evt) => {
-        const duration = this.mediaDuration;
+        const duration = +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
 
         // If no duration we can't calculate which time to show
         if (!duration) return;
@@ -171,9 +171,9 @@ class MediaTimeRange extends MediaChromeRange {
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
 
-        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PREVIEW_REQUEST, {
-          detail: mousePercent * duration
-        });
+        const mediaPreviewEvt = new Event(MediaUIEvents.MEDIA_PREVIEW_REQUEST);
+        mediaPreviewEvt.detail = mousePercent * duration;
+        this.dispatchEvent(mediaPreviewEvt);
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
     };
@@ -185,7 +185,7 @@ class MediaTimeRange extends MediaChromeRange {
     // Trigger when the mouse moves over the range
     let rangeEntered = false;
     let rangeMouseMoveHander = (evt) => {
-      if (!rangeEntered && this.mediaDuration) {
+      if (!rangeEntered && this.getAttribute(MediaUIAttributes.MEDIA_DURATION)) {
         rangeEntered = true;
         this.thumbnailPreview.style.display = 'block';
         trackMouse();

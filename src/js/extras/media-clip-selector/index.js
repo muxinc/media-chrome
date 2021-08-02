@@ -1,7 +1,6 @@
 import MediaChromeHTMLElement from '../../media-chrome-html-element.js';
 import { defineCustomElement } from '../../utils/defineCustomElement.js';
 import { Window as window, Document as document } from '../../utils/server-safe-globals.js';
-import MediaThumbnailPreviewElement from '../../media-thumbnail-preview-element.js';
 import { mediaUIEvents } from '../../media-chrome-html-element.js';
 
 const template = document.createElement('template');

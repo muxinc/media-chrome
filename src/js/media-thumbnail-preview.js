@@ -4,9 +4,9 @@
   Uses the "thumbnails" track of a video element to show an image relative to
   the video time given in the `time` attribute.
 */
-import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants';
 
 const template = document.createElement('template');
 
@@ -29,33 +29,40 @@ template.innerHTML = `
   <img crossorigin loading="eager" decoding="async" />
 `;
 
-class MediaThumbnailPreviewElement extends MediaChromeHTMLElement {
+class MediaThumbnailPreviewElement extends HTMLElement {
   static get observedAttributes() {
-    return ['time'].concat(super.observedAttributes || []);
+    return ['time', MediaUIAttributes.MEDIA_PREVIEW_IMAGE, MediaUIAttributes.MEDIA_PREVIEW_COORDS];
   }
 
   constructor() {
     super();
 
-    const shadow = this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  mediaPreviewImageSet(imageSrc) {
-    this.update();
+  connectedCallback() {
+    /** Option 1 */
+    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
+    evt.details = this.constructor.observedAttributes;
+    this.dispatchEvent(evt);
+    /** Option 2 */
+    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
   }
 
-  mediaPreviewCoordsSet(coords) {
+  attributeChangedCallback(attrName, _oldValue, newValue) {
     this.update();
   }
 
   update() {
-    if (!this.mediaPreviewCoords || !this.mediaPreviewImage) return;
-
+    const mediaPreviewCoordsStr = this.getAttribute(MediaUIAttributes.MEDIA_PREVIEW_COORDS);
+    const mediaPreviewImage = this.getAttribute(MediaUIAttributes.MEDIA_PREVIEW_IMAGE);
+    if (!(mediaPreviewCoordsStr && mediaPreviewImage)) return;
+    const { offsetWidth } = this;
     const img = this.shadowRoot.querySelector('img');
-    const [x,y,w,h] = this.mediaPreviewCoords;
-    const src = this.mediaPreviewImage;
-    const scale = this.offsetWidth / w;
+    const [x,y,w,_h] = mediaPreviewCoordsStr.split(/\s+/).map(coord => +coord);
+    const src = mediaPreviewImage;
+    const scale = offsetWidth / w;
 
     const resize = () => {
       img.style.width = `${scale * img.naturalWidth}px`;

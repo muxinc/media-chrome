@@ -25,5 +25,7 @@ export const MediaUIAttributes = {
     MEDIA_PLAYBACK_RATE: 'media-playback-rate',
     MEDIA_CURRENT_TIME: 'media-current-time',
     MEDIA_DURATION: 'media-duration',
+    MEDIA_PREVIEW_IMAGE: 'media-preview-image',
+    MEDIA_PREVIEW_COORDS: 'media-preview-coords',
     MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
 };

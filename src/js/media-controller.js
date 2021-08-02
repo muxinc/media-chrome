@@ -46,11 +46,14 @@ class MediaController extends MediaContainer {
     observer.observe(this, { childList: true, attributes: true, subtree: true });
 
     /** option 2, controller side */
-    this.addEventListener(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, ({ target }) => {
-
-      this.associateElement(target);
+    this.addEventListener(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, ({ target, path = [] }) => {
+      const el = path?.[0] ?? target;
+      this.associateElement(el);
     });
-    this.addEventListener(MediaUIEvents.MEDIA_CHROME_ELEMENT_DISCONNECTED, ({ target }) => this.unassociateElement(target));
+    this.addEventListener(MediaUIEvents.MEDIA_CHROME_ELEMENT_DISCONNECTED,  ({ target, path = [] }) => {
+      const el = path?.[0] ?? target;
+      this.unassociateElement(el);
+    });
 
     // Capture request events from internal controls
     const mediaUIEventHandlers = {
@@ -154,7 +157,7 @@ class MediaController extends MediaContainer {
             const url = new URL(cue.text);
             const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
             this.propagateMediaState('media-preview-image', url.href);
-            this.propagateMediaState('media-preview-coords', previewCoordsStr);
+            this.propagateMediaState('media-preview-coords', previewCoordsStr.split(',').join(' '));
           }
         }
       }
@@ -202,7 +205,7 @@ class MediaController extends MediaContainer {
       [fullscreenApi.event]: () => {
         // Might be in the shadow dom
         const fullscreenEl = this.getRootNode()[fullscreenApi.element];
-        this.propagateMediaState('media-is-fullscreen', fullscreenEl == this);
+        this.propagateMediaState('media-is-fullscreen', fullscreenEl === this);
       },
       'enterpictureinpicture,leavepictureinpicture': (e) => {
         let isPip;
@@ -217,10 +220,10 @@ class MediaController extends MediaContainer {
         this.propagateMediaState('media-is-pip', isPip);
       },
       'timeupdate,loadedmetadata': () => {
-        this.propagateMediaState('mediaCurrentTime', this.media.currentTime);
+        this.propagateMediaState('media-current-time', this.media.currentTime);
       },
       'durationchange,loadedmetadata': () => {
-        this.propagateMediaState('mediaDuration', this.media.duration);
+        this.propagateMediaState('media-duration', this.media.duration);
       },
       'ratechange': () => {
         this.propagateMediaState('media-playback-rate', this.media.playbackRate);
@@ -307,6 +310,15 @@ class MediaController extends MediaContainer {
     // TODO: Update to propagate all states when registered
     if (this.media) {
       propagateMediaState([el], 'media-paused', this.media.paused);
+      // propagateMediaState([el], 'media-volume-level', level);
+      propagateMediaState([el], 'media-muted', this.media.muted);
+      propagateMediaState([el], 'media-volume', this.media.volume);
+      // const fullscreenEl = this.getRootNode()[fullscreenApi.element];
+      // propagateMediaState([el], 'media-is-fullscreen', fullscreenEl === this);
+      // propagateMediaState([el], 'media-is-pip', isPip);
+      propagateMediaState([el], 'media-current-time', this.media.currentTime);
+      propagateMediaState([el], 'media-duration', this.media.duration);
+      propagateMediaState([el], 'media-playback-rate', this.media.playbackRate);
     }
   }
 
@@ -410,18 +422,7 @@ const MEDIA_CONTROLLER_ATTRIBUTES = Object.values(MediaUIAttributes);
 
 const MEDIA_PROP_ATTR_LOOKUP = {
   // 'media-controller',
-  'media-paused': 'media-paused',
-  'media-muted': 'media-muted',
-  'media-volume': 'media-volume',
-  'media-volume-level': 'media-volume-level',
-  'media-is-fullscreen': 'media-is-fullscreen',
-  mediaCurrentTime: 'media-current-time',
-  mediaDuration: 'media-duration',
   // 'media-buffered',
-  'media-preview-image': 'media-preview-image',
-  'media-preview-coords': 'media-preview-coords',
-  'media-is-pip': 'media-is-pip',
-  'media-playback-rate': 'media-playback-rate',
 };
 
 const getMediaControllerAttributesFrom = (child) => {
@@ -489,7 +490,7 @@ const propagateMediaState = (els, stateName, val) => {
     if (el.slot === 'media') return;
     
     const relevantAttrs = getMediaControllerAttributesFrom(el);
-    const stateAttr = MEDIA_PROP_ATTR_LOOKUP[stateName];
+    const stateAttr = MEDIA_PROP_ATTR_LOOKUP[stateName] || stateName;
     if (!relevantAttrs.includes(stateAttr)) return;
 
     setAttr(el, stateAttr, val);
