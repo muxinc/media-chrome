@@ -110,7 +110,9 @@ export class MediaChromeHTMLElement extends window.HTMLElement {
       typedValue = !(newValue === null);
     }
 
-    this[propName] = typedValue;
+    if (propName != 'mediaPaused') {
+      this[propName] = typedValue;
+    }
   }
 
   get mediaController() {

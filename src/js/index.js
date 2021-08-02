@@ -6,6 +6,7 @@ import MediaChromeRange from './media-chrome-range.js';
 import MediaControlBar from './media-control-bar.js';
 import MediaCurrentTimeDisplay from './media-current-time-display.js';
 import MediaDurationDisplay from './media-duration-display.js';
+import MediaTimeDisplay from './media-time-display.js';
 import MediaSeekForwardButton from './media-seek-forward-button.js';
 import MediaFullscreenButton from './media-fullscreen-button.js';
 import MediaMuteButton from './media-mute-button.js';
@@ -23,7 +24,7 @@ import { Window as window } from './utils/server-safe-globals.js';
 
 // Alias <media-controller> as <media-chrome>
 // Might move MediaChrome to include default controls
-class MediaChrome extends MediaController {};
+class MediaChrome extends MediaController { };
 if (!window.customElements.get('media-chrome')) {
   window.customElements.define('media-chrome', MediaChrome);
 }
@@ -50,6 +51,7 @@ export {
   MediaControlBar,
   MediaCurrentTimeDisplay,
   MediaDurationDisplay,
+  MediaTimeDisplay,
   MediaSeekForwardButton,
   MediaFullscreenButton,
   MediaMuteButton,

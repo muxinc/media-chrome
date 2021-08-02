@@ -1,20 +1,30 @@
 import MediaTextDisplay from './media-text-display.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { formatTime } from './utils/time.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 class MediaDurationDisplay extends MediaTextDisplay {
+
+  static get observedAttributes() {
+    return [MediaUIAttributes.MEDIA_DURATION];
+  }
+
+  constructor(...args) {
+    super(...args);
+  }
+
   connectedCallback() {
-    this._update();
+    /** Option 1 */
+    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
+    evt.details = this.constructor.observedAttributes;
+    this.dispatchEvent(evt);
+    /** Option 2 */
+    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
   }
 
-  mediaDurationSet() {
-    this._update();
-  }
-
-  _update() {
-    this.container.innerHTML = formatTime(this.mediaDuration);
+  attributeChangedCallback(_attrName, _oldValue, newValue) {
+    this.container.innerHTML = formatTime(newValue);
   }
 }
 

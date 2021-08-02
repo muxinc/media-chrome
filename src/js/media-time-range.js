@@ -1,8 +1,7 @@
 import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
-import MediaThumbnailPreviewElement from './media-thumbnail-preview-element.js';
-import { mediaUIEvents } from './media-chrome-html-element.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants';
 
 const template = document.createElement('template');
 
@@ -64,30 +63,20 @@ template.innerHTML = `
 
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
-    return ['thumbnails'].concat(super.observedAttributes || []);
+    return ['thumbnails', MediaUIAttributes.MEDIA_DURATION, MediaUIAttributes.MEDIA_CURRENT_TIME];
   }
 
   constructor() {
     super();
 
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.setMediaTimeWithRange = () => {
-      const time = Math.round((this.range.value / 1000) * this.mediaDuration);
 
-      this.dispatchMediaEvent(mediaUIEvents.MEDIA_SEEK_REQUEST, {
-        detail: time
-      });
-    };
-    this.range.addEventListener('input', this.setMediaTimeWithRange);
-
-    // The following listeners need to be removeable
-    this.updateRangeWithMediaTime = () => {
-      this.range.value = Math.round(
-        (this.mediaCurrentTime / this.mediaDuration) * 1000
-      );
-
-      this.updateBar();
-    };
+    this.range.addEventListener('input', () => {
+      const newTime = this.range.value;
+      const evt = new Event(MediaUIEvents.MEDIA_SEEK_REQUEST, { composed: true, bubbles: true });
+      evt.detail = newTime;
+      this.dispatchEvent(evt);
+    });
 
     // Come back to this feature
     // this.playIfNotReady = e => {
@@ -99,17 +88,34 @@ class MediaTimeRange extends MediaChromeRange {
     this.enableThumbnails();
   }
 
-  mediaCurrentTimeSet(time) {
-    this.updateRangeWithMediaTime();
+  connectedCallback() {
+    /** Option 1 */
+    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
+    evt.details = this.constructor.observedAttributes;
+    this.dispatchEvent(evt);
+    /** Option 2 */
+    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
   }
 
-  mediaDurationSet(time) {
-    this.updateRangeWithMediaTime();
+
+  attributeChangedCallback(attrName, _oldValue, newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
+      this.range.value = +newValue;
+      this.updateBar();
+      return;
+    }
+    if (attrName === MediaUIAttributes.MEDIA_DURATION) {
+      this.range.max = +newValue;
+      this.updateBar();
+      return;
+    }
+    // const newCurrentTime = toCurrentTime(this);
+    // this.range.value = newCurrentTime;
   }
 
-  mediaBufferedSet(bufferedRanges) {
-    this.updateBar();
-  }
+  // mediaBufferedSet(bufferedRanges) {
+  //   this.updateBar();
+  // }
 
   // mediaSetCallback(media) {
   //   // Come back to this...
@@ -134,7 +140,7 @@ class MediaTimeRange extends MediaChromeRange {
     }
 
     const buffered = this.mediaBuffered;
-    const buffPercent = (buffered[buffered.length-1][1] / this.mediaDuration) * 100;
+    const buffPercent = (buffered[buffered.length - 1][1] / this.mediaDuration) * 100;
     colorsArray.splice(1, 0, ['var(--media-time-buffered-color, #777)', buffPercent]);
     return colorsArray;
   }

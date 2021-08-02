@@ -1,4 +1,3 @@
-import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Document as document } from './utils/server-safe-globals.js';
 
@@ -69,20 +68,20 @@ template.innerHTML = `
   }
   button:active {}
 
-  svg, img, ::slotted(svg), ::slotted(img) {
+  svg,
+  ::slotted(*) {
     width: var(--media-button-icon-width, 24px);
     height: var(--media-button-icon-height);
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);
     fill: var(--media-icon-color, #eee);
-    vertical-align: middle;
   }
 </style>
 
 <button></button>
 `;
 
-class MediaChromeButton extends MediaChromeHTMLElement {
+class MediaChromeButton extends HTMLElement {
   constructor(options={}) {
     super();
 
@@ -103,12 +102,13 @@ class MediaChromeButton extends MediaChromeHTMLElement {
 
     shadow.appendChild(buttonHTML);
 
-    this.addEventListener('click', e => {
+    this.nativeEl.addEventListener('click', e => {
       this.handleClick(e);
     });
   }
 
-  handleClick() {}
+  handleClick() {
+  }
 }
 
 defineCustomElement('media-chrome-button', MediaChromeButton);

@@ -3,7 +3,6 @@
 
   Auto position contorls in a line and set some base colors
 */
-import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Document as document } from './utils/server-safe-globals.js';
 
@@ -38,11 +37,11 @@ template.innerHTML = `
   <slot></slot>
 `;
 
-class MediaControlBar extends MediaChromeHTMLElement {
+class MediaControlBar extends HTMLElement {
   constructor() {
     super();
 
-    var shadow = this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
