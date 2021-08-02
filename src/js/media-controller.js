@@ -420,11 +420,6 @@ class MediaController extends MediaContainer {
 
 const MEDIA_CONTROLLER_ATTRIBUTES = Object.values(MediaUIAttributes);
 
-const MEDIA_PROP_ATTR_LOOKUP = {
-  // 'media-controller',
-  // 'media-buffered',
-};
-
 const getMediaControllerAttributesFrom = (child) => {
   const { constructor: { observedAttributes } } = child;
   const mediaChromeAttributesList = child?.getAttribute?.(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES)?.split?.(/\s+/);
@@ -490,10 +485,9 @@ const propagateMediaState = (els, stateName, val) => {
     if (el.slot === 'media') return;
     
     const relevantAttrs = getMediaControllerAttributesFrom(el);
-    const stateAttr = MEDIA_PROP_ATTR_LOOKUP[stateName] || stateName;
-    if (!relevantAttrs.includes(stateAttr)) return;
+    if (!relevantAttrs.includes(stateName)) return;
 
-    setAttr(el, stateAttr, val);
+    setAttr(el, stateName, val);
   });
 }
 
