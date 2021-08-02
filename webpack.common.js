@@ -2,8 +2,8 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    'media-chrome-core': './src/js/index.js',
-    'media-clip-selector': './src/js/extras/media-clip-selector/index.js',
+    'index': './src/js/index.js',
+    'extras/media-clip-selector/index': './src/js/extras/media-clip-selector/index.js',
   },
   module: {
     rules: [
