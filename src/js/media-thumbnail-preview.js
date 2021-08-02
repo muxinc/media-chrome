@@ -58,11 +58,12 @@ class MediaThumbnailPreviewElement extends HTMLElement {
     const mediaPreviewCoordsStr = this.getAttribute(MediaUIAttributes.MEDIA_PREVIEW_COORDS);
     const mediaPreviewImage = this.getAttribute(MediaUIAttributes.MEDIA_PREVIEW_IMAGE);
     if (!(mediaPreviewCoordsStr && mediaPreviewImage)) return;
-    const { offsetWidth } = this;
+    // const { offsetWidth } = this;
+    const offsetWidth = this.offsetWidth;
     const img = this.shadowRoot.querySelector('img');
     const [x,y,w,_h] = mediaPreviewCoordsStr.split(/\s+/).map(coord => +coord);
     const src = mediaPreviewImage;
-    const scale = offsetWidth / w;
+    const scale = (offsetWidth / w) || 1;
 
     const resize = () => {
       img.style.width = `${scale * img.naturalWidth}px`;

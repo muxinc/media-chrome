@@ -63,7 +63,7 @@ template.innerHTML = `
 
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
-    return ['thumbnails', MediaUIAttributes.MEDIA_DURATION, MediaUIAttributes.MEDIA_CURRENT_TIME];
+    return ['thumbnails', MediaUIAttributes.MEDIA_DURATION, MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_PREVIEW_IMAGE];
   }
 
   constructor() {
@@ -185,24 +185,19 @@ class MediaTimeRange extends MediaChromeRange {
     // Trigger when the mouse moves over the range
     let rangeEntered = false;
     let rangeMouseMoveHander = (evt) => {
-      if (!rangeEntered && this.getAttribute(MediaUIAttributes.MEDIA_DURATION)) {
+      const mediaDurationStr = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+      if (!rangeEntered && mediaDurationStr) {
         rangeEntered = true;
-        this.thumbnailPreview.style.display = 'block';
         trackMouse();
 
         let offRangeHandler = (evt) => {
           if (evt.target != this && !this.contains(evt.target)) {
-            this.thumbnailPreview.style.display = 'none';
             window.removeEventListener('mousemove', offRangeHandler);
             rangeEntered = false;
             stopTrackingMouse();
           }
         }
         window.addEventListener('mousemove', offRangeHandler, false);
-      }
-
-      if (!this.mediaDuration) {
-        this.thumbnailPreview.style.display = 'none';
       }
     };
     this.addEventListener('mousemove', rangeMouseMoveHander, false);
