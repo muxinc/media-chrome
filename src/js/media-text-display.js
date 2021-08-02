@@ -1,5 +1,5 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 const template = document.createElement('template');
@@ -36,7 +36,7 @@ template.innerHTML = `
   <div id="container"></div>
 `;
 
-class MediaTextDisplay extends HTMLElement {
+class MediaTextDisplay extends window.HTMLElement {
   constructor() {
     super();
 

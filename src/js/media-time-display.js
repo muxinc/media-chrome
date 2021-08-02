@@ -1,5 +1,6 @@
 import MediaTextDisplay from './media-text-display.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { Window as window } from './utils/server-safe-globals.js';
 import { formatTime } from './utils/time.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
@@ -32,8 +33,8 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   connectedCallback() {
     /** Option 1 */
-    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
-    evt.details = this.constructor.observedAttributes;
+    const detail = this.constructor.observedAttributes;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
     /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));

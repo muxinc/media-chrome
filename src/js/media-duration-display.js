@@ -1,3 +1,4 @@
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import MediaTextDisplay from './media-text-display.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { formatTime } from './utils/time.js';
@@ -16,8 +17,7 @@ class MediaDurationDisplay extends MediaTextDisplay {
 
   connectedCallback() {
     /** Option 1 */
-    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
-    evt.details = this.constructor.observedAttributes;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail: this.constructor.observedAttributes });
     this.dispatchEvent(evt);
     /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));

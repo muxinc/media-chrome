@@ -1,6 +1,6 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants';
 
 const offIcon =
@@ -57,8 +57,8 @@ class MediaMuteButton extends MediaChromeButton {
 
   connectedCallback() {
     /** Option 1 */
-    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
-    evt.details = this.constructor.observedAttributes;
+    const detail = this.constructor.observedAttributes;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
     /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
@@ -68,7 +68,7 @@ class MediaMuteButton extends MediaChromeButton {
     const eventName = (this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off')
       ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
       : MediaUIEvents.MEDIA_MUTE_REQUEST;
-    this.dispatchEvent(new Event(eventName, { composed: true, bubbles: true }));
+    this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
   }
 }
 

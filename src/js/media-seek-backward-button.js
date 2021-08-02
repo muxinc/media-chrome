@@ -1,6 +1,6 @@
 import MediaChromeButton from './media-chrome-button';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants';
 
 const backwardIcon =
@@ -26,8 +26,8 @@ class MediaSeekBackwardButton extends MediaChromeButton {
 
   connectedCallback() {
     /** Option 1 */
-    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
-    evt.details = this.constructor.observedAttributes;
+    const detail = this.constructor.observedAttributes;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
     /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
@@ -37,8 +37,8 @@ class MediaSeekBackwardButton extends MediaChromeButton {
     const currentTimeStr = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
     const currentTime = (currentTimeStr && !Number.isNaN(+currentTimeStr)) ? +currentTimeStr : DEFAULT_TIME;
     const newTime = Math.max(currentTime + DEFAULT_SEEK_OFFSET, 0);
-    const evt = new Event(MediaUIEvents.MEDIA_SEEK_REQUEST, { composed: true, bubbles: true });
-    evt.detail = newTime;
+    const detail = newTime;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
   }
 }

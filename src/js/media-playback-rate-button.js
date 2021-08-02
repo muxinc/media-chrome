@@ -1,5 +1,6 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { Window as window } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants';
 
 /*
@@ -23,8 +24,8 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   connectedCallback() {
     /** Option 1 */
-    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
-    evt.details = this.constructor.observedAttributes;
+    const detail = this.constructor.observedAttributes;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
     /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
@@ -47,8 +48,8 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   handleClick(_e) {
     const currentRate = (+this.getAttribute(MediaUIAttributes.MEDIA_PLAYBACK_RATE) || DEFAULT_RATE);
     const newRate = this._rates.find(r => r > currentRate) ?? this._rates[0] ?? DEFAULT_RATE;
-    const evt = new Event(MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST, { composed: true, bubbles: true });
-    evt.detail = newRate;
+    const detail = newRate;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
   }
 }

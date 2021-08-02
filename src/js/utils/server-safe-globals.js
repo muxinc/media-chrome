@@ -1,10 +1,15 @@
 const windowShim = {
-  HTMLElement: function HTMLElement() {},
+  HTMLElement: function HTMLElement() {
+    this.addEventListener = () => {};
+    this.removeEventListener = () => {};
+    this.dispatchEvent = () => {};
+  },
   customElements: {
     get: function(){},
     define: function(){},
     whenDefined: function(){}
-  }
+  },
+  CustomEvent: function CustomEvent() {},
 };
 
 const documentShim = {

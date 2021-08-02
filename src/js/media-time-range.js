@@ -73,8 +73,8 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.range.addEventListener('input', () => {
       const newTime = this.range.value;
-      const evt = new Event(MediaUIEvents.MEDIA_SEEK_REQUEST, { composed: true, bubbles: true });
-      evt.detail = newTime;
+      const detail = newTime;
+      const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, { composed: true, bubbles: true, detail });
       this.dispatchEvent(evt);
     });
 
@@ -90,8 +90,8 @@ class MediaTimeRange extends MediaChromeRange {
 
   connectedCallback() {
     /** Option 1 */
-    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
-    evt.details = this.constructor.observedAttributes;
+    const detail = this.constructor.observedAttributes;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
     /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
@@ -171,8 +171,8 @@ class MediaTimeRange extends MediaChromeRange {
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
 
-        const mediaPreviewEvt = new Event(MediaUIEvents.MEDIA_PREVIEW_REQUEST);
-        mediaPreviewEvt.detail = mousePercent * duration;
+        const detail = mousePercent * duration;
+        const mediaPreviewEvt = new window.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST);
         this.dispatchEvent(mediaPreviewEvt);
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);

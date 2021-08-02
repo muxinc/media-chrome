@@ -8,7 +8,7 @@
 */
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants';
 
 const enterFullscreenIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -52,8 +52,8 @@ class MediaFullscreenButton extends MediaChromeButton {
 
   connectedCallback() {
     /** Option 1 */
-    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
-    evt.details = this.constructor.observedAttributes;
+    const detail = this.constructor.observedAttributes;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
     /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
@@ -63,7 +63,7 @@ class MediaFullscreenButton extends MediaChromeButton {
     const eventName = (this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null)
       ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
       : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
-    this.dispatchEvent(new Event(eventName, { composed: true, bubbles: true }));
+    this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
   }
 }
 

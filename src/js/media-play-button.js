@@ -1,5 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants';
 
@@ -38,8 +38,8 @@ class MediaPlayButton extends MediaChromeButton {
 
   connectedCallback() {
     /** Option 1 */
-    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
-    evt.details = this.constructor.observedAttributes;
+    const detail = this.constructor.observedAttributes;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
     /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
@@ -49,7 +49,7 @@ class MediaPlayButton extends MediaChromeButton {
     const eventName = (this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null)
       ? MediaUIEvents.MEDIA_PLAY_REQUEST
       : MediaUIEvents.MEDIA_PAUSE_REQUEST;
-    this.dispatchEvent(new Event(eventName, { composed: true, bubbles: true }));
+    this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
   }
 }
 

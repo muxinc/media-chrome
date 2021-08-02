@@ -1,7 +1,6 @@
 import MediaChromeButton from './media-chrome-button.js';
 // import MediaContainer from './src/js/media-container.js';
 import MediaController from './media-controller.js';
-import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import MediaChromeRange from './media-chrome-range.js';
 import MediaControlBar from './media-control-bar.js';
 import MediaCurrentTimeDisplay from './media-current-time-display.js';
@@ -13,7 +12,6 @@ import MediaMuteButton from './media-mute-button.js';
 import MediaPipButton from './media-pip-button.js';
 import MediaPlayButton from './media-play-button.js';
 import MediaPlaybackRateButton from './media-playback-rate-button.js';
-import MediaPoster from './media-poster.js';
 import MediaProgressRange from './media-progress-range.js';
 import MediaSeekBackwardButton from './media-seek-backward-button.js';
 import MediaThumbnailPreview from './media-thumbnail-preview.js';
@@ -46,7 +44,6 @@ export {
   MediaChromeButton,
   MediaContainer,
   MediaController,
-  MediaChromeHTMLElement,
   MediaChromeRange,
   MediaControlBar,
   MediaCurrentTimeDisplay,
@@ -58,7 +55,6 @@ export {
   MediaPipButton,
   MediaPlayButton,
   MediaPlaybackRateButton,
-  MediaPoster,
   MediaProgressRange,
   MediaSeekBackwardButton,
   MediaThumbnailPreview,

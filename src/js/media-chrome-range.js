@@ -1,5 +1,5 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -123,7 +123,7 @@ template.innerHTML = `
   <input id="range" type="range" min="0" max="1000" step="1" value="0">
 `;
 
-class MediaChromeRange extends HTMLElement {
+class MediaChromeRange extends window.HTMLElement {
   constructor() {
     super();
 

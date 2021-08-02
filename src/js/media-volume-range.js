@@ -1,3 +1,4 @@
+import { Window as window } from './utils/server-safe-globals.js';
 import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
@@ -21,16 +22,16 @@ class MediaVolumeRange extends MediaChromeRange {
 
     this.range.addEventListener('input', () => {
       const newVolume = this.range.value / 1000;
-      const evt = new Event(MediaUIEvents.MEDIA_VOLUME_REQUEST, { composed: true, bubbles: true });
-      evt.detail = newVolume;
+      const detail = newVolume;
+      const evt = new window.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, { composed: true, bubbles: true, detail });
       this.dispatchEvent(evt);
     });
   }
 
   connectedCallback() {
     /** Option 1 */
-    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
-    evt.details = this.constructor.observedAttributes;
+    const detail = this.constructor.observedAttributes;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
     /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));

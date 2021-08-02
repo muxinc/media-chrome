@@ -9,7 +9,7 @@
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
-import { MediaChromeHTMLElement, mediaUIEvents } from './media-chrome-html-element.js';
+import { MediaUIEvents as mediaUIEvents } from './constants.js';
 
 const template = document.createElement('template');
 
@@ -70,7 +70,7 @@ template.innerHTML = `
   <slot></slot>
 `;
 
-class MediaContainer extends MediaChromeHTMLElement {
+class MediaContainer extends window.HTMLElement {
   constructor() {
     super();
 

@@ -4,7 +4,7 @@
   Auto position contorls in a line and set some base colors
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -37,7 +37,7 @@ template.innerHTML = `
   <slot></slot>
 `;
 
-class MediaControlBar extends HTMLElement {
+class MediaControlBar extends window.HTMLElement {
   constructor() {
     super();
 

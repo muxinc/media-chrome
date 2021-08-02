@@ -29,7 +29,7 @@ template.innerHTML = `
   <img crossorigin loading="eager" decoding="async" />
 `;
 
-class MediaThumbnailPreviewElement extends HTMLElement {
+class MediaThumbnailPreviewElement extends window.HTMLElement {
   static get observedAttributes() {
     return ['time', MediaUIAttributes.MEDIA_PREVIEW_IMAGE, MediaUIAttributes.MEDIA_PREVIEW_COORDS];
   }
@@ -43,8 +43,8 @@ class MediaThumbnailPreviewElement extends HTMLElement {
 
   connectedCallback() {
     /** Option 1 */
-    const evt = new Event(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true });
-    evt.details = this.constructor.observedAttributes;
+    const detail = this.constructor.observedAttributes;
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
     /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
