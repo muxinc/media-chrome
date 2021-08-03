@@ -36,7 +36,7 @@ template.innerHTML = `
       background-color: #ff0;
     } */
 
-    :host([media-preview-image]:hover) #thumbnailContainer {
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) #thumbnailContainer {
       display: block;
       animation: fadeIn ease 0.5s;
     }

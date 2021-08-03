@@ -13,7 +13,7 @@ const windowShim = {
 };
 
 const documentShim = {
-  createElement: function() { return {}; }
+  createElement: function() { return new windowShim.HTMLElement(); }
 };
 
 export const isServer = typeof window === 'undefined' || typeof window.customElements === 'undefined';

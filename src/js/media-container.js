@@ -9,7 +9,7 @@
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
-import { MediaUIEvents as mediaUIEvents } from './constants.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 
 const template = document.createElement('template');
 
@@ -57,7 +57,7 @@ template.innerHTML = `
       visibility: visible;
     }
 
-    :host([user-inactive]:not([media-paused]):not([audio])) slot:not([media]) ::slotted(*) {
+    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) slot:not([media]) ::slotted(*) {
       opacity: 0;
       transition: opacity 1s;
     }
@@ -166,9 +166,9 @@ class MediaContainer extends window.HTMLElement {
     // Toggle play/pause with clicks on the media element itself
     this._mediaClickPlayToggle = e => {
       if (media.paused) {
-        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PLAY_REQUEST);
+        this.dispatchMediaEvent(MediaUIEvents.MEDIA_PLAY_REQUEST);
       } else {
-        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PAUSE_REQUEST);
+        this.dispatchMediaEvent(MediaUIEvents.MEDIA_PAUSE_REQUEST);
       }
     }
     media.addEventListener('click', this._mediaClickPlayToggle, false);
