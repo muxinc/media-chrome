@@ -68,13 +68,13 @@ template.innerHTML = `
   }
   button:active {}
 
-  svg,
-  ::slotted(*) {
+  svg, img, ::slotted(svg), ::slotted(img) {
     width: var(--media-button-icon-width, 24px);
     height: var(--media-button-icon-height);
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);
     fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
   }
 </style>
 
@@ -107,8 +107,7 @@ class MediaChromeButton extends window.HTMLElement {
     });
   }
 
-  handleClick() {
-  }
+  handleClick() {}
 }
 
 defineCustomElement('media-chrome-button', MediaChromeButton);

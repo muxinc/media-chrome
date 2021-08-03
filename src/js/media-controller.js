@@ -37,7 +37,7 @@ class MediaController extends MediaContainer {
     this.associatedElements = [];
 
     const mutationCallback = (mutationsList, _observer) => {
-      const { addedNodes, removedNodes } = toNextMediaChromeNodesState(mutationsList);
+      const { addedNodes, removedNodes } = toNextMediaUIElementsState(mutationsList);
       addedNodes.forEach(this.associateElement.bind(this));
       removedNodes.forEach(this.unassociateElement.bind(this));
     };
@@ -46,12 +46,12 @@ class MediaController extends MediaContainer {
     observer.observe(this, { childList: true, attributes: true, subtree: true });
 
     /** option 2, controller side */
-    this.addEventListener(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, ({ target, path = [] }) => {
-      const el = path?.[0] ?? target;
+    this.addEventListener(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, (evt) => {
+      const el = evt?.composedPath()[0] ?? evt.target;
       this.associateElement(el);
     });
-    this.addEventListener(MediaUIEvents.MEDIA_CHROME_ELEMENT_DISCONNECTED,  ({ target, path = [] }) => {
-      const el = path?.[0] ?? target;
+    this.addEventListener(MediaUIEvents.MEDIA_CHROME_ELEMENT_DISCONNECTED, (evt) => {
+      const el = evt?.composedPath()[0] ?? evt.target;
       this.unassociateElement(el);
     });
 
@@ -234,7 +234,7 @@ class MediaController extends MediaContainer {
   }
 
   connectedCallback() {
-    const addedNodes = toMediaChromeNodeDescendantsOf(this);
+    const addedNodes = getMediaUIElementDescendants(this);
     addedNodes.forEach(this.associateElement.bind(this));
     super.connectedCallback();
   }
@@ -418,16 +418,16 @@ class MediaController extends MediaContainer {
   }
 }
 
-const MEDIA_CONTROLLER_ATTRIBUTES = Object.values(MediaUIAttributes);
+const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
-const getMediaControllerAttributesFrom = (child) => {
+const getMediaUIAttributesFrom = (child) => {
   const { constructor: { observedAttributes } } = child;
   const mediaChromeAttributesList = child?.getAttribute?.(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES)?.split?.(/\s+/);
   if (!Array.isArray(observedAttributes || mediaChromeAttributesList)) return [];
-  return (observedAttributes || mediaChromeAttributesList).filter(attrName => MEDIA_CONTROLLER_ATTRIBUTES.includes(attrName));
+  return (observedAttributes || mediaChromeAttributesList).filter(attrName => MEDIA_UI_ATTRIBUTE_NAMES.includes(attrName));
 }
 
-const isMediaControllerElement = (child) => !!getMediaControllerAttributesFrom(child).length;
+const isMediaUIElement = (child) => !!getMediaUIAttributesFrom(child).length;
 
 const setAttr = (child, attrName, attrValue) => {
   if (typeof attrValue === 'boolean') {
@@ -437,30 +437,30 @@ const setAttr = (child, attrName, attrValue) => {
   return child.setAttribute(attrName, attrValue);
 }
 
-const toMediaChromeNodeDescendantsOf = (rootNode) => {
+const getMediaUIElementDescendants = (rootNode) => {
   const { childNodes } = rootNode;
-  const seedNodes = isMediaControllerElement(rootNode) ? [rootNode] : [];
+  const rootMediaUIElements = isMediaUIElement(rootNode) ? [rootNode] : [];
   /* leaf node that is either a mediaChromeNode or not */
-  if (!(childNodes && childNodes.length)) return seedNodes;
+  if (!(childNodes && childNodes.length)) return rootMediaUIElements;
   return [
-    ...seedNodes,
-    ...Array.prototype.flatMap.call(childNodes, toMediaChromeNodeDescendantsOf)
+    ...rootMediaUIElements,
+    ...Array.prototype.flatMap.call(childNodes, getMediaUIElementDescendants)
   ];
 };
 
-const toNextMediaChromeNodesState = (mutationsList = []) => {
+const toNextMediaUIElementsState = (mutationsList = []) => {
   const mediaChromeNodesState = mutationsList.reduce((prevMediaChromeNodesState, mutationRecord) => {
     const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
     if (type === 'childList') {
-      const addedMediaChromeNodes = Array.prototype.filter.call(addedNodes, isMediaControllerElement);
-      const removedMediaChromeNodes = Array.prototype.filter.call(removedNodes, isMediaControllerElement);
+      const addedMediaChromeNodes = Array.prototype.filter.call(addedNodes, isMediaUIElement);
+      const removedMediaChromeNodes = Array.prototype.filter.call(removedNodes, isMediaUIElement);
       prevMediaChromeNodesState.addedNodes.push(...addedMediaChromeNodes);
       prevMediaChromeNodesState.removedNodes.push(...removedMediaChromeNodes);
       return prevMediaChromeNodesState;
     }
     /** option 1, controller side */
     if (type === 'attributes' && attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES) {
-      const attrs = getMediaControllerAttributesFrom(target);
+      const attrs = getMediaUIAttributesFrom(target);
       if (attrs.length) {
         prevMediaChromeNodesState.addedNodes.push(target);
       }
@@ -484,7 +484,7 @@ const propagateMediaState = (els, stateName, val) => {
     // so just avoid potential conflicts
     if (el.slot === 'media') return;
     
-    const relevantAttrs = getMediaControllerAttributesFrom(el);
+    const relevantAttrs = getMediaUIAttributesFrom(el);
     if (!relevantAttrs.includes(stateName)) return;
 
     setAttr(el, stateName, val);
