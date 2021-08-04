@@ -10,9 +10,9 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "yarn clean && webpack --config webpack.prod.js",
-    "dev": "yarn start",
-    "start": "webpack serve --config webpack.dev.js",
+    "build": "snowpack build --config snowpack.prod.config.js",
+    "dev": "snowpack dev --config snowpack.dev.config.js",
+    "start": "yarn dev",
     "test": "echo \"Error: no test specified\" && exit 1",
     "publish-patch": "yarn run build && np patch --no-tests --any-branch"
   },
@@ -36,12 +36,8 @@
   },
   "homepage": "https://github.com/muxinc/media-chrome#readme",
   "devDependencies": {
-    "esbuild-loader": "^2.13.1",
     "rimraf": "^3.0.2",
-    "webpack": "^5.47.0",
-    "webpack-cli": "^4.7.2",
-    "webpack-dev-server": "^3.11.2",
-    "webpack-merge": "^5.8.0"
+    "snowpack": "^3.8.3"
   },
   "dependencies": {}
 }
