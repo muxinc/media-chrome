@@ -1,6 +1,5 @@
 // Work in progress
 
-import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Document as document } from './utils/server-safe-globals.js';
 
@@ -40,7 +39,7 @@ template.innerHTML = `
   </media-chrome-menu>
 `;
 
-class MediaSettingsPopup extends MediaChromeHTMLElement {
+class MediaSettingsPopup extends HTMLElement {
   constructor() {
     super();
 
