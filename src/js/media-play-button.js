@@ -1,7 +1,7 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 
 const playIcon =
   '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path class="icon" d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';

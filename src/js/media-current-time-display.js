@@ -2,7 +2,7 @@ import { Window as window, Document as document } from './utils/server-safe-glob
 import MediaTextDisplay from './media-text-display.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { formatTime } from './utils/time.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 class MediaCurrentTimeDisplay extends MediaTextDisplay {

@@ -1,6 +1,6 @@
 import { defineCustomElement } from '../../utils/defineCustomElement.js';
 import { Window as window, Document as document } from '../../utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from '../../constants';
+import { MediaUIEvents, MediaUIAttributes } from '../../constants.js';
 
 const template = document.createElement('template');
 

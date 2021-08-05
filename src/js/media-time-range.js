@@ -1,7 +1,7 @@
 import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 
 const template = document.createElement('template');
 
@@ -109,8 +109,6 @@ class MediaTimeRange extends MediaChromeRange {
       this.updateBar();
       return;
     }
-    // const newCurrentTime = toCurrentTime(this);
-    // this.range.value = newCurrentTime;
   }
 
   // mediaBufferedSet(bufferedRanges) {

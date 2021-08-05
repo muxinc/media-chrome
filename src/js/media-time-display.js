@@ -2,7 +2,7 @@ import MediaTextDisplay from './media-text-display.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window } from './utils/server-safe-globals.js';
 import { formatTime } from './utils/time.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 const DEFAULT_TIMES_SEP = ' / ';

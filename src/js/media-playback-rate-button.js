@@ -1,7 +1,7 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 
 /*
   <media-playback-rate-button rates="1,1.5,2">
