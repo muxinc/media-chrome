@@ -102,7 +102,7 @@ class MediaChromeButton extends window.HTMLElement {
 
     shadow.appendChild(buttonHTML);
 
-    this.nativeEl.addEventListener('click', e => {
+    this.addEventListener('click', e => {
       this.handleClick(e);
     });
   }

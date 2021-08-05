@@ -443,20 +443,23 @@ const setAttr = (child, attrName, attrValue) => {
  *  - Have a `media-chrome-attributes` attribute with at least one well-defined media chrome attribute
  */
 const getMediaUIElementDescendants = (rootNode) => {
-  const { childNodes } = rootNode;
+  const { childNodes } = rootNode ?? [];
+  const shadowChildNodes = rootNode?.shadowRoot?.childNodes ?? [];
+  const allChildNodes = [...childNodes, ...shadowChildNodes];
   const rootMediaUIElements = isMediaUIElement(rootNode) ? [rootNode] : [];
   // If it's a leaf node/element, if it's also a media ui element, return an array containing it as the sole member,
   // otherwise return an empty array.
-  if (!(childNodes && childNodes.length)) return rootMediaUIElements;
+  if (!allChildNodes.length) return rootMediaUIElements;
   // return an array of...
   return [
     // (a spread of an array of only) the root node/element if it is in fact a media ui element, otherwise nothing (a spread of an empty array)
     ...rootMediaUIElements,
     // For the (current) root node/element:
-    // 1. map each child node to its own media ui element descendants array, which will yield an array of arrays
+    // 1. map each child node (including "shadow children") to its own media ui element descendants array, 
+    // which will yield an array of arrays
     // 2. flatten that into a single array (aka map+flat aka flatMap)
     // 3. spread this as the rest of the descendant arrays' elements to return
-    ...Array.prototype.flatMap.call(childNodes, getMediaUIElementDescendants)
+    ...Array.prototype.flatMap.call(allChildNodes, getMediaUIElementDescendants)
   ];
 };
 
@@ -464,8 +467,8 @@ const toNextMediaUIElementsState = (mutationsList = []) => {
   const mediaChromeNodesState = mutationsList.reduce((prevMediaChromeNodesState, mutationRecord) => {
     const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
     if (type === 'childList') {
-      const addedMediaChromeNodes = Array.prototype.filter.call(addedNodes, isMediaUIElement);
-      const removedMediaChromeNodes = Array.prototype.filter.call(removedNodes, isMediaUIElement);
+      const addedMediaChromeNodes = Array.prototype.flatMap.call(addedNodes, getMediaUIElementDescendants);
+      const removedMediaChromeNodes = Array.prototype.flatMap.call(removedNodes, getMediaUIElementDescendants);
       prevMediaChromeNodesState.addedNodes.push(...addedMediaChromeNodes);
       prevMediaChromeNodesState.removedNodes.push(...removedMediaChromeNodes);
       return prevMediaChromeNodesState;
