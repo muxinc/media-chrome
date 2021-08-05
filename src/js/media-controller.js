@@ -137,7 +137,6 @@ class MediaController extends MediaContainer {
       },
       MEDIA_PLAYBACK_RATE_REQUEST: (e) => {
         this.media.playbackRate = e.detail;
-        this.propagateMediaState(MediaUIAttributes.MEDIA_PLAYBACK_RATE, this.media.playbackRate);
       },
       MEDIA_PREVIEW_REQUEST: (e) => {
         const media = this.media;
