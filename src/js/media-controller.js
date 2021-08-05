@@ -339,11 +339,11 @@ class MediaController extends MediaContainer {
   // so that everything happens through the events.
   // Not sure how far we should take this API
   play() {
-    this.dispatchMediaEvent(MEDIA_PLAY_REQUEST);
+  this.dispatchEvent(new window.CustomEvent(MEDIA_PLAY_REQUEST, { composed: true, bubbles: true }));
   }
 
   pause() {
-    this.dispatchMediaEvent(MEDIA_PAUSE_REQUEST);
+    this.dispatchEvent(new window.CustomEvent(MEDIA_PAUSE_REQUEST, { composed: true, bubbles: true }));
   }
 
   get muted() {
@@ -351,8 +351,8 @@ class MediaController extends MediaContainer {
   }
 
   set muted(mute) {
-    const event = (mute) ? MEDIA_MUTE_REQUEST : MEDIA_UNMUTE_REQUEST;
-    this.dispatchMediaEvent(event);
+    const eventName = (mute) ? MEDIA_MUTE_REQUEST : MEDIA_UNMUTE_REQUEST;
+    this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
   }
 
   get volume() {
@@ -362,17 +362,17 @@ class MediaController extends MediaContainer {
   }
 
   set volume(volume) {
-    this.dispatchMediaEvent(MEDIA_VOLUME_REQUEST, {
-      detail: volume
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_VOLUME_REQUEST, {
+      composed: true, bubbles: true, detail: volume
+    }));
   }
 
   requestFullscreen() {
-    this.dispatchMediaEvent(MEDIA_ENTER_FULLSCREEN_REQUEST);
+    this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_FULLSCREEN_REQUEST, { composed: true, bubbles: true }));
   }
 
   exitFullscreen() {
-    this.dispatchMediaEvent(MEDIA_EXIT_FULLSCREEN_REQUEST);
+    this.dispatchEvent(new window.CustomEvent(MEDIA_EXIT_FULLSCREEN_REQUEST, { composed: true, bubbles: true }));
   }
 
   get currentTime() {
@@ -382,9 +382,9 @@ class MediaController extends MediaContainer {
   }
 
   set currentTime(time) {
-    this.dispatchMediaEvent(MEDIA_SEEK_REQUEST, {
-      detail: time
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_SEEK_REQUEST, {
+      composed: true, bubbles: true, detail: time
+    }));
   }
 
   get playbackRate() {
@@ -394,27 +394,23 @@ class MediaController extends MediaContainer {
   }
 
   set playbackRate(rate) {
-    this.dispatchMediaEvent(MEDIA_PLAYBACK_RATE_REQUEST, {
-      detail: rate
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_PLAYBACK_RATE_REQUEST, {
+      composed: true, bubbles: true, detail: rate
+    }));
   }
 
   requestPictureInPicture() {
-    this.dispatchMediaEvent(MEDIA_ENTER_PIP_REQUEST, {
-      detail: time
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_PIP_REQUEST, { composed: true, bubbles: true }));
   }
 
   exitPictureInPicture() {
-    this.dispatchMediaEvent(MEDIA_EXIT_PIP_REQUEST, {
-      detail: time
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_EXIT_PIP_REQUEST, { composed: true, bubbles: true }));
   }
 
   requestPreview(time) {
-    this.dispatchMediaEvent(MEDIA_PREVIEW_REQUEST, {
-      detail: time
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_PREVIEW_REQUEST, {
+      composed: true, bubbles: true, detail: time
+    }));
   }
 }
 
@@ -437,13 +433,30 @@ const setAttr = (child, attrName, attrValue) => {
   return child.setAttribute(attrName, attrValue);
 }
 
+/**
+ * 
+ * @description This function will recursively check for any descendants (including the root node) 
+ * that are media ui elements and return them as a single, flat array.
+ * 
+ * @param {HTMLElement} rootNode 
+ * @returns An array of all descendant nodes (including the current node) that are identifiable as media ui elements, aka either:
+ *  - Have media chrome attributes in its `observedAttributes` list -or-
+ *  - Have a `media-chrome-attributes` attribute with at least one well-defined media chrome attribute
+ */
 const getMediaUIElementDescendants = (rootNode) => {
   const { childNodes } = rootNode;
   const rootMediaUIElements = isMediaUIElement(rootNode) ? [rootNode] : [];
-  /* leaf node that is either a mediaChromeNode or not */
+  // If it's a leaf node/element, if it's also a media ui element, return an array containing it as the sole member,
+  // otherwise return an empty array.
   if (!(childNodes && childNodes.length)) return rootMediaUIElements;
+  // return an array of...
   return [
+    // (a spread of an array of only) the root node/element if it is in fact a media ui element, otherwise nothing (a spread of an empty array)
     ...rootMediaUIElements,
+    // For the (current) root node/element:
+    // 1. map each child node to its own media ui element descendants array, which will yield an array of arrays
+    // 2. flatten that into a single array (aka map+flat aka flatMap)
+    // 3. spread this as the rest of the descendant arrays' elements to return
     ...Array.prototype.flatMap.call(childNodes, getMediaUIElementDescendants)
   ];
 };
