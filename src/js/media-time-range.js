@@ -170,7 +170,7 @@ class MediaTimeRange extends MediaChromeRange {
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
 
         const detail = mousePercent * duration;
-        const mediaPreviewEvt = new window.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST);
+        const mediaPreviewEvt = new window.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, { composed: true, bubbles: true, detail });
         this.dispatchEvent(mediaPreviewEvt);
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
