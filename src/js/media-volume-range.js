@@ -7,7 +7,7 @@ const toVolume = (el) => {
   const muted = el.getAttribute(MediaUIAttributes.MEDIA_MUTED) != null;
   if (muted) return 0;
 
-  const volume = +(el.getAttribute(MediaUIAttributes.MEDIA_VOLUME) ?? 0.085);
+  const volume = +(el.getAttribute(MediaUIAttributes.MEDIA_VOLUME) ?? 1);
   return Math.round(volume * 1000);
 };
 
