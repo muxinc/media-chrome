@@ -338,11 +338,11 @@ class MediaController extends MediaContainer {
   // so that everything happens through the events.
   // Not sure how far we should take this API
   play() {
-  this.dispatchEvent(new window.CustomEvent(MEDIA_PLAY_REQUEST, { composed: true, bubbles: true }));
+  this.dispatchEvent(new window.CustomEvent(MEDIA_PLAY_REQUEST));
   }
 
   pause() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_PAUSE_REQUEST, { composed: true, bubbles: true }));
+    this.dispatchEvent(new window.CustomEvent(MEDIA_PAUSE_REQUEST));
   }
 
   get muted() {
@@ -351,7 +351,7 @@ class MediaController extends MediaContainer {
 
   set muted(mute) {
     const eventName = (mute) ? MEDIA_MUTE_REQUEST : MEDIA_UNMUTE_REQUEST;
-    this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
+    this.dispatchEvent(new window.CustomEvent(eventName));
   }
 
   get volume() {
@@ -361,17 +361,15 @@ class MediaController extends MediaContainer {
   }
 
   set volume(volume) {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_VOLUME_REQUEST, {
-      composed: true, bubbles: true, detail: volume
-    }));
+    this.dispatchEvent(new window.CustomEvent(MEDIA_VOLUME_REQUEST, { detail: volume }));
   }
 
   requestFullscreen() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_FULLSCREEN_REQUEST, { composed: true, bubbles: true }));
+    this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_FULLSCREEN_REQUEST));
   }
 
   exitFullscreen() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_EXIT_FULLSCREEN_REQUEST, { composed: true, bubbles: true }));
+    this.dispatchEvent(new window.CustomEvent(MEDIA_EXIT_FULLSCREEN_REQUEST));
   }
 
   get currentTime() {
@@ -381,9 +379,7 @@ class MediaController extends MediaContainer {
   }
 
   set currentTime(time) {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_SEEK_REQUEST, {
-      composed: true, bubbles: true, detail: time
-    }));
+    this.dispatchEvent(new window.CustomEvent(MEDIA_SEEK_REQUEST, { detail: time }));
   }
 
   get playbackRate() {
@@ -393,23 +389,19 @@ class MediaController extends MediaContainer {
   }
 
   set playbackRate(rate) {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_PLAYBACK_RATE_REQUEST, {
-      composed: true, bubbles: true, detail: rate
-    }));
+    this.dispatchEvent(new window.CustomEvent(MEDIA_PLAYBACK_RATE_REQUEST, { detail: rate }));
   }
 
   requestPictureInPicture() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_PIP_REQUEST, { composed: true, bubbles: true }));
+    this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_PIP_REQUEST));
   }
 
   exitPictureInPicture() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_EXIT_PIP_REQUEST, { composed: true, bubbles: true }));
+    this.dispatchEvent(new window.CustomEvent(MEDIA_EXIT_PIP_REQUEST));
   }
 
   requestPreview(time) {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_PREVIEW_REQUEST, {
-      composed: true, bubbles: true, detail: time
-    }));
+    this.dispatchEvent(new window.CustomEvent(MEDIA_PREVIEW_REQUEST, { detail: time }));
   }
 }
 
