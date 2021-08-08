@@ -422,7 +422,17 @@ const setAttr = (child, attrName, attrValue) => {
     return child.removeAttribute(attrName);
   }
   return child.setAttribute(attrName, attrValue);
-}
+};
+
+const isMediaSlotElement = (el) => el?.slot === 'media';
+const isMediaSlotElementDescendant = (el) => !!el.closest('*[slot="media"]');
+const hasDescendants = (el) => {
+  return !!(el?.childNodes?.length || el?.shadowRoot?.childNodes?.length);
+};
+
+const shouldGetMediaUIElementDescendants = (el) => {
+  return !isMediaSlotElement(el) && hasDescendants(el);
+};
 
 /**
  * 
@@ -435,13 +445,14 @@ const setAttr = (child, attrName, attrValue) => {
  *  - Have a `media-chrome-attributes` attribute with at least one well-defined media chrome attribute
  */
 const getMediaUIElementDescendants = (rootNode) => {
-  const { childNodes } = rootNode ?? [];
-  const shadowChildNodes = rootNode?.shadowRoot?.childNodes ?? [];
-  const allChildNodes = [...childNodes, ...shadowChildNodes];
-  const rootMediaUIElements = isMediaUIElement(rootNode) ? [rootNode] : [];
+  const rootMediaUIElements = isMediaUIElement(rootNode) && !isMediaSlotElementDescendant(rootNode) ? [rootNode] : [];
   // If it's a leaf node/element, if it's also a media ui element, return an array containing it as the sole member,
   // otherwise return an empty array.
-  if (!allChildNodes.length) return rootMediaUIElements;
+  if (!shouldGetMediaUIElementDescendants(rootNode)) return rootMediaUIElements;
+
+  const { childNodes = [] } = rootNode ?? {};
+  const shadowChildNodes = rootNode?.shadowRoot?.childNodes ?? [];
+  const allChildNodes = [...childNodes, ...shadowChildNodes];
   // return an array of...
   return [
     // (a spread of an array of only) the root node/element if it is in fact a media ui element, otherwise nothing (a spread of an empty array)
