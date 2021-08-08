@@ -36,8 +36,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   handleClick() {
     const currentTimeStr = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
     const currentTime = (currentTimeStr && !Number.isNaN(+currentTimeStr)) ? +currentTimeStr : DEFAULT_TIME;
-    const newTime = Math.max(currentTime + DEFAULT_SEEK_OFFSET, 0);
-    const detail = newTime;
+    const detail = Math.max(currentTime + DEFAULT_SEEK_OFFSET, 0);
     const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
   }

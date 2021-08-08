@@ -36,8 +36,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
   handleClick() {
     const currentTimeStr = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
     const currentTime = (currentTimeStr && !Number.isNaN(+currentTimeStr)) ? +currentTimeStr : DEFAULT_TIME;
-    const newTime = currentTime + DEFAULT_SEEK_OFFSET;
-    const detail = newTime;
+    const detail = currentTime + DEFAULT_SEEK_OFFSET;
     const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, { composed: true, bubbles: true, detail });
     this.dispatchEvent(evt);
   }
