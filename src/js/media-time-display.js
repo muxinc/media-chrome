@@ -27,10 +27,6 @@ class MediaTimeDisplay extends MediaTextDisplay {
     return [MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_DURATION, 'remaining', 'show-duration'];
   }
 
-  constructor(...args) {
-    super(...args);
-  }
-
   connectedCallback() {
     /** Option 1 */
     const detail = this.constructor.observedAttributes;

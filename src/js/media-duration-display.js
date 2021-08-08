@@ -11,10 +11,6 @@ class MediaDurationDisplay extends MediaTextDisplay {
     return [MediaUIAttributes.MEDIA_DURATION];
   }
 
-  constructor(...args) {
-    super(...args);
-  }
-
   connectedCallback() {
     /** Option 1 */
     const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail: this.constructor.observedAttributes });
