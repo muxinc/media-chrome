@@ -13,7 +13,7 @@ template.innerHTML = `
     background-color: var(--media-control-background, rgba(20,20,30, 0.7));
 
     /* Default width and height can be overridden externally */
-    padding: 10px;
+    padding: 0px;
     
 
     /* Vertically center any text */
@@ -44,10 +44,11 @@ template.innerHTML = `
   /* Undo the default button styles and fill the parent element */
   button {
     width: 100%;
+    box-sizing: border-box;
     vertical-align: middle;
     border: none;
     margin: 0;
-    padding: 0;
+    padding: 10px;
     text-decoration: none;
     background: transparent;
     color: #ffffff;
@@ -78,7 +79,7 @@ template.innerHTML = `
   }
 </style>
 
-<button></button>
+<button part="inner-button"></button>
 `;
 
 class MediaChromeButton extends window.HTMLElement {
