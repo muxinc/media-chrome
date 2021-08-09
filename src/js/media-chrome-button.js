@@ -1,6 +1,5 @@
-import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -82,7 +81,7 @@ template.innerHTML = `
 <button></button>
 `;
 
-class MediaChromeButton extends MediaChromeHTMLElement {
+class MediaChromeButton extends window.HTMLElement {
   constructor(options={}) {
     super();
 

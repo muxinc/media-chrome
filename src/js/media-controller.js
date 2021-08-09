@@ -9,11 +9,11 @@
 */
 import MediaContainer from './media-container.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import { Window as window } from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 
-import { mediaUIEvents } from './media-chrome-html-element.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 const {
   MEDIA_PLAY_REQUEST,
   MEDIA_PAUSE_REQUEST,
@@ -26,8 +26,8 @@ const {
   MEDIA_PREVIEW_REQUEST,
   MEDIA_ENTER_PIP_REQUEST,
   MEDIA_EXIT_PIP_REQUEST,
-  MEDIA_PLAYBACK_RATE_REQUEST
-} = mediaUIEvents;
+  MEDIA_PLAYBACK_RATE_REQUEST,
+} = MediaUIEvents;
 
 class MediaController extends MediaContainer {
   constructor() {
@@ -35,6 +35,15 @@ class MediaController extends MediaContainer {
 
     // Track externally associated control elements
     this.associatedElements = [];
+
+    const mutationCallback = (mutationsList, _observer) => {
+      const { addedNodes, removedNodes } = toNextMediaUIElementsState(mutationsList);
+      addedNodes.forEach(this.associateElement.bind(this));
+      removedNodes.forEach(this.unassociateElement.bind(this));
+    };
+
+    const observer = new MutationObserver(mutationCallback);
+    observer.observe(this, { childList: true, attributes: true, subtree: true });
 
     // Capture request events from internal controls
     const mediaUIEventHandlers = {
@@ -68,7 +77,7 @@ class MediaController extends MediaContainer {
             'media-chrome-pref-volume',
             volume.toString()
           );
-        } catch (err) {}
+        } catch (err) { }
       },
 
       // This current assumes that the media controller is the fullscreen element
@@ -117,14 +126,14 @@ class MediaController extends MediaContainer {
         }
       },
       MEDIA_PLAYBACK_RATE_REQUEST: (e) => {
-        this.media.playbackRate = e.detail
+        this.media.playbackRate = e.detail;
       },
       MEDIA_PREVIEW_REQUEST: (e) => {
         const media = this.media;
         const time = e.detail;
 
         if (media && media.textTracks && media.textTracks.length) {
-          let track = Array.prototype.find.call(media.textTracks, (t)=>{
+          let track = Array.prototype.find.call(media.textTracks, (t) => {
             return t.label == 'thumbnails';
           });
 
@@ -135,16 +144,16 @@ class MediaController extends MediaContainer {
 
           if (cue) {
             const url = new URL(cue.text);
-            const [x,y,w,h] = url.hash.split('=')[1].split(',');
-            this.propagateMediaState('mediaPreviewImage', url.href);
-            this.propagateMediaState('mediaPreviewCoords', `${x},${y},${w},${h}`);
+            const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
+            this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, url.href);
+            this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, previewCoordsStr.split(',').join(' '));
           }
         }
       }
     };
 
     // Apply ui event listeners
-    Object.keys(mediaUIEventHandlers).forEach((key)=>{
+    Object.keys(mediaUIEventHandlers).forEach((key) => {
       const handlerName = `_handle${constToCamel(key, true)}`;
 
       this[handlerName] = (e) => {
@@ -158,13 +167,13 @@ class MediaController extends MediaContainer {
 
         mediaUIEventHandlers[key](e, this.media);
       };
-      this.addEventListener(mediaUIEvents[key], this[handlerName]);
+      this.addEventListener(MediaUIEvents[key], this[handlerName]);
     });
 
     // Pass media state to child and associated control elements
     this._mediaStatePropagators = {
       'play,pause': () => {
-        this.propagateMediaState('mediaPaused', this.media.paused);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, this.media.paused);
       },
       'volumechange': () => {
         const { muted, volume } = this.media;
@@ -178,14 +187,14 @@ class MediaController extends MediaContainer {
           level = 'medium';
         }
 
-        this.propagateMediaState('mediaMuted', muted);
-        this.propagateMediaState('mediaVolume', volume);
-        this.propagateMediaState('mediaVolumeLevel', level);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_MUTED, muted);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME, volume);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
       },
       [fullscreenApi.event]: () => {
         // Might be in the shadow dom
         const fullscreenEl = this.getRootNode()[fullscreenApi.element];
-        this.propagateMediaState('mediaIsFullscreen', fullscreenEl == this);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_FULLSCREEN, fullscreenEl === this);
       },
       'enterpictureinpicture,leavepictureinpicture': (e) => {
         let isPip;
@@ -197,20 +206,26 @@ class MediaController extends MediaContainer {
         } else {
           isPip = this.media == this.getRootNode().pictureInPictureElement
         }
-        this.propagateMediaState('mediaIsPip', isPip);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_PIP, isPip);
       },
       'timeupdate,loadedmetadata': () => {
-        this.propagateMediaState('mediaCurrentTime', this.media.currentTime);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CURRENT_TIME, this.media.currentTime);
       },
       'durationchange,loadedmetadata': () => {
-        this.propagateMediaState('mediaDuration', this.media.duration);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_DURATION, this.media.duration);
       },
       'ratechange': () => {
-        this.propagateMediaState('mediaPlaybackRate', this.media.playbackRate);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_PLAYBACK_RATE, this.media.playbackRate);
       }
     }
 
     this.associateElement(this);
+  }
+
+  connectedCallback() {
+    const addedNodes = getMediaUIElementDescendants(this);
+    addedNodes.forEach(this.associateElement.bind(this));
+    super.connectedCallback();
   }
 
   mediaSetCallback(media) {
@@ -218,11 +233,11 @@ class MediaController extends MediaContainer {
     if (!super.mediaSetCallback(media)) return;
 
     // Listen for media state changes and propagate them to children and associated els
-    Object.keys(this._mediaStatePropagators).forEach((key)=>{
+    Object.keys(this._mediaStatePropagators).forEach((key) => {
       const events = key.split(',');
       const handler = this._mediaStatePropagators[key];
 
-      events.forEach((event)=>{
+      events.forEach((event) => {
         // If this is fullscreen apply to the document
         const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
 
@@ -246,26 +261,30 @@ class MediaController extends MediaContainer {
     super.mediaUnsetCallback(media);
 
     // Remove all state change propagators
-    Object.keys(this._mediaStatePropagators).forEach((key)=>{
+    Object.keys(this._mediaStatePropagators).forEach((key) => {
       const { events, handler } = this.mediaStatePropagators[key];
 
-      events.forEach((event)=>{
+      events.forEach((event) => {
         const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
         target.removeEventListener(event, handler);
       });
     });
 
     // Reset to paused state
-    this.propagateMediaState('mediaPaused', true);
+    this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, true);
   }
 
   propagateMediaState(stateName, state) {
-    propagateMediaState(this.children, stateName, state);
     propagateMediaState(this.associatedElements, stateName, state);
   }
 
   associateElement(el) {
-    this.associatedElements.push(el);
+    if (!el) return;
+    const els = this.associatedElements;
+    const index = els.indexOf(el);
+    if (index > -1) return;
+
+    els.push(el);
 
     // TODO: Update to handle all request events
     // Could just attach all releveant listeners to every associated el
@@ -273,27 +292,35 @@ class MediaController extends MediaContainer {
     // which events the el intends to dispatch
     // The latter requires authors to actually follow that paradigm
     // which is probably a stretch
-    Object.keys(mediaUIEvents).forEach((key)=>{
-      el.addEventListener(mediaUIEvents[key], this[`_handle${constToCamel(key, true)}`]);
+    Object.keys(MediaUIEvents).forEach((key) => {
+      el.addEventListener(MediaUIEvents[key], this[`_handle${constToCamel(key, true)}`]);
     });
 
     // TODO: Update to propagate all states when registered
     if (this.media) {
-      propagateMediaState([el], 'mediaPaused', this.media.paused);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_PAUSED, this.media.paused);
+      // propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_MUTED, this.media.muted);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME, this.media.volume);
+      // const fullscreenEl = this.getRootNode()[fullscreenApi.element];
+      // propagateMediaState([el], MediaUIAttributes.MEDIA_IS_FULLSCREEN, fullscreenEl === this);
+      // propagateMediaState([el], MediaUIAttributes.MEDIA_IS_PIP, isPip);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_CURRENT_TIME, this.media.currentTime);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_DURATION, this.media.duration);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_PLAYBACK_RATE, this.media.playbackRate);
     }
   }
 
   unassociateElement(el) {
-    els = this.associatedElements;
+    const els = this.associatedElements;
 
     const index = els.indexOf(el);
-    if (index > -1) {
-      els.splice(index, 1);
-    }
-
+    if (index < 0) return;
+    
+    els.splice(index, 1);
     // Remove all media UI event listeners
-    Object.keys(mediaUIEvents).forEach((key)=>{
-      el.addEventListener(mediaUIEvents[key], this[`_handle${constToCamel(key, true)}`]);
+    Object.keys(MediaUIEvents).forEach((key) => {
+      el.removeEventListener(MediaUIEvents[key], this[`_handle${constToCamel(key, true)}`]);
     });
   }
 
@@ -301,11 +328,11 @@ class MediaController extends MediaContainer {
   // so that everything happens through the events.
   // Not sure how far we should take this API
   play() {
-    this.dispatchMediaEvent(MEDIA_PLAY_REQUEST);
+  this.dispatchEvent(new window.CustomEvent(MEDIA_PLAY_REQUEST));
   }
 
   pause() {
-    this.dispatchMediaEvent(MEDIA_PAUSE_REQUEST);
+    this.dispatchEvent(new window.CustomEvent(MEDIA_PAUSE_REQUEST));
   }
 
   get muted() {
@@ -313,8 +340,8 @@ class MediaController extends MediaContainer {
   }
 
   set muted(mute) {
-    const event = (mute) ? MEDIA_MUTE_REQUEST : MEDIA_UNMUTE_REQUEST;
-    this.dispatchMediaEvent(event);
+    const eventName = (mute) ? MEDIA_MUTE_REQUEST : MEDIA_UNMUTE_REQUEST;
+    this.dispatchEvent(new window.CustomEvent(eventName));
   }
 
   get volume() {
@@ -324,17 +351,15 @@ class MediaController extends MediaContainer {
   }
 
   set volume(volume) {
-    this.dispatchMediaEvent(MEDIA_VOLUME_REQUEST, {
-      detail: volume
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_VOLUME_REQUEST, { detail: volume }));
   }
 
   requestFullscreen() {
-    this.dispatchMediaEvent(MEDIA_ENTER_FULLSCREEN_REQUEST);
+    this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_FULLSCREEN_REQUEST));
   }
 
   exitFullscreen() {
-    this.dispatchMediaEvent(MEDIA_EXIT_FULLSCREEN_REQUEST);
+    this.dispatchEvent(new window.CustomEvent(MEDIA_EXIT_FULLSCREEN_REQUEST));
   }
 
   get currentTime() {
@@ -344,9 +369,7 @@ class MediaController extends MediaContainer {
   }
 
   set currentTime(time) {
-    this.dispatchMediaEvent(MEDIA_SEEK_REQUEST, {
-      detail: time
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_SEEK_REQUEST, { detail: time }));
   }
 
   get playbackRate() {
@@ -356,64 +379,123 @@ class MediaController extends MediaContainer {
   }
 
   set playbackRate(rate) {
-    this.dispatchMediaEvent(MEDIA_PLAYBACK_RATE_REQUEST, {
-      detail: rate
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_PLAYBACK_RATE_REQUEST, { detail: rate }));
   }
 
   requestPictureInPicture() {
-    this.dispatchMediaEvent(MEDIA_ENTER_PIP_REQUEST, {
-      detail: time
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_PIP_REQUEST));
   }
 
   exitPictureInPicture() {
-    this.dispatchMediaEvent(MEDIA_EXIT_PIP_REQUEST, {
-      detail: time
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_EXIT_PIP_REQUEST));
   }
 
   requestPreview(time) {
-    this.dispatchMediaEvent(MEDIA_PREVIEW_REQUEST, {
-      detail: time
-    });
+    this.dispatchEvent(new window.CustomEvent(MEDIA_PREVIEW_REQUEST, { detail: time }));
   }
 }
 
-/*
-  Loop through child nodes and set the media[State] on every child.
-*/
-function propagateMediaState(nodeList, stateName, val) {
-  Array.from(nodeList).forEach(child => {
-    // All elements we care about at least have an empty children list (i.e. not <style>)
-    if (!child.children) return;
+const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
-    const childName = child.nodeName.toLowerCase();
+const getMediaUIAttributesFrom = (child) => {
+  const { constructor: { observedAttributes } } = child;
+  const mediaChromeAttributesList = child?.getAttribute?.(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES)?.split?.(/\s+/);
+  if (!Array.isArray(observedAttributes || mediaChromeAttributesList)) return [];
+  return (observedAttributes || mediaChromeAttributesList).filter(attrName => MEDIA_UI_ATTRIBUTE_NAMES.includes(attrName));
+}
 
+const isMediaUIElement = (child) => !!getMediaUIAttributesFrom(child).length;
+
+const setAttr = (child, attrName, attrValue) => {
+  if (typeof attrValue === 'boolean') {
+    if (attrValue) return child.setAttribute(attrName, '');
+    return child.removeAttribute(attrName);
+  }
+  return child.setAttribute(attrName, attrValue);
+};
+
+const isMediaSlotElement = (el) => el?.slot === 'media';
+const isMediaSlotElementDescendant = (el) => !!el.closest('*[slot="media"]');
+const hasDescendants = (el) => {
+  return !!(el?.childNodes?.length || el?.shadowRoot?.childNodes?.length);
+};
+
+const shouldGetMediaUIElementDescendants = (el) => {
+  return !isMediaSlotElement(el) && hasDescendants(el);
+};
+
+/**
+ * 
+ * @description This function will recursively check for any descendants (including the root node) 
+ * that are media ui elements and return them as a single, flat array.
+ * 
+ * @param {HTMLElement} rootNode 
+ * @returns An array of all descendant nodes (including the current node) that are identifiable as media ui elements, aka either:
+ *  - Have media chrome attributes in its `observedAttributes` list -or-
+ *  - Have a `media-chrome-attributes` attribute with at least one well-defined media chrome attribute
+ */
+const getMediaUIElementDescendants = (rootNode) => {
+  const rootMediaUIElements = isMediaUIElement(rootNode) && !isMediaSlotElementDescendant(rootNode) ? [rootNode] : [];
+  // If it's a leaf node/element, if it's also a media ui element, return an array containing it as the sole member,
+  // otherwise return an empty array.
+  if (!shouldGetMediaUIElementDescendants(rootNode)) return rootMediaUIElements;
+
+  const { childNodes = [] } = rootNode ?? {};
+  const shadowChildNodes = rootNode?.shadowRoot?.childNodes ?? [];
+  const allChildNodes = [...childNodes, ...shadowChildNodes];
+  // return an array of...
+  return [
+    // (a spread of an array of only) the root node/element if it is in fact a media ui element, otherwise nothing (a spread of an empty array)
+    ...rootMediaUIElements,
+    // For the (current) root node/element:
+    // 1. map each child node (including "shadow children") to its own media ui element descendants array, 
+    // which will yield an array of arrays
+    // 2. flatten that into a single array (aka map+flat aka flatMap)
+    // 3. spread this as the rest of the descendant arrays' elements to return
+    ...Array.prototype.flatMap.call(allChildNodes, getMediaUIElementDescendants)
+  ];
+};
+
+const toNextMediaUIElementsState = (mutationsList = []) => {
+  const mediaChromeNodesState = mutationsList.reduce((prevMediaChromeNodesState, mutationRecord) => {
+    const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
+    if (type === 'childList') {
+      const addedMediaChromeNodes = Array.prototype.flatMap.call(addedNodes, getMediaUIElementDescendants);
+      const removedMediaChromeNodes = Array.prototype.flatMap.call(removedNodes, getMediaUIElementDescendants);
+      prevMediaChromeNodesState.addedNodes.push(...addedMediaChromeNodes);
+      prevMediaChromeNodesState.removedNodes.push(...removedMediaChromeNodes);
+      return prevMediaChromeNodesState;
+    }
+    /** option 1, controller side */
+    if (type === 'attributes' && attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES) {
+      const attrs = getMediaUIAttributesFrom(target);
+      if (attrs.length) {
+        prevMediaChromeNodesState.addedNodes.push(target);
+      }
+      else {
+        prevMediaChromeNodesState.removedNodes.push(target);
+      }
+      return prevMediaChromeNodesState;
+    }
+    return prevMediaChromeNodesState;
+  }, {
+    addedNodes: [],
+    removedNodes: [],
+  });
+  return mediaChromeNodesState;
+};
+
+const propagateMediaState = (els, stateName, val) => {
+  els.forEach(el => {
+    /** @TODO confirm this is still needed; otherwise, remove (CJP) */
     // Don't propagate into media elements, UI can't live in <video>
     // so just avoid potential conflicts
-    if (child.slot === 'media') return;
+    if (el.slot === 'media') return;
+    
+    const relevantAttrs = getMediaUIAttributesFrom(el);
+    if (!relevantAttrs.includes(stateName)) return;
 
-    function setAndPropagate() {
-      // Only set if previously defined, at least as null
-      // This is how element authors can tell us they want to
-      // receive these state updates
-      if (typeof child[stateName] !== 'undefined') {
-        child[stateName] = val;
-      }
-
-      propagateMediaState(child.children, stateName, val);
-
-      // We might consider an option to block piercing the shadow dom
-      if (child.shadowRoot) propagateMediaState(child.shadowRoot.childNodes, stateName, val);
-    }
-
-    // Make sure custom els are ready
-    if (childName.includes('-') && !window.customElements.get(childName)) {
-      window.customElements.whenDefined(childName).then(setAndPropagate);
-    } else {
-      setAndPropagate();
-    }
+    setAttr(el, stateName, val);
   });
 }
 

@@ -1,14 +1,19 @@
 const windowShim = {
-  HTMLElement: function HTMLElement() {},
+  HTMLElement: function HTMLElement() {
+    this.addEventListener = () => {};
+    this.removeEventListener = () => {};
+    this.dispatchEvent = () => {};
+  },
   customElements: {
     get: function(){},
     define: function(){},
     whenDefined: function(){}
-  }
+  },
+  CustomEvent: function CustomEvent() {},
 };
 
 const documentShim = {
-  createElement: function() { return {}; }
+  createElement: function() { return new windowShim.HTMLElement(); }
 };
 
 export const isServer = typeof window === 'undefined' || typeof window.customElements === 'undefined';

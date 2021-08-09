@@ -9,7 +9,7 @@
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
-import { MediaChromeHTMLElement, mediaUIEvents } from './media-chrome-html-element.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 
 const template = document.createElement('template');
 
@@ -57,7 +57,7 @@ template.innerHTML = `
       visibility: visible;
     }
 
-    :host([user-inactive]:not([media-paused]):not([audio])) slot:not([media]) ::slotted(*) {
+    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) slot:not([media]) ::slotted(*) {
       opacity: 0;
       transition: opacity 1s;
     }
@@ -70,7 +70,7 @@ template.innerHTML = `
   <slot></slot>
 `;
 
-class MediaContainer extends MediaChromeHTMLElement {
+class MediaContainer extends window.HTMLElement {
   constructor() {
     super();
 
@@ -165,11 +165,11 @@ class MediaContainer extends MediaChromeHTMLElement {
 
     // Toggle play/pause with clicks on the media element itself
     this._mediaClickPlayToggle = e => {
-      if (media.paused) {
-        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PLAY_REQUEST);
-      } else {
-        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PAUSE_REQUEST);
-      }
+
+      const eventName = media.paused
+        ? MediaUIEvents.MEDIA_PLAY_REQUEST
+        : MediaUIEvents.MEDIA_PAUSE_REQUEST;
+      this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
     }
     media.addEventListener('click', this._mediaClickPlayToggle, false);
 

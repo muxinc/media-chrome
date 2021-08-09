@@ -1,8 +1,6 @@
-import MediaChromeHTMLElement from '../../media-chrome-html-element.js';
 import { defineCustomElement } from '../../utils/defineCustomElement.js';
 import { Window as window, Document as document } from '../../utils/server-safe-globals.js';
-import MediaThumbnailPreviewElement from '../../media-thumbnail-preview-element.js';
-import { mediaUIEvents } from '../../media-chrome-html-element.js';
+import { MediaUIEvents, MediaUIAttributes } from '../../constants.js';
 
 const template = document.createElement('template');
 
@@ -14,7 +12,7 @@ const Z = {
   '300': 300,
 };
 
-function lockBetweenZeroAndOne (num) {
+function lockBetweenZeroAndOne(num) {
   return Math.max(0, Math.min(1, num));
 }
 
@@ -136,9 +134,9 @@ template.innerHTML = `
   </div>
 `;
 
-class MediaClipSelector extends MediaChromeHTMLElement {
+class MediaClipSelector extends window.HTMLElement {
   static get observedAttributes() {
-    return ['thumbnails'].concat(super.observedAttributes || []);
+    return ['thumbnails', MediaUIAttributes.MEDIA_DURATION, MediaUIAttributes.MEDIA_CURRENT_TIME];
   }
 
   constructor() {
@@ -177,19 +175,31 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     this.enableThumbnails();
   }
 
+  connectedCallback() {
+    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+  }
+
+  get mediaDuration() {
+    return +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+  }
+
+  get mediaCurrentTime() {
+    return +this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+  }
+
   /*
    * pass in a mouse event (evt.clientX)
    * calculates the percentage progress based on the bounding rectang
    * converts the percentage progress into a duration in seconds
    */
-  getPlayheadBasedOnMouseEvent (evt) {
+  getPlayheadBasedOnMouseEvent(evt) {
     const duration = this.mediaDuration;
     if (!duration) return;
     const mousePercent = lockBetweenZeroAndOne(this.getMousePercent(evt));
     return (mousePercent * duration);
   }
 
-  getXPositionFromMouse (evt) {
+  getXPositionFromMouse(evt) {
     let clientX;
 
     if (['touchstart', 'touchmove'].includes(evt.type)) {
@@ -199,13 +209,13 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     return clientX || evt.clientX;
   }
 
-  getMousePercent (evt) {
+  getMousePercent(evt) {
     const rangeRect = this.wrapper.getBoundingClientRect();
     const mousePercent = (this.getXPositionFromMouse(evt) - rangeRect.left) / rangeRect.width;
     return lockBetweenZeroAndOne(mousePercent);
   }
 
-  dragStart (evt) {
+  dragStart(evt) {
     if (evt.target === this.startHandle) {
       this.draggingEl = this.startHandle;
     }
@@ -216,12 +226,12 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     this.initialX = this.getXPositionFromMouse(evt);
   }
 
-  dragEnd (evt) {
+  dragEnd(evt) {
     this.initialX = null;
     this.draggingEl = null;
   }
 
-  setSelectionWidth (selectionPercent, fullTimelineWidth) {
+  setSelectionWidth(selectionPercent, fullTimelineWidth) {
     let percent = selectionPercent;
 
     const minWidthPx = HANDLE_W * 3;
@@ -242,7 +252,7 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     this.selection.style.width = `${percent * 100}%`;
   }
 
-  drag (evt) {
+  drag(evt) {
     if (!this.draggingEl) {
       return;
     }
@@ -279,14 +289,14 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     this.dispatchUpdate();
   }
 
-  dispatchUpdate () {
+  dispatchUpdate() {
     const updateEvent = new CustomEvent('update', {
       detail: this.getCurrentClipBounds(),
     });
     this.dispatchEvent(updateEvent);
   }
 
-  getCurrentClipBounds () {
+  getCurrentClipBounds() {
     const rangeRect = this.wrapper.getBoundingClientRect();
     const leftTrimRect = this.leftTrim.getBoundingClientRect();
     const selectionRect = this.selection.getBoundingClientRect();
@@ -303,12 +313,12 @@ class MediaClipSelector extends MediaChromeHTMLElement {
     };
   }
 
-  isTimestampInBounds (timestamp) {
+  isTimestampInBounds(timestamp) {
     const { startTime, endTime } = this.getCurrentClipBounds();
     return (startTime <= timestamp && endTime >= timestamp);
   }
 
-  handleClick (evt) {
+  handleClick(evt) {
     const mousePercent = this.getMousePercent(evt);
     const timestampForClick = mousePercent * this.mediaDuration;
 
@@ -317,9 +327,12 @@ class MediaClipSelector extends MediaChromeHTMLElement {
      * currentTime of the underlying media, only clicking in bounds does that
      */
     if (this.isTimestampInBounds(timestampForClick)) {
-      this.dispatchMediaEvent(mediaUIEvents.MEDIA_SEEK_REQUEST, {
-        detail: timestampForClick
-      });
+      this.dispatchEvent(
+        new window.CustomEvent(
+          MediaUIEvents.MEDIA_SEEK_REQUEST,
+          { composed: true, bubbles: true, detail: timestampForClick }
+        )
+      );
     }
   }
 
@@ -339,9 +352,12 @@ class MediaClipSelector extends MediaChromeHTMLElement {
       const { startTime, endTime } = this.getCurrentClipBounds();
 
       if (this.mediaCurrentTime < startTime || this.mediaCurrentTime > endTime) {
-        this.dispatchMediaEvent(mediaUIEvents.MEDIA_SEEK_REQUEST, {
-          detail: startTime
-        });
+        this.dispatchEvent(
+          new window.CustomEvent(
+            MediaUIEvents.MEDIA_SEEK_REQUEST,
+            { composed: true, bubbles: true, detail: startTime }
+          )
+        );
       }
     }
   }
@@ -385,10 +401,12 @@ class MediaClipSelector extends MediaChromeHTMLElement {
         const thumbnailLeft = leftPadding + (mousePercent * rangeRect.width);
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
-
-        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PREVIEW_REQUEST, {
-          detail: mousePercent * duration
-        });
+        this.dispatchEvent(
+          new window.CustomEvent(
+            MediaUIEvents.MEDIA_PREVIEW_REQUEST,
+            { composed: true, bubbles: true, detail: mousePercent * duration }
+          )
+        );
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
     };

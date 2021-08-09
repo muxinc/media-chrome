@@ -1,8 +1,7 @@
 import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
-import MediaThumbnailPreviewElement from './media-thumbnail-preview-element.js';
-import { mediaUIEvents } from './media-chrome-html-element.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 
 const template = document.createElement('template');
 
@@ -37,7 +36,7 @@ template.innerHTML = `
       background-color: #ff0;
     } */
 
-    :host([media-preview-image]:hover) #thumbnailContainer {
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) #thumbnailContainer {
       display: block;
       animation: fadeIn ease 0.5s;
     }
@@ -64,30 +63,20 @@ template.innerHTML = `
 
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
-    return ['thumbnails'].concat(super.observedAttributes || []);
+    return ['thumbnails', MediaUIAttributes.MEDIA_DURATION, MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_PREVIEW_IMAGE];
   }
 
   constructor() {
     super();
 
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.setMediaTimeWithRange = () => {
-      const time = Math.round((this.range.value / 1000) * this.mediaDuration);
 
-      this.dispatchMediaEvent(mediaUIEvents.MEDIA_SEEK_REQUEST, {
-        detail: time
-      });
-    };
-    this.range.addEventListener('input', this.setMediaTimeWithRange);
-
-    // The following listeners need to be removeable
-    this.updateRangeWithMediaTime = () => {
-      this.range.value = Math.round(
-        (this.mediaCurrentTime / this.mediaDuration) * 1000
-      );
-
-      this.updateBar();
-    };
+    this.range.addEventListener('input', () => {
+      const newTime = this.range.value;
+      const detail = newTime;
+      const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, { composed: true, bubbles: true, detail });
+      this.dispatchEvent(evt);
+    });
 
     // Come back to this feature
     // this.playIfNotReady = e => {
@@ -99,17 +88,27 @@ class MediaTimeRange extends MediaChromeRange {
     this.enableThumbnails();
   }
 
-  mediaCurrentTimeSet(time) {
-    this.updateRangeWithMediaTime();
+  connectedCallback() {
+    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
   }
 
-  mediaDurationSet(time) {
-    this.updateRangeWithMediaTime();
+
+  attributeChangedCallback(attrName, _oldValue, newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
+      this.range.value = +newValue;
+      this.updateBar();
+      return;
+    }
+    if (attrName === MediaUIAttributes.MEDIA_DURATION) {
+      this.range.max = +newValue;
+      this.updateBar();
+      return;
+    }
   }
 
-  mediaBufferedSet(bufferedRanges) {
-    this.updateBar();
-  }
+  // mediaBufferedSet(bufferedRanges) {
+  //   this.updateBar();
+  // }
 
   // mediaSetCallback(media) {
   //   // Come back to this...
@@ -134,7 +133,7 @@ class MediaTimeRange extends MediaChromeRange {
     }
 
     const buffered = this.mediaBuffered;
-    const buffPercent = (buffered[buffered.length-1][1] / this.mediaDuration) * 100;
+    const buffPercent = (buffered[buffered.length - 1][1] / this.mediaDuration) * 100;
     colorsArray.splice(1, 0, ['var(--media-time-buffered-color, #777)', buffPercent]);
     return colorsArray;
   }
@@ -147,7 +146,7 @@ class MediaTimeRange extends MediaChromeRange {
     let mouseMoveHandler;
     const trackMouse = () => {
       mouseMoveHandler = (evt) => {
-        const duration = this.mediaDuration;
+        const duration = +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
 
         // If no duration we can't calculate which time to show
         if (!duration) return;
@@ -165,9 +164,9 @@ class MediaTimeRange extends MediaChromeRange {
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
 
-        this.dispatchMediaEvent(mediaUIEvents.MEDIA_PREVIEW_REQUEST, {
-          detail: mousePercent * duration
-        });
+        const detail = mousePercent * duration;
+        const mediaPreviewEvt = new window.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, { composed: true, bubbles: true, detail });
+        this.dispatchEvent(mediaPreviewEvt);
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
     };
@@ -179,24 +178,19 @@ class MediaTimeRange extends MediaChromeRange {
     // Trigger when the mouse moves over the range
     let rangeEntered = false;
     let rangeMouseMoveHander = (evt) => {
-      if (!rangeEntered && this.mediaDuration) {
+      const mediaDurationStr = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+      if (!rangeEntered && mediaDurationStr) {
         rangeEntered = true;
-        this.thumbnailPreview.style.display = 'block';
         trackMouse();
 
         let offRangeHandler = (evt) => {
           if (evt.target != this && !this.contains(evt.target)) {
-            this.thumbnailPreview.style.display = 'none';
             window.removeEventListener('mousemove', offRangeHandler);
             rangeEntered = false;
             stopTrackingMouse();
           }
         }
         window.addEventListener('mousemove', offRangeHandler, false);
-      }
-
-      if (!this.mediaDuration) {
-        this.thumbnailPreview.style.display = 'none';
       }
     };
     this.addEventListener('mousemove', rangeMouseMoveHander, false);
