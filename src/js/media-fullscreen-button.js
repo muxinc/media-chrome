@@ -10,6 +10,7 @@ import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { verbs } from './labels/labels.js';
 
 const enterFullscreenIcon = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
   <path d="M0 0h24v24H0z" fill="none"/>
@@ -40,6 +41,12 @@ slotTemplate.innerHTML = `
   <slot name="exit">${exitFullscreenIcon}</slot>
 `;
 
+const updateAriaLabel = (el) => {
+  const isFullScreen = el.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null;
+  const label = isFullScreen ? verbs.EXIT_FULLSCREEN() : verbs.ENTER_FULLSCREEN();
+  el.nativeEl.setAttribute('aria-label', label);
+};
+
 class MediaFullscreenButton extends MediaChromeButton {
 
   static get observedAttributes() {
@@ -51,7 +58,14 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   connectedCallback() {
+    updateAriaLabel(this);
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+  }
+
+  attributeChangedCallback(attrName, _oldValue, _newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_IS_FULLSCREEN) {
+      updateAriaLabel(this);
+    }
   }
 
   handleClick(_e) {
