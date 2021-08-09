@@ -25,11 +25,6 @@ class MediaSeekForwardButton extends MediaChromeButton {
   }
 
   connectedCallback() {
-    /** Option 1 */
-    const detail = this.constructor.observedAttributes;
-    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, { composed: true, bubbles: true, detail });
-    this.dispatchEvent(evt);
-    /** Option 2 */
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
   }
 

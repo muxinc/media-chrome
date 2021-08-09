@@ -11,8 +11,6 @@ export const MediaUIEvents = {
     MEDIA_ENTER_PIP_REQUEST: 'mediaenterpiprequest',
     MEDIA_EXIT_PIP_REQUEST: 'mediaexitpiprequest',
     MEDIA_PLAYBACK_RATE_REQUEST: 'mediaplaybackraterequest',
-    MEDIA_CHROME_ELEMENT_CONNECTED: 'mediachromeelementconnected',
-    MEDIA_CHROME_ELEMENT_DISCONNECTED: 'mediachromeelementdisconnected',
 };
 
 export const MediaUIAttributes = {

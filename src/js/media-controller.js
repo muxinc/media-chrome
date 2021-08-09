@@ -45,16 +45,6 @@ class MediaController extends MediaContainer {
     const observer = new MutationObserver(mutationCallback);
     observer.observe(this, { childList: true, attributes: true, subtree: true });
 
-    /** option 2, controller side */
-    this.addEventListener(MediaUIEvents.MEDIA_CHROME_ELEMENT_CONNECTED, (evt) => {
-      const el = evt?.composedPath()[0] ?? evt.target;
-      this.associateElement(el);
-    });
-    this.addEventListener(MediaUIEvents.MEDIA_CHROME_ELEMENT_DISCONNECTED, (evt) => {
-      const el = evt?.composedPath()[0] ?? evt.target;
-      this.unassociateElement(el);
-    });
-
     // Capture request events from internal controls
     const mediaUIEventHandlers = {
       MEDIA_PLAY_REQUEST: () => this.media.play(),
