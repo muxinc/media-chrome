@@ -10,6 +10,7 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
 
 const template = document.createElement('template');
 
@@ -18,6 +19,7 @@ template.innerHTML = `
     :host {
       box-sizing: border-box;
       position: relative;
+      align-items: stretch;
 
       /* Position controls at the bottom  */
       display: inline-flex;
@@ -57,6 +59,11 @@ template.innerHTML = `
       visibility: visible;
     }
 
+    :host > section {
+      display: inline-flex;
+      flex-direction: column-reverse;
+    }
+
     :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) slot:not([media]) ::slotted(*) {
       opacity: 0;
       transition: opacity 1s;
@@ -66,8 +73,10 @@ template.innerHTML = `
       width: 100%;
     }
   </style>
-  <slot name="media"></slot>
-  <slot></slot>
+  <section>
+    <slot name="media"></slot>
+    <slot></slot>
+  </section>
 `;
 
 class MediaContainer extends window.HTMLElement {
@@ -181,6 +190,10 @@ class MediaContainer extends window.HTMLElement {
   }
 
   connectedCallback() {
+    const isAudioChrome = this.getAttribute('audio') != null;
+    const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
+    this.shadowRoot.querySelector('section').setAttribute('aria-label', label)
+
     if (this.media) {
       this.mediaSetCallback(this.media);
     }
