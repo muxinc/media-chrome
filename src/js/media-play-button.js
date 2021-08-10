@@ -30,7 +30,7 @@ slotTemplate.innerHTML = `
 const updateAriaLabel = (el) => {
   const paused = el.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null;
   const label = paused ? verbs.PLAY() : verbs.PAUSE();
-  el.nativeEl.setAttribute('aria-label', label);
+  el.setAttribute('aria-label', label);
 };
 
 class MediaPlayButton extends MediaChromeButton {

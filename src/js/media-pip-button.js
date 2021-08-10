@@ -29,7 +29,7 @@ slotTemplate.innerHTML = `
 const updateAriaLabel = (el) => {
   const isPip = el.getAttribute(MediaUIAttributes.MEDIA_IS_PIP) != null;
   const label = isPip ? verbs.EXIT_PIP() : verbs.ENTER_PIP();
-  el.nativeEl.setAttribute('aria-label', label);
+  el.setAttribute('aria-label', label);
 };
 
 class MediaPipButton extends MediaChromeButton {

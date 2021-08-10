@@ -41,6 +41,8 @@ class MediaPlaybackRateButton extends MediaChromeButton {
       const newRate = newValue ? +newValue : Number.NaN;
       const rate = !Number.isNaN(newRate) ? newRate : DEFAULT_RATE;
       this.nativeEl.innerHTML = `${rate}x`;
+      /** @TODO Implement real version of this (CJP) */
+      this.setAttribute('aria-label', `${rate}x`);
       return;
     }
   }

@@ -42,7 +42,7 @@ template.innerHTML = `
   }
 
   /* Undo the default button styles and fill the parent element */
-  button {
+  .button {
     width: 100%;
     vertical-align: middle;
     border: none;
@@ -62,11 +62,11 @@ template.innerHTML = `
     -moz-appearance: none;
   }
 
-  button:hover {}
-  button:focus {
+  .button:hover {}
+  .button:focus {
     outline: 0;
   }
-  button:active {}
+  .button:active {}
 
   svg, img, ::slotted(svg), ::slotted(img) {
     width: var(--media-button-icon-width, 24px);
@@ -78,7 +78,7 @@ template.innerHTML = `
   }
 </style>
 
-<button></button>
+<div class="button"></div>
 `;
 
 class MediaChromeButton extends window.HTMLElement {
@@ -88,7 +88,10 @@ class MediaChromeButton extends window.HTMLElement {
     const shadow = this.attachShadow({ mode: 'open' });
 
     const buttonHTML = template.content.cloneNode(true);
-    this.nativeEl = buttonHTML.querySelector('button');
+    this.nativeEl = buttonHTML.querySelector('div');
+    
+    this.setAttribute('role', "button");
+    this.setAttribute('tabindex', 0);
 
     // Slots
     let slotTemplate = options.slotTemplate;

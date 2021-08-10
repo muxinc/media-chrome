@@ -44,7 +44,7 @@ slotTemplate.innerHTML = `
 const updateAriaLabel = (el) => {
   const isFullScreen = el.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null;
   const label = isFullScreen ? verbs.EXIT_FULLSCREEN() : verbs.ENTER_FULLSCREEN();
-  el.nativeEl.setAttribute('aria-label', label);
+  el.setAttribute('aria-label', label);
 };
 
 class MediaFullscreenButton extends MediaChromeButton {

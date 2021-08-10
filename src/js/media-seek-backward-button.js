@@ -19,7 +19,7 @@ const updateAriaLabel = (el) => {
   // NOTE: seek direction is described via text, so always use positive numeric representation
   const seekOffset = Math.abs(DEFAULT_SEEK_OFFSET);
   const label = verbs.SEEK_BACK_N_SECS({ seekOffset });
-  el.nativeEl.setAttribute('aria-label', label);
+  el.setAttribute('aria-label', label);
 };
 
 class MediaSeekBackwardButton extends MediaChromeButton {

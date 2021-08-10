@@ -49,7 +49,7 @@ slotTemplate.innerHTML = `
 const updateAriaLabel = (el) => {
   const muted = el.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off';
   const label = muted ? verbs.UNMUTE() : verbs.MUTE();
-  el.nativeEl.setAttribute('aria-label', label);
+  el.setAttribute('aria-label', label);
 };
 
 class MediaMuteButton extends MediaChromeButton {
