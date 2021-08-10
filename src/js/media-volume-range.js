@@ -14,6 +14,8 @@ const toVolume = (el) => {
   return Math.round(volume * el.range.max);
 };
 
+const formatAsPercentString = ({ value, max }) => `${Math.round((value / max) * 100)} percent`;
+
 class MediaVolumeRange extends MediaChromeRange {
 
   static get observedAttributes() {
@@ -41,6 +43,7 @@ class MediaVolumeRange extends MediaChromeRange {
   attributeChangedCallback(_attrName, _oldValue, _newValue) {
     const newVolume = toVolume(this);
     this.range.value = newVolume;
+    this.range.setAttribute('aria-valuetext', formatAsPercentString(this.range));
     this.updateBar();
   }
 }

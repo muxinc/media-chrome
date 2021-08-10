@@ -3,6 +3,7 @@ import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
+import { formatAsTimePhrase } from './utils/time.js';
 
 const template = document.createElement('template');
 
@@ -62,6 +63,14 @@ template.innerHTML = `
   </div>
 `;
 
+const updateAriaValueText = (el) => {
+  const range = el.range;
+  const currentTimePhrase = formatAsTimePhrase(+range.value);
+  const totalTimePhrase = formatAsTimePhrase(+range.max);
+  const fullPhrase = `${currentTimePhrase} of ${totalTimePhrase}`;
+  range.setAttribute('aria-valuetext', fullPhrase);
+};
+
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
     return ['thumbnails', MediaUIAttributes.MEDIA_DURATION, MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_PREVIEW_IMAGE];
@@ -98,11 +107,13 @@ class MediaTimeRange extends MediaChromeRange {
   attributeChangedCallback(attrName, _oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
       this.range.value = +newValue;
+      updateAriaValueText(this);
       this.updateBar();
       return;
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
       this.range.max = +newValue;
+      updateAriaValueText(this);
       this.updateBar();
       return;
     }
