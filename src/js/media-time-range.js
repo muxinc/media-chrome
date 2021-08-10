@@ -63,7 +63,7 @@ template.innerHTML = `
   </div>
 `;
 
-const DEFAULT_MISSING_TIME_PHRASE = '';
+const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
 const updateAriaValueText = (el) => {
   const range = el.range;
