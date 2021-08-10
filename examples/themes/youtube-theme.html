@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta name="viewport" content="width=device-width">
   <title>Media Chrome Youtube Theme Example</title>
@@ -133,36 +133,37 @@
     --media-icon-color: #fff;
   }
 </style>
+<main>
+  <h1>Media Chrome Youtube Theme Example</h1>
+  <media-controller class="media-theme-youtube">
+    <video
+      slot="media"
+      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+      muted
+      preload="none"
+      crossorigin
+    >
+      <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt">
+    </video>
+    <media-control-bar>
+      <media-time-range></media-time-range>
+      <media-play-button></media-play-button>
+      <media-mute-button></media-mute-button>
+      <media-volume-range></media-volume-range>
+      <media-time-display></media-time-display>
+      <div>/</div>
+      <media-duration-display></media-duration-display>
+      <span class="control-spacer"></span>
+      <media-playback-rate-button></media-playback-rate-button>
+      <media-pip-button></media-pip-button>
+      <media-fullscreen-button></media-fullscreen-button>
+    </media-control-bar>
+  </media-controller>
 
-<media-controller class="media-theme-youtube">
-  <video
-    slot="media"
-    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-    muted
-    preload="none"
-    crossorigin
-  >
-    <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt">
-  </video>
-  <media-control-bar>
-    <media-time-range></media-time-range>
-    <media-play-button></media-play-button>
-    <media-mute-button></media-mute-button>
-    <media-volume-range></media-volume-range>
-    <media-time-display></media-time-display>
-    <div>/</div>
-    <media-duration-display></media-duration-display>
-    <span class="control-spacer"></span>
-    <media-playback-rate-button></media-playback-rate-button>
-    <media-pip-button></media-pip-button>
-    <media-fullscreen-button></media-fullscreen-button>
-  </media-control-bar>
-</media-controller>
+  <script>
+    const mediaMuteButton = document.querySelector('media-mute-button');
 
-<script>
-  const mediaMuteButton = document.querySelector('media-mute-button');
-
-</script>
-
+  </script>
+</main>
 </body>
 </html>
