@@ -6,10 +6,10 @@
   If none, the button will look for the closest media-container element to the media.
   If none, the button will make the media fullscreen.
 */
-import MediaChromeButton from "./media-chrome-button.js";
+import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document } from './utils/server-safe-globals.js';
-import { mediaUIEvents } from './media-chrome-html-element.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 
 const enterFullscreenIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
   <path d="M0 0h24v24H0z" fill="none"/>
@@ -24,14 +24,14 @@ const exitFullscreenIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" h
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
   <style>
-  :host([media-is-fullscreen]) slot:not([name=exit]) > *, 
-  :host([media-is-fullscreen]) ::slotted(:not([slot=exit])) {
+  :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot:not([name=exit]) > *, 
+  :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) ::slotted(:not([slot=exit])) {
     display: none;
   }
 
   /* Double negative, but safer if display doesn't equal 'block' */
-  :host(:not([media-is-fullscreen])) slot:not([name=enter]) > *, 
-  :host(:not([media-is-fullscreen])) ::slotted(:not([slot=enter])) {
+  :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) slot:not([name=enter]) > *, 
+  :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) ::slotted(:not([slot=enter])) {
     display: none;
   }
   </style>
@@ -41,33 +41,24 @@ slotTemplate.innerHTML = `
 `;
 
 class MediaFullscreenButton extends MediaChromeButton {
-  constructor(options={}) {
-    options = Object.assign({
-      slotTemplate: slotTemplate
-    }, options);
 
-    super(options); 
-  }
-
-  handleClick(e) {
-    const eventName = (this.mediaIsFullscreen)
-     ? mediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST 
-     : mediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
-
-    this.dispatchMediaEvent(eventName);
-  }
-
-  // Need to update fullscreenElement setting for media-controller
   static get observedAttributes() {
-    return ['fullscreen-element'].concat(super.observedAttributes || []);
+    return [MediaUIAttributes.MEDIA_IS_FULLSCREEN];
   }
-  get fullscreenElement() {
-    return this._fullscreenElement
-      || (this.media && this.media.closest('media-container, media-chrome'))
-      || this.media;
+
+  constructor(options = {}) {
+    super({ slotTemplate, ...options });
   }
-  set fullscreenElement(val) {
-    this._fullscreenElement = document.querySelector(val);
+
+  connectedCallback() {
+    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+  }
+
+  handleClick(_e) {
+    const eventName = (this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null)
+      ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
+      : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
+    this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
   }
 }
 

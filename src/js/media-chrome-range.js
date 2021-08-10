@@ -1,6 +1,5 @@
-import MediaChromeHTMLElement from './media-chrome-html-element.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -124,11 +123,11 @@ template.innerHTML = `
   <input id="range" type="range" min="0" max="1000" step="1" value="0">
 `;
 
-class MediaChromeRange extends MediaChromeHTMLElement {
+class MediaChromeRange extends window.HTMLElement {
   constructor() {
     super();
 
-    var shadow = this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.range = this.shadowRoot.querySelector('#range');
@@ -169,7 +168,7 @@ class MediaChromeRange extends MediaChromeHTMLElement {
   */
   getBarColors() {
     const range = this.range;
-    const rangePercent = (this.range.value / 1000) * 100;
+    const rangePercent = (range.value / range.max) * 100;
 
     let colorArray = [
       ['var(--media-range-bar-color, #fff)', rangePercent],

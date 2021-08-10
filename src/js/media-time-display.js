@@ -1,32 +1,38 @@
 import MediaTextDisplay from './media-text-display.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { formatTime } from './utils/time.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { MediaUIAttributes } from './constants.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
+const DEFAULT_TIMES_SEP = ' / ';
+
+const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
+  const showRemaining = el.getAttribute('remaining') != null;
+  const showDuration = el.getAttribute('show-duration') != null;
+  const currentTime = +el.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+  const duration = +el.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+
+  const timeLabel = showRemaining 
+    ? formatTime(0 - (duration - currentTime)) 
+    : formatTime(currentTime);
+
+  if (!showDuration) return timeLabel;
+  return `${timeLabel}${timesSep}${formatTime(duration)}`;
+};
+
 class MediaTimeDisplay extends MediaTextDisplay {
+
+  static get observedAttributes() {
+    return [MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_DURATION, 'remaining', 'show-duration'];
+  }
+
   connectedCallback() {
-    this._update();
+    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
   }
 
-  mediaCurrentTimeSet() {
-    this._update();
-  }
-
-  mediaDurationSet() {
-    this._update();
-  }
-
-  _update() {
-    if (this.getAttribute('remaining') !== null) {
-      this.container.innerHTML = formatTime(0-(this.mediaDuration - this.mediaCurrentTime));  
-    } else {
-      this.container.innerHTML = formatTime(this.mediaCurrentTime);
-    }
-
-    if (this.getAttribute('show-duration') !== null) {
-      this.container.innerHTML += ' / ' + formatTime(this.mediaDuration);
-    }
+  attributeChangedCallback(_attrName, _oldValue, _newValue) {
+    const timesLabel = formatTimesLabel(this);
+    this.container.innerHTML = timesLabel;
   }
 }
 

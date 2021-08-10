@@ -9,7 +9,7 @@
 */
 import MediaContainer from './media-container.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import { Window as window } from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 
@@ -469,6 +469,15 @@ const toNextMediaUIElementsState = (mutationsList = []) => {
       prevMediaChromeNodesState.removedNodes.push(...removedMediaChromeNodes);
       return prevMediaChromeNodesState;
     }
+<<<<<<< HEAD
+
+    // Make sure custom els are ready
+    // Even if customElements.get returns something, it may not be ready!
+    if (childName.includes('-')) {
+      window.customElements.whenDefined(childName).then(setAndPropagate);
+    } else {
+      setAndPropagate();
+=======
     /** option 1, controller side */
     if (type === 'attributes' && attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES) {
       const attrs = getMediaUIAttributesFrom(target);
@@ -479,6 +488,7 @@ const toNextMediaUIElementsState = (mutationsList = []) => {
         prevMediaChromeNodesState.removedNodes.push(target);
       }
       return prevMediaChromeNodesState;
+>>>>>>> main
     }
     return prevMediaChromeNodesState;
   }, {
