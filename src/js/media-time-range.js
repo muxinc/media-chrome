@@ -63,11 +63,15 @@ template.innerHTML = `
   </div>
 `;
 
+const DEFAULT_MISSING_TIME_PHRASE = '';
+
 const updateAriaValueText = (el) => {
   const range = el.range;
   const currentTimePhrase = formatAsTimePhrase(+range.value);
   const totalTimePhrase = formatAsTimePhrase(+range.max);
-  const fullPhrase = `${currentTimePhrase} of ${totalTimePhrase}`;
+  const fullPhrase = !(currentTimePhrase && totalTimePhrase) 
+    ? DEFAULT_MISSING_TIME_PHRASE
+    : `${currentTimePhrase} of ${totalTimePhrase}`;
   range.setAttribute('aria-valuetext', fullPhrase);
 };
 

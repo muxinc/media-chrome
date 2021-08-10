@@ -2,7 +2,27 @@
 // Consider moving this to a more generic utils module
 const isValidNumber = x => typeof x === 'number' && !Number.isNaN(x) && Number.isFinite(x);
 
-const UnitLabels = ['hours', 'minutes', 'seconds'];
+const UnitLabels = [
+  { 
+    singular: 'hour',
+    plural: 'hours',
+  }, 
+  { 
+    singular: 'minute',
+    plural: 'minutes', 
+  }, 
+  { 
+    singular: 'second',
+    plural: 'seconds',
+  }
+];
+const toTimeUnitPhrase = (timeUnitValue, unitIndex) => {
+  const unitLabel = timeUnitValue === 1 
+    ? UnitLabels[unitIndex].singular
+    : UnitLabels[unitIndex].plural;
+  
+  return `${timeUnitValue} ${unitLabel}`;
+};
 
 /**
  * This function converts numeric seconds into a phrase
@@ -19,7 +39,7 @@ export const formatAsTimePhrase = (seconds) => {
 
   const timeString = timeParts
     // Convert non-0 values to a string of the value plus its unit
-    .map((timeUnitValue, index) => timeUnitValue && `${timeUnitValue} ${UnitLabels[index]}`)
+    .map((timeUnitValue, index) => timeUnitValue && toTimeUnitPhrase(timeUnitValue, index))
     // Ignore/exclude any 0 values
     .filter(x => x)
     // join into a single comma-separated string phrase
