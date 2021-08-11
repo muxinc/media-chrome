@@ -35,15 +35,8 @@ class MediaController extends MediaContainer {
 
     // Track externally associated control elements
     this.associatedElements = [];
-
-    const mutationCallback = (mutationsList, _observer) => {
-      const { addedNodes, removedNodes } = toNextMediaUIElementsState(mutationsList);
-      addedNodes.forEach(this.associateElement.bind(this));
-      removedNodes.forEach(this.unassociateElement.bind(this));
-    };
-
-    const observer = new MutationObserver(mutationCallback);
-    observer.observe(this, { childList: true, attributes: true, subtree: true });
+    this.monitoredElements = [];
+    this.associateDescendantsOf(this);
 
     // Capture request events from internal controls
     const mediaUIEventHandlers = {
@@ -278,6 +271,46 @@ class MediaController extends MediaContainer {
     propagateMediaState(this.associatedElements, stateName, state);
   }
 
+  associateDescendantsOf(element) {
+    if (!element) return;
+    const els = this.monitoredElements;
+    if (els.some(elObj => elObj.element === element)) return;
+
+    const mediaUIElementDescendants = getMediaUIElementDescendants(element);
+
+    const associateElement = this.associateElement.bind(this);
+    const unassociateElement = this.unassociateElement.bind(this);
+
+    mediaUIElementDescendants.forEach(associateElement);
+
+    /** @TODO Should we support "removing association" */
+    const unsubscribe = monitorMediaUIElementDescendantsOf(
+      element, 
+      associateElement, 
+      unassociateElement,
+    );
+
+    els.push({ element, unsubscribe });
+  }
+
+  unassociateDescendantsOf(element) {
+    if (!element) return;
+    const els = this.monitoredElements;
+
+    const index = els.findIndex(elObj => elObj.element === element);
+    if (index < 0) return;
+
+    const mediaUIElementDescendants = getMediaUIElementDescendants(element);
+
+    const unassociateElement = this.unassociateElement.bind(this);
+
+    mediaUIElementDescendants.forEach(unassociateElement);
+    
+    const { unsubscribe } = els[index];
+    unsubscribe();
+    els.splice(index, 1);
+  }
+
   associateElement(el) {
     if (!el) return;
     const els = this.associatedElements;
@@ -497,7 +530,19 @@ const propagateMediaState = (els, stateName, val) => {
 
     setAttr(el, stateName, val);
   });
-}
+};
+
+const monitorMediaUIElementDescendantsOf = (root, associateCallback, unassociateCallback) => {
+  const mutationCallback = (mutationsList, _observer) => {
+    const { addedNodes, removedNodes } = toNextMediaUIElementsState(mutationsList);
+    addedNodes.forEach(associateCallback);
+    removedNodes.forEach(unassociateCallback);
+  };
+
+  const observer = new MutationObserver(mutationCallback);
+  observer.observe(root, { childList: true, attributes: true, subtree: true });
+  return () => observer.disconnect();
+};
 
 defineCustomElement('media-controller', MediaController);
 

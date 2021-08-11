@@ -3,7 +3,9 @@
 
   Auto position contorls in a line and set some base colors
 */
+import { MediaUIAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { getElementBySelectorOrId } from './utils/elementUtils.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
@@ -38,6 +40,11 @@ template.innerHTML = `
 `;
 
 class MediaControlBar extends window.HTMLElement {
+
+  static get observedAttributes() {
+    return [MediaUIAttributes.MEDIA_CONTROLLER];
+  }
+
   constructor() {
     super();
 
@@ -45,7 +52,34 @@ class MediaControlBar extends window.HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 
-  connectedCallback() { }
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+      if (oldValue) {
+        const mediaControllerEl = getElementBySelectorOrId(oldValue, attrName);
+        mediaControllerEl?.unassociateDescendantsOf?.(this);
+      }
+      if (newValue) {
+        const mediaControllerEl = getElementBySelectorOrId(newValue, attrName);
+        mediaControllerEl?.associateDescendantsOf?.(this);
+      }
+    }
+  }
+
+  connectedCallback() {
+    const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    if (mediaControllerSelector) {
+      const mediaControllerEl = getElementBySelectorOrId(mediaControllerSelector, MediaUIAttributes.MEDIA_CONTROLLER);
+      mediaControllerEl?.associateDescendantsOf?.(this);
+    }
+  }
+
+  disconnectedCallback() {
+    const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    if (mediaControllerSelector) {
+      const mediaControllerEl = getElementBySelectorOrId(mediaControllerSelector, MediaUIAttributes.MEDIA_CONTROLLER);
+      mediaControllerEl?.unassociateDescendantsOf?.(this);
+    }
+  }
 }
 
 defineCustomElement('media-control-bar', MediaControlBar);
