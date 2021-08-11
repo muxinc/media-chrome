@@ -81,6 +81,8 @@ template.innerHTML = `
 <div class="button"></div>
 `;
 
+const ButtonPressedKeys = ['Enter', ' '];
+
 class MediaChromeButton extends window.HTMLElement {
   constructor(options={}) {
     super();
@@ -107,6 +109,27 @@ class MediaChromeButton extends window.HTMLElement {
 
     this.addEventListener('click', e => {
       this.handleClick(e);
+    });
+
+    // NOTE: There are definitely some "false positive" cases with multi-key pressing,
+    // but this should be good enough for most use cases.
+    const keyUpHandler = e => {
+      const { key } = e;
+      if (!ButtonPressedKeys.includes(key)) {
+        this.removeEventListener('keyup', keyUpHandler);
+        return;
+      }
+
+      this.handleClick(e);
+    };
+
+    this.addEventListener('keydown', e => {
+      const { metaKey, altKey, key } = e;
+      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+        this.removeEventListener('keyup', keyUpHandler);
+        return;
+      }
+      this.addEventListener('keyup', keyUpHandler);
     });
   }
 
