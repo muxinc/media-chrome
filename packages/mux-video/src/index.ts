@@ -141,4 +141,8 @@ if (!window.customElements.get("mux-video")) {
   window.MuxVideoElement = MuxVideoElement;
 }
 
+export {
+  Hls
+};
+
 export default MuxVideoElement;

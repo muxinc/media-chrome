@@ -2,14 +2,18 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Basic mux-video example</title>
+    <title>Basic &lt;mux-video/&gt; example</title>
     <script type="module" src="../dist/index.js"></script>
   </head>
   <body>
+    <!-- Add your environment key below to automatically wire up mux data -->
     <mux-video
       slot="media"
       src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
       controls
+      autoplay
+      muted
+      env-key=""
     >
       <track
         label="thumbnails"
