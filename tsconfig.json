@@ -2,7 +2,7 @@
   "compilerOptions": {
     "incremental": true,
     "target": "ES2019",
-    "module": "ES2019",
+    "module": "es6",
     "declaration": true,
     "sourceMap": true,
     "composite": true,
