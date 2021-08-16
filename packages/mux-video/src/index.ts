@@ -1,5 +1,3 @@
-// Web Components: Extending Native Elements, A working example
-
 import CustomVideoElement from "custom-video-element";
 import mux from "mux-embed";
 
@@ -67,6 +65,27 @@ class MuxVideoElement extends CustomVideoElement {
         // autoStartLoad: false,
       });
 
+      hls.on(Hls.Events.ERROR, (_event, data) => {
+        if (data.fatal) {
+          switch (data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              // try to recover network error
+              console.error("fatal network error encountered, try to recover");
+              hls.startLoad();
+              break;
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              console.error("fatal media error encountered, try to recover");
+              hls.recoverMediaError();
+              break;
+            default:
+              // cannot recover
+              console.error("unrecoverable fatal error encountered, cannot recover (check logs for more info)");
+              hls.destroy();
+              break;
+          }
+        }
+      });
+
       hls.loadSource(this.src);
       hls.attachMedia(this.nativeEl);
 
@@ -116,7 +135,10 @@ class MuxVideoElement extends CustomVideoElement {
   // }
 
   connectedCallback() {
-    this.load();
+    // Only auto-load if we have a src
+    if (this.src) {
+      this.load();
+    }
 
     // Not preloading might require faking the play() promise
     // so that you can call play(), call load() within that
@@ -141,8 +163,6 @@ if (!window.customElements.get("mux-video")) {
   window.MuxVideoElement = MuxVideoElement;
 }
 
-export {
-  Hls
-};
+export { Hls };
 
 export default MuxVideoElement;
