@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome HLS Media Example</title>
+    <script type="module" src="../dist/index.js"></script>
+  </head>
+  <body>
+    <mux-video
+      slot="media"
+      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
+    >
+      <track
+        label="thumbnails"
+        default
+        kind="metadata"
+        src="http://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+      />
+    </mux-video>
+  </body>
+</html>

@@ -84,8 +84,10 @@ declare global {
   interface Window { MuxVideoElement: typeof MuxVideoElement; }
 }
 
-if (!window.customElements.get('hls-video')) {
-  window.customElements.define('hls-video', MuxVideoElement);
+/** @TODO Refactor once using `globalThis` polyfills */
+if (!window.customElements.get('mux-video')) {
+  window.customElements.define('mux-video', MuxVideoElement);
+  /** @TODO consider externalizing this (breaks standard modularity) */
   window.MuxVideoElement = MuxVideoElement;
 }
 

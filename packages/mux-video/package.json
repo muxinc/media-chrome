@@ -11,6 +11,9 @@
   "author": "Mux, Inc.",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "dev": "snowpack dev --config snowpack.dev.config.js"
+  },
   "dependencies": {
     "custom-video-element": "^0.0.2",
     "hls.js": "^1.0.9"
