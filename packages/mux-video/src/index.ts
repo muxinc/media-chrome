@@ -3,24 +3,29 @@ import mux from "mux-embed";
 
 import Hls from "hls.js";
 
-type Attributes = {
+/** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
+type AttributeNames = {
   ENV_KEY: "env-key";
+  DEBUG: "debug";
 };
 
-const Attributes: Attributes = {
+const Attributes: AttributeNames = {
   ENV_KEY: "env-key",
+  DEBUG: "debug",
 };
 
 class MuxVideoElement extends CustomVideoElement {
   static get observedAttributes() {
     return [
       Attributes.ENV_KEY,
+      Attributes.DEBUG,
       ...(CustomVideoElement.observedAttributes ?? []),
     ];
   }
 
   protected __hls?: Hls;
   protected __muxPlayerInitTime: number;
+  // protected __metadata:
 
   constructor() {
     super();
@@ -79,7 +84,9 @@ class MuxVideoElement extends CustomVideoElement {
               break;
             default:
               // cannot recover
-              console.error("unrecoverable fatal error encountered, cannot recover (check logs for more info)");
+              console.error(
+                "unrecoverable fatal error encountered, cannot recover (check logs for more info)"
+              );
               hls.destroy();
               break;
           }
@@ -93,7 +100,7 @@ class MuxVideoElement extends CustomVideoElement {
 
       if (env_key) {
         mux.monitor(this.nativeEl, {
-          debug: false,
+          debug: true,
           hlsjs: hls,
           Hls: Hls,
           data: {
@@ -110,7 +117,7 @@ class MuxVideoElement extends CustomVideoElement {
       this.nativeEl.src = this.src;
       if (env_key) {
         mux.monitor(this.nativeEl, {
-          debug: false,
+          debug: true,
           data: {
             env_key, // required
             // Metadata fields
