@@ -12,6 +12,7 @@
   "license": "MIT",
   "private": true,
   "devDependencies": {
+    "@snowpack/plugin-typescript": "^1.2.1",
     "husky": "^7.0.1",
     "lerna": "^4.0.0",
     "prettier": "^2.3.2",
