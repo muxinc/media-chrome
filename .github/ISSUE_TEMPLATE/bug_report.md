@@ -14,20 +14,27 @@ labels: 'bug, Status: Unconfirmed'
   - (NOTE: If the issue is not occurring in the latest version, we may not resolve it.)
 
 ### Which Mux Elements/Packages has a bug?
-- [] mux-video
-- [] mux-audio
-- [] common
+<!-- 
+  Uncomment all that apply
+
+- mux-video
+- mux-audio
+- common
+-->
 
 ### Which browser(s) are you using?
-- [] Chrome
-- [] Safari
-- [] Firefox
-- [] Edge ("Edgeium")
-- [] Chrome Android
-- [] Safari on iOS
-- [] Other (NOTE: Currently, Mux Elements are only officially supported in new versions of the browsers listed above)
-
-If "Other", please list the browser names (e.g. "Samsung Internet", "Opera") below:
+<!-- 
+  Uncomment all that apply
+  (NOTE: Currently, Mux Elements are only officially supported in new versions of the browsers listed above)
+  
+- Chrome
+- Safari
+- Firefox
+- Edge ("Edgeium")
+- Chrome Android
+- Safari on iOS
+- Other (list browser name(s), e.g. "Samsung Internet", "Opera"):  
+-->
 
 ### Which operating system(s) are you using?
 (For example: macOS, Windows, iOS, Android)

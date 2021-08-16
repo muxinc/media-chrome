@@ -4,11 +4,11 @@
     "node": "^14.17.0",
     "npm": "^7.17.0"
   },
-  "version": "0.0.1",
-  "description": "Custom elements for working with media in the browser that Just Work.",
+  "version": "0.1.0",
+  "description": "Custom elements for working with media in the browser that Just Work™",
   "main": "index.js",
   "repository": "https://github.com/muxinc/elements-mono",
-  "author": "Mux, Inc",
+  "author": "Mux, Inc.",
   "license": "MIT",
   "private": true,
   "devDependencies": {

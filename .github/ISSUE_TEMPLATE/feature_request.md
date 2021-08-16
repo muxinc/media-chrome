@@ -7,10 +7,14 @@ labels: 'enhancement'
 ---
 
 ### Which Mux Elements/Packages would you like a new feature for?
-- [] mux-video
-- [] mux-audio
-- [] common
-- [] I'd like to propose a new Element!
+<!-- 
+  Uncomment all that apply
+  
+- mux-video
+- mux-audio
+- common
+- I'd like to propose a new Element!
+-->
 
 ## 🎥 Describe the feature you'd like to request
 
