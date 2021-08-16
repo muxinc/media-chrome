@@ -1,7 +1,9 @@
 import CustomVideoElement from "custom-video-element";
-import mux from "mux-embed";
+import mux, { Options } from "mux-embed";
 
 import Hls from "hls.js";
+
+type Metadata = Partial<Options["data"]>;
 
 /** @TODO make the relationship between name+value smarter and more deriveable (CJP) */
 type AttributeNames = {
@@ -14,7 +16,9 @@ const Attributes: AttributeNames = {
   DEBUG: "debug",
 };
 
-class MuxVideoElement extends CustomVideoElement {
+type HTMLVideoElementWithMux = HTMLVideoElement & { mux: typeof mux };
+
+class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   static get observedAttributes() {
     return [
       Attributes.ENV_KEY,
@@ -25,7 +29,7 @@ class MuxVideoElement extends CustomVideoElement {
 
   protected __hls?: Hls;
   protected __muxPlayerInitTime: number;
-  // protected __metadata:
+  protected __metadata: Readonly<Metadata> = {};
 
   constructor() {
     super();
@@ -34,6 +38,10 @@ class MuxVideoElement extends CustomVideoElement {
 
   get hls() {
     return this.__hls;
+  }
+
+  get mux(): Readonly<typeof mux> {
+    return this.nativeEl.mux;
   }
 
   get src() {
@@ -55,6 +63,32 @@ class MuxVideoElement extends CustomVideoElement {
     }
   }
 
+  /** @TODO write a generic module for well defined primitive types -> attribute getter/setters/removers (CJP) */
+  get debug(): boolean {
+    return this.getAttribute("debug") != null;
+  }
+
+  set debug(val: boolean) {
+    if (val) {
+      this.setAttribute(Attributes.DEBUG, "");
+    } else {
+      this.removeAttribute(Attributes.DEBUG);
+    }
+  }
+
+  get metadata() {
+    return this.__metadata;
+  }
+
+  set metadata(val: Readonly<Metadata> | undefined) {
+    this.__metadata = val ?? {};
+    if (!!this.mux) {
+      /** @TODO Link to docs for a more detailed discussion (CJP) */
+      console.info('Some metadata values may not be overridable at this time. Make sure you set all metadata to override before setting the src.');
+      this.mux.emit('hb', this.__metadata);
+    }
+  }
+
   load() {
     /** @TODO Add custom errors + error codes */
     if (!this.src) {
@@ -63,11 +97,13 @@ class MuxVideoElement extends CustomVideoElement {
     }
 
     const env_key = this.getAttribute(Attributes.ENV_KEY);
+    const debug = this.debug;
 
     if (Hls.isSupported()) {
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
         // autoStartLoad: false,
+        debug
       });
 
       hls.on(Hls.Events.ERROR, (_event, data) => {
@@ -100,7 +136,7 @@ class MuxVideoElement extends CustomVideoElement {
 
       if (env_key) {
         mux.monitor(this.nativeEl, {
-          debug: true,
+          debug,
           hlsjs: hls,
           Hls: Hls,
           data: {
@@ -108,8 +144,8 @@ class MuxVideoElement extends CustomVideoElement {
             // Metadata fields
             player_name: "mux-video", // any arbitrary string you want to use to identify this player
             // Should this be the initialization of *THIS* player (instance) or the page?
-            player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000
-            // ...
+            player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000,
+            ...this.__metadata,
           },
         });
       }
@@ -117,14 +153,14 @@ class MuxVideoElement extends CustomVideoElement {
       this.nativeEl.src = this.src;
       if (env_key) {
         mux.monitor(this.nativeEl, {
-          debug: true,
+          debug,
           data: {
             env_key, // required
             // Metadata fields
             player_name: "mux-video", // any arbitrary string you want to use to identify this player
             // Should this be the initialization of *THIS* player (instance) or the page?
             player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000
-            // ...
+            ...this.__metadata,
           },
         });
       }
@@ -140,6 +176,31 @@ class MuxVideoElement extends CustomVideoElement {
   //     return this.nativeEl.play();
   //   }
   // }
+
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ) {
+    if (attrName === "src") {
+      // Handle 3 cases:
+      // 1. no src -> src
+      // 2. src -> (different) src
+      // 3. src -> no src
+    }
+    if (attrName === Attributes.DEBUG) {
+      const debug = this.debug;
+      if (!!this.mux) {
+        /** @TODO Link to docs for a more detailed discussion (CJP) */
+        console.info('Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src.');
+      }
+      if (!!this.hls) {
+        this.hls.config.debug = debug;
+      }
+    }
+
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+  }
 
   connectedCallback() {
     // Only auto-load if we have a src

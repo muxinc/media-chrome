@@ -64,12 +64,20 @@ declare module "mux-embed" {
     Partial<OptionalMetadata> &
     Partial<OverridableMetadata>;
 
-  type Options = {
+  export type Options<M extends Metadata = Metadata> = {
     debug?: boolean;
     hlsjs?: Hls;
     Hls?: typeof Hls;
-    data: Metadata;
+    data: M;
+  };
+
+  /** @TODO Add well defined event types (CJP) */
+  type EventTypesMap = {
+    hb: Partial<Metadata>;
   };
 
   export function monitor(id: string | HTMLMediaElement, options: Options) {}
+
+  export function emit<K extends keyof EventTypesMap>(type: K, payload: EventTypesMap[K]): void;
+//   export function emit(type: string, payload: any);
 }
