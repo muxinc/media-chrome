@@ -79,5 +79,4 @@ declare module "mux-embed" {
   export function monitor(id: string | HTMLMediaElement, options: Options) {}
 
   export function emit<K extends keyof EventTypesMap>(type: K, payload: EventTypesMap[K]): void;
-//   export function emit(type: string, payload: any);
 }

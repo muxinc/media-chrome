@@ -9,20 +9,26 @@ type Metadata = Partial<Options["data"]>;
 type AttributeNames = {
   ENV_KEY: "env-key";
   DEBUG: "debug";
+  PLAYBACK_ID: "playback-id";
 };
 
 const Attributes: AttributeNames = {
   ENV_KEY: "env-key",
   DEBUG: "debug",
+  PLAYBACK_ID: "playback-id",
 };
+
+const AttributeNameValues = Object.values(Attributes);
+
+const toMuxVideoURL = (playbackId: string | null) =>
+  playbackId ? `https://stream.mux.com/${playbackId}.m3u8` : null;
 
 type HTMLVideoElementWithMux = HTMLVideoElement & { mux: typeof mux };
 
 class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   static get observedAttributes() {
     return [
-      Attributes.ENV_KEY,
-      Attributes.DEBUG,
+      ...AttributeNameValues,
       ...(CustomVideoElement.observedAttributes ?? []),
     ];
   }
@@ -84,8 +90,10 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     this.__metadata = val ?? {};
     if (!!this.mux) {
       /** @TODO Link to docs for a more detailed discussion (CJP) */
-      console.info('Some metadata values may not be overridable at this time. Make sure you set all metadata to override before setting the src.');
-      this.mux.emit('hb', this.__metadata);
+      console.info(
+        "Some metadata values may not be overridable at this time. Make sure you set all metadata to override before setting the src."
+      );
+      this.mux.emit("hb", this.__metadata);
     }
   }
 
@@ -103,7 +111,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
         // autoStartLoad: false,
-        debug
+        debug,
       });
 
       hls.on(Hls.Events.ERROR, (_event, data) => {
@@ -182,21 +190,30 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     oldValue: string | null,
     newValue: string | null
   ) {
-    if (attrName === "src") {
-      // Handle 3 cases:
-      // 1. no src -> src
-      // 2. src -> (different) src
-      // 3. src -> no src
-    }
-    if (attrName === Attributes.DEBUG) {
-      const debug = this.debug;
-      if (!!this.mux) {
-        /** @TODO Link to docs for a more detailed discussion (CJP) */
-        console.info('Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src.');
-      }
-      if (!!this.hls) {
-        this.hls.config.debug = debug;
-      }
+    switch (attrName) {
+      case "src":
+        // Handle 3 cases:
+        // 1. no src -> src
+        // 2. src -> (different) src
+        // 3. src -> no src
+        break;
+      case Attributes.PLAYBACK_ID:
+        this.src = toMuxVideoURL(newValue);
+        break;
+      case Attributes.DEBUG:
+        const debug = this.debug;
+        if (!!this.mux) {
+          /** @TODO Link to docs for a more detailed discussion (CJP) */
+          console.info(
+            "Cannot toggle debug mode of mux data after initialization. Make sure you set all metadata to override before setting the src."
+          );
+        }
+        if (!!this.hls) {
+          this.hls.config.debug = debug;
+        }
+        break;
+      default:
+        break;
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
