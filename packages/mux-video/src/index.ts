@@ -1,4 +1,4 @@
-import './polyfills/window';
+import "./polyfills/window";
 
 import CustomVideoElement from "custom-video-element";
 import mux, { Options } from "mux-embed";
@@ -27,7 +27,9 @@ const AttributeNameValues = Object.values(Attributes);
 const toMuxVideoURL = (playbackId: string | null) =>
   playbackId ? `https://stream.mux.com/${playbackId}.m3u8` : null;
 
-type HTMLVideoElementWithMux = HTMLVideoElement & { mux: typeof mux };
+const hlsSupported = Hls.isSupported();
+
+type HTMLVideoElementWithMux = HTMLVideoElement & { mux?: typeof mux };
 
 class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   static get observedAttributes() {
@@ -50,7 +52,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     return this.__hls;
   }
 
-  get mux(): Readonly<typeof mux> {
+  get mux(): Readonly<typeof mux> | undefined {
     return this.nativeEl.mux;
   }
 
@@ -104,6 +106,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     }
   }
 
+  /** @TODO Refactor as an independent function (CJP) */
   load() {
     /** @TODO Add custom errors + error codes */
     if (!this.src) {
@@ -114,7 +117,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     const env_key = this.getAttribute(Attributes.ENV_KEY);
     const debug = this.debug;
 
-    if (Hls.isSupported()) {
+    if (hlsSupported) {
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
         // autoStartLoad: false,
@@ -182,6 +185,20 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     }
   }
 
+  unload() {
+    // NOTE: I believe we cannot reliably "recycle" hls player instances, but should confirm at least for optimization reasons.
+    if (this.__hls) {
+      this.__hls.detachMedia();
+      this.__hls.destroy();
+      this.__hls = undefined;
+    }
+    if (this.nativeEl.mux) {
+      this.nativeEl.mux.destroy();
+      delete this.nativeEl.mux;
+    }
+  }
+
+  // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
   // play() {
   //   if (this.readyState === 0 && this.networkState < 2) {
   //     this.load();
@@ -199,12 +216,20 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   ) {
     switch (attrName) {
       case "src":
-        // Handle 3 cases:
-        // 1. no src -> src
-        // 2. src -> (different) src
-        // 3. src -> no src
+        const hadSrc = !!oldValue;
+        const hasSrc = !!newValue;
+        if (!hadSrc && hasSrc) {
+          this.load();
+        } else if (hadSrc && !hasSrc) {
+          this.unload();
+          /** @TODO Test this thoroughly (async?) and confirm unload() necessary (CJP) */
+        } else if (hadSrc && hasSrc) {
+          this.unload();
+          this.load();
+        }
         break;
       case Attributes.PLAYBACK_ID:
+        /** @TODO Improv+Discuss - how should playback-id update wrt src attr changes (and vice versa) (CJP) */
         this.src = toMuxVideoURL(newValue);
         break;
       case Attributes.DEBUG:
@@ -221,7 +246,9 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
         break;
       case Attributes.METADATA_URL:
         if (newValue) {
-          fetch(newValue).then(resp => resp.json()).then(json => this.metadata = json);
+          fetch(newValue)
+            .then((resp) => resp.json())
+            .then((json) => (this.metadata = json));
         }
         break;
       default:
@@ -231,12 +258,18 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
+  disconnectedCallback() {
+    this.unload();
+  }
+
+  /** @TODO Followup - investigate why this is necessary (attributeChanged not invoked on initial load when setting playback-id) (CJP) */
   connectedCallback() {
     // Only auto-load if we have a src
     if (this.src) {
       this.load();
     }
 
+    // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
     // Not preloading might require faking the play() promise
     // so that you can call play(), call load() within that
     // But wait until MANIFEST_PARSED to actually call play()
