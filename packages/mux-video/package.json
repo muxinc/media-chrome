@@ -12,7 +12,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev": "snowpack dev --config snowpack.dev.config.js"
+    "dev": "snowpack dev --config snowpack.dev.config.js",
+    "build": "snowpack build --config snowpack.prod.config.js"
   },
   "dependencies": {
     "custom-video-element": "^0.0.2",

@@ -5,10 +5,11 @@
 module.exports = {
   extends: './snowpack.common.config.js',
   mount: {
-    'src/js': { url: '/' },
+    'src': { url: '/' },
   },
   optimize: {
-    bundle: false,
+    entrypoints: ['index.js'],
+    bundle: true,
     minify: true,
     target: 'es2019',
   },
