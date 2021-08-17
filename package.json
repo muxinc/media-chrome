@@ -15,9 +15,11 @@
     "@snowpack/plugin-typescript": "^1.2.1",
     "husky": "^7.0.0",
     "lerna": "^4.0.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.3.2",
     "pretty-quick": "^3.1.1",
-    "snowpack": "^3.8.6"
+    "snowpack": "^3.8.6",
+    "typescript": "^4.3.5"
   },
   "workspaces": [
     "packages/*"
