@@ -1,12 +1,22 @@
 # Architecture Notes
 
+## Components should feel like native HTML
+
+Web components allow us to "extend the browser", and in this project we take that seriously, to the degree of aligning the design of the components to the design of native HTML elements. In some cases this can seem less ideal/progressive, but it creates an intutive and predictable interface for anyone familiar with HTML concepts.
+
 ## Connecting elements to the media
 
-Media chrome elements rely on their `media=''` attribute to set the media element (`<video>` or `<audio>`) they will interact with.
+Media chrome UI elements emit events to request media state changes. These events bubble up the DOM and are caught by a parent `<media-controller>` element. The media-controller handles the request and calls the appropriate API on a child media element, designated with the attribute `slot="media"`. A media element can be `<video>`, `<audio>`, or any element with a matching API.
 
-Any media chrome element inside of a `<media-container>` element will have the media element automaticallly injected via their `el.media` property (by the media-container's mutation observer). This roughly matches the pattern of HTML `<form>` elements (a submit button will submit its parent form if no `form=''` attribute is set).
+Media state is set on UI elements via HTML attributes, for example `<media-ui-element media-paused>`. For UI elements that are children of or associated with a media-controller, the media-controller will update these attributes automatically.  
 
-Note: Originally it was built into the media-chrome-element to find the media via a parent media-container, but switched this to have the logic in media-container to simplify the relationhip and avoid a search everytime the media API is needed.
+UI elements that are not children of a media-controller can be associated with a media-controller through a javascript function or the `media-controller=""` attribute.
+
+> Note: We have been through many different approaches to the architecture:
+> 1. A UI element "discovers" a media element by finding a parent media-container, then has a direct reference to the media element
+> 2. A parent media-container injects a reference to a media element into all child UI elements
+> 
+> Moving to a single centralized _controller_ handling all operations against the media element has made debugging, monitoring user interactions, and refactoring much easier.
 
 ## Element Independence
 
@@ -14,9 +24,7 @@ A goal of this project is that each UI element could be used independently of th
 
 ## Support Unidirectional Data Flow
 
-Many js application frameworks today like React follow a "unidirectional data flow" pattern. We want media chrome elements to be smart by default, understanding how to listen to media events without a ton of extra overhead, however we don't want to prohibit using them in a react-style app.
-
-To do this the elements will have the option of being passed a media to attach listeners to. And alternatively allow the element state to be set externally.
+Many js application frameworks today like React follow a "unidirectional data flow" pattern. We want to make sure media chrome elements are not blocked or complicated to use in these contexts.
 
 ## Element Naming
 * Prefix with `media-` for scoping.
