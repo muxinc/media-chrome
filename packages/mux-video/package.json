@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A custom mux video element for the browser that Just Works™",
   "main": "dist/index.js",
+  "types": "dist/types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/muxinc/elements-mono",
@@ -13,7 +14,9 @@
   "private": true,
   "scripts": {
     "dev": "snowpack dev --config snowpack.dev.config.js",
-    "build": "snowpack build --config snowpack.prod.config.js"
+    "build:snowpack": "snowpack build --config snowpack.prod.config.js",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir './dist/types'",
+    "build": "npm-run-all build:snowpack build:types"
   },
   "dependencies": {
     "custom-video-element": "^0.0.2",
