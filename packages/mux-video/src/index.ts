@@ -10,12 +10,14 @@ type AttributeNames = {
   ENV_KEY: "env-key";
   DEBUG: "debug";
   PLAYBACK_ID: "playback-id";
+  METADATA_URL: "metadata-url";
 };
 
 const Attributes: AttributeNames = {
   ENV_KEY: "env-key",
   DEBUG: "debug",
   PLAYBACK_ID: "playback-id",
+  METADATA_URL: "metadata-url",
 };
 
 const AttributeNameValues = Object.values(Attributes);
@@ -75,6 +77,9 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   }
 
   set debug(val: boolean) {
+    // dont' cause an infinite loop
+    if (val === this.debug) return;
+
     if (val) {
       this.setAttribute(Attributes.DEBUG, "");
     } else {
@@ -210,6 +215,11 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
         }
         if (!!this.hls) {
           this.hls.config.debug = debug;
+        }
+        break;
+      case Attributes.METADATA_URL:
+        if (newValue) {
+          fetch(newValue).then(resp => resp.json()).then(json => this.metadata = json);
         }
         break;
       default:
