@@ -1,3 +1,5 @@
+import './polyfills/window';
+
 import CustomVideoElement from "custom-video-element";
 import mux, { Options } from "mux-embed";
 
