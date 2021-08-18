@@ -24,9 +24,6 @@ const Attributes: AttributeNames = {
 
 const AttributeNameValues = Object.values(Attributes);
 
-const toMuxVideoURL = (playbackId: string | null) =>
-  playbackId ? `https://stream.mux.com/${playbackId}.m3u8` : null;
-
 const hlsSupported = Hls.isSupported();
 
 type HTMLVideoElementWithMux = HTMLVideoElement & { mux?: typeof mux };
@@ -161,6 +158,15 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
             env_key, // required
             // Metadata fields
             player_name: "mux-video", // any arbitrary string you want to use to identify this player
+            /** @TODO Confirm this works in production build */
+            /**
+             * @TODO Use documented version if/when resolved (commented out below) (CJP)
+             * @see https://github.com/snowpackjs/snowpack/issues/3621
+             * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
+             */
+            // @ts-ignore
+            player_version: import.meta.env.SNOWPACK_PUBLIC_PLAYER_VERSION,
+            // player_version: __SNOWPACK_ENV__.PLAYER_VERSION,
             // Should this be the initialization of *THIS* player (instance) or the page?
             player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000,
             ...this.__metadata,
@@ -176,6 +182,15 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
             env_key, // required
             // Metadata fields
             player_name: "mux-video", // any arbitrary string you want to use to identify this player
+            /** @TODO Confirm this works in production build */
+            /**
+             * @TODO Use documented version if/when resolved (commented out below) (CJP)
+             * @see https://github.com/snowpackjs/snowpack/issues/3621
+             * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
+             */
+            // @ts-ignore
+            player_version: import.meta.env.SNOWPACK_PUBLIC_PLAYER_VERSION,
+            // player_version: __SNOWPACK_ENV__.PLAYER_VERSION,
             // Should this be the initialization of *THIS* player (instance) or the page?
             player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000
             ...this.__metadata,
