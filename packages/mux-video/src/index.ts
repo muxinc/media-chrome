@@ -24,6 +24,14 @@ const Attributes: AttributeNames = {
 
 const AttributeNameValues = Object.values(Attributes);
 
+const toMuxVideoURL = (playbackId: string | null) => {
+  if (!playbackId) return null;
+  const qIndex = playbackId.indexOf('?');
+  const idPart = playbackId.slice(0, qIndex);
+  const queryPart = playbackId.slice(qIndex);
+  return `https://stream.mux.com/${idPart}.m3u8${queryPart}`;
+};
+
 const hlsSupported = Hls.isSupported();
 
 type HTMLVideoElementWithMux = HTMLVideoElement & { mux?: typeof mux };
