@@ -15,7 +15,7 @@ labels: 'bug, Status: Unconfirmed'
 
 ### Which Mux Elements/Packages has a bug?
 <!-- 
-  Uncomment all that apply
+  Uncomment all that apply. Also, make sure you add the appropriate Label after creating the issue!
 
 - mux-video
 - mux-audio
