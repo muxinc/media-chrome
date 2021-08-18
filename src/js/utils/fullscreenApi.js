@@ -9,7 +9,7 @@ export const fullscreenApi = {
 };
 
 if (document.fullscreenElement === undefined) {
-  fullscreenApi.enter = "webkitRequestFullScreen";
+  fullscreenApi.enter = document.webkitExitFullscreen != null ? "webkitEnterFullScreen" : "webkitRequestFullScreen";
   fullscreenApi.exit = document.webkitExitFullscreen != null ? "webkitExitFullscreen" : "webkitCancelFullScreen";
   fullscreenApi.event = "webkitfullscreenchange";
   fullscreenApi.element = "webkitFullscreenElement";
