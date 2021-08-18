@@ -13,6 +13,7 @@ type AttributeNames = {
   DEBUG: "debug";
   PLAYBACK_ID: "playback-id";
   METADATA_URL: "metadata-url";
+  PREFER_NATIVE: "prefer-native";
 };
 
 const Attributes: AttributeNames = {
@@ -20,13 +21,14 @@ const Attributes: AttributeNames = {
   DEBUG: "debug",
   PLAYBACK_ID: "playback-id",
   METADATA_URL: "metadata-url",
+  PREFER_NATIVE: "prefer-native",
 };
 
 const AttributeNameValues = Object.values(Attributes);
 
 const toMuxVideoURL = (playbackId: string | null) => {
   if (!playbackId) return null;
-  const qIndex = playbackId.indexOf('?');
+  const qIndex = playbackId.indexOf("?");
   const idPart = playbackId.slice(0, qIndex);
   const queryPart = playbackId.slice(qIndex);
   return `https://stream.mux.com/${idPart}.m3u8${queryPart}`;
@@ -82,7 +84,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
 
   /** @TODO write a generic module for well defined primitive types -> attribute getter/setters/removers (CJP) */
   get debug(): boolean {
-    return this.getAttribute("debug") != null;
+    return this.getAttribute(Attributes.DEBUG) != null;
   }
 
   set debug(val: boolean) {
@@ -93,6 +95,22 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
       this.setAttribute(Attributes.DEBUG, "");
     } else {
       this.removeAttribute(Attributes.DEBUG);
+    }
+  }
+
+  /** @TODO Followup: naming convention: all lower (common per HTMLElement props) vs. camel (common per JS convention) (CJP) */
+  get preferNative(): boolean {
+    return this.getAttribute(Attributes.PREFER_NATIVE) != null;
+  }
+
+  set preferNative(val: boolean) {
+    // dont' cause an infinite loop
+    if (val === this.debug) return;
+
+    if (val) {
+      this.setAttribute(Attributes.PREFER_NATIVE, "");
+    } else {
+      this.removeAttribute(Attributes.PREFER_NATIVE);
     }
   }
 
@@ -121,8 +139,33 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
 
     const env_key = this.getAttribute(Attributes.ENV_KEY);
     const debug = this.debug;
+    const preferNative = this.preferNative;
 
-    if (hlsSupported) {
+    if (this.nativeEl.canPlayType("application/vnd.apple.mpegurl") && (!hlsSupported || preferNative)) {
+      this.nativeEl.src = this.src;
+      if (env_key) {
+        mux.monitor(this.nativeEl, {
+          debug,
+          data: {
+            env_key, // required
+            // Metadata fields
+            player_name: "mux-video", // any arbitrary string you want to use to identify this player
+            /** @TODO Confirm this works in production build */
+            /**
+             * @TODO Use documented version if/when resolved (commented out below) (CJP)
+             * @see https://github.com/snowpackjs/snowpack/issues/3621
+             * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
+             */
+            // @ts-ignore
+            player_version: import.meta.env.SNOWPACK_PUBLIC_PLAYER_VERSION,
+            // player_version: __SNOWPACK_ENV__.PLAYER_VERSION,
+            // Should this be the initialization of *THIS* player (instance) or the page?
+            player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000
+            ...this.__metadata,
+          },
+        });
+      }
+    } else if (hlsSupported) {
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
         // autoStartLoad: false,
@@ -181,30 +224,8 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
           },
         });
       }
-    } else if (this.nativeEl.canPlayType("application/vnd.apple.mpegurl")) {
-      this.nativeEl.src = this.src;
-      if (env_key) {
-        mux.monitor(this.nativeEl, {
-          debug,
-          data: {
-            env_key, // required
-            // Metadata fields
-            player_name: "mux-video", // any arbitrary string you want to use to identify this player
-            /** @TODO Confirm this works in production build */
-            /**
-             * @TODO Use documented version if/when resolved (commented out below) (CJP)
-             * @see https://github.com/snowpackjs/snowpack/issues/3621
-             * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
-             */
-            // @ts-ignore
-            player_version: import.meta.env.SNOWPACK_PUBLIC_PLAYER_VERSION,
-            // player_version: __SNOWPACK_ENV__.PLAYER_VERSION,
-            // Should this be the initialization of *THIS* player (instance) or the page?
-            player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000
-            ...this.__metadata,
-          },
-        });
-      }
+    } else {
+      console.error('It looks like HLS video playback will not work on this system! If possible, try upgrading to the newest versions of your browser or software.')
     }
   }
 
