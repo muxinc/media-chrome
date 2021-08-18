@@ -1,7 +1,7 @@
 import "./polyfills/window";
 
 import CustomVideoElement from "custom-video-element";
-import mux, { Options } from "mux-embed";
+import mux, { Options, HighPriorityMetadata } from "mux-embed";
 
 import Hls from "hls.js";
 
@@ -14,6 +14,9 @@ type AttributeNames = {
   PLAYBACK_ID: "playback-id";
   METADATA_URL: "metadata-url";
   PREFER_NATIVE: "prefer-native";
+  METADATA_VIDEO_ID: "metadata-video-id";
+  METADATA_VIDEO_TITLE: "metadata-video-title";
+  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id";
 };
 
 const Attributes: AttributeNames = {
@@ -22,21 +25,53 @@ const Attributes: AttributeNames = {
   PLAYBACK_ID: "playback-id",
   METADATA_URL: "metadata-url",
   PREFER_NATIVE: "prefer-native",
+  METADATA_VIDEO_ID: "metadata-video-id",
+  METADATA_VIDEO_TITLE: "metadata-video-title",
+  METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
 };
 
 const AttributeNameValues = Object.values(Attributes);
 
+const toPlaybackIdParts = (playbackIdWithOptionalParams: string): [string, string?] => {
+  const qIndex = playbackIdWithOptionalParams.indexOf("?");
+  const idPart = playbackIdWithOptionalParams.slice(0, qIndex);
+  const queryPart = playbackIdWithOptionalParams.slice(qIndex);
+  if (!queryPart) return [idPart];
+  return [idPart, queryPart];
+};
+
 const toMuxVideoURL = (playbackId: string | null) => {
   if (!playbackId) return null;
-  const qIndex = playbackId.indexOf("?");
-  const idPart = playbackId.slice(0, qIndex);
-  const queryPart = playbackId.slice(qIndex);
+  const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
   return `https://stream.mux.com/${idPart}.m3u8${queryPart}`;
 };
 
 const hlsSupported = Hls.isSupported();
 
 type HTMLVideoElementWithMux = HTMLVideoElement & { mux?: typeof mux };
+
+const getPlaybackIdAsVideoIdMetadata = (mediaEl: MuxVideoElement): Partial<Pick<HighPriorityMetadata, 'video_id'>> => {
+  const playbackIdWithOptionalParams = mediaEl.getAttribute(Attributes.PLAYBACK_ID);
+  if (!playbackIdWithOptionalParams) return {};
+  const [playbackId] = toPlaybackIdParts(playbackIdWithOptionalParams);
+  if (!playbackId) return {};
+
+  return { video_id: playbackId };
+};
+
+const getHighPriorityMetadata = (mediaEl: MuxVideoElement): Partial<HighPriorityMetadata> => {
+  const video_title = mediaEl.getAttribute(Attributes.METADATA_VIDEO_TITLE);
+  const viewer_id = mediaEl.getAttribute(Attributes.METADATA_VIEWER_USER_ID);
+  const video_id = mediaEl.getAttribute(Attributes.METADATA_VIDEO_ID);
+  const videoTitleObj = video_title ? { video_title } : {};
+  const viewerIdObj = viewer_id ? { viewer_id } : {};
+  const videoIdObj = video_id ? { video_id } : {};
+  return {
+    ...videoTitleObj,
+    ...viewerIdObj,
+    ...videoIdObj,
+  };
+};
 
 class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   static get observedAttributes() {
@@ -141,9 +176,14 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     const debug = this.debug;
     const preferNative = this.preferNative;
 
-    if (this.nativeEl.canPlayType("application/vnd.apple.mpegurl") && (!hlsSupported || preferNative)) {
+    if (
+      this.nativeEl.canPlayType("application/vnd.apple.mpegurl") &&
+      (!hlsSupported || preferNative)
+    ) {
       this.nativeEl.src = this.src;
       if (env_key) {
+        const playbackIdMetadata = getPlaybackIdAsVideoIdMetadata(this);
+        const highPriorityMetadata = getHighPriorityMetadata(this);
         mux.monitor(this.nativeEl, {
           debug,
           data: {
@@ -161,7 +201,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
             // player_version: __SNOWPACK_ENV__.PLAYER_VERSION,
             // Should this be the initialization of *THIS* player (instance) or the page?
             player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000
+            // Default to playback-id as video_id (if available)
+            ...playbackIdMetadata,
+            // Use any metadata passed in programmatically (which may override the defaults above)
             ...this.__metadata,
+            // Use any high priority metadata passed in via attributes (which may override any of the above)
+            ...highPriorityMetadata,
           },
         });
       }
@@ -201,6 +246,8 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
       this.__hls = hls;
 
       if (env_key) {
+        const playbackIdMetadata = getPlaybackIdAsVideoIdMetadata(this);
+        const highPriorityMetadata = getHighPriorityMetadata(this);
         mux.monitor(this.nativeEl, {
           debug,
           hlsjs: hls,
@@ -220,12 +267,19 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
             // player_version: __SNOWPACK_ENV__.PLAYER_VERSION,
             // Should this be the initialization of *THIS* player (instance) or the page?
             player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000,
+            // Default to playback-id as video_id (if available)
+            ...playbackIdMetadata,
+            // Use any metadata passed in programmatically (which may override the defaults above)
             ...this.__metadata,
+            // Use any high priority metadata passed in via attributes (which may override any of the above)
+            ...highPriorityMetadata,
           },
         });
       }
     } else {
-      console.error('It looks like HLS video playback will not work on this system! If possible, try upgrading to the newest versions of your browser or software.')
+      console.error(
+        "It looks like HLS video playback will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
+      );
     }
   }
 
