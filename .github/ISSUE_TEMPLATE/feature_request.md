@@ -8,7 +8,7 @@ labels: 'enhancement'
 
 ### Which Mux Elements/Packages would you like a new feature for?
 <!-- 
-  Uncomment all that apply
+  Uncomment all that apply. Also, make sure you add the appropriate Label after creating the issue!
   
 - mux-video
 - mux-audio

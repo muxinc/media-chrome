@@ -13,12 +13,16 @@
   "private": true,
   "devDependencies": {
     "@snowpack/plugin-typescript": "^1.2.1",
-    "husky": "^7.0.1",
+    "husky": "^7.0.0",
     "lerna": "^4.0.0",
     "prettier": "^2.3.2",
+    "pretty-quick": "^3.1.1",
     "snowpack": "^3.8.6"
   },
   "workspaces": [
     "packages/*"
-  ]
+  ],
+  "scripts": {
+    "prepare": "husky install"
+  }
 }
