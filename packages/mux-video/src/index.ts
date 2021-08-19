@@ -32,7 +32,9 @@ const Attributes: AttributeNames = {
 
 const AttributeNameValues = Object.values(Attributes);
 
-const toPlaybackIdParts = (playbackIdWithOptionalParams: string): [string, string?] => {
+const toPlaybackIdParts = (
+  playbackIdWithOptionalParams: string
+): [string, string?] => {
   const qIndex = playbackIdWithOptionalParams.indexOf("?");
   const idPart = playbackIdWithOptionalParams.slice(0, qIndex);
   const queryPart = playbackIdWithOptionalParams.slice(qIndex);
@@ -42,7 +44,7 @@ const toPlaybackIdParts = (playbackIdWithOptionalParams: string): [string, strin
 
 const toMuxVideoURL = (playbackId: string | null) => {
   if (!playbackId) return null;
-  const [idPart, queryPart = ''] = toPlaybackIdParts(playbackId);
+  const [idPart, queryPart = ""] = toPlaybackIdParts(playbackId);
   return `https://stream.mux.com/${idPart}.m3u8${queryPart}`;
 };
 
@@ -50,8 +52,12 @@ const hlsSupported = Hls.isSupported();
 
 type HTMLVideoElementWithMux = HTMLVideoElement & { mux?: typeof mux };
 
-const getPlaybackIdAsVideoIdMetadata = (mediaEl: MuxVideoElement): Partial<Pick<HighPriorityMetadata, 'video_id'>> => {
-  const playbackIdWithOptionalParams = mediaEl.getAttribute(Attributes.PLAYBACK_ID);
+const getPlaybackIdAsVideoIdMetadata = (
+  mediaEl: MuxVideoElement
+): Partial<Pick<HighPriorityMetadata, "video_id">> => {
+  const playbackIdWithOptionalParams = mediaEl.getAttribute(
+    Attributes.PLAYBACK_ID
+  );
   if (!playbackIdWithOptionalParams) return {};
   const [playbackId] = toPlaybackIdParts(playbackIdWithOptionalParams);
   if (!playbackId) return {};
@@ -59,7 +65,9 @@ const getPlaybackIdAsVideoIdMetadata = (mediaEl: MuxVideoElement): Partial<Pick<
   return { video_id: playbackId };
 };
 
-const getHighPriorityMetadata = (mediaEl: MuxVideoElement): Partial<HighPriorityMetadata> => {
+const getHighPriorityMetadata = (
+  mediaEl: MuxVideoElement
+): Partial<HighPriorityMetadata> => {
   const video_title = mediaEl.getAttribute(Attributes.METADATA_VIDEO_TITLE);
   const viewer_id = mediaEl.getAttribute(Attributes.METADATA_VIEWER_USER_ID);
   const video_id = mediaEl.getAttribute(Attributes.METADATA_VIDEO_ID);
@@ -175,41 +183,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     const env_key = this.getAttribute(Attributes.ENV_KEY);
     const debug = this.debug;
     const preferNative = this.preferNative;
+    const canUseNative = this.nativeEl.canPlayType(
+      "application/vnd.apple.mpegurl"
+    );
 
-    if (
-      this.nativeEl.canPlayType("application/vnd.apple.mpegurl") &&
-      (!hlsSupported || preferNative)
-    ) {
+    if (canUseNative && (preferNative || !hlsSupported)) {
       this.nativeEl.src = this.src;
-      if (env_key) {
-        const playbackIdMetadata = getPlaybackIdAsVideoIdMetadata(this);
-        const highPriorityMetadata = getHighPriorityMetadata(this);
-        mux.monitor(this.nativeEl, {
-          debug,
-          data: {
-            env_key, // required
-            // Metadata fields
-            player_name: "mux-video", // any arbitrary string you want to use to identify this player
-            /** @TODO Confirm this works in production build */
-            /**
-             * @TODO Use documented version if/when resolved (commented out below) (CJP)
-             * @see https://github.com/snowpackjs/snowpack/issues/3621
-             * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
-             */
-            // @ts-ignore
-            player_version: import.meta.env.SNOWPACK_PUBLIC_PLAYER_VERSION,
-            // player_version: __SNOWPACK_ENV__.PLAYER_VERSION,
-            // Should this be the initialization of *THIS* player (instance) or the page?
-            player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000
-            // Default to playback-id as video_id (if available)
-            ...playbackIdMetadata,
-            // Use any metadata passed in programmatically (which may override the defaults above)
-            ...this.__metadata,
-            // Use any high priority metadata passed in via attributes (which may override any of the above)
-            ...highPriorityMetadata,
-          },
-        });
-      }
     } else if (hlsSupported) {
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
@@ -244,42 +223,47 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
       hls.attachMedia(this.nativeEl);
 
       this.__hls = hls;
-
-      if (env_key) {
-        const playbackIdMetadata = getPlaybackIdAsVideoIdMetadata(this);
-        const highPriorityMetadata = getHighPriorityMetadata(this);
-        mux.monitor(this.nativeEl, {
-          debug,
-          hlsjs: hls,
-          Hls: Hls,
-          data: {
-            env_key, // required
-            // Metadata fields
-            player_name: "mux-video", // any arbitrary string you want to use to identify this player
-            /** @TODO Confirm this works in production build */
-            /**
-             * @TODO Use documented version if/when resolved (commented out below) (CJP)
-             * @see https://github.com/snowpackjs/snowpack/issues/3621
-             * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
-             */
-            // @ts-ignore
-            player_version: import.meta.env.SNOWPACK_PUBLIC_PLAYER_VERSION,
-            // player_version: __SNOWPACK_ENV__.PLAYER_VERSION,
-            // Should this be the initialization of *THIS* player (instance) or the page?
-            player_init_time: this.__muxPlayerInitTime, // ex: 1451606400000,
-            // Default to playback-id as video_id (if available)
-            ...playbackIdMetadata,
-            // Use any metadata passed in programmatically (which may override the defaults above)
-            ...this.__metadata,
-            // Use any high priority metadata passed in via attributes (which may override any of the above)
-            ...highPriorityMetadata,
-          },
-        });
-      }
     } else {
       console.error(
         "It looks like HLS video playback will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
       );
+      return;
+    }
+
+    if (env_key) {
+      const player_init_time = this.__muxPlayerInitTime;
+      const metadataObj = this.__metadata;
+      const hlsjs = this.__hls; // an instance of hls.js or undefined
+      const playbackIdMetadata = getPlaybackIdAsVideoIdMetadata(this);
+      const highPriorityMetadata = getHighPriorityMetadata(this);
+      /**
+       * @TODO Use documented version if/when resolved (commented out below) (CJP)
+       * @see https://github.com/snowpackjs/snowpack/issues/3621
+       * @see https://www.snowpack.dev/reference/environment-variables#option-2-config-file
+       */
+      // @ts-ignore
+      const player_version = import.meta.env
+        .SNOWPACK_PUBLIC_PLAYER_VERSION as string;
+      // const player_version = __SNOWPACK_ENV__.PLAYER_VERSION;
+
+      mux.monitor(this.nativeEl, {
+        debug,
+        hlsjs,
+        Hls: hlsjs ? Hls : undefined,
+        data: {
+          env_key, // required
+          // Metadata fields
+          player_name: "mux-video", // default player name for "mux-video"
+          player_version,
+          player_init_time,
+          // Default to playback-id as video_id (if available)
+          ...playbackIdMetadata,
+          // Use any metadata passed in programmatically (which may override the defaults above)
+          ...metadataObj,
+          // Use any high priority metadata passed in via attributes (which may override any of the above)
+          ...highPriorityMetadata,
+        },
+      });
     }
   }
 
