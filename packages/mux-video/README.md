@@ -115,9 +115,9 @@ Instead of using the `metadata` property, you also have the option to specify a 
 
 ```json
 {
-  "experiment_name": 'landing_page_v3',
-  "video_content_type": 'clip',
-  "video_series": 'season 1',
+  "experiment_name": "landing_page_v3",
+  "video_content_type": "clip",
+  "video_series": "season 1"
 }
 ```
 
