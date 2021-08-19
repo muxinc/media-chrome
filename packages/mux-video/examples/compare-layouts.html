@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Basic &lt;mux-video/&gt; example</title>
+    <script type="module" src="../dist/index.js"></script>
+    <style>
+      .container {
+      }
+      .media-container {
+      }
+      .mux-video-container {
+      }
+      .video-container {
+      }
+      .media-el {
+        width: 50vw;
+      }
+      .mux-video-el {
+      }
+      .video-el {
+      }
+      mux-video {
+      }
+      video {
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Add your environment key below to automatically wire up mux data -->
+    <div class="container">
+      <div class="media-container mux-video-container">
+        <mux-video
+          class="media-el mux-video-el"
+          playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe?foo=bar&biz=baz"
+          metadata-video-id="This is a more different ID"
+          metadata-video-title="IM NOT STARWARS YOURE STARWARS"
+          metadata-viewer-user-id="...starwars"
+          prefer-native
+          metadata-url="./metadata.json"
+          controls
+          muted
+          debug
+          env-key=""
+        >
+        </mux-video>
+      </div>
+      <div class="media-container video-container">
+        <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+        <!-- Or if you want a more recent alpha version -->
+        <!-- <script src="https://cdn.jsdelivr.net/npm/hls.js@alpha"></script> -->
+        <video class="media-el video-el" muted controls></video>
+        <script>
+          var video = document.querySelector("video");
+          var videoSrc =
+            "https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8?foo=bar&biz=baz";
+          if (Hls.isSupported()) {
+            var hls = new Hls();
+            hls.loadSource(videoSrc);
+            hls.attachMedia(video);
+          }
+          // HLS.js is not supported on platforms that do not have Media Source
+          // Extensions (MSE) enabled.
+          //
+          // When the browser has built-in HLS support (check using `canPlayType`),
+          // we can provide an HLS manifest (i.e. .m3u8 URL) directly to the video
+          // element through the `src` property. This is using the built-in support
+          // of the plain video element, without using HLS.js.
+          //
+          // Note: it would be more normal to wait on the 'canplay' event below however
+          // on Safari (where you are most likely to find built-in HLS support) the
+          // video.src URL must be on the user-driven white-list before a 'canplay'
+          // event will be emitted; the last video event that can be reliably
+          // listened-for when the URL is not on the white-list is 'loadedmetadata'.
+          else if (video.canPlayType("application/vnd.apple.mpegurl")) {
+            video.src = videoSrc;
+          }
+        </script>
+      </div>
+    </div>
+  </body>
+</html>

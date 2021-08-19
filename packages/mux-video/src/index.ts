@@ -1,6 +1,6 @@
 import "./polyfills/window";
 
-import CustomVideoElement from "custom-video-element";
+import CustomVideoElement from "./CustomVideoElement.js";
 import mux, { Options, HighPriorityMetadata } from "mux-embed";
 
 import Hls from "hls.js";
