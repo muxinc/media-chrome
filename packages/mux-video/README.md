@@ -71,7 +71,7 @@ Now you are free to use this web component in your HTML, just as you would with 
 
 Attributes:
 
-* `playback-id`: This is the playback ID for your Mux Asset or Mux Live Stream. The playback-id is the variable you may have used before to construct a `.m3u8` hls url like this:`https://stream.mux.com/{PLAYBACK_ID}.m3u8`
+* `playback-id`: This is the playback ID for your Mux Asset or Mux Live Stream. The playback-id is the variable you may have used before to construct a `.m3u8` hls url like this:`https://stream.mux.com/{PLAYBACK_ID}.m3u8`. [Mux Docs](https://docs.mux.com/guides/video/play-your-videos#1-get-your-playback-id) 
 * `env-key`: This is the environment key for Mux Data. Note that this is different than your API Key. Get your env key from the "Mux Data" part of the Mux Dashboard 
 
 <img src="../../images/env-key.png" alt="Mux Data dashboard env key"></img>
