@@ -6,7 +6,7 @@ declare module "mux-embed" {
     env_key: string;
   };
 
-  type HighPriorityMetadata = {
+  export type HighPriorityMetadata = {
     video_id: string;
     video_title: string;
     viewer_user_id: string;
