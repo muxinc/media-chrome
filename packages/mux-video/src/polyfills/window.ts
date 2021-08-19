@@ -14,10 +14,10 @@ if (!globalThis.customElements) {
 }
 
 if (!globalThis.CustomEvent) {
-  class CustomEvent<T = undefined> extends Event implements CustomEvent<T> {
+  class CustomEvent<T = undefined> implements CustomEvent<T> {
     readonly detail: T;
     constructor (typeArg: string, eventInitDict: CustomEventInit<T> = {}) {
-      super(typeArg, eventInitDict);
+      // super(typeArg, eventInitDict);
       // NOTE: Lazy fix for global env expectations
       this.detail = eventInitDict?.detail as T;
     };
@@ -28,6 +28,7 @@ if (!globalThis.CustomEvent) {
       _detailArg: T
     ) {}
   }
+  // @ts-ignore
   globalThis.CustomEvent = CustomEvent;
 }
 
