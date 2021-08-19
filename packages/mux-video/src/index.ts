@@ -187,8 +187,11 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
       "application/vnd.apple.mpegurl"
     );
 
+    // We should use native playback if we a) can use native playback and either b) prefer it or c) can't use Hls.js
+    const shouldUseNative = canUseNative && (preferNative || !hlsSupported);
+
     // 1. create hls if we should be using it "under the hood"
-    if (!preferNative && hlsSupported) {
+    if (!shouldUseNative && hlsSupported) {
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
         // autoStartLoad: false,
@@ -236,7 +239,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     }
 
     // 3. Finish any additional setup to load/play the media
-    if (canUseNative && (preferNative || !hlsSupported)) {
+    if (shouldUseNative) {
       this.nativeEl.src = this.src;
     } else if (this.__hls) {
       const hls = this.__hls;
@@ -266,14 +269,12 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
 
       hls.loadSource(this.src);
       hls.attachMedia(this.nativeEl);
-
     } else {
       console.error(
         "It looks like HLS video playback will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
       );
       return;
     }
-
   }
 
   unload() {
