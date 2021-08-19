@@ -187,49 +187,18 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
       "application/vnd.apple.mpegurl"
     );
 
-    if (canUseNative && (preferNative || !hlsSupported)) {
-      this.nativeEl.src = this.src;
-    } else if (hlsSupported) {
+    // 1. create hls if we should be using it "under the hood"
+    if (!preferNative && hlsSupported) {
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
         // autoStartLoad: false,
         debug,
       });
 
-      hls.on(Hls.Events.ERROR, (_event, data) => {
-        if (data.fatal) {
-          switch (data.type) {
-            case Hls.ErrorTypes.NETWORK_ERROR:
-              // try to recover network error
-              console.error("fatal network error encountered, try to recover");
-              hls.startLoad();
-              break;
-            case Hls.ErrorTypes.MEDIA_ERROR:
-              console.error("fatal media error encountered, try to recover");
-              hls.recoverMediaError();
-              break;
-            default:
-              // cannot recover
-              console.error(
-                "unrecoverable fatal error encountered, cannot recover (check logs for more info)"
-              );
-              hls.destroy();
-              break;
-          }
-        }
-      });
-
-      hls.loadSource(this.src);
-      hls.attachMedia(this.nativeEl);
-
       this.__hls = hls;
-    } else {
-      console.error(
-        "It looks like HLS video playback will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
-      );
-      return;
     }
 
+    // 2. Start monitoring for mux data before we do anything else
     if (env_key) {
       const player_init_time = this.__muxPlayerInitTime;
       const metadataObj = this.__metadata;
@@ -265,6 +234,46 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
         },
       });
     }
+
+    // 3. Finish any additional setup to load/play the media
+    if (canUseNative && (preferNative || !hlsSupported)) {
+      this.nativeEl.src = this.src;
+    } else if (this.__hls) {
+      const hls = this.__hls;
+
+      hls.on(Hls.Events.ERROR, (_event, data) => {
+        if (data.fatal) {
+          switch (data.type) {
+            case Hls.ErrorTypes.NETWORK_ERROR:
+              // try to recover network error
+              console.error("fatal network error encountered, try to recover");
+              hls.startLoad();
+              break;
+            case Hls.ErrorTypes.MEDIA_ERROR:
+              console.error("fatal media error encountered, try to recover");
+              hls.recoverMediaError();
+              break;
+            default:
+              // cannot recover
+              console.error(
+                "unrecoverable fatal error encountered, cannot recover (check logs for more info)"
+              );
+              hls.destroy();
+              break;
+          }
+        }
+      });
+
+      hls.loadSource(this.src);
+      hls.attachMedia(this.nativeEl);
+
+    } else {
+      console.error(
+        "It looks like HLS video playback will not work on this system! If possible, try upgrading to the newest versions of your browser or software."
+      );
+      return;
+    }
+
   }
 
   unload() {
