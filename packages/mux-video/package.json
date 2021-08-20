@@ -19,7 +19,6 @@
     "build": "npm-run-all build:snowpack build:types"
   },
   "dependencies": {
-    "custom-video-element": "^0.0.2",
     "hls.js": "^1.0.9",
     "mux-embed": "^4.1.1"
   }
