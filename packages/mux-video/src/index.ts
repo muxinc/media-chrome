@@ -1,5 +1,3 @@
-import "./polyfills/window";
-
 import CustomVideoElement from "./CustomVideoElement.js";
 import mux, { Options, HighPriorityMetadata } from "mux-embed";
 
@@ -47,8 +45,6 @@ const toMuxVideoURL = (playbackId: string | null) => {
   const [idPart, queryPart = ""] = toPlaybackIdParts(playbackId);
   return `https://stream.mux.com/${idPart}.m3u8${queryPart}`;
 };
-
-const hlsSupported = Hls.isSupported();
 
 type HTMLVideoElementWithMux = HTMLVideoElement & { mux?: typeof mux };
 
@@ -188,10 +184,11 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     );
 
     // We should use native playback if we a) can use native playback and either b) prefer it or c) can't use Hls.js
-    const shouldUseNative = canUseNative && (preferNative || !hlsSupported);
+    const shouldUseNative =
+      canUseNative && (preferNative || !Hls.isSupported());
 
     // 1. create hls if we should be using it "under the hood"
-    if (!shouldUseNative && hlsSupported) {
+    if (!shouldUseNative && Hls.isSupported()) {
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
         // autoStartLoad: false,
@@ -377,17 +374,16 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   }
 }
 
+type MuxVideoElementType = typeof MuxVideoElement;
 declare global {
-  interface Window {
-    MuxVideoElement: typeof MuxVideoElement;
-  }
+  var MuxVideoElement: MuxVideoElementType;
 }
 
 /** @TODO Refactor once using `globalThis` polyfills */
-if (!window.customElements.get("mux-video")) {
-  window.customElements.define("mux-video", MuxVideoElement);
+if (!globalThis.customElements.get("mux-video")) {
+  globalThis.customElements.define("mux-video", MuxVideoElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
-  window.MuxVideoElement = MuxVideoElement;
+  globalThis.MuxVideoElement = MuxVideoElement;
 }
 
 export { Hls };
