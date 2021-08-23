@@ -328,7 +328,12 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElementWithMux> {
         if (newValue) {
           fetch(newValue)
             .then((resp) => resp.json())
-            .then((json) => (this.metadata = json));
+            .then((json) => (this.metadata = json))
+            .catch((_err) =>
+              console.error(
+                `Unable to load or parse metadata JSON from metadata-url ${newValue}!`
+              )
+            );
         }
         break;
       default:
