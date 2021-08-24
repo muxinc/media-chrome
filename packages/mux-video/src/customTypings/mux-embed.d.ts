@@ -76,9 +76,15 @@ declare module "mux-embed" {
     hb: Partial<Metadata>;
   };
 
-  export function monitor(id: string | HTMLMediaElement, options: Options): void;
+  export function monitor(
+    id: string | HTMLMediaElement,
+    options: Options
+  ): void;
 
-  export function emit<K extends keyof EventTypesMap>(type: K, payload: EventTypesMap[K]): void;
+  export function emit<K extends keyof EventTypesMap>(
+    type: K,
+    payload: EventTypesMap[K]
+  ): void;
 
   export function destroy(): void;
 }

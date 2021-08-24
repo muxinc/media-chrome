@@ -246,9 +246,9 @@ function arrayFindAnyCase(arr, word) {
   return found;
 }
 
-if (!window.customElements.get("custom-audio")) {
-  window.customElements.define("custom-audio", CustomAudioElement);
-  window.CustomAudioElement = CustomAudioElement;
+if (!globalThis.customElements.get("custom-audio")) {
+  globalThis.customElements.define("custom-audio", CustomAudioElement);
+  globalThis.CustomAudioElement = CustomAudioElement;
 }
 
 export default CustomAudioElement;

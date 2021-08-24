@@ -47,8 +47,6 @@ const toMuxVideoURL = (playbackId: string | null) => {
   return `https://stream.mux.com/${idPart}.m3u8${queryPart}`;
 };
 
-const hlsSupported = Hls.isSupported();
-
 type HTMLAudioElementWithMux = HTMLVideoElement & { mux?: typeof mux };
 
 const getPlaybackIdAsVideoIdMetadata = (
@@ -185,6 +183,7 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElementWithMux> {
     const canUseNative = this.nativeEl.canPlayType(
       "application/vnd.apple.mpegurl"
     );
+    const hlsSupported = Hls.isSupported();
 
     // We should use native playback if we a) can use native playback and either b) prefer it or c) can't use Hls.js
     const shouldUseNative = canUseNative && (preferNative || !hlsSupported);
@@ -356,17 +355,15 @@ class MuxAudioElement extends CustomAudioElement<HTMLAudioElementWithMux> {
   }
 }
 
+type MuxAudioElementType = typeof MuxAudioElement;
 declare global {
-  interface Window {
-    MuxAudioElement: typeof MuxAudioElement;
-  }
+  var MuxAudioElement: MuxAudioElementType;
 }
 
-/** @TODO Refactor once using `globalThis` polyfills */
-if (!window.customElements.get("mux-audio")) {
-  window.customElements.define("mux-audio", MuxAudioElement);
+if (!globalThis.customElements.get("mux-audio")) {
+  globalThis.customElements.define("mux-audio", MuxAudioElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
-  window.MuxAudioElement = MuxAudioElement;
+  globalThis.MuxAudioElement = MuxAudioElement;
 }
 
 export { Hls };
