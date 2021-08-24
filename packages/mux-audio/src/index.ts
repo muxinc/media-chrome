@@ -1,6 +1,5 @@
 import "./polyfills/window";
-
-import CustomVideoElement from "./CustomVideoElement.js";
+import CustomAudioElement from "./CustomAudioElement";
 import mux, { Options, HighPriorityMetadata } from "mux-embed";
 
 import Hls from "hls.js";
@@ -50,10 +49,10 @@ const toMuxVideoURL = (playbackId: string | null) => {
 
 const hlsSupported = Hls.isSupported();
 
-type HTMLVideoElementWithMux = HTMLVideoElement & { mux?: typeof mux };
+type HTMLAudioElementWithMux = HTMLVideoElement & { mux?: typeof mux };
 
 const getPlaybackIdAsVideoIdMetadata = (
-  mediaEl: MuxVideoElement
+  mediaEl: MuxAudioElement
 ): Partial<Pick<HighPriorityMetadata, "video_id">> => {
   const playbackIdWithOptionalParams = mediaEl.getAttribute(
     Attributes.PLAYBACK_ID
@@ -66,7 +65,7 @@ const getPlaybackIdAsVideoIdMetadata = (
 };
 
 const getHighPriorityMetadata = (
-  mediaEl: MuxVideoElement
+  mediaEl: MuxAudioElement
 ): Partial<HighPriorityMetadata> => {
   const video_title = mediaEl.getAttribute(Attributes.METADATA_VIDEO_TITLE);
   const viewer_id = mediaEl.getAttribute(Attributes.METADATA_VIEWER_USER_ID);
@@ -81,11 +80,11 @@ const getHighPriorityMetadata = (
   };
 };
 
-class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
+class MuxAudioElement extends CustomAudioElement<HTMLAudioElementWithMux> {
   static get observedAttributes() {
     return [
       ...AttributeNameValues,
-      ...(CustomVideoElement.observedAttributes ?? []),
+      ...(CustomAudioElement.observedAttributes ?? []),
     ];
   }
 
@@ -225,7 +224,7 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
         data: {
           env_key, // required
           // Metadata fields
-          player_name: "mux-video", // default player name for "mux-video"
+          player_name: "mux-audio", // default player name for "mux-audio"
           player_version,
           player_init_time,
           // Default to playback-id as video_id (if available)
@@ -289,17 +288,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
       delete this.nativeEl.mux;
     }
   }
-
-  // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
-  // play() {
-  //   if (this.readyState === 0 && this.networkState < 2) {
-  //     this.load();
-  //     this.hls.on(Hls.Events.MANIFEST_PARSED,function() {
-  //     video.play();
-  //
-  //     return this.nativeEl.play();
-  //   }
-  // }
 
   attributeChangedCallback(
     attrName: string,
@@ -365,31 +353,22 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
     if (this.src) {
       this.load();
     }
-
-    // NOTE: This was carried over from hls-video-element. Is it needed for an edge case?
-    // Not preloading might require faking the play() promise
-    // so that you can call play(), call load() within that
-    // But wait until MANIFEST_PARSED to actually call play()
-    // on the nativeEl.
-    // if (this.preload === 'auto') {
-    //   this.load();
-    // }
   }
 }
 
 declare global {
   interface Window {
-    MuxVideoElement: typeof MuxVideoElement;
+    MuxAudioElement: typeof MuxAudioElement;
   }
 }
 
 /** @TODO Refactor once using `globalThis` polyfills */
-if (!window.customElements.get("mux-video")) {
-  window.customElements.define("mux-video", MuxVideoElement);
+if (!window.customElements.get("mux-audio")) {
+  window.customElements.define("mux-audio", MuxAudioElement);
   /** @TODO consider externalizing this (breaks standard modularity) */
-  window.MuxVideoElement = MuxVideoElement;
+  window.MuxAudioElement = MuxAudioElement;
 }
 
 export { Hls };
 
-export default MuxVideoElement;
+export default MuxAudioElement;
