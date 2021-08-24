@@ -32,7 +32,7 @@
       <div class="media-container mux-video-container">
         <mux-video
           class="media-el mux-video-el"
-          playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe?foo=bar&biz=baz"
+          playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
           metadata-video-id="This is a more different ID"
           metadata-video-title="IM NOT STARWARS YOURE STARWARS"
           metadata-viewer-user-id="...starwars"
@@ -53,7 +53,7 @@
         <script>
           var video = document.querySelector("video");
           var videoSrc =
-            "https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8?foo=bar&biz=baz";
+            "https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8";
           if (Hls.isSupported()) {
             var hls = new Hls();
             hls.loadSource(videoSrc);

@@ -1,5 +1,5 @@
 {
-  "name": "@mux/elements",
+  "name": "@mux-elements/elements",
   "engines": {
     "node": "^14.17.0",
     "npm": "^7.17.0"

@@ -1,5 +1,5 @@
 {
-  "name": "@mux/mux-video",
+  "name": "@mux-elements/mux-video",
   "version": "0.1.0",
   "description": "A custom mux video element for the browser that Just Works™",
   "main": "dist/index.js",
