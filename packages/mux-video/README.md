@@ -167,7 +167,7 @@ playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe?token=jwt-signed-token"
 
 ### If I'm using Mux, do I have to use this library?
 
-No, not at all! The way Mux delivers HLS video is compliant with the HLS spec. Any video player that supports HLS will work with Mux Video.
+No, you're not. The way Mux delivers HLS video is compliant with the HLS spec. Any video player that supports HLS will work with Mux Video.
 
 ### If I'm not use Mux Video, can I still use this library?
 

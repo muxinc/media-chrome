@@ -4,20 +4,25 @@
     <meta name="viewport" content="width=device-width" />
     <title>Basic &lt;mux-video/&gt; example</title>
     <script type="module" src="../dist/index.js"></script>
+    <style>
+      mux-video {
+        width: 100%;
+        max-width: 800px;
+        margin: 40px auto;
+        display: block;
+      }
+    </style>
   </head>
   <body>
-    <!-- Add your environment key below to automatically wire up mux data -->
     <mux-video
       playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
-      metadata-video-id="This is a more different ID"
-      metadata-video-title="IM NOT STARWARS YOURE STARWARS"
-      metadata-viewer-user-id="...starwars"
-      metadata-url="./metadata.json"
+      metadata-video-id="video-id-12345"
+      metadata-video-title="Star Wars: Episode 3"
+      metadata-viewer-user-id="user-id-6789"
+      env-key="mux-data-env-key"
       controls
       autoplay
       muted
-      debug
-      env-key=""
     >
     </mux-video>
   </body>

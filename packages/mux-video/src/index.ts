@@ -143,9 +143,6 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   }
 
   set preferMSE(val: boolean) {
-    // dont' cause an infinite loop
-    if (val === this.debug) return;
-
     if (val) {
       this.setAttribute(Attributes.PREFER_MSE, "");
     } else {
