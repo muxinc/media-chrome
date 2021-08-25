@@ -9,12 +9,12 @@ type Metadata = Partial<Options["data"]>;
 type AttributeNames = {
   ENV_KEY: "env-key";
   DEBUG: "debug";
-  PLAYBACK_ID: "playback-id";
   METADATA_URL: "metadata-url";
-  PREFER_NATIVE: "prefer-native";
   METADATA_VIDEO_ID: "metadata-video-id";
   METADATA_VIDEO_TITLE: "metadata-video-title";
   METADATA_VIEWER_USER_ID: "metadata-viewer-user-id";
+  PLAYBACK_ID: "playback-id";
+  PREFER_MSE: "prefer-mse";
 };
 
 const Attributes: AttributeNames = {
@@ -22,7 +22,7 @@ const Attributes: AttributeNames = {
   DEBUG: "debug",
   PLAYBACK_ID: "playback-id",
   METADATA_URL: "metadata-url",
-  PREFER_NATIVE: "prefer-native",
+  PREFER_MSE: "prefer-mse",
   METADATA_VIDEO_ID: "metadata-video-id",
   METADATA_VIDEO_TITLE: "metadata-video-title",
   METADATA_VIEWER_USER_ID: "metadata-viewer-user-id",
@@ -138,18 +138,18 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
   }
 
   /** @TODO Followup: naming convention: all lower (common per HTMLElement props) vs. camel (common per JS convention) (CJP) */
-  get preferNative(): boolean {
-    return this.getAttribute(Attributes.PREFER_NATIVE) != null;
+  get preferMSE(): boolean {
+    return this.getAttribute(Attributes.PREFER_MSE) != null;
   }
 
-  set preferNative(val: boolean) {
+  set preferMSE(val: boolean) {
     // dont' cause an infinite loop
     if (val === this.debug) return;
 
     if (val) {
-      this.setAttribute(Attributes.PREFER_NATIVE, "");
+      this.setAttribute(Attributes.PREFER_MSE, "");
     } else {
-      this.removeAttribute(Attributes.PREFER_NATIVE);
+      this.removeAttribute(Attributes.PREFER_MSE);
     }
   }
 
@@ -178,17 +178,17 @@ class MuxVideoElement extends CustomVideoElement<HTMLVideoElementWithMux> {
 
     const env_key = this.getAttribute(Attributes.ENV_KEY);
     const debug = this.debug;
-    const preferNative = this.preferNative;
+    const preferMSE = this.preferMSE;
     const canUseNative = this.nativeEl.canPlayType(
       "application/vnd.apple.mpegurl"
     );
+    const hlsSupported = Hls.isSupported();
 
-    // We should use native playback if we a) can use native playback and either b) prefer it or c) can't use Hls.js
-    const shouldUseNative =
-      canUseNative && (preferNative || !Hls.isSupported());
+    // We should use native playback if we a) can use native playback and don't also b) prefer to use MSE/hls.js if/when it's supported
+    const shouldUseNative = canUseNative && !(preferMSE && hlsSupported);
 
     // 1. create hls if we should be using it "under the hood"
-    if (!shouldUseNative && Hls.isSupported()) {
+    if (!shouldUseNative && hlsSupported) {
       const hls = new Hls({
         // Kind of like preload metadata, but causes spinner.
         // autoStartLoad: false,
