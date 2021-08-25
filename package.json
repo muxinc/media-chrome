@@ -7,10 +7,9 @@
   "version": "0.1.0",
   "description": "Custom elements for working with media in the browser that Just Work™",
   "main": "index.js",
-  "repository": "https://github.com/muxinc/elements-mono",
+  "repository": "https://github.com/muxinc/elements",
   "author": "Mux, Inc.",
   "license": "MIT",
-  "private": true,
   "devDependencies": {
     "@snowpack/plugin-typescript": "^1.2.1",
     "husky": "^7.0.0",

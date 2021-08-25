@@ -6,12 +6,11 @@
   "types": "dist/types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/muxinc/elements-mono",
+    "url": "https://github.com/muxinc/elements",
     "directory": "packages/mux-video"
   },
   "author": "Mux, Inc.",
   "license": "MIT",
-  "private": true,
   "scripts": {
     "dev": "snowpack dev --config snowpack.dev.config.js",
     "build:snowpack": "snowpack build --config snowpack.prod.config.js",
