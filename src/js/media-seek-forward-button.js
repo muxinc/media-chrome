@@ -25,7 +25,7 @@ const updateAriaLabel = (el) => {
 class MediaSeekForwardButton extends MediaChromeButton {
   
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CURRENT_TIME];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME];
   }
 
   constructor(options={}) {
@@ -35,6 +35,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
   connectedCallback() {
     updateAriaLabel(this);
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    super.connectedCallback();
   }
 
   handleClick() {

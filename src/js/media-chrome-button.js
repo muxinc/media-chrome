@@ -1,3 +1,4 @@
+import { MediaUIAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
@@ -84,6 +85,11 @@ template.innerHTML = `
 const ButtonPressedKeys = ['Enter', ' '];
 
 class MediaChromeButton extends window.HTMLElement {
+  
+  static get observedAttributes() {
+    return [MediaUIAttributes.MEDIA_CONTROLLER];
+  }
+
   constructor(options={}) {
     super();
 
@@ -131,6 +137,35 @@ class MediaChromeButton extends window.HTMLElement {
       }
       this.addEventListener('keyup', keyUpHandler);
     });
+  }
+
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+      if (oldValue) {
+        const mediaControllerEl = document.getElementById(oldValue);
+        mediaControllerEl?.unassociateDescendantsOf?.(this);
+      }
+      if (newValue) {
+        const mediaControllerEl = document.getElementById(newValue);
+        mediaControllerEl?.associateDescendantsOf?.(this);
+      }
+    }
+  }
+
+  connectedCallback() {
+    const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    if (mediaControllerId) {
+      const mediaControllerEl = document.getElementById(mediaControllerId);
+      mediaControllerEl?.associateDescendantsOf?.(this);
+    }
+  }
+
+  disconnectedCallback() {
+    const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    if (mediaControllerSelector) {
+      const mediaControllerEl = document.getElementById(mediaControllerId);
+      mediaControllerEl?.unassociateDescendantsOf?.(this);
+    }
   }
 
   handleClick() {}

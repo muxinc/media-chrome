@@ -25,7 +25,7 @@ const updateAriaLabel = (el) => {
 class MediaSeekBackwardButton extends MediaChromeButton {
 
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CURRENT_TIME];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME];
   }
 
   constructor(options={}) {
@@ -36,6 +36,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
     // NOTE: currently don't support changing the seek value, so only need to set this once on initialization.
     updateAriaLabel(this);
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    super.connectedCallback();
   }
 
   handleClick() {
