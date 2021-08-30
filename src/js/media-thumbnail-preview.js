@@ -31,7 +31,7 @@ template.innerHTML = `
 
 class MediaThumbnailPreviewElement extends window.HTMLElement {
   static get observedAttributes() {
-    return ['time', MediaUIAttributes.MEDIA_PREVIEW_IMAGE, MediaUIAttributes.MEDIA_PREVIEW_COORDS];
+    return [MediaUIAttributes.MEDIA_CONTROLLER, 'time', MediaUIAttributes.MEDIA_PREVIEW_IMAGE, MediaUIAttributes.MEDIA_PREVIEW_COORDS];
   }
 
   constructor() {
@@ -43,10 +43,35 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
 
   connectedCallback() {
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    if (mediaControllerId) {
+      const mediaControllerEl = document.getElementById(mediaControllerId);
+      mediaControllerEl?.associateDescendantsOf?.(this);
+    }
   }
 
-  attributeChangedCallback(attrName, _oldValue, newValue) {
-    this.update();
+  disconnectedCallback() {
+    const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    if (mediaControllerSelector) {
+      const mediaControllerEl = document.getElementById(mediaControllerId);
+      mediaControllerEl?.unassociateDescendantsOf?.(this);
+    }
+  }
+
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (['time', MediaUIAttributes.MEDIA_PREVIEW_IMAGE, MediaUIAttributes.MEDIA_PREVIEW_COORDS].includes(attrName)) {
+      this.update();
+    }
+    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+      if (oldValue) {
+        const mediaControllerEl = document.getElementById(oldValue);
+        mediaControllerEl?.unassociateDescendantsOf?.(this);
+      }
+      if (newValue) {
+        const mediaControllerEl = document.getElementById(newValue);
+        mediaControllerEl?.associateDescendantsOf?.(this);
+      }
+    }
   }
 
   update() {
