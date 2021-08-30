@@ -63,7 +63,7 @@ template.innerHTML = `
 
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
-    return ['thumbnails', MediaUIAttributes.MEDIA_DURATION, MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_PREVIEW_IMAGE];
+    return [...super.observedAttributes, 'thumbnails', MediaUIAttributes.MEDIA_DURATION, MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_PREVIEW_IMAGE];
   }
 
   constructor() {
@@ -90,10 +90,11 @@ class MediaTimeRange extends MediaChromeRange {
 
   connectedCallback() {
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    super.connectedCallback();
   }
 
 
-  attributeChangedCallback(attrName, _oldValue, newValue) {
+  attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
       this.range.value = +newValue;
       this.updateBar();
@@ -104,6 +105,7 @@ class MediaTimeRange extends MediaChromeRange {
       this.updateBar();
       return;
     }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   // mediaBufferedSet(bufferedRanges) {

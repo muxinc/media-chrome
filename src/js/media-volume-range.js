@@ -14,7 +14,7 @@ const toVolume = (el) => {
 class MediaVolumeRange extends MediaChromeRange {
 
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_VOLUME, MediaUIAttributes.MEDIA_MUTED];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_VOLUME, MediaUIAttributes.MEDIA_MUTED];
   }
 
   constructor() {
@@ -30,12 +30,16 @@ class MediaVolumeRange extends MediaChromeRange {
 
   connectedCallback() {
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    super.connectedCallback();
   }
 
-  attributeChangedCallback(_attrName, _oldValue, _newValue) {
-    const newVolume = toVolume(this);
-    this.range.value = newVolume;
-    this.updateBar();
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_VOLUME || attrName === MediaUIAttributes.MEDIA_MUTED) {
+      const newVolume = toVolume(this);
+      this.range.value = newVolume;
+      this.updateBar();
+    }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 }
 
