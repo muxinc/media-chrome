@@ -42,7 +42,7 @@ template.innerHTML = `
   }
 
   /* Undo the default button styles and fill the parent element */
-  button {
+  .button {
     width: 100%;
     vertical-align: middle;
     border: none;
@@ -62,11 +62,11 @@ template.innerHTML = `
     -moz-appearance: none;
   }
 
-  button:hover {}
-  button:focus {
+  .button:hover {}
+  .button:focus {
     outline: 0;
   }
-  button:active {}
+  .button:active {}
 
   svg, img, ::slotted(svg), ::slotted(img) {
     width: var(--media-button-icon-width, 24px);
@@ -78,8 +78,10 @@ template.innerHTML = `
   }
 </style>
 
-<button></button>
+<div class="button"></div>
 `;
+
+const ButtonPressedKeys = ['Enter', ' '];
 
 class MediaChromeButton extends window.HTMLElement {
   constructor(options={}) {
@@ -88,7 +90,10 @@ class MediaChromeButton extends window.HTMLElement {
     const shadow = this.attachShadow({ mode: 'open' });
 
     const buttonHTML = template.content.cloneNode(true);
-    this.nativeEl = buttonHTML.querySelector('button');
+    this.nativeEl = buttonHTML.querySelector('div');
+    
+    this.setAttribute('role', "button");
+    this.setAttribute('tabindex', 0);
 
     // Slots
     let slotTemplate = options.slotTemplate;
@@ -104,6 +109,27 @@ class MediaChromeButton extends window.HTMLElement {
 
     this.addEventListener('click', e => {
       this.handleClick(e);
+    });
+
+    // NOTE: There are definitely some "false positive" cases with multi-key pressing,
+    // but this should be good enough for most use cases.
+    const keyUpHandler = e => {
+      const { key } = e;
+      if (!ButtonPressedKeys.includes(key)) {
+        this.removeEventListener('keyup', keyUpHandler);
+        return;
+      }
+
+      this.handleClick(e);
+    };
+
+    this.addEventListener('keydown', e => {
+      const { metaKey, altKey, key } = e;
+      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+        this.removeEventListener('keyup', keyUpHandler);
+        return;
+      }
+      this.addEventListener('keyup', keyUpHandler);
     });
   }
 
