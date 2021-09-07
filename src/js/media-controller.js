@@ -36,7 +36,7 @@ class MediaController extends MediaContainer {
     // Track externally associated control elements
     this.associatedElements = [];
     this.monitoredElements = [];
-    this.associateDescendantsOf(this);
+    this.associateElement(this);
 
     // Capture request events from internal controls
     const mediaUIEventHandlers = {
@@ -212,12 +212,12 @@ class MediaController extends MediaContainer {
       }
     }
 
-    this.associateElement(this);
+    this.setupAssociatedElement(this);
   }
 
   connectedCallback() {
     const addedNodes = getMediaUIElementDescendants(this);
-    addedNodes.forEach(this.associateElement.bind(this));
+    addedNodes.forEach(this.setupAssociatedElement.bind(this));
     super.connectedCallback();
   }
 
@@ -271,29 +271,29 @@ class MediaController extends MediaContainer {
     propagateMediaState(this.associatedElements, stateName, state);
   }
 
-  associateDescendantsOf(element) {
+  associateElement(element) {
     if (!element) return;
     const els = this.monitoredElements;
     if (els.some(elObj => elObj.element === element)) return;
 
     const mediaUIElementDescendants = getMediaUIElementDescendants(element);
 
-    const associateElement = this.associateElement.bind(this);
-    const unassociateElement = this.unassociateElement.bind(this);
+    const setupAssociatedElement = this.setupAssociatedElement.bind(this);
+    const teardownAssociatedElement = this.teardownAssociatedElement.bind(this);
 
-    mediaUIElementDescendants.forEach(associateElement);
+    mediaUIElementDescendants.forEach(setupAssociatedElement);
 
     /** @TODO Should we support "removing association" */
     const unsubscribe = monitorMediaUIElementDescendantsOf(
       element, 
-      associateElement, 
-      unassociateElement,
+      setupAssociatedElement, 
+      teardownAssociatedElement,
     );
 
     els.push({ element, unsubscribe });
   }
 
-  unassociateDescendantsOf(element) {
+  unassociateElement(element) {
     if (!element) return;
     const els = this.monitoredElements;
 
@@ -302,16 +302,16 @@ class MediaController extends MediaContainer {
 
     const mediaUIElementDescendants = getMediaUIElementDescendants(element);
 
-    const unassociateElement = this.unassociateElement.bind(this);
+    const teardownAssociatedElement = this.teardownAssociatedElement.bind(this);
 
-    mediaUIElementDescendants.forEach(unassociateElement);
+    mediaUIElementDescendants.forEach(teardownAssociatedElement);
     
     const { unsubscribe } = els[index];
     unsubscribe();
     els.splice(index, 1);
   }
 
-  associateElement(el) {
+  setupAssociatedElement(el) {
     if (!el) return;
     const els = this.associatedElements;
     const index = els.indexOf(el);
@@ -344,7 +344,7 @@ class MediaController extends MediaContainer {
     }
   }
 
-  unassociateElement(el) {
+  teardownAssociatedElement(el) {
     const els = this.associatedElements;
 
     const index = els.indexOf(el);

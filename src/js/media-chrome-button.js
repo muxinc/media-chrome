@@ -143,11 +143,11 @@ class MediaChromeButton extends window.HTMLElement {
     if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
-        mediaControllerEl?.unassociateDescendantsOf?.(this);
+        mediaControllerEl?.unassociateElement?.(this);
       }
       if (newValue) {
         const mediaControllerEl = document.getElementById(newValue);
-        mediaControllerEl?.associateDescendantsOf?.(this);
+        mediaControllerEl?.associateElement?.(this);
       }
     }
   }
@@ -156,7 +156,7 @@ class MediaChromeButton extends window.HTMLElement {
     const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
-      mediaControllerEl?.associateDescendantsOf?.(this);
+      mediaControllerEl?.associateElement?.(this);
     }
   }
 
@@ -164,7 +164,7 @@ class MediaChromeButton extends window.HTMLElement {
     const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
     if (mediaControllerSelector) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
-      mediaControllerEl?.unassociateDescendantsOf?.(this);
+      mediaControllerEl?.unassociateElement?.(this);
     }
   }
 
