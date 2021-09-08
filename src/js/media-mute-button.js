@@ -55,7 +55,7 @@ const updateAriaLabel = (el) => {
 class MediaMuteButton extends MediaChromeButton {
   
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_VOLUME_LEVEL];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_VOLUME_LEVEL];
   }
 
   constructor(options={}) {
@@ -65,12 +65,14 @@ class MediaMuteButton extends MediaChromeButton {
   connectedCallback() {
     updateAriaLabel(this);
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, _oldValue, _newValue) {
+  attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_VOLUME_LEVEL) {
       updateAriaLabel(this);
     }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   handleClick(_e) {

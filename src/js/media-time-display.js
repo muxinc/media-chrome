@@ -23,16 +23,20 @@ const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
 class MediaTimeDisplay extends MediaTextDisplay {
 
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_DURATION, 'remaining', 'show-duration'];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_DURATION, 'remaining', 'show-duration'];
   }
 
   connectedCallback() {
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    super.connectedCallback();
   }
 
-  attributeChangedCallback(_attrName, _oldValue, _newValue) {
-    const timesLabel = formatTimesLabel(this);
-    this.container.innerHTML = timesLabel;
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if ([MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_DURATION, 'remaining', 'show-duration'].includes(attrName)) {
+      const timesLabel = formatTimesLabel(this);
+      this.container.innerHTML = timesLabel;
+    }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 }
 

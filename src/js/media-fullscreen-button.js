@@ -50,7 +50,7 @@ const updateAriaLabel = (el) => {
 class MediaFullscreenButton extends MediaChromeButton {
 
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_IS_FULLSCREEN];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_IS_FULLSCREEN];
   }
 
   constructor(options = {}) {
@@ -60,12 +60,14 @@ class MediaFullscreenButton extends MediaChromeButton {
   connectedCallback() {
     updateAriaLabel(this);
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, _oldValue, _newValue) {
+  attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_IS_FULLSCREEN) {
       updateAriaLabel(this);
     }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   handleClick(_e) {

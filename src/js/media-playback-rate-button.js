@@ -13,7 +13,7 @@ const DEFAULT_RATE = 1;
 class MediaPlaybackRateButton extends MediaChromeButton {
 
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_PLAYBACK_RATE, 'rates'];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_PLAYBACK_RATE, 'rates'];
   }
 
   constructor() {
@@ -24,9 +24,10 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   connectedCallback() {
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, _oldValue, newValue) {
+  attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'rates') {
       // This will:
       // 1. parse the space-separated attribute string (standard for representing lists as HTML/CSS values) into an array (of strings)
@@ -45,6 +46,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
       this.setAttribute('aria-label', `${rate}x`);
       return;
     }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   handleClick(_e) {

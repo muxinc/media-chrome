@@ -35,7 +35,7 @@ const updateAriaLabel = (el) => {
 class MediaPipButton extends MediaChromeButton {
   
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_IS_PIP];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_IS_PIP];
   }
 
   constructor(options={}) {
@@ -45,12 +45,14 @@ class MediaPipButton extends MediaChromeButton {
   connectedCallback() {
     updateAriaLabel(this);
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, _oldValue, _newValue) {
+  attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_IS_PIP) {
       updateAriaLabel(this);
     }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   handleClick(_e) {

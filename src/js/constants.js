@@ -26,4 +26,5 @@ export const MediaUIAttributes = {
     MEDIA_PREVIEW_IMAGE: 'media-preview-image',
     MEDIA_PREVIEW_COORDS: 'media-preview-coords',
     MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
+    MEDIA_CONTROLLER: 'media-controller',
 };

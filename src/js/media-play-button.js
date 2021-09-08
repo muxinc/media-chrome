@@ -36,7 +36,7 @@ const updateAriaLabel = (el) => {
 class MediaPlayButton extends MediaChromeButton {
 
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_PAUSED];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_PAUSED];
   }
 
   constructor(options={}) {
@@ -46,12 +46,14 @@ class MediaPlayButton extends MediaChromeButton {
   connectedCallback() {
     updateAriaLabel(this);
     this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, _oldValue, _newValue) {
+  attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_PAUSED) {
       updateAriaLabel(this);
     }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   handleClick(_e) {
