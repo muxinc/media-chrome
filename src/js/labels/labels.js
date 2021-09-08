@@ -2,6 +2,7 @@ export const nouns = {
     AUDIO_PLAYER: () => 'audio player',
     VIDEO_PLAYER: () => 'video player',
     VOLUME: () => 'volume',
+    SEEK: () => 'seek',
 };
 
 export const verbs = {
