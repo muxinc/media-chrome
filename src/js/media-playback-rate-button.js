@@ -2,6 +2,7 @@ import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
 
 /*
   <media-playback-rate-button rates="1,1.5,2">
@@ -39,11 +40,10 @@ class MediaPlaybackRateButton extends MediaChromeButton {
       return;
     }
     if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
-      const newRate = newValue ? +newValue : Number.NaN;
-      const rate = !Number.isNaN(newRate) ? newRate : DEFAULT_RATE;
-      this.nativeEl.innerHTML = `${rate}x`;
-      /** @TODO Implement real version of this (CJP) */
-      this.setAttribute('aria-label', `${rate}x`);
+      const newPlaybackRate = newValue ? +newValue : Number.NaN;
+      const playbackRate = !Number.isNaN(newPlaybackRate) ? newPlaybackRate : DEFAULT_RATE;
+      this.nativeEl.innerHTML = `${playbackRate}x`;
+      this.setAttribute('aria-label', nouns.PLAYBACK_RATE({ playbackRate }));
       return;
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);

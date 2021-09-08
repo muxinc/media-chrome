@@ -3,6 +3,7 @@ export const nouns = {
     VIDEO_PLAYER: () => 'video player',
     VOLUME: () => 'volume',
     SEEK: () => 'seek',
+    PLAYBACK_RATE: ({ playbackRate }) => `current playback rate ${playbackRate}`,
 };
 
 export const verbs = {
