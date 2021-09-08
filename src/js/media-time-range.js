@@ -117,10 +117,6 @@ class MediaTimeRange extends MediaChromeRange {
 
   connectedCallback() {
     this.range.setAttribute('aria-label', nouns.SEEK());
-    this.setAttribute(
-      MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES,
-      this.constructor.observedAttributes.join(' ')
-    );
     super.connectedCallback();
   }
 

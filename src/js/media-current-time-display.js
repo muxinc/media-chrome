@@ -10,11 +10,6 @@ class MediaCurrentTimeDisplay extends MediaTextDisplay {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME];
   }
 
-  connectedCallback() {
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
-    super.connectedCallback();
-  }
-
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
       this.container.innerHTML = formatTime(newValue);

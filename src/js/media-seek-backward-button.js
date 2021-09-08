@@ -35,7 +35,6 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   connectedCallback() {
     // NOTE: currently don't support changing the seek value, so only need to set this once on initialization.
     updateAriaLabel(this);
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
     super.connectedCallback();
   }
 
