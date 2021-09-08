@@ -99,6 +99,7 @@ class MediaChromeButton extends window.HTMLElement {
     this.nativeEl = buttonHTML.querySelector('div');
     
     this.setAttribute('role', "button");
+    this.setAttribute('aria-live', "polite");
     this.setAttribute('tabindex', 0);
 
     // Slots
