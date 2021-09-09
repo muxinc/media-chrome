@@ -13,7 +13,7 @@ import { Window as window } from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { MediaUIEvents, MediaUIAttributes, TextTrackKinds, TextTrackModes } from './constants.js';
 const {
   MEDIA_PLAY_REQUEST,
   MEDIA_PAUSE_REQUEST,
@@ -143,7 +143,68 @@ class MediaController extends MediaContainer {
             this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, previewCoordsStr.split(',').join(' '));
           }
         }
-      }
+      },
+      MEDIA_SHOW_TEXT_TRACKS_REQUEST: (e) => {
+        const tracks = this.media?.textTracks;
+        const { detail: tracksToUpdate = [] } = e;
+        // const isSubOrCC = ({ kind }) => [TextTrackKinds.CAPTIONS, TextTrackKinds.SUBTITLES].includes(kind);
+        const isTrackToUpdate = ({ language, kind, label }) => {
+          return tracksToUpdate.some((trackToUpdate) => {
+            return trackToUpdate.label === label && trackToUpdate.language === language && trackToUpdate.kind === kind;
+          });
+        };
+        // const isTrackToUpdate = ({ language, kind }) => tracksToUpdate.some((trackToUpdate) => trackToUpdate.label === label && trackToUpdate);
+        const updateTrack = track => {
+          track.mode = TextTrackModes.SHOWING;
+        };
+        Array.prototype.filter.call(tracks, (isTrackToUpdate)).forEach(updateTrack);
+
+        /** 
+         * @TODO Text Track changes can be observed via events on media.textTracks. Should potentially monitor there instead, 
+         * especially since values could change "from the outside" 
+         */
+        const captionsAttr = this.captionTracks.map(({ language, label }) => {
+          if (!label) return language;
+          return `${language}:${encodeURIComponent(label)}`;
+        }).join(' ');
+        const subtitlesAttr = this.subtitleTracks.map(({ language, label }) => {
+          if (!label) return language;
+          return `${language}:${encodeURIComponent(label)}`;
+        }).join(' ');
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_TRACKS, captionsAttr);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLE_TRACKS, subtitlesAttr);
+      },
+      MEDIA_HIDE_TEXT_TRACKS_REQUEST: (e) => {
+        const tracks = this.media?.textTracks;
+        const { detail: tracksToUpdate } = e;
+        const isTrackToUpdate = ({ language, kind, label }) => {
+          return !tracksToUpdate || tracksToUpdate.some((trackToUpdate) => {
+            return trackToUpdate.label === label && trackToUpdate.language === language && trackToUpdate.kind === kind;
+          });
+        };
+        // const isTrackToUpdate = ({ label }) => !tracksToUpdate || tracksToUpdate.some((trackToUpdate) => trackToUpdate.label === label);
+        const updateTrack = track => {
+          if (track.mode === TextTrackModes.SHOWING) {
+            track.mode = TextTrackModes.DISABLED;
+          }
+        };
+        tracks.filter(isTrackToUpdate).forEach(updateTrack);
+
+        /** 
+         * @TODO Text Track changes can be observed via events on media.textTracks. Should potentially monitor there instead, 
+         * especially since values could change "from the outside" 
+         */
+         const captionsAttr = this.captionTracks.map(({ language, label }) => {
+          if (!label) return language;
+          return `${language}:${encodeURIComponent(label)}`;
+        }).join(' ');
+        const subtitlesAttr = this.subtitleTracks.map(({ language, label }) => {
+          if (!label) return language;
+          return `${language}:${encodeURIComponent(label)}`;
+        }).join(' ');
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_TRACKS, captionsAttr);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLE_TRACKS, subtitlesAttr);
+      },
     };
 
     // Apply ui event listeners
@@ -313,6 +374,16 @@ class MediaController extends MediaContainer {
 
     // TODO: Update to propagate all states when registered
     if (this.media) {
+      const captionsAttr = this.captionTracks.map(({ language, label }) => {
+        if (!label) return language;
+        return `${language}:${encodeURIComponent(label)}`;
+      }).join(' ');
+      const subtitlesAttr = this.subtitleTracks.map(({ language, label }) => {
+        if (!label) return language;
+        return `${language}:${encodeURIComponent(label)}`;
+      }).join(' ');
+      propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_TRACKS, captionsAttr);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_SUBTITLE_TRACKS, subtitlesAttr);
       propagateMediaState([el], MediaUIAttributes.MEDIA_PAUSED, this.media.paused);
       // propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
       propagateMediaState([el], MediaUIAttributes.MEDIA_MUTED, this.media.muted);
@@ -393,6 +464,18 @@ class MediaController extends MediaContainer {
     this.dispatchEvent(new window.CustomEvent(MEDIA_PLAYBACK_RATE_REQUEST, { detail: rate }));
   }
 
+  get subtitleTracks() {
+    return getTextTracksList(this.media, ({ kind }) => kind === TextTrackKinds.SUBTITLES);
+  }
+
+  get captionTracks() {
+    return getTextTracksList(this.media, ({ kind }) => kind === TextTrackKinds.CAPTIONS);
+  }
+
+  get showingTracks() {
+    return getTextTracksList(this.media, ({ mode }) => mode === TextTrackModes.SHOWING);
+  }
+
   requestPictureInPicture() {
     this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_PIP_REQUEST));
   }
@@ -405,6 +488,18 @@ class MediaController extends MediaContainer {
     this.dispatchEvent(new window.CustomEvent(MEDIA_PREVIEW_REQUEST, { detail: time }));
   }
 }
+
+const getTextTracksList = (
+  media, 
+  filterPred = () => true, 
+  mapFn = x => x
+) => {
+  if (!media?.textTracks) return [];
+  
+  return Array.from(media.textTracks)
+    .filter(filterPred)
+    .map(mapFn);
+};
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
@@ -429,6 +524,14 @@ const setAttr = (child, attrName, attrValue) => {
 };
 
 const isMediaSlotElementDescendant = (el) => !!el.closest?.('*[slot="media"]');
+
+const getTextTracksList = (media, filterPred = () => true) => {
+  if (!media?.textTracks) return [];
+  
+  return Array.from(media.textTracks)
+    .filter(filterPred)
+    .map(({ id, kind, label, language, mode }) => ({ id, kind, label, language, mode }));
+};
 
 /**
  * 
