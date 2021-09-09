@@ -10,6 +10,12 @@ export const MediaUIEvents = {
     MEDIA_PREVIEW_REQUEST: 'mediapreviewrequest',
     MEDIA_ENTER_PIP_REQUEST: 'mediaenterpiprequest',
     MEDIA_EXIT_PIP_REQUEST: 'mediaexitpiprequest',
+    MEDIA_SHOW_TEXT_TRACKS_REQUEST: 'mediashowtexttracksrequest',
+    MEDIA_HIDE_TEXT_TRACKS_REQUEST: 'mediahidetexttracksrequest',
+    MEDIA_SHOW_CAPTIONS_TRACKS_REQUEST: 'mediashowcaptionsrequest',
+    MEDIA_SHOW_SUBTITLE_TRACKS_REQUEST: 'mediashowsubtitletracksrequest',
+    MEDIA_DISABLE_CAPTIONS_TRACKS_REQUEST: 'mediadisablecaptionsrequest',
+    MEDIA_DISABLE_SUBTITLE_TRACKS_REQUEST: 'mediadisablesubtitletracksrequest',
     MEDIA_PLAYBACK_RATE_REQUEST: 'mediaplaybackraterequest',
     REGISTER_MEDIA_STATE_RECEIVER: 'registermediastatereceiver',
     UNREGISTER_MEDIA_STATE_RECEIVER: 'unregistermediastatereceiver',
@@ -21,6 +27,8 @@ export const MediaUIAttributes = {
     MEDIA_VOLUME_LEVEL: 'media-volume-level',
     MEDIA_VOLUME: 'media-volume',
     MEDIA_IS_PIP: 'media-is-pip',
+    MEDIA_CAPTIONS_TRACKS: 'media-captions-tracks',
+    MEDIA_SUBTITLE_TRACKS: 'media-subtitle-tracks',
     MEDIA_IS_FULLSCREEN: 'media-is-fullscreen',
     MEDIA_PLAYBACK_RATE: 'media-playback-rate',
     MEDIA_CURRENT_TIME: 'media-current-time',
@@ -29,4 +37,18 @@ export const MediaUIAttributes = {
     MEDIA_PREVIEW_COORDS: 'media-preview-coords',
     MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
     MEDIA_CONTROLLER: 'media-controller',
+};
+
+export const TextTrackKinds = {
+    SUBTITLES: 'subtitles',
+    CAPTIONS: 'captions',
+    DESCRIPTIONS: 'descriptions',
+    CHAPTERS: 'chapters',
+    METADATA: 'metadata',
+};
+
+export const TextTrackModes = {
+    DISABLED: 'disabled',
+    HIDDEN: 'hidden',
+    SHOWING: 'showing',
 };
