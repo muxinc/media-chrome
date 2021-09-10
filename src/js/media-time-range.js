@@ -1,7 +1,24 @@
 import MediaChromeRange from './media-chrome-range.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
+import { formatAsTimePhrase } from './utils/time.js';
+
+const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
+
+const updateAriaValueText = (el) => {
+  const range = el.range;
+  const currentTimePhrase = formatAsTimePhrase(+range.value);
+  const totalTimePhrase = formatAsTimePhrase(+range.max);
+  const fullPhrase = !(currentTimePhrase && totalTimePhrase)
+    ? DEFAULT_MISSING_TIME_PHRASE
+    : `${currentTimePhrase} of ${totalTimePhrase}`;
+  range.setAttribute('aria-valuetext', fullPhrase);
+};
 
 const template = document.createElement('template');
 
@@ -63,7 +80,13 @@ template.innerHTML = `
 
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
-    return [...super.observedAttributes, 'thumbnails', MediaUIAttributes.MEDIA_DURATION, MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_PREVIEW_IMAGE];
+    return [
+      ...super.observedAttributes,
+      'thumbnails',
+      MediaUIAttributes.MEDIA_DURATION,
+      MediaUIAttributes.MEDIA_CURRENT_TIME,
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
+    ];
   }
 
   constructor() {
@@ -74,7 +97,11 @@ class MediaTimeRange extends MediaChromeRange {
     this.range.addEventListener('input', () => {
       const newTime = this.range.value;
       const detail = newTime;
-      const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, { composed: true, bubbles: true, detail });
+      const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+        composed: true,
+        bubbles: true,
+        detail,
+      });
       this.dispatchEvent(evt);
     });
 
@@ -89,21 +116,24 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   connectedCallback() {
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    this.range.setAttribute('aria-label', nouns.SEEK());
+    this.setAttribute(
+      MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES,
+      this.constructor.observedAttributes.join(' ')
+    );
     super.connectedCallback();
   }
-
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
       this.range.value = +newValue;
+      updateAriaValueText(this);
       this.updateBar();
-      return;
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
       this.range.max = +newValue;
+      updateAriaValueText(this);
       this.updateBar();
-      return;
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
@@ -130,19 +160,31 @@ class MediaTimeRange extends MediaChromeRange {
   getBarColors() {
     let colorsArray = super.getBarColors();
 
-    if (!this.mediaBuffered || !this.mediaBuffered.length || this.mediaDuration <= 0) {
+    if (
+      !this.mediaBuffered ||
+      !this.mediaBuffered.length ||
+      this.mediaDuration <= 0
+    ) {
       return colorsArray;
     }
 
     const buffered = this.mediaBuffered;
-    const buffPercent = (buffered[buffered.length - 1][1] / this.mediaDuration) * 100;
-    colorsArray.splice(1, 0, ['var(--media-time-buffered-color, #777)', buffPercent]);
+    const buffPercent =
+      (buffered[buffered.length - 1][1] / this.mediaDuration) * 100;
+    colorsArray.splice(1, 0, [
+      'var(--media-time-buffered-color, #777)',
+      buffPercent,
+    ]);
     return colorsArray;
   }
 
   enableThumbnails() {
-    this.thumbnailPreview = this.shadowRoot.querySelector('media-thumbnail-preview');
-    const thumbnailContainer = this.shadowRoot.querySelector('#thumbnailContainer');
+    this.thumbnailPreview = this.shadowRoot.querySelector(
+      'media-thumbnail-preview'
+    );
+    const thumbnailContainer = this.shadowRoot.querySelector(
+      '#thumbnailContainer'
+    );
     thumbnailContainer.classList.add('enabled');
 
     let mouseMoveHandler;
@@ -162,12 +204,15 @@ class MediaTimeRange extends MediaChromeRange {
 
         // Get thumbnail center position
         const leftPadding = rangeRect.left - this.getBoundingClientRect().left;
-        const thumbnailLeft = leftPadding + (mousePercent * rangeRect.width);
+        const thumbnailLeft = leftPadding + mousePercent * rangeRect.width;
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
 
         const detail = mousePercent * duration;
-        const mediaPreviewEvt = new window.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, { composed: true, bubbles: true, detail });
+        const mediaPreviewEvt = new window.CustomEvent(
+          MediaUIEvents.MEDIA_PREVIEW_REQUEST,
+          { composed: true, bubbles: true, detail }
+        );
         this.dispatchEvent(mediaPreviewEvt);
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
@@ -180,7 +225,9 @@ class MediaTimeRange extends MediaChromeRange {
     // Trigger when the mouse moves over the range
     let rangeEntered = false;
     let rangeMouseMoveHander = (evt) => {
-      const mediaDurationStr = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+      const mediaDurationStr = this.getAttribute(
+        MediaUIAttributes.MEDIA_DURATION
+      );
       if (!rangeEntered && mediaDurationStr) {
         rangeEntered = true;
         trackMouse();
@@ -191,7 +238,7 @@ class MediaTimeRange extends MediaChromeRange {
             rangeEntered = false;
             stopTrackingMouse();
           }
-        }
+        };
         window.addEventListener('mousemove', offRangeHandler, false);
       }
     };

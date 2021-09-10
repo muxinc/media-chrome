@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta name="viewport" content="width=device-width">
   <title>Media Chrome Youtube Media Example</title>
@@ -7,20 +7,21 @@
   <script type="module" src="../../dist/index.js"></script>
 </head>
 <body>
-
-<media-controller>
-  <youtube-video
-    slot="media"
-    src="https://www.youtube.com/watch?v=rubNgGj3pYo"
-  ></youtube-video>
-  <media-control-bar>
-    <media-play-button></media-play-button>
-    <media-time-range></media-time-range>
-    <media-mute-button></media-mute-button>
-    <media-volume-range></media-volume-range>
-    <media-fullscreen-button></media-fullscreen-button>
-  </media-control-bar>
-</media-controller>
-
+  <main>
+    <h1>Media Chrome Youtube Media Example</h1>
+    <media-controller>
+      <youtube-video
+        slot="media"
+        src="https://www.youtube.com/watch?v=rubNgGj3pYo"
+      ></youtube-video>
+      <media-control-bar>
+        <media-play-button></media-play-button>
+        <media-time-range></media-time-range>
+        <media-mute-button></media-mute-button>
+        <media-volume-range></media-volume-range>
+        <media-fullscreen-button></media-fullscreen-button>
+      </media-control-bar>
+    </media-controller>
+  </main>
 </body>
 </html>

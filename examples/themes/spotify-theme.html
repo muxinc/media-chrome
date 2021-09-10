@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <title>Media Chrome Spotify Theme Example</title>
   <script type="module" src="../../dist/index.js"></script>
@@ -91,33 +91,33 @@
   }
 
 </style>
+<main>
+  <h1>The Spotify player theme</h1>
+  <p>The Spotify player built with media-chrome.</p>
 
-<h1>The Spotify player theme</h1>
-<p>The Spotify player built with media-chrome.</p>
+  <media-controller audio>
+    <audio
+      slot="media"
+      src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
+      preload="none"
+    ></audio>
 
-<media-controller audio>
-  <audio
-    slot="media"
-    src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
-    preload="none"
-  ></audio>
-
-  <div id="media-poster">
-    <media-play-button></media-play-button>
-  </div>
-
-  <div id="content-area">
-    <div id="text-area">
-      <div id="media-title-display">Emotion (Deluxe)</div>
-      <div id="media-subtitle-display">Carly Rae Jepsen</div>
+    <div id="media-poster">
+      <media-play-button></media-play-button>
     </div>
-    <media-control-bar>
-      <media-time-range></media-time-range>
-      <media-time-display remaining></media-time-display>
-    </media-control-bar>
-  </div>
 
-</media-controller>
+    <div id="content-area">
+      <div id="text-area">
+        <div id="media-title-display">Emotion (Deluxe)</div>
+        <div id="media-subtitle-display">Carly Rae Jepsen</div>
+      </div>
+      <media-control-bar>
+        <media-time-range></media-time-range>
+        <media-time-display remaining></media-time-display>
+      </media-control-bar>
+    </div>
 
+  </media-controller>
+</main>
 </body>
 </html>
