@@ -6,6 +6,7 @@ import MediaControlBar from './media-control-bar.js';
 import MediaCurrentTimeDisplay from './media-current-time-display.js';
 import MediaDurationDisplay from './media-duration-display.js';
 import MediaTimeDisplay from './media-time-display.js';
+import MediaCaptionsButton from './media-captions-button.js';
 import MediaSeekForwardButton from './media-seek-forward-button.js';
 import MediaFullscreenButton from './media-fullscreen-button.js';
 import MediaMuteButton from './media-mute-button.js';
@@ -49,6 +50,7 @@ export {
   MediaCurrentTimeDisplay,
   MediaDurationDisplay,
   MediaTimeDisplay,
+  MediaCaptionsButton,
   MediaSeekForwardButton,
   MediaFullscreenButton,
   MediaMuteButton,
