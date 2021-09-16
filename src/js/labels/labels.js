@@ -8,6 +8,7 @@ export const nouns = {
   PLAYBACK_RATE: ({ playbackRate = 1 } = {}) =>
     `current playback rate ${playbackRate}`,
   PLAYBACK_TIME: () => `playback time`,
+  MEDIA_LOADING: () => `media loading`,
 };
 
 /** @type {{ [k: string]: (x?: Partial<{ seekOffset: number; playbackRate: number; }>) => string; }} */
