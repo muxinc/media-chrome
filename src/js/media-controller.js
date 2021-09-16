@@ -408,7 +408,7 @@ class MediaController extends MediaContainer {
   get playbackRate() {
     const media = this.media;
 
-    return media ? media.currentTime : 1;
+    return media ? media.playbackRate : 1;
   }
 
   set playbackRate(rate) {
