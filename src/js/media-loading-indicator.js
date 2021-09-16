@@ -1,7 +1,10 @@
 import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 const template = document.createElement('template');
@@ -20,7 +23,7 @@ const loadingIndicatorIcon = `
          repeatCount="indefinite" />
   </path>
 </svg>
-`
+`;
 
 template.innerHTML = `
 <style>
@@ -35,14 +38,15 @@ template.innerHTML = `
   width: 0px;
   height: 0px;
 }
-:host(:not([${MediaUIAttributes.MEDIA_LOADING}])) slot[name=loading] > *, 
-:host(:not([${MediaUIAttributes.MEDIA_LOADING}])) ::slotted([slot=loading]),
-:host(:not([${MediaUIAttributes.MEDIA_LOADING}])) #status {
+
+:host(:not([is-loading])) slot[name=loading] > *, 
+:host(:not([is-loading])) ::slotted([slot=loading]),
+:host(:not([is-loading])) #status {
   display: none;
 }
 
 svg, img, ::slotted(svg), ::slotted(img) {
-  width: var(--media-loading-icon-width, 24px);
+  width: var(--media-loading-icon-width, 50px);
   height: var(--media-loading-icon-height);
   fill: var(--media-icon-color, #fff);
   vertical-align: middle;
@@ -53,12 +57,18 @@ svg, img, ::slotted(svg), ::slotted(img) {
 <div id="status" role="status" aria-live="polite">${nouns.MEDIA_LOADING()}</div>
 `;
 
+const DEFAULT_LOADING_DELAY = 500;
+
 class MediaLoadingIndicator extends window.HTMLElement {
-  
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CONTROLLER, MediaUIAttributes.MEDIA_PAUSED, MediaUIAttributes.MEDIA_LOADING, 'loading-delay'];
+    return [
+      MediaUIAttributes.MEDIA_CONTROLLER,
+      MediaUIAttributes.MEDIA_PAUSED,
+      MediaUIAttributes.MEDIA_LOADING,
+      'loading-delay',
+    ];
   }
-  
+
   constructor() {
     super();
 
@@ -66,8 +76,24 @@ class MediaLoadingIndicator extends window.HTMLElement {
     const indicatorHTML = template.content.cloneNode(true);
     shadow.appendChild(indicatorHTML);
   }
-  
+
   attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_LOADING) {
+      if (newValue == undefined) {
+        if (this.loadingDelayHandle) {
+          clearTimeout(this.loadingDelayHandle);
+          this.loadingDelayHandle = undefined;
+        }
+        this.removeAttribute('is-loading');
+      } else if (newValue != undefined) {
+        const loadingDelay =
+          +this.getAttribute('loading-delay') ?? DEFAULT_LOADING_DELAY;
+        this.loadingDelayHandle = setTimeout(() => {
+          this.setAttribute('is-loading', '');
+          this.loadingDelayHandle = undefined;
+        }, loadingDelay);
+      }
+    }
     if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
@@ -81,7 +107,9 @@ class MediaLoadingIndicator extends window.HTMLElement {
   }
 
   connectedCallback() {
-    const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    const mediaControllerId = this.getAttribute(
+      MediaUIAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.associateElement?.(this);
@@ -89,7 +117,13 @@ class MediaLoadingIndicator extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    if (this.loadingDelayHandle) {
+      clearTimeout(this.loadingDelayHandle);
+      this.loadingDelayHandle = undefined;
+    }
+    const mediaControllerSelector = this.getAttribute(
+      MediaUIAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerSelector) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
