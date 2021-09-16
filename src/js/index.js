@@ -17,6 +17,7 @@ import MediaProgressRange from './media-progress-range.js';
 import MediaSeekBackwardButton from './media-seek-backward-button.js';
 import MediaThumbnailPreview from './media-thumbnail-preview.js';
 import MediaTimeRange from './media-time-range.js';
+import MediaLoadingIndicator from './media-loading-indicator.js';
 import MediaTitleElement from './media-title-element.js';
 import MediaVolumeRange from './media-volume-range.js';
 import { Window as window } from './utils/server-safe-globals.js';
@@ -63,5 +64,6 @@ export {
   MediaThumbnailPreview as MediaThumbnailPreviewElement,
   MediaTimeRange,
   MediaTitleElement,
+  MediaLoadingIndicator,
   MediaVolumeRange,
 }

@@ -5,6 +5,7 @@ export const nouns = {
     SEEK: () => 'seek',
     CLOSED_CAPTIONS: () => 'closed captions',
     PLAYBACK_RATE: ({ playbackRate }) => `current playback rate ${playbackRate}`,
+    MEDIA_LOADING: () => `media loading`,
 };
 
 export const verbs = {

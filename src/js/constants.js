@@ -39,6 +39,7 @@ export const MediaUIAttributes = {
     MEDIA_PREVIEW_COORDS: 'media-preview-coords',
     MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
     MEDIA_CONTROLLER: 'media-controller',
+    MEDIA_LOADING: 'media-loading',
 };
 
 export const TextTrackKinds = {
@@ -53,4 +54,12 @@ export const TextTrackModes = {
     DISABLED: 'disabled',
     HIDDEN: 'hidden',
     SHOWING: 'showing',
+};
+
+export const ReadyStates = {
+    HAVE_NOTHING: 0,
+    HAVE_METADATA: 1,
+    HAVE_CURRENT_DATA: 2,
+    HAVE_FUTURE_DATA: 3,
+    HAVE_ENOUGH_DATA: 4,
 };
