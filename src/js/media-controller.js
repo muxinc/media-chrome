@@ -34,8 +34,8 @@ class MediaController extends MediaContainer {
     super();
 
     // Track externally associated control elements
+    this.mediaStateReceivers = [];
     this.associatedElements = [];
-    this.monitoredElements = [];
     this.associateElement(this);
 
     // Capture request events from internal controls
@@ -260,22 +260,22 @@ class MediaController extends MediaContainer {
   }
 
   propagateMediaState(stateName, state) {
-    propagateMediaState(this.associatedElements, stateName, state);
+    propagateMediaState(this.mediaStateReceivers, stateName, state);
   }
 
   associateElement(element) {
     if (!element) return;
-    const els = this.monitoredElements;
+    const els = this.associatedElements;
     if (els.some(elObj => elObj.element === element)) return;
 
-    const setupAssociatedElement = this.setupAssociatedElement.bind(this);
-    const teardownAssociatedElement = this.teardownAssociatedElement.bind(this);
+    const registerMediaStateReceiver = this.registerMediaStateReceiver.bind(this);
+    const unregisterMediaStateReceiver = this.unregisterMediaStateReceiver.bind(this);
 
     /** @TODO Should we support "removing association" */
     const unsubscribe = monitorMediaUIElementDescendantsOf(
       element, 
-      setupAssociatedElement, 
-      teardownAssociatedElement,
+      registerMediaStateReceiver, 
+      unregisterMediaStateReceiver,
     );
 
     els.push({ element, unsubscribe });
@@ -283,25 +283,25 @@ class MediaController extends MediaContainer {
 
   unassociateElement(element) {
     if (!element) return;
-    const els = this.monitoredElements;
+    const els = this.associatedElements;
 
     const index = els.findIndex(elObj => elObj.element === element);
     if (index < 0) return;
 
     const mediaUIElementDescendants = getMediaUIElementDescendants(element);
 
-    const teardownAssociatedElement = this.teardownAssociatedElement.bind(this);
+    const unregisterMediaStateReceiver = this.unregisterMediaStateReceiver.bind(this);
 
-    mediaUIElementDescendants.forEach(teardownAssociatedElement);
+    mediaUIElementDescendants.forEach(unregisterMediaStateReceiver);
     
     const { unsubscribe } = els[index];
     unsubscribe();
     els.splice(index, 1);
   }
 
-  setupAssociatedElement(el) {
+  registerMediaStateReceiver(el) {
     if (!el) return;
-    const els = this.associatedElements;
+    const els = this.mediaStateReceivers;
     const index = els.indexOf(el);
     if (index > -1) return;
 
@@ -332,8 +332,8 @@ class MediaController extends MediaContainer {
     }
   }
 
-  teardownAssociatedElement(el) {
-    const els = this.associatedElements;
+  unregisterMediaStateReceiver(el) {
+    const els = this.mediaStateReceivers;
 
     const index = els.indexOf(el);
     if (index < 0) return;
