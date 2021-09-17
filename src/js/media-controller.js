@@ -482,32 +482,6 @@ const traverseForMediaStateReceivers = (rootNode, mediaStateReceiverCallback) =>
   allChildNodes.forEach(childNode => traverseForMediaStateReceivers(childNode, mediaStateReceiverCallback));
 };
 
-const updateMediaStateReceiversFromMutations = (mutationsList = []) => {
-  const mediaChromeNodesState = {
-    addedNodes: [],
-    removedNodes: [],
-  };
-
-  const mediaStateReceiverAddedCb = (mediaStateReceiver) => mediaChromeNodeState.addedNodes.push(mediaStateReceiver);
-  const mediaStateReceiverRemovedCb = (mediaStateReceiver) => mediaChromeNodeState.removedNodes.push(mediaStateReceiver);
-
-  mutationsList.forEach(mutationRecord => {
-    const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
-    if (type === 'childList') {
-      Array.prototype.forEach.call(addedNodes, mediaStateReceiverAddedCb);
-      Array.prototype.forEach.call(removedNodes, mediaStateReceiverRemovedCb);
-    } else if (type === 'attributes' && attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES) {
-      if (isMediaStateReceiver(target)) {
-        mediaStateReceiverAddedCb(target);
-      } else {
-        mediaStateReceiverRemovedCb(target);
-      }
-    }
-  });
-
-  return mediaChromeNodesState;
-};
-
 const propagateMediaState = (els, stateName, val) => {
   els.forEach(el => {
     /** @TODO confirm this is still needed; otherwise, remove (CJP) */
@@ -541,9 +515,19 @@ const monitorForMediaStateReceivers = (root, registerMediaStateReceiver, unregis
   root.addEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unassociateElementHandler);
 
   const mutationCallback = (mutationsList, _observer) => {
-    const { addedNodes, removedNodes } = updateMediaStateReceiversFromMutations(mutationsList);
-    addedNodes.forEach(registerMediaStateReceiver);
-    removedNodes.forEach(unregisterMediaStateReceiver);
+    mutationsList.forEach(mutationRecord => {
+      const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
+      if (type === 'childList') {
+        Array.prototype.forEach.call(addedNodes, registerMediaStateReceiver);
+        Array.prototype.forEach.call(removedNodes, unregisterMediaStateReceiver);
+      } else if (type === 'attributes' && attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES) {
+        if (isMediaStateReceiver(target)) {
+          registerMediaStateReceiver(target);
+        } else {
+          unregisterMediaStateReceiver(target);
+        }
+      }
+    });
   };
 
   const observer = new MutationObserver(mutationCallback);
