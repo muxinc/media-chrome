@@ -288,9 +288,6 @@ class MediaController extends MediaContainer {
     const index = els.findIndex(elObj => elObj.element === element);
     if (index < 0) return;
 
-    const unregisterMediaStateReceiver = this.unregisterMediaStateReceiver.bind(this);
-    traverseForMediaStateReceivers(element, unregisterMediaStateReceiver);
-    
     const { unsubscribe } = els[index];
     unsubscribe();
     els.splice(index, 1);
@@ -533,11 +530,17 @@ const monitorForMediaStateReceivers = (root, registerMediaStateReceiver, unregis
   const observer = new MutationObserver(mutationCallback);
   observer.observe(root, { childList: true, attributes: true, subtree: true });
 
-  return () => {
+  const unsubscribe = () => {
+    // Unregister ourselves and any of our descendants
+    traverseForMediaStateReceivers(element, unregisterMediaStateReceiver);
+    // Stop observing for Media State Receivers
     observer.disconnect();
+    // Stop listening for Media State Receiver events.
     root.removeEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, associateElementHandler);
     root.removeEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unassociateElementHandler);
   };
+
+  return unsubscribe;
 };
 
 defineCustomElement('media-controller', MediaController);
