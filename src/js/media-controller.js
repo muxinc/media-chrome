@@ -266,8 +266,8 @@ class MediaController extends MediaContainer {
 
   associateElement(element) {
     if (!element) return;
-    const { associatedElements: els = [], associatedElementSubscriptions } = this;
-    if (els.some(elObj => elObj.element === element)) return;
+    const { associatedElementSubscriptions } = this;
+    if (associatedElementSubscriptions.has(element)) return;
 
     const registerMediaStateReceiver = this.registerMediaStateReceiver.bind(this);
     const unregisterMediaStateReceiver = this.unregisterMediaStateReceiver.bind(this);
@@ -279,20 +279,16 @@ class MediaController extends MediaContainer {
       unregisterMediaStateReceiver,
     );
 
-    els.push(element);
     associatedElementSubscriptions.set(element, unsubscribe);
   }
 
   unassociateElement(element) {
     if (!element) return;
-    const { associatedElements: els = [], associatedElementSubscriptions } = this;
-
-    const index = els.findIndex(elObj => elObj.element === element);
-    if (index < 0) return;
-
+    const { associatedElementSubscriptions } = this;
+    if (!associatedElementSubscriptions.has(element)) return;
     const unsubscribe = associatedElementSubscriptions.get(element);
     unsubscribe();
-    els.splice(index, 1);
+    associatedElementSubscriptions.delete(element);
   }
 
   registerMediaStateReceiver(el) {
@@ -557,8 +553,8 @@ const monitorForMediaStateReceivers = (rootNode, registerMediaStateReceiver, unr
     // Stop observing for Media State Receivers
     observer.disconnect();
     // Stop listening for Media State Receiver events.
-    rootNode.removeEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, associateElementHandler);
-    rootNode.removeEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unassociateElementHandler);
+    rootNode.removeEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, registerMediaStateReceiverHandler);
+    rootNode.removeEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unregisterMediaStateReceiverHandler);
   };
 
   return unsubscribe;
