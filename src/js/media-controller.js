@@ -288,7 +288,7 @@ class MediaController extends MediaContainer {
     const index = els.findIndex(elObj => elObj.element === element);
     if (index < 0) return;
 
-    const mediaUIElementDescendants = getMediaUIElementDescendants(element);
+    const mediaUIElementDescendants = traverseForMediaStateReceivers(element);
 
     const unregisterMediaStateReceiver = this.unregisterMediaStateReceiver.bind(this);
 
@@ -468,7 +468,7 @@ const getRegisteredCustomElementPromise = (el) => {
  *  - Have media chrome attributes in its `observedAttributes` list -or-
  *  - Have a `media-chrome-attributes` attribute with at least one well-defined media chrome attribute
  */
-const getMediaUIElementDescendants = (rootNode) => {
+const traverseForMediaStateReceivers = (rootNode) => {
   // If the rootNode is a custom element that's not yet defined/ready, so return an array of a promise to yield the
   // element once it's registered for us to check at that time.
   if (isUndefinedCustomElement(rootNode)) return [getRegisteredCustomElementPromise(rootNode)];
@@ -490,7 +490,7 @@ const getMediaUIElementDescendants = (rootNode) => {
     // which will yield an array of arrays
     // 2. flatten that into a single array (aka map+flat aka flatMap)
     // 3. spread this as the rest of the descendant arrays' elements to return
-    ...Array.prototype.flatMap.call(allChildNodes, getMediaUIElementDescendants)
+    ...Array.prototype.flatMap.call(allChildNodes, traverseForMediaStateReceivers)
   ];
 };
 
@@ -498,8 +498,8 @@ const toNextMediaUIElementsState = (mutationsList = []) => {
   const mediaChromeNodesState = mutationsList.reduce((prevMediaChromeNodesState, mutationRecord) => {
     const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
     if (type === 'childList') {
-      const addedMediaChromeNodes = Array.prototype.flatMap.call(addedNodes, getMediaUIElementDescendants);
-      const removedMediaChromeNodes = Array.prototype.flatMap.call(removedNodes, getMediaUIElementDescendants);
+      const addedMediaChromeNodes = Array.prototype.flatMap.call(addedNodes, traverseForMediaStateReceivers);
+      const removedMediaChromeNodes = Array.prototype.flatMap.call(removedNodes, traverseForMediaStateReceivers);
       prevMediaChromeNodesState.addedNodes.push(...addedMediaChromeNodes);
       prevMediaChromeNodesState.removedNodes.push(...removedMediaChromeNodes);
       return prevMediaChromeNodesState;
@@ -548,7 +548,7 @@ const monitorMediaUIElementDescendantsOf = (root, associateCallback, unassociate
     if (isPromiseLike(elOrPromise) && !isHTMLElement(elOrPromise)) {
       // Assume promises will yield the element when resolved
       elOrPromise.then(el => {
-        const addedNodes = getMediaUIElementDescendants(el);
+        const addedNodes = traverseForMediaStateReceivers(el);
         // Still use `associateCallbackWithAsync`, just in case more descendants aren't quite ready
         addedNodes.forEach(associateCallbackWithAsync);
       });
@@ -558,7 +558,7 @@ const monitorMediaUIElementDescendantsOf = (root, associateCallback, unassociate
     associateCallback(elOrPromise);
   };
 
-  const addedNodes = getMediaUIElementDescendants(root);
+  const addedNodes = traverseForMediaStateReceivers(root);
   addedNodes.forEach(associateCallbackWithAsync);
 
   /** @TODO Discuss recursively (un)associating or not, recursively monitoring or not, etc. for event use case (CJP) */
@@ -572,8 +572,8 @@ const monitorMediaUIElementDescendantsOf = (root, associateCallback, unassociate
     unassociateCallback(el);
   };
 
-  root.addEventListener(MediaUIEvents.MEDIA_ASSOCIATE_ELEMENT_REQUEST, associateElementHandler);
-  root.addEventListener(MediaUIEvents.MEDIA_UNASSOCIATE_ELEMENT_REQUEST, unassociateElementHandler);
+  root.addEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, associateElementHandler);
+  root.addEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unassociateElementHandler);
 
   const mutationCallback = (mutationsList, _observer) => {
     const { addedNodes, removedNodes } = toNextMediaUIElementsState(mutationsList);
@@ -586,8 +586,8 @@ const monitorMediaUIElementDescendantsOf = (root, associateCallback, unassociate
 
   return () => {
     observer.disconnect();
-    root.removeEventListener(MediaUIEvents.MEDIA_ASSOCIATE_ELEMENT_REQUEST, associateElementHandler);
-    root.removeEventListener(MediaUIEvents.MEDIA_UNASSOCIATE_ELEMENT_REQUEST, unassociateElementHandler);
+    root.removeEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, associateElementHandler);
+    root.removeEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unassociateElementHandler);
   };
 };
 
