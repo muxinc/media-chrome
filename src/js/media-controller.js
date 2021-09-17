@@ -288,11 +288,8 @@ class MediaController extends MediaContainer {
     const index = els.findIndex(elObj => elObj.element === element);
     if (index < 0) return;
 
-    const mediaUIElementDescendants = traverseForMediaStateReceivers(element);
-
     const unregisterMediaStateReceiver = this.unregisterMediaStateReceiver.bind(this);
-
-    mediaUIElementDescendants.forEach(unregisterMediaStateReceiver);
+    traverseForMediaStateReceivers(element, unregisterMediaStateReceiver);
     
     const { unsubscribe } = els[index];
     unsubscribe();
@@ -438,24 +435,11 @@ const setAttr = (child, attrName, attrValue) => {
   return child.setAttribute(attrName, attrValue);
 };
 
-const isMediaSlotElement = (el) => el?.slot === 'media';
-const isMediaSlotElementDescendant = (el) => !!el.closest('*[slot="media"]');
-const hasDescendants = (el) => {
-  return !!(el?.childNodes?.length || el?.shadowRoot?.childNodes?.length);
-};
-
-const shouldGetMediaUIElementDescendants = (el) => {
-  return !isMediaSlotElement(el) && hasDescendants(el);
-};
+const isMediaSlotElementDescendant = (el) => !!el.closest?.('*[slot="media"]');
 
 const isUndefinedCustomElement = (el) => {
   const name = el?.nodeName.toLowerCase();
   return name.includes('-') && !window.customElements.get(name);
-};
-
-const getRegisteredCustomElementPromise = (el) => {
-  const name = el?.nodeName.toLowerCase();
-  return window.customElements.whenDefined(name).then(() => el);
 };
 
 /**
@@ -468,58 +452,59 @@ const getRegisteredCustomElementPromise = (el) => {
  *  - Have media chrome attributes in its `observedAttributes` list -or-
  *  - Have a `media-chrome-attributes` attribute with at least one well-defined media chrome attribute
  */
-const traverseForMediaStateReceivers = (rootNode) => {
-  // If the rootNode is a custom element that's not yet defined/ready, so return an array of a promise to yield the
-  // element once it's registered for us to check at that time.
-  if (isUndefinedCustomElement(rootNode)) return [getRegisteredCustomElementPromise(rootNode)];
+const traverseForMediaStateReceivers = (rootNode, mediaStateReceiverCallback) => {
+  // We (currently) don't check if descendants of the `media` (e.g. <video/>) are Media State Receivers
+  // See also `propagateMediaState`
+  if (isMediaSlotElementDescendant(rootNode)) {
+    return;
+  }
+  // If the rootNode is a custom element that's not yet defined/ready, wait until it's defined before
+  // attempting traversal
+  if (isUndefinedCustomElement(rootNode)) {
+    const name = rootNode?.nodeName.toLowerCase();
+    window.customElements.whenDefined(name).then(() => {
+      // Try/traverse again once the custom element is registered
+      traverseForMediaStateReceivers(rootNode, mediaStateReceiverCallback);
+    });
+    return;
+  };
 
-  const rootMediaUIElements = isMediaStateReceiver(rootNode) && !isMediaSlotElementDescendant(rootNode) ? [rootNode] : [];
-  // If it's a leaf node/element, if it's also a media ui element, return an array containing it as the sole member,
-  // otherwise return an empty array.
-  if (!shouldGetMediaUIElementDescendants(rootNode)) return rootMediaUIElements;
+  // The rootNode is itself a Media State Receiver
+  if (isMediaStateReceiver(rootNode)) {
+    mediaStateReceiverCallback(rootNode);
+  }
 
   const { childNodes = [] } = rootNode ?? {};
   const shadowChildNodes = rootNode?.shadowRoot?.childNodes ?? [];
   const allChildNodes = [...childNodes, ...shadowChildNodes];
-  // return an array of...
-  return [
-    // (a spread of an array of only) the root node/element if it is in fact a media ui element, otherwise nothing (a spread of an empty array)
-    ...rootMediaUIElements,
-    // For the (current) root node/element:
-    // 1. map each child node (including "shadow children") to its own media ui element descendants array, 
-    // which will yield an array of arrays
-    // 2. flatten that into a single array (aka map+flat aka flatMap)
-    // 3. spread this as the rest of the descendant arrays' elements to return
-    ...Array.prototype.flatMap.call(allChildNodes, traverseForMediaStateReceivers)
-  ];
+
+  // Traverse all children (including shadowRoot children) to see if they are/have Media State Receivers
+  allChildNodes.forEach(childNode => traverseForMediaStateReceivers(childNode, mediaStateReceiverCallback));
 };
 
 const updateMediaStateReceiversFromMutations = (mutationsList = []) => {
-  const mediaChromeNodesState = mutationsList.reduce((prevMediaChromeNodesState, mutationRecord) => {
-    const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
-    if (type === 'childList') {
-      const addedMediaChromeNodes = Array.prototype.flatMap.call(addedNodes, traverseForMediaStateReceivers);
-      const removedMediaChromeNodes = Array.prototype.flatMap.call(removedNodes, traverseForMediaStateReceivers);
-      prevMediaChromeNodesState.addedNodes.push(...addedMediaChromeNodes);
-      prevMediaChromeNodesState.removedNodes.push(...removedMediaChromeNodes);
-      return prevMediaChromeNodesState;
-    }
-    /** option 1, controller side */
-    if (type === 'attributes' && attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES) {
-      const attrs = getMediaUIAttributesFrom(target);
-      if (attrs.length) {
-        prevMediaChromeNodesState.addedNodes.push(target);
-      }
-      else {
-        prevMediaChromeNodesState.removedNodes.push(target);
-      }
-      return prevMediaChromeNodesState;
-    }
-    return prevMediaChromeNodesState;
-  }, {
+  const mediaChromeNodesState = {
     addedNodes: [],
     removedNodes: [],
+  };
+
+  const mediaStateReceiverAddedCb = (mediaStateReceiver) => mediaChromeNodeState.addedNodes.push(mediaStateReceiver);
+  const mediaStateReceiverRemovedCb = (mediaStateReceiver) => mediaChromeNodeState.removedNodes.push(mediaStateReceiver);
+
+  mutationsList.forEach(mutationRecord => {
+    const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
+    if (type === 'childList') {
+      Array.prototype.forEach.call(addedNodes, mediaStateReceiverAddedCb);
+      Array.prototype.forEach.call(removedNodes, mediaStateReceiverRemovedCb);
+    } else if (type === 'attributes' && attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES) {
+      if (isMediaStateReceiver(target)) {
+        mediaStateReceiverAddedCb(target);
+      } else {
+        mediaStateReceiverRemovedCb(target);
+      }
+    }
   });
+
   return mediaChromeNodesState;
 };
 
@@ -537,30 +522,10 @@ const propagateMediaState = (els, stateName, val) => {
   });
 };
 
-const isPromiseLike = value => typeof value?.then === 'function';
-const isHTMLElement = value => value instanceof window.HTMLElement;
-
 const monitorForMediaStateReceivers = (root, registerMediaStateReceiver, unregisterMediaStateReceiver) => {
 
-  const associateCallbackWithAsync = (elOrPromise) => {
-    // Use structural type checking for "`then`" based on A+/Promise spec in case of 3rd party Promise impls or similar
-    // But also make sure it isn't an `HTMLElement`, just in case it happens to have a `then` method
-    if (isPromiseLike(elOrPromise) && !isHTMLElement(elOrPromise)) {
-      // Assume promises will yield the element when resolved
-      elOrPromise.then(el => {
-        const addedNodes = traverseForMediaStateReceivers(el);
-        // Still use `associateCallbackWithAsync`, just in case more descendants aren't quite ready
-        addedNodes.forEach(associateCallbackWithAsync);
-      });
-      return;
-    }
-
-    registerMediaStateReceiver(elOrPromise);
-  };
-
-  const addedNodes = traverseForMediaStateReceivers(root);
-  addedNodes.forEach(associateCallbackWithAsync);
-
+  traverseForMediaStateReceivers(root, registerMediaStateReceiver);
+  
   /** @TODO Discuss recursively (un)associating or not, recursively monitoring or not, etc. for event use case (CJP) */
   const associateElementHandler = (evt) => {
     const el = evt?.composedPath()[0] ?? evt.target;
@@ -577,7 +542,7 @@ const monitorForMediaStateReceivers = (root, registerMediaStateReceiver, unregis
 
   const mutationCallback = (mutationsList, _observer) => {
     const { addedNodes, removedNodes } = updateMediaStateReceiversFromMutations(mutationsList);
-    addedNodes.forEach(associateCallbackWithAsync);
+    addedNodes.forEach(registerMediaStateReceiver);
     removedNodes.forEach(unregisterMediaStateReceiver);
   };
 
