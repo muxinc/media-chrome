@@ -417,7 +417,7 @@ const getMediaUIAttributesFrom = (child) => {
   const mediaChromeAttributesList = child?.getAttribute?.(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES)?.split?.(/\s+/);
   if (!Array.isArray(observedAttributes || mediaChromeAttributesList)) return [];
   return (observedAttributes || mediaChromeAttributesList).filter(attrName => MEDIA_UI_ATTRIBUTE_NAMES.includes(attrName));
-}
+};
 
 const isMediaStateReceiver = (child) => !!getMediaUIAttributesFrom(child).length;
 
