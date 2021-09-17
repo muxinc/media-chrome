@@ -30,9 +30,13 @@ template.innerHTML = `
     }
 
     /* Video specific styles */
-    :host(:not([audio])) {
+    :host(:not([audio]):not([aspect-ratio])) {
       height: 480px;
       width: 720px;
+    }
+
+    :host([aspect-ratio]) {
+      width: 100%;
     }
 
     /* Safari needs this to actually make the element fill the window */
@@ -67,6 +71,8 @@ template.innerHTML = `
       width: 100%;
     }
   </style>
+  <style class="aspect-ratio"></style>
+
   <slot name="media"></slot>
   <slot></slot>
 `;
@@ -129,8 +135,14 @@ class MediaContainer extends window.HTMLElement {
     observer.observe(this, { childList: true, subtree: true });
   }
 
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === 'aspect-ratio') {
+      this.updateAspectRatio(newValue);
+    }
+  }
+
   static get observedAttributes() {
-    return ['autohide'].concat(super.observedAttributes || []);
+    return ['autohide', 'aspect-ratio'].concat(super.observedAttributes || []);
   }
 
   // Could share this code with media-chrome-html-element instead
@@ -182,7 +194,7 @@ class MediaContainer extends window.HTMLElement {
   }
 
   connectedCallback() {
-    
+
     const isAudioChrome = this.getAttribute('audio') != null;
     const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
     this.setAttribute('role', 'region')
@@ -243,6 +255,26 @@ class MediaContainer extends window.HTMLElement {
 
   get autohide() {
     return this._autohide === undefined ? 2 : this._autohide;
+  }
+
+  updateAspectRatio(ratioString) {
+    const [width, height] = ratioString.split(':');
+
+    const styleEl = this.shadow.querySelector('style.aspect-ratio');
+
+    if (height && width) {
+      styleEl.innerHTML = `:host { padding-top: ${height/width * 100}%; }`;
+    } else {
+      styleEl.innerHTML = '';
+    }
+  }
+
+  get aspectRatio() {
+    return this.getAttribute('aspect-ratio');
+  }
+
+  set aspectRatio(ratioString) {
+    this.setAttribute('aspect-ratio', ratioString);
   }
 }
 
