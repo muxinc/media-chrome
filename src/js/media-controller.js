@@ -35,6 +35,7 @@ class MediaController extends MediaContainer {
 
     // Track externally associated control elements
     this.mediaStateReceivers = [];
+    this.associatedElementSubscriptions = new Map();
     this.associatedElements = [];
     this.associateElement(this);
 
@@ -265,7 +266,7 @@ class MediaController extends MediaContainer {
 
   associateElement(element) {
     if (!element) return;
-    const els = this.associatedElements;
+    const { associatedElements: els = [], associatedElementSubscriptions } = this;
     if (els.some(elObj => elObj.element === element)) return;
 
     const registerMediaStateReceiver = this.registerMediaStateReceiver.bind(this);
@@ -278,17 +279,18 @@ class MediaController extends MediaContainer {
       unregisterMediaStateReceiver,
     );
 
-    els.push({ element, unsubscribe });
+    els.push(element);
+    associatedElementSubscriptions.set(element, unsubscribe);
   }
 
   unassociateElement(element) {
     if (!element) return;
-    const els = this.associatedElements;
+    const { associatedElements: els = [], associatedElementSubscriptions } = this;
 
     const index = els.findIndex(elObj => elObj.element === element);
     if (index < 0) return;
 
-    const { unsubscribe } = els[index];
+    const unsubscribe = associatedElementSubscriptions.get(element);
     unsubscribe();
     els.splice(index, 1);
   }
@@ -441,26 +443,26 @@ const isUndefinedCustomElement = (el) => {
 
 /**
  * 
- * @description This function will recursively check for any descendants (including the root node) 
- * that are media ui elements and return them as a single, flat array.
+ * @description This function will recursively check for any descendants (including the rootNode) 
+ * that are Media State Receivers and invoke `mediaStateReceiverCallback` with any Media State Receiver
+ * found
  * 
  * @param {HTMLElement} rootNode 
- * @returns An array of all descendant nodes (including the current node) that are identifiable as media ui elements, aka either:
- *  - Have media chrome attributes in its `observedAttributes` list -or-
- *  - Have a `media-chrome-attributes` attribute with at least one well-defined media chrome attribute
+ * @param {function} mediaStateReceiverCallback 
  */
 const traverseForMediaStateReceivers = (rootNode, mediaStateReceiverCallback) => {
   // We (currently) don't check if descendants of the `media` (e.g. <video/>) are Media State Receivers
-  // See also `propagateMediaState`
+  // See also: `propagateMediaState`
   if (isMediaSlotElementDescendant(rootNode)) {
     return;
   }
-  // If the rootNode is a custom element that's not yet defined/ready, wait until it's defined before
-  // attempting traversal
+  // If the rootNode is a custom element that's not yet defined/ready, we don't yet know for sure
+  // whether or not it or its descendants are Media State Receivers, so wait until it's
+  // defined before attempting traversal.
   if (isUndefinedCustomElement(rootNode)) {
     const name = rootNode?.nodeName.toLowerCase();
     window.customElements.whenDefined(name).then(() => {
-      // Try/traverse again once the custom element is registered
+      // Try/traverse again once the custom element is defined
       traverseForMediaStateReceivers(rootNode, mediaStateReceiverCallback);
     });
     return;
@@ -471,12 +473,12 @@ const traverseForMediaStateReceivers = (rootNode, mediaStateReceiverCallback) =>
     mediaStateReceiverCallback(rootNode);
   }
 
-  const { childNodes = [] } = rootNode ?? {};
-  const shadowChildNodes = rootNode?.shadowRoot?.childNodes ?? [];
-  const allChildNodes = [...childNodes, ...shadowChildNodes];
+  const { children = [] } = rootNode ?? {};
+  const shadowChildren = rootNode?.shadowRoot?.children ?? [];
+  const allChildren = [...children, ...shadowChildren];
 
   // Traverse all children (including shadowRoot children) to see if they are/have Media State Receivers
-  allChildNodes.forEach(childNode => traverseForMediaStateReceivers(childNode, mediaStateReceiverCallback));
+  allChildren.forEach(child => traverseForMediaStateReceivers(child, mediaStateReceiverCallback));
 };
 
 const propagateMediaState = (els, stateName, val) => {
@@ -493,34 +495,53 @@ const propagateMediaState = (els, stateName, val) => {
   });
 };
 
-const monitorForMediaStateReceivers = (root, registerMediaStateReceiver, unregisterMediaStateReceiver) => {
+/**
+ * 
+ * @description This function will monitor the rootNode for any Media State Receiver descendants
+ * that are already present, added, or removed, invoking the relevant callback function for each
+ * case.
+ * 
+ * @param {HTMLElement} rootNode 
+ * @param {function} registerMediaStateReceiver
+ * @param {function} unregisterMediaStateReceiver
+ * @returns An unsubscribe method, used to stop monitoring descendants of rootNode and to unregister its descendants
+ * 
+ */
+const monitorForMediaStateReceivers = (rootNode, registerMediaStateReceiver, unregisterMediaStateReceiver) => {
 
-  traverseForMediaStateReceivers(root, registerMediaStateReceiver);
+  // First traverse the tree to register any current Media State Receivers
+  traverseForMediaStateReceivers(rootNode, registerMediaStateReceiver);
   
-  /** @TODO Discuss recursively (un)associating or not, recursively monitoring or not, etc. for event use case (CJP) */
-  const associateElementHandler = (evt) => {
+  // Monitor for any event-based requests from descendants to register/unregister as a Media State Receiver
+  const registerMediaStateReceiverHandler = (evt) => {
     const el = evt?.composedPath()[0] ?? evt.target;
     registerMediaStateReceiver(el);
   };
 
-  const unassociateElementHandler = (evt) => {
+  const unregisterMediaStateReceiverHandler = (evt) => {
     const el = evt?.composedPath()[0] ?? evt.target;
     unregisterMediaStateReceiver(el);
   };
 
-  root.addEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, associateElementHandler);
-  root.addEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unassociateElementHandler);
+  rootNode.addEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, registerMediaStateReceiverHandler);
+  rootNode.addEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unregisterMediaStateReceiverHandler);
 
+  // Observe any changes to the DOM for any descendants that are identifiable as Media State Receivers
+  // and register or unregister them, depending on the change that occurred.
   const mutationCallback = (mutationsList, _observer) => {
     mutationsList.forEach(mutationRecord => {
       const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
       if (type === 'childList') {
-        Array.prototype.forEach.call(addedNodes, registerMediaStateReceiver);
-        Array.prototype.forEach.call(removedNodes, unregisterMediaStateReceiver);
+        // For each added node, register any Media State Receiver descendants (including itself)
+        Array.prototype.forEach.call(addedNodes, node => traverseForMediaStateReceivers(node, registerMediaStateReceiver));
+        // For each removed node, unregister any Media State Receiver descendants (including itself)
+        Array.prototype.forEach.call(removedNodes, node => traverseForMediaStateReceivers(node, unregisterMediaStateReceiver));
       } else if (type === 'attributes' && attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES) {
         if (isMediaStateReceiver(target)) {
+          // Changed from a "non-Media State Receiver" to a Media State Receiver: register it.
           registerMediaStateReceiver(target);
         } else {
+          // Changed from a Media State Receiver to a "non-Media State Receiver": unregister it.
           unregisterMediaStateReceiver(target);
         }
       }
@@ -528,16 +549,16 @@ const monitorForMediaStateReceivers = (root, registerMediaStateReceiver, unregis
   };
 
   const observer = new MutationObserver(mutationCallback);
-  observer.observe(root, { childList: true, attributes: true, subtree: true });
+  observer.observe(rootNode, { childList: true, attributes: true, subtree: true });
 
   const unsubscribe = () => {
-    // Unregister ourselves and any of our descendants
-    traverseForMediaStateReceivers(element, unregisterMediaStateReceiver);
+    // Unregister any Media State Receiver descendants (including ourselves)
+    traverseForMediaStateReceivers(rootNode, unregisterMediaStateReceiver);
     // Stop observing for Media State Receivers
     observer.disconnect();
     // Stop listening for Media State Receiver events.
-    root.removeEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, associateElementHandler);
-    root.removeEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unassociateElementHandler);
+    rootNode.removeEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, associateElementHandler);
+    rootNode.removeEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unassociateElementHandler);
   };
 
   return unsubscribe;
