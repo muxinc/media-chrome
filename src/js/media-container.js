@@ -30,13 +30,14 @@ template.innerHTML = `
     }
 
     /* Video specific styles */
-    :host(:not([audio]):not([aspect-ratio])) {
+    :host(:not([audio])) {
       height: 480px;
       width: 720px;
     }
 
     :host([aspect-ratio]) {
       width: 100%;
+      height: 0;
     }
 
     /* Safari needs this to actually make the element fill the window */
@@ -260,7 +261,7 @@ class MediaContainer extends window.HTMLElement {
   updateAspectRatio(ratioString) {
     const [width, height] = ratioString.split(':');
 
-    const styleEl = this.shadow.querySelector('style.aspect-ratio');
+    const styleEl = this.shadowRoot.querySelector('style.aspect-ratio');
 
     if (height && width) {
       styleEl.innerHTML = `:host { padding-top: ${height/width * 100}%; }`;
