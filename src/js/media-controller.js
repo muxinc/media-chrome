@@ -272,7 +272,7 @@ class MediaController extends MediaContainer {
     const unregisterMediaStateReceiver = this.unregisterMediaStateReceiver.bind(this);
 
     /** @TODO Should we support "removing association" */
-    const unsubscribe = monitorMediaUIElementDescendantsOf(
+    const unsubscribe = monitorForMediaStateReceivers(
       element, 
       registerMediaStateReceiver, 
       unregisterMediaStateReceiver,
@@ -425,7 +425,7 @@ const getMediaUIAttributesFrom = (child) => {
   return (observedAttributes || mediaChromeAttributesList).filter(attrName => MEDIA_UI_ATTRIBUTE_NAMES.includes(attrName));
 }
 
-const isMediaUIElement = (child) => !!getMediaUIAttributesFrom(child).length;
+const isMediaStateReceiver = (child) => !!getMediaUIAttributesFrom(child).length;
 
 const setAttr = (child, attrName, attrValue) => {
   if (typeof attrValue === 'boolean') {
@@ -473,7 +473,7 @@ const traverseForMediaStateReceivers = (rootNode) => {
   // element once it's registered for us to check at that time.
   if (isUndefinedCustomElement(rootNode)) return [getRegisteredCustomElementPromise(rootNode)];
 
-  const rootMediaUIElements = isMediaUIElement(rootNode) && !isMediaSlotElementDescendant(rootNode) ? [rootNode] : [];
+  const rootMediaUIElements = isMediaStateReceiver(rootNode) && !isMediaSlotElementDescendant(rootNode) ? [rootNode] : [];
   // If it's a leaf node/element, if it's also a media ui element, return an array containing it as the sole member,
   // otherwise return an empty array.
   if (!shouldGetMediaUIElementDescendants(rootNode)) return rootMediaUIElements;
@@ -494,7 +494,7 @@ const traverseForMediaStateReceivers = (rootNode) => {
   ];
 };
 
-const toNextMediaUIElementsState = (mutationsList = []) => {
+const updateMediaStateReceiversFromMutations = (mutationsList = []) => {
   const mediaChromeNodesState = mutationsList.reduce((prevMediaChromeNodesState, mutationRecord) => {
     const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
     if (type === 'childList') {
@@ -540,7 +540,7 @@ const propagateMediaState = (els, stateName, val) => {
 const isPromiseLike = value => typeof value?.then === 'function';
 const isHTMLElement = value => value instanceof window.HTMLElement;
 
-const monitorMediaUIElementDescendantsOf = (root, associateCallback, unassociateCallback) => {
+const monitorForMediaStateReceivers = (root, registerMediaStateReceiver, unregisterMediaStateReceiver) => {
 
   const associateCallbackWithAsync = (elOrPromise) => {
     // Use structural type checking for "`then`" based on A+/Promise spec in case of 3rd party Promise impls or similar
@@ -555,7 +555,7 @@ const monitorMediaUIElementDescendantsOf = (root, associateCallback, unassociate
       return;
     }
 
-    associateCallback(elOrPromise);
+    registerMediaStateReceiver(elOrPromise);
   };
 
   const addedNodes = traverseForMediaStateReceivers(root);
@@ -564,21 +564,21 @@ const monitorMediaUIElementDescendantsOf = (root, associateCallback, unassociate
   /** @TODO Discuss recursively (un)associating or not, recursively monitoring or not, etc. for event use case (CJP) */
   const associateElementHandler = (evt) => {
     const el = evt?.composedPath()[0] ?? evt.target;
-    associateCallback(el);
+    registerMediaStateReceiver(el);
   };
 
   const unassociateElementHandler = (evt) => {
     const el = evt?.composedPath()[0] ?? evt.target;
-    unassociateCallback(el);
+    unregisterMediaStateReceiver(el);
   };
 
   root.addEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, associateElementHandler);
   root.addEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unassociateElementHandler);
 
   const mutationCallback = (mutationsList, _observer) => {
-    const { addedNodes, removedNodes } = toNextMediaUIElementsState(mutationsList);
+    const { addedNodes, removedNodes } = updateMediaStateReceiversFromMutations(mutationsList);
     addedNodes.forEach(associateCallbackWithAsync);
-    removedNodes.forEach(unassociateCallback);
+    removedNodes.forEach(unregisterMediaStateReceiver);
   };
 
   const observer = new MutationObserver(mutationCallback);
