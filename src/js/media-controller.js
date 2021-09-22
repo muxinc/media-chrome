@@ -444,6 +444,9 @@ const setAttr = (child, attrName, attrValue) => {
     if (attrValue) return child.setAttribute(attrName, '');
     return child.removeAttribute(attrName);
   }
+  if (Number.isNaN(attrValue)) {
+    return child.removeAttribute(attrName);
+  }
   return child.setAttribute(attrName, attrValue);
 };
 
