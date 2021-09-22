@@ -20,6 +20,7 @@ template.innerHTML = `
     }
 
     ::slotted(*), :host > * {
+      flex-shrink: 1;
     }
 
     media-time-range,
