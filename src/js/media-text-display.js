@@ -8,33 +8,27 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     :host {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-
-      background-color: var(--media-control-background, rgba(20,20,30, 0.7));
-
-      /* Default width and height can be overridden externally */
-      height: 44px;
-
+      display: inline-block;
+      vertical-align: middle;
       box-sizing: border-box;
-      padding: 0 5px;
+      background-color: var(--media-control-background, rgba(20,20,30, 0.7));
+  
+      /* Default width and height can be overridden externally */
+      padding: 10px;
 
-      /* Min icon size is 24x24 */
-      min-height: 24px;
-      min-width: 24px;
-
-      /* Vertically center any text */
-      font-size: 16px;
+      font-size: 14px;
       line-height: 24px;
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
       color: #ffffff;
     }
 
-    #container {}
+    #container {
+      /* NOTE: We don't currently have more generic sizing vars */
+      height: var(--media-text-content-height, 24px);
+    }
   </style>
-  <div id="container"></div>
+  <span id="container"></span>
 `;
 
 class MediaTextDisplay extends window.HTMLElement {
