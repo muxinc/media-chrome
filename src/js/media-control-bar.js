@@ -13,18 +13,13 @@ template.innerHTML = `
   <style>
     :host {
       /* Need position to display above video for some reason */
-      position: relative;
       box-sizing: border-box;
       display: inline-flex;
-
-      /* Allows putting the progress range at full width on other lines */
-      flex-wrap: wrap;
 
       color: var(--media-icon-color, #eee);
     }
 
     ::slotted(*), :host > * {
-      /* position: relative; */
     }
 
     media-time-range,
