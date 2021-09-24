@@ -501,14 +501,6 @@ const setAttr = (child, attrName, attrValue) => {
 
 const isMediaSlotElementDescendant = (el) => !!el.closest?.('*[slot="media"]');
 
-const getTextTracksList = (media, filterPred = () => true) => {
-  if (!media?.textTracks) return [];
-  
-  return Array.from(media.textTracks)
-    .filter(filterPred)
-    .map(({ id, kind, label, language, mode }) => ({ id, kind, label, language, mode }));
-};
-
 /**
  * 
  * @description This function will recursively check for any descendants (including the rootNode) 
