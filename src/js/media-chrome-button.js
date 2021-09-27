@@ -151,7 +151,6 @@ class MediaChromeButton extends window.HTMLElement {
 
   connectedCallback() {
     this.setAttribute('role', "button");
-    this.setAttribute('aria-live', "polite");
     this.setAttribute('tabindex', 0);
 
     const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
