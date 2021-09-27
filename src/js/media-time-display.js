@@ -53,7 +53,6 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   connectedCallback() {
     this.setAttribute('role', 'progressbar');
-    this.setAttribute('aria-live', 'polite');
     this.setAttribute('tabindex', 0);
     super.connectedCallback();
   }
@@ -63,6 +62,9 @@ class MediaTimeDisplay extends MediaTextDisplay {
       const timesLabel = formatTimesLabel(this);
       updateAriaValueText(this);
       this.container.innerHTML = timesLabel;
+    }
+    if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
+      this.setAttribute('aria-valuenow', newValue);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
