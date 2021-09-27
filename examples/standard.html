@@ -5,9 +5,15 @@
   <title>Media Chrome Standard Video Usage Example</title>
   <script type="module" src="../dist/index.js"></script>
   <style>
-    :root { --media-icon-color: #e00; }
     .examples {
       margin-top: 20px;
+    }
+
+    media-loading-indicator {
+      --media-loading-icon-width: 100px;
+      left: calc(50% - 50px);
+      top: calc(50% - 50px);
+      position: absolute;
     }
   </style>
 </head>
@@ -20,6 +26,7 @@
         src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
         preload="none"
         muted
+        autoplay
         crossorigin
       >
         <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
@@ -27,6 +34,7 @@
         <track label="English" kind="subtitles" srclang="en" src="./en-sub.vtt"></track>
         <track label="English CC" kind="captions" srclang="en" src="./en-cc.vtt"></track>
       </video>
+      <media-loading-indicator></media-loading-indicator>
       <media-control-bar>
         <media-play-button></media-play-button>
         <media-seek-backward-button></media-seek-backward-button>
@@ -36,25 +44,53 @@
         <media-time-range></media-time-range>
         <media-time-display show-duration remaining></media-time-display>
         <media-captions-button></media-captions-button>
-        <media-loading-indicator media-loading></media-loading-indicator>
         <media-playback-rate-button></media-playback-rate-button>
         <media-pip-button></media-pip-button>
         <media-fullscreen-button></media-fullscreen-button>
       </media-control-bar>
     </media-controller>
     <div class="examples">
-      <button id="loadingBtn">Toggle Loading</button>
+      <!-- <button id="loadingBtn">Toggle Loading</button> -->
       <script>
-        const loadingBtn = document.querySelector('#loadingBtn');
+        const searchParams = new URLSearchParams(window.location.search.substring(1));
+        const vidEl = document.querySelector('video');
+        const togglePause = () => {
+          if (vidEl.paused) {
+            vidEl.play();
+          } else {
+            vidEl.pause();
+          }
+        }
         const loadingEl = document.querySelector('media-loading-indicator');
-        loadingBtn.addEventListener('click', () => {
+        const toggleLoading = () => {
           const nextState = !loadingEl.hasAttribute('media-loading');
           if (nextState) {
             loadingEl.setAttribute('media-loading', '');
           } else {
             loadingEl.removeAttribute('media-loading');
           }
-        })
+        };
+
+        if (searchParams.has('loading')) {
+          const playingHandler = () => {
+            setTimeout(() => {
+              togglePause();
+              toggleLoading();
+              setTimeout(() => {
+                toggleLoading();
+                togglePause();
+
+              }, 2000);
+            }, 2500);
+            vidEl.removeEventListener('playing', playingHandler);
+          };
+          vidEl.addEventListener('playing', playingHandler);
+        }
+
+        // const loadingBtn = document.querySelector('#loadingBtn');
+        // loadingBtn.addEventListener('click', () => {
+          
+        // });
       </script>
       <a href="./">View more examples</a>
     </div>
