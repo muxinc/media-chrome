@@ -128,13 +128,13 @@ class MediaCaptionsButton extends MediaChromeButton {
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
-    this.setAttribute('role', 'switch');
-    this.setAttribute('aria-label', nouns.CLOSED_CAPTIONS());
   }
 
   connectedCallback() {
-    updateAriaChecked(this);
     super.connectedCallback();
+    this.setAttribute('role', 'switch');
+    this.setAttribute('aria-label', nouns.CLOSED_CAPTIONS());
+    updateAriaChecked(this);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
