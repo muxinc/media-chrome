@@ -37,8 +37,10 @@
   },
   "homepage": "https://github.com/muxinc/media-chrome#readme",
   "devDependencies": {
-    "rimraf": "^3.0.2",
-    "snowpack": "^3.8.3"
+    "rimraf": "^3.0.2"
   },
-  "dependencies": {}
+  "dependencies": {
+    "snowpack": "^3.8.3"
+
+  }
 }
