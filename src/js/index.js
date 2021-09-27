@@ -13,6 +13,7 @@ import MediaMuteButton from './media-mute-button.js';
 import MediaPipButton from './media-pip-button.js';
 import MediaPlayButton from './media-play-button.js';
 import MediaPlaybackRateButton from './media-playback-rate-button.js';
+import MediaPlaybackRateSpinButton from './media-playback-rate-spin-button.js';
 import MediaProgressRange from './media-progress-range.js';
 import MediaSeekBackwardButton from './media-seek-backward-button.js';
 import MediaThumbnailPreview from './media-thumbnail-preview.js';
@@ -58,6 +59,7 @@ export {
   MediaPipButton,
   MediaPlayButton,
   MediaPlaybackRateButton,
+  MediaPlaybackRateSpinButton,
   MediaProgressRange,
   MediaSeekBackwardButton,
   MediaThumbnailPreview,
