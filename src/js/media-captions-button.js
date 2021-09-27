@@ -190,7 +190,7 @@ class MediaCaptionsButton extends MediaChromeButton {
     } else {
       const [ccTrackStr] =
         splitTextTracksStr(
-          this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST)
+          this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST) ?? ''
         ) ?? [];
       if (ccTrackStr) {
         const evt = new window.CustomEvent(
@@ -201,7 +201,7 @@ class MediaCaptionsButton extends MediaChromeButton {
       } else if (this.hasAttribute('use-subtitles-fallback')) {
         const [subTrackStr] =
           splitTextTracksStr(
-            this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST)
+            this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST) ?? ''
           ) ?? [];
         if (subTrackStr) {
           const evt = new window.CustomEvent(
@@ -210,6 +210,9 @@ class MediaCaptionsButton extends MediaChromeButton {
           );
           this.dispatchEvent(evt);
         }
+      }
+      else {
+        console.error('Attempting to enable closed captions but none are available! Please verify your media content if this is unexpected.');
       }
     }
   }
