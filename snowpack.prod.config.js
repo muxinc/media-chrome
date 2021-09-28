@@ -9,7 +9,7 @@ module.exports = {
   },
   optimize: {
     bundle: false,
-    minify: true,
+    minify: false,
     target: 'es2019',
   },
   plugins: [
