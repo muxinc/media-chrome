@@ -257,6 +257,26 @@ class MediaController extends MediaContainer {
         this.propagateMediaState(MediaUIAttributes.MEDIA_PLAYBACK_RATE, this.media.playbackRate);
       }
     }
+
+    /** 
+     * @TODO This and _mediaStatePropagators should be refactored to be less presumptuous about what is being 
+     * monitored (and also probably how it's being monitored) (CJP) 
+     */
+     this._textTrackMediaStatePropagators = {
+      'addtrack,removetrack': () => {
+        console.log('TextTrack added or removed!');
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_LIST, formatTextTracks(this.captionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_LIST, formatTextTracks(this.subtitleTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, formatTextTracks(this.showingCaptionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, formatTextTracks(this.showingSubtitleTracks) || undefined);
+      },
+      'change': () => {
+        console.log('TextTrack change!');
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, formatTextTracks(this.showingCaptionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, formatTextTracks(this.showingSubtitleTracks) || undefined);
+      }
+
+    };
   }
 
   mediaSetCallback(media) {
@@ -273,6 +293,14 @@ class MediaController extends MediaContainer {
         const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
 
         target.addEventListener(event, handler);
+      });
+      handler();
+    });
+    Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
+      const events = eventsStr.split(',');
+      events.forEach((event) => {
+        // If this is fullscreen apply to the document
+        media.textTracks.addEventListener(event, handler);
       });
       handler();
     });
@@ -299,6 +327,15 @@ class MediaController extends MediaContainer {
         const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
         target.removeEventListener(event, handler);
       });
+    });
+
+    Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
+      const events = eventsStr.split(',');
+      events.forEach((event) => {
+        // If this is fullscreen apply to the document
+        media.textTracks.removeEventListener(event, handler);
+      });
+      handler();
     });
 
     // Reset to paused state

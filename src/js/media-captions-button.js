@@ -182,7 +182,7 @@ class MediaCaptionsButton extends MediaChromeButton {
       );
       if (subtitlesShowingStr && this.hasAttribute('use-subtitles-fallback')) {
         const evt = new window.CustomEvent(
-          MediaUIEvents.MEDIA_DISABLE_SUBTITLE_REQUEST,
+          MediaUIEvents.MEDIA_DISABLE_SUBTITLES_REQUEST,
           { composed: true, bubbles: true, detail: subtitlesShowingStr }
         );
         this.dispatchEvent(evt);
