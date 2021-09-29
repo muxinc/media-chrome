@@ -52,9 +52,10 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   connectedCallback() {
-    this.setAttribute('role', 'progressbar');
-    this.setAttribute('tabindex', 0);
     super.connectedCallback();
+    this.setAttribute('role', 'progressbar');
+    this.setAttribute('aria-label', 'playback time');
+    this.setAttribute('tabindex', 0);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
