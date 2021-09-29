@@ -28,8 +28,6 @@ class MediaPlaybackRateSpinButton extends MediaChromeButton {
 
   constructor() {
     super();
-    this.setAttribute('role', 'spinbutton');
-    this.setAttribute('aria-label', 'playback rate');
     this._rates = DEFAULT_RATES;
     this.nativeEl.innerHTML = `${DEFAULT_RATE}x`;
     this.addEventListener('keydown', (e) => {
@@ -53,6 +51,12 @@ class MediaPlaybackRateSpinButton extends MediaChromeButton {
       const evt = new window.CustomEvent(MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST, { composed: true, bubbles: true, detail: nextRate });
       this.dispatchEvent(evt);
     });
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.setAttribute('role', 'spinbutton');
+    this.setAttribute('aria-label', 'playback rate');
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
