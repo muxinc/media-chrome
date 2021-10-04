@@ -13,6 +13,7 @@ import MediaTimeDisplay from './media-time-display.js';
 import MediaCaptionsButton from './media-captions-button.js';
 import MediaSeekForwardButton from './media-seek-forward-button.js';
 import MediaFullscreenButton from './media-fullscreen-button.js';
+import MediaInteractionFeedback from './media-interaction-feedback.js';
 import MediaMuteButton from './media-mute-button.js';
 import MediaPipButton from './media-pip-button.js';
 import MediaPlayButton from './media-play-button.js';
@@ -61,6 +62,7 @@ export {
   MediaCaptionsButton,
   MediaSeekForwardButton,
   MediaFullscreenButton,
+  MediaInteractionFeedback,
   MediaMuteButton,
   MediaPipButton,
   MediaPlayButton,
