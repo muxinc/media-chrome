@@ -87,7 +87,14 @@ class MediaController extends MediaContainer {
           docOrRoot.exitPictureInPicture();
         }
 
-        super[fullscreenApi.enter]();
+        if (super[fullscreenApi.enter]) {
+          super[fullscreenApi.enter]();
+          /** @TODO This is to handle iOS Safari, which doesn't support the full screen API, but does allow HTMLMediaElements to enter/exit fullscreen. (CJP) */
+        } else if (this.media.webkitEnterFullscreen) {
+          this.media.webkitEnterFullscreen();
+        } else {
+          console.error('Entering fullscreen currently unsupported for this browser or environment.');
+        }
       },
       MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
         this.getRootNode()[fullscreenApi.exit]();
@@ -230,10 +237,14 @@ class MediaController extends MediaContainer {
         this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME, volume);
         this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
       },
-      [fullscreenApi.event]: () => {
+      [fullscreenApi.event]: (evt) => {
         // Might be in the shadow dom
         const fullscreenEl = this.getRootNode()[fullscreenApi.element];
         this.propagateMediaState(MediaUIAttributes.MEDIA_IS_FULLSCREEN, fullscreenEl === this);
+      },
+      /** @TODO This is for iOS Safari to make sure controls that are automatically shown in fullscreen get re-hidden. Could be abstracted better. (CJP) */
+      'webkitendfullscreen': () => {
+        this.media.controls = false;
       },
       'enterpictureinpicture,leavepictureinpicture': (e) => {
         let isPip;
@@ -289,9 +300,8 @@ class MediaController extends MediaContainer {
       const handler = this._mediaStatePropagators[key];
 
       events.forEach((event) => {
-        // If this is fullscreen apply to the document
-        const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
-
+        // If this is fullscreen  and *not* iOS (which only supports fullscreen directly on an HTMLMediaElement) apply to the document
+        const target = (event == fullscreenApi.event && super[fullscreenApi.enter]) ? this.getRootNode() : media;
         target.addEventListener(event, handler);
       });
       handler();
@@ -324,7 +334,7 @@ class MediaController extends MediaContainer {
       const { events, handler } = this.mediaStatePropagators[key];
 
       events.forEach((event) => {
-        const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
+        const target = (event == fullscreenApi.event && super[fullscreenApi.enter]) ? this.getRootNode() : media;
         target.removeEventListener(event, handler);
       });
     });
