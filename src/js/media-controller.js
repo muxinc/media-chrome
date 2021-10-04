@@ -405,6 +405,16 @@ class MediaController extends MediaContainer {
 
     // TODO: Update to propagate all states when registered
     if (this.media) {
+      const { muted, volume } = this.media;
+
+      let level = 'high';
+      if (volume == 0 || muted) {
+        level = 'off';
+      } else if (volume < 0.5) {
+        level = 'low';
+      } else if (volume < 0.75) {
+        level = 'medium';
+      }
       propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_LIST, formatTextTracks(this.captionTracks) || undefined);
       propagateMediaState([el], MediaUIAttributes.MEDIA_SUBTITLES_LIST, formatTextTracks(this.subtitleTracks) || undefined);
       propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, formatTextTracks(this.showingCaptionTracks) || undefined);
@@ -413,6 +423,7 @@ class MediaController extends MediaContainer {
       // propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
       propagateMediaState([el], MediaUIAttributes.MEDIA_MUTED, this.media.muted);
       propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME, this.media.volume);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
       // const fullscreenEl = this.getRootNode()[fullscreenApi.element];
       // propagateMediaState([el], MediaUIAttributes.MEDIA_IS_FULLSCREEN, fullscreenEl === this);
       // propagateMediaState([el], MediaUIAttributes.MEDIA_IS_PIP, isPip);
