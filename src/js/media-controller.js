@@ -67,12 +67,12 @@ class MediaController extends MediaContainer {
         }
 
         // Store the last set volume as a local preference, if ls is supported
-        try {
-          window.localStorage.setItem(
-            'media-chrome-pref-volume',
-            volume.toString()
-          );
-        } catch (err) { }
+        // try {
+        //   window.localStorage.setItem(
+        //     'media-chrome-pref-volume',
+        //     volume.toString()
+        //   );
+        // } catch (err) { }
       },
 
       // This current assumes that the media controller is the fullscreen element
@@ -318,12 +318,12 @@ class MediaController extends MediaContainer {
     // Update the media with the last set volume preference
     // This would preferably live with the media element,
     // not a control.
-    try {
-      const volPref = window.localStorage.getItem('media-chrome-pref-volume');
-      if (volPref !== null) media.volume = volPref;
-    } catch (e) {
-      console.debug('Error getting volume pref', e);
-    }
+    // try {
+    //   const volPref = window.localStorage.getItem('media-chrome-pref-volume');
+    //   if (volPref !== null) media.volume = volPref;
+    // } catch (e) {
+    //   console.debug('Error getting volume pref', e);
+    // }
   }
 
   mediaUnsetCallback(media) {
