@@ -21,6 +21,7 @@ template.innerHTML = `
       font-family: Arial, sans-serif;
       text-align: center;
       color: #ffffff;
+      pointer-events: auto;
     }
 
     #container {
