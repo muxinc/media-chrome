@@ -50,6 +50,8 @@ template.innerHTML = `
       font-size: 16px;
       line-height: 24px;
       padding: 0 10px;
+
+      pointer-events: auto;
     }
 
     /*
