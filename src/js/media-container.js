@@ -35,11 +35,18 @@ template.innerHTML = `
       display: flex;
       flex-flow: column nowrap;
       align-items: stretch;
-      // background-color: blue;
+      pointer-events: none;
+      background: none;
+    }
+
+    *[part~=gestures-layer] {
+      pointer-events: auto;
     }
 
     .spacer {
       flex-grow: 1;
+      pointer-events: none;
+      background: none;
     }
 
     /* Position the media element to fill the container */
@@ -76,6 +83,9 @@ template.innerHTML = `
 
   <span part="layer media-layer">
     <slot name="media"></slot>
+  </span>
+  <span part="layer gesture-layer">
+    <slot name="gestures-overlay"></slot>
   </span>
   <!--
   <span part="layer text-tracks-layer">
