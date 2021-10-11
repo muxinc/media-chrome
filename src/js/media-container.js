@@ -19,14 +19,33 @@ template.innerHTML = `
     :host {
       box-sizing: border-box;
       position: relative;
-
-      /* Position controls at the bottom  */
-      display: inline-flex;
-      flex-direction: column-reverse;
+      display: inline-block;
 
       /* Max out at 100% width for smaller screens (< 720px) */
-      max-width: 100%;
+      // max-width: 100%;
       background-color: #000;
+    }
+
+    *[part~=layer] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: stretch;
+      // background-color: blue;
+    }
+
+    .spacer {
+      flex-grow: 1;
+    }
+
+    /* Position the media element to fill the container */
+    ::slotted([slot=media]) {
+      margin: auto 0 auto 0;
+      width: 100%;
     }
 
     /* Video specific styles */
@@ -42,15 +61,6 @@ template.innerHTML = `
       height: 100% !important;
     }
 
-    /* Position the media element to fill the container */
-    ::slotted([slot=media]) {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
     /* Hide controls when inactive and not paused and not audio */
     slot:not([media]) ::slotted() {
       opacity: 1;
@@ -62,14 +72,28 @@ template.innerHTML = `
       opacity: 0;
       transition: opacity 1s;
     }
-
-    slot:not([media]) ::slotted(media-control-bar)  {
-      width: 100%;
-    }
   </style>
-  <slot name="media"></slot>
-  <slot></slot>
+
+  <span part="layer media-layer">
+    <slot name="media"></slot>
+  </span>
+  <!--
+  <span part="layer text-tracks-layer">
+    <slot name="text-tracks-renderer"></slot>
+  </span>
+  -->
+  <span part="layer controls-overlay-layer">
+    <slot name="controls-overlay"></slot>
+  </span>
+  <span part="layer controls-layer">
+    <slot name="top-controls"></slot>
+    <slot name="middle-controls"><span class="spacer"></span></slot>
+    <slot></slot>
+    <slot name="bottom-controls"></slot>
+  </span>
 `;
+
+const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 class MediaContainer extends window.HTMLElement {
   constructor() {
@@ -130,17 +154,15 @@ class MediaContainer extends window.HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['autohide'].concat(super.observedAttributes || []);
+    return ['autohide'].concat(MEDIA_UI_ATTRIBUTE_NAMES);
   }
 
   // Could share this code with media-chrome-html-element instead
-  // attributeChangedCallback(attrName, oldValue, newValue) {
-  //   if (attrName.toLowerCase() == 'autohide') {
-  //     this.autohide = newValue;
-  //   } else {
-  //     super.attributeChangedCallback(attrName, oldValue, newValue);
-  //   }
-  // }
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName.toLowerCase() == 'autohide') {
+      this.autohide = newValue;
+    } 
+  }
 
   // First direct child with slot=media, or null
   get media() {
@@ -177,13 +199,13 @@ class MediaContainer extends window.HTMLElement {
         : MediaUIEvents.MEDIA_PAUSE_REQUEST;
       this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
     }
-    media.addEventListener('click', this._mediaClickPlayToggle, false);
+    // media.addEventListener('click', this._mediaClickPlayToggle, false);
 
     return true;
   }
 
   mediaUnsetCallback(media) {
-    media.removeEventListener('click', this._mediaClickPlayToggle);
+    // media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 
   connectedCallback() {
