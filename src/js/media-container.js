@@ -102,6 +102,7 @@ template.innerHTML = `
     <slot></slot>
     <slot name="bottom-controls"></slot>
   </span>
+  <slot name="custom-chrome"></slot>
 `;
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
