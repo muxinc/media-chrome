@@ -45,6 +45,20 @@
     .overlay :is(media-seek-backward-button, media-seek-forward-button) {
       width: 15%;
     }
+
+    .seek-control-bar {
+      padding: 0 5px;
+    }
+
+    .seek-control-bar > * {
+      background: none;
+      height: auto;
+      padding: 0px;
+    }
+
+    .seek-control-bar > media-time-range {
+      padding-right: 5px;
+    }
   </style>
 </head>
 <body>
@@ -65,7 +79,7 @@
         <media-play-button></media-play-button>
         <media-seek-forward-button></media-seek-forward-button>
       </div>
-      <media-control-bar>
+      <media-control-bar class="seek-control-bar">
         <media-time-range></media-time-range>
         <media-time-display show-duration remaining></media-time-display>
       </media-control-bar>
