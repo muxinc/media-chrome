@@ -73,6 +73,7 @@ template.innerHTML = `
       opacity: 1;
       transition: opacity 0.25s;
       visibility: visible;
+      pointer-events: auto;
     }
 
     :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) slot:not([media]) ::slotted(*) {
