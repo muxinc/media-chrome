@@ -8,8 +8,9 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     :host {
-      display: inline-block;
-      vertical-align: middle;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
       box-sizing: border-box;
       background-color: var(--media-control-background, rgba(20,20,30, 0.7));
   
@@ -26,7 +27,7 @@ template.innerHTML = `
 
     #container {
       /* NOTE: We don't currently have more generic sizing vars */
-      height: var(--media-text-content-height, 24px);
+      height: var(--media-text-content-height, auto);
     }
   </style>
   <span id="container">
