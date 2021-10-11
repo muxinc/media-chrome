@@ -28,7 +28,9 @@ template.innerHTML = `
       height: var(--media-text-content-height, 24px);
     }
   </style>
-  <span id="container"></span>
+  <span id="container">
+  <slot></slot>
+  </span>
 `;
 
 class MediaTextDisplay extends window.HTMLElement {
