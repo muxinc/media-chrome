@@ -46,9 +46,6 @@ template.innerHTML = `
       transition: background-color 0.15s linear;
       height: 44px;
       width: 100px;
-      min-height: 24px;
-      font-size: 16px;
-      line-height: 24px;
       padding: 0 10px;
 
       pointer-events: auto;
@@ -73,7 +70,7 @@ template.innerHTML = `
       background: transparent; /* Otherwise white in Chrome */
 
       /* Fill host with the range */
-      height: 100%;
+      min-height: 100%;
       width: var(--media-range-track-width, 100%); /* Specific width is required for Firefox. */
 
       box-sizing: border-box;
@@ -141,6 +138,7 @@ class MediaChromeRange extends window.HTMLElement {
     this.range = this.shadowRoot.querySelector('#range');
     this.range.setAttribute('aria-live', "polite");
     this.range.addEventListener('input', this.updateBar.bind(this));
+    this._internals = this.attachInternals();
   }
   
   attributeChangedCallback(attrName, oldValue, newValue) {
