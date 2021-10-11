@@ -26,6 +26,7 @@ template.innerHTML = `
 
     transition: background-color 0.15s linear;
 
+    pointer-events: auto;
     cursor: pointer;
     font-family: Arial, sans-serif;
     vertical-align: middle;
