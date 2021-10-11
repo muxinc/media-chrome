@@ -8,6 +8,8 @@ template.innerHTML = `
 <style>
   :host {
     display: inline-block;
+    width: auto;
+    height: auto;
     vertical-align: middle;
     box-sizing: border-box;
     background-color: var(--media-control-background, rgba(20,20,30, 0.7));
@@ -18,7 +20,6 @@ template.innerHTML = `
 
     /* Vertically center any text */
     font-size: 14px;
-    line-height: 24px;
     font-weight: bold;
     color: #ffffff;
     text-align: center;
@@ -43,15 +44,6 @@ template.innerHTML = `
     background-color: var(--media-control-hover-background, rgba(50,50,70, 0.7));
   }
 
-  .container {
-    /* NOTE: We don't currently have more generic sizing vars */
-    height: var(--media-button-content-height, 24px);
-  }
-
-  .container:focus {
-    outline: 0;
-  }
-
   svg, img, ::slotted(svg), ::slotted(img) {
     width: var(--media-button-icon-width, 24px);
     height: var(--media-button-icon-height);
@@ -59,10 +51,16 @@ template.innerHTML = `
     transition: var(--media-button-icon-transition);
     fill: var(--media-icon-color, #eee);
     vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
   }
 </style>
-
-<div class="container"></div>
 `;
 
 const ButtonPressedKeys = ['Enter', ' '];
@@ -79,8 +77,8 @@ class MediaChromeButton extends window.HTMLElement {
     const shadow = this.attachShadow({ mode: 'open' });
 
     const buttonHTML = template.content.cloneNode(true);
-    this.nativeEl = buttonHTML.querySelector('div');
-
+    this.nativeEl = buttonHTML;
+    
     // Slots
     let slotTemplate = options.slotTemplate;
 
