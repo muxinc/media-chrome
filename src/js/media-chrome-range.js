@@ -138,7 +138,6 @@ class MediaChromeRange extends window.HTMLElement {
     this.range = this.shadowRoot.querySelector('#range');
     this.range.setAttribute('aria-live', "polite");
     this.range.addEventListener('input', this.updateBar.bind(this));
-    this._internals = this.attachInternals();
   }
   
   attributeChangedCallback(attrName, oldValue, newValue) {
