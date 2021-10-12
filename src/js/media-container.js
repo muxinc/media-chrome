@@ -57,8 +57,14 @@ template.innerHTML = `
 
     /* Video specific styles */
     :host(:not([audio])) {
-      height: 480px;
+      aspect-ratio: var(--media-aspect-ratio, auto 3 / 2);
       width: 720px;
+    }
+
+    @supports not (aspect-ratio: 1 / 1) {
+      :host(:not([audio])) {
+        height: 480px;
+      }
     }
 
     /* Safari needs this to actually make the element fill the window */
