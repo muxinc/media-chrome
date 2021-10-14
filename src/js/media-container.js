@@ -43,6 +43,14 @@ template.innerHTML = `
       pointer-events: auto;
     }
 
+    ::slotted([slot=controls-overlay]) {
+      flex-grow: 1;
+      display: flex; 
+      flex-flow: row nowrap; 
+      align-items: center; 
+      justify-content: space-evenly;
+    }
+
     .spacer {
       flex-grow: 1;
       pointer-events: none;
@@ -104,9 +112,9 @@ template.innerHTML = `
   </span>
   <span part="layer controls-layer">
     <slot name="top-controls"></slot>
-    <slot name="middle-controls"><span class="spacer"></span></slot>
+    <span class="spacer centered"><slot name="middle-controls"></slot></span>
+    <!-- default, effectively "bottom-controls" -->
     <slot></slot>
-    <slot name="bottom-controls"></slot>
   </span>
   <slot name="custom-chrome"></slot>
 `;
