@@ -138,21 +138,6 @@ class MediaCaptionsButton extends MediaChromeButton {
     ) {
       updateAriaChecked(this);
     }
-    if (attrName === MediaUIAttributes.MEDIA_CAPTIONS_TRACKS) {
-      // updateAriaLabel(this);
-      console.log(
-        parseTextTracksStr(newValue, { kind: TextTrackKinds.CAPTIONS })
-      );
-    }
-    if (
-      attrName === MediaUIAttributes.MEDIA_SUBTITLE_TRACKS &&
-      this.hasAttribute('use-subtitles-fallback')
-    ) {
-      // updateAriaLabel(this);
-      console.log(
-        parseTextTracksStr(newValue, { kind: TextTrackKinds.SUBTITLES })
-      );
-    }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
