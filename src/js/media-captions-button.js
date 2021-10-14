@@ -1,11 +1,3 @@
-/*
-  <media-fullscreen-button media="#myVideo" fullscreen-element="#myContainer">
-
-  The fullscreen-element attribute can be used to say which element
-  to make fullscreen.
-  If none, the button will look for the closest media-container element to the media.
-  If none, the button will make the media fullscreen.
-*/
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
