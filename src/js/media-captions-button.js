@@ -7,10 +7,9 @@ import {
 import {
   MediaUIEvents,
   MediaUIAttributes,
-  TextTrackKinds,
 } from './constants.js';
 import { nouns } from './labels/labels.js';
-import { parseTextTracksStr, splitTextTracksStr } from './utils/captions.js';
+import { splitTextTracksStr } from './utils/captions.js';
 
 const ccIconOn = `
 <svg
