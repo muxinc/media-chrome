@@ -152,45 +152,21 @@ class MediaController extends MediaContainer {
         const tracks = this.captionTracks;
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
-
-        /** 
-         * @TODO Text Track changes can be observed via events on media.textTracks. Should potentially monitor there instead, 
-         * especially since values could change "from the outside" 
-         */
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, formatTextTracks(this.showingCaptionTracks) || undefined);
       },
       MEDIA_DISABLE_CAPTIONS_REQUEST: (e) => {
         const tracks = this.captionTracks;
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
-
-        /** 
-         * @TODO Text Track changes can be observed via events on media.textTracks. Should potentially monitor there instead, 
-         * especially since values could change "from the outside" 
-         */
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, formatTextTracks(this.showingCaptionTracks) || undefined);
       },
       MEDIA_SHOW_SUBTITLES_REQUEST: (e) => {
         const tracks = this.subtitleTracks;
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
-
-        /** 
-         * @TODO Text Track changes can be observed via events on media.textTracks. Should potentially monitor there instead, 
-         * especially since values could change "from the outside" 
-         */
-        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, formatTextTracks(this.showingSubtitleTracks) || undefined);
       },
       MEDIA_DISABLE_SUBTITLES_REQUEST: (e) => {
         const tracks = this.subtitleTracks;
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
-
-        /** 
-         * @TODO Text Track changes can be observed via events on media.textTracks. Should potentially monitor there instead, 
-         * especially since values could change "from the outside" 
-         */
-        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, formatTextTracks(this.showingSubtitleTracks) || undefined);
       },
     };
 
@@ -259,7 +235,24 @@ class MediaController extends MediaContainer {
       'ratechange': () => {
         this.propagateMediaState(MediaUIAttributes.MEDIA_PLAYBACK_RATE, this.media.playbackRate);
       }
-    }
+    };
+
+    /** 
+     * @TODO This and _mediaStatePropagators should be refactored to be less presumptuous about what is being 
+     * monitored (and also probably how it's being monitored) (CJP) 
+     */
+    this._textTrackMediaStatePropagators = {
+      'addtrack,removetrack': () => {
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_LIST, formatTextTracks(this.captionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_LIST, formatTextTracks(this.subtitleTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, formatTextTracks(this.showingCaptionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, formatTextTracks(this.showingSubtitleTracks) || undefined);
+      },
+      'change': () => {
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, formatTextTracks(this.showingCaptionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, formatTextTracks(this.showingSubtitleTracks) || undefined);
+      }
+    };
   }
 
   mediaSetCallback(media) {
@@ -276,6 +269,15 @@ class MediaController extends MediaContainer {
         const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
 
         target.addEventListener(event, handler);
+      });
+      handler();
+    });
+
+    Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
+      const events = eventsStr.split(',');
+      events.forEach((event) => {
+        // If this is fullscreen apply to the document
+        media.textTracks.addEventListener(event, handler);
       });
       handler();
     });
@@ -302,6 +304,15 @@ class MediaController extends MediaContainer {
         const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
         target.removeEventListener(event, handler);
       });
+    });
+    
+    Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
+      const events = eventsStr.split(',');
+      events.forEach((event) => {
+        // If this is fullscreen apply to the document
+        media.textTracks.removeEventListener(event, handler);
+      });
+      handler();
     });
 
     // Reset to paused state
