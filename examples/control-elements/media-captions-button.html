@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width">
+  <script type="module" src="../../dist/media-captions-button.js"></script>
+</head>
+<body>
+
+<h1>&lt;media-captions-button&gt;</h1>
+
+<h3>Default (no captions or subtitles)</h3>
+<media-captions-button></media-captions-button>
+
+<h3>Closed Captions on ("captions showing")</h3>
+<media-captions-button media-captions-showing="en:English%20Closed%20Captions" media-captions-list="en:English%20Closed%20Captions"></media-captions-button>
+<!-- 
+<h3>Closed Captions on with subtitles fallback ("subtitles showing")</h3>
+<media-captions-button 
+  use-subtitles-fallback 
+  media-subtitles-showing="en:English%20Subtitles" 
+  media-subtitles-list="en:English%20Subtitles">
+</media-captions-button>
+ -->
+
+<h3>Alternate Content</h3>
+<media-captions-button media-captions-showing="en:English%20Closed%20Captions">
+  <span slot="on"><b><u>CC</u></b></span>
+  <span slot="off">CC</span>
+</media-captions-button>
+<media-captions-button>
+  <span slot="on"><b><u>CC</u></b></span>
+  <span slot="off">CC</span>
+</media-captions-button>
+</body>
+</html>
