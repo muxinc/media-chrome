@@ -11,6 +11,8 @@ export const MediaUIEvents = {
     MEDIA_ENTER_PIP_REQUEST: 'mediaenterpiprequest',
     MEDIA_EXIT_PIP_REQUEST: 'mediaexitpiprequest',
     MEDIA_PLAYBACK_RATE_REQUEST: 'mediaplaybackraterequest',
+    REGISTER_MEDIA_STATE_RECEIVER: 'registermediastatereceiver',
+    UNREGISTER_MEDIA_STATE_RECEIVER: 'unregistermediastatereceiver',
 };
 
 export const MediaUIAttributes = {

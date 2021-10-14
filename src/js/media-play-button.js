@@ -45,7 +45,6 @@ class MediaPlayButton extends MediaChromeButton {
 
   connectedCallback() {
     updateAriaLabel(this);
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
     super.connectedCallback();
   }
 

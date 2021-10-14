@@ -42,7 +42,6 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
   }
 
   connectedCallback() {
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
     const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);

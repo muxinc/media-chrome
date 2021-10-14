@@ -175,10 +175,6 @@ class MediaClipSelector extends window.HTMLElement {
     this.enableThumbnails();
   }
 
-  connectedCallback() {
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
-  }
-
   get mediaDuration() {
     return +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
   }
