@@ -5,7 +5,6 @@
   <title>Media Chrome Advanced Video Usage Example</title>
   <script type="module" src="../dist/index.js"></script>
   <style>
-    :root { --media-icon-color: #e00; }
     .examples {
       margin-top: 20px;
     }
@@ -23,9 +22,9 @@
         crossorigin
       >
         <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
-        <track label="Spanish" kind="subtitles" srclang="es" src="./en-sub.vtt"></track>
-        <track label="English" kind="subtitles" srclang="en" src="./es-sub.vtt"></track>
-        <track label="English" kind="captions" srclang="en" src="./en-cc.vtt"></track>
+        <!-- <track label="Spanish" kind="subtitles" srclang="es" src="./vtt/en-sub.vtt"></track>
+        <track label="English" kind="subtitles" srclang="en" src="./vtt/es-sub.vtt"></track> -->
+        <track label="English" kind="captions" srclang="en" src="./vtt/en-cc.vtt"></track>
       </video>
       <media-control-bar>
         <media-play-button></media-play-button>
