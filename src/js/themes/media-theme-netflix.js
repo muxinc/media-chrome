@@ -158,11 +158,7 @@ const template = `
 
 class MediaThemeNetflix extends MediaTheme {
   constructor(options={}) {
-    options = Object.assign({
-      // allow options
-    }, options);
-
-    super(template, options);
+    super(template, { /* allow ...defaultOptions, */ ...options });
   }
 }
 
