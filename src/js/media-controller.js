@@ -9,7 +9,7 @@
 */
 import MediaContainer from './media-container.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window } from './utils/server-safe-globals.js';
+import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 
@@ -89,7 +89,10 @@ class MediaController extends MediaContainer {
         super[fullscreenApi.enter]();
       },
       MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
-        this.getRootNode()[fullscreenApi.exit]();
+        document[fullscreenApi.exit]();
+
+        // Shadow root throws an error for this function
+        // this.getRootNode()[fullscreenApi.exit]();
       },
       MEDIA_ENTER_PIP_REQUEST: () => {
         const docOrRoot = this.getRootNode();
