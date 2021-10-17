@@ -10,6 +10,7 @@
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
 
 const template = document.createElement('template');
 
@@ -186,6 +187,12 @@ class MediaContainer extends window.HTMLElement {
   }
 
   connectedCallback() {
+    
+    const isAudioChrome = this.getAttribute('audio') != null;
+    const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
+    this.setAttribute('role', 'region')
+    this.setAttribute('aria-label', label);
+
     if (this.media) {
       this.mediaSetCallback(this.media);
     }

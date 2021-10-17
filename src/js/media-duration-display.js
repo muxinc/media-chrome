@@ -7,15 +7,14 @@ import { MediaUIAttributes } from './constants.js';
 class MediaDurationDisplay extends MediaTextDisplay {
 
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_DURATION];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_DURATION];
   }
 
-  connectedCallback() {
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
-  }
-
-  attributeChangedCallback(_attrName, _oldValue, newValue) {
-    this.container.innerHTML = formatTime(newValue);
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_DURATION) {
+      this.container.innerHTML = formatTime(newValue);
+    }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 }
 

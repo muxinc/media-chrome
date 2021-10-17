@@ -10,13 +10,14 @@ import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { verbs } from './labels/labels.js';
 
-const enterFullscreenIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+const enterFullscreenIcon = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
   <path d="M0 0h24v24H0z" fill="none"/>
   <path class="icon" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
 </svg>`;
 
-const exitFullscreenIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+const exitFullscreenIcon = `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
   <path d="M0 0h24v24H0z" fill="none"/>
   <path class="icon" d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
 </svg>`;
@@ -40,10 +41,16 @@ slotTemplate.innerHTML = `
   <slot name="exit">${exitFullscreenIcon}</slot>
 `;
 
+const updateAriaLabel = (el) => {
+  const isFullScreen = el.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null;
+  const label = isFullScreen ? verbs.EXIT_FULLSCREEN() : verbs.ENTER_FULLSCREEN();
+  el.setAttribute('aria-label', label);
+};
+
 class MediaFullscreenButton extends MediaChromeButton {
 
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_IS_FULLSCREEN];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_IS_FULLSCREEN];
   }
 
   constructor(options = {}) {
@@ -51,7 +58,15 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   connectedCallback() {
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
+    updateAriaLabel(this);
+    super.connectedCallback();
+  }
+
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_IS_FULLSCREEN) {
+      updateAriaLabel(this);
+    }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   handleClick(_e) {

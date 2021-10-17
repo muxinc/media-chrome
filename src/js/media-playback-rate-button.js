@@ -2,6 +2,7 @@ import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
 
 /*
   <media-playback-rate-button rates="1,1.5,2">
@@ -13,7 +14,7 @@ const DEFAULT_RATE = 1;
 class MediaPlaybackRateButton extends MediaChromeButton {
 
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_PLAYBACK_RATE, 'rates'];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_PLAYBACK_RATE, 'rates'];
   }
 
   constructor() {
@@ -22,11 +23,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     this.nativeEl.innerHTML = `${DEFAULT_RATE}x`;
   }
 
-  connectedCallback() {
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
-  }
-
-  attributeChangedCallback(attrName, _oldValue, newValue) {
+  attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'rates') {
       // This will:
       // 1. parse the space-separated attribute string (standard for representing lists as HTML/CSS values) into an array (of strings)
@@ -38,11 +35,13 @@ class MediaPlaybackRateButton extends MediaChromeButton {
       return;
     }
     if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
-      const newRate = newValue ? +newValue : Number.NaN;
-      const rate = !Number.isNaN(newRate) ? newRate : DEFAULT_RATE;
-      this.nativeEl.innerHTML = `${rate}x`;
+      const newPlaybackRate = newValue ? +newValue : Number.NaN;
+      const playbackRate = !Number.isNaN(newPlaybackRate) ? newPlaybackRate : DEFAULT_RATE;
+      this.nativeEl.innerHTML = `${playbackRate}x`;
+      this.setAttribute('aria-label', nouns.PLAYBACK_RATE({ playbackRate }));
       return;
     }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   handleClick(_e) {

@@ -1,3 +1,4 @@
+import { MediaUIAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 
@@ -124,6 +125,11 @@ template.innerHTML = `
 `;
 
 class MediaChromeRange extends window.HTMLElement {
+  
+  static get observedAttributes() {
+    return [MediaUIAttributes.MEDIA_CONTROLLER];
+  }
+  
   constructor() {
     super();
 
@@ -131,11 +137,38 @@ class MediaChromeRange extends window.HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.range = this.shadowRoot.querySelector('#range');
+    this.range.setAttribute('aria-live', "polite");
     this.range.addEventListener('input', this.updateBar.bind(this));
+  }
+  
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+      if (oldValue) {
+        const mediaControllerEl = document.getElementById(oldValue);
+        mediaControllerEl?.unassociateElement?.(this);
+      }
+      if (newValue) {
+        const mediaControllerEl = document.getElementById(newValue);
+        mediaControllerEl?.associateElement?.(this);
+      }
+    }
   }
 
   connectedCallback() {
+    const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    if (mediaControllerId) {
+      const mediaControllerEl = document.getElementById(mediaControllerId);
+      mediaControllerEl?.associateElement?.(this);
+    }
     this.updateBar();
+  }
+
+  disconnectedCallback() {
+    const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    if (mediaControllerSelector) {
+      const mediaControllerEl = document.getElementById(mediaControllerId);
+      mediaControllerEl?.unassociateElement?.(this);
+    }
   }
 
   /*

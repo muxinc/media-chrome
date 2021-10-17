@@ -7,15 +7,14 @@ import { MediaUIAttributes } from './constants.js';
 class MediaCurrentTimeDisplay extends MediaTextDisplay {
 
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CURRENT_TIME];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME];
   }
 
-  connectedCallback() {
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
-  }
-
-  attributeChangedCallback(_attrName, _oldValue, newValue) {
-    this.container.innerHTML = formatTime(newValue);
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
+      this.container.innerHTML = formatTime(newValue);
+    }
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 }
 
