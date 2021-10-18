@@ -97,10 +97,6 @@ class MediaChromeButton extends window.HTMLElement {
 
     const buttonHTML = template.content.cloneNode(true);
     this.nativeEl = buttonHTML.querySelector('div');
-    
-    this.setAttribute('role', "button");
-    this.setAttribute('aria-live', "polite");
-    this.setAttribute('tabindex', 0);
 
     // Slots
     let slotTemplate = options.slotTemplate;
@@ -154,6 +150,9 @@ class MediaChromeButton extends window.HTMLElement {
   }
 
   connectedCallback() {
+    this.setAttribute('role', "button");
+    this.setAttribute('tabindex', 0);
+
     const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);

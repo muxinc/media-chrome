@@ -13,7 +13,8 @@ import { Window as window, Document as document } from './utils/server-safe-glob
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { MediaUIEvents, MediaUIAttributes, TextTrackKinds, TextTrackModes } from './constants.js';
+import { stringifyTextTrackList, getTextTracksList, updateTracksModeTo } from './utils/captions.js';
 const {
   MEDIA_PLAY_REQUEST,
   MEDIA_PAUSE_REQUEST,
@@ -127,26 +128,50 @@ class MediaController extends MediaContainer {
       },
       MEDIA_PREVIEW_REQUEST: (e) => {
         const media = this.media;
+        // No media (yet), so bail early
+        if (!media) return;
+
+        
+        const [track] = getTextTracksList(media, { kind: TextTrackKinds.METADATA, label: 'thumbnails' });
+        // No thumbnails track (yet) or no cues available in thumbnails track, so bail early.
+        if (!(track && track.cues)) return;
+        
         const time = e.detail;
+        const cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
 
-        if (media && media.textTracks && media.textTracks.length) {
-          let track = Array.prototype.find.call(media.textTracks, (t) => {
-            return t.label == 'thumbnails';
-          });
+        // No corresponding cue, so bail early
+        if (!cue) return;
 
-          if (!track) return;
-          if (!track.cues) return;
-
-          let cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
-
-          if (cue) {
-            const url = new URL(cue.text);
-            const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-            this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, url.href);
-            this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, previewCoordsStr.split(',').join(' '));
-          }
-        }
-      }
+        // Since this isn't really "global state", we may want to consider moving this "down" to the component level,
+        // probably pulled out into its own module/set of functions (CJP)
+        const url = new URL(cue.text);
+        const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
+        this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, url.href);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, previewCoordsStr.split(',').join(' '));
+      },
+      MEDIA_SHOW_CAPTIONS_REQUEST: (e) => {
+        const tracks = this.captionTracks;
+        const { detail: tracksToUpdate = [] } = e;
+        updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
+      },
+      // NOTE: We're currently recommending and providing default components that will "disable" tracks when
+      // we don't want them shown (rather than "hiding" them).
+      // For a discussion why, see: https://github.com/muxinc/media-chrome/issues/60
+      MEDIA_DISABLE_CAPTIONS_REQUEST: (e) => {
+        const tracks = this.captionTracks;
+        const { detail: tracksToUpdate = [] } = e;
+        updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
+      },
+      MEDIA_SHOW_SUBTITLES_REQUEST: (e) => {
+        const tracks = this.subtitleTracks;
+        const { detail: tracksToUpdate = [] } = e;
+        updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
+      },
+      MEDIA_DISABLE_SUBTITLES_REQUEST: (e) => {
+        const tracks = this.subtitleTracks;
+        const { detail: tracksToUpdate = [] } = e;
+        updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
+      },
     };
 
     // Apply ui event listeners
@@ -214,7 +239,24 @@ class MediaController extends MediaContainer {
       'ratechange': () => {
         this.propagateMediaState(MediaUIAttributes.MEDIA_PLAYBACK_RATE, this.media.playbackRate);
       }
-    }
+    };
+
+    /** 
+     * @TODO This and _mediaStatePropagators should be refactored to be less presumptuous about what is being 
+     * monitored (and also probably how it's being monitored) (CJP) 
+     */
+    this._textTrackMediaStatePropagators = {
+      'addtrack,removetrack': () => {
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_LIST, stringifyTextTrackList(this.captionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_LIST, stringifyTextTrackList(this.subtitleTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, stringifyTextTrackList(this.showingCaptionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, stringifyTextTrackList(this.showingSubtitleTracks) || undefined);
+      },
+      'change': () => {
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, stringifyTextTrackList(this.showingCaptionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, stringifyTextTrackList(this.showingSubtitleTracks) || undefined);
+      }
+    };
   }
 
   mediaSetCallback(media) {
@@ -231,6 +273,14 @@ class MediaController extends MediaContainer {
         const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
 
         target.addEventListener(event, handler);
+      });
+      handler();
+    });
+
+    Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
+      const events = eventsStr.split(',');
+      events.forEach((event) => {
+        media.textTracks.addEventListener(event, handler);
       });
       handler();
     });
@@ -257,6 +307,14 @@ class MediaController extends MediaContainer {
         const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
         target.removeEventListener(event, handler);
       });
+    });
+    
+    Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
+      const events = eventsStr.split(',');
+      events.forEach((event) => {
+        media.textTracks.removeEventListener(event, handler);
+      });
+      handler();
     });
 
     // Reset to paused state
@@ -316,6 +374,10 @@ class MediaController extends MediaContainer {
 
     // TODO: Update to propagate all states when registered
     if (this.media) {
+      propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_LIST, stringifyTextTrackList(this.captionTracks) || undefined);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_SUBTITLES_LIST, stringifyTextTrackList(this.subtitleTracks) || undefined);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, stringifyTextTrackList(this.showingCaptionTracks) || undefined);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, stringifyTextTrackList(this.showingSubtitleTracks) || undefined);
       propagateMediaState([el], MediaUIAttributes.MEDIA_PAUSED, this.media.paused);
       // propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
       propagateMediaState([el], MediaUIAttributes.MEDIA_MUTED, this.media.muted);
@@ -396,6 +458,22 @@ class MediaController extends MediaContainer {
     this.dispatchEvent(new window.CustomEvent(MEDIA_PLAYBACK_RATE_REQUEST, { detail: rate }));
   }
 
+  get subtitleTracks() {
+    return getTextTracksList(this.media, { kind: TextTrackKinds.SUBTITLES });
+  }
+
+  get captionTracks() {
+    return getTextTracksList(this.media, { kind: TextTrackKinds.CAPTIONS });
+  }
+
+  get showingSubtitleTracks() {
+    return getTextTracksList(this.media, { kind: TextTrackKinds.SUBTITLES, mode: TextTrackModes.SHOWING });
+  }
+
+  get showingCaptionTracks() {
+    return getTextTracksList(this.media, { kind: TextTrackKinds.CAPTIONS, mode: TextTrackModes.SHOWING });
+  }
+
   requestPictureInPicture() {
     this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_PIP_REQUEST));
   }
@@ -421,6 +499,9 @@ const getMediaUIAttributesFrom = (child) => {
 const isMediaStateReceiver = (child) => !!getMediaUIAttributesFrom(child).length;
 
 const setAttr = (child, attrName, attrValue) => {
+  if (attrValue == undefined) {
+    return child.removeAttribute(attrName);
+  }
   if (typeof attrValue === 'boolean') {
     if (attrValue) return child.setAttribute(attrName, '');
     return child.removeAttribute(attrName);
