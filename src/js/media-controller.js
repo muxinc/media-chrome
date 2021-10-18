@@ -153,6 +153,9 @@ class MediaController extends MediaContainer {
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
       },
+      // NOTE: We're currently recommending and providing default components that will "disable" tracks when
+      // we don't want them shown (rather than "hiding" them).
+      // For a discussion why, see: https://github.com/muxinc/media-chrome/issues/60
       MEDIA_DISABLE_CAPTIONS_REQUEST: (e) => {
         const tracks = this.captionTracks;
         const { detail: tracksToUpdate = [] } = e;
@@ -276,7 +279,6 @@ class MediaController extends MediaContainer {
     Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
       const events = eventsStr.split(',');
       events.forEach((event) => {
-        // If this is fullscreen apply to the document
         media.textTracks.addEventListener(event, handler);
       });
       handler();
@@ -309,7 +311,6 @@ class MediaController extends MediaContainer {
     Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
       const events = eventsStr.split(',');
       events.forEach((event) => {
-        // If this is fullscreen apply to the document
         media.textTracks.removeEventListener(event, handler);
       });
       handler();

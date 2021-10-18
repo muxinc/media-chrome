@@ -142,6 +142,7 @@ class MediaCaptionsButton extends MediaChromeButton {
     const ccIsOn = isCCOn(this);
     if (ccIsOn) {
       // Closed Captions is on. Clicking should disable any currently showing captions (and subtitles, if relevant)
+      // For why we are requesting tracks to `mode="disabled"` and not `mode="hidden"`, see: https://github.com/muxinc/media-chrome/issues/60
       const captionsShowingStr = this.getAttribute(
         MediaUIAttributes.MEDIA_CAPTIONS_SHOWING
       );
