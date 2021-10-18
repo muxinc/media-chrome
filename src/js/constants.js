@@ -15,7 +15,7 @@ export const MediaUIEvents = {
     MEDIA_SHOW_CAPTIONS_REQUEST: 'mediashowcaptionsrequest',
     MEDIA_SHOW_SUBTITLES_REQUEST: 'mediashowsubtitlesrequest',
     MEDIA_DISABLE_CAPTIONS_REQUEST: 'mediadisablecaptionsrequest',
-    MEDIA_DISABLE_SUBTITLE_REQUEST: 'mediadisablesubtitlesrequest',
+    MEDIA_DISABLE_SUBTITLES_REQUEST: 'mediadisablesubtitlesrequest',
     MEDIA_PLAYBACK_RATE_REQUEST: 'mediaplaybackraterequest',
     REGISTER_MEDIA_STATE_RECEIVER: 'registermediastatereceiver',
     UNREGISTER_MEDIA_STATE_RECEIVER: 'unregistermediastatereceiver',
