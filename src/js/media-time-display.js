@@ -55,7 +55,6 @@ class MediaTimeDisplay extends MediaTextDisplay {
     this.setAttribute('role', 'progressbar');
     this.setAttribute('aria-live', 'polite');
     this.setAttribute('tabindex', 0);
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
     super.connectedCallback();
   }
 
