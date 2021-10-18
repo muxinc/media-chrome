@@ -14,7 +14,7 @@ import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 
 import { MediaUIEvents, MediaUIAttributes, TextTrackKinds, TextTrackModes } from './constants.js';
-import { formatTextTracks, getTextTracksList, updateTracksModeTo } from './utils/captions.js';
+import { stringifyTextTrackList, getTextTracksList, updateTracksModeTo } from './utils/captions.js';
 const {
   MEDIA_PLAY_REQUEST,
   MEDIA_PAUSE_REQUEST,
@@ -128,25 +128,26 @@ class MediaController extends MediaContainer {
       },
       MEDIA_PREVIEW_REQUEST: (e) => {
         const media = this.media;
+        // No media (yet), so bail early
+        if (!media) return;
+
+        
+        const [track] = getTextTracksList(media, { kind: TextTrackKinds.METADATA, label: 'thumbnails' });
+        // No thumbnails track (yet) or no cues available in thumbnails track, so bail early.
+        if (!(track && track.cues)) return;
+        
         const time = e.detail;
+        const cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
 
-        if (media && media.textTracks && media.textTracks.length) {
-          let track = Array.prototype.find.call(media.textTracks, (t) => {
-            return t.label == 'thumbnails';
-          });
+        // No corresponding cue, so bail early
+        if (!cue) return;
 
-          if (!track) return;
-          if (!track.cues) return;
-
-          let cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
-
-          if (cue) {
-            const url = new URL(cue.text);
-            const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-            this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, url.href);
-            this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, previewCoordsStr.split(',').join(' '));
-          }
-        }
+        // Since this isn't really "global state", we may want to consider moving this "down" to the component level,
+        // probably pulled out into its own module/set of functions (CJP)
+        const url = new URL(cue.text);
+        const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
+        this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, url.href);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, previewCoordsStr.split(',').join(' '));
       },
       MEDIA_SHOW_CAPTIONS_REQUEST: (e) => {
         const tracks = this.captionTracks;
@@ -246,14 +247,14 @@ class MediaController extends MediaContainer {
      */
     this._textTrackMediaStatePropagators = {
       'addtrack,removetrack': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_LIST, formatTextTracks(this.captionTracks) || undefined);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_LIST, formatTextTracks(this.subtitleTracks) || undefined);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, formatTextTracks(this.showingCaptionTracks) || undefined);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, formatTextTracks(this.showingSubtitleTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_LIST, stringifyTextTrackList(this.captionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_LIST, stringifyTextTrackList(this.subtitleTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, stringifyTextTrackList(this.showingCaptionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, stringifyTextTrackList(this.showingSubtitleTracks) || undefined);
       },
       'change': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, formatTextTracks(this.showingCaptionTracks) || undefined);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, formatTextTracks(this.showingSubtitleTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, stringifyTextTrackList(this.showingCaptionTracks) || undefined);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, stringifyTextTrackList(this.showingSubtitleTracks) || undefined);
       }
     };
   }
@@ -373,10 +374,10 @@ class MediaController extends MediaContainer {
 
     // TODO: Update to propagate all states when registered
     if (this.media) {
-      propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_LIST, formatTextTracks(this.captionTracks) || undefined);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_SUBTITLES_LIST, formatTextTracks(this.subtitleTracks) || undefined);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, formatTextTracks(this.showingCaptionTracks) || undefined);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, formatTextTracks(this.showingSubtitleTracks) || undefined);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_LIST, stringifyTextTrackList(this.captionTracks) || undefined);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_SUBTITLES_LIST, stringifyTextTrackList(this.subtitleTracks) || undefined);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, stringifyTextTrackList(this.showingCaptionTracks) || undefined);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, stringifyTextTrackList(this.showingSubtitleTracks) || undefined);
       propagateMediaState([el], MediaUIAttributes.MEDIA_PAUSED, this.media.paused);
       // propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
       propagateMediaState([el], MediaUIAttributes.MEDIA_MUTED, this.media.muted);
