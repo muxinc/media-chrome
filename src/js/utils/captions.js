@@ -102,7 +102,7 @@ export const formatTextTrackObj = ({ label, language } = {}) => {
  * @param {Array<TextTrack|object>|TextTracks} textTracks - A TextTracks object or an Array of TextTracks or TextTrack-like objects.
  * @returns A string representing a set of TextTracks, separated by whitespace.
  */
-export const formatTextTracks = (textTracks = []) => {
+export const stringifyTextTrackList = (textTracks = []) => {
   return Array.prototype.map.call(textTracks, formatTextTrackObj).join(' ');
 };
 
