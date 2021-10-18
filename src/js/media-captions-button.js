@@ -98,18 +98,16 @@ const updateAriaChecked = (el) => {
 };
 
 const isCCOn = (el) => {
-  return (
-    !!el.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING) ||
-    (el.hasAttribute('use-subtitles-fallback') &&
-      !!el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING))
-  );
+  const showingCaptions = !!el.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING);
+  const showingSubtitlesAsCaptions = !el.hasAttribute('no-subtitles-fallback') && !!el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
+  return showingCaptions || showingSubtitlesAsCaptions;
 };
 
 class MediaCaptionsButton extends MediaChromeButton {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      'use-subtitles-fallback',
+      'no-subtitles-fallback',
       MediaUIAttributes.MEDIA_CAPTIONS_LIST,
       MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
@@ -143,9 +141,11 @@ class MediaCaptionsButton extends MediaChromeButton {
   handleClick(_e) {
     const ccIsOn = isCCOn(this);
     if (ccIsOn) {
+      // Closed Captions is on. Clicking should disable any currently showing captions (and subtitles, if relevant)
       const captionsShowingStr = this.getAttribute(
         MediaUIAttributes.MEDIA_CAPTIONS_SHOWING
       );
+      // If we have currently showing captions track(s), request for them to be disabled.
       if (captionsShowingStr) {
         const evt = new window.CustomEvent(
           MediaUIEvents.MEDIA_DISABLE_CAPTIONS_REQUEST,
@@ -156,30 +156,36 @@ class MediaCaptionsButton extends MediaChromeButton {
       const subtitlesShowingStr = this.getAttribute(
         MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
       );
-      if (subtitlesShowingStr && this.hasAttribute('use-subtitles-fallback')) {
+      // If we have currently showing subtitles track(s) and we're using subtitle fallback (true/"on" by default), request for them to be disabled.
+      if (subtitlesShowingStr && !this.hasAttribute('no-subtitles-fallback')) {
         const evt = new window.CustomEvent(
-          MediaUIEvents.MEDIA_DISABLE_SUBTITLE_REQUEST,
+          MediaUIEvents.MEDIA_DISABLE_SUBTITLES_REQUEST,
           { composed: true, bubbles: true, detail: subtitlesShowingStr }
         );
         this.dispatchEvent(evt);
       }
     } else {
+      // Closed Captions is off. Clicking should show the first relevant captions track or subtitles track if we're using subtitle fallback (true/"on" by default)
       const [ccTrackStr] =
         splitTextTracksStr(
           this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST) ?? ''
         ) ?? [];
-      if (ccTrackStr) {
+        if (ccTrackStr) {
+        // If we have at least one captions track, request for the first one to be showing.
         const evt = new window.CustomEvent(
           MediaUIEvents.MEDIA_SHOW_CAPTIONS_REQUEST,
           { composed: true, bubbles: true, detail: ccTrackStr }
         );
         this.dispatchEvent(evt);
-      } else if (this.hasAttribute('use-subtitles-fallback')) {
+
+      } else if (!this.hasAttribute('no-subtitles-fallback')) {
+        // If we don't have a captions track and we're using subtitles fallback (true/"on" by default), check if we have any subtitles available.
         const [subTrackStr] =
           splitTextTracksStr(
             this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST) ?? ''
           ) ?? [];
         if (subTrackStr) {
+          // If we have at least one subtitles track (and didn't have any captions tracks), request for the first one to be showing as a fallback for captions.
           const evt = new window.CustomEvent(
             MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,
             { composed: true, bubbles: true, detail: subTrackStr }
@@ -188,6 +194,7 @@ class MediaCaptionsButton extends MediaChromeButton {
         }
       }
       else {
+        // If we end up here, it means we have an enabled CC-button that a user has clicked on but there are no captions and no subtitles (or we've disabled subtitles fallback).
         console.error('Attempting to enable closed captions but none are available! Please verify your media content if this is unexpected.');
       }
     }
