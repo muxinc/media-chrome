@@ -17,7 +17,9 @@
 <p>This example shows how individual controls can be used without the <code>media-container</code> element.</p>
 
 <media-controller id="controller">
-  <video slot="media" src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"></video>
+  <video slot="media" src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4">
+    <track label="English" kind="captions" srclang="en" default src="./vtt/en-cc.vtt"></track>
+  </video>
 </media-controller>
 
 <h2>Outside the control-bar element</h2>
@@ -29,6 +31,7 @@
 <media-time-range media-controller="controller"></media-time-range>
 <!-- It works for "display-only" components, too! -->
 <media-time-display media-controller="controller" remaining show-duration></media-time-display>
+<media-captions-button media-controller="controller"></media-captions-button>
 <media-playback-rate-button media-controller="controller"></media-playback-rate-button>
 <media-pip-button media-controller="controller"></media-pip-button>
 <media-fullscreen-button media-controller="controller"></media-fullscreen-button>
@@ -44,6 +47,7 @@
   <media-volume-range></media-volume-range>
   <media-time-range></media-time-range>
   <media-time-display remaining show-duration></media-time-display>
+  <media-captions-button></media-captions-button>
   <media-playback-rate-button></media-playback-rate-button>
   <media-pip-button></media-pip-button>
   <media-fullscreen-button></media-fullscreen-button>
