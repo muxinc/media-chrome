@@ -14,6 +14,7 @@
     "dev": "snowpack dev --config snowpack.dev.config.js",
     "start": "yarn dev",
     "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "yarn run build",
     "publish-patch": "yarn run build && np patch --no-tests --any-branch"
   },
   "repository": {
