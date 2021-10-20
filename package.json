@@ -13,7 +13,7 @@
     "build": "snowpack build --config snowpack.prod.config.js",
     "dev": "snowpack dev --config snowpack.dev.config.js",
     "start": "yarn dev",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "web-test-runner --coverage",
     "publish-patch": "yarn run build && np patch --no-tests --any-branch"
   },
   "repository": {
@@ -36,7 +36,10 @@
   },
   "homepage": "https://github.com/muxinc/media-chrome#readme",
   "devDependencies": {
+    "@open-wc/testing": "^3.0.1",
+    "@web/test-runner": "^0.13.20",
     "rimraf": "^3.0.2",
+    "sinon": "^11.1.2",
     "snowpack": "^3.8.3"
   },
   "dependencies": {}
