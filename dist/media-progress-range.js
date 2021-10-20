@@ -1,0 +1,1 @@
+import r from"./media-time-range.js";import{defineCustomElement as s}from"./utils/defineCustomElement.js";class e extends r{constructor(){super();console.warn("MediaChrome: <media-progress-range> is deprecated. Use <media-time-range> instead.")}}s("media-progress-range",e);export default e;
