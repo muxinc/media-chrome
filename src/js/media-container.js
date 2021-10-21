@@ -147,7 +147,7 @@ class MediaContainer extends window.HTMLElement {
     let media = this.querySelector(':scope > [slot=media]');
 
     // Chaining media slots for media templates
-    if (media.nodeName == 'SLOT') media = media.assignedElements({flatten:true})[0];
+    if (media?.nodeName == 'SLOT') media = media.assignedElements({flatten:true})[0];
 
     return media;
   }
