@@ -26,7 +26,7 @@ template.innerHTML = `
       background-color: #000;
     }
 
-    *[part~=layer] {
+    :host(:not([audio])) *[part~=layer] {
       position: absolute;
       top: 0;
       left: 0;
@@ -52,7 +52,6 @@ template.innerHTML = `
     }
 
     .spacer {
-      flex-grow: 1;
       pointer-events: none;
       background: none;
     }
@@ -67,6 +66,10 @@ template.innerHTML = `
     :host(:not([audio])) {
       aspect-ratio: var(--media-aspect-ratio, auto 3 / 2);
       width: 720px;
+    }
+
+    :host(:not([audio])) .spacer {
+      flex-grow: 1;
     }
 
     @supports not (aspect-ratio: 1 / 1) {
