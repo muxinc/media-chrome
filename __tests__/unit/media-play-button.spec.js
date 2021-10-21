@@ -30,7 +30,6 @@ describe('<media-play-button/>', () => {
       expect(icon).to.be.visible;
     });
 
-    /** @TODO Figure out if this test failure is due to assertion assumptions of visible vs. invalid component initialization condition (CJP) */
     it.skip('should not show play', () => {
       const icon = el.shadowRoot.querySelector('slot[name="play"] > *');
       expect(icon).to.not.be.visible;
@@ -51,12 +50,10 @@ describe('<media-play-button/>', () => {
     });
 
     it.skip('should request pause when Enter pressed', () => {
-      /** @TODO Implement me (CJP) */
       expect(false).to.be.true;
     });
 
     it.skip('should request pause when Space pressed', () => {
-      /** @TODO Implement me (CJP) */
       expect(false).to.be.true;
     });
   });
@@ -83,7 +80,6 @@ describe('<media-play-button/>', () => {
       expect(icon).to.be.visible;
     });
 
-    /** @TODO Figure out if this test failure is due to assertion assumptions of visible vs. invalid component initialization condition (CJP) */
     it.skip('should not show pause', () => {
       const icon = el.shadowRoot.querySelector('slot[name="pause"] > *');
       expect(icon).to.not.be.visible;
@@ -104,17 +100,14 @@ describe('<media-play-button/>', () => {
     });
 
     it.skip('should request play when Enter pressed', () => {
-      /** @TODO Implement me (CJP) */
       expect(false).to.be.true;
     });
 
     it.skip('should request play when Space pressed', () => {
-      /** @TODO Implement me (CJP) */
       expect(false).to.be.true;
     });
   });
 
-  /** @TODO Investigate why slots are still svgs in these cases (CJP) */
   describe.skip('custom slots', () => {
     it('should support custom play content', async () => {
       const idStr = 'customPlay';
