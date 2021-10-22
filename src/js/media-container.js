@@ -154,7 +154,7 @@ class MediaContainer extends window.HTMLElement {
 
   mediaSetCallback(media) {
     // Should only ever be set with a compatible media element, never null
-    if (!media || !media.play) {
+    if (!media) {
       console.error('<media-chrome>: Media element set with slot="media" does not appear to be compatible.', media);
       return false;
     }
