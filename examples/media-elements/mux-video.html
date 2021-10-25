@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome &lt;mux-video/&gt; Example</title>
+    <script
+      type="module"
+      src="https://unpkg.com/@mux-elements/mux-video"
+    ></script>
+    <script type="module" src="../../dist/index.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome <code>&lt;mux-video/&gt;</code> Example</h1>
+      <media-controller>
+        <mux-video
+          slot="media"
+          playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+          metadata-video-id="video-id-12345"
+          metadata-video-title="Mad Max: Fury Road Trailer"
+          metadata-viewer-user-id="user-id-6789"
+          stream-type="vod"
+          autoplay
+          muted
+        >
+        </mux-video>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-seek-backward-button></media-seek-backward-button>
+          <media-seek-forward-button></media-seek-forward-button>
+          <media-mute-button></media-mute-button>
+          <media-volume-range></media-volume-range>
+          <media-time-range></media-time-range>
+          <media-time-display show-duration remaining></media-time-display>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-pip-button></media-pip-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+    </main>
+  </body>
+</html>
