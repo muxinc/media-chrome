@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width">
+  <title>Media Chrome Mobile Video Usage Example</title>
+  <script type="module" src="../dist/index.js"></script>
+  <style>
+    body {
+      width: 100vw;
+      height: 100vh;
+      margin: 0px;
+    }
+
+    .examples {
+      margin-top: 20px;
+    }
+
+    *[slot="centered-chrome"] {
+      margin: 0 15%;
+      --media-control-hover-background: none;
+      --media-control-background: none;
+    }
+
+    media-controller {
+      max-width: 100vw;
+      max-height: 100vh;
+    }
+    
+    media-controller[user-inactive="user-inactive"]:not([media-paused]) :is(*[slot="centered-chrome"], media-control-bar) {
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    *[slot="centered-chrome"] :is(media-play-button, media-seek-backward-button, media-seek-forward-button) {
+      padding: 0px;
+    }
+
+    *[slot="centered-chrome"] media-play-button {
+      width: 20%;
+    }
+
+    *[slot="centered-chrome"] :is(media-seek-backward-button, media-seek-forward-button) {
+      width: 15%;
+    }
+
+    .seek-control-bar {
+      padding: 0 5px;
+    }
+
+    .seek-control-bar > * {
+      background: none;
+      height: auto;
+      padding: 0px;
+    }
+
+    .seek-control-bar > media-time-range {
+      padding-right: 5px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Media Chrome Standard Mobile Video Usage Example</h1>
+    <media-controller  autohide="2">
+      <video
+        slot="media"
+        src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+        preload="none"
+        muted
+        crossorigin
+      >
+        <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
+      </video>
+      <div slot="centered-chrome">
+        <media-seek-backward-button></media-seek-backward-button>
+        <media-play-button></media-play-button>
+        <media-seek-forward-button></media-seek-forward-button>
+      </div>
+      <media-control-bar class="seek-control-bar">
+        <media-time-range></media-time-range>
+        <media-time-display show-duration remaining></media-time-display>
+      </media-control-bar>
+      <media-control-bar>
+        <media-mute-button></media-mute-button>
+        <media-playback-rate-button></media-playback-rate-button>
+        <media-pip-button></media-pip-button>
+        <media-fullscreen-button></media-fullscreen-button>
+      </media-control-bar>
+    </media-controller>
+    <div class="examples">
+      <a href="./">View more examples</a>
+    </div>
+  </main>
+</body>
+</html>
