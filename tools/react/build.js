@@ -6,6 +6,7 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// REACT MODULE STRING CREATION CODE BEGIN
 const toPascalCase = (kebabText) => {
   return kebabText.replace(/(^\w|-\w)/g, clearAndUpper);
 };
@@ -52,7 +53,9 @@ ${toExportsStr(config)}
 
   return moduleStr;
 };
+// REACT MODULE STRING CREATION CODE END
 
+// BUILD BEGIN
 const createReactWrapperModules = async ({
   entryPoints,
   setupGlobalsAsync,
@@ -68,11 +71,10 @@ const createReactWrapperModules = async ({
           const path = require('path');
           const importPathObj = path.parse(importPathAbs);
           const moduleDirStr = path.join(importPathObj.dir, 'react');
-          // const moduleFileName = `${importPathObj.name}.jsx`;
           const modulePathAbs = path.format({
             dir: moduleDirStr,
             name: importPathObj.name,
-            ext: '.jsx',
+            ext: '.js',
           });
 
           const importPathRelative = path.relative(moduleDirStr, importPathAbs);
@@ -101,9 +103,7 @@ const createReactWrapperModules = async ({
             importPath: importPathRelative,
           })}\n\n${componentsWithExports.join('\n')}`;
 
-          // const modulePathAbs = path.join(importPathObj.dir, 'react', `${importPathObj.name}`, '.jsx');
           fs.writeFileSync(modulePathAbs, moduleStr);
-          // console.log('dir', path.dirname(importPathAbs));
           console.log('modulePathAbs', modulePathAbs);
 
           return [modulePathAbs, moduleStr];
@@ -111,16 +111,14 @@ const createReactWrapperModules = async ({
       })
     );
 
-    // const [entryPoint] = entryPoints;
-    // const result = require.resolve(entryPoint);
-    // console.log('resolved', result);
-
     return modules;
   });
 };
 
 export { toCustomElementReactWrapperModule };
+// BUILD END
 
+// EXTERNALIZEABLE/CONFIG CODE BEGIN
 const path = require('path');
 const projectRoot = path.join(__dirname, '..', '..');
 const entryPoints = [path.join(projectRoot, 'dist', 'index.js')];
@@ -144,3 +142,4 @@ const setupGlobalsAsync = async () => {
 };
 
 createReactWrapperModules({ entryPoints, setupGlobalsAsync });
+// EXTERNALIZEABLE/CONFIG CODE END
