@@ -22,16 +22,16 @@
         --media-control-hover-background: initial;
       }
 
-      *[slot="controls-overlay"] {
+      *[slot="centered-chrome"] {
         --media-control-hover-background: none;
         --media-control-background: none;
       }
 
-      *[slot="controls-overlay"] media-play-button {
+      *[slot="centered-chrome"] media-play-button {
         width: 30%;
       }
 
-      *[slot="controls-overlay"] :is(media-seek-forward-button, media-seek-backward-button) {
+      *[slot="centered-chrome"] :is(media-seek-forward-button, media-seek-backward-button) {
         width: 15%;
       }
 
@@ -67,7 +67,7 @@
           muted
           preload="none"
         ></video>
-        <media-control-bar slot="top-controls" class="mobile-only">
+        <media-control-bar slot="top-chrome" class="mobile-only">
           <media-mute-button></media-mute-button>
           <media-playback-rate-button></media-playback-rate-button>
           <div class="spacer"></div>
@@ -148,7 +148,7 @@
             </svg>
           </media-fullscreen-button>
         </media-control-bar>
-        <span slot="controls-overlay">
+        <span slot="centered-chrome">
           <media-seek-backward-button class="mobile-only">
             <svg
               slot="backward"

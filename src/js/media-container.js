@@ -43,7 +43,7 @@ template.innerHTML = `
       pointer-events: auto;
     }
 
-    ::slotted([slot=controls-overlay]) {
+    ::slotted([slot=centered-chrome]) {
       flex-grow: 1;
       display: flex; 
       flex-flow: row nowrap; 
@@ -103,23 +103,17 @@ template.innerHTML = `
     <slot name="media"></slot>
   </span>
   <span part="layer gesture-layer">
-    <slot name="gestures-overlay"></slot>
+    <slot name="gestures-chrome"></slot>
   </span>
-  <!--
-  <span part="layer text-tracks-layer">
-    <slot name="text-tracks-renderer"></slot>
+  <span part="layer centered-layer">
+    <slot name="centered-chrome"></slot>
   </span>
-  -->
-  <span part="layer controls-overlay-layer">
-    <slot name="controls-overlay"></slot>
-  </span>
-  <span part="layer controls-layer">
-    <slot name="top-controls"></slot>
-    <span class="spacer centered"><slot name="middle-controls"></slot></span>
-    <!-- default, effectively "bottom-controls" -->
+  <span part="layer vertical-layer">
+    <slot name="top-chrome"></slot>
+    <span class="spacer centered"><slot name="middle-chrome"></slot></span>
+    <!-- default, effectively "bottom-chrome" -->
     <slot></slot>
   </span>
-  <slot name="custom-chrome"></slot>
 `;
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
