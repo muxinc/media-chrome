@@ -20,9 +20,6 @@ template.innerHTML = `
       box-sizing: border-box;
       position: relative;
       display: inline-block;
-
-      /* Max out at 100% width for smaller screens (< 720px) */
-      // max-width: 100%;
       background-color: #000;
     }
 

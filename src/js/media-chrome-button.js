@@ -14,9 +14,7 @@ template.innerHTML = `
     box-sizing: border-box;
     background-color: var(--media-control-background, rgba(20,20,30, 0.7));
 
-    /* Default width and height can be overridden externally */
     padding: 10px;
-    
 
     /* Vertically center any text */
     font-size: 14px;
