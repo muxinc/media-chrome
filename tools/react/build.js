@@ -1,4 +1,4 @@
-import { createRequire } from "module";
+import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 import { fileURLToPath } from 'url';
 import path from 'path';
@@ -58,36 +58,70 @@ ${toExportsStr(config)}
 // REACT MODULE STRING CREATION CODE END
 
 // BUILD BEGIN
+
+const entryPointsToReactModulesIterable = (entryPoints) => {
+  return {
+    [Symbol.asyncIterator]() {
+      return {
+        i: offsetIdx,
+        next() {
+          const { i } = this;
+          if (i >= entryPoints.length) return Promise.resolve({ done: true });
+
+          const entryPoint = entryPoints[i];
+          return segmentFetchBufferPromise(sourceBuffer, segment)
+            .then((segmentData) => {
+              this.i++;
+              return { value: segmentData, done: false };
+            })
+            .catch((segmentDataWithError) => {
+              return Promise.reject({ value: segmentDataWithError });
+            });
+        },
+      };
+    },
+  };
+};
+
 const createReactWrapperModules = async ({
   entryPoints,
   setupGlobalsAsync,
+  distRoot = './',
+  commonModulesSrcRoot = path.join(__dirname, 'common'),
 }) => {
-  return setupGlobalsAsync().then((customElementNames) => {
-    // const definedCustomElements = [];
+  return setupGlobalsAsync().then(async (customElementNames) => {
+    if (!entryPoints?.length) {
+      console.error('no entrypoints! bailing');
+      return;
+    }
+    
+    const moduleDirStr = distRoot;
+    fs.mkdirSync(moduleDirStr, { recursive: true });
+
+    const commonModulesDistPath = path.join(moduleDirStr, 'common');
+    fs.mkdirSync(commonModulesDistPath, { recursive: true });
+    fs.readdirSync(commonModulesSrcRoot, { withFileTypes: true }).forEach(
+      (dirEntryObj) => {
+        const { name } = dirEntryObj;
+        fs.copyFileSync(
+          path.format({ name, dir: commonModulesSrcRoot }),
+          path.format({ name, dir: commonModulesDistPath })
+        );
+      }
+    );
+    
     const modules = Promise.all(
       entryPoints.map((importPath) => {
+        const importPathAbs = require.resolve(importPath);
+        const importPathObj = path.parse(importPathAbs);
+        const modulePathAbs = path.format({
+          dir: moduleDirStr,
+          name: importPathObj.name,
+          ext: '.js',
+        });
+
+        const importPathRelative = path.relative(moduleDirStr, importPathAbs);
         return import(importPath).then((_) => {
-          const importPathAbs = require.resolve(importPath);
-
-          const importPathObj = path.parse(importPathAbs);
-          const moduleDirStr = path.join(importPathObj.dir, 'react');
-          const modulePathAbs = path.format({
-            dir: moduleDirStr,
-            name: importPathObj.name,
-            ext: '.js',
-          });
-
-          const importPathRelative = path.relative(moduleDirStr, importPathAbs);
-          fs.mkdirSync(moduleDirStr, { recursive: true });
-          const commonModulesSrcPath = path.join(__dirname, 'common');
-          const commonModulesDestPath = path.join(moduleDirStr, 'common');
-          fs.mkdirSync(commonModulesDestPath, { recursive: true });
-          fs.readdirSync(commonModulesSrcPath, { withFileTypes: true }).forEach(
-            (dirEntryObj) => {
-              const { name } = dirEntryObj;
-              fs.copyFileSync(path.format({ name, dir: commonModulesSrcPath }), path.format({ name, dir: commonModulesDestPath }));
-            }
-          );
 
           /** @TODO Convert to reduce with side effect for definedCustomElements to "filter as we go" and avoid potential redefinition across modules (CJP) */
           const componentsWithExports = customElementNames.map(
@@ -118,6 +152,7 @@ export { toCustomElementReactWrapperModule };
 
 // EXTERNALIZEABLE/CONFIG CODE BEGIN
 const projectRoot = path.join(__dirname, '..', '..');
+const distRoot = path.join(projectRoot, 'dist', 'react');
 const entryPoints = [path.join(projectRoot, 'dist', 'index.js')];
 const setupGlobalsAsync = async () => {
   const customElementNames = await import(
@@ -134,5 +169,5 @@ const setupGlobalsAsync = async () => {
   return customElementNames;
 };
 
-createReactWrapperModules({ entryPoints, setupGlobalsAsync });
+createReactWrapperModules({ entryPoints, setupGlobalsAsync, distRoot });
 // EXTERNALIZEABLE/CONFIG CODE END
