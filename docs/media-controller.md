@@ -38,7 +38,7 @@ For an interactive example of how each of the slots render for `video`, check ou
 
 ### `centered-chrome`
 
-* Render Location: The child "slotted to" `centered-chrome` will cover all of the `<media-controller/>` but "underneath" anything in the default slot / "`bottom-chrome`", `top-chrome`, or `middle-chrome`. By default, the `centered-chrome` element will layout all children within a centered [flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/) row with each child spaced evenly apart from one another.
+* Render Location: The child "slotted to" `centered-chrome` will cover all of the `<media-controller/>` and will be "above" anything in the default slot / "`bottom-chrome`", `top-chrome`, or `middle-chrome`. By default, the `centered-chrome` element will layout all children within a centered [flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/) row with each child spaced evenly apart from one another.
 
 * Common/Example use cases: "big button" controls that are centered and horizontally layed out "on top of" the media. While you **_can_** have multiple children that are "slotted to" `centered-chrome`, most likely, you'll want to use one to take advantage of the built in layout.
   * [Mobile example](https://media-chrome.mux.dev/examples/mobile.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/mobile.html))

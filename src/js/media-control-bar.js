@@ -19,10 +19,6 @@ template.innerHTML = `
       color: var(--media-icon-color, #eee);
     }
 
-    ::slotted(*), :host > * {
-      flex-shrink: 1;
-    }
-
     media-time-range,
     ::slotted(media-time-range),
     ::slotted(media-progress-range),
