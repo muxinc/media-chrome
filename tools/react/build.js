@@ -59,23 +59,59 @@ ${toExportsStr(config)}
 
 // BUILD BEGIN
 
-const entryPointsToReactModulesIterable = (entryPoints) => {
+const entryPointsToReactModulesIterable = (
+  entryPoints,
+  { getDefinedCustomElements, distRoot }
+) => {
+  let alreadyDefinedCustomElementNames = [];
   return {
     [Symbol.asyncIterator]() {
       return {
-        i: offsetIdx,
+        i: 0,
         next() {
           const { i } = this;
           if (i >= entryPoints.length) return Promise.resolve({ done: true });
 
-          const entryPoint = entryPoints[i];
-          return segmentFetchBufferPromise(sourceBuffer, segment)
-            .then((segmentData) => {
-              this.i++;
-              return { value: segmentData, done: false };
+          const importPath = entryPoints[i];
+          const importPathAbs = require.resolve(importPath);
+          const importPathObj = path.parse(importPathAbs);
+          const modulePathAbs = path.format({
+            dir: distRoot,
+            name: importPathObj.name,
+            ext: '.js',
+          });
+
+          const importPathRelative = path.relative(distRoot, importPathAbs);
+          return import(importPath)
+            .then((_) => {
+              const customElementNames = getDefinedCustomElements();
+              const componentsWithExports = customElementNames
+                .filter(
+                  (name) => !alreadyDefinedCustomElementNames.includes(name)
+                )
+                .map((elementName) => {
+                  return toCustomElementReactWrapperModule({
+                    elementName,
+                  });
+                });
+
+              const moduleStr = `${toImportsStr({
+                importPath: importPathRelative,
+              })}\n\n${componentsWithExports.join('\n')}`;
+
+              fs.writeFileSync(modulePathAbs, moduleStr);
+              alreadyDefinedCustomElementNames = customElementNames;
+              return {
+                modulePath: modulePathAbs,
+                moduleContents: moduleStr,
+              };
             })
-            .catch((segmentDataWithError) => {
-              return Promise.reject({ value: segmentDataWithError });
+            .then((moduleDef) => {
+              this.i++;
+              return { value: moduleDef, done: false };
+            })
+            .catch((err) => {
+              return Promise.reject({ value: err });
             });
         },
       };
@@ -94,11 +130,10 @@ const createReactWrapperModules = async ({
       console.error('no entrypoints! bailing');
       return;
     }
-    
-    const moduleDirStr = distRoot;
-    fs.mkdirSync(moduleDirStr, { recursive: true });
 
-    const commonModulesDistPath = path.join(moduleDirStr, 'common');
+    fs.mkdirSync(distRoot, { recursive: true });
+
+    const commonModulesDistPath = path.join(distRoot, 'common');
     fs.mkdirSync(commonModulesDistPath, { recursive: true });
     fs.readdirSync(commonModulesSrcRoot, { withFileTypes: true }).forEach(
       (dirEntryObj) => {
@@ -109,41 +144,29 @@ const createReactWrapperModules = async ({
         );
       }
     );
-    
-    const modules = Promise.all(
-      entryPoints.map((importPath) => {
-        const importPathAbs = require.resolve(importPath);
-        const importPathObj = path.parse(importPathAbs);
-        const modulePathAbs = path.format({
-          dir: moduleDirStr,
-          name: importPathObj.name,
-          ext: '.js',
-        });
 
-        const importPathRelative = path.relative(moduleDirStr, importPathAbs);
-        return import(importPath).then((_) => {
-
-          /** @TODO Convert to reduce with side effect for definedCustomElements to "filter as we go" and avoid potential redefinition across modules (CJP) */
-          const componentsWithExports = customElementNames.map(
-            (elementName) => {
-              return toCustomElementReactWrapperModule({
-                elementName,
-              });
-            }
-          );
-
-          const moduleStr = `${toImportsStr({
-            importPath: importPathRelative,
-          })}\n\n${componentsWithExports.join('\n')}`;
-
-          fs.writeFileSync(modulePathAbs, moduleStr);
-
-          return [modulePathAbs, moduleStr];
-        });
-      })
+    const moduleCreateAsyncIterable = entryPointsToReactModulesIterable(
+      entryPoints,
+      { getDefinedCustomElements: () => customElementNames, distRoot }
     );
 
-    return modules;
+    try {
+      for await (let moduleDef of moduleCreateAsyncIterable) {
+        const { modulePath, moduleContents } = moduleDef;
+        console.log(
+          'React module wrapper created!',
+          'path (absolute):',
+          modulePath,
+          '\n',
+          'contents:',
+          moduleContents
+        );
+      }
+    } catch (err) {
+      console.log('unexpected error generating module!', err);
+    }
+
+    console.log('\n\n\n', 'module generation completed!');
   });
 };
 
@@ -164,6 +187,8 @@ const setupGlobalsAsync = async () => {
     window.customElementNames = [];
     window.customElements.define = (name, _classRef) =>
       window.customElementNames.push(name);
+    // NOTE: The current implementation relies on the fact that `customElementNames` will be mutated
+    // to add the Custom Element html name for every element that's defined as a result of loading/importing the entryPoints modules (CJP).
     return window.customElementNames;
   });
   return customElementNames;
