@@ -1,7 +1,9 @@
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import path from 'path';
+import fs from 'fs';
+const { dirname } = path;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -64,11 +66,9 @@ const createReactWrapperModules = async ({
     // const definedCustomElements = [];
     const modules = Promise.all(
       entryPoints.map((importPath) => {
-        console.log('before entrypoint dynamic import', importPath);
         return import(importPath).then((_) => {
           const importPathAbs = require.resolve(importPath);
 
-          const path = require('path');
           const importPathObj = path.parse(importPathAbs);
           const moduleDirStr = path.join(importPathObj.dir, 'react');
           const modulePathAbs = path.format({
@@ -78,7 +78,6 @@ const createReactWrapperModules = async ({
           });
 
           const importPathRelative = path.relative(moduleDirStr, importPathAbs);
-          const fs = require('fs');
           fs.mkdirSync(moduleDirStr, { recursive: true });
           const commonModulesSrcPath = path.join(__dirname, 'common');
           const commonModulesDestPath = path.join(moduleDirStr, 'common');
@@ -104,7 +103,6 @@ const createReactWrapperModules = async ({
           })}\n\n${componentsWithExports.join('\n')}`;
 
           fs.writeFileSync(modulePathAbs, moduleStr);
-          console.log('modulePathAbs', modulePathAbs);
 
           return [modulePathAbs, moduleStr];
         });
@@ -119,14 +117,9 @@ export { toCustomElementReactWrapperModule };
 // BUILD END
 
 // EXTERNALIZEABLE/CONFIG CODE BEGIN
-const path = require('path');
 const projectRoot = path.join(__dirname, '..', '..');
 const entryPoints = [path.join(projectRoot, 'dist', 'index.js')];
 const setupGlobalsAsync = async () => {
-  console.log(
-    'before setupGlobalsAsync dynamic import',
-    path.join(projectRoot, 'dist', 'utils', 'server-safe-globals.js')
-  );
   const customElementNames = await import(
     path.join(projectRoot, 'dist', 'utils', 'server-safe-globals.js')
   ).then((exports) => {
