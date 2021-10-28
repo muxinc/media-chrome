@@ -9,11 +9,13 @@
     main {
       display: flex;
       flex-flow: row nowrap;
+      background-color: #fef4f6;
+      height: 100vh;
+      width: 100vw;
     }
 
     .slots-control {
       margin-left: 50px;
-      background-color: lightgrey;
       padding: 10px;
     }
 
@@ -33,27 +35,27 @@
 
     media-controller > [slot='top-chrome'],
     .top-chrome {
-      background-color: rgba(0, 128, 0, 0.75);
-      border: 1px solid rgb(0, 128, 0);
+      background-color: rgba(179, 236, 184, 0.75);
+      border: 1px solid rgb(179, 236, 184);
     }
 
     media-controller > [slot='middle-chrome'],
     .middle-chrome {
-      background-color: rgba(0, 0, 255, 0.75);
-      border: 1px solid rgb(0, 0, 255);
+      background-color: rgba(140, 207, 254, 0.75);
+      border: 1px solid rgb(140, 207, 254);
     }
 
     /* aka "bottom-chrome" */
     media-controller > :not([slot]),
     .bottom-chrome {
-      background-color: rgba(75, 0, 130, 0.75);
-      border: 1px solid rgb(75, 0, 130);
+      background-color: rgba(203, 143, 235, 0.75);
+      border: 1px solid rgb(203, 143, 235);
     }
 
     media-controller > [slot='centered-chrome'],
     .centered-chrome {
-      background-color: rgba(255, 255, 0, 0.75);
-      border: 1px solid rgba(255, 255, 0);
+      background-color: rgba(255, 236, 165, 0.75);
+      border: 1px solid rgb(255, 236, 165);
     }
 
     .hidden {
@@ -66,6 +68,7 @@
       margin: 0 5px;
       display: inline-block;
       line-height: 0px;
+      border: 1px solid black;
     }
 
     .spacer {
