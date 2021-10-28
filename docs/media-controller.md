@@ -177,6 +177,12 @@ You also may want to show different slots on mobile vs. desktop. For example, he
 For an interactive example of how each of the slots render for `video`, check out [this demo](https://media-chrome.mux.dev/examples/slots-demo.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/slots-demo.html)).
 
 ### Default Slot (effectively the "`bottom-chrome`")
+
+<br>
+<img src="./assets/bottom-chrome.png" alt="Bottom Chrome Visual Description" width="800"/>
+<br>
+<br>
+
 * Render Location: Each child that doesn't specify a slot will render at the bottom of the <media-controller/>. If you have more than element like this they will be stacked vertically.
 
 * Common/Example use cases: showing one or more rows of controls at the bottom of the `<media-controller/>`. For many use cases, you can simply add a `<media-control-bar/>` for each row of controls you'd like.
@@ -186,12 +192,23 @@ For an interactive example of how each of the slots render for `video`, check ou
   * [Netflix theme](https://media-chrome.mux.dev/examples/themes/netflix-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/netflix-theme.html))
 
 ### `top-chrome`
+
+<br>
+<img src="./assets/top-chrome.png" alt="Top Chrome Visual Description" width="800"/>
+<br>
+<br>
+
 * Render Location: Each child that specifies `slot="top-chrome"` will render at the top of the <media-controller/>. If you have more than element like this they will be stacked vertically.
 
 * Common/Example use cases: showing one or more rows of controls at the top of the `<media-controller/>`. For many use cases, you can simply add a `<media-control-bar/>` for each row of controls you'd like.
   * [Demuxed 2021 theme](https://media-chrome.mux.dev/examples/themes/demuxed-2021-theme.html) (mobile screen sizes only) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/demuxed-2021-theme.html))
 
 ### `middle-chrome`
+
+<br>
+<img src="./assets/middle-chrome.png" alt="Middle Chrome Visual Description" width="800"/>
+<br>
+<br>
 
 * Render Location: Children that specify `slot="middle-chrome"` will show up in the available space between any "`top-chrome`" children and any default slot/"`bottom-chrome`" children.
 
@@ -200,11 +217,31 @@ For an interactive example of how each of the slots render for `video`, check ou
 
 ### `centered-chrome`
 
+<br>
+<img src="./assets/centered-chrome.png" alt="Centered Chrome Visual Description" width="800"/>
+<br>
+<br>
+
 * Render Location: The child that specifies `slot="centered-chrome"` will cover all of the `<media-controller/>` and will be "above" anything in the default slot / "`bottom-chrome`", `top-chrome`, or `middle-chrome`. By default, the `centered-chrome` element will layout all children within a centered [flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/) row with each child spaced evenly apart from one another.
 
 * Common/Example use cases: "big button" controls that are centered and horizontally layed out "on top of" the media. While you **_can_** have multiple children that are "slotted to" `centered-chrome`, most likely, you'll want to use one to take advantage of the built in layout.
   * [Mobile example](https://media-chrome.mux.dev/examples/mobile.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/mobile.html))
   * [Demuxed 2021 theme](https://media-chrome.mux.dev/examples/themes/demuxed-2021-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/demuxed-2021-theme.html))
+
+### Other use cases
+
+<figure>
+<img src="./assets/mix-and-match.png" alt="Mix and Match Usage Visual Description" width="800"/>
+<figcaption>Mix and match your use of slots (e.g. using <code>&lt;media-control-bar/&gt;</code> at the top and bottom)</figcaption>
+</figure>
+
+<br>
+
+<figure>
+<img src="./assets/responsive.png" alt="Responsive Design Visual Description" width="800"/>
+<figcaption>Use media queries for desktop-only or mobile-only controls, just like any HTML element</figcaption>
+</figure>
+
 
 ## Working with slots (audio)
 
