@@ -17,21 +17,22 @@
         --media-range-bar-color: #ff5968;
       }
 
-      media-control-bar[slot="top-controls"] {
+      media-control-bar[slot='top-controls'] {
         --media-control-background: rgba(50, 50, 70, 0.7);
         --media-control-hover-background: initial;
       }
 
-      *[slot="centered-chrome"] {
+      *[slot='centered-chrome'] {
         --media-control-hover-background: none;
         --media-control-background: none;
       }
 
-      *[slot="centered-chrome"] media-play-button {
+      *[slot='centered-chrome'] media-play-button {
         width: 30%;
       }
 
-      *[slot="centered-chrome"] :is(media-seek-forward-button, media-seek-backward-button) {
+      *[slot='centered-chrome']
+        :is(media-seek-forward-button, media-seek-backward-button) {
         width: 15%;
       }
 
@@ -52,7 +53,7 @@
           display: initial;
         }
 
-        *[slot="controls-overlay"] media-play-button:not([media-paused]) {
+        *[slot='controls-overlay'] media-play-button:not([media-paused]) {
           display: none;
         }
       }
@@ -60,7 +61,7 @@
 
     <main>
       <h1>Media Chrome Demuxed 2021 Theme Example</h1>
-      <media-controller>
+      <media-controller autohide="2">
         <video
           slot="media"
           src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"

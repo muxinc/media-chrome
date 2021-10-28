@@ -5,90 +5,89 @@
     <title>Understanding Media Controller slots</title>
     <script type="module" src="../dist/index.js"></script>
   </head>
+  <style>
+    main {
+      display: flex;
+      flex-flow: row nowrap;
+    }
+
+    .slots-control {
+      margin-left: 50px;
+      background-color: lightgrey;
+      padding: 10px;
+    }
+
+    .slots-control ul {
+      list-style-type: none;
+      padding: 10px;
+    }
+
+    media-control-bar {
+      background: none;
+    }
+
+    media-controller {
+      aspect-ratio: 16 / 9;
+      --media-control-background: none;
+    }
+
+    media-controller > [slot='top-chrome'],
+    .top-chrome {
+      background-color: rgba(0, 128, 0, 0.75);
+      border: 1px solid rgb(0, 128, 0);
+    }
+
+    media-controller > [slot='middle-chrome'],
+    .middle-chrome {
+      background-color: rgba(0, 0, 255, 0.75);
+      border: 1px solid rgb(0, 0, 255);
+    }
+
+    /* aka "bottom-chrome" */
+    media-controller > :not([slot]),
+    .bottom-chrome {
+      background-color: rgba(75, 0, 130, 0.75);
+      border: 1px solid rgb(75, 0, 130);
+    }
+
+    media-controller > [slot='centered-chrome'],
+    .centered-chrome {
+      background-color: rgba(255, 255, 0, 0.75);
+      border: 1px solid rgba(255, 255, 0);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .legend-item {
+      height: 0.75em;
+      aspect-ratio: 1 / 1;
+      margin: 0 5px;
+      display: inline-block;
+      line-height: 0px;
+    }
+
+    .spacer {
+      flex-grow: 1;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+  </style>
   <body>
-    <style>
-      main {
-        display: flex;
-        flex-flow: row nowrap;
-      }
-
-      .slots-control {
-        margin-left: 50px;
-        background-color: lightgrey;
-        padding: 10px;
-      }
-
-      .slots-control ul {
-        list-style-type: none;
-        padding: 10px;
-      }
-
-      media-control-bar {
-        background: none;
-      }
-
-      media-controller {
-        aspect-ratio: 16 / 9;
-        background: none;
-        border: 2px solid black;
-        --media-control-background: none;
-      }
-
-      media-controller > [slot='top-chrome'],
-      .top-chrome {
-        background-color: rgba(0, 128, 0, 0.75);
-        border: 1px solid rgb(0, 128, 0);
-      }
-
-      media-controller > [slot='middle-chrome'],
-      .middle-chrome {
-        background-color: rgba(0, 0, 255, 0.75);
-        border: 1px solid rgb(0, 0, 255);
-      }
-
-      /* aka "bottom-chrome" */
-      media-controller > :not([slot]),
-      .bottom-chrome {
-        background-color: rgba(75, 0, 130, 0.75);
-        border: 1px solid rgb(75, 0, 130);
-      }
-
-      media-controller > [slot='centered-chrome'],
-      .centered-chrome {
-        background-color: rgba(255, 255, 0, 0.75);
-        border: 1px solid rgba(255, 255, 0);
-      }
-
-      .hidden {
-        display: none;
-      }
-
-      .legend-item {
-        height: 0.75em;
-        aspect-ratio: 1 / 1;
-        margin: 0 5px;
-        display: inline-block;
-        line-height: 0px;
-      }
-
-      .spacer {
-        flex-grow: 1;
-        text-align: center;
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-      }
-    </style>
-
     <main>
       <section>
         <h1>Understanding <code>&lt;media-controller/&gt;</code> slots</h1>
-        <media-controller>
+        <media-controller autohide="-1">
           <video
             slot="media"
-            src="http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            src="https://stream.mux.com/BlSb4AuUfA00wchgJ3D00bz4VTppg3eo5Y/high.mp4"
+            poster="https://image.mux.com/BlSb4AuUfA00wchgJ3D00bz4VTppg3eo5Y/thumbnail.jpg"
             muted
             preload="none"
+            crossorigin
           ></video>
           <span slot="centered-chrome">
             <media-seek-backward-button></media-seek-backward-button>

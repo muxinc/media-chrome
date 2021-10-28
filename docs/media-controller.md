@@ -2,6 +2,118 @@
 
 The `<media-controller/>` manages communication of state and state change requests between a `media` element and control elements. It also provides some built in sizing and layout to make styling your player as easy as possible.
 
+# Attributes
+
+* `autohide (seconds, default: 0)` - (`video` only) Use this to autohide all controls/chrome (except for the `media`) after `n` seconds of inactivity, unless the media is paused. To disable `autohide`, set the value to -1.
+
+Example:
+
+```html
+<media-controller  autohide="2">
+  <video
+    slot="media"
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+  ></video>
+  <div slot="centered-chrome">
+    <media-seek-backward-button></media-seek-backward-button>
+    <media-play-button></media-play-button>
+    <media-seek-forward-button></media-seek-forward-button>
+  </div>
+  <media-control-bar class="seek-control-bar">
+    <media-time-range></media-time-range>
+    <media-time-display show-duration remaining></media-time-display>
+  </media-control-bar>
+  <media-control-bar>
+    <media-mute-button></media-mute-button>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-pip-button></media-pip-button>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-controller>
+```
+
+<img src="https://image.mux.com/yxrSF1II82CjDSLR4100Eo5jBndsznIU7I00ZFylJbfvU/animated.gif" alt="Example autohide behavior" width="600"/>
+
+Example (`autohide` disabled):
+
+```html
+<media-controller  autohide="-1">
+  <video
+    slot="media"
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+  ></video>
+  <div slot="centered-chrome">
+    <media-seek-backward-button></media-seek-backward-button>
+    <media-play-button></media-play-button>
+    <media-seek-forward-button></media-seek-forward-button>
+  </div>
+  <media-control-bar class="seek-control-bar">
+    <media-time-range></media-time-range>
+    <media-time-display show-duration remaining></media-time-display>
+  </media-control-bar>
+  <media-control-bar>
+    <media-mute-button></media-mute-button>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-pip-button></media-pip-button>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-controller>
+```
+
+# Styling
+
+* `aspect-ratio` - While this is [a standard CSS style](https://css-tricks.com/almanac/properties/a/aspect-ratio/), it's fairly new, and you're likely to want to use it frequently on `<media-controller/>`, at least for `video` use cases. Most often, you'll want the `aspect-ratio` to match your video content's aspect ratio.
+
+Example:
+
+```html
+<media-controller style="aspect-ratio: 16/9">
+  <video
+    slot="media"
+    src="https://stream.mux.com/BlSb4AuUfA00wchgJ3D00bz4VTppg3eo5Y/high.mp4"
+    poster="https://image.mux.com/BlSb4AuUfA00wchgJ3D00bz4VTppg3eo5Y/thumbnail.jpg"
+    muted
+    preload="none"
+    crossorigin
+  ></video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-display></media-time-display>
+    <media-time-range></media-time-range>
+    <media-duration-display></media-duration-display>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-controller>
+```
+
+Just in case your browser doesn't support `aspect-ratio` (all major evergreen browsers should!), you can always set it manually.
+
+```html
+<media-controller style="width: 800px; height: calc(800px * 9/16)"> <!-- for 16:9 aspect ratio where you want an explicit width and a "derived" height -->
+  <video
+    slot="media"
+    src="https://stream.mux.com/BlSb4AuUfA00wchgJ3D00bz4VTppg3eo5Y/high.mp4"
+    poster="https://image.mux.com/BlSb4AuUfA00wchgJ3D00bz4VTppg3eo5Y/thumbnail.jpg"
+    muted
+    preload="none"
+    crossorigin
+  ></video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-display></media-time-display>
+    <media-time-range></media-time-range>
+    <media-duration-display></media-duration-display>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-controller>
+```
+
 # Layout - Slots
 Slots are used to tell `<media-controller/>` where you want your controls positioned. Even if you aren't explicitly naming a slot, you're still using one (the "default slot"). Below is a discussion of available slots and how they work.
 

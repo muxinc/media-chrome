@@ -94,7 +94,7 @@ template.innerHTML = `
       width: 100%;
     }
 
-    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) slot:not([media]) ::slotted(*) {
+    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) ::slotted(:not([slot=media])) {
       opacity: 0;
       transition: opacity 1s;
     }
