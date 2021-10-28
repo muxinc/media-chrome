@@ -90,6 +90,10 @@ template.innerHTML = `
       pointer-events: auto;
     }
 
+    slot:not([media]) ::slotted(media-control-bar)  {
+      width: 100%;
+    }
+
     :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) slot:not([media]) ::slotted(*) {
       opacity: 0;
       transition: opacity 1s;
