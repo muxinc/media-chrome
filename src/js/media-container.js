@@ -36,7 +36,7 @@ template.innerHTML = `
       background: none;
     }
 
-    *[part~=gestures-layer] {
+    :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer]) {
       pointer-events: auto;
     }
     
