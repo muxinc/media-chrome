@@ -39,13 +39,10 @@ template.innerHTML = `
     *[part~=gestures-layer] {
       pointer-events: auto;
     }
-
-    ::slotted([slot=centered-chrome]) {
-      flex-grow: 1;
-      display: flex; 
-      flex-flow: row nowrap; 
-      align-items: center; 
-      justify-content: space-evenly;
+    
+    :host(:not([audio])) *[part~=layer][part~=centered-layer] {
+      align-items: center;
+      justify-content: center;
     }
 
     .spacer {

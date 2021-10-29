@@ -15,6 +15,19 @@
       margin-top: 20px;
     }
 
+    /* Breaking these up into two selectors to demonstrate how this could work with a new custom "contaienr" element (CJP) */
+    media-controller .centered-controls-overlay {
+      flex-grow: 1;
+      align-self: stretch;
+    }
+
+    .centered-controls-overlay {
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: center;
+      justify-content: space-evenly;
+    }
+
     *[slot="centered-chrome"] {
       margin: 0 15%;
       --media-control-hover-background: none;
@@ -66,7 +79,7 @@
       >
         <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
       </video>
-      <div slot="centered-chrome">
+      <div slot="centered-chrome" class="centered-controls-overlay">
         <media-seek-backward-button></media-seek-backward-button>
         <media-play-button></media-play-button>
         <media-seek-forward-button></media-seek-forward-button>

@@ -27,6 +27,19 @@
         --media-control-background: none;
       }
 
+      /* Breaking these up into two selectors to demonstrate how this could work with a new custom "contaienr" element (CJP) */
+      media-controller .centered-controls-overlay {
+        flex-grow: 1;
+        align-self: stretch;
+      }
+
+      .centered-controls-overlay {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-evenly;
+      }
+
       *[slot='centered-chrome'] media-play-button {
         width: 30%;
       }
@@ -149,7 +162,7 @@
             </svg>
           </media-fullscreen-button>
         </media-control-bar>
-        <span slot="centered-chrome">
+        <span slot="centered-chrome" class="centered-controls-overlay">
           <media-seek-backward-button class="mobile-only">
             <svg
               slot="backward"
