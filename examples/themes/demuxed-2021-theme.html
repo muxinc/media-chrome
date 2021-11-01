@@ -29,7 +29,6 @@
 
       /* Breaking these up into two selectors to demonstrate how this could work with a new custom "contaienr" element (CJP) */
       media-controller .centered-controls-overlay {
-        flex-grow: 1;
         align-self: stretch;
       }
 
@@ -66,7 +65,7 @@
           display: initial;
         }
 
-        *[slot='controls-overlay'] media-play-button:not([media-paused]) {
+        *[slot='centered-chrome'] media-play-button:not([media-paused]) {
           display: none;
         }
       }
