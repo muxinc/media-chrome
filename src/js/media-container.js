@@ -52,8 +52,8 @@ template.innerHTML = `
 
     /* Position the media element to fill the container */
     ::slotted([slot=media]) {
-      margin: auto 0 auto 0;
       width: 100%;
+      height: 100%;
     }
 
     /* Video specific styles */
