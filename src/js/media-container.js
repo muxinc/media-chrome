@@ -31,7 +31,7 @@ template.innerHTML = `
       right: 0;
       display: flex;
       flex-flow: column nowrap;
-      align-items: stretch;
+      align-items: start;
       pointer-events: none;
       background: none;
     }
@@ -80,15 +80,15 @@ template.innerHTML = `
     }
 
     /* Hide controls when inactive and not paused and not audio */
-    slot:not([media]) ::slotted() {
+    ::slotted(:not([slot=media])) {
       opacity: 1;
       transition: opacity 0.25s;
       visibility: visible;
       pointer-events: auto;
     }
 
-    slot:not([media]) ::slotted(media-control-bar)  {
-      width: 100%;
+    ::slotted(media-control-bar)  {
+      align-self: stretch;
     }
 
     :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) ::slotted(:not([slot=media])) {
