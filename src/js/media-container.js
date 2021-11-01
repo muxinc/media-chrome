@@ -19,20 +19,57 @@ template.innerHTML = `
     :host {
       box-sizing: border-box;
       position: relative;
-
-      /* Position controls at the bottom  */
-      display: inline-flex;
-      flex-direction: column-reverse;
-
-      /* Max out at 100% width for smaller screens (< 720px) */
-      max-width: 100%;
+      display: inline-block;
       background-color: #000;
+    }
+
+    :host(:not([audio])) *[part~=layer] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: start;
+      pointer-events: none;
+      background: none;
+    }
+
+    :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer]) {
+      pointer-events: auto;
+    }
+    
+    :host(:not([audio])) *[part~=layer][part~=centered-layer] {
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spacer {
+      pointer-events: none;
+      background: none;
+    }
+
+    /* Position the media element to fill the container */
+    ::slotted([slot=media]) {
+      width: 100%;
+      height: 100%;
     }
 
     /* Video specific styles */
     :host(:not([audio])) {
-      height: 480px;
+      aspect-ratio: var(--media-aspect-ratio, auto 3 / 2);
       width: 720px;
+    }
+
+    :host(:not([audio])) .spacer {
+      flex-grow: 1;
+    }
+
+    @supports not (aspect-ratio: 1 / 1) {
+      :host(:not([audio])) {
+        height: 480px;
+      }
     }
 
     /* Safari needs this to actually make the element fill the window */
@@ -42,34 +79,42 @@ template.innerHTML = `
       height: 100% !important;
     }
 
-    /* Position the media element to fill the container */
-    ::slotted([slot=media]) {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-
     /* Hide controls when inactive and not paused and not audio */
-    slot:not([media]) ::slotted() {
+    ::slotted(:not([slot=media])) {
       opacity: 1;
       transition: opacity 0.25s;
       visibility: visible;
+      pointer-events: auto;
     }
 
-    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) slot:not([media]) ::slotted(*) {
+    ::slotted(media-control-bar)  {
+      align-self: stretch;
+    }
+
+    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) ::slotted(:not([slot=media])) {
       opacity: 0;
       transition: opacity 1s;
     }
-
-    slot:not([media]) ::slotted(media-control-bar)  {
-      width: 100%;
-    }
   </style>
-  <slot name="media"></slot>
-  <slot></slot>
+
+  <span part="layer media-layer">
+    <slot name="media"></slot>
+  </span>
+  <span part="layer gesture-layer">
+    <slot name="gestures-chrome"></slot>
+  </span>
+  <span part="layer vertical-layer">
+    <slot name="top-chrome"></slot>
+    <span class="spacer"><slot name="middle-chrome"></slot></span>
+    <!-- default, effectively "bottom-chrome" -->
+    <slot></slot>
+  </span>
+  <span part="layer centered-layer">
+    <slot name="centered-chrome"></slot>
+  </span>
 `;
+
+const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 class MediaContainer extends window.HTMLElement {
   constructor() {
@@ -130,17 +175,15 @@ class MediaContainer extends window.HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['autohide'].concat(super.observedAttributes || []);
+    return ['autohide'].concat(MEDIA_UI_ATTRIBUTE_NAMES);
   }
 
   // Could share this code with media-chrome-html-element instead
-  // attributeChangedCallback(attrName, oldValue, newValue) {
-  //   if (attrName.toLowerCase() == 'autohide') {
-  //     this.autohide = newValue;
-  //   } else {
-  //     super.attributeChangedCallback(attrName, oldValue, newValue);
-  //   }
-  // }
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName.toLowerCase() == 'autohide') {
+      this.autohide = newValue;
+    } 
+  }
 
   // First direct child with slot=media, or null
   get media() {
@@ -177,13 +220,13 @@ class MediaContainer extends window.HTMLElement {
         : MediaUIEvents.MEDIA_PAUSE_REQUEST;
       this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
     }
-    media.addEventListener('click', this._mediaClickPlayToggle, false);
+    // media.addEventListener('click', this._mediaClickPlayToggle, false);
 
     return true;
   }
 
   mediaUnsetCallback(media) {
-    media.removeEventListener('click', this._mediaClickPlayToggle);
+    // media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 
   connectedCallback() {

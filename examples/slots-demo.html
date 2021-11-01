@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Understanding Media Controller slots</title>
+    <script type="module" src="../dist/index.js"></script>
+  </head>
+  <style>
+    main {
+      display: flex;
+      flex-flow: row nowrap;
+      background-color: #fef4f6;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    .slots-control {
+      margin-left: 50px;
+      padding: 10px;
+    }
+
+    .slots-control ul {
+      list-style-type: none;
+      padding: 10px;
+    }
+
+    media-control-bar {
+      background: none;
+    }
+
+    media-controller {
+      aspect-ratio: 16 / 9;
+      --media-control-background: none;
+    }
+
+    media-controller > [slot='top-chrome'],
+    .top-chrome {
+      background-color: rgba(179, 236, 184, 0.75);
+      border: 1px solid rgb(179, 236, 184);
+    }
+
+    media-controller > [slot='middle-chrome'],
+    .middle-chrome {
+      background-color: rgba(140, 207, 254, 0.75);
+      border: 1px solid rgb(140, 207, 254);
+    }
+
+    /* aka "bottom-chrome" */
+    media-controller > :not([slot]),
+    .bottom-chrome {
+      background-color: rgba(203, 143, 235, 0.75);
+      border: 1px solid rgb(203, 143, 235);
+    }
+
+    media-controller > [slot='centered-chrome'],
+    .centered-chrome {
+      background-color: rgba(255, 236, 165, 0.75);
+      border: 1px solid rgb(255, 236, 165);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .legend-item {
+      height: 0.75em;
+      aspect-ratio: 1 / 1;
+      margin: 0 5px;
+      display: inline-block;
+      line-height: 0px;
+      border: 1px solid black;
+    }
+
+    .spacer {
+      flex-grow: 1;
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+    }
+  </style>
+  <body>
+    <main>
+      <section>
+        <h1>Understanding <code>&lt;media-controller/&gt;</code> slots</h1>
+        <media-controller autohide="-1">
+          <video
+            slot="media"
+            src="https://stream.mux.com/BlSb4AuUfA00wchgJ3D00bz4VTppg3eo5Y/high.mp4"
+            poster="https://image.mux.com/BlSb4AuUfA00wchgJ3D00bz4VTppg3eo5Y/thumbnail.jpg"
+            muted
+            preload="none"
+            crossorigin
+          ></video>
+          <span slot="centered-chrome">
+            <media-seek-backward-button></media-seek-backward-button>
+            <media-play-button> </media-play-button>
+            <media-seek-forward-button> </media-seek-forward-button>
+          </span>
+          <!-- Since it's (*mostly*) just a container component, you can use the <media-control-bar/> in other slots. -->
+          <media-control-bar slot="top-chrome" class="first">
+            <media-mute-button></media-mute-button>
+            <span class="spacer"><b>Spacer Text</b></span>
+            <media-fullscreen-button></media-fullscreen-button>
+          </media-control-bar>
+          <!-- You can have more than one element "slotted" to the same slot. -->
+          <media-control-bar slot="top-chrome" class="second">
+            <media-time-range></media-time-range>
+          </media-control-bar>
+          <div slot="middle-chrome">
+            <media-seek-backward-button></media-seek-backward-button>
+            <media-play-button> </media-play-button>
+            <media-seek-forward-button> </media-seek-forward-button>
+          </div>
+          <!-- 
+            When you don't specify a slot, these go into the "default" slot. For video, you can think of
+            it as the "bottom-chrome" slot.
+          -->
+          <media-control-bar class="first">
+            <media-time-range></media-time-range>
+          </media-control-bar>
+          <!-- Just like with named slots, you can have more than one element "slotted" to the default slot. -->
+          <media-control-bar class="second">
+            <media-seek-backward-button> </media-seek-backward-button>
+            <media-play-button> </media-play-button>
+            <media-seek-forward-button> </media-seek-forward-button>
+            <span class="spacer"><b>Spacer Text</b></span>
+            <media-fullscreen-button></media-fullscreen-button>
+          </media-control-bar>
+        </media-controller>
+      </section>
+      <section class="slots-control">
+        <h1>Show/Hide Slots</h1>
+        <ul>
+          <li>
+            <div>
+              <input id="topChromeCheckbox" type="checkbox" checked />
+              <label for="topChromeCheckbox">
+                <span class="legend-item top-chrome"></span>
+                Top Chrome Slotted Elements
+              </label>
+            </div>
+            <div>
+              <ul>
+                <li>
+                  <div>
+                    <input
+                      id="topChromeCheckboxFirst"
+                      type="checkbox"
+                      checked
+                    />
+                    <label for="topChromeCheckboxFirst">
+                      First Slotted Element (<code>&lt;media-control-bar/&gt;</code>)
+                    </label>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <input
+                      id="topChromeCheckboxSecond"
+                      type="checkbox"
+                      checked
+                    />
+                    <label for="topChromeCheckboxSecond">
+                      Second Slotted Element (<code>&lt;media-control-bar/&gt;</code>)
+                    </label>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <div>
+              <input id="middleChromeCheckbox" type="checkbox" checked />
+              <label for="middleChromeCheckbox">
+                <span class="legend-item middle-chrome"></span>
+                Middle Chrome Slotted Elements (<code>&lt;div/&gt;</code>)
+              </label>
+            </div>
+          </li>
+          <li>
+            <div>
+              <input id="bottomChromeCheckbox" type="checkbox" checked />
+              <label for="bottomChromeCheckbox">
+                <span class="legend-item bottom-chrome"></span>
+                Default (aka "Bottom Chrome") Slotted Elements
+              </label>
+            </div>
+            <div>
+              <ul>
+                <li>
+                  <div>
+                    <input
+                      id="bottomChromeCheckboxFirst"
+                      type="checkbox"
+                      checked
+                    />
+                    <label for="bottomChromeCheckboxFirst">
+                      First Slotted Element (<code>&lt;media-control-bar/&gt;</code>)
+                    </label>
+                  </div>
+                </li>
+                <li>
+                  <div>
+                    <input
+                      id="bottomChromeCheckboxSecond"
+                      type="checkbox"
+                      checked
+                    />
+                    <label for="bottomChromeCheckboxSecond">
+                      Second Slotted Element (<code>&lt;media-control-bar/&gt;</code>)
+                    </label>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            <div>
+              <input id="centeredChromeCheckbox" type="checkbox" checked />
+              <label for="centeredChromeCheckbox">
+                <span class="legend-item centered-chrome"></span>
+                Centered Chrome Slotted Elements (<code>&lt;span/&gt;</code>)
+              </label>
+            </div>
+          </li>
+        </ul>
+        <div></div>
+      </section>
+    </main>
+    <script>
+      const CheckboxSlotMap = {
+        topChromeCheckbox: "media-controller > [slot='top-chrome']",
+        topChromeCheckboxFirst: "media-controller > [slot='top-chrome'].first",
+        topChromeCheckboxSecond:
+          "media-controller > [slot='top-chrome'].second",
+        middleChromeCheckbox: "media-controller > [slot='middle-chrome']",
+        bottomChromeCheckbox: 'media-controller > :not([slot])',
+        bottomChromeCheckboxFirst: 'media-controller > :not([slot]).first',
+        bottomChromeCheckboxSecond: 'media-controller > :not([slot]).second',
+        centeredChromeCheckbox: "media-controller > [slot='centered-chrome']",
+      };
+
+      Array.from(
+        document.querySelectorAll('.slots-control input[type="checkbox"]')
+      ).forEach((checkboxEl) => {
+        const id = checkboxEl.id;
+        const slottedEls = Array.from(
+          document.querySelectorAll(CheckboxSlotMap[id])
+        );
+        const nestedCheckboxEls = Array.from(
+          document.querySelectorAll(`[id^='${id}']:not(#${id})`)
+        );
+        checkboxEl.addEventListener('change', ({ target: { checked } }) => {
+          slottedEls.forEach((slottedEl) => {
+            if (checked) {
+              slottedEl.classList.remove('hidden');
+            } else {
+              slottedEl.classList.add('hidden');
+            }
+          });
+          nestedCheckboxEls.forEach((nestedCheckboxEl) => {
+            nestedCheckboxEl.checked = checked;
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

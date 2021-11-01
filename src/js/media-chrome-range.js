@@ -46,10 +46,9 @@ template.innerHTML = `
       transition: background-color 0.15s linear;
       height: 44px;
       width: 100px;
-      min-height: 24px;
-      font-size: 16px;
-      line-height: 24px;
       padding: 0 10px;
+
+      pointer-events: auto;
     }
 
     /*
@@ -71,7 +70,7 @@ template.innerHTML = `
       background: transparent; /* Otherwise white in Chrome */
 
       /* Fill host with the range */
-      height: 100%;
+      min-height: 100%;
       width: var(--media-range-track-width, 100%); /* Specific width is required for Firefox. */
 
       box-sizing: border-box;

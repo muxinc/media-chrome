@@ -7,26 +7,27 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
   :host {
-    position: relative;
     display: inline-block;
+    width: auto;
+    height: auto;
     vertical-align: middle;
     box-sizing: border-box;
     background-color: var(--media-control-background, rgba(20,20,30, 0.7));
 
-    /* Default width and height can be overridden externally */
     padding: 10px;
-    
 
     /* Vertically center any text */
     font-size: 14px;
-    line-height: 1;
     font-weight: bold;
-
-    /* Min icon size is 24x24 */
-    min-height: 24px;
-    min-width: 24px;
+    color: #ffffff;
+    text-align: center;
 
     transition: background-color 0.15s linear;
+
+    pointer-events: auto;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    vertical-align: middle;
   }
 
   /*
@@ -42,33 +43,6 @@ template.innerHTML = `
     background-color: var(--media-control-hover-background, rgba(50,50,70, 0.7));
   }
 
-  /* Undo the default button styles and fill the parent element */
-  .button {
-    width: 100%;
-    vertical-align: middle;
-    border: none;
-    margin: 0;
-    padding: 0;
-    text-decoration: none;
-    background: transparent;
-    color: #ffffff;
-    font-family: sans-serif;
-    font-size: 14px;
-    line-height: 24px;
-    font-weight: bold;
-    font-family: Arial, sans-serif;
-    cursor: pointer;
-    text-align: center;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-  }
-
-  .button:hover {}
-  .button:focus {
-    outline: 0;
-  }
-  .button:active {}
-
   svg, img, ::slotted(svg), ::slotted(img) {
     width: var(--media-button-icon-width, 24px);
     height: var(--media-button-icon-height);
@@ -76,10 +50,16 @@ template.innerHTML = `
     transition: var(--media-button-icon-transition);
     fill: var(--media-icon-color, #eee);
     vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
   }
 </style>
-
-<div class="button"></div>
 `;
 
 const ButtonPressedKeys = ['Enter', ' '];
@@ -96,8 +76,8 @@ class MediaChromeButton extends window.HTMLElement {
     const shadow = this.attachShadow({ mode: 'open' });
 
     const buttonHTML = template.content.cloneNode(true);
-    this.nativeEl = buttonHTML.querySelector('div');
-
+    this.nativeEl = buttonHTML;
+    
     // Slots
     let slotTemplate = options.slotTemplate;
 

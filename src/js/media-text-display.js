@@ -11,30 +11,27 @@ template.innerHTML = `
       display: inline-flex;
       justify-content: center;
       align-items: center;
-
-      background-color: var(--media-control-background, rgba(20,20,30, 0.7));
-
-      /* Default width and height can be overridden externally */
-      height: 44px;
-
       box-sizing: border-box;
-      padding: 0 5px;
+      background-color: var(--media-control-background, rgba(20,20,30, 0.7));
+  
+      padding: 10px;
 
-      /* Min icon size is 24x24 */
-      min-height: 24px;
-      min-width: 24px;
-
-      /* Vertically center any text */
-      font-size: 16px;
+      font-size: 14px;
       line-height: 24px;
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       text-align: center;
       color: #ffffff;
+      pointer-events: auto;
     }
 
-    #container {}
+    #container {
+      /* NOTE: We don't currently have more generic sizing vars */
+      height: var(--media-text-content-height, auto);
+    }
   </style>
-  <div id="container"></div>
+  <span id="container">
+  <slot></slot>
+  </span>
 `;
 
 class MediaTextDisplay extends window.HTMLElement {

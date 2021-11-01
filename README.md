@@ -62,6 +62,10 @@ Fully customizable media player controls using web components (native custom ele
 #### Results (<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank">Try the CodePen example</a>)
 <a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank"><img width="719" alt="Media Chrome Demo" src="https://user-images.githubusercontent.com/166/127259205-b36e237c-a37b-4bd1-9eff-852868e458a6.png"></a>
 
+## Advanced Usage
+
+For a more in depth discussion of working with `<media-controller/>`, including more complex controls layouts, check out [the docs](./docs/media-controller.md).
+
 ## _Quick_ Demo
 
 ### Adding controls to a video element
@@ -141,7 +145,7 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 
 | Element                      | Description                                                                                          |
 |------------------------------|------------------------------------------------------------------------------------------------------|
-| `<media-controller>`       | Wraps controls and the media element, and handles communication between them.                          |
+| `<media-controller>`       | Wraps controls and the media element, and handles communication between them. ([docs](./docs/media-controller.md))                          |
 | `<media-control-bar>`       | Optional controls container to help align the controls in the standard fashion.                       |
 | `<media-play-button>`       | Toggle media playback                                                                                 |
 | `<media-mute-button>`       | Toggle the sound. The icon responds to volume changes and acts as part of the typical volume control. |

@@ -1,169 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta name="viewport" content="width=device-width">
-  <title>Media Chrome Youtube Theme Example</title>
-  <script type="module" src="../../dist/index.js"></script>
-  <!-- <script type="module" src="https://unpkg.com/youtube-video-element@0"></script> -->
-</head>
-<body>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Youtube Theme Example</title>
+    <script type="module" src="../../dist/index.js"></script>
+    <!-- <script type="module" src="https://unpkg.com/youtube-video-element@0"></script> -->
+  </head>
+  <body>
+    <style>
+      .media-theme-youtube * {
+        font-size: 13px;
+        font-family: Roboto, Arial, sans-serif;
+        color: #ddd;
 
-<style>
-  .media-theme-youtube media-control-bar > * {
-    height: 44px;
-    line-height: 44px;
-  }
+        --media-range-track-height: 3px;
+        --media-range-thumb-height: 13px;
+        --media-range-thumb-width: 13px;
+        --media-range-thumb-border-radius: 13px;
 
-  .media-theme-youtube media-play-button {
-    width: 46px;
-    --media-button-icon-width: 30px;
-    --media-button-icon-height: 30px;
-    padding: 6px 10px;
-  }
+        --media-icon-color: #ddd;
+      }
 
-  .media-theme-youtube media-duration-display,
-  .media-theme-youtube media-current-time-display {
-    font-size: 13px;
-    font-family: Roboto, Arial, sans-serif;
-    color: #ddd;
-  }
+      .media-theme-youtube *:hover {
+        color: #fff;
+        --media-icon-color: #fff;
+      }
 
-  .media-theme-youtube media-duration-display:hover,
-  .media-theme-youtube media-current-time-display:hover {
-    color: #fff;
-  }
+      .media-theme-youtube media-control-bar > *:hover {
+        background: transparent;
+      }
 
-  .media-theme-youtube media-time-range {
-    width: 100%;
-    height: 13px;
-    padding-bottom: 0;
-    min-height: 0;
-    transition: none;
+      .media-theme-youtube media-play-button {
+        --media-button-icon-width: 30px;
+        padding: 6px 10px;
+      }
 
-    --media-range-track-height: 3px;
-    --media-range-track-transition: height .1s linear;
-    --media-range-track-background: #444;
+      .media-theme-youtube media-time-range {
+        height: auto;
 
-    --media-range-bar-color: rgb(229, 9, 20);
-    --media-progress-buffered-color: #999;
+        --media-range-track-transition: height 0.1s linear;
+        --media-range-track-background: #444;
 
-    --media-range-thumb-width: 13px;
-    --media-range-thumb-height: 13px;
-    --media-range-thumb-border-radius: 13px;
-    --media-range-thumb-background: #f00;
+        --media-range-bar-color: rgb(229, 9, 20);
+        --media-progress-buffered-color: #999;
 
-    --media-range-thumb-transition: transform .1s linear;
-    --media-range-thumb-transform: scale(0) translate(0%, 0%);
-  }
+        --media-range-thumb-border-radius: 13px;
+        --media-range-thumb-background: #f00;
 
-  .media-theme-youtube media-time-range:hover {
-    background: transparent;
+        --media-range-thumb-transition: transform 0.1s linear;
+        --media-range-thumb-transform: scale(0) translate(0%, 0%);
+      }
 
-    --media-range-track-height: 5px;
-    --media-range-thumb-height: 13px;
-    --media-range-thumb-width: 13px;
+      .media-theme-youtube media-time-range:hover {
+        --media-range-track-height: 5px;
+        --media-range-thumb-transform: scale(1) translate(0%, 0%);
+      }
 
-    --media-range-thumb-transform: scale(1) translate(0%, 0%);
-  }
+      .media-theme-youtube media-volume-range {
+        padding-left: 0px;
 
-  .media-theme-youtube media-volume-range {
-    padding-left: 0px;
+        --media-range-track-background: #fff;
+        --media-range-bar-color: #fff;
+        --media-range-thumb-background: #fff;
+      }
 
-    --media-range-track-height: 3px;
-    --media-range-track-background: #fff;
-    --media-range-bar-color: #fff;
+      .media-theme-youtube .control-spacer {
+        flex-grow: 1;
+      }
 
-    --media-range-thumb-background: #fff;
-    --media-range-thumb-height: 13px;
-    --media-range-thumb-width: 13px;
-    --media-range-thumb-border-radius: 13px;
-  }
+      .media-theme-youtube media-mute-button + media-volume-range {
+        width: 0px;
+        overflow: hidden;
+        padding-right: 0px;
 
-  .media-theme-youtube .control-spacer {
-    text-align: left;
-    flex-grow: 1;
-  }
+        /* Set the internal width so it reveals, not grows */
+        --media-range-track-width: 60px;
+        transition: width 0.2s ease-in;
+      }
 
-  .media-theme-youtube media-control-bar div {
-    font-size: 13px;
-  }
-
-  .media-theme-youtube media-mute-button + media-volume-range {
-    width: 0px;
-    overflow: hidden;
-    padding-right: 0px;
-
-    /* Set the internal width so it reveals, not grows */
-    --media-range-track-width: 60px;
-    transition: width 0.2s ease-in;
-  }
-
-  /* Expand volume control in all relevant states */
-  .media-theme-youtube media-mute-button:hover + media-volume-range,
-  .media-theme-youtube media-mute-button:focus + media-volume-range,
-  .media-theme-youtube media-mute-button:focus-within + media-volume-range,
-  .media-theme-youtube media-volume-range:hover,
-  .media-theme-youtube media-volume-range:focus,
-  .media-theme-youtube media-volume-range:focus-within {
-    width: 70px;
-    background: transparent;
-  }
-
-  .media-theme-youtube media-control-bar > * {
-    --media-icon-color: #ddd;
-  }
-
-  .media-theme-youtube media-control-bar > *:focus,
-  .media-theme-youtube media-control-bar > *:focus-within {
-    outline: 0;
-  }
-
-  /* For some reason `media-control-bar > *:hover` doesn't work...
-  while `media-control-bar > *:focus-within` does. Really annoying.
-  Need to submit a bug. */
-  .media-theme-youtube media-control-bar > *:hover,
-  .media-theme-youtube media-play-button:hover,
-  .media-theme-youtube media-seek-backward-button:hover,
-  .media-theme-youtube media-seek-forward-button:hover,
-  .media-theme-youtube media-mute-button:hover,
-  .media-theme-youtube media-fullscreen-button:hover,
-  .media-theme-youtube media-playback-rate-button:hover,
-  .media-theme-youtube media-pip-button:hover {
-    background: transparent;
-    --media-icon-color: #fff;
-  }
-</style>
-<main>
-  <h1>Media Chrome Youtube Theme Example</h1>
-  <media-controller class="media-theme-youtube">
-    <video
-      slot="media"
-      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-      muted
-      preload="none"
-      crossorigin
-    >
-      <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt">
-    </video>
-    <media-control-bar>
-      <media-time-range></media-time-range>
-      <media-play-button></media-play-button>
-      <media-mute-button></media-mute-button>
-      <media-volume-range></media-volume-range>
-      <media-time-display></media-time-display>
-      <div>/</div>
-      <media-duration-display></media-duration-display>
-      <span class="control-spacer"></span>
-      <media-playback-rate-button></media-playback-rate-button>
-      <media-pip-button></media-pip-button>
-      <media-fullscreen-button></media-fullscreen-button>
-    </media-control-bar>
-  </media-controller>
-
-  <script>
-    const mediaMuteButton = document.querySelector('media-mute-button');
-
-  </script>
-</main>
-</body>
+      /* Expand volume control in all relevant states */
+      .media-theme-youtube media-mute-button:hover + media-volume-range,
+      .media-theme-youtube media-mute-button:focus + media-volume-range,
+      .media-theme-youtube media-mute-button:focus-within + media-volume-range,
+      .media-theme-youtube media-volume-range:hover,
+      .media-theme-youtube media-volume-range:focus,
+      .media-theme-youtube media-volume-range:focus-within {
+        width: 70px;
+      }
+    </style>
+    <main>
+      <h1>Media Chrome Youtube Theme Example</h1>
+      <media-controller class="media-theme-youtube">
+        <video
+          slot="media"
+          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+          muted
+          preload="none"
+          crossorigin
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+          />
+        </video>
+        <media-control-bar>
+          <media-time-range></media-time-range>
+        </media-control-bar>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-mute-button></media-mute-button>
+          <media-volume-range></media-volume-range>
+          <media-time-display show-duration></media-time-display>
+          <span class="control-spacer"></span>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-pip-button></media-pip-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+    </main>
+    <script></script>
+  </body>
 </html>
