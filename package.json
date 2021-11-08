@@ -3,6 +3,7 @@
   "version": "0.3.2",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
   "main": "dist/index.js",
+  "type": "module",
   "files": [
     "dist/*",
     "README.md",
@@ -10,8 +11,8 @@
   ],
   "scripts": {
     "clean": "rimraf dist",
-    "build": "snowpack build --config snowpack.prod.config.js",
-    "dev": "snowpack dev --config snowpack.dev.config.js",
+    "build": "snowpack build --config snowpack.prod.config.cjs",
+    "dev": "snowpack dev --config snowpack.dev.config.cjs",
     "start": "yarn dev",
     "test": "web-test-runner --coverage",
     "publish-patch": "yarn run build && np patch --no-tests --any-branch"

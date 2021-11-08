@@ -3,7 +3,7 @@
 
 /** @type {import("snowpack").SnowpackUserConfig } */
 module.exports = {
-  extends: './snowpack.common.config.js',
+  extends: './snowpack.common.config.cjs',
   mount: {
     'src/js': { url: '/dist' },
     // Mount "public" to the root URL path ("/*") and serve files with zero transformations:
