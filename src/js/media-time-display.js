@@ -2,6 +2,7 @@ import MediaTextDisplay from './media-text-display.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { formatAsTimePhrase, formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 const DEFAULT_TIMES_SEP = ' / ';
@@ -53,7 +54,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   connectedCallback() {
     this.setAttribute('role', 'progressbar');
-    this.setAttribute('aria-live', 'polite');
+    this.setAttribute('aria-label', nouns.PLAYBACK_TIME());
     this.setAttribute('tabindex', 0);
     super.connectedCallback();
   }
