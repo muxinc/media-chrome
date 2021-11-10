@@ -20,7 +20,8 @@ const clearAndUpper = (kebabText) => {
 const toImportsStr = ({ importPath }) => {
   return `import React from "react";
 import "${importPath}";
-import { toNativeProps } from "./common/utils";`;
+import { toNativeProps } from "./common/utils";
+`;
 };
 
 // const toReactComponentJSXStr = (config) => {
@@ -36,7 +37,8 @@ import { toNativeProps } from "./common/utils";`;
 const toReactComponentStr = (config) => {
   const { elementName } = config;
   const ReactComponentName = toPascalCase(elementName);
-  return `const ${ReactComponentName} = ({ children, ...props }) => {
+  return `/** @type { import("react").HTMLElement } */
+const ${ReactComponentName} = ({ children, ...props }) => {
   return React.createElement('${elementName}', toNativeProps(props), children);
 };`;
 };
@@ -157,16 +159,16 @@ const createReactWrapperModules = async ({
           'React module wrapper created!',
           'path (absolute):',
           modulePath,
-          '\n',
-          'contents:',
-          moduleContents
+          // '\n',
+          // 'contents:',
+          // moduleContents
         );
       }
     } catch (err) {
       console.log('unexpected error generating module!', err);
     }
 
-    console.log('\n\n\n', 'module generation completed!');
+    console.log('module generation completed!');
   });
 };
 

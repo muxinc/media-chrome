@@ -12,8 +12,9 @@
   "scripts": {
     "format": "prettier --write .",
     "clean": "rimraf dist",
-    "build": "snowpack build --config snowpack.prod.config.cjs",
+    "build:esm": "snowpack build --config snowpack.prod.config.cjs",
     "build:react": "node ./tools/react/build.js",
+    "build": "yarn build:esm && yarn build:react",
     "dev": "snowpack dev --config snowpack.dev.config.cjs",
     "start": "yarn dev",
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
