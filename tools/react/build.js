@@ -20,7 +20,7 @@ const clearAndUpper = (kebabText) => {
 const toImportsStr = ({ importPath }) => {
   return `import React from "react";
 import "${importPath}";
-import { toNativeProps } from "./common/utils";
+import { toNativeProps } from "./common/utils.js";
 `;
 };
 
