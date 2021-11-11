@@ -21,8 +21,8 @@ export const toStyleCssString = (styleObj) => {
     .join(';');
 };
 
-export const isMaybeBrowser = () => typeof window != undefined;
-export const isMaybeServer = () => typeof global != undefined;
+export const isMaybeBrowser = () => typeof window != 'undefined';
+export const isMaybeServer = () => typeof global != 'undefined';
 
 // NOTE: Next.js expects us to still provide CSS objects, even to native elements (CJP).
 export const toStyleAttr =
