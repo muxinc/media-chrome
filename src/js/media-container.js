@@ -196,33 +196,46 @@ class MediaContainer extends window.HTMLElement {
   }
 
   mediaSetCallback(media) {
-    // Should only ever be set with a compatible media element, never null
-    if (!media) {
-      console.error('<media-chrome>: Media element set with slot="media" does not appear to be compatible.', media);
-      return false;
+    const resolveMediaPromise = (media) => {
+      // Toggle play/pause with clicks on the media element itself
+      this._mediaClickPlayToggle = _e => {
+
+        const eventName = media.paused
+          ? MediaUIEvents.MEDIA_PLAY_REQUEST
+          : MediaUIEvents.MEDIA_PAUSE_REQUEST;
+        this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
+      }
+      // media.addEventListener('click', this._mediaClickPlayToggle, false);
+
+      return Promise.resolve(media);
+    };
+
+    const rejectMediaPromise = (media) => {
+      console.error(
+        '<media-chrome>: Media element set with slot="media" does not appear to be compatible.',
+        media
+      );
+      return Promise.reject(media);
+    };
+
+    // Already "looks like" a media element. Resolve.
+    if (isMediaEl(media)) {
+      return resolveMediaPromise(media);
     }
 
-    // Wait until custom media elements are ready
     const mediaName = media.nodeName.toLowerCase();
-
-    if (mediaName.includes('-') && !window.customElements.get(mediaName)) {
-      window.customElements.whenDefined(mediaName).then(()=>{
-        this.mediaSetCallback(media);
+    // Custom element. Wait until it's defined before final verdict on whether it "looks like"
+    // a media element.
+    if (mediaName.includes('-')) {
+      return window.customElements.whenDefined(mediaName).then(() => {
+        return isMediaEl(media) 
+          ? resolveMediaPromise(media) // *Now* it "looks like" a media element. Resolve.
+          : rejectMediaPromise(media); // *Still* doesn't "look like" a media element. Reject.
       });
-      return false;
     }
 
-    // Toggle play/pause with clicks on the media element itself
-    this._mediaClickPlayToggle = e => {
-
-      const eventName = media.paused
-        ? MediaUIEvents.MEDIA_PLAY_REQUEST
-        : MediaUIEvents.MEDIA_PAUSE_REQUEST;
-      this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
-    }
-    // media.addEventListener('click', this._mediaClickPlayToggle, false);
-
-    return true;
+    // Isn't a custom element and doesn't "look like" a media element. Reject.
+    return rejectMediaPromise(media);
   }
 
   mediaUnsetCallback(media) {
@@ -293,6 +306,29 @@ class MediaContainer extends window.HTMLElement {
     return this._autohide === undefined ? 2 : this._autohide;
   }
 }
+
+const mediaElPropTypes = {
+  muted: 'boolean',
+  volume: 'number',
+  textTracks: 'object',
+  readyState: 'number',
+  currentTime: 'number',
+  playbackRate: 'number',
+  paused: 'boolean',
+  play: 'function',
+  pause: 'function',
+};
+const mediaElPropTypeTuples = Object.entries(mediaElPropTypes);
+
+// Predicate that checks if a particular node minimally conforms to an HTMLMediaElement's shape.
+const isMediaEl = (node) => {
+  return (
+    node &&
+    mediaElPropTypeTuples.every(
+      ([propName, propType]) => typeof node[propName] === propType
+    )
+  );
+};
 
 // Aliasing media-controller to media-container in main index until we know
 // we're not breaking people with the change.
