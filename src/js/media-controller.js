@@ -260,39 +260,38 @@ class MediaController extends MediaContainer {
   }
 
   mediaSetCallback(media) {
-    super.mediaSetCallback(media).then((media) => {
-      // Listen for media state changes and propagate them to children and associated els
-      Object.keys(this._mediaStatePropagators).forEach((key) => {
-        const events = key.split(',');
-        const handler = this._mediaStatePropagators[key];
-  
-        events.forEach((event) => {
-          // If this is fullscreen apply to the document
-          const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
-  
-          target.addEventListener(event, handler);
-        });
-        handler();
+    super.mediaSetCallback(media);
+    // Listen for media state changes and propagate them to children and associated els
+    Object.keys(this._mediaStatePropagators).forEach((key) => {
+      const events = key.split(',');
+      const handler = this._mediaStatePropagators[key];
+
+      events.forEach((event) => {
+        // If this is fullscreen apply to the document
+        const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
+
+        target.addEventListener(event, handler);
       });
-  
-      Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
-        const events = eventsStr.split(',');
-        events.forEach((event) => {
-          media.textTracks.addEventListener(event, handler);
-        });
-        handler();
-      });
-      
-      // Update the media with the last set volume preference
-      // This would preferably live with the media element,
-      // not a control.
-      try {
-        const volPref = window.localStorage.getItem('media-chrome-pref-volume');
-        if (volPref !== null) media.volume = volPref;
-      } catch (e) {
-        console.debug('Error getting volume pref', e);
-      }
+      handler();
     });
+
+    Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
+      const events = eventsStr.split(',');
+      events.forEach((event) => {
+        media.textTracks.addEventListener(event, handler);
+      });
+      handler();
+    });
+
+    // Update the media with the last set volume preference
+    // This would preferably live with the media element,
+    // not a control.
+    try {
+      const volPref = window.localStorage.getItem('media-chrome-pref-volume');
+      if (volPref !== null) media.volume = volPref;
+    } catch (e) {
+      console.debug('Error getting volume pref', e);
+    }
   }
 
   mediaUnsetCallback(media) {
@@ -307,7 +306,7 @@ class MediaController extends MediaContainer {
         target.removeEventListener(event, handler);
       });
     });
-    
+
     Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
       const events = eventsStr.split(',');
       events.forEach((event) => {

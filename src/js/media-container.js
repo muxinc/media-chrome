@@ -11,6 +11,7 @@ import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
+import { isMediaEl } from './utils/media.js';
 
 const template = document.createElement('template');
 
@@ -130,7 +131,6 @@ class MediaContainer extends window.HTMLElement {
 
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
-
           // Media element being removed
           mutation.removedNodes.forEach(node => {
             // Is this a direct child media element of media-controller?
@@ -162,7 +162,7 @@ class MediaContainer extends window.HTMLElement {
             mutation.addedNodes.forEach(node => {
               if (node == media) {
                 // Update all controls with new media if this is the new media
-                this.mediaSetCallback(node);
+                this.handleMediaUpdated(media).then((media) => this.mediaSetCallback(media));
               }
             });
           }
@@ -182,7 +182,7 @@ class MediaContainer extends window.HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName.toLowerCase() == 'autohide') {
       this.autohide = newValue;
-    } 
+    }
   }
 
   // First direct child with slot=media, or null
@@ -196,15 +196,19 @@ class MediaContainer extends window.HTMLElement {
   }
 
   mediaSetCallback(media) {
-    const resolveMediaPromise = (media) => {
-      // Toggle play/pause with clicks on the media element itself
-      this._mediaClickPlayToggle = _e => {
+    // Toggle play/pause with clicks on the media element itself
+    this._mediaClickPlayToggle = (_e) => {
+      const eventName = media.paused
+        ? MediaUIEvents.MEDIA_PLAY_REQUEST
+        : MediaUIEvents.MEDIA_PAUSE_REQUEST;
+      this.dispatchEvent(
+        new window.CustomEvent(eventName, { composed: true, bubbles: true })
+      );
+    };
+  }
 
-        const eventName = media.paused
-          ? MediaUIEvents.MEDIA_PLAY_REQUEST
-          : MediaUIEvents.MEDIA_PAUSE_REQUEST;
-        this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
-      }
+  handleMediaUpdated(media) {
+    const resolveMediaPromise = (media) => {
       // media.addEventListener('click', this._mediaClickPlayToggle, false);
 
       return Promise.resolve(media);
@@ -228,7 +232,7 @@ class MediaContainer extends window.HTMLElement {
     // a media element.
     if (mediaName.includes('-')) {
       return window.customElements.whenDefined(mediaName).then(() => {
-        return isMediaEl(media) 
+        return isMediaEl(media)
           ? resolveMediaPromise(media) // *Now* it "looks like" a media element. Resolve.
           : rejectMediaPromise(media); // *Still* doesn't "look like" a media element. Reject.
       });
@@ -243,14 +247,13 @@ class MediaContainer extends window.HTMLElement {
   }
 
   connectedCallback() {
-    
     const isAudioChrome = this.getAttribute('audio') != null;
     const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
-    this.setAttribute('role', 'region')
+    this.setAttribute('role', 'region');
     this.setAttribute('aria-label', label);
 
     if (this.media) {
-      this.mediaSetCallback(this.media);
+      this.handleMediaUpdated(this.media).then((media) => this.mediaSetCallback(media));
     }
 
     const scheduleInactive = () => {
@@ -306,29 +309,6 @@ class MediaContainer extends window.HTMLElement {
     return this._autohide === undefined ? 2 : this._autohide;
   }
 }
-
-const mediaElPropTypes = {
-  muted: 'boolean',
-  volume: 'number',
-  textTracks: 'object',
-  readyState: 'number',
-  currentTime: 'number',
-  playbackRate: 'number',
-  paused: 'boolean',
-  play: 'function',
-  pause: 'function',
-};
-const mediaElPropTypeTuples = Object.entries(mediaElPropTypes);
-
-// Predicate that checks if a particular node minimally conforms to an HTMLMediaElement's shape.
-const isMediaEl = (node) => {
-  return (
-    node &&
-    mediaElPropTypeTuples.every(
-      ([propName, propType]) => typeof node[propName] === propType
-    )
-  );
-};
 
 // Aliasing media-controller to media-container in main index until we know
 // we're not breaking people with the change.
