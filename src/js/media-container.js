@@ -11,7 +11,6 @@ import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
-import { isMediaEl } from './utils/media.js';
 
 const template = document.createElement('template');
 
@@ -222,24 +221,21 @@ class MediaContainer extends window.HTMLElement {
       return Promise.reject(media);
     };
 
-    // Already "looks like" a media element. Resolve.
-    if (isMediaEl(media)) {
-      return resolveMediaPromise(media);
+    // Anything "falsy" couldn't act as a media element. Reject.
+    if (!media) {
+      return rejectMediaPromise(media);
     }
 
     const mediaName = media.nodeName.toLowerCase();
-    // Custom element. Wait until it's defined before final verdict on whether it "looks like"
-    // a media element.
+    // Custom element. Wait until it's defined before resolving
     if (mediaName.includes('-')) {
       return window.customElements.whenDefined(mediaName).then(() => {
-        return isMediaEl(media)
-          ? resolveMediaPromise(media) // *Now* it "looks like" a media element. Resolve.
-          : rejectMediaPromise(media); // *Still* doesn't "look like" a media element. Reject.
+        return resolveMediaPromise(media);
       });
     }
 
-    // Isn't a custom element and doesn't "look like" a media element. Reject.
-    return rejectMediaPromise(media);
+    // Exists and isn't a custom element. Resolve.
+    return resolveMediaPromise(media);
   }
 
   mediaUnsetCallback(media) {
