@@ -260,9 +260,7 @@ class MediaController extends MediaContainer {
   }
 
   mediaSetCallback(media) {
-    // Might wait for custom media el to be ready
-    if (!super.mediaSetCallback(media)) return;
-
+    super.mediaSetCallback(media);
     // Listen for media state changes and propagate them to children and associated els
     Object.keys(this._mediaStatePropagators).forEach((key) => {
       const events = key.split(',');
@@ -308,7 +306,7 @@ class MediaController extends MediaContainer {
         target.removeEventListener(event, handler);
       });
     });
-    
+
     Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
       const events = eventsStr.split(',');
       events.forEach((event) => {

@@ -130,7 +130,6 @@ class MediaContainer extends window.HTMLElement {
 
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
-
           // Media element being removed
           mutation.removedNodes.forEach(node => {
             // Is this a direct child media element of media-controller?
@@ -162,7 +161,7 @@ class MediaContainer extends window.HTMLElement {
             mutation.addedNodes.forEach(node => {
               if (node == media) {
                 // Update all controls with new media if this is the new media
-                this.mediaSetCallback(node);
+                this.handleMediaUpdated(media).then((media) => this.mediaSetCallback(media));
               }
             });
           }
@@ -182,7 +181,7 @@ class MediaContainer extends window.HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName.toLowerCase() == 'autohide') {
       this.autohide = newValue;
-    } 
+    }
   }
 
   // First direct child with slot=media, or null
@@ -196,33 +195,47 @@ class MediaContainer extends window.HTMLElement {
   }
 
   mediaSetCallback(media) {
-    // Should only ever be set with a compatible media element, never null
-    if (!media) {
-      console.error('<media-chrome>: Media element set with slot="media" does not appear to be compatible.', media);
-      return false;
-    }
-
-    // Wait until custom media elements are ready
-    const mediaName = media.nodeName.toLowerCase();
-
-    if (mediaName.includes('-') && !window.customElements.get(mediaName)) {
-      window.customElements.whenDefined(mediaName).then(()=>{
-        this.mediaSetCallback(media);
-      });
-      return false;
-    }
-
     // Toggle play/pause with clicks on the media element itself
-    this._mediaClickPlayToggle = e => {
-
+    this._mediaClickPlayToggle = (_e) => {
       const eventName = media.paused
         ? MediaUIEvents.MEDIA_PLAY_REQUEST
         : MediaUIEvents.MEDIA_PAUSE_REQUEST;
-      this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
-    }
-    // media.addEventListener('click', this._mediaClickPlayToggle, false);
+      this.dispatchEvent(
+        new window.CustomEvent(eventName, { composed: true, bubbles: true })
+      );
+    };
+  }
 
-    return true;
+  handleMediaUpdated(media) {
+    const resolveMediaPromise = (media) => {
+      // media.addEventListener('click', this._mediaClickPlayToggle, false);
+
+      return Promise.resolve(media);
+    };
+
+    const rejectMediaPromise = (media) => {
+      console.error(
+        '<media-chrome>: Media element set with slot="media" does not appear to be compatible.',
+        media
+      );
+      return Promise.reject(media);
+    };
+
+    // Anything "falsy" couldn't act as a media element. Reject.
+    if (!media) {
+      return rejectMediaPromise(media);
+    }
+
+    const mediaName = media.nodeName.toLowerCase();
+    // Custom element. Wait until it's defined before resolving
+    if (mediaName.includes('-')) {
+      return window.customElements.whenDefined(mediaName).then(() => {
+        return resolveMediaPromise(media);
+      });
+    }
+
+    // Exists and isn't a custom element. Resolve.
+    return resolveMediaPromise(media);
   }
 
   mediaUnsetCallback(media) {
@@ -230,14 +243,13 @@ class MediaContainer extends window.HTMLElement {
   }
 
   connectedCallback() {
-    
     const isAudioChrome = this.getAttribute('audio') != null;
     const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
-    this.setAttribute('role', 'region')
+    this.setAttribute('role', 'region');
     this.setAttribute('aria-label', label);
 
     if (this.media) {
-      this.mediaSetCallback(this.media);
+      this.handleMediaUpdated(this.media).then((media) => this.mediaSetCallback(media));
     }
 
     const scheduleInactive = () => {
