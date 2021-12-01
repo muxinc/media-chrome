@@ -1,23 +1,32 @@
 # `<media-captions-button/>`
 
-Add Description Here?
+Button to show/disable captions
+
+- [Source](../src/js/media-captions-button.js)
+- [Example](https://media-chrome.mux.dev/examples/control-elements/media-captions-button.html) ([Example Source](../examples/control-elements/media-captions-button.html))
 
 # Attributes
 
-| Name                    | Type      | Default Value | Description                                                                                         |
-| ----------------------- | --------- | ------------- | --------------------------------------------------------------------------------------------------- |
-| `no-subtitles-fallback` | `boolean` | `false`       | Controls whether media-chrome will show subtitle tracks if no closed captions tracks are available  |
+| Name                    | Type      | Default Value | Description                                                                                        |
+| ----------------------- | --------- | ------------- | -------------------------------------------------------------------------------------------------- |
+| `no-subtitles-fallback` | `boolean` | `false`       | Controls whether media-chrome will show subtitle tracks if no closed captions tracks are available |
 
 # Slots
 
-| Name        | Default Type | Description                                                 |
-| ----------- | ------------ | ----------------------------------------------------------- |
-| `on`        | `svg`        | An element that will be shown while closed captions are on  |
-| `off`       | `svg`        | An element that will be shown while closed captions are off |
+| Name  | Default Type | Description                                                 |
+| ----- | ------------ | ----------------------------------------------------------- |
+| `on`  | `svg`        | An element that will be shown while closed captions are on  |
+| `off` | `svg`        | An element that will be shown while closed captions are off |
 
-# CSS Variables
+### Example
 
-| Name                         | CSS Property | Default Value | Description                                       |
-| ---------------------------- | ------------ | ------------- | ------------------------------------------------- |
-| `--media-button-icon-width`  | `width`      | `24px`        | Determines the default width of the button icons  |
-| `--media-button-icon-height` | `height`     | none          | Determines the default height of the button icons |
+```html
+<media-captions-button>
+  <svg slot="on"><!-- your SVG --></svg>
+  <svg slot="off"><!-- your SVG --></svg>
+</media-captions-button>
+```
+
+# Styling
+
+See our [styling docs](./styling.md#Buttons)
