@@ -1,7 +1,11 @@
-# CSS Variables
+# Styling Media Chrome
 
-! Add More Here
-relies on [CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
+Media Chrome is written using [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). As such, you can do a lot of styling to the component through standard CSS properties, style attributes, and selectors. However, there are enough situations where you might want to style more specific details of some `<media-chrome/>` elements (e.g. the size or color of the drag thumb on the `<media-volume-range/>`) or easily update some styles more globally for `<media-chrome/` elements (e.g. changing the background color for all the control/display elements). To accomplish this, `<media-chrome/>` relies primarily on [CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) to update specific styles for various elements.
+
+
+### An Important Caveat
+
+Our current styling architecture is still quite nascent and is very likely to undergo changes, including quite large ones (all hopefully for the better!). Be sure to keep this in mind when upgrading versions of media-chrome.
 
 ## Buttons
 
