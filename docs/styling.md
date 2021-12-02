@@ -1,15 +1,7 @@
 # CSS Variables
 
-## Text Displays
-
-### Elements
-
-- `<media-time-display/>` ([docs](./media-time-display.md))
-
-| Name                          | CSS Property       | Default Value         | Description                                                     | Notes                                                                |
-| ----------------------------- | ------------------ | --------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------- |
-| `--media-text-content-height` | `height`           | `24px`                | height of the underlying text container for text-based elements | Also applies to `<media-captions-button>` ([See §Buttons](#Buttons)) |
-| `--media-control-background`  | `background-color` | `rgba(20,20,30, 0.7)` | background color of the component                               | Applies to other components as well ([See notes below \*\*](#notes)) |
+! Add More Here
+relies on [CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties)
 
 ## Buttons
 
@@ -24,17 +16,56 @@
 - `<media-seek-backward-button/>` ([docs](./media-seek-backward-button.md))
 - `<media-seek-forward-button/>` ([docs](./media-seek-forward-button.md))
 
-| Name                               | CSS Property       | Default Value         | Description                                                                                       | Notes                                                                                           |
-| ---------------------------------- | ------------------ | --------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `--media-control-background`       | `background-color` | `rgba(20,20,30, 0.7)` | background color of the component                                                                 | Applies to other components as well ([See notes below \*\*](#notes)                             |
-| `--media-control-hover-background` | `background-color` | `rgba(50,50,70, 0.7)` | background color of the button when hovered                                                       | Applied by the `:hover` [pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:hover) |
-| `--media-button-icon-width`        | `width`            | `24px`                | default width of button icons                                                                     | Only applies to `<img>` and `<svg>` tags                                                        |
-| `--media-button-icon-height`       | `height`           | none                  | default height of button icons                                                                    | Only applies to `<img>` and `<svg>` tags                                                        |
-| `--media-icon-color`               | `fill`             | `#eee`                | default fill color of button icons                                                                | Only applies to `<img>` and `<svg>` tags                                                        |
-| `--media-button-icon-transform`    | `transform`        | none                  | apply a [transform](https://developer.mozilla.org/en-US/docs/Web/CSS/transform) to button icons   | Only applies to `<img>` and `<svg>` tags                                                        |
-| `--media-button-icon-transition`   | `transform`        | none                  | apply a [transition](https://developer.mozilla.org/en-US/docs/Web/CSS/transition) to button icons | Only applies to `<img>` and `<svg>` tags                                                        |
+| Name                               | CSS Property       | Default Value         | Description                                                                                       | Notes                                                                                                                                                                |
+| ---------------------------------- | ------------------ | --------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--media-control-background`       | `background-color` | `rgba(20,20,30, 0.7)` | background color of the component                                                                 | Applies to other components as well ([See notes below \*\*](#notes))                                                                                                 |
+| `--media-control-hover-background` | `background-color` | `rgba(50,50,70, 0.7)` | background color of the button when hovered                                                       | Applied by the `:hover` [pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:hover) Applies to other components as well ([See notes below \*\*](#notes)) |
+| `--media-button-icon-width`        | `width`            | `24px`                | default width of button icons                                                                     | Only applies to `<img>` and `<svg>` tags                                                                                                                             |
+| `--media-button-icon-height`       | `height`           | none                  | default height of button icons                                                                    | Only applies to `<img>` and `<svg>` tags                                                                                                                             |
+| `--media-icon-color`               | `fill`             | `#eee`                | default fill color of button icons                                                                | Only applies to `<img>` and `<svg>` tags                                                                                                                             |
+| `--media-button-icon-transform`    | `transform`        | none                  | apply a [transform](https://developer.mozilla.org/en-US/docs/Web/CSS/transform) to button icons   | Only applies to `<img>` and `<svg>` tags                                                                                                                             |
+| `--media-button-icon-transition`   | `transform`        | none                  | apply a [transition](https://developer.mozilla.org/en-US/docs/Web/CSS/transition) to button icons | Only applies to `<img>` and `<svg>` tags                                                                                                                             |
+
+## Ranges
+
+### Elements
+
+- `<media-time-range/>` ([docs](./media-time-range.md))
+- `<media-volume-range/>` ([docs](./media-volume-range.md))
+
+| Name                                | CSS Property       | Default Value             | Description                                                                                                                | Notes                                                                                                                                                                  |
+| ----------------------------------- | ------------------ | ------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--media-control-background`        | `background-color` | `rgba(20,20,30, 0.7)`     | background color of the component                                                                                          | Applies to other components as well ([See notes below \*\*](#notes))                                                                                                   |
+| `--media-control-hover-background`  | `background-color` | `rgba(50,50,70, 0.7)`     | background color of the button when hovered                                                                                | Applied by the `:hover` [pseudo-class](https://developer.mozilla.org/en-US/docs/Web/CSS/:hover) Applies to other components as well ([See notes below \*\*](#notes))   |
+| `--media-range-thumb-height`        | `height`           | `10px`                    | height of the underlying slider's drag thumb                                                                               | Applied via `::-webkit-slider-thumb` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-thumb)                   |
+| `--media-range-thumb-width`         | `width`            | `10px`                    | width of the underlying slider's drag thumb                                                                                | Applied via `::-webkit-slider-thumb` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-thumb)                   |
+| `--media-range-thumb-border`        | `border`           | `none`                    | border of the underlying slider's drag thumb                                                                               | Applied via `::-webkit-slider-thumb` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-thumb)                   |
+| `--media-range-thumb-border-radius` | `border-radius`    | `10px`                    | border radius of the underlying slider's drag thumb                                                                        | Applied via `::-webkit-slider-thumb` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-thumb)                   |
+| `--media-range-thumb-background`    | `background`       | `#fff`                    | background color of the underlying slider's drag thumb                                                                     | Applied via `::-webkit-slider-thumb` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-thumb)                   |
+| `--media-range-thumb-box-shadow`    | `box-shadow`       | `1px 1px 1px transparent` | box shadow of the underlying slider's drag thumb                                                                           | Applied via `::-webkit-slider-thumb` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-thumb)                   |
+| `--media-range-thumb-transition`    | `transition`       | `none`                    | apply a [transition](https://developer.mozilla.org/en-US/docs/Web/CSS/transition) to the underlying slider's drag thumb    | Applied via `::-webkit-slider-thumb` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-thumb)                   |
+| `--media-range-thumb-transform`     | `transform`        | `none`                    | apply a [transform](https://developer.mozilla.org/en-US/docs/Web/CSS/transform) to the underlying slider's drag thumb      | Applied via `::-webkit-slider-thumb` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-thumb)                   |
+| `--media-range-thumb-opacity`       | `opacity`          | `1`                       | opacity of the underlying slider's drag thumb                                                                              | Applied via `::-webkit-slider-thumb` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-thumb)                   |
+| `--media-range-track-height`        | `height`           | `4px`                     | height of the underlying slider's track display                                                                            | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
+| `--media-range-track-width`         | `width`            | `100%`                    | width of the underlying slider's track display                                                                             | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
+| `--media-range-track-border`        | `border`           | `none`                    | border of the underlying slider's track display                                                                            | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
+| `--media-range-track-border-radius` | `border-radius`    | `0`                       | border radius of the underlying slider's track display                                                                     | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
+| `--media-range-track-background`    | `background`       | `#eee`                    | background color of the underlying slider's track display                                                                  | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
+| `--media-range-track-box-shadow`    | `box-shadow`       | `none`                    | box shadow of the underlying slider's track display                                                                        | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
+| `--media-range-track-transition`    | `transition`       | `none`                    | apply a [transition](https://developer.mozilla.org/en-US/docs/Web/CSS/transition) to the underlying slider's track display | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
+
+## Text Displays
+
+### Elements
+
+- `<media-time-display/>` ([docs](./media-time-display.md))
+
+| Name                          | CSS Property       | Default Value         | Description                                                     | Notes                                                                |
+| ----------------------------- | ------------------ | --------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `--media-control-background`  | `background-color` | `rgba(20,20,30, 0.7)` | background color of the component                               | Applies to other components as well ([See notes below \*\*](#notes)) |
+| `--media-text-content-height` | `height`           | `24px`                | height of the underlying text container for text-based elements | Also applies to `<media-captions-button>` ([See §Buttons](#Buttons)) |
 
 # Notes
 
 \* Unlike most Media Chrome buttons, the `<media-playback-rate-button/>` button displays text (and not an icon/svg), so many [button styles](#buttons) don't apply to it and some [text display styles](#text-displays) do apply to it (unlike most buttons).
-\*\* Unlike most Media Chrome buttons, the `<media-playback-rate-button/>` button displays text (and not an icon/svg), so many [button styles](#buttons) don't apply to it and some [text display styles](#text-displays) do apply to it (unlike most buttons).
+\*\* A few CSS Variables are more "global" in their application, so make sure you define and scope them via selectors appropriately.
