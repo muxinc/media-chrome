@@ -68,4 +68,5 @@ relies on [CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using
 # Notes
 
 \* Unlike most Media Chrome buttons, the `<media-playback-rate-button/>` button displays text (and not an icon/svg), so many [button styles](#buttons) don't apply to it and some [text display styles](#text-displays) do apply to it (unlike most buttons).
+
 \*\* A few CSS Variables are more "global" in their application, so make sure you define and scope them via selectors appropriately.
