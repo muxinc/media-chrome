@@ -16,7 +16,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 - `<media-mute-button/>` ([docs](./media-mute-button.md))
 - `<media-pip-button/>` ([docs](./media-pip-button.md))
 - `<media-play-button/>` ([docs](./media-play-button.md))
-- `<media-playback-rate-button/>` ([docs](./media-playback-rate-button.md)) [\*](#notes)
+- `<media-playback-rate-button/>` ([docs](./media-playback-rate-button.md)) ([See notes below \*](#notes))
 - `<media-seek-backward-button/>` ([docs](./media-seek-backward-button.md))
 - `<media-seek-forward-button/>` ([docs](./media-seek-forward-button.md))
 
