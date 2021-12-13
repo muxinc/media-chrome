@@ -1,4 +1,4 @@
-# `<media-chrome>`
+# [`<media-chrome>`](https://media-chrome.org)
 
 Your media player's dancing suit. :man_dancing:
 
@@ -9,7 +9,7 @@ Fully customizable media player controls using web components (native custom ele
 - [x] Simple HTML to add/remove controls
 - [x] Simple CSS to style the controls
 
-*From [Mux](https://mux.com/) and the creator of [Video.js](https://videojs.com/).*
+*From [Mux](https://mux.com?utm_source=github&utm_medium=social&utm_campaign=media-chrome) and the creator of [Video.js](https://videojs.com/).*
 
 ## Video Example
 
