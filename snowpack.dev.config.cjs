@@ -6,6 +6,7 @@ module.exports = {
   extends: './snowpack.common.config.cjs',
   mount: {
     'src/js': { url: '/dist' },
+    'node_modules/youtube-video-element/dist': { url: '/dist' },
     // Mount "public" to the root URL path ("/*") and serve files with zero transformations:
     examples: { url: '/examples', static: true, resolve: false },
   },

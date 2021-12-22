@@ -5709,3 +5709,8 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+youtube-video-element@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/youtube-video-element/-/youtube-video-element-0.0.5.tgz#ba66c92bf2bd8452fe15bc68840351a3e920cba1"
+  integrity sha512-Bp/+X+gdAB84eVYQD2mv98DLsgKN5OASRWpJkMyMyLrpBiANB3kY4/zjx1LOHKjxNhLLo1XcMj3r6gcF6LYShQ==

@@ -6,6 +6,7 @@ module.exports = {
   extends: './snowpack.common.config.cjs',
   mount: {
     'src/js': { url: '/' },
+    'node_modules/youtube-video-element/dist': { url: '/' },
   },
   optimize: {
     bundle: false,

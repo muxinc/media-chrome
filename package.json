@@ -44,5 +44,7 @@
     "sinon": "^11.1.2",
     "snowpack": "^3.8.3"
   },
-  "dependencies": {}
+  "dependencies": {
+    "youtube-video-element": "^0.0.5"
+  }
 }
