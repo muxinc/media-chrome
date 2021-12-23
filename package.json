@@ -39,6 +39,7 @@
   "devDependencies": {
     "@open-wc/testing": "^3.0.1",
     "@web/test-runner": "^0.13.20",
+    "np": "^7.6.0",
     "rimraf": "^3.0.2",
     "sinon": "^11.1.2",
     "snowpack": "^3.8.3"
