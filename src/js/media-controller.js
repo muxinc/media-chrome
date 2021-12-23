@@ -278,7 +278,9 @@ class MediaController extends MediaContainer {
     Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
       const events = eventsStr.split(',');
       events.forEach((event) => {
-        media.textTracks.addEventListener(event, handler);
+        if (media.textTracks) {
+          media.textTracks.addEventListener(event, handler);
+        }
       });
       handler();
     });
@@ -310,7 +312,9 @@ class MediaController extends MediaContainer {
     Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
       const events = eventsStr.split(',');
       events.forEach((event) => {
-        media.textTracks.removeEventListener(event, handler);
+        if (media.textTracks) {
+          media.textTracks.removeEventListener(event, handler);
+        }
       });
       handler();
     });
