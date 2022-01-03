@@ -220,7 +220,7 @@ For an interactive example of how each of the slots render for `video`, check ou
 
 * Render Location: The child that specifies `slot="centered-chrome"` will show up in the center of the `<media-controller/>` and will be "above" anything in the default slot, `top-chrome`, or `middle-chrome`.
 
-* Common/Example use cases: "big button" controls that are centered and horizontally layed out "on top of" the media. While you **_can_** have multiple children that are "slotted to" `centered-chrome`, most likely, you'll want to use one make styling and layout easier and more predictable.
+* Common/Example use cases: "big button" controls that are centered and horizontally layed out "on top of" the media. While you **_can_** have multiple children that are "slotted to" `centered-chrome`. Most likely, you'll want to use one making styling and layout easier and more predictable.
   * [Mobile example](https://media-chrome.mux.dev/examples/mobile.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/mobile.html))
   * [Demuxed 2021 theme](https://media-chrome.mux.dev/examples/themes/demuxed-2021-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/demuxed-2021-theme.html))
 
