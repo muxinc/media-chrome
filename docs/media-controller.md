@@ -9,7 +9,7 @@ The `<media-controller/>` manages communication of state and state change reques
 Example:
 
 ```html
-<media-controller  autohide="2">
+<media-controller autohide="2">
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -37,7 +37,7 @@ Example:
 Example (`autohide` disabled):
 
 ```html
-<media-controller  autohide="-1">
+<media-controller autohide="-1">
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -179,7 +179,7 @@ For an interactive example of how each of the slots render for `video`, check ou
 <br>
 <br>
 
-* Render Location: Each child that doesn't specify a slot will render at the bottom of the `<media-controller/>`. If you have more than element like this they will be stacked vertically.
+* Render Location: Each child that doesn't specify a slot will render at the bottom of the `<media-controller/>`. If you have more than one element like this they will be stacked vertically.
 
 * Common/Example use cases: showing one or more rows of controls at the bottom of the `<media-controller/>`. For many use cases, you can simply add a `<media-control-bar/>` for each row of controls you'd like, which will provide you with additional automatic sizing and layout behavior.
   * [Basic example](https://media-chrome.mux.dev/examples/basic.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/basic.html))
@@ -194,7 +194,7 @@ For an interactive example of how each of the slots render for `video`, check ou
 <br>
 <br>
 
-* Render Location: Each child that specifies `slot="top-chrome"` will render at the top of the <media-controller/>. If you have more than element like this they will be stacked vertically.
+* Render Location: Each child that specifies `slot="top-chrome"` will render at the top of the `<media-controller/>`. If you have more than one element like this they will be stacked vertically.
 
 * Common/Example use cases: showing one or more rows of controls at the top of the `<media-controller/>`. For many use cases, you can simply add a `<media-control-bar/>` for each row of controls you'd like.
   * [Demuxed 2021 theme](https://media-chrome.mux.dev/examples/themes/demuxed-2021-theme.html) (mobile screen sizes only) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/demuxed-2021-theme.html))
@@ -220,7 +220,7 @@ For an interactive example of how each of the slots render for `video`, check ou
 
 * Render Location: The child that specifies `slot="centered-chrome"` will show up in the center of the `<media-controller/>` and will be "above" anything in the default slot, `top-chrome`, or `middle-chrome`.
 
-* Common/Example use cases: "big button" controls that are centered and horizontally layed out "on top of" the media. While you **_can_** have multiple children that are "slotted to" `centered-chrome`, most likely, you'll want to use one make styling and layout easier and more predictable.
+* Common/Example use cases: "big button" controls that are centered and horizontally layed out "on top of" the media. While you **_can_** have multiple children that are "slotted to" `centered-chrome`, most likely, you'll want to use only one, making styling and layout easier and more predictable.
   * [Mobile example](https://media-chrome.mux.dev/examples/mobile.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/mobile.html))
   * [Demuxed 2021 theme](https://media-chrome.mux.dev/examples/themes/demuxed-2021-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/demuxed-2021-theme.html))
 
