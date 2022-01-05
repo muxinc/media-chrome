@@ -6,6 +6,7 @@
   <title>Media Chrome - Architecture Diagrams</title>
   <style>
     section {
+      margin-left: 100px;
       max-width:  700px;
     }
 
@@ -16,15 +17,31 @@
 <section>
   <h1>Media Chrome - Architecture Diagrams</h1>
 
-  <p>Any HTML element can send user input to the <code>MediaController</code>.</p>
+  <p>Any HTML element can send user input to the <code>MediaController</code> and receive media state from the <code>MediaController</code>.</p>
+
+  <h3>Sending</h3>
 
   <p>The <code>MediaController</code> receives user input via <code>MediaUIEvents</code> like <code>MediaUIEvents.MEDIA_PLAY_REQUEST</code> or <code>MediaUIEvents.MEDIA_SEEK_REQUEST</code> for example.</p>
 
-  <p>Either 1. from events fired from the <code>&lt;media-controller&gt;</code> element itself or its descendants. In this case the element that receives the events is the <code>&lt;media-controller&gt;</code> element. The element that is receiving the events is also called a controller associated element. The events bubble up to this associated element.</p>
+  <p>Either 1. from events fired from the <code>&lt;media-controller&gt;</code> element itself or its descendants. In this case the element that receives the events is the <code>&lt;media-controller&gt;</code> element. The element that is receiving the events is also called a controller <b>associated element</b>. The events bubble up to this associated element.</p>
 
   <p>In case 2. below the UI element would not be nested under the <code>&lt;media-controller&gt;</code> element and in turn the <code>&lt;media-controller&gt;</code> element will not be able to automatically receive bubbling up events.</p>
 
-  <p>For this case an associated element is created by targetting the <code>&lt;media-controller&gt;</code> via a <code>[media-controller="my-media-controller"]</code> attribute.</p>
+  <p>For this case an <b>associated element</b> is created by targeting the <code>&lt;media-controller&gt;</code> via a <code>[media-controller="my-media-controller"]</code> attribute. The <code>&lt;media-controller&gt;</code> element should have a corresponding id attribute, <code>[id="my-media-controller"]</code> in this instance.</p>
+
+  <h3>Receiving</h3>
+
+  <p>The <code>MediaController</code> propagates media state by setting <code>MediaUIAttributes</code> on observing UI elements.</p>
+
+  <p>Any <b>associated element</b> or any of its descendants can receive media state from the <code>MediaController</code> but they need to be observing one or more <code>MediaUIAttributes</code>. The native Media Chrome web components will have this built in and they do this by having the <code>MediaUIAttributes</code> listed in the web component <code>observedAttributes</code> array.</p>
+
+  <p>Simple HTML elements like a <code>&lt;div&gt;</code> element for example are also able to receive media state by defining a <code>[media-chrome-attributes]</code> attribute and listing the <code>MediaUIAttributes</code> space separated.</p>
+
+  <p>e.g. <code>&lt;div media-chrome-attributes=&quot;media-paused media-current-time&quot;&gt;&lt;/div&gt;</code></p>
+
+  <br>
+  <br>
+  <br>
 
   <h2>1. by <code>&lt;media-controller&gt;</code> Nesting</h2>
 
