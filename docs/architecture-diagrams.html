@@ -23,11 +23,13 @@
 
   <p>The <code>MediaController</code> receives user input via <code>MediaUIEvents</code> like <code>MediaUIEvents.MEDIA_PLAY_REQUEST</code> or <code>MediaUIEvents.MEDIA_SEEK_REQUEST</code> for example.</p>
 
-  <p>Either 1. from events fired from the <code>&lt;media-controller&gt;</code> element itself or its descendants. In this case the element that receives the events is the <code>&lt;media-controller&gt;</code> element. The element that is receiving the events is also called a controller <b>associated element</b>. The events bubble up to this associated element.</p>
+  <p>Either 1. (see diagram below), from events fired from the <code>&lt;media-controller&gt;</code> element itself or its descendants. In this case the element that receives the events is the <code>&lt;media-controller&gt;</code> element. The element that is receiving the events is also called a controller <b>associated element</b>. The events bubble up to this associated element.</p>
 
-  <p>In case 2. below the UI element would not be nested under the <code>&lt;media-controller&gt;</code> element and in turn the <code>&lt;media-controller&gt;</code> element will not be able to automatically receive bubbling up events.</p>
+  <p>In case 2. (see diagram below), the UI element would not be nested under the <code>&lt;media-controller&gt;</code> element and in turn the <code>&lt;media-controller&gt;</code> element will not be able to automatically receive bubbling up events.</p>
 
   <p>For this case an <b>associated element</b> is created by targeting the <code>&lt;media-controller&gt;</code> via a <code>[media-controller="my-media-controller"]</code> attribute. The <code>&lt;media-controller&gt;</code> element should have a corresponding id attribute, <code>[id="my-media-controller"]</code> in this instance.</p>
+
+  <p>All Media Chrome elements support the <code>[media-controller]</code> attribute and can be made an <b>associated element</b>. Simple HTML elements can be made associated elements but require some JavaScript to get this to work.</p>
 
   <h3>Receiving</h3>
 
