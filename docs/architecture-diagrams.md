@@ -19,11 +19,13 @@ All Media Chrome elements support the `[media-controller]` attribute and can be 
 
 The `MediaController` propagates media state by setting `MediaUIAttributes` on observing UI elements.
 
-Any **associated element** or any of its descendants can receive media state from the `MediaController` but they need to be observing one or more `MediaUIAttributes`. The native Media Chrome web components will have this built in and they do this by having the `MediaUIAttributes` listed in the web component `observedAttributes` array.
+Any **associated element** or any of its descendants can receive media state from the `MediaController`, as long as the elements are identifiable as something that should receive media state (aka identifiable as a **media state receiver**). Elements are identified as media state receivers in one of two ways:
 
-Simple HTML elements like a `<div>` element for example are also able to receive media state by defining a `[media-chrome-attributes]` attribute and listing the `MediaUIAttributes` space separated.
+- The native Media Chrome web components will have this built in and they do this by having the `MediaUIAttributes` listed in the web component `observedAttributes` array.
 
-e.g. `<div media-chrome-attributes="media-paused media-current-time"></div>`
+- Simple HTML elements like a `<div>` element for example are also able to receive media state by defining a `[media-chrome-attributes]` attribute and listing the `MediaUIAttributes` space separated.
+
+  e.g. `<div media-chrome-attributes="media-paused media-current-time"></div>`
   
 <br>
 <br>
