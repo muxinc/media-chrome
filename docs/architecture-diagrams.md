@@ -1,21 +1,17 @@
 Media Chrome - Architecture Diagrams
 ====================================
 
-Any HTML element can *send* user input to the `MediaController` and *receive* media state from the `MediaController`.
+Any HTML element can *send* user input to the [`MediaController`](https://github.com/muxinc/media-chrome/blob/main/src/js/media-controller.js#L33) and *receive* media state from the `MediaController`.
 
 ### Sending
 
-The `MediaController` receives user input via `MediaUIEvents` like `MediaUIEvents.MEDIA_PLAY_REQUEST` or `MediaUIEvents.MEDIA_SEEK_REQUEST` for example.
+The `MediaController` receives user input via [`MediaUIEvents`](https://github.com/muxinc/media-chrome/blob/main/src/js/constants.js#L1) like `MediaUIEvents.MEDIA_PLAY_REQUEST` or `MediaUIEvents.MEDIA_SEEK_REQUEST` for example. The `MediaController` may receive these events in one of two ways:
 
-The `MediaController` may receive these events in one of two ways:
+- From a UI element that is nested under the `<media-controller>` element (see [diagram 1](#1-by-media-controller-nesting)).  
+  The DOM element that will receive the bubbling up events from the UI element is the `<media-controller>` element, it's also called an **associated element** in the codebase.
 
-- In case the UI element is nested under the `<media-controller>` element, events are fired from the `<media-controller>` element itself or its descendants (see [diagram 1](#1-by-media-controller-nesting)).
-
-  In this case the element that receives the events is the `<media-controller>` element. The element that is receiving the events is also called a controller **associated element**. The events bubble up to this associated element.
-
-- In case the UI element is not nested under the `<media-controller>` element, the `<media-controller>` element will not be able to automatically receive bubbling up events (see [diagram 2](#2-by-media-controller-id)).
-
-  For this case an **associated element** is created by targeting the `<media-controller>` via a `[media-controller="my-media-controller"]` attribute. The `<media-controller>` element should have a corresponding id attribute, `[id="my-media-controller"]` in this instance.
+- From a UI element that is **not** nested under the `<media-controller>` element (see [diagram 2](#2-by-media-controller-id)).  
+  An **associated element** is created by targeting the `<media-controller id="my-ctrl">` via a `[media-controller="my-ctrl"]` attribute. Now the DOM events are received by the **associated element** and passed through to the `MediaController`.
 
 All Media Chrome elements support the `[media-controller]` attribute and can be made an **associated element**.  
 Simple HTML elements can be made associated elements but require some [JavaScript](https://github.com/muxinc/media-chrome/blob/main/src/js/media-control-bar.js#L60-L64) to get this to work.
@@ -26,7 +22,7 @@ The `MediaController` propagates media state by setting `MediaUIAttributes` on o
 
 Any **associated element** or any of its descendants can receive media state from the `MediaController`, as long as the elements are identifiable as something that should receive media state (aka identifiable as a **media state receiver**). Elements are identified as media state receivers in one of two ways:
 
-- The native Media Chrome web components will have this built in and they do this by having the `MediaUIAttributes` listed in the web component `observedAttributes` array.
+- The native Media Chrome web components will have this built in and they do this by having the [`MediaUIAttributes`](https://github.com/muxinc/media-chrome/blob/main/src/js/constants.js#L24) listed in the web component `observedAttributes` array.
 
 - Simple HTML elements like a `<div>` element for example are also able to receive media state by defining a `[media-chrome-attributes]` attribute and listing the `MediaUIAttributes` space separated.
 
