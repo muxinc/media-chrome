@@ -127,7 +127,8 @@ class MediaTimeRange extends MediaChromeRange {
       this.updateBar();
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
-      this.range.max = +newValue;
+      // Since our range's step is 1, floor the max value to ensure reasonable rendering
+      this.range.max = Math.floor(+newValue);
       updateAriaValueText(this);
       this.updateBar();
     }
