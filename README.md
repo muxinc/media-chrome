@@ -38,6 +38,8 @@ Fully customizable media player controls using web components (native custom ele
 #### Results (<a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank">Try the CodePen example</a>)
 <a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank"><img width="719" alt="Media Chrome Demo" src="https://user-images.githubusercontent.com/166/78526967-834bcb80-7790-11ea-98a3-a5b355e7a55a.png"></a>
 
+#### <a href="https://media-chrome.mux.dev/examples/" target="_blank">See all of the repo examples in action.</a>
+
 ## Audio Example
 
 ```html
