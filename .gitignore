@@ -10,3 +10,4 @@ sandbox/*
 
 ## testing
 /coverage/
+*.sublime-*
