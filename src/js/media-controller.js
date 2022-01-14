@@ -301,7 +301,8 @@ class MediaController extends MediaContainer {
 
     // Remove all state change propagators
     Object.keys(this._mediaStatePropagators).forEach((key) => {
-      const { events, handler } = this.mediaStatePropagators[key];
+      const events = key.split(',');
+      const handler = this._mediaStatePropagators[key];
 
       events.forEach((event) => {
         const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
