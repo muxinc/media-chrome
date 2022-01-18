@@ -1,5 +1,5 @@
-Media Chrome - Architecture
-===========================
+Architecture Diagrams
+=====================
 
 Any control element can *send* user input to the [`MediaController`](https://github.com/muxinc/media-chrome/blob/main/src/js/media-controller.js#L33) and *receive* media state from the `MediaController`.
 
