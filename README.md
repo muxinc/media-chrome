@@ -229,3 +229,8 @@ Web components. @heff spoke about [the potential of web components for video](ht
 Listen for the `update` event on the element to get the selected start and end timestamps. Full example in examples/clip-selector.html.
 
 ![media clip selector example](./screenshots/media-clip-selector.gif?raw=true)
+
+## Architecture
+
+- [Architecture Notes](./ARCHITECTURE.md)
+- [Architecture Diagrams](./docs/architecture-diagrams.md)
