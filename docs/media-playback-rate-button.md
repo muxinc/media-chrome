@@ -9,7 +9,7 @@ Button to change the speed of playback.
 
 | Name                    | Type   | Default Value       | Description                                                       |
 | ----------------------- | ------ | ------------------- | ----------------------------------------------------------------- |
-| `no-subtitles-fallback` | `list` | `1 1.25 1.5 1.75 2` | List of playback rates to toggle through when pressing the button |
+| `rates` | `list` | `1 1.25 1.5 1.75 2` | List of playback rates to toggle through when pressing the button |
 
 # Slots
 
