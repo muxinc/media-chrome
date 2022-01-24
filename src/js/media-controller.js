@@ -238,6 +238,10 @@ class MediaController extends MediaContainer {
       },
       'ratechange': () => {
         this.propagateMediaState(MediaUIAttributes.MEDIA_PLAYBACK_RATE, this.media.playbackRate);
+      },
+      'waiting,stalled,playing': () => {
+        const isLoading = !this.media?.paused && this.media?.readyState < 3;
+        this.propagateMediaState(MediaUIAttributes.MEDIA_LOADING, isLoading);
       }
     };
 
