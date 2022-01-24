@@ -77,17 +77,30 @@ class MediaController extends MediaContainer {
 
       // This current assumes that the media controller is the fullscreen element
       // which may be true in most cases but not all.
-      // The prior version of media-chrome support alt fullscreen elements
+      // The prior version of media-chrome supported alt fullscreen elements
       // and that's something we can work towards here
       MEDIA_ENTER_FULLSCREEN_REQUEST: () => {
         const docOrRoot = this.getRootNode();
+        const media = this.media;
 
         if (docOrRoot.pictureInPictureElement) {
           // Should be async
           docOrRoot.exitPictureInPicture();
         }
 
-        super[fullscreenApi.enter]();
+        if (super[fullscreenApi.enter]) {
+          // Media chrome container fullscreen
+          super[fullscreenApi.enter]();
+        } else if (media.webkitEnterFullscreen) {
+          // Media element fullscreen using iOS API
+          media.webkitEnterFullscreen();
+        } else if (media.requestFullscreen) {
+          // Media element fullscreen, using correct API
+          // So media els don't have to implement multiple APIs.
+          media.requestFullscreen();
+        } else {
+          console.warn('MediaChrome: Fullscreen not supported');
+        }
       },
       MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
         document[fullscreenApi.exit]();
