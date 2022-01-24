@@ -86,7 +86,7 @@ class MediaLoadingIndicator extends window.HTMLElement {
         this.removeAttribute('is-loading');
       } else if (newValue != undefined) {
         const loadingDelay =
-          +this.getAttribute('loading-delay') ?? DEFAULT_LOADING_DELAY;
+          +(this.getAttribute('loading-delay') ?? DEFAULT_LOADING_DELAY);
         this.loadingDelayHandle = setTimeout(() => {
           this.setAttribute('is-loading', '');
           this.loadingDelayHandle = undefined;
