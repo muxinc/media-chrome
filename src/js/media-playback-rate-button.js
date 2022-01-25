@@ -45,10 +45,12 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     if (attrName === 'rates') {
       // This will:
       // 1. parse the space-separated attribute string (standard for representing lists as HTML/CSS values) into an array (of strings)
+      //   The current regex has includes `|,\s*` to preserve legacy behavior for lists with commas.
       // 2. convert that list into numbers (including potentially NaN)
       // 3. filter out all NaNs for invalid values
       // 4. sort the array of numbers to ensure the expected toggle-through order for playback rate.
-      const newRates = (newValue ?? '').split(/,\s?/).map(str => str ? +str : Number.NaN).filter(num => !Number.isNaN(num)).sort();
+      const newRates = (newValue ?? '').trim().split(/\s+|,\s*/)
+        .map(str => Number(str)).filter(num => !Number.isNaN(num)).sort((a, b) => a - b);
       this._rates = newRates.length ? newRates : DEFAULT_RATES;
       return;
     }
