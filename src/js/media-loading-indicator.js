@@ -77,14 +77,20 @@ class MediaLoadingIndicator extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_LOADING) {
-      if (newValue == undefined) {
+    if (
+      attrName === MediaUIAttributes.MEDIA_LOADING ||
+      attrName === MediaUIAttributes.MEDIA_PAUSED
+    ) {
+      const isPaused = this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != undefined;
+      const isMediaLoading = this.getAttribute(MediaUIAttributes.MEDIA_LOADING) != undefined;
+      const isLoading = !isPaused && isMediaLoading;
+      if (!isLoading) {
         if (this.loadingDelayHandle) {
           clearTimeout(this.loadingDelayHandle);
           this.loadingDelayHandle = undefined;
         }
         this.removeAttribute('is-loading');
-      } else if (newValue != undefined) {
+      } else if (!this.loadingDelayHandle && isLoading) {
         const loadingDelay =
           +(this.getAttribute('loading-delay') ?? DEFAULT_LOADING_DELAY);
         this.loadingDelayHandle = setTimeout(() => {
@@ -92,8 +98,7 @@ class MediaLoadingIndicator extends window.HTMLElement {
           this.loadingDelayHandle = undefined;
         }, loadingDelay);
       }
-    }
-    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+    } else if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
