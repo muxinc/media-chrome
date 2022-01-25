@@ -38,8 +38,17 @@ template.innerHTML = `
   height: 0px;
 }
 
+:host slot[name=loading] > *,
+:host ::slotted([slot=loading]) {
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+
 :host(:not([is-loading])) slot[name=loading] > *, 
-:host(:not([is-loading])) ::slotted([slot=loading]),
+:host(:not([is-loading])) ::slotted([slot=loading]) {
+  opacity: 0;
+}
+
 :host(:not([is-loading])) #status {
   display: none;
 }
