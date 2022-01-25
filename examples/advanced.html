@@ -8,6 +8,10 @@
     .examples {
       margin-top: 20px;
     }
+
+    media-loading-indicator {
+      --media-loading-icon-width: 100px;
+    }
   </style>
 </head>
 <body>
@@ -25,7 +29,7 @@
         <track label="English" kind="captions" srclang="en" src="./vtt/en-cc.vtt"></track>
       </video>
       <div slot="centered-chrome" no-auto-hide>
-        <media-loading-indicator media-loading style="--media-loading-icon-width: 100px;"></media-loading-indicator>
+        <media-loading-indicator media-loading></media-loading-indicator>
       </div>
       <media-control-bar>
         <media-play-button></media-play-button>
