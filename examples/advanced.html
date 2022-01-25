@@ -40,19 +40,6 @@
       </media-control-bar>
     </media-controller>
     <div class="examples">
-      <button id="loadingBtn">Toggle Loading</button>
-      <script>
-        const loadingBtn = document.querySelector('#loadingBtn');
-        const loadingEl = document.querySelector('media-loading-indicator');
-        loadingBtn.addEventListener('click', () => {
-          const nextState = !loadingEl.hasAttribute('media-loading');
-          if (nextState) {
-            loadingEl.setAttribute('media-loading', '');
-          } else {
-            loadingEl.removeAttribute('media-loading');
-          }
-        })
-      </script>
       <a href="./">View more examples</a>
     </div>
   </main>
