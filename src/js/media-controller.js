@@ -185,6 +185,15 @@ class MediaController extends MediaContainer {
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
       },
+      MEDIA_SELECT_AIRPLAY_REQUEST: (_e) => {
+        const { media } = this;
+        if (!media) return;
+        if (!(media.webkitShowPlaybackTargetPicker && window.WebKitPlaybackTargetAvailabilityEvent)) {
+          console.warn('received a request to select AirPlay but AirPlay is not supported in this environment');
+          return;
+        }
+        media.webkitShowPlaybackTargetPicker();
+      }
     };
 
     // Apply ui event listeners
