@@ -69,6 +69,18 @@ Our current styling architecture is still quite nascent and is very likely to un
 | `--media-control-background`  | `background-color` | `rgba(20,20,30, 0.7)` | background color of the component                               | Applies to other components as well ([See notes below \*\*](#notes)) |
 | `--media-text-content-height` | `height`           | `24px`                | height of the underlying text container for text-based elements | Also applies to `<media-captions-button>` ([See §Buttons](#Buttons)) |
 
+## Indicators
+
+### Elements
+
+- `<media-loading-indicator/>` ([docs](./media-loading-indicator.md))
+
+| Name                           | CSS Property       | Default Value         | Description  | Notes |
+| -----------------------------  | ------------------ | --------------------- | ------------ | ----- |
+| `--media-loading-icon-width`   | `width` | `44px` | width of the loading icon      |       |
+| `--media-loading-icon-height`  | `height` | `auto` | height of the loading icon      |       |
+| `--media-icon-color`  | `fill` | `#fff` | color of the loading icon      | Only applies to `<img>` and `<svg>`      |
+
 # Notes
 
 \* Unlike most Media Chrome buttons, the `<media-playback-rate-button/>` button displays text (and not an icon/svg), so many [button styles](#buttons) don't apply to it and some [text display styles](#text-displays) do apply to it (unlike most buttons).
