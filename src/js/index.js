@@ -1,6 +1,7 @@
 export * as constants from './constants';
 export { default as labels } from './labels/labels';
 export * as timeUtils from './utils/time';
+import MediaAirplayButton from './media-airplay-button';
 import MediaChromeButton from './media-chrome-button.js';
 // import MediaContainer from './src/js/media-container.js';
 import MediaController from './media-controller.js';
@@ -46,6 +47,7 @@ if (!window.customElements.get('media-container')) {
 }
 
 export {
+  MediaAirplayButton,
   MediaChromeButton,
   MediaContainer,
   MediaController,

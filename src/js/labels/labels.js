@@ -17,6 +17,7 @@ export const verbs = {
   PAUSE: () => 'pause',
   MUTE: () => 'mute',
   UNMUTE: () => 'unmute',
+  AIRPLAY: () => 'air play',
   ENTER_FULLSCREEN: () => 'enter fullscreen mode',
   EXIT_FULLSCREEN: () => 'exit fullscreen mode',
   ENTER_PIP: () => 'enter picture in picture mode',

@@ -161,6 +161,7 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 | `<media-seek-backward-button>` | Jump back 30 seconds in the media                                                                      |
 | `<media-seek-forward-button>` | Jump ahead 30 seconds in the media                                                                  |
 | `<media-captions-button>` | Show/disable captions (if no captions are available, will fallback to subtitles by default unless `no-subtitles-fallback` attribute is set)                                                                      |
+| `<media-airplay-button>`    | Bring up the AirPlay menu to select/deselect AirPlay playback (Safari only).                          |
 | More to come                 | Requests and contributions welcome                                                                   |
 
 ### Extras

@@ -5,6 +5,7 @@ export const MediaUIEvents = {
     MEDIA_UNMUTE_REQUEST: 'mediaunmuterequest',
     MEDIA_VOLUME_REQUEST: 'mediavolumerequest',
     MEDIA_SEEK_REQUEST: 'mediaseekrequest',
+    MEDIA_AIRPLAY_REQUEST: 'mediaairplayrequest',
     MEDIA_ENTER_FULLSCREEN_REQUEST: 'mediaenterfullscreenrequest',
     MEDIA_EXIT_FULLSCREEN_REQUEST: 'mediaexitfullscreenrequest',
     MEDIA_PREVIEW_REQUEST: 'mediapreviewrequest',
