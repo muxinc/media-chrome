@@ -31,10 +31,6 @@ class MediaAirplayButton extends MediaChromeButton {
     super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
-    super.attributeChangedCallback(attrName, oldValue, newValue);
-  }
-
   handleClick(_e) {
     const evt = new window.CustomEvent(
       MediaUIEvents.MEDIA_SELECT_AIRPLAY_REQUEST,

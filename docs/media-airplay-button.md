@@ -1,4 +1,4 @@
-# `<media-seek-backward-button/>`
+# `<media-airplay-button/>`
 
 Button to jump back 30 seconds in the media.
 
