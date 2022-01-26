@@ -8,6 +8,10 @@
     .examples {
       margin-top: 20px;
     }
+
+    media-loading-indicator {
+      --media-loading-icon-width: 100px;
+    }
   </style>
 </head>
 <body>
@@ -24,6 +28,9 @@
         <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
         <track label="English" kind="captions" srclang="en" src="./vtt/en-cc.vtt"></track>
       </video>
+      <div slot="centered-chrome" no-auto-hide>
+        <media-loading-indicator media-loading></media-loading-indicator>
+      </div>
       <media-control-bar>
         <media-play-button></media-play-button>
         <media-seek-backward-button></media-seek-backward-button>
