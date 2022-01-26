@@ -1,6 +1,6 @@
 # `<media-airplay-button/>`
 
-Button to jump back 30 seconds in the media.
+Button to bring up the AirPlay menu and select AirPlay playback.
 
 - [Source](../src/js/media-airplay-button.js)
 - [Example](https://media-chrome.mux.dev/examples/control-elements/media-airplay-button.html) ([Example Source](../examples/control-elements/media-airplay-button.html))

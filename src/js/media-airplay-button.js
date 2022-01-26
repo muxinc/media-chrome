@@ -19,7 +19,7 @@ slotTemplate.innerHTML = `
 
 class MediaAirplayButton extends MediaChromeButton {
   static get observedAttributes() {
-    return [...super.observedAttributes, MediaUIAttributes.MEDIA_IS_AIRPLAY];
+    return [...super.observedAttributes];
   }
 
   constructor(options = {}) {
@@ -27,13 +27,13 @@ class MediaAirplayButton extends MediaChromeButton {
   }
 
   connectedCallback() {
-    this.setAttribute('aria-label', verbs.SELECT_AIRPLAY());
+    this.setAttribute('aria-label', verbs.AIRPLAY());
     super.connectedCallback();
   }
 
   handleClick(_e) {
     const evt = new window.CustomEvent(
-      MediaUIEvents.MEDIA_SELECT_AIRPLAY_REQUEST,
+      MediaUIEvents.MEDIA_AIRPLAY_REQUEST,
       { composed: true, bubbles: true }
     );
     this.dispatchEvent(evt);
