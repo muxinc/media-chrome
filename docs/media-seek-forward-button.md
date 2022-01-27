@@ -13,13 +13,13 @@ _None_
 
 | Name       | Default Type | Description                                             |
 | ---------- | ------------ | ------------------------------------------------------- |
-| `backward` | `svg`        | The element shown for the seek forward button's display |
+| `forward` | `svg`        | The element shown for the seek forward button's display |
 
 ### Example
 
 ```html
 <media-seek-forward-button>
-  <svg slot="backward"><!-- your SVG --></svg>
+  <svg slot="forward"><!-- your SVG --></svg>
 </media-seek-forward-button>
 ```
 
