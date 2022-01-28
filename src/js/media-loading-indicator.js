@@ -90,8 +90,10 @@ class MediaLoadingIndicator extends window.HTMLElement {
       attrName === MediaUIAttributes.MEDIA_LOADING ||
       attrName === MediaUIAttributes.MEDIA_PAUSED
     ) {
-      const isPaused = this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != undefined;
-      const isMediaLoading = this.getAttribute(MediaUIAttributes.MEDIA_LOADING) != undefined;
+      const isPaused =
+        this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != undefined;
+      const isMediaLoading =
+        this.getAttribute(MediaUIAttributes.MEDIA_LOADING) != undefined;
       const isLoading = !isPaused && isMediaLoading;
       if (!isLoading) {
         if (this.loadingDelayHandle) {
@@ -100,8 +102,9 @@ class MediaLoadingIndicator extends window.HTMLElement {
         }
         this.removeAttribute('is-loading');
       } else if (!this.loadingDelayHandle && isLoading) {
-        const loadingDelay =
-          +(this.getAttribute('loading-delay') ?? DEFAULT_LOADING_DELAY);
+        const loadingDelay = +(
+          this.getAttribute('loading-delay') ?? DEFAULT_LOADING_DELAY
+        );
         this.loadingDelayHandle = setTimeout(() => {
           this.setAttribute('is-loading', '');
           this.loadingDelayHandle = undefined;

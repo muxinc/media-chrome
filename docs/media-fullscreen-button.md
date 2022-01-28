@@ -11,10 +11,10 @@ _None_
 
 # Slots
 
-| Name        | Default Type | Description |
-| ----------- | ------------ | ----------- |
-| `enter`     | `svg`        | An element shown when the media is not in fullscreen and pressing the button will trigger entering fullscreen |
-| `exit`      | `svg`        | An element shown when the media is in fullscreen and pressing the button will trigger exiting fullscreen |
+| Name    | Default Type | Description                                                                                                   |
+| ------- | ------------ | ------------------------------------------------------------------------------------------------------------- |
+| `enter` | `svg`        | An element shown when the media is not in fullscreen and pressing the button will trigger entering fullscreen |
+| `exit`  | `svg`        | An element shown when the media is in fullscreen and pressing the button will trigger exiting fullscreen      |
 
 ### Example
 

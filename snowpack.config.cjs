@@ -12,7 +12,10 @@ module.exports = {
     polyfillNode: true,
   },
   testOptions: {
-    files: ['__tests__/@(unit|integration)/**/*.@(test|spec).js', '__tests__/setup/**/*'],
+    files: [
+      '__tests__/@(unit|integration)/**/*.@(test|spec).js',
+      '__tests__/setup/**/*',
+    ],
   },
   alias: {
     'graceful-fs': 'memfs',

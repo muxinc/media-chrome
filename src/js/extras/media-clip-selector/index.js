@@ -1,5 +1,8 @@
 import { defineCustomElement } from '../../utils/defineCustomElement.js';
-import { Window as window, Document as document } from '../../utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from '../../utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from '../../constants.js';
 
 const template = document.createElement('template');
@@ -7,9 +10,9 @@ const template = document.createElement('template');
 const HANDLE_W = 8;
 
 const Z = {
-  '100': 100,
-  '200': 200,
-  '300': 300,
+  100: 100,
+  200: 200,
+  300: 300,
 };
 
 function lockBetweenZeroAndOne(num) {
@@ -136,7 +139,11 @@ template.innerHTML = `
 
 class MediaClipSelector extends window.HTMLElement {
   static get observedAttributes() {
-    return ['thumbnails', MediaUIAttributes.MEDIA_DURATION, MediaUIAttributes.MEDIA_CURRENT_TIME];
+    return [
+      'thumbnails',
+      MediaUIAttributes.MEDIA_DURATION,
+      MediaUIAttributes.MEDIA_CURRENT_TIME,
+    ];
   }
 
   constructor() {
@@ -192,7 +199,7 @@ class MediaClipSelector extends window.HTMLElement {
     const duration = this.mediaDuration;
     if (!duration) return;
     const mousePercent = lockBetweenZeroAndOne(this.getMousePercent(evt));
-    return (mousePercent * duration);
+    return mousePercent * duration;
   }
 
   getXPositionFromMouse(evt) {
@@ -207,7 +214,8 @@ class MediaClipSelector extends window.HTMLElement {
 
   getMousePercent(evt) {
     const rangeRect = this.wrapper.getBoundingClientRect();
-    const mousePercent = (this.getXPositionFromMouse(evt) - rangeRect.left) / rangeRect.width;
+    const mousePercent =
+      (this.getXPositionFromMouse(evt) - rangeRect.left) / rangeRect.width;
     return lockBetweenZeroAndOne(mousePercent);
   }
 
@@ -231,7 +239,9 @@ class MediaClipSelector extends window.HTMLElement {
     let percent = selectionPercent;
 
     const minWidthPx = HANDLE_W * 3;
-    const minWidthPercent = lockBetweenZeroAndOne(minWidthPx / fullTimelineWidth);
+    const minWidthPercent = lockBetweenZeroAndOne(
+      minWidthPx / fullTimelineWidth
+    );
 
     if (percent < minWidthPercent) {
       percent = minWidthPercent;
@@ -270,7 +280,9 @@ class MediaClipSelector extends window.HTMLElement {
       this.initialX = this.getXPositionFromMouse(evt);
       this.leftTrim.style.width = `${percent * 100}%`;
 
-      const selectionPercent = lockBetweenZeroAndOne((selectionW - xDelta) / fullTimelineWidth);
+      const selectionPercent = lockBetweenZeroAndOne(
+        (selectionW - xDelta) / fullTimelineWidth
+      );
       this.setSelectionWidth(selectionPercent, fullTimelineWidth);
     }
     /*
@@ -279,7 +291,9 @@ class MediaClipSelector extends window.HTMLElement {
      */
     if (this.draggingEl === this.endHandle) {
       this.initialX = this.getXPositionFromMouse(evt);
-      const selectionPercent = lockBetweenZeroAndOne((selectionW + xDelta) / fullTimelineWidth);
+      const selectionPercent = lockBetweenZeroAndOne(
+        (selectionW + xDelta) / fullTimelineWidth
+      );
       this.setSelectionWidth(selectionPercent, fullTimelineWidth);
     }
     this.dispatchUpdate();
@@ -297,8 +311,12 @@ class MediaClipSelector extends window.HTMLElement {
     const leftTrimRect = this.leftTrim.getBoundingClientRect();
     const selectionRect = this.selection.getBoundingClientRect();
 
-    const percentStart = lockBetweenZeroAndOne(leftTrimRect.width / rangeRect.width);
-    const percentEnd = lockBetweenZeroAndOne((leftTrimRect.width + selectionRect.width) / rangeRect.width);
+    const percentStart = lockBetweenZeroAndOne(
+      leftTrimRect.width / rangeRect.width
+    );
+    const percentEnd = lockBetweenZeroAndOne(
+      (leftTrimRect.width + selectionRect.width) / rangeRect.width
+    );
 
     /*
      * Currently we round to the nearest integer? Might want to change later to round to 1 or 2 decimails?
@@ -311,7 +329,7 @@ class MediaClipSelector extends window.HTMLElement {
 
   isTimestampInBounds(timestamp) {
     const { startTime, endTime } = this.getCurrentClipBounds();
-    return (startTime <= timestamp && endTime >= timestamp);
+    return startTime <= timestamp && endTime >= timestamp;
   }
 
   handleClick(evt) {
@@ -324,18 +342,21 @@ class MediaClipSelector extends window.HTMLElement {
      */
     if (this.isTimestampInBounds(timestampForClick)) {
       this.dispatchEvent(
-        new window.CustomEvent(
-          MediaUIEvents.MEDIA_SEEK_REQUEST,
-          { composed: true, bubbles: true, detail: timestampForClick }
-        )
+        new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+          composed: true,
+          bubbles: true,
+          detail: timestampForClick,
+        })
       );
     }
   }
 
   mediaCurrentTimeSet(time) {
-    const percentComplete = lockBetweenZeroAndOne(this.mediaCurrentTime / this.mediaDuration);
+    const percentComplete = lockBetweenZeroAndOne(
+      this.mediaCurrentTime / this.mediaDuration
+    );
     const fullW = this.wrapper.getBoundingClientRect().width;
-    const progressW = (percentComplete * fullW);
+    const progressW = percentComplete * fullW;
 
     this.playhead.style.left = `${percentComplete * 100}%`;
     this.playhead.style.display = 'block';
@@ -347,12 +368,16 @@ class MediaClipSelector extends window.HTMLElement {
     if (!this.mediaPaused) {
       const { startTime, endTime } = this.getCurrentClipBounds();
 
-      if (this.mediaCurrentTime < startTime || this.mediaCurrentTime > endTime) {
+      if (
+        this.mediaCurrentTime < startTime ||
+        this.mediaCurrentTime > endTime
+      ) {
         this.dispatchEvent(
-          new window.CustomEvent(
-            MediaUIEvents.MEDIA_SEEK_REQUEST,
-            { composed: true, bubbles: true, detail: startTime }
-          )
+          new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+            composed: true,
+            bubbles: true,
+            detail: startTime,
+          })
         );
       }
     }
@@ -368,7 +393,6 @@ class MediaClipSelector extends window.HTMLElement {
     this.wrapper.removeEventListener('mousedown', this._dragStart);
     window.removeEventListener('mouseup', this._dragEnd);
     window.removeEventListener('mousemove', this._drag);
-
   }
 
   /*
@@ -376,8 +400,12 @@ class MediaClipSelector extends window.HTMLElement {
    * this code shared between the two components
    */
   enableThumbnails() {
-    this.thumbnailPreview = this.shadowRoot.querySelector('media-thumbnail-preview');
-    const thumbnailContainer = this.shadowRoot.querySelector('#thumbnailContainer');
+    this.thumbnailPreview = this.shadowRoot.querySelector(
+      'media-thumbnail-preview'
+    );
+    const thumbnailContainer = this.shadowRoot.querySelector(
+      '#thumbnailContainer'
+    );
     thumbnailContainer.classList.add('enabled');
 
     let mouseMoveHandler;
@@ -394,14 +422,15 @@ class MediaClipSelector extends window.HTMLElement {
 
         // Get thumbnail center position
         const leftPadding = rangeRect.left - this.getBoundingClientRect().left;
-        const thumbnailLeft = leftPadding + (mousePercent * rangeRect.width);
+        const thumbnailLeft = leftPadding + mousePercent * rangeRect.width;
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
         this.dispatchEvent(
-          new window.CustomEvent(
-            MediaUIEvents.MEDIA_PREVIEW_REQUEST,
-            { composed: true, bubbles: true, detail: mousePercent * duration }
-          )
+          new window.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
+            composed: true,
+            bubbles: true,
+            detail: mousePercent * duration,
+          })
         );
       };
       window.addEventListener('mousemove', mouseMoveHandler, false);
@@ -426,7 +455,7 @@ class MediaClipSelector extends window.HTMLElement {
             rangeEntered = false;
             stopTrackingMouse();
           }
-        }
+        };
         window.addEventListener('mousemove', offRangeHandler, false);
       }
 

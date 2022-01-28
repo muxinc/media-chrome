@@ -1,11 +1,13 @@
-
 class MediaTheme extends HTMLElement {
-  constructor(template=``, options={}) {
+  constructor(template = ``, options = {}) {
     super();
 
-    options = Object.assign({
-      // Default options
-    }, options);
+    options = Object.assign(
+      {
+        // Default options
+      },
+      options
+    );
 
     // Expose the template publicaly for other uses
     this.template = template;

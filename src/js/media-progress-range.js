@@ -9,7 +9,9 @@ class MediaProgressRange extends MediaTimeRange {
   constructor() {
     super();
 
-    console.warn('MediaChrome: <media-progress-range> is deprecated. Use <media-time-range> instead.');
+    console.warn(
+      'MediaChrome: <media-progress-range> is deprecated. Use <media-time-range> instead.'
+    );
   }
 }
 

@@ -1,6 +1,9 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
@@ -23,12 +26,11 @@ const updateAriaLabel = (el) => {
 };
 
 class MediaSeekForwardButton extends MediaChromeButton {
-  
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME];
   }
 
-  constructor(options={}) {
+  constructor(options = {}) {
     super({ slotTemplate, ...options });
   }
 
@@ -39,10 +41,19 @@ class MediaSeekForwardButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const currentTimeStr = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
-    const currentTime = (currentTimeStr && !Number.isNaN(+currentTimeStr)) ? +currentTimeStr : DEFAULT_TIME;
+    const currentTimeStr = this.getAttribute(
+      MediaUIAttributes.MEDIA_CURRENT_TIME
+    );
+    const currentTime =
+      currentTimeStr && !Number.isNaN(+currentTimeStr)
+        ? +currentTimeStr
+        : DEFAULT_TIME;
     const detail = currentTime + DEFAULT_SEEK_OFFSET;
-    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, { composed: true, bubbles: true, detail });
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+      composed: true,
+      bubbles: true,
+      detail,
+    });
     this.dispatchEvent(evt);
   }
 }

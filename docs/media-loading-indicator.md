@@ -7,14 +7,14 @@ Shows a loading indicator when the media is buffering.
 
 # Attributes
 
-| Name            | Type     | Default Value | Description                                                                                 |
-| --------------- | -------- | ------------- | ------------------------------------------------------------------------------------------- |
+| Name            | Type     | Default Value | Description                                                                                   |
+| --------------- | -------- | ------------- | --------------------------------------------------------------------------------------------- |
 | `loading-delay` | `number` | `500`         | The amount of time in ms the media has to be buffering before the loading indicator is shown. |
 
 # Slots
 
-| Name      | Default Type | Description                                                 |
-| --------- | ------------ | ----------------------------------------------------------- |
+| Name      | Default Type | Description                                                   |
+| --------- | ------------ | ------------------------------------------------------------- |
 | `loading` | `svg`        | The element shown for when the media is in a buffering state. |
 
 ### Example

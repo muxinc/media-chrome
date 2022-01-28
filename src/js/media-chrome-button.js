@@ -1,6 +1,9 @@
 import { MediaUIAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -65,19 +68,18 @@ template.innerHTML = `
 const ButtonPressedKeys = ['Enter', ' '];
 
 class MediaChromeButton extends window.HTMLElement {
-  
   static get observedAttributes() {
     return [MediaUIAttributes.MEDIA_CONTROLLER];
   }
 
-  constructor(options={}) {
+  constructor(options = {}) {
     super();
 
     const shadow = this.attachShadow({ mode: 'open' });
 
     const buttonHTML = template.content.cloneNode(true);
     this.nativeEl = buttonHTML;
-    
+
     // Slots
     let slotTemplate = options.slotTemplate;
 
@@ -90,13 +92,13 @@ class MediaChromeButton extends window.HTMLElement {
 
     shadow.appendChild(buttonHTML);
 
-    this.addEventListener('click', e => {
+    this.addEventListener('click', (e) => {
       this.handleClick(e);
     });
 
     // NOTE: There are definitely some "false positive" cases with multi-key pressing,
     // but this should be good enough for most use cases.
-    const keyUpHandler = e => {
+    const keyUpHandler = (e) => {
       const { key } = e;
       if (!ButtonPressedKeys.includes(key)) {
         this.removeEventListener('keyup', keyUpHandler);
@@ -106,7 +108,7 @@ class MediaChromeButton extends window.HTMLElement {
       this.handleClick(e);
     };
 
-    this.addEventListener('keydown', e => {
+    this.addEventListener('keydown', (e) => {
       const { metaKey, altKey, key } = e;
       if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
         this.removeEventListener('keyup', keyUpHandler);
@@ -130,10 +132,12 @@ class MediaChromeButton extends window.HTMLElement {
   }
 
   connectedCallback() {
-    this.setAttribute('role', "button");
+    this.setAttribute('role', 'button');
     this.setAttribute('tabindex', 0);
 
-    const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    const mediaControllerId = this.getAttribute(
+      MediaUIAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.associateElement?.(this);
@@ -141,7 +145,9 @@ class MediaChromeButton extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    const mediaControllerSelector = this.getAttribute(
+      MediaUIAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerSelector) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);

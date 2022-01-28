@@ -4,7 +4,10 @@
   Uses the "thumbnails" track of a video element to show an image relative to
   the video time given in the `time` attribute.
 */
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { MediaUIAttributes } from './constants.js';
 
@@ -31,7 +34,12 @@ template.innerHTML = `
 
 class MediaThumbnailPreviewElement extends window.HTMLElement {
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CONTROLLER, 'time', MediaUIAttributes.MEDIA_PREVIEW_IMAGE, MediaUIAttributes.MEDIA_PREVIEW_COORDS];
+    return [
+      MediaUIAttributes.MEDIA_CONTROLLER,
+      'time',
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
+      MediaUIAttributes.MEDIA_PREVIEW_COORDS,
+    ];
   }
 
   constructor() {
@@ -42,7 +50,9 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
   }
 
   connectedCallback() {
-    const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    const mediaControllerId = this.getAttribute(
+      MediaUIAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.associateElement?.(this);
@@ -50,7 +60,9 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    const mediaControllerSelector = this.getAttribute(
+      MediaUIAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerSelector) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
@@ -58,7 +70,13 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (['time', MediaUIAttributes.MEDIA_PREVIEW_IMAGE, MediaUIAttributes.MEDIA_PREVIEW_COORDS].includes(attrName)) {
+    if (
+      [
+        'time',
+        MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
+        MediaUIAttributes.MEDIA_PREVIEW_COORDS,
+      ].includes(attrName)
+    ) {
       this.update();
     }
     if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
@@ -74,15 +92,21 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
   }
 
   update() {
-    const mediaPreviewCoordsStr = this.getAttribute(MediaUIAttributes.MEDIA_PREVIEW_COORDS);
-    const mediaPreviewImage = this.getAttribute(MediaUIAttributes.MEDIA_PREVIEW_IMAGE);
+    const mediaPreviewCoordsStr = this.getAttribute(
+      MediaUIAttributes.MEDIA_PREVIEW_COORDS
+    );
+    const mediaPreviewImage = this.getAttribute(
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    );
     if (!(mediaPreviewCoordsStr && mediaPreviewImage)) return;
     // const { offsetWidth } = this;
     const offsetWidth = this.offsetWidth;
     const img = this.shadowRoot.querySelector('img');
-    const [x,y,w,_h] = mediaPreviewCoordsStr.split(/\s+/).map(coord => +coord);
+    const [x, y, w, _h] = mediaPreviewCoordsStr
+      .split(/\s+/)
+      .map((coord) => +coord);
     const src = mediaPreviewImage;
-    const scale = (offsetWidth / w) || 1;
+    const scale = offsetWidth / w || 1;
 
     const resize = () => {
       img.style.width = `${scale * img.naturalWidth}px`;

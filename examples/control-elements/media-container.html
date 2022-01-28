@@ -1,53 +1,59 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta name="viewport" content="width=device-width">
-  <script type="module" src="../../dist/index.js"></script>
-</head>
-<body>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <script type="module" src="../../dist/index.js"></script>
+  </head>
+  <body>
+    <h3>Media Container</h3>
+    <p>
+      The media-container element is the parent class of media-controller and
+      handles identifying the child media element via the slot="media"
+      attribute, and also handles hiding and showing of controls. Controls will
+      not work inside the media-container without extra code. Use
+      media-controller if you want the controls to work automatically.
+    </p>
 
-<h3>Media Container</h3>
-<p>
-  The media-container element is the parent class of media-controller and handles identifying the child media element via
-  the slot="media" attribute, and also handles hiding and showing of controls.
-  Controls will not work inside the media-container without extra code.
-  Use media-controller if you want the controls to work automatically.
-</p>
+    <p>
+      Use the autohide="[seconds]" to change how quickly control elements will
+      hide. Set to -1 to stop hiding.
+    </p>
 
-<p>
-  Use the autohide="[seconds]" to change how quickly control elements will hide.
-  Set to -1 to stop hiding.
-</p>
+    <media-container-temp autohide="2" media-paused>
+      <video
+        slot="media"
+        src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+        preload="none"
+        muted
+        crossorigin
+        id="vid"
+      ></video>
+      <media-play-button media-paused></media-play-button>
+    </media-container-temp>
 
-<media-container-temp autohide="2" media-paused>
-  <video
-    slot="media"
-    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-    preload="none"
-    muted
-    crossorigin
-    id="vid"
-  >
-  </video>
-  <media-play-button media-paused></media-play-button>
-</media-container-temp>
+    <script>
+      const container = document.querySelector('media-container');
+      const playButton = document.querySelector('media-play-button');
+      const vid = document.querySelector('video');
 
-<script>
-  const container = document.querySelector('media-container');
-  const playButton = document.querySelector('media-play-button');
-  const vid = document.querySelector('video');
+      // Wire up the container to know media state
+      // media-controller does this as a subclass
+      vid.addEventListener('play', (e) =>
+        container.removeAttribute('media-paused')
+      );
+      vid.addEventListener('pause', (e) =>
+        container.setAttribute('media-paused', 'media-paused')
+      );
 
-  // Wire up the container to know media state
-  // media-controller does this as a subclass
-  vid.addEventListener('play', e => container.removeAttribute('media-paused'));
-  vid.addEventListener('pause', e => container.setAttribute('media-paused', 'media-paused'));
-
-  // Wire up the play button
-  playButton.addEventListener('mediaplayrequest', e => vid.play());
-  playButton.addEventListener('mediapauserequest', e => vid.pause());
-  vid.addEventListener('play', e => playButton.removeAttribute('media-paused'));
-  vid.addEventListener('pause', e => playButton.setAttribute('media-paused', 'media-paused'));
-</script>
-
-</body>
+      // Wire up the play button
+      playButton.addEventListener('mediaplayrequest', (e) => vid.play());
+      playButton.addEventListener('mediapauserequest', (e) => vid.pause());
+      vid.addEventListener('play', (e) =>
+        playButton.removeAttribute('media-paused')
+      );
+      vid.addEventListener('pause', (e) =>
+        playButton.setAttribute('media-paused', 'media-paused')
+      );
+    </script>
+  </body>
 </html>

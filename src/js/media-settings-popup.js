@@ -1,7 +1,10 @@
 // Work in progress
 
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document, Window as window } from './utils/server-safe-globals.js';
+import {
+  Document as document,
+  Window as window,
+} from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 

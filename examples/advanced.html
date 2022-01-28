@@ -1,53 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta name="viewport" content="width=device-width">
-  <title>Media Chrome Advanced Video Usage Example</title>
-  <script type="module" src="../dist/index.js"></script>
-  <style>
-    .examples {
-      margin-top: 20px;
-    }
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Advanced Video Usage Example</title>
+    <script type="module" src="../dist/index.js"></script>
+    <style>
+      .examples {
+        margin-top: 20px;
+      }
 
-    media-loading-indicator {
-      --media-loading-icon-width: 100px;
-    }
-  </style>
-</head>
-<body>
-  <main>
-    <h1>Media Chrome Advanced Video Usage Example</h1>
-    <media-controller>
-      <video
-        slot="media"
-        src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-        preload="none"
-        muted
-        crossorigin
-      >
-        <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"></track>
-        <track label="English" kind="captions" srclang="en" src="./vtt/en-cc.vtt"></track>
-      </video>
-      <div slot="centered-chrome" no-auto-hide>
-        <media-loading-indicator media-loading></media-loading-indicator>
+      media-loading-indicator {
+        --media-loading-icon-width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome Advanced Video Usage Example</h1>
+      <media-controller>
+        <video
+          slot="media"
+          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+          preload="none"
+          muted
+          crossorigin
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+          />
+          <track
+            label="English"
+            kind="captions"
+            srclang="en"
+            src="./vtt/en-cc.vtt"
+          />
+        </video>
+        <div slot="centered-chrome" no-auto-hide>
+          <media-loading-indicator media-loading></media-loading-indicator>
+        </div>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-seek-backward-button></media-seek-backward-button>
+          <media-seek-forward-button></media-seek-forward-button>
+          <media-mute-button></media-mute-button>
+          <media-volume-range></media-volume-range>
+          <media-time-range></media-time-range>
+          <media-time-display show-duration remaining></media-time-display>
+          <media-captions-button></media-captions-button>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-pip-button></media-pip-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+      <div class="examples">
+        <a href="./">View more examples</a>
       </div>
-      <media-control-bar>
-        <media-play-button></media-play-button>
-        <media-seek-backward-button></media-seek-backward-button>
-        <media-seek-forward-button></media-seek-forward-button>
-        <media-mute-button></media-mute-button>
-        <media-volume-range></media-volume-range>
-        <media-time-range></media-time-range>
-        <media-time-display show-duration remaining></media-time-display>
-        <media-captions-button></media-captions-button>
-        <media-playback-rate-button></media-playback-rate-button>
-        <media-pip-button></media-pip-button>
-        <media-fullscreen-button></media-fullscreen-button>
-      </media-control-bar>
-    </media-controller>
-    <div class="examples">
-      <a href="./">View more examples</a>
-    </div>
-  </main>
-</body>
+    </main>
+  </body>
 </html>

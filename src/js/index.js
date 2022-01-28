@@ -28,7 +28,7 @@ import { Window as window } from './utils/server-safe-globals.js';
 
 // Alias <media-controller> as <media-chrome>
 // Might move MediaChrome to include default controls
-class MediaChrome extends MediaController { };
+class MediaChrome extends MediaController {}
 if (!window.customElements.get('media-chrome')) {
   window.customElements.define('media-chrome', MediaChrome);
 }
@@ -39,9 +39,11 @@ if (!window.customElements.get('media-chrome')) {
 class MediaContainer extends MediaController {
   constructor() {
     super();
-    console.warn('MediaChrome: <media-container> is deprecated. Use <media-controller>.');
+    console.warn(
+      'MediaChrome: <media-container> is deprecated. Use <media-controller>.'
+    );
   }
-};
+}
 if (!window.customElements.get('media-container')) {
   window.customElements.define('media-container', MediaContainer);
 }
@@ -71,4 +73,4 @@ export {
   MediaTitleElement,
   MediaLoadingIndicator,
   MediaVolumeRange,
-}
+};

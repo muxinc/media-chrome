@@ -9,12 +9,24 @@
 */
 import MediaContainer from './media-container.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 
-import { MediaUIEvents, MediaUIAttributes, TextTrackKinds, TextTrackModes } from './constants.js';
-import { stringifyTextTrackList, getTextTracksList, updateTracksModeTo } from './utils/captions.js';
+import {
+  MediaUIEvents,
+  MediaUIAttributes,
+  TextTrackKinds,
+  TextTrackModes,
+} from './constants.js';
+import {
+  stringifyTextTrackList,
+  getTextTracksList,
+  updateTracksModeTo,
+} from './utils/captions.js';
 const {
   MEDIA_PLAY_REQUEST,
   MEDIA_PAUSE_REQUEST,
@@ -44,7 +56,7 @@ class MediaController extends MediaContainer {
     const mediaUIEventHandlers = {
       MEDIA_PLAY_REQUEST: () => this.media.play(),
       MEDIA_PAUSE_REQUEST: () => this.media.pause(),
-      MEDIA_MUTE_REQUEST: () => this.media.muted = true,
+      MEDIA_MUTE_REQUEST: () => (this.media.muted = true),
       MEDIA_UNMUTE_REQUEST: () => {
         const media = this.media;
 
@@ -72,7 +84,7 @@ class MediaController extends MediaContainer {
             'media-chrome-pref-volume',
             volume.toString()
           );
-        } catch (err) { }
+        } catch (err) {}
       },
 
       // This current assumes that the media controller is the fullscreen element
@@ -144,13 +156,18 @@ class MediaController extends MediaContainer {
         // No media (yet), so bail early
         if (!media) return;
 
-        
-        const [track] = getTextTracksList(media, { kind: TextTrackKinds.METADATA, label: 'thumbnails' });
+        const [track] = getTextTracksList(media, {
+          kind: TextTrackKinds.METADATA,
+          label: 'thumbnails',
+        });
         // No thumbnails track (yet) or no cues available in thumbnails track, so bail early.
         if (!(track && track.cues)) return;
-        
+
         const time = e.detail;
-        const cue = Array.prototype.find.call(track.cues, c => c.startTime >= time);
+        const cue = Array.prototype.find.call(
+          track.cues,
+          (c) => c.startTime >= time
+        );
 
         // No corresponding cue, so bail early
         if (!cue) return;
@@ -159,8 +176,14 @@ class MediaController extends MediaContainer {
         // probably pulled out into its own module/set of functions (CJP)
         const url = new URL(cue.text);
         const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-        this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, url.href);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, previewCoordsStr.split(',').join(' '));
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
+          url.href
+        );
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_PREVIEW_COORDS,
+          previewCoordsStr.split(',').join(' ')
+        );
       },
       MEDIA_SHOW_CAPTIONS_REQUEST: (e) => {
         const tracks = this.captionTracks;
@@ -188,12 +211,19 @@ class MediaController extends MediaContainer {
       MEDIA_AIRPLAY_REQUEST: (_e) => {
         const { media } = this;
         if (!media) return;
-        if (!(media.webkitShowPlaybackTargetPicker && window.WebKitPlaybackTargetAvailabilityEvent)) {
-          console.warn('received a request to select AirPlay but AirPlay is not supported in this environment');
+        if (
+          !(
+            media.webkitShowPlaybackTargetPicker &&
+            window.WebKitPlaybackTargetAvailabilityEvent
+          )
+        ) {
+          console.warn(
+            'received a request to select AirPlay but AirPlay is not supported in this environment'
+          );
           return;
         }
         media.webkitShowPlaybackTargetPicker();
-      }
+      },
     };
 
     // Apply ui event listeners
@@ -217,9 +247,12 @@ class MediaController extends MediaContainer {
     // Pass media state to child and associated control elements
     this._mediaStatePropagators = {
       'play,pause': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, this.media.paused);
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_PAUSED,
+          this.media.paused
+        );
       },
-      'volumechange': () => {
+      volumechange: () => {
         const { muted, volume } = this.media;
 
         let level = 'high';
@@ -238,7 +271,10 @@ class MediaController extends MediaContainer {
       [fullscreenApi.event]: () => {
         // Might be in the shadow dom
         const fullscreenEl = this.getRootNode()[fullscreenApi.element];
-        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_FULLSCREEN, fullscreenEl === this);
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_IS_FULLSCREEN,
+          fullscreenEl === this
+        );
       },
       'enterpictureinpicture,leavepictureinpicture': (e) => {
         let isPip;
@@ -248,40 +284,67 @@ class MediaController extends MediaContainer {
         if (e) {
           isPip = e.type == 'enterpictureinpicture';
         } else {
-          isPip = this.media == this.getRootNode().pictureInPictureElement
+          isPip = this.media == this.getRootNode().pictureInPictureElement;
         }
         this.propagateMediaState(MediaUIAttributes.MEDIA_IS_PIP, isPip);
       },
       'timeupdate,loadedmetadata': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CURRENT_TIME, this.media.currentTime);
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_CURRENT_TIME,
+          this.media.currentTime
+        );
       },
       'durationchange,loadedmetadata': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_DURATION, this.media.duration);
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_DURATION,
+          this.media.duration
+        );
       },
-      'ratechange': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_PLAYBACK_RATE, this.media.playbackRate);
+      ratechange: () => {
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_PLAYBACK_RATE,
+          this.media.playbackRate
+        );
       },
       'waiting,playing': () => {
         const isLoading = this.media?.readyState < 3;
         this.propagateMediaState(MediaUIAttributes.MEDIA_LOADING, isLoading);
-      }
+      },
     };
 
-    /** 
-     * @TODO This and _mediaStatePropagators should be refactored to be less presumptuous about what is being 
-     * monitored (and also probably how it's being monitored) (CJP) 
+    /**
+     * @TODO This and _mediaStatePropagators should be refactored to be less presumptuous about what is being
+     * monitored (and also probably how it's being monitored) (CJP)
      */
     this._textTrackMediaStatePropagators = {
       'addtrack,removetrack': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_LIST, stringifyTextTrackList(this.captionTracks) || undefined);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_LIST, stringifyTextTrackList(this.subtitleTracks) || undefined);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, stringifyTextTrackList(this.showingCaptionTracks) || undefined);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, stringifyTextTrackList(this.showingSubtitleTracks) || undefined);
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_CAPTIONS_LIST,
+          stringifyTextTrackList(this.captionTracks) || undefined
+        );
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_SUBTITLES_LIST,
+          stringifyTextTrackList(this.subtitleTracks) || undefined
+        );
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
+          stringifyTextTrackList(this.showingCaptionTracks) || undefined
+        );
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
+          stringifyTextTrackList(this.showingSubtitleTracks) || undefined
+        );
       },
-      'change': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, stringifyTextTrackList(this.showingCaptionTracks) || undefined);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, stringifyTextTrackList(this.showingSubtitleTracks) || undefined);
-      }
+      change: () => {
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
+          stringifyTextTrackList(this.showingCaptionTracks) || undefined
+        );
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
+          stringifyTextTrackList(this.showingSubtitleTracks) || undefined
+        );
+      },
     };
   }
 
@@ -294,22 +357,25 @@ class MediaController extends MediaContainer {
 
       events.forEach((event) => {
         // If this is fullscreen apply to the document
-        const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
+        const target =
+          event == fullscreenApi.event ? this.getRootNode() : media;
 
         target.addEventListener(event, handler);
       });
       handler();
     });
 
-    Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
-      const events = eventsStr.split(',');
-      events.forEach((event) => {
-        if (media.textTracks) {
-          media.textTracks.addEventListener(event, handler);
-        }
-      });
-      handler();
-    });
+    Object.entries(this._textTrackMediaStatePropagators).forEach(
+      ([eventsStr, handler]) => {
+        const events = eventsStr.split(',');
+        events.forEach((event) => {
+          if (media.textTracks) {
+            media.textTracks.addEventListener(event, handler);
+          }
+        });
+        handler();
+      }
+    );
 
     // Update the media with the last set volume preference
     // This would preferably live with the media element,
@@ -331,20 +397,23 @@ class MediaController extends MediaContainer {
       const handler = this._mediaStatePropagators[key];
 
       events.forEach((event) => {
-        const target = (event == fullscreenApi.event) ? this.getRootNode() : media;
+        const target =
+          event == fullscreenApi.event ? this.getRootNode() : media;
         target.removeEventListener(event, handler);
       });
     });
 
-    Object.entries(this._textTrackMediaStatePropagators).forEach(([eventsStr, handler]) => {
-      const events = eventsStr.split(',');
-      events.forEach((event) => {
-        if (media.textTracks) {
-          media.textTracks.removeEventListener(event, handler);
-        }
-      });
-      handler();
-    });
+    Object.entries(this._textTrackMediaStatePropagators).forEach(
+      ([eventsStr, handler]) => {
+        const events = eventsStr.split(',');
+        events.forEach((event) => {
+          if (media.textTracks) {
+            media.textTracks.removeEventListener(event, handler);
+          }
+        });
+        handler();
+      }
+    );
 
     // Reset to paused state
     this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, true);
@@ -359,21 +428,26 @@ class MediaController extends MediaContainer {
     const { associatedElementSubscriptions } = this;
     if (associatedElementSubscriptions.has(element)) return;
 
-    const registerMediaStateReceiver = this.registerMediaStateReceiver.bind(this);
-    const unregisterMediaStateReceiver = this.unregisterMediaStateReceiver.bind(this);
+    const registerMediaStateReceiver =
+      this.registerMediaStateReceiver.bind(this);
+    const unregisterMediaStateReceiver =
+      this.unregisterMediaStateReceiver.bind(this);
 
     /** @TODO Should we support "removing association" */
     const unsubscribe = monitorForMediaStateReceivers(
-      element, 
-      registerMediaStateReceiver, 
-      unregisterMediaStateReceiver,
+      element,
+      registerMediaStateReceiver,
+      unregisterMediaStateReceiver
     );
 
     // Add all media request event listeners to the Associated Element. This allows any DOM element that
     // is a descendant of any Associated Element (including the <media-controller/> itself) to make requests
     // for media state changes rather than constraining that exclusively to a Media State Receivers.
     Object.keys(MediaUIEvents).forEach((key) => {
-      element.addEventListener(MediaUIEvents[key], this[`_handle${constToCamel(key, true)}`]);
+      element.addEventListener(
+        MediaUIEvents[key],
+        this[`_handle${constToCamel(key, true)}`]
+      );
     });
 
     associatedElementSubscriptions.set(element, unsubscribe);
@@ -389,7 +463,10 @@ class MediaController extends MediaContainer {
 
     // Remove all media UI event listeners
     Object.keys(MediaUIEvents).forEach((key) => {
-      element.removeEventListener(MediaUIEvents[key], this[`_handle${constToCamel(key, true)}`]);
+      element.removeEventListener(
+        MediaUIEvents[key],
+        this[`_handle${constToCamel(key, true)}`]
+      );
     });
   }
 
@@ -403,20 +480,60 @@ class MediaController extends MediaContainer {
 
     // TODO: Update to propagate all states when registered
     if (this.media) {
-      propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_LIST, stringifyTextTrackList(this.captionTracks) || undefined);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_SUBTITLES_LIST, stringifyTextTrackList(this.subtitleTracks) || undefined);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_CAPTIONS_SHOWING, stringifyTextTrackList(this.showingCaptionTracks) || undefined);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, stringifyTextTrackList(this.showingSubtitleTracks) || undefined);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_PAUSED, this.media.paused);
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_CAPTIONS_LIST,
+        stringifyTextTrackList(this.captionTracks) || undefined
+      );
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_SUBTITLES_LIST,
+        stringifyTextTrackList(this.subtitleTracks) || undefined
+      );
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
+        stringifyTextTrackList(this.showingCaptionTracks) || undefined
+      );
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
+        stringifyTextTrackList(this.showingSubtitleTracks) || undefined
+      );
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_PAUSED,
+        this.media.paused
+      );
       // propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_MUTED, this.media.muted);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME, this.media.volume);
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_MUTED,
+        this.media.muted
+      );
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_VOLUME,
+        this.media.volume
+      );
       // const fullscreenEl = this.getRootNode()[fullscreenApi.element];
       // propagateMediaState([el], MediaUIAttributes.MEDIA_IS_FULLSCREEN, fullscreenEl === this);
       // propagateMediaState([el], MediaUIAttributes.MEDIA_IS_PIP, isPip);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_CURRENT_TIME, this.media.currentTime);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_DURATION, this.media.duration);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_PLAYBACK_RATE, this.media.playbackRate);
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_CURRENT_TIME,
+        this.media.currentTime
+      );
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_DURATION,
+        this.media.duration
+      );
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_PLAYBACK_RATE,
+        this.media.playbackRate
+      );
     }
   }
 
@@ -425,7 +542,7 @@ class MediaController extends MediaContainer {
 
     const index = els.indexOf(el);
     if (index < 0) return;
-    
+
     els.splice(index, 1);
   }
 
@@ -433,7 +550,7 @@ class MediaController extends MediaContainer {
   // so that everything happens through the events.
   // Not sure how far we should take this API
   play() {
-  this.dispatchEvent(new window.CustomEvent(MEDIA_PLAY_REQUEST));
+    this.dispatchEvent(new window.CustomEvent(MEDIA_PLAY_REQUEST));
   }
 
   pause() {
@@ -445,7 +562,7 @@ class MediaController extends MediaContainer {
   }
 
   set muted(mute) {
-    const eventName = (mute) ? MEDIA_MUTE_REQUEST : MEDIA_UNMUTE_REQUEST;
+    const eventName = mute ? MEDIA_MUTE_REQUEST : MEDIA_UNMUTE_REQUEST;
     this.dispatchEvent(new window.CustomEvent(eventName));
   }
 
@@ -456,7 +573,9 @@ class MediaController extends MediaContainer {
   }
 
   set volume(volume) {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_VOLUME_REQUEST, { detail: volume }));
+    this.dispatchEvent(
+      new window.CustomEvent(MEDIA_VOLUME_REQUEST, { detail: volume })
+    );
   }
 
   requestFullscreen() {
@@ -474,7 +593,9 @@ class MediaController extends MediaContainer {
   }
 
   set currentTime(time) {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_SEEK_REQUEST, { detail: time }));
+    this.dispatchEvent(
+      new window.CustomEvent(MEDIA_SEEK_REQUEST, { detail: time })
+    );
   }
 
   get playbackRate() {
@@ -484,7 +605,9 @@ class MediaController extends MediaContainer {
   }
 
   set playbackRate(rate) {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_PLAYBACK_RATE_REQUEST, { detail: rate }));
+    this.dispatchEvent(
+      new window.CustomEvent(MEDIA_PLAYBACK_RATE_REQUEST, { detail: rate })
+    );
   }
 
   get subtitleTracks() {
@@ -496,11 +619,17 @@ class MediaController extends MediaContainer {
   }
 
   get showingSubtitleTracks() {
-    return getTextTracksList(this.media, { kind: TextTrackKinds.SUBTITLES, mode: TextTrackModes.SHOWING });
+    return getTextTracksList(this.media, {
+      kind: TextTrackKinds.SUBTITLES,
+      mode: TextTrackModes.SHOWING,
+    });
   }
 
   get showingCaptionTracks() {
-    return getTextTracksList(this.media, { kind: TextTrackKinds.CAPTIONS, mode: TextTrackModes.SHOWING });
+    return getTextTracksList(this.media, {
+      kind: TextTrackKinds.CAPTIONS,
+      mode: TextTrackModes.SHOWING,
+    });
   }
 
   requestPictureInPicture() {
@@ -512,20 +641,30 @@ class MediaController extends MediaContainer {
   }
 
   requestPreview(time) {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_PREVIEW_REQUEST, { detail: time }));
+    this.dispatchEvent(
+      new window.CustomEvent(MEDIA_PREVIEW_REQUEST, { detail: time })
+    );
   }
 }
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 const getMediaUIAttributesFrom = (child) => {
-  const { constructor: { observedAttributes } } = child;
-  const mediaChromeAttributesList = child?.getAttribute?.(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES)?.split?.(/\s+/);
-  if (!Array.isArray(observedAttributes || mediaChromeAttributesList)) return [];
-  return (observedAttributes || mediaChromeAttributesList).filter(attrName => MEDIA_UI_ATTRIBUTE_NAMES.includes(attrName));
+  const {
+    constructor: { observedAttributes },
+  } = child;
+  const mediaChromeAttributesList = child
+    ?.getAttribute?.(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES)
+    ?.split?.(/\s+/);
+  if (!Array.isArray(observedAttributes || mediaChromeAttributesList))
+    return [];
+  return (observedAttributes || mediaChromeAttributesList).filter((attrName) =>
+    MEDIA_UI_ATTRIBUTE_NAMES.includes(attrName)
+  );
 };
 
-const isMediaStateReceiver = (child) => !!getMediaUIAttributesFrom(child).length;
+const isMediaStateReceiver = (child) =>
+  !!getMediaUIAttributesFrom(child).length;
 
 const setAttr = (child, attrName, attrValue) => {
   if (attrValue == undefined) {
@@ -544,22 +683,28 @@ const setAttr = (child, attrName, attrValue) => {
 const isMediaSlotElementDescendant = (el) => !!el.closest?.('*[slot="media"]');
 
 /**
- * 
- * @description This function will recursively check for any descendants (including the rootNode) 
+ *
+ * @description This function will recursively check for any descendants (including the rootNode)
  * that are Media State Receivers and invoke `mediaStateReceiverCallback` with any Media State Receiver
  * found
- * 
- * @param {HTMLElement} rootNode 
- * @param {function} mediaStateReceiverCallback 
+ *
+ * @param {HTMLElement} rootNode
+ * @param {function} mediaStateReceiverCallback
  */
-const traverseForMediaStateReceivers = (rootNode, mediaStateReceiverCallback) => {
+const traverseForMediaStateReceivers = (
+  rootNode,
+  mediaStateReceiverCallback
+) => {
   // We (currently) don't check if descendants of the `media` (e.g. <video/>) are Media State Receivers
   // See also: `propagateMediaState`
   if (isMediaSlotElementDescendant(rootNode)) {
     return;
   }
 
-  const traverseForMediaStateReceiversSync = (rootNode, mediaStateReceiverCallback) => {
+  const traverseForMediaStateReceiversSync = (
+    rootNode,
+    mediaStateReceiverCallback
+  ) => {
     // The rootNode is itself a Media State Receiver
     if (isMediaStateReceiver(rootNode)) {
       mediaStateReceiverCallback(rootNode);
@@ -570,7 +715,9 @@ const traverseForMediaStateReceivers = (rootNode, mediaStateReceiverCallback) =>
     const allChildren = [...children, ...shadowChildren];
 
     // Traverse all children (including shadowRoot children) to see if they are/have Media State Receivers
-    allChildren.forEach(child => traverseForMediaStateReceivers(child, mediaStateReceiverCallback));
+    allChildren.forEach((child) =>
+      traverseForMediaStateReceivers(child, mediaStateReceiverCallback)
+    );
   };
 
   // Custom Elements (and *only* Custom Elements) must have a hyphen ("-") in their name. So, if the rootNode is
@@ -587,13 +734,13 @@ const traverseForMediaStateReceivers = (rootNode, mediaStateReceiverCallback) =>
       traverseForMediaStateReceiversSync(rootNode, mediaStateReceiverCallback);
     });
     return;
-  };
+  }
 
   traverseForMediaStateReceiversSync(rootNode, mediaStateReceiverCallback);
 };
 
 const propagateMediaState = (els, stateName, val) => {
-  els.forEach(el => {
+  els.forEach((el) => {
     const relevantAttrs = getMediaUIAttributesFrom(el);
     if (!relevantAttrs.includes(stateName)) return;
     setAttr(el, stateName, val);
@@ -601,22 +748,25 @@ const propagateMediaState = (els, stateName, val) => {
 };
 
 /**
- * 
+ *
  * @description This function will monitor the rootNode for any Media State Receiver descendants
  * that are already present, added, or removed, invoking the relevant callback function for each
  * case.
- * 
- * @param {HTMLElement} rootNode 
+ *
+ * @param {HTMLElement} rootNode
  * @param {function} registerMediaStateReceiver
  * @param {function} unregisterMediaStateReceiver
  * @returns An unsubscribe method, used to stop monitoring descendants of rootNode and to unregister its descendants
- * 
+ *
  */
-const monitorForMediaStateReceivers = (rootNode, registerMediaStateReceiver, unregisterMediaStateReceiver) => {
-
+const monitorForMediaStateReceivers = (
+  rootNode,
+  registerMediaStateReceiver,
+  unregisterMediaStateReceiver
+) => {
   // First traverse the tree to register any current Media State Receivers
   traverseForMediaStateReceivers(rootNode, registerMediaStateReceiver);
-  
+
   // Monitor for any event-based requests from descendants to register/unregister as a Media State Receiver
   const registerMediaStateReceiverHandler = (evt) => {
     const el = evt?.composedPath()[0] ?? evt.target;
@@ -628,20 +778,39 @@ const monitorForMediaStateReceivers = (rootNode, registerMediaStateReceiver, unr
     unregisterMediaStateReceiver(el);
   };
 
-  rootNode.addEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, registerMediaStateReceiverHandler);
-  rootNode.addEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unregisterMediaStateReceiverHandler);
+  rootNode.addEventListener(
+    MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER,
+    registerMediaStateReceiverHandler
+  );
+  rootNode.addEventListener(
+    MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER,
+    unregisterMediaStateReceiverHandler
+  );
 
   // Observe any changes to the DOM for any descendants that are identifiable as Media State Receivers
   // and register or unregister them, depending on the change that occurred.
   const mutationCallback = (mutationsList, _observer) => {
-    mutationsList.forEach(mutationRecord => {
-      const { addedNodes = [], removedNodes = [], type, target, attributeName } = mutationRecord;
+    mutationsList.forEach((mutationRecord) => {
+      const {
+        addedNodes = [],
+        removedNodes = [],
+        type,
+        target,
+        attributeName,
+      } = mutationRecord;
       if (type === 'childList') {
         // For each added node, register any Media State Receiver descendants (including itself)
-        Array.prototype.forEach.call(addedNodes, node => traverseForMediaStateReceivers(node, registerMediaStateReceiver));
+        Array.prototype.forEach.call(addedNodes, (node) =>
+          traverseForMediaStateReceivers(node, registerMediaStateReceiver)
+        );
         // For each removed node, unregister any Media State Receiver descendants (including itself)
-        Array.prototype.forEach.call(removedNodes, node => traverseForMediaStateReceivers(node, unregisterMediaStateReceiver));
-      } else if (type === 'attributes' && attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES) {
+        Array.prototype.forEach.call(removedNodes, (node) =>
+          traverseForMediaStateReceivers(node, unregisterMediaStateReceiver)
+        );
+      } else if (
+        type === 'attributes' &&
+        attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES
+      ) {
         if (isMediaStateReceiver(target)) {
           // Changed from a "non-Media State Receiver" to a Media State Receiver: register it.
           registerMediaStateReceiver(target);
@@ -654,7 +823,11 @@ const monitorForMediaStateReceivers = (rootNode, registerMediaStateReceiver, unr
   };
 
   const observer = new MutationObserver(mutationCallback);
-  observer.observe(rootNode, { childList: true, attributes: true, subtree: true });
+  observer.observe(rootNode, {
+    childList: true,
+    attributes: true,
+    subtree: true,
+  });
 
   const unsubscribe = () => {
     // Unregister any Media State Receiver descendants (including ourselves)
@@ -662,8 +835,14 @@ const monitorForMediaStateReceivers = (rootNode, registerMediaStateReceiver, unr
     // Stop observing for Media State Receivers
     observer.disconnect();
     // Stop listening for Media State Receiver events.
-    rootNode.removeEventListener(MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER, registerMediaStateReceiverHandler);
-    rootNode.removeEventListener(MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER, unregisterMediaStateReceiverHandler);
+    rootNode.removeEventListener(
+      MediaUIEvents.REGISTER_MEDIA_STATE_RECEIVER,
+      registerMediaStateReceiverHandler
+    );
+    rootNode.removeEventListener(
+      MediaUIEvents.UNREGISTER_MEDIA_STATE_RECEIVER,
+      unregisterMediaStateReceiverHandler
+    );
   };
 
   return unsubscribe;

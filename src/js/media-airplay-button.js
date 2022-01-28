@@ -32,10 +32,10 @@ class MediaAirplayButton extends MediaChromeButton {
   }
 
   handleClick(_e) {
-    const evt = new window.CustomEvent(
-      MediaUIEvents.MEDIA_AIRPLAY_REQUEST,
-      { composed: true, bubbles: true }
-    );
+    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_AIRPLAY_REQUEST, {
+      composed: true,
+      bubbles: true,
+    });
     this.dispatchEvent(evt);
   }
 }

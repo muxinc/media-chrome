@@ -11,11 +11,11 @@ module.exports = {
   },
   routes: [
     {
-      match: "routes",
-      src: "/",
+      match: 'routes',
+      src: '/',
       dest: (_req, resp) => {
         resp.statusCode = 302;
-        resp.setHeader("Location", "/examples/index.html");
+        resp.setHeader('Location', '/examples/index.html');
         return resp.end();
       },
     },
@@ -27,8 +27,7 @@ module.exports = {
     /* ... */
   },
   devOptions: {
-    openUrl: "/examples/index.html",
+    openUrl: '/examples/index.html',
   },
-  buildOptions: {
-  },
+  buildOptions: {},
 };

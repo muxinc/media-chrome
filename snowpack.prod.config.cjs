@@ -22,6 +22,6 @@ module.exports = {
     /* ... */
   },
   buildOptions: {
-    out: './dist'
+    out: './dist',
   },
 };

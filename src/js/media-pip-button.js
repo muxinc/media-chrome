@@ -1,6 +1,9 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
@@ -33,12 +36,11 @@ const updateAriaLabel = (el) => {
 };
 
 class MediaPipButton extends MediaChromeButton {
-  
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_IS_PIP];
   }
 
-  constructor(options={}) {
+  constructor(options = {}) {
     super({ slotTemplate, ...options });
   }
 
@@ -55,10 +57,13 @@ class MediaPipButton extends MediaChromeButton {
   }
 
   handleClick(_e) {
-    const eventName = (this.getAttribute(MediaUIAttributes.MEDIA_IS_PIP) != null)
-      ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
-      : MediaUIEvents.MEDIA_ENTER_PIP_REQUEST;
-    this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
+    const eventName =
+      this.getAttribute(MediaUIAttributes.MEDIA_IS_PIP) != null
+        ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
+        : MediaUIEvents.MEDIA_ENTER_PIP_REQUEST;
+    this.dispatchEvent(
+      new window.CustomEvent(eventName, { composed: true, bubbles: true })
+    );
   }
 }
 
