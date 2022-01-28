@@ -1,49 +1,57 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta name="viewport" content="width=device-width">
-  <script type="module" src="../../dist/index.js"></script>
-  <script type="module" src="../../dist/extras/media-clip-selector/index.js"></script>
-</head>
-<body>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <script type="module" src="../../dist/index.js"></script>
+    <script
+      type="module"
+      src="../../dist/extras/media-clip-selector/index.js"
+    ></script>
+  </head>
+  <body>
+    <media-controller autohide="-1">
+      <video
+        slot="media"
+        src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+        crossorigin
+      >
+        <track
+          label="thumbnails"
+          default
+          kind="metadata"
+          src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+        />
+      </video>
+      <media-control-bar>
+        <media-play-button></media-play-button>
+        <media-clip-selector></media-clip-selector>
+        <media-mute-button></media-mute-button>
+        <media-volume-range></media-volume-range>
+      </media-control-bar>
+    </media-controller>
 
-<media-controller autohide="-1">
-  <video
-    slot="media"
-    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-    crossorigin
-  >
-    <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt">
-  </video>
-  <media-control-bar>
-    <media-play-button></media-play-button>
-    <media-clip-selector></media-clip-selector>
-    <media-mute-button></media-mute-button>
-    <media-volume-range></media-volume-range>
-  </media-control-bar>
-</media-controller>
+    <p id="current-time"></p>
+    <p id="start-time"></p>
+    <p id="end-time"></p>
+  </body>
 
-<p id="current-time"></p>
-<p id="start-time"></p>
-<p id="end-time"></p>
+  <script>
+    const mediaClipSelect = document.querySelector('media-clip-selector');
+    const startTimeEl = document.querySelector('#start-time');
+    const endTimeEl = document.querySelector('#end-time');
+    const currentTimeEl = document.querySelector('#current-time');
+    const videoEl = document.querySelector('video');
 
-</body>
+    mediaClipSelect.addEventListener('update', (evt) => {
+      const { startTime, endTime } = evt.detail;
+      startTimeEl.innerHTML = `Start time seconds: ${startTime}`;
+      endTimeEl.innerHTML = `End time seconds: ${endTime}`;
+    });
 
-<script>
-  const mediaClipSelect = document.querySelector('media-clip-selector');
-  const startTimeEl = document.querySelector('#start-time');
-  const endTimeEl = document.querySelector('#end-time');
-  const currentTimeEl = document.querySelector('#current-time');
-  const videoEl = document.querySelector('video');
-
-  mediaClipSelect.addEventListener('update', (evt) => {
-    const { startTime, endTime } = evt.detail;
-    startTimeEl.innerHTML = `Start time seconds: ${startTime}`;
-    endTimeEl.innerHTML = `End time seconds: ${endTime}`;
-  });
-
-  videoEl.addEventListener('timeupdate', () => {
-    currentTimeEl.innerHTML = `Current time: ${Math.round(videoEl.currentTime)}`;
-  });
-</script>
+    videoEl.addEventListener('timeupdate', () => {
+      currentTimeEl.innerHTML = `Current time: ${Math.round(
+        videoEl.currentTime
+      )}`;
+    });
+  </script>
 </html>

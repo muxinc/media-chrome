@@ -11,8 +11,8 @@ _None_
 
 # Slots
 
-| Name      | Default Type | Description                                              |
-| --------- | ------------ | -------------------------------------------------------- |
+| Name      | Default Type | Description                                        |
+| --------- | ------------ | -------------------------------------------------- |
 | `airplay` | `svg`        | The element shown for the AirPlay button's display |
 
 ### Example

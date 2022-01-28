@@ -4,10 +4,7 @@ import {
   Window as window,
   Document as document,
 } from './utils/server-safe-globals.js';
-import {
-  MediaUIEvents,
-  MediaUIAttributes,
-} from './constants.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { splitTextTracksStr } from './utils/captions.js';
 
@@ -98,8 +95,12 @@ const updateAriaChecked = (el) => {
 };
 
 const isCCOn = (el) => {
-  const showingCaptions = !!el.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING);
-  const showingSubtitlesAsCaptions = !el.hasAttribute('no-subtitles-fallback') && !!el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
+  const showingCaptions = !!el.getAttribute(
+    MediaUIAttributes.MEDIA_CAPTIONS_SHOWING
+  );
+  const showingSubtitlesAsCaptions =
+    !el.hasAttribute('no-subtitles-fallback') &&
+    !!el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
   return showingCaptions || showingSubtitlesAsCaptions;
 };
 
@@ -171,14 +172,13 @@ class MediaCaptionsButton extends MediaChromeButton {
         splitTextTracksStr(
           this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST) ?? ''
         ) ?? [];
-        if (ccTrackStr) {
+      if (ccTrackStr) {
         // If we have at least one captions track, request for the first one to be showing.
         const evt = new window.CustomEvent(
           MediaUIEvents.MEDIA_SHOW_CAPTIONS_REQUEST,
           { composed: true, bubbles: true, detail: ccTrackStr }
         );
         this.dispatchEvent(evt);
-
       } else if (!this.hasAttribute('no-subtitles-fallback')) {
         // If we don't have a captions track and we're using subtitles fallback (true/"on" by default), check if we have any subtitles available.
         const [subTrackStr] =
@@ -193,10 +193,11 @@ class MediaCaptionsButton extends MediaChromeButton {
           );
           this.dispatchEvent(evt);
         }
-      }
-      else {
+      } else {
         // If we end up here, it means we have an enabled CC-button that a user has clicked on but there are no captions and no subtitles (or we've disabled subtitles fallback).
-        console.error('Attempting to enable closed captions but none are available! Please verify your media content if this is unexpected.');
+        console.error(
+          'Attempting to enable closed captions but none are available! Please verify your media content if this is unexpected.'
+        );
       }
     }
   }

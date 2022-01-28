@@ -5,7 +5,6 @@ import { MediaUIAttributes } from './constants.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 class MediaCurrentTimeDisplay extends MediaTextDisplay {
-
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME];
   }

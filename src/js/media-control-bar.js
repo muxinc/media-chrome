@@ -5,7 +5,10 @@
 */
 import { MediaUIAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -31,7 +34,6 @@ template.innerHTML = `
 `;
 
 class MediaControlBar extends window.HTMLElement {
-
   static get observedAttributes() {
     return [MediaUIAttributes.MEDIA_CONTROLLER];
   }
@@ -57,7 +59,9 @@ class MediaControlBar extends window.HTMLElement {
   }
 
   connectedCallback() {
-    const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    const mediaControllerId = this.getAttribute(
+      MediaUIAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.associateElement?.(this);
@@ -65,7 +69,9 @@ class MediaControlBar extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    const mediaControllerSelector = this.getAttribute(
+      MediaUIAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerSelector) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);

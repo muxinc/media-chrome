@@ -196,9 +196,9 @@ export const updateTracksModeTo = (mode, tracks = [], tracksToUpdate = []) => {
  * <head></head>
  * <body>
  * <video src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4">
- *   <track label="Spanish" kind="subtitles" srclang="es" src="./vtt/en-sub.vtt"></track>
- *   <track label="English" kind="subtitles" srclang="en" src="./vtt/es-sub.vtt"></track>
- *   <track label="English" kind="captions" srclang="en" src="./vtt/en-cc.vtt"></track>
+ *   <track label="Spanish" kind="subtitles" srclang="es" src="./vtt/en-sub.vtt">
+ *   <track label="English" kind="subtitles" srclang="en" src="./vtt/es-sub.vtt">
+ *   <track label="English" kind="captions" srclang="en" src="./vtt/en-cc.vtt">
   </video>
  * </body>
  * </html>

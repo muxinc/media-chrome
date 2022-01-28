@@ -1,6 +1,9 @@
 import { MediaUIAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -124,11 +127,10 @@ template.innerHTML = `
 `;
 
 class MediaChromeRange extends window.HTMLElement {
-  
   static get observedAttributes() {
     return [MediaUIAttributes.MEDIA_CONTROLLER];
   }
-  
+
   constructor() {
     super();
 
@@ -138,7 +140,7 @@ class MediaChromeRange extends window.HTMLElement {
     this.range = this.shadowRoot.querySelector('#range');
     this.range.addEventListener('input', this.updateBar.bind(this));
   }
-  
+
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
@@ -153,7 +155,9 @@ class MediaChromeRange extends window.HTMLElement {
   }
 
   connectedCallback() {
-    const mediaControllerId = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    const mediaControllerId = this.getAttribute(
+      MediaUIAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.associateElement?.(this);
@@ -162,7 +166,9 @@ class MediaChromeRange extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    const mediaControllerSelector = this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER);
+    const mediaControllerSelector = this.getAttribute(
+      MediaUIAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerSelector) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
@@ -182,7 +188,8 @@ class MediaChromeRange extends window.HTMLElement {
     let prevPercent = 0;
     colorArray.forEach((color) => {
       if (color[1] < prevPercent) return;
-      gradientStr = gradientStr + `${color[0]} ${prevPercent}%, ${color[0]} ${color[1]}%,`;
+      gradientStr =
+        gradientStr + `${color[0]} ${prevPercent}%, ${color[0]} ${color[1]}%,`;
       prevPercent = color[1];
     });
     gradientStr = gradientStr.slice(0, gradientStr.length - 1) + ')';
@@ -203,7 +210,7 @@ class MediaChromeRange extends window.HTMLElement {
 
     let colorArray = [
       ['var(--media-range-bar-color, #fff)', rangePercent],
-      ['var(--media-range-track-background, #333)', 100]
+      ['var(--media-range-track-background, #333)', 100],
     ];
 
     return colorArray;

@@ -157,7 +157,7 @@ const template = `
 `;
 
 class MediaThemeNetflix extends MediaTheme {
-  constructor(options={}) {
+  constructor(options = {}) {
     super(template, { /* allow ...defaultOptions, */ ...options });
   }
 }

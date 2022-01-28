@@ -8,7 +8,10 @@
   * Auto-hide controls on inactivity while playing
 */
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 
@@ -131,14 +134,16 @@ class MediaContainer extends window.HTMLElement {
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
           // Media element being removed
-          mutation.removedNodes.forEach(node => {
+          mutation.removedNodes.forEach((node) => {
             // Is this a direct child media element of media-controller?
             // TODO: This accuracy doesn't matter after moving away from media attrs.
             // Could refactor so we can always just call 'dispose' on any removed media el.
             if (node.slot == 'media' && mutation.target == this) {
               // Check if this was the current media by if it was the first
               // el with slot=media in the child list. There could be multiple.
-              let previousSibling = mutation.previousSibling && mutation.previousSibling.previousElementSibling;
+              let previousSibling =
+                mutation.previousSibling &&
+                mutation.previousSibling.previousElementSibling;
 
               // Must have been first if no prev sibling or new media
               if (!previousSibling || !media) {
@@ -147,7 +152,9 @@ class MediaContainer extends window.HTMLElement {
                 // Check if any prev siblings had a slot=media
                 // Should remain true otherwise
                 let wasFirst = previousSibling.slot !== 'media';
-                while ((previousSibling = previousSibling.previousSibling) !== null) {
+                while (
+                  (previousSibling = previousSibling.previousSibling) !== null
+                ) {
                   if (previousSibling.slot == 'media') wasFirst = false;
                 }
                 if (wasFirst) this.mediaUnsetCallback(node);
@@ -158,10 +165,12 @@ class MediaContainer extends window.HTMLElement {
           // Controls or media element being added
           // No need to inject anything if media=null
           if (media) {
-            mutation.addedNodes.forEach(node => {
+            mutation.addedNodes.forEach((node) => {
               if (node == media) {
                 // Update all controls with new media if this is the new media
-                this.handleMediaUpdated(media).then((media) => this.mediaSetCallback(media));
+                this.handleMediaUpdated(media).then((media) =>
+                  this.mediaSetCallback(media)
+                );
               }
             });
           }
@@ -189,7 +198,8 @@ class MediaContainer extends window.HTMLElement {
     let media = this.querySelector(':scope > [slot=media]');
 
     // Chaining media slots for media templates
-    if (media?.nodeName == 'SLOT') media = media.assignedElements({flatten:true})[0];
+    if (media?.nodeName == 'SLOT')
+      media = media.assignedElements({ flatten: true })[0];
 
     return media;
   }
@@ -249,7 +259,9 @@ class MediaContainer extends window.HTMLElement {
     this.setAttribute('aria-label', label);
 
     if (this.media) {
-      this.handleMediaUpdated(this.media).then((media) => this.mediaSetCallback(media));
+      this.handleMediaUpdated(this.media).then((media) =>
+        this.mediaSetCallback(media)
+      );
     }
 
     const scheduleInactive = () => {
@@ -265,19 +277,19 @@ class MediaContainer extends window.HTMLElement {
     };
 
     // Unhide for keyboard controlling
-    this.addEventListener('keyup', e => {
+    this.addEventListener('keyup', (e) => {
       scheduleInactive();
     });
 
     // Allow for focus styles only when using the keyboard to navigate
-    this.addEventListener('keyup', e => {
+    this.addEventListener('keyup', (e) => {
       this.setAttribute('media-keyboard-control', 'media-keyboard-control');
     });
-    this.addEventListener('mouseup', e => {
+    this.addEventListener('mouseup', (e) => {
       this.removeAttribute('media-keyboard-control');
     });
 
-    this.addEventListener('mousemove', e => {
+    this.addEventListener('mousemove', (e) => {
       if (e.target === this) return;
 
       // Stay visible if hovered over control bar
@@ -291,8 +303,9 @@ class MediaContainer extends window.HTMLElement {
     });
 
     // Immediately hide if mouse leaves the container
-    this.addEventListener('mouseout', e => {
-      if (this.autohide > -1) this.setAttribute('user-inactive', 'user-inactive');
+    this.addEventListener('mouseout', (e) => {
+      if (this.autohide > -1)
+        this.setAttribute('user-inactive', 'user-inactive');
     });
   }
 

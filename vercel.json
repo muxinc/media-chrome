@@ -1,6 +1,4 @@
 {
-    "trailingSlash": true,
-    "redirects": [
-        { "source": "/", "destination": "/examples/" }
-    ]
+  "trailingSlash": true,
+  "redirects": [{ "source": "/", "destination": "/examples/" }]
 }

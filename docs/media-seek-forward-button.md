@@ -11,8 +11,8 @@ _None_
 
 # Slots
 
-| Name       | Default Type | Description                                             |
-| ---------- | ------------ | ------------------------------------------------------- |
+| Name      | Default Type | Description                                             |
+| --------- | ------------ | ------------------------------------------------------- |
 | `forward` | `svg`        | The element shown for the seek forward button's display |
 
 ### Example

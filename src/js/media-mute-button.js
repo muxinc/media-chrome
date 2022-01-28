@@ -1,6 +1,9 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
@@ -53,12 +56,11 @@ const updateAriaLabel = (el) => {
 };
 
 class MediaMuteButton extends MediaChromeButton {
-  
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_VOLUME_LEVEL];
   }
 
-  constructor(options={}) {
+  constructor(options = {}) {
     super({ slotTemplate, ...options });
   }
 
@@ -75,10 +77,13 @@ class MediaMuteButton extends MediaChromeButton {
   }
 
   handleClick(_e) {
-    const eventName = (this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off')
-      ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
-      : MediaUIEvents.MEDIA_MUTE_REQUEST;
-    this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
+    const eventName =
+      this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off'
+        ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
+        : MediaUIEvents.MEDIA_MUTE_REQUEST;
+    this.dispatchEvent(
+      new window.CustomEvent(eventName, { composed: true, bubbles: true })
+    );
   }
 }
 

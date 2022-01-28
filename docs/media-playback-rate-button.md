@@ -7,8 +7,8 @@ Button to change the speed of playback.
 
 # Attributes
 
-| Name                    | Type   | Default Value       | Description                                                       |
-| ----------------------- | ------ | ------------------- | ----------------------------------------------------------------- |
+| Name    | Type   | Default Value       | Description                                                       |
+| ------- | ------ | ------------------- | ----------------------------------------------------------------- |
 | `rates` | `list` | `1 1.25 1.5 1.75 2` | List of playback rates to toggle through when pressing the button |
 
 # Slots

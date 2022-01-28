@@ -8,7 +8,10 @@
 */
 import MediaChromeButton from './media-chrome-button.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import {
+  Window as window,
+  Document as document,
+} from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
@@ -42,13 +45,15 @@ slotTemplate.innerHTML = `
 `;
 
 const updateAriaLabel = (el) => {
-  const isFullScreen = el.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null;
-  const label = isFullScreen ? verbs.EXIT_FULLSCREEN() : verbs.ENTER_FULLSCREEN();
+  const isFullScreen =
+    el.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null;
+  const label = isFullScreen
+    ? verbs.EXIT_FULLSCREEN()
+    : verbs.ENTER_FULLSCREEN();
   el.setAttribute('aria-label', label);
 };
 
 class MediaFullscreenButton extends MediaChromeButton {
-
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_IS_FULLSCREEN];
   }
@@ -70,10 +75,13 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   handleClick(_e) {
-    const eventName = (this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null)
-      ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
-      : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
-    this.dispatchEvent(new window.CustomEvent(eventName, { composed: true, bubbles: true }));
+    const eventName =
+      this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null
+        ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
+        : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
+    this.dispatchEvent(
+      new window.CustomEvent(eventName, { composed: true, bubbles: true })
+    );
   }
 }
 

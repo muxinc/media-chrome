@@ -14,12 +14,16 @@ const toVolume = (el) => {
   return Math.round(volume * el.range.max);
 };
 
-const formatAsPercentString = ({ value, max }) => `${Math.round((value / max) * 100)}%`;
+const formatAsPercentString = ({ value, max }) =>
+  `${Math.round((value / max) * 100)}%`;
 
 class MediaVolumeRange extends MediaChromeRange {
-
   static get observedAttributes() {
-    return [...super.observedAttributes, MediaUIAttributes.MEDIA_VOLUME, MediaUIAttributes.MEDIA_MUTED];
+    return [
+      ...super.observedAttributes,
+      MediaUIAttributes.MEDIA_VOLUME,
+      MediaUIAttributes.MEDIA_MUTED,
+    ];
   }
 
   constructor() {
@@ -30,7 +34,11 @@ class MediaVolumeRange extends MediaChromeRange {
     this.range.addEventListener('input', () => {
       const newVolume = this.range.value / this.range.max;
       const detail = newVolume;
-      const evt = new window.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, { composed: true, bubbles: true, detail });
+      const evt = new window.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
+        composed: true,
+        bubbles: true,
+        detail,
+      });
       this.dispatchEvent(evt);
     });
   }
@@ -41,10 +49,16 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_VOLUME || attrName === MediaUIAttributes.MEDIA_MUTED) {
+    if (
+      attrName === MediaUIAttributes.MEDIA_VOLUME ||
+      attrName === MediaUIAttributes.MEDIA_MUTED
+    ) {
       const newVolume = toVolume(this);
       this.range.value = newVolume;
-      this.range.setAttribute('aria-valuetext', formatAsPercentString(this.range));
+      this.range.setAttribute(
+        'aria-valuetext',
+        formatAsPercentString(this.range)
+      );
       this.updateBar();
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);

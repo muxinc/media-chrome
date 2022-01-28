@@ -1,7 +1,6 @@
-Architecture Diagrams
-=====================
+# Architecture Diagrams
 
-Any control element can *send* user input to the [`MediaController`](https://github.com/muxinc/media-chrome/blob/main/src/js/media-controller.js#L33) and *receive* media state from the `MediaController`.
+Any control element can _send_ user input to the [`MediaController`](https://github.com/muxinc/media-chrome/blob/main/src/js/media-controller.js#L33) and _receive_ media state from the `MediaController`.
 
 ### Sending
 
@@ -11,7 +10,7 @@ The `MediaController` receives user input via [`MediaUIEvents`](https://github.c
   The DOM element that will receive bubbling up events from the control element is the `<media-controller>` element, it's also called an **associated element** in the codebase.
 
 - From a control element that is **not** nested under the `<media-controller>` element (see [diagram 2](#2-by-media-controller-id)).  
-  An **associated element** is created by targeting the media controller via the `media-controller` attribute or property. 
+  An **associated element** is created by targeting the media controller via the `media-controller` attribute or property.
 
   ```html
   <media-controller id="my-ctrl">
@@ -47,17 +46,16 @@ Any **associated element** or any of its descendants can receive media state fro
   ```html
   <div media-chrome-attributes="media-paused media-current-time"></div>
   ```
-  
+
 <br>
 <br>
 
 ### 1\. by `<media-controller>` Nesting
 
-
 ![media chrome diagram](./assets/media-chrome-diagram-media-controller-nesting.png)
 
 [View Figma embed](https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2FJfpS4VVSJgvywPHEYAr7Ie%2FMedia-Chrome-Diagrams%3Fnode-id%3D0%253A1)
-  
+
 <br>
 <br>
 

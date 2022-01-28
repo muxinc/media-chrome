@@ -13,8 +13,8 @@ const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
   const currentTime = +el.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
   const duration = +el.getAttribute(MediaUIAttributes.MEDIA_DURATION);
 
-  const timeLabel = showRemaining 
-    ? formatTime(0 - (duration - currentTime)) 
+  const timeLabel = showRemaining
+    ? formatTime(0 - (duration - currentTime))
     : formatTime(currentTime);
 
   if (!showDuration) return timeLabel;
@@ -24,7 +24,12 @@ const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
 const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
 const updateAriaValueText = (el) => {
-  if (!(el.hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) && el.hasAttribute(MediaUIAttributes.MEDIA_DURATION))) {
+  if (
+    !(
+      el.hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) &&
+      el.hasAttribute(MediaUIAttributes.MEDIA_DURATION)
+    )
+  ) {
     el.setAttribute('aria-valuetext', DEFAULT_MISSING_TIME_PHRASE);
     return;
   }
@@ -33,8 +38,8 @@ const updateAriaValueText = (el) => {
   const currentTime = +el.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
   const duration = +el.getAttribute(MediaUIAttributes.MEDIA_DURATION);
 
-  const currentTimePhrase = showRemaining 
-    ? formatAsTimePhrase(0 - (duration - currentTime)) 
+  const currentTimePhrase = showRemaining
+    ? formatAsTimePhrase(0 - (duration - currentTime))
     : formatAsTimePhrase(currentTime);
 
   if (!showDuration) {
@@ -47,9 +52,14 @@ const updateAriaValueText = (el) => {
 };
 
 class MediaTimeDisplay extends MediaTextDisplay {
-
   static get observedAttributes() {
-    return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_DURATION, 'remaining', 'show-duration'];
+    return [
+      ...super.observedAttributes,
+      MediaUIAttributes.MEDIA_CURRENT_TIME,
+      MediaUIAttributes.MEDIA_DURATION,
+      'remaining',
+      'show-duration',
+    ];
   }
 
   connectedCallback() {
@@ -60,7 +70,14 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if ([MediaUIAttributes.MEDIA_CURRENT_TIME, MediaUIAttributes.MEDIA_DURATION, 'remaining', 'show-duration'].includes(attrName)) {
+    if (
+      [
+        MediaUIAttributes.MEDIA_CURRENT_TIME,
+        MediaUIAttributes.MEDIA_DURATION,
+        'remaining',
+        'show-duration',
+      ].includes(attrName)
+    ) {
       const timesLabel = formatTimesLabel(this);
       updateAriaValueText(this);
       this.container.innerHTML = timesLabel;
