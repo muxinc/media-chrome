@@ -109,6 +109,7 @@ class MediaCaptionsButton extends MediaChromeButton {
     return [
       ...super.observedAttributes,
       'no-subtitles-fallback',
+      'default-showing',
       MediaUIAttributes.MEDIA_CAPTIONS_LIST,
       MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
@@ -118,6 +119,9 @@ class MediaCaptionsButton extends MediaChromeButton {
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
+    // Internal variable to keep track of when we have some or no captions (or subtitles, if using subtitles fallback)
+    // Used for `default-showing` behavior.
+    this.__captionsReady = false;
   }
 
   connectedCallback() {
@@ -135,6 +139,41 @@ class MediaCaptionsButton extends MediaChromeButton {
       ].includes(attrName)
     ) {
       updateAriaChecked(this);
+    }
+    if (
+      this.hasAttribute('default-showing') && // we want to show captions by default
+      this.getAttribute('aria-checked') !== 'true' // and we aren't currently showing them
+    ) {
+      // Make sure we're only checking against the relevant attributes based on whether or not we are using subtitles fallback
+      const subtitlesIncluded = !this.hasAttribute('no-subtitles-fallback');
+      const relevantAttributes = subtitlesIncluded
+        ? [
+            MediaUIAttributes.MEDIA_CAPTIONS_LIST,
+            MediaUIAttributes.MEDIA_SUBTITLES_LIST,
+          ]
+        : [MediaUIAttributes.MEDIA_CAPTIONS_LIST];
+      // If one of the relevant attributes changed...
+      if (relevantAttributes.includes(attrName)) {
+        // check if we went
+        // a) from captions (/subs) not ready to captions (/subs) ready
+        // b) from captions (/subs) ready to captions (/subs) not ready.
+        // by using a simple truthy (empty or non-empty) string check on the relevant values
+        // NOTE: Need to get the attributes from the instance, as there may be more than one that's relevant
+        const nextCaptionsReady = subtitlesIncluded
+          ? !!`${this.getAttribute(
+              MediaUIAttributes.MEDIA_CAPTIONS_LIST
+            )}${this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST)}`
+          : !!this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST);
+        // If the value changed, (re)set the internal prop
+        if (this.__captionsReady !== nextCaptionsReady) {
+          this.__captionsReady = nextCaptionsReady;
+          // If captions are currently ready, that means we went from unready to ready, so
+          // use the click handler to dispatch a request to turn captions on
+          if (this.__captionsReady) {
+            this.handleClick();
+          }
+        }
+      }
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
