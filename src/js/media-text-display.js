@@ -20,7 +20,7 @@ template.innerHTML = `
       padding: 10px;
 
       font-size: 14px;
-      line-height: 24px;
+      line-height: 18px;
       font-family: Arial, sans-serif;
       text-align: center;
       color: #ffffff;

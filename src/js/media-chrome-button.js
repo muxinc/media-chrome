@@ -10,10 +10,11 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
   :host {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: auto;
     height: auto;
-    vertical-align: middle;
     box-sizing: border-box;
     background: var(--media-control-background, rgba(20,20,30, 0.7));
 
@@ -22,15 +23,13 @@ template.innerHTML = `
     /* Vertically center any text */
     font-size: 14px;
     font-weight: bold;
-    color: #ffffff;
-    text-align: center;
+    color: #fff;
 
     transition: background 0.15s linear;
 
     pointer-events: auto;
     cursor: pointer;
     font-family: Arial, sans-serif;
-    vertical-align: middle;
   }
 
   /*
@@ -54,8 +53,8 @@ template.innerHTML = `
   }
 
   svg, img, ::slotted(svg), ::slotted(img) {
-    width: var(--media-button-icon-width, 24px);
-    height: var(--media-button-icon-height);
+    width: var(--media-button-icon-width);
+    height: var(--media-button-icon-height, 18px);
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);
     fill: var(--media-icon-color, #eee);
@@ -63,11 +62,10 @@ template.innerHTML = `
     max-width: 100%;
     max-height: 100%;
     min-width: 100%;
-    min-height: 100%;
   }
 
   ::slotted(div), ::slotted(span) {
-    height: 24px;
+    height: 18px;
   }
 </style>
 `;
