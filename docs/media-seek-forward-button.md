@@ -7,7 +7,9 @@ Button to jump ahead 30 seconds in the media.
 
 # Attributes
 
-_None_
+| Name          | Type     | Default Value | Description                                                          |
+| ------------- | -------- | ------------- | -------------------------------------------------------------------- |
+| `seek-offset` | `number` | `30`          | Adjusts how much time (in seconds) the playhead should seek backward |
 
 # Slots
 
