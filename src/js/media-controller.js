@@ -247,26 +247,15 @@ class MediaController extends MediaContainer {
     // Pass media state to child and associated control elements
     this._mediaStatePropagators = {
       'play,pause': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_PAUSED,
-          this.media.paused
-        );
+        this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, this.paused);
       },
       volumechange: () => {
-        const { muted, volume } = this.media;
-
-        let level = 'high';
-        if (volume == 0 || muted) {
-          level = 'off';
-        } else if (volume < 0.5) {
-          level = 'low';
-        } else if (volume < 0.75) {
-          level = 'medium';
-        }
-
-        this.propagateMediaState(MediaUIAttributes.MEDIA_MUTED, muted);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME, volume);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_MUTED, this.muted);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME, this.volume);
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_VOLUME_LEVEL,
+          this.volumeLevel
+        );
       },
       [fullscreenApi.event]: () => {
         // Might be in the shadow dom
@@ -284,26 +273,26 @@ class MediaController extends MediaContainer {
         if (e) {
           isPip = e.type == 'enterpictureinpicture';
         } else {
-          isPip = this.media == this.getRootNode().pictureInPictureElement;
+          isPip = this.isPip;
         }
         this.propagateMediaState(MediaUIAttributes.MEDIA_IS_PIP, isPip);
       },
       'timeupdate,loadedmetadata': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_CURRENT_TIME,
-          this.media.currentTime
+          this.currentTime
         );
       },
       'durationchange,loadedmetadata': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_DURATION,
-          this.media.duration
+          this.duration
         );
       },
       ratechange: () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_PLAYBACK_RATE,
-          this.media.playbackRate
+          this.playbackRate
         );
       },
       'waiting,playing': () => {
@@ -426,6 +415,7 @@ class MediaController extends MediaContainer {
   associateElement(element) {
     if (!element) return;
     const { associatedElementSubscriptions } = this;
+
     if (associatedElementSubscriptions.has(element)) return;
 
     const registerMediaStateReceiver =
@@ -503,18 +493,23 @@ class MediaController extends MediaContainer {
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_PAUSED,
-        this.media.paused
+        this.paused
       );
       // propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_MUTED,
-        this.media.muted
+        this.muted
       );
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_VOLUME,
-        this.media.volume
+        this.volume
+      );
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_VOLUME_LEVEL,
+        this.volumeLevel
       );
       // const fullscreenEl = this.getRootNode()[fullscreenApi.element];
       // propagateMediaState([el], MediaUIAttributes.MEDIA_IS_FULLSCREEN, fullscreenEl === this);
@@ -522,17 +517,17 @@ class MediaController extends MediaContainer {
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_CURRENT_TIME,
-        this.media.currentTime
+        this.currentTime
       );
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_DURATION,
-        this.media.duration
+        this.duration
       );
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_PLAYBACK_RATE,
-        this.media.playbackRate
+        this.playbackRate
       );
     }
   }
@@ -557,6 +552,12 @@ class MediaController extends MediaContainer {
     this.dispatchEvent(new window.CustomEvent(MEDIA_PAUSE_REQUEST));
   }
 
+  get paused() {
+    if (!this.media) return true;
+
+    return this.media.paused;
+  }
+
   get muted() {
     return !!(this.media && this.media.muted);
   }
@@ -578,6 +579,24 @@ class MediaController extends MediaContainer {
     );
   }
 
+  get volumeLevel() {
+    let level = 'high';
+
+    if (!this.media) return level;
+
+    const { muted, volume } = this.media;
+
+    if (volume === 0 || muted) {
+      level = 'off';
+    } else if (volume < 0.5) {
+      level = 'low';
+    } else if (volume < 0.75) {
+      level = 'medium';
+    }
+
+    return level;
+  }
+
   requestFullscreen() {
     this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_FULLSCREEN_REQUEST));
   }
@@ -596,6 +615,12 @@ class MediaController extends MediaContainer {
     this.dispatchEvent(
       new window.CustomEvent(MEDIA_SEEK_REQUEST, { detail: time })
     );
+  }
+
+  get duration() {
+    const media = this.media;
+
+    return media ? media.duration : NaN;
   }
 
   get playbackRate() {
@@ -632,6 +657,12 @@ class MediaController extends MediaContainer {
     });
   }
 
+  get isPip() {
+    return (
+      this.media && this.media == this.getRootNode().pictureInPictureElement
+    );
+  }
+
   requestPictureInPicture() {
     this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_PIP_REQUEST));
   }
@@ -663,8 +694,9 @@ const getMediaUIAttributesFrom = (child) => {
   );
 };
 
-const isMediaStateReceiver = (child) =>
-  !!getMediaUIAttributesFrom(child).length;
+const isMediaStateReceiver = (child) => {
+  return !!getMediaUIAttributesFrom(child).length;
+};
 
 const setAttr = (child, attrName, attrValue) => {
   if (attrValue == undefined) {

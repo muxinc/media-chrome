@@ -8,6 +8,7 @@ module.exports = {
     'src/js': { url: '/dist' },
     // Mount "public" to the root URL path ("/*") and serve files with zero transformations:
     examples: { url: '/examples', static: true, resolve: false },
+    sandbox: { url: '/sandbox', static: true, resolve: false },
   },
   routes: [
     {
