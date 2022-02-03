@@ -15,7 +15,7 @@ template.innerHTML = `
       justify-content: center;
       align-items: center;
       box-sizing: border-box;
-      background-color: var(--media-control-background, rgba(20,20,30, 0.7));
+      background: var(--media-control-background, rgba(20,20,30, 0.7));
   
       padding: 10px;
 
