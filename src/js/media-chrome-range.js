@@ -28,7 +28,7 @@ const trackStyles = `
   height: var(--track-height);
   border: var(--media-range-track-border, none);
   border-radius: var(--media-range-track-border-radius, 0);
-  background: var(--media-range-track-background-internal, var(--media-range-track-background, #eee));
+  background: var(--media-range-track-background-internal, var(--media-range-track-background-color, #eee));
 
   box-shadow: var(--media-range-track-box-shadow, none);
   transition: var(--media-range-track-transition, none);
@@ -210,7 +210,7 @@ class MediaChromeRange extends window.HTMLElement {
 
     let colorArray = [
       ['var(--media-range-bar-color, #fff)', rangePercent],
-      ['var(--media-range-track-background, #333)', 100],
+      ['var(--media-range-track-background-color, #333)', 100],
     ];
 
     return colorArray;
