@@ -45,7 +45,7 @@ template.innerHTML = `
       display: inline-block;
       vertical-align: middle;
       box-sizing: border-box;
-      background-color: var(--media-control-background, rgba(20,20,30, 0.7));
+      background: var(--media-control-background, rgba(20,20,30, 0.7));
       transition: background-color 0.15s linear;
       height: 44px;
       width: 100px;
@@ -64,7 +64,7 @@ template.innerHTML = `
     }
 
     :host(:hover) {
-      background-color: var(--media-control-hover-background, rgba(50,50,60, 0.7));
+      background: var(--media-control-hover-background, rgba(50,50,60, 0.7));
     }
 
     input[type=range] {

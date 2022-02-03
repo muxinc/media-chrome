@@ -15,7 +15,7 @@ template.innerHTML = `
     height: auto;
     vertical-align: middle;
     box-sizing: border-box;
-    background-color: var(--media-control-background, rgba(20,20,30, 0.7));
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
 
     padding: 10px;
 
@@ -43,7 +43,7 @@ template.innerHTML = `
   }
 
   :host(:hover) {
-    background-color: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
   }
 
   svg, img, ::slotted(svg), ::slotted(img) {
