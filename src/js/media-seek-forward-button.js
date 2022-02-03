@@ -10,7 +10,8 @@ import { getSlotted, updateIconText } from './utils/element-utils.js';
 
 const DEFAULT_SEEK_OFFSET = 30;
 
-const forwardIcon = `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 15 18"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text id="value" class="text" transform="translate(5.9 17.6)">${DEFAULT_SEEK_OFFSET}</text><path d="M7,3V0l5.61,4L7,7.94V5A5.54,5.54,0,0,0,5.1,15.48V17.6A7.5,7.5,0,0,1,7,3Z"/></svg>`;
+// const forwardIcon = `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 15 18"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(5.9 17.6)">${DEFAULT_SEEK_OFFSET}</text><path d="M7,3V0l5.61,4L7,7.94V5A5.54,5.54,0,0,0,5.1,15.48V17.6A7.5,7.5,0,0,1,7,3Z"/></svg>`;
+const forwardIcon = `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="-3 -3 24 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(7.4 17.6)">${DEFAULT_SEEK_OFFSET}</text><path d="M8.52,3V0l5.61,4-5.61,4V5A5.54,5.54,0,0,0,6.6,15.48V17.6A7.5,7.5,0,0,1,8.52,3Z"/></svg>`;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `  

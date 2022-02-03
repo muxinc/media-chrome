@@ -1,5 +1,9 @@
-export const updateIconText = (svg, value, selector = '#value') => {
-  svg.querySelector(selector).textContent = value;
+export const updateIconText = (svg, value, selector = '.value') => {
+  const node = svg.querySelector(selector);
+
+  if (!node) return;
+
+  node.textContent = value;
 };
 
 export const getAllSlotted = (el, name) => {
