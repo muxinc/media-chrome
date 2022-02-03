@@ -25,7 +25,7 @@ template.innerHTML = `
     color: #ffffff;
     text-align: center;
 
-    transition: background-color 0.15s linear;
+    transition: background 0.15s linear;
 
     pointer-events: auto;
     cursor: pointer;

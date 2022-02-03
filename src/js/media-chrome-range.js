@@ -46,7 +46,7 @@ template.innerHTML = `
       vertical-align: middle;
       box-sizing: border-box;
       background: var(--media-control-background, rgba(20,20,30, 0.7));
-      transition: background-color 0.15s linear;
+      transition: background 0.15s linear;
       height: 44px;
       width: 100px;
       padding: 0 10px;
