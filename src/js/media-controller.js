@@ -126,9 +126,6 @@ class MediaController extends MediaContainer {
       },
       MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
         document[fullscreenApi.exit]();
-
-        // Shadow root throws an error for this function
-        // this.getRootNode()[fullscreenApi.exit]();
       },
       MEDIA_ENTER_PIP_REQUEST: () => {
         const docOrRoot = this.getRootNode();
