@@ -94,18 +94,18 @@ class MediaController extends MediaContainer {
       //
       // Generally the fullscreen and PiP API's have the exit methods and enabled
       // flags on the `document`. The active element is accessed on the document
-      // or shadow root. Entering fullscreen or PiP is called on the element. i.e.
+      // or shadow root but Safari doesn't support this.
+      // Entering fullscreen or PiP is called on the element. i.e.
       //
       //   - Document.exitFullscreen()
       //   - Document.fullscreenEnabled
-      //   - Document.fullscreenElement / ShadowRoot.fullscreenElement
+      //   - Document.fullscreenElement / (ShadowRoot.fullscreenElement)
       //   - Element.requestFullscreen()
       //
       MEDIA_ENTER_FULLSCREEN_REQUEST: () => {
-        const docOrRoot = this.getRootNode();
         const media = this.media;
 
-        if (docOrRoot.pictureInPictureElement) {
+        if (document.pictureInPictureElement) {
           // Should be async
           document.exitPictureInPicture();
         }
@@ -128,22 +128,19 @@ class MediaController extends MediaContainer {
         document[fullscreenApi.exit]();
       },
       MEDIA_ENTER_PIP_REQUEST: () => {
-        const docOrRoot = this.getRootNode();
         const media = this.media;
 
         if (!document.pictureInPictureEnabled) return;
 
         // Exit fullscreen if needed
-        if (docOrRoot[fullscreenApi.element]) {
+        if (document[fullscreenApi.element]) {
           document[fullscreenApi.exit]();
         }
 
         media.requestPictureInPicture();
       },
       MEDIA_EXIT_PIP_REQUEST: () => {
-        const docOrRoot = this.getRootNode();
-
-        if (docOrRoot.pictureInPictureElement) {
+        if (document.pictureInPictureElement) {
           // Should be async
           document.exitPictureInPicture();
         }
@@ -268,11 +265,12 @@ class MediaController extends MediaContainer {
         );
       },
       [fullscreenApi.event]: () => {
-        // Might be in the shadow dom
-        const fullscreenEl = this.getRootNode()[fullscreenApi.element];
+        // If media-chrome is in the shadow dom this.getRootNode().host will
+        // be the fullscreen element otherwise this controller will be.
+        let fullscreenEl = document[fullscreenApi.element];
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_IS_FULLSCREEN,
-          fullscreenEl === this
+          fullscreenEl === (this.getRootNode().host ?? this)
         );
       },
       'enterpictureinpicture,leavepictureinpicture': (e) => {
@@ -669,7 +667,7 @@ class MediaController extends MediaContainer {
 
   get isPip() {
     return (
-      this.media && this.media == this.getRootNode().pictureInPictureElement
+      this.media && this.media == document.pictureInPictureElement
     );
   }
 
