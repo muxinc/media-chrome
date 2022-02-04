@@ -24,7 +24,7 @@ const template = `
     --media-range-thumb-background: rgba(255,0,0, 1);
     --media-range-track-height: 4px;
     --media-range-track-transition: height .2s ease;
-    --media-range-track-background: #555;
+    --media-range-track-background-color: #555;
     --media-range-bar-color: rgb(229, 9, 20);
 
     --media-button-icon-width: 50px;
