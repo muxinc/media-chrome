@@ -23,6 +23,7 @@ class MediaVolumeRange extends MediaChromeRange {
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_VOLUME,
       MediaUIAttributes.MEDIA_MUTED,
+      MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE,
     ];
   }
 

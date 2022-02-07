@@ -23,13 +23,18 @@ export const MediaUIEvents = {
 };
 
 export const MediaUIAttributes = {
+  MEDIA_AIRPLAY_UNAVAILABLE: 'media-airplay-unavailable',
   MEDIA_PAUSED: 'media-paused',
   MEDIA_MUTED: 'media-muted',
   MEDIA_VOLUME_LEVEL: 'media-volume-level',
   MEDIA_VOLUME: 'media-volume',
+  MEDIA_VOLUME_UNAVAILABLE: 'media-volume-unavailable',
   MEDIA_IS_PIP: 'media-is-pip',
   MEDIA_CAPTIONS_LIST: 'media-captions-list',
   MEDIA_SUBTITLES_LIST: 'media-subtitles-list',
+  // Include this for styling convenience or exclude since it
+  // can be derived from MEDIA_CAPTIONS_LIST && MEDIA_SUBTITLES_LIST? (CJP)
+  MEDIA_CAPTIONS_UNAVAILABLE: 'media-captions-unavailable',
   MEDIA_CAPTIONS_SHOWING: 'media-captions-showing',
   MEDIA_SUBTITLES_SHOWING: 'media-subtitles-showing',
   MEDIA_IS_FULLSCREEN: 'media-is-fullscreen',
@@ -63,4 +68,9 @@ export const ReadyStates = {
   HAVE_CURRENT_DATA: 2,
   HAVE_FUTURE_DATA: 3,
   HAVE_ENOUGH_DATA: 4,
+};
+
+export const AvailabilityStates = {
+  UNAVAILABLE: 'unavailable',
+  UNSUPPORTED: 'unsupported',
 };

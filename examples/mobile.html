@@ -15,6 +15,14 @@
         margin-top: 20px;
       }
 
+      media-airplay-button[media-airplay-unavailable] {
+        display: none;
+      }
+
+      media-volume-range[media-volume-unavailable] {
+        display: none;
+      }
+
       /* Breaking these up into two selectors to demonstrate how this could work with a new custom "contaienr" element (CJP) */
       media-controller .centered-controls-overlay {
         align-self: stretch;
@@ -99,6 +107,7 @@
           <media-playback-rate-button></media-playback-rate-button>
           <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>
+          <media-airplay-button></media-button-button>
         </media-control-bar>
       </media-controller>
       <div class="examples">
