@@ -55,7 +55,7 @@ ${toExportsStr(config)}
 // REACT MODULE STRING CREATION CODE END
 
 // TYPESCRIPT DECLARATION FILE STRING CREATION CODE BEGIN
-const toImportsAndGenericDefinitionsStr = () => {
+const toTypeImportsAndGenericDefinitionsStr = () => {
   return `import type React from 'react';
 
 import type * as CSS from 'csstype';
@@ -154,7 +154,7 @@ const entryPointsToReactModulesIterable = (
                 }
               );
 
-              const tsDeclStr = `${toImportsAndGenericDefinitionsStr()}\n${declarationsWithExports.join(
+              const tsDeclStr = `${toTypeImportsAndGenericDefinitionsStr()}\n${declarationsWithExports.join(
                 '\n'
               )}`;
 
