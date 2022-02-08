@@ -8,13 +8,18 @@ const { dirname } = path;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// REACT MODULE STRING CREATION CODE BEGIN
-const toPascalCase = (kebabText) => {
-  return kebabText.replace(/(^\w|-\w)/g, clearAndUpper);
-};
+// Notes about the current implementation of the React wrapper compiler:
+// Currently relies on a build having already been generated.
+// Outputs (uncompiled) ES Modules to the dist dir
+// Does not currently support "extras" components
 
+// REACT MODULE STRING CREATION CODE BEGIN
 const clearAndUpper = (kebabText) => {
   return kebabText.replace(/-/, '').toUpperCase();
+};
+
+const toPascalCase = (kebabText) => {
+  return kebabText.replace(/(^\w|-\w)/g, clearAndUpper);
 };
 
 const toImportsStr = ({ importPath }) => {
@@ -24,23 +29,13 @@ import { toNativeProps } from "./common/utils.js";
 `;
 };
 
-// const toReactComponentJSXStr = (config) => {
-//   const { elementName } = config;
-//   const ReactComponentName = toPascalCase(elementName);
-//   return `const ${ReactComponentName} = ({ children, ...props }) => {
-//   return (
-//     <${elementName} {...toNativeProps(props)}>{children}</${elementName}>
-//   );
-// };`;
-// };
-
 const toReactComponentStr = (config) => {
   const { elementName } = config;
   const ReactComponentName = toPascalCase(elementName);
   return `/** @type { import("react").HTMLElement } */
-const ${ReactComponentName} = ({ children, ...props }) => {
-  return React.createElement('${elementName}', toNativeProps(props), children);
-};`;
+const ${ReactComponentName} = React.forwardRef(({ children, ...props }, ref) => {
+  return React.createElement('${elementName}', toNativeProps({ ...props, ref }), children);
+});`;
 };
 
 const toExportsStr = (config) => {
@@ -58,6 +53,48 @@ ${toExportsStr(config)}
   return moduleStr;
 };
 // REACT MODULE STRING CREATION CODE END
+
+// TYPESCRIPT DECLARATION FILE STRING CREATION CODE BEGIN
+const toImportsAndGenericDefinitionsStr = () => {
+  return `import type React from 'react';
+
+import type * as CSS from 'csstype';
+declare global {
+  interface Element {
+    slot?: string;
+  }
+}
+
+declare module 'csstype' {
+  interface Properties {
+    // Should add generic support for any CSS variables
+    [index: \`--\${string}\`]: any;
+  }
+}
+
+type GenericProps = { [k: string]: any };
+type GenericElement = HTMLElement;
+
+type GenericForwardRef = React.ForwardRefExoticComponent<
+  GenericProps & React.RefAttributes<GenericElement | undefined>
+>;
+`;
+};
+
+const toDeclarationStr = (config) => {
+  const { elementName } = config;
+  const ReactComponentName = toPascalCase(elementName);
+  return `declare const ${ReactComponentName}: GenericForwardRef;`;
+};
+
+const toCustomElementReactTypeDeclaration = (config) => {
+  const typeDeclarationStr = `${toDeclarationStr(config)}
+${toExportsStr(config)}
+`;
+
+  return typeDeclarationStr;
+};
+// TYPESCRIPT DECLARATION FILE STRING CREATION CODE END
 
 // BUILD BEGIN
 
@@ -82,30 +119,53 @@ const entryPointsToReactModulesIterable = (
             name: importPathObj.name,
             ext: '.js',
           });
+          const tsDeclPathAbs = path.format({
+            dir: distRoot,
+            name: importPathObj.name,
+            ext: '.d.ts',
+          });
 
           const importPathRelative = path.relative(distRoot, importPathAbs);
           return import(importPath)
             .then((_) => {
               const customElementNames = getDefinedCustomElements();
-              const componentsWithExports = customElementNames
-                .filter(
-                  (name) => !alreadyDefinedCustomElementNames.includes(name)
-                )
-                .map((elementName) => {
+
+              const undefinedCustomElementNames = customElementNames.filter(
+                (name) => !alreadyDefinedCustomElementNames.includes(name)
+              );
+
+              const componentsWithExports = undefinedCustomElementNames.map(
+                (elementName) => {
                   return toCustomElementReactWrapperModule({
                     elementName,
                   });
-                });
+                }
+              );
 
               const moduleStr = `${toImportsStr({
                 importPath: importPathRelative,
-              })}\n\n${componentsWithExports.join('\n')}`;
+              })}\n${componentsWithExports.join('\n')}`;
 
               fs.writeFileSync(modulePathAbs, moduleStr);
+
+              const declarationsWithExports = undefinedCustomElementNames.map(
+                (elementName) => {
+                  return toCustomElementReactTypeDeclaration({ elementName });
+                }
+              );
+
+              const tsDeclStr = `${toImportsAndGenericDefinitionsStr()}\n${declarationsWithExports.join(
+                '\n'
+              )}`;
+
+              fs.writeFileSync(tsDeclPathAbs, tsDeclStr);
+
               alreadyDefinedCustomElementNames = customElementNames;
               return {
                 modulePath: modulePathAbs,
                 moduleContents: moduleStr,
+                tsDeclarationPath: tsDeclPathAbs,
+                tsDeclarationContents: tsDeclStr,
               };
             })
             .then((moduleDef) => {
@@ -158,7 +218,7 @@ const createReactWrapperModules = async ({
         console.log(
           'React module wrapper created!',
           'path (absolute):',
-          modulePath,
+          modulePath
           // '\n',
           // 'contents:',
           // moduleContents
