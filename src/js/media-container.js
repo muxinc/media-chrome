@@ -82,21 +82,24 @@ template.innerHTML = `
       height: 100% !important;
     }
 
-    /* Hide controls when inactive and not paused and not audio */
     ::slotted(:not([slot=media])) {
+      pointer-events: auto;
+    }
+
+    /* Only add these if auto hide is not disabled */
+    ::slotted(:not([slot=media]):not([no-auto-hide])) {
       opacity: 1;
       transition: opacity 0.25s;
-      visibility: visible;
-      pointer-events: auto;
+    }
+
+    /* Hide controls when inactive, not paused, not audio and auto hide not disabled */
+    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) ::slotted(:not([slot=media]):not([no-auto-hide])) {
+      opacity: 0;
+      transition: opacity 1s;
     }
 
     ::slotted(media-control-bar)  {
       align-self: stretch;
-    }
-
-    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([audio])) ::slotted(:not([slot=media]):not([no-auto-hide])) {
-      opacity: 0;
-      transition: opacity 1s;
     }
   </style>
 
