@@ -47,17 +47,22 @@ class MediaController extends MediaContainer {
   constructor() {
     super();
 
-    this._volumeUnavailable;
-    hasVolumeSupportAsync().then(supported => {
-      if (!supported) {
+    if (!airplaySupported) {
+      this._airplayUnavailable = AvailabilityStates.UNSUPPORTED;
+    }
+    if (!pipSupported) {
+      this._pipUnavailable = AvailabilityStates.UNSUPPORTED;
+    }
+    if (volumeSupported !== undefined) {
+      if (!volumeSupported) {
         this._volumeUnavailable = AvailabilityStates.UNSUPPORTED;
       }
-      this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, this.volumeUnavailable);
-    });
-
-    this._airplayUnavailable;
-    if (!window.WebKitPlaybackTargetAvailabilityEvent) {
-      this._airplayUnavailable = AvailabilityStates.UNSUPPORTED;
+    } else {
+      volumeSupportPromise.then(() => {
+        if (!volumeSupported) {
+          this._volumeUnavailable = AvailabilityStates.UNSUPPORTED;
+        }
+      });
     }
 
     // Include this for styling convenience or exclude since it
@@ -328,13 +333,17 @@ class MediaController extends MediaContainer {
         } else if (event?.availability === 'not-available') {
           this._airplayUnavailable = AvailabilityStates.UNAVAILABLE;
         }
-        this.propagateMediaState(MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE, this.airplayUnavailable);
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE,
+          this.airplayUnavailable
+        );
       };
       // NOTE: only adding this if airplay is supported, in part to avoid unnecessary battery consumption per
       // Apple docs recommendations (See: https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls)
       // For a more advanced solution, we could monitor for media state receivers that "care" about airplay support and add/remove
       // whenever these are added/removed. (CJP)
-      this._mediaStatePropagators['webkitplaybacktargetavailabilitychanged'] = airplaySupporHandler;
+      this._mediaStatePropagators['webkitplaybacktargetavailabilitychanged'] =
+        airplaySupporHandler;
     }
 
     /**
@@ -515,6 +524,11 @@ class MediaController extends MediaContainer {
       MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE,
       this.airplayUnavailable
     );
+    propagateMediaState(
+      [el],
+      MediaUIAttributes.MEDIA_PIP_UNAVAILABLE,
+      this.pipUnavailable,
+    );
 
     // TODO: Update to propagate all states when registered
     if (this.media) {
@@ -538,22 +552,10 @@ class MediaController extends MediaContainer {
         MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
         stringifyTextTrackList(this.showingSubtitleTracks) || undefined
       );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_PAUSED,
-        this.paused
-      );
+      propagateMediaState([el], MediaUIAttributes.MEDIA_PAUSED, this.paused);
       // propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_MUTED,
-        this.muted
-      );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_VOLUME,
-        this.volume
-      );
+      propagateMediaState([el], MediaUIAttributes.MEDIA_MUTED, this.muted);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME, this.volume);
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_VOLUME_LEVEL,
@@ -731,6 +733,10 @@ class MediaController extends MediaContainer {
     this.dispatchEvent(
       new window.CustomEvent(MEDIA_PREVIEW_REQUEST, { detail: time })
     );
+  }
+
+  get pipUnavailable() {
+    return this._pipUnavailable;
   }
 }
 
@@ -937,26 +943,32 @@ const monitorForMediaStateReceivers = (
 };
 
 let testMediaEl;
-export const getTestMediaEl = (nodeName = "video") => {
+export const getTestMediaEl = (nodeName = 'video') => {
   if (testMediaEl) return testMediaEl;
-  if (typeof window !== "undefined") {
-    testMediaEl = document.createElement(nodeName);
-  }
+  testMediaEl = document?.createElement?.(nodeName);
   return testMediaEl;
 };
 
-export const hasVolumeSupportAsync = async (
-  mediaEl = getTestMediaEl()
-) => {
+export const hasVolumeSupportAsync = async (mediaEl = getTestMediaEl()) => {
   if (!mediaEl) return false;
   const prevVolume = mediaEl.volume;
   mediaEl.volume = prevVolume / 2 + 0.1;
-  return new Promise((resolve, _reject) => {
-    setTimeout(() => {
-      resolve(mediaEl.volume !== prevVolume);
-    }, 0);
+  return Promise.resolve().then(() => {
+    mediaEl.volume !== prevVolume;
   });
 };
+
+export const hasPipSupport = (mediaEl = getTestMediaEl()) =>
+  typeof mediaEl?.requestPictureInPicture === 'function';
+
+const pipSupported = hasPipSupport();
+
+let volumeSupported;
+const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
+  volumeSupported = supported;
+});
+
+const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
 
 defineCustomElement('media-controller', MediaController);
 

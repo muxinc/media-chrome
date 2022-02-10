@@ -24,6 +24,7 @@ export const MediaUIEvents = {
 
 export const MediaUIAttributes = {
   MEDIA_AIRPLAY_UNAVAILABLE: 'media-airplay-unavailable',
+  MEDIA_PIP_UNAVAILABLE: 'media-pip-unavailable',
   MEDIA_PAUSED: 'media-paused',
   MEDIA_MUTED: 'media-muted',
   MEDIA_VOLUME_LEVEL: 'media-volume-level',
