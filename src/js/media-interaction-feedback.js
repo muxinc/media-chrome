@@ -99,10 +99,6 @@ class MediaInteractionFeedback extends window.HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
-
-  connectedCallback() {
-    this.setAttribute(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES, this.constructor.observedAttributes.join(' '));
-  }
 }
 
 defineCustomElement('media-interaction-feedback', MediaInteractionFeedback);
