@@ -15,6 +15,7 @@ import {
 } from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
+import { containsWithShadow } from './utils/element-utils.js';
 
 import {
   MediaUIEvents,
@@ -666,9 +667,10 @@ class MediaController extends MediaContainer {
   }
 
   get isPip() {
-    return (
-      this.media && this.media == document.pictureInPictureElement
-    );
+    const pipElement =
+      this.getRootNode().pictureInPictureElement ??
+      document.pictureInPictureElement;
+    return this.media && containsWithShadow(this.media, pipElement);
   }
 
   requestPictureInPicture() {
