@@ -257,6 +257,9 @@ class MediaController extends MediaContainer {
       'play,pause': () => {
         this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, this.paused);
       },
+      playing: () => {
+        this.propagateMediaState(MediaUIAttributes.MEDIA_HAS_PLAYED, !this.media?.paused);
+      }, 
       volumechange: () => {
         this.propagateMediaState(MediaUIAttributes.MEDIA_MUTED, this.muted);
         this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME, this.volume);
