@@ -24,6 +24,7 @@ export const MediaUIEvents = {
 
 export const MediaUIAttributes = {
   MEDIA_PAUSED: 'media-paused',
+  MEDIA_HAS_PLAYED: 'media-has-played',
   MEDIA_MUTED: 'media-muted',
   MEDIA_VOLUME_LEVEL: 'media-volume-level',
   MEDIA_VOLUME: 'media-volume',
