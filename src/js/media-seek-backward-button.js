@@ -58,6 +58,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
         this.setAttribute('seek-offset', DEFAULT_SEEK_OFFSET);
       }
       updateSeekIconValue(this);
+      updateAriaLabel(this);
     }
   }
 
