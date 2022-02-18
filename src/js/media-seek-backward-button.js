@@ -22,7 +22,7 @@ const DEFAULT_TIME = 0;
 
 const updateAriaLabel = (el) => {
   // NOTE: seek direction is described via text, so always use positive numeric representation
-  const seekOffset = Math.abs(DEFAULT_SEEK_OFFSET);
+  const seekOffset = Math.abs(+el.getAttribute('seek-offset'));
   const label = verbs.SEEK_BACK_N_SECS({ seekOffset });
   el.setAttribute('aria-label', label);
 };
