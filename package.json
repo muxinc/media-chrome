@@ -15,7 +15,7 @@
     "build": "snowpack build --config snowpack.prod.config.cjs",
     "dev": "snowpack dev --config snowpack.dev.config.cjs",
     "start": "yarn dev",
-    "test": "web-test-runner --coverage",
+    "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
     "publish-patch": "yarn run build && np patch --no-tests --any-branch"
   },
   "repository": {
