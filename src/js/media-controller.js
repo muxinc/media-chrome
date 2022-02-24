@@ -943,9 +943,9 @@ const monitorForMediaStateReceivers = (
 };
 
 let testMediaEl;
-export const getTestMediaEl = (nodeName = 'video') => {
+export const getTestMediaEl = () => {
   if (testMediaEl) return testMediaEl;
-  testMediaEl = document?.createElement?.(nodeName);
+  testMediaEl = document?.createElement?.('video');
   return testMediaEl;
 };
 
@@ -954,7 +954,7 @@ export const hasVolumeSupportAsync = async (mediaEl = getTestMediaEl()) => {
   const prevVolume = mediaEl.volume;
   mediaEl.volume = prevVolume / 2 + 0.1;
   return Promise.resolve().then(() => {
-    mediaEl.volume !== prevVolume;
+    return mediaEl.volume !== prevVolume;
   });
 };
 
@@ -966,6 +966,7 @@ const pipSupported = hasPipSupport();
 let volumeSupported;
 const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
   volumeSupported = supported;
+  return volumeSupported;
 });
 
 const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
