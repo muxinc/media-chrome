@@ -12,6 +12,19 @@
       media-loading-indicator {
         --media-loading-icon-width: 100px;
       }
+
+      media-airplay-button[media-airplay-unavailable] {
+        display: none;
+      }
+
+      media-volume-range[media-volume-unavailable] {
+        display: none;
+      }
+
+      media-pip-button[media-pip-unavailable] {
+        display: none;
+      }
+
     </style>
   </head>
   <body>
@@ -53,6 +66,7 @@
           <media-playback-rate-button></media-playback-rate-button>
           <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>
+          <media-airplay-button></media-airplay-button>
         </media-control-bar>
       </media-controller>
       <div class="examples">

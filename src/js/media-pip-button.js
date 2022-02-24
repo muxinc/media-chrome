@@ -37,7 +37,7 @@ const updateAriaLabel = (el) => {
 
 class MediaPipButton extends MediaChromeButton {
   static get observedAttributes() {
-    return [...super.observedAttributes, MediaUIAttributes.MEDIA_IS_PIP];
+    return [...super.observedAttributes, MediaUIAttributes.MEDIA_IS_PIP, MediaUIAttributes.MEDIA_PIP_UNAVAILABLE];
   }
 
   constructor(options = {}) {
