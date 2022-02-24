@@ -61,6 +61,7 @@ class MediaController extends MediaContainer {
       volumeSupportPromise.then(() => {
         if (!volumeSupported) {
           this._volumeUnavailable = AvailabilityStates.UNSUPPORTED;
+          this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, this.volumeUnavailable);
         }
       });
     }
@@ -953,8 +954,10 @@ export const hasVolumeSupportAsync = async (mediaEl = getTestMediaEl()) => {
   if (!mediaEl) return false;
   const prevVolume = mediaEl.volume;
   mediaEl.volume = prevVolume / 2 + 0.1;
-  return Promise.resolve().then(() => {
-    return mediaEl.volume !== prevVolume;
+  return new Promise((resolve, _reject) => {
+    setTimeout(() => {
+      resolve(mediaEl.volume !== prevVolume);
+    }, 0)
   });
 };
 
