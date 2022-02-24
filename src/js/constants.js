@@ -33,9 +33,6 @@ export const MediaUIAttributes = {
   MEDIA_IS_PIP: 'media-is-pip',
   MEDIA_CAPTIONS_LIST: 'media-captions-list',
   MEDIA_SUBTITLES_LIST: 'media-subtitles-list',
-  // Include this for styling convenience or exclude since it
-  // can be derived from MEDIA_CAPTIONS_LIST && MEDIA_SUBTITLES_LIST? (CJP)
-  MEDIA_CAPTIONS_UNAVAILABLE: 'media-captions-unavailable',
   MEDIA_CAPTIONS_SHOWING: 'media-captions-showing',
   MEDIA_SUBTITLES_SHOWING: 'media-subtitles-showing',
   MEDIA_IS_FULLSCREEN: 'media-is-fullscreen',
