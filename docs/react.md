@@ -63,7 +63,6 @@ export const MyComponent = () => {
         <MediaTimeDisplay showDuration></MediaTimeDisplay>
         <MediaMuteButton></MediaMuteButton>
         <MediaVolumeRange></MediaVolumeRange>
-        <MediaPlaybackRateButton></MediaPlaybackRateButton>
       </MediaControlBar>
     </MediaController>
   );
