@@ -222,6 +222,10 @@ Be sure to include the `slot="media"` attribute in the player's tag.
 </media-controller>
 ```
 
+## Use with React
+
+While you technically can use the Media Chrome directly with React, it can sometimes be a bit clunky to work with Web Components in React, and some things just don't feel idiomatic to the framework. To help with this, we've published some React wrapper components for all of our core Elements. You can read up on using them [here](./docs/react.md).
+
 ## Why?
 
 More often than not web designers and developers just use the default media player controls, even when creating a beautiful custom design theme. It's hard not to.
