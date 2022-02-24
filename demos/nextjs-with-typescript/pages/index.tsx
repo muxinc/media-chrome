@@ -17,7 +17,7 @@ import {
   MediaAirplayButton,
   MediaPipButton,
   MediaFullscreenButton,
-} from "media-chrome/dist/react/index";
+} from "media-chrome/dist/react";
 
 const primaryColor = "white";
 const chromeStyles = {
