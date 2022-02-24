@@ -6,7 +6,7 @@ const ReactPropToAttrNameMap = {
   viewBox: 'viewBox',
 };
 
-const toKebabCase = (string) =>
+export const toKebabCase = (string) =>
   string.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
 
 export const toNativeAttrName = (propName, propValue) => {
@@ -16,12 +16,9 @@ export const toNativeAttrName = (propName, propValue) => {
   if (/[A-Z]/.test(propName)) return toKebabCase(propName);
   return propName;
 };
-export const toStyleAttr = (x) => x;
 
-export const toNativeAttrValue = (propValue, propName) => {
+export const toNativeAttrValue = (propValue, _propName) => {
   if (typeof propValue === 'boolean') return '';
-  if (propName === 'style' && typeof propValue === 'object')
-    return toStyleAttr(propValue);
   return propValue;
 };
 
