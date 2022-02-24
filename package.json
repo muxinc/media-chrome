@@ -44,6 +44,7 @@
     "@web/test-runner": "^0.13.20",
     "np": "^7.6.0",
     "prettier": "^2.5.1",
+    "react": "^17.0.2",
     "rimraf": "^3.0.2",
     "sinon": "^11.1.2",
     "snowpack": "^3.8.3"
