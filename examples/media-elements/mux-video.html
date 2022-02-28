@@ -19,10 +19,15 @@
           metadata-video-id="video-id-12345"
           metadata-video-title="Mad Max: Fury Road Trailer"
           metadata-viewer-user-id="user-id-6789"
-          stream-type="vod"
-          autoplay
+          stream-type="on-demand"
           muted
         >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+          />
         </mux-video>
         <media-control-bar>
           <media-play-button></media-play-button>

@@ -16,17 +16,13 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     :host {
-      box-sizing: border-box;
       background-color: #000;
-      width: 284px;
-      height: 160px;
-      overflow: hidden;
+      height: auto;
+      width: auto;
     }
 
     img {
-      position: absolute;
-      left: 0;
-      top: 0;
+      object-fit: none;
     }
   </style>
   <img crossorigin loading="eager" decoding="async" />
@@ -99,18 +95,15 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE
     );
     if (!(mediaPreviewCoordsStr && mediaPreviewImage)) return;
-    // const { offsetWidth } = this;
-    const offsetWidth = this.offsetWidth;
     const img = this.shadowRoot.querySelector('img');
-    const [x, y, w, _h] = mediaPreviewCoordsStr
+    const [x, y, w, h] = mediaPreviewCoordsStr
       .split(/\s+/)
       .map((coord) => +coord);
     const src = mediaPreviewImage;
-    const scale = offsetWidth / w || 1;
 
     const resize = () => {
-      img.style.width = `${scale * img.naturalWidth}px`;
-      img.style.height = `${scale * img.naturalHeight}px`;
+      img.style.height = `${h}px`;
+      img.style['aspect-ratio'] = `${w} / ${h}`;
     };
 
     if (img.src !== src) {
@@ -120,8 +113,7 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
     }
 
     resize();
-    img.style.left = `-${scale * x}px`;
-    img.style.top = `-${scale * y}px`;
+    img.style['object-position'] = `-${x}px -${y}px`
   }
 }
 

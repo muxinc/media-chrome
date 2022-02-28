@@ -26,21 +26,16 @@ template.innerHTML = `
   <style>
     #thumbnailContainer {
       display: none;
-      position: absolute;
-      top: 0;
     }
 
     media-thumbnail-preview {
+      /* Scale the thumbnail preview to 50% and reposition appropriately to not take up too much real-estate. */
+      transform: scale(0.5) translateY(50%) translateX(-100%);
       position: absolute;
-      bottom: 10px;
+      bottom: calc(100% + 5px);
       border: 2px solid #fff;
       border-radius: 2px;
       background-color: #000;
-      width: 160px;
-      height: 90px;
-
-      /* Negative offset of half to center on the handle */
-      margin-left: -80px;
     }
 
     /* Can't get this working. Trying a downward triangle. */
