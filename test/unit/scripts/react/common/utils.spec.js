@@ -1,7 +1,7 @@
 import { expect } from '@open-wc/testing';
-import { toNativeProps } from '../../../../../tools/react/common/utils';
+import { toNativeProps } from '../../../../../scripts/react/common/utils';
 
-describe('module: tools/react/common/utils', () => {
+describe('module: scripts/react/common/utils', () => {
   describe('toNativeProps()', () => {
     it('should rename camelCase props to kebab-case for generic props', async () => {
       const props = {
