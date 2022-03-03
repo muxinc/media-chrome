@@ -278,10 +278,10 @@ class MediaController extends MediaContainer {
 
     // Pass media state to child and associated control elements
     this._mediaStatePropagators = {
-      'play,pause': () => {
+      'play,pause,emptied': () => {
         this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, this.paused);
       },
-      playing: () => {
+      'playing,emptied': () => {
         this.propagateMediaState(MediaUIAttributes.MEDIA_HAS_PLAYED, !this.media?.paused);
       }, 
       volumechange: () => {
@@ -319,7 +319,7 @@ class MediaController extends MediaContainer {
           this.currentTime
         );
       },
-      'durationchange,loadedmetadata': () => {
+      'durationchange,loadedmetadata,emptied': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_DURATION,
           this.duration
@@ -331,7 +331,7 @@ class MediaController extends MediaContainer {
           this.playbackRate
         );
       },
-      'waiting,playing': () => {
+      'waiting,playing,emptied': () => {
         const isLoading = this.media?.readyState < 3;
         this.propagateMediaState(MediaUIAttributes.MEDIA_LOADING, isLoading);
       },
