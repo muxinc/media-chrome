@@ -20,6 +20,11 @@
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
     "publish-patch": "yarn run build && np patch --no-tests --any-branch"
   },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "singleQuote": true
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/muxinc/media-chrome.git"
