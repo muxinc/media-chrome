@@ -18,7 +18,9 @@ esbuild
       port: 8010,
     },
     {
-      entryPoints: [...walkSync('src/js/')],
+      entryPoints: [...walkSync('src/js/')].filter((entry) =>
+        entry.endsWith('.js')
+      ),
       outdir: 'dist',
       target: 'es2019',
     }
