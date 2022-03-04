@@ -39,7 +39,7 @@ template.innerHTML = `
       background: none;
     }
 
-    :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer]) {
+    :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer],[part~=poster-layer])  {
       pointer-events: auto;
     }
     
@@ -53,8 +53,9 @@ template.innerHTML = `
       background: none;
     }
 
-    /* Position the media element to fill the container */
-    ::slotted([slot=media]) {
+    /* Position the media and poster elements to fill the container */
+    ::slotted([slot=media]),
+    ::slotted([slot=poster]) {
       width: 100%;
       height: 100%;
     }
@@ -105,6 +106,9 @@ template.innerHTML = `
 
   <span part="layer media-layer">
     <slot name="media"></slot>
+  </span>
+  <span part="layer poster-layer">
+    <slot name="poster"></slot>
   </span>
   <span part="layer gesture-layer">
     <slot name="gestures-chrome"></slot>

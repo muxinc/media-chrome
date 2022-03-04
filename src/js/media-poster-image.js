@@ -32,8 +32,8 @@ template.innerHTML = `
     }
   </style>
 
-  <div part="placeholder"></div>
-  <div part="image"></div>
+  <div id="placeholder"></div>
+  <div id="image"></div>
 `;
 
 const setBackgroundImage = (el, image) => {
@@ -51,8 +51,8 @@ class MediaPosterImage extends window.HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    this.placeholder = this.shadowRoot.querySelector('[part=placeholder]');
-    this.image = this.shadowRoot.querySelector('[part=image]');
+    this.placeholder = this.shadowRoot.querySelector('#placeholder');
+    this.image = this.shadowRoot.querySelector('#image');
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
