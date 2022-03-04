@@ -43,6 +43,11 @@ template.innerHTML = `
       pointer-events: auto;
     }
     
+    ::slotted([slot=poster]) {
+      width: 100%;
+      height: 100%;
+    }
+    
     :host(:not([audio])) *[part~=layer][part~=centered-layer] {
       align-items: center;
       justify-content: center;
