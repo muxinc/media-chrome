@@ -13,7 +13,6 @@ template.innerHTML = `
       height: 100%;
       width: 100%;
       position: relative;
-      pointer-events: none;
     }
 
     div {
