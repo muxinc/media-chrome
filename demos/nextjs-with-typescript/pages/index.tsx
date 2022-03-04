@@ -1,6 +1,6 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import styles from "../styles/Home.module.css";
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import styles from '../styles/Home.module.css';
 import {
   MediaController,
   MediaControlBar,
@@ -17,13 +17,14 @@ import {
   MediaAirplayButton,
   MediaPipButton,
   MediaFullscreenButton,
-} from "media-chrome/dist/react";
+  MediaPosterImage,
+} from 'media-chrome/dist/react';
 
-const primaryColor = "white";
+const primaryColor = 'white';
 const chromeStyles = {
-  "--media-icon-color": primaryColor,
-  "--media-range-thumb-background": primaryColor,
-  "--media-range-bar-color": primaryColor,
+  '--media-icon-color': primaryColor,
+  '--media-range-thumb-background': primaryColor,
+  '--media-range-bar-color': primaryColor,
   color: primaryColor,
 };
 
@@ -38,10 +39,13 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>
-          Welcome to <a href="https://www.media-chrome.org" target="_blank">Media Chrome!</a>
+          Welcome to{' '}
+          <a href="https://www.media-chrome.org" target="_blank">
+            Media Chrome!
+          </a>
         </h1>
         <MediaController
-          ref={(node: HTMLElement) => console.log("ref", node)}
+          ref={(node: HTMLElement) => console.log('ref', node)}
           style={chromeStyles}
         >
           <video
@@ -64,9 +68,14 @@ const Home: NextPage = () => {
               src="./vtt/en-cc.vtt"
             />
           </video>
+          <MediaPosterImage
+            slot="poster"
+            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
+            placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
+          ></MediaPosterImage>
           <div slot="centered-chrome" no-auto-hide="">
             <MediaLoadingIndicator
-              style={{ "--media-loading-icon-width": 80 }}
+              style={{ '--media-loading-icon-width': 80 }}
             ></MediaLoadingIndicator>
           </div>
           <MediaControlBar>
