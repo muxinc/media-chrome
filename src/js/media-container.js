@@ -39,7 +39,7 @@ template.innerHTML = `
       background: none;
     }
 
-    :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer],[part~=poster-layer])  {
+    :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer])  {
       pointer-events: auto;
     }
     
