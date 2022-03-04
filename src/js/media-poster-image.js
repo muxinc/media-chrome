@@ -10,29 +10,29 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     :host {
-      height: 100%;
-      width: 100%;
-      position: relative;
+      pointer-events: none;
+      display: inline-block;
+      box-sizing: border-box;
+  
+      width: auto;
+      height: auto;
     }
-
-    div {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-position: center;
+  
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      min-width: 100%;
+      min-height: 100%;
       background-size: cover;
       background-repeat: no-repeat;
     }
-
-    :host([${MediaUIAttributes.MEDIA_HAS_PLAYED}]) div {
+  
+    :host([${MediaUIAttributes.MEDIA_HAS_PLAYED}]) img {
       display: none;
     }
   </style>
 
-  <div id="placeholder"></div>
-  <div id="image"></div>
+  <img aria-hidden="true" id="image"/>
 `;
 
 const setBackgroundImage = (el, image) => {
@@ -50,17 +50,16 @@ class MediaPosterImage extends window.HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
-    this.placeholder = this.shadowRoot.querySelector('#placeholder');
     this.image = this.shadowRoot.querySelector('#image');
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
     if (attrName === 'src') {
-      setBackgroundImage(this.image, newValue);
+      this.image.setAttribute('src', newValue);
     }
 
     if (attrName === 'placeholder-src') {
-      setBackgroundImage(this.placeholder, newValue);
+      setBackgroundImage(this.image, newValue);
     }
   }
 }
