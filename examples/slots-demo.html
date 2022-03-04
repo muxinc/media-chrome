@@ -33,6 +33,12 @@
       --media-control-background: none;
     }
 
+    media-controller > [slot='poster'],
+    .poster {
+      background-color: rgba(253, 243, 246, 0.75);
+      border: 1px solid rgb(253, 243, 246);
+    }
+
     media-controller > [slot='top-chrome'],
     .top-chrome {
       background-color: rgba(179, 236, 184, 0.75);
@@ -92,6 +98,11 @@
             preload="none"
             crossorigin
           ></video>
+          <div
+            slot="poster"
+            class="first"
+            style="font-size: 128px"
+          >This is a poster.</div>
           <span slot="centered-chrome">
             <media-seek-backward-button></media-seek-backward-button>
             <media-play-button> </media-play-button>
@@ -228,6 +239,15 @@
               </label>
             </div>
           </li>
+          <li>
+            <div>
+              <input id="posterCheckbox" type="checkbox" checked />
+              <label for="posterChromeCheckbox">
+                <span class="legend-item poster"></span>
+                Poster Slotted Elements (<code>&lt;div/&gt;</code>)
+              </label>
+            </div>
+          </li>
         </ul>
         <div></div>
       </section>
@@ -243,6 +263,7 @@
         bottomChromeCheckboxFirst: 'media-controller > :not([slot]).first',
         bottomChromeCheckboxSecond: 'media-controller > :not([slot]).second',
         centeredChromeCheckbox: "media-controller > [slot='centered-chrome']",
+        posterCheckbox: "media-controller > [slot='poster']",
       };
 
       Array.from(
