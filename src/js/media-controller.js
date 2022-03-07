@@ -206,7 +206,10 @@ class MediaController extends MediaContainer {
 
         // Since this isn't really "global state", we may want to consider moving this "down" to the component level,
         // probably pulled out into its own module/set of functions (CJP)
-        const url = new URL(cue.text);
+        const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
+          ? media.querySelector('track[label="thumbnails"]')?.src
+          : undefined;
+        const url = new URL(cue.text, base);
         const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
