@@ -23,6 +23,7 @@ import {
   TextTrackKinds,
   TextTrackModes,
   AvailabilityStates,
+  AttributeToStateChangeEventMap,
 } from './constants.js';
 import {
   stringifyTextTrackList,
