@@ -12,7 +12,7 @@ import {
   Window as window,
   Document as document,
 } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { MediaUIEvents, MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
 
 const template = document.createElement('template');
@@ -278,6 +278,11 @@ class MediaContainer extends window.HTMLElement {
 
     const scheduleInactive = () => {
       this.removeAttribute('user-inactive');
+      const evt = new window.CustomEvent(
+        MediaStateChangeEvents.USER_INACTIVE, 
+        { composed: true, bubbles: true, detail: false }
+      );
+      this.dispatchEvent(evt);
       window.clearTimeout(this.inactiveTimeout);
 
       // Setting autohide to -1 turns off autohide
@@ -285,6 +290,11 @@ class MediaContainer extends window.HTMLElement {
 
       this.inactiveTimeout = window.setTimeout(() => {
         this.setAttribute('user-inactive', 'user-inactive');
+        const evt = new window.CustomEvent(
+          MediaStateChangeEvents.USER_INACTIVE, 
+          { composed: true, bubbles: true, detail: true }
+        );
+        this.dispatchEvent(evt);
       }, this.autohide * 1000);
     };
 
@@ -306,6 +316,11 @@ class MediaContainer extends window.HTMLElement {
 
       // Stay visible if hovered over control bar
       this.removeAttribute('user-inactive');
+      const evt = new window.CustomEvent(
+        MediaStateChangeEvents.USER_INACTIVE, 
+        { composed: true, bubbles: true, detail: false }
+      );
+      this.dispatchEvent(evt);
       window.clearTimeout(this.inactiveTimeout);
 
       // If hovering over the media element we're free to make inactive
@@ -316,8 +331,13 @@ class MediaContainer extends window.HTMLElement {
 
     // Immediately hide if mouse leaves the container
     this.addEventListener('mouseout', (e) => {
-      if (this.autohide > -1)
-        this.setAttribute('user-inactive', 'user-inactive');
+      if (this.autohide < 0) return;
+      this.setAttribute('user-inactive', 'user-inactive');
+      const evt = new window.CustomEvent(
+        MediaStateChangeEvents.USER_INACTIVE, 
+        { composed: true, bubbles: true, detail: true }
+      );
+      this.dispatchEvent(evt);
     });
   }
 

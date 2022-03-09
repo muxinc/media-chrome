@@ -370,7 +370,7 @@ class MediaController extends MediaContainer {
      * monitored (and also probably how it's being monitored) (CJP)
      */
     this._textTrackMediaStatePropagators = {
-      'addtrack,removetrack': () => {
+      'addtrack,removetrack,loadstart': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_CAPTIONS_LIST,
           stringifyTextTrackList(this.captionTracks) || undefined
@@ -474,6 +474,11 @@ class MediaController extends MediaContainer {
 
   propagateMediaState(stateName, state) {
     propagateMediaState(this.mediaStateReceivers, stateName, state);
+    const evt = new window.CustomEvent(
+      AttributeToStateChangeEventMap[stateName],
+      { composed: true, bubbles: true, detail: state }
+    );
+    this.dispatchEvent(evt);
   }
 
   associateElement(element) {
