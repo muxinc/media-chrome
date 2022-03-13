@@ -45,6 +45,7 @@ export const MediaUIAttributes = {
   MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
   MEDIA_CONTROLLER: 'media-controller',
   MEDIA_LOADING: 'media-loading',
+  MEDIA_BUFFERED: 'media-buffered',
 };
 
 export const TextTrackKinds = {

@@ -331,6 +331,12 @@ class MediaController extends MediaContainer {
           this.duration
         );
       },
+      'progress,emptied': () => {
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_BUFFERED,
+          serializeTimeRanges(this.media?.buffered)
+        );
+      },
       ratechange: () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_PLAYBACK_RATE,
@@ -992,6 +998,15 @@ const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
 });
 
 const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
+
+function serializeTimeRanges(timeRanges = []) {
+  return Array.from(timeRanges)
+    .map((_, i) => [
+      Number(timeRanges.start(i).toFixed(2)),
+      Number(timeRanges.end(i).toFixed(2)),
+    ])
+    .join(' ');
+}
 
 defineCustomElement('media-controller', MediaController);
 

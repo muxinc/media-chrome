@@ -81,6 +81,7 @@ class MediaTimeRange extends MediaChromeRange {
       MediaUIAttributes.MEDIA_DURATION,
       MediaUIAttributes.MEDIA_CURRENT_TIME,
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
+      MediaUIAttributes.MEDIA_BUFFERED,
     ];
   }
 
@@ -127,6 +128,9 @@ class MediaTimeRange extends MediaChromeRange {
       updateAriaValueText(this);
       this.updateBar();
     }
+    if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
+      this.updateBar();
+    }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
@@ -147,6 +151,17 @@ class MediaTimeRange extends MediaChromeRange {
   //   // this.range.removeEventListener('change', this.playIfNotReady);
   //   // TODO: Reset value after media is unset
   // }
+
+  get mediaDuration() {
+    return +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+  }
+
+  get mediaBuffered() {
+    const buffered = this.getAttribute(MediaUIAttributes.MEDIA_BUFFERED);
+    if (buffered) {
+      return buffered.split(' ').map((timePair) => timePair.split(','));
+    }
+  }
 
   /* Add a buffered progress bar */
   getBarColors() {
