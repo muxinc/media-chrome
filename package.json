@@ -2,8 +2,9 @@
   "name": "media-chrome",
   "version": "0.16.3",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
-  "main": "dist/index.js",
   "type": "module",
+  "main": "dist/index.js",
+  "customElements": "dist/custom-elements.json",
   "files": [
     "dist/*",
     "README.md",
@@ -18,6 +19,7 @@
     "build:cjs": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=cjs --outdir=dist/cjs",
     "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome && yarn size",
     "build:react": "node ./scripts/react/build.js",
+    "build:manifest": "cem analyze",
     "build": "yarn build:esm && yarn build:cjs && yarn build:iife && yarn build:react && yarn build:types",
     "watch": "run-p watch:types watch:esbuild",
     "watch:types": "yarn build:types -w",
@@ -48,6 +50,7 @@
   },
   "homepage": "https://github.com/muxinc/media-chrome#readme",
   "devDependencies": {
+    "@custom-elements-manifest/analyzer": "^0.5.7",
     "@open-wc/testing": "^3.1.6",
     "@web/test-runner": "^0.15.0",
     "esbuild": "^0.15.12",
