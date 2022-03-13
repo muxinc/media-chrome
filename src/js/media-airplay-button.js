@@ -16,6 +16,13 @@ slotTemplate.innerHTML = `
   <slot name="airplay">${airplayIcon}</slot>
 `;
 
+/**
+ * @attr {(unavailable|unsupported)} media-airplay-unavailable
+ *
+ * @slot airplay
+ *
+ * @event {CustomEvent} mediaairplayrequest
+ */
 class MediaAirplayButton extends MediaChromeButton {
   static get observedAttributes() {
     return [
