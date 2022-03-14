@@ -7,6 +7,7 @@ import MediaChromeButton from './media-chrome-button.js';
 import MediaController from './media-controller.js';
 import MediaChromeRange from './media-chrome-range.js';
 import MediaControlBar from './media-control-bar.js';
+import MediaControlStrip from './media-control-strip.js';
 import MediaCurrentTimeDisplay from './media-current-time-display.js';
 import MediaDurationDisplay from './media-duration-display.js';
 import MediaTimeDisplay from './media-time-display.js';
@@ -56,6 +57,7 @@ export {
   MediaController,
   MediaChromeRange,
   MediaControlBar,
+  MediaControlStrip,
   MediaCurrentTimeDisplay,
   MediaDurationDisplay,
   MediaTimeDisplay,

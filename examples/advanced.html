@@ -63,8 +63,10 @@
           <media-play-button></media-play-button>
           <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
           <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
-          <media-mute-button></media-mute-button>
-          <media-volume-range></media-volume-range>
+          <media-control-strip>
+            <media-mute-button slot="open-button"></media-mute-button>
+            <media-volume-range></media-volume-range>
+          </media-control-strip>
           <media-time-range></media-time-range>
           <media-time-display show-duration remaining></media-time-display>
           <media-captions-button default-showing></media-captions-button>
