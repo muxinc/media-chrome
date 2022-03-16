@@ -330,7 +330,7 @@ class MediaContainer extends window.HTMLElement {
     });
 
     // Immediately hide if mouse leaves the container
-    this.addEventListener('mouseout', (e) => {
+    this.addEventListener('mouseleave', (e) => {
       if (this.autohide < 0) return;
       this.setAttribute('user-inactive', 'user-inactive');
       const evt = new window.CustomEvent(
