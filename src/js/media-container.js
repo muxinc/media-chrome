@@ -88,7 +88,8 @@ template.innerHTML = `
       height: 100% !important;
     }
 
-    ::slotted(:not([slot=media])) {
+    /* Need to revisit this. May be too presumptuous for user-inactive behavior */
+    ::slotted(:not([slot=media]):not([slot=poster])) {
       pointer-events: auto;
     }
 
