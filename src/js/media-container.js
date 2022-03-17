@@ -277,6 +277,10 @@ class MediaContainer extends window.HTMLElement {
       );
     }
 
+    // Assume user is inactive until they're not (aka user-inactive by default is true)
+    // This allows things like autoplay and programmatic playing to also initiate hiding controls (CJP)
+    this.setAttribute('user-inactive', 'user-inactive');
+
     const scheduleInactive = () => {
       this.removeAttribute('user-inactive');
       const evt = new window.CustomEvent(
@@ -284,12 +288,12 @@ class MediaContainer extends window.HTMLElement {
         { composed: true, bubbles: true, detail: false }
       );
       this.dispatchEvent(evt);
-      window.clearTimeout(this.inactiveTimeout);
+      window.clearTimeout(this._inactiveTimeout);
 
       // Setting autohide to -1 turns off autohide
       if (this.autohide < 0) return;
 
-      this.inactiveTimeout = window.setTimeout(() => {
+      this._inactiveTimeout = window.setTimeout(() => {
         this.setAttribute('user-inactive', 'user-inactive');
         const evt = new window.CustomEvent(
           MediaStateChangeEvents.USER_INACTIVE, 
@@ -322,7 +326,7 @@ class MediaContainer extends window.HTMLElement {
         { composed: true, bubbles: true, detail: false }
       );
       this.dispatchEvent(evt);
-      window.clearTimeout(this.inactiveTimeout);
+      window.clearTimeout(this._inactiveTimeout);
 
       // If hovering over the media element we're free to make inactive
       if (e.target === this.media) {
