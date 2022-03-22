@@ -36,6 +36,8 @@ template.innerHTML = `
     media-thumbnail-preview {
       --thumb-min-width: var(--media-thumbnail-preview-min-width, 120px);
       --thumb-max-width: var(--media-thumbnail-preview-max-width, 200px);
+      --thumb-min-height: var(--media-thumbnail-preview-min-height, 80px);
+      --thumb-max-height: var(--media-thumbnail-preview-max-height, 160px);
       transform-origin: 50% 100%;
       position: absolute;
       bottom: calc(100% + 5px);
@@ -231,19 +233,39 @@ class MediaTimeRange extends MediaChromeRange {
         const thumbMaxWidth = parseInt(
           thumbStyle.getPropertyValue('--thumb-max-width')
         );
+        const thumbMinHeight = parseInt(
+          thumbStyle.getPropertyValue('--thumb-min-height')
+        );
+        const thumbMaxHeight = parseInt(
+          thumbStyle.getPropertyValue('--thumb-max-height')
+        );
 
-        const unscaledThumbWidth = this.thumbnailPreview.offsetWidth;
-        const thumbnailLeft = thumbnailOffset - unscaledThumbWidth / 2;
+        // Use client dimensions instead of offset dimensions to exclude borders.
+        const { clientWidth, clientHeight } = this.thumbnailPreview;
+        const maxThumbRatio = Math.min(
+          thumbMaxWidth / clientWidth,
+          thumbMaxHeight / clientHeight
+        );
+        const minThumbRatio = Math.max(
+          thumbMinWidth / clientWidth,
+          thumbMinHeight / clientHeight
+        );
+        const thumbnailLeft = thumbnailOffset - clientWidth / 2;
+        // maxThumbRatio scales down and takes priority, minThumbRatio scales up.
         const thumbScale =
-          unscaledThumbWidth > thumbMaxWidth
-            ? thumbMaxWidth / unscaledThumbWidth
-            : unscaledThumbWidth < thumbMinWidth
-            ? thumbMinWidth / unscaledThumbWidth
+          maxThumbRatio < 1
+            ? maxThumbRatio
+            : minThumbRatio > 1
+            ? minThumbRatio
             : 1;
 
         this.thumbnailPreview.style.transform = `translateX(${thumbnailLeft}px) scale(${thumbScale})`;
-        this.thumbnailPreview.style.borderWidth = `${Math.round(2 / thumbScale)}px`;
-        this.thumbnailPreview.style.borderRadius = `${Math.round(2 / thumbScale)}px`
+        this.thumbnailPreview.style.borderWidth = `${Math.round(
+          2 / thumbScale
+        )}px`;
+        this.thumbnailPreview.style.borderRadius = `${Math.round(
+          2 / thumbScale
+        )}px`;
 
         const detail = mousePercent * duration;
         const mediaPreviewEvt = new window.CustomEvent(
