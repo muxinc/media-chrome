@@ -159,7 +159,7 @@ class MediaTimeRange extends MediaChromeRange {
   get mediaBuffered() {
     const buffered = this.getAttribute(MediaUIAttributes.MEDIA_BUFFERED);
     if (buffered) {
-      return buffered.split(' ').map((timePair) => timePair.split(','));
+      return buffered.split(' ').map((timePair) => timePair.split(':'));
     }
   }
 

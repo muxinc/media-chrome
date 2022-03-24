@@ -1004,7 +1004,7 @@ function serializeTimeRanges(timeRanges = []) {
     .map((_, i) => [
       Number(timeRanges.start(i).toFixed(2)),
       Number(timeRanges.end(i).toFixed(2)),
-    ])
+    ].join(':'))
     .join(' ');
 }
 
