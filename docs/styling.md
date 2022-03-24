@@ -57,6 +57,12 @@ Our current styling architecture is still quite nascent and is very likely to un
 | `--media-range-track-box-shadow`       | `box-shadow`    | `none`                    | box shadow of the underlying slider's track display                                                                        | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
 | `--media-range-track-transition`       | `transition`    | `none`                    | apply a [transition](https://developer.mozilla.org/en-US/docs/Web/CSS/transition) to the underlying slider's track display | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
 
+- `<media-time-range/>` ([docs](./media-time-range.md))
+
+| Name                          | CSS Property          | Default Value | Description                            | Notes                                                                         |
+| ----------------------------- | --------------------- | ------------- | -------------------------------------- | ----------------------------------------------------------------------------- |
+| `--media-time-buffered-color` | `<linear-color-stop>` | `#777`        | background color of the buffered range | This is a `<linear-color-stop>` part of the `linear-gradient()` CSS function. |
+
 ## Text Displays
 
 ### Elements
