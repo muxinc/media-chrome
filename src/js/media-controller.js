@@ -786,7 +786,14 @@ const isMediaStateReceiver = (child) => {
   return !!getMediaUIAttributesFrom(child).length;
 };
 
-const setAttr = (child, attrName, attrValue) => {
+const setAttr = async (child, attrName, attrValue) => {
+  // If the node is not connected to the DOM yet wait on macrotask. Fix for:
+  //   Uncaught DOMException: Failed to construct 'CustomElement':
+  //   The result must not have attributes
+  if (!child.isConnected) {
+    await delay(0);
+  }
+
   if (attrValue == undefined) {
     return child.removeAttribute(attrName);
   }
@@ -979,12 +986,16 @@ export const hasVolumeSupportAsync = async (mediaEl = getTestMediaEl()) => {
   if (!mediaEl) return false;
   const prevVolume = mediaEl.volume;
   mediaEl.volume = prevVolume / 2 + 0.1;
-  return new Promise((resolve, _reject) => {
-    setTimeout(() => {
-      resolve(mediaEl.volume !== prevVolume);
-    }, 0)
-  });
+  await delay(0);
+  return mediaEl.volume !== prevVolume;
 };
+
+/**
+ * Returns a promise that will resolve after passed ms.
+ * @param  {number} ms
+ * @return {Promise}
+ */
+export const delay = (ms) => new Promise((resolve, reject) => setTimeout(resolve, ms));
 
 export const hasPipSupport = (mediaEl = getTestMediaEl()) =>
   typeof mediaEl?.requestPictureInPicture === 'function';
