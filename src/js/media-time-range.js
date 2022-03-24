@@ -156,6 +156,10 @@ class MediaTimeRange extends MediaChromeRange {
     return +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
   }
 
+  get mediaCurrentTime() {
+    return +this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+  }
+
   get mediaBuffered() {
     const buffered = this.getAttribute(MediaUIAttributes.MEDIA_BUFFERED);
     if (buffered) {
@@ -176,8 +180,14 @@ class MediaTimeRange extends MediaChromeRange {
     }
 
     const buffered = this.mediaBuffered;
-    const buffPercent =
-      (buffered[buffered.length - 1][1] / this.mediaDuration) * 100;
+    let currentBufferedEnd;
+    for (const [start, end] of buffered) {
+      if (this.mediaCurrentTime >= start && this.mediaCurrentTime <= end) {
+        currentBufferedEnd = end;
+        break;
+      }
+    }
+    const buffPercent = (currentBufferedEnd / this.mediaDuration) * 100;
     colorsArray.splice(1, 0, [
       'var(--media-time-buffered-color, #777)',
       buffPercent,
