@@ -180,13 +180,14 @@ class MediaTimeRange extends MediaChromeRange {
     }
 
     const buffered = this.mediaBuffered;
-    let currentBufferedEnd;
+    let currentBufferedEnd = 0;
     for (const [start, end] of buffered) {
       if (this.mediaCurrentTime >= start && this.mediaCurrentTime <= end) {
         currentBufferedEnd = end;
         break;
       }
     }
+
     const buffPercent = (currentBufferedEnd / this.mediaDuration) * 100;
     colorsArray.splice(1, 0, [
       'var(--media-time-buffered-color, #777)',
