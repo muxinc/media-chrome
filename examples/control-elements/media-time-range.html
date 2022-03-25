@@ -10,15 +10,17 @@
     <h3>Default (no time or duration)</h3>
     <media-time-range></media-time-range>
 
-    <h3>Time 0s (duration 60s)</h3>
+    <h3>Time 0s (buffered 15s, duration 60s)</h3>
     <media-time-range
       media-current-time="0"
+      media-buffered="0:15"
       media-duration="60"
     ></media-time-range>
 
-    <h3>Time 30s (duration 60s)</h3>
+    <h3>Time 30s (buffered 60s, duration 60s)</h3>
     <media-time-range
       media-current-time="30"
+      media-buffered="0:60"
       media-duration="60"
     ></media-time-range>
 

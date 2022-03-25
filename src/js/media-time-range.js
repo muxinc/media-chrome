@@ -81,6 +81,7 @@ class MediaTimeRange extends MediaChromeRange {
       MediaUIAttributes.MEDIA_DURATION,
       MediaUIAttributes.MEDIA_CURRENT_TIME,
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
+      MediaUIAttributes.MEDIA_BUFFERED,
     ];
   }
 
@@ -127,6 +128,9 @@ class MediaTimeRange extends MediaChromeRange {
       updateAriaValueText(this);
       this.updateBar();
     }
+    if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
+      this.updateBar();
+    }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
@@ -148,6 +152,21 @@ class MediaTimeRange extends MediaChromeRange {
   //   // TODO: Reset value after media is unset
   // }
 
+  get mediaDuration() {
+    return +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+  }
+
+  get mediaCurrentTime() {
+    return +this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+  }
+
+  get mediaBuffered() {
+    const buffered = this.getAttribute(MediaUIAttributes.MEDIA_BUFFERED);
+    if (buffered) {
+      return buffered.split(' ').map((timePair) => timePair.split(':'));
+    }
+  }
+
   /* Add a buffered progress bar */
   getBarColors() {
     let colorsArray = super.getBarColors();
@@ -161,8 +180,15 @@ class MediaTimeRange extends MediaChromeRange {
     }
 
     const buffered = this.mediaBuffered;
-    const buffPercent =
-      (buffered[buffered.length - 1][1] / this.mediaDuration) * 100;
+    let currentBufferedEnd = 0;
+    for (const [start, end] of buffered) {
+      if (this.mediaCurrentTime >= start && this.mediaCurrentTime <= end) {
+        currentBufferedEnd = end;
+        break;
+      }
+    }
+
+    const buffPercent = (currentBufferedEnd / this.mediaDuration) * 100;
     colorsArray.splice(1, 0, [
       'var(--media-time-buffered-color, #777)',
       buffPercent,
