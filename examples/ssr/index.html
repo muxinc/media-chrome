@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <title>Media Chrome SSR Usage Example</title>
+    <script type="module" src="../../dist/index.js"></script>
+    <style>
+      .examples {
+        margin-top: 20px;
+      }
+
+      media-controller {
+        display: block;
+        width: 720px;
+        aspect-ratio: auto 3 / 2;
+      }
+
+      media-loading-indicator {
+        --media-loading-icon-width: 100px;
+      }
+
+      media-airplay-button[media-airplay-unavailable] {
+        display: none;
+      }
+
+      media-volume-range[media-volume-unavailable] {
+        display: none;
+      }
+
+      media-pip-button[media-pip-unavailable] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome SSR (Server-Side Rendering) Usage Example</h1>
+      <media-controller user-inactive="user-inactive" aria-label="video player" role="region" media-pip-unavailable="unsupported" media-airplay-unavailable="unsupported"><template shadowroot="open">
+  <style>
+    :host {
+      box-sizing: border-box;
+      position: relative;
+      display: inline-block;
+      background-color: #000;
+    }
+
+    :host(:not([audio])) *[part~=layer] {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      display: flex;
+      flex-flow: column nowrap;
+      align-items: start;
+      pointer-events: none;
+      background: none;
+    }
+
+    :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer])  {
+      pointer-events: auto;
+    }
+    
+    ::slotted([slot=poster]) {
+      width: 100%;
+      height: 100%;
+    }
+    
+    :host(:not([audio])) *[part~=layer][part~=centered-layer] {
+      align-items: center;
+      justify-content: center;
+    }
+
+    .spacer {
+      pointer-events: none;
+      background: none;
+    }
+
+    /* Position the media and poster elements to fill the container */
+    ::slotted([slot=media]),
+    ::slotted([slot=poster]) {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Video specific styles */
+    :host(:not([audio])) {
+      aspect-ratio: var(--media-aspect-ratio, auto 3 / 2);
+      width: 720px;
+    }
+
+    :host(:not([audio])) .spacer {
+      flex-grow: 1;
+    }
+
+    @supports not (aspect-ratio: 1 / 1) {
+      :host(:not([audio])) {
+        height: 480px;
+      }
+    }
+
+    /* Safari needs this to actually make the element fill the window */
+    :host(:-webkit-full-screen) {
+      /* Needs to use !important otherwise easy to break */
+      width: 100% !important;
+      height: 100% !important;
+    }
+
+    /* Need to revisit this. May be too presumptuous for user-inactive behavior */
+    ::slotted(:not([slot=media]):not([slot=poster])) {
+      pointer-events: auto;
+    }
+
+    /* Only add these if auto hide is not disabled */
+    ::slotted(:not([slot=media]):not([no-auto-hide])) {
+      opacity: 1;
+      transition: opacity 0.25s;
+    }
+
+    /* Hide controls when inactive, not paused, not audio and auto hide not disabled */
+    :host([user-inactive]:not([media-paused]):not([audio])) ::slotted(:not([slot=media]):not([no-auto-hide])) {
+      opacity: 0;
+      transition: opacity 1s;
+    }
+
+    ::slotted(media-control-bar)  {
+      align-self: stretch;
+    }
+  </style>
+
+  <span part="layer media-layer">
+    <slot name="media"></slot>
+  </span>
+  <span part="layer poster-layer">
+    <slot name="poster"></slot>
+  </span>
+  <span part="layer gesture-layer">
+    <slot name="gestures-chrome"></slot>
+  </span>
+  <span part="layer vertical-layer">
+    <slot name="top-chrome"></slot>
+    <span class="spacer"><slot name="middle-chrome"></slot></span>
+    <!-- default, effectively "bottom-chrome" -->
+    <slot></slot>
+  </span>
+  <span part="layer centered-layer">
+    <slot name="centered-chrome"></slot>
+  </span>
+</template>
+        <video slot="media" src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4" preload="none" muted crossorigin></video>
+        <media-poster-image slot="poster" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg" placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="><template shadowroot="open">
+  <style>
+    :host {
+      pointer-events: none;
+      display: inline-block;
+      box-sizing: border-box;
+  
+      width: auto;
+      height: auto;
+    }
+  
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      min-width: 100%;
+      min-height: 100%;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+  
+    :host([media-has-played]) img {
+      display: none;
+    }
+  </style>
+
+  <img aria-hidden="true" id="image">
+</template>
+        </media-poster-image>
+        <div slot="centered-chrome" no-auto-hide>
+          <media-loading-indicator media-loading><template shadowroot="open">
+<style>
+:host {
+  display: inline-block;
+  vertical-align: middle;
+  box-sizing: border-box;
+}
+
+#status {
+  color: rgba(0,0,0,0);
+  width: 0px;
+  height: 0px;
+}
+
+:host slot[name=loading] > *,
+:host ::slotted([slot=loading]) {
+  opacity: 1;
+  transition: opacity 0.15s;
+}
+
+:host(:not([is-loading])) slot[name=loading] > *, 
+:host(:not([is-loading])) ::slotted([slot=loading]) {
+  opacity: 0;
+}
+
+:host(:not([is-loading])) #status {
+  display: none;
+}
+
+svg, img, ::slotted(svg), ::slotted(img) {
+  width: var(--media-loading-icon-width, 44px);
+  height: var(--media-loading-icon-height);
+  fill: var(--media-icon-color, #fff);
+  vertical-align: middle;
+}
+</style>
+
+<slot name="loading">
+<svg aria-hidden="true" viewBox="0 0 100 100">
+  <path d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
+    <animatetransform attributeName="transform" attributeType="XML" type="rotate" dur="1s" from="0 50 50" to="360 50 50" repeatCount="indefinite"></animatetransform>
+  </path>
+</svg>
+</slot>
+<div id="status" role="status" aria-live="polite">media loading</div>
+</template></media-loading-indicator>
+        </div>
+        <media-control-bar><template shadowroot="open">
+  <style>
+    :host {
+      /* Need position to display above video for some reason */
+      box-sizing: border-box;
+      display: inline-flex;
+
+      color: var(--media-icon-color, #eee);
+    }
+
+    media-time-range,
+    ::slotted(media-time-range),
+    ::slotted(media-progress-range),
+    ::slotted(media-clip-selector) {
+      flex-grow: 1;
+    }
+  </style>
+
+  <slot></slot>
+</template>
+          <media-play-button tabindex="0" role="button" aria-label="pause"><template shadowroot="open">
+<style>
+  :host {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
+
+    padding: 10px;
+
+    /* Vertically center any text */
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+
+    transition: background 0.15s linear;
+
+    pointer-events: auto;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    vertical-align: middle;
+  }
+
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+  }
+
+  :host(:hover) {
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+  }
+
+  svg, img, ::slotted(svg), ::slotted(img) {
+    width: var(--media-button-icon-width, 24px);
+    height: var(--media-button-icon-height);
+    transform: var(--media-button-icon-transform);
+    transition: var(--media-button-icon-transition);
+    fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
+  }
+</style>
+
+  <style>
+  :host([media-paused]) slot[name=pause] > *, 
+  :host([media-paused]) ::slotted([slot=pause]) {
+    display: none;
+  }
+
+  :host(:not([media-paused])) slot[name=play] > *, 
+  :host(:not([media-paused])) ::slotted([slot=play]) {
+    display: none;
+  }
+  </style>
+
+  <slot name="play"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M8 5v14l11-7z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
+  <slot name="pause"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
+</template></media-play-button>
+          <media-seek-backward-button tabindex="0" role="button" aria-label="seek back 15 seconds" seek-offset="15"><template shadowroot="open">
+<style>
+  :host {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
+
+    padding: 10px;
+
+    /* Vertically center any text */
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+
+    transition: background 0.15s linear;
+
+    pointer-events: auto;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    vertical-align: middle;
+  }
+
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+  }
+
+  :host(:hover) {
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+  }
+
+  svg, img, ::slotted(svg), ::slotted(img) {
+    width: var(--media-button-icon-width, 24px);
+    height: var(--media-button-icon-height);
+    transform: var(--media-button-icon-transform);
+    transition: var(--media-button-icon-transition);
+    fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
+  }
+</style>
+  
+  <slot name="backward"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 24 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(1.68 17.6)">15</text><path d="M9.48,3V0L3.87,4l5.61,4V5a5.54,5.54,0,0,1,1.92,10.5V17.6A7.5,7.5,0,0,0,9.48,3Z"></path></svg></slot>
+</template></media-seek-backward-button>
+          <media-seek-forward-button tabindex="0" role="button" aria-label="seek forward 15 seconds" seek-offset="15"><template shadowroot="open">
+<style>
+  :host {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
+
+    padding: 10px;
+
+    /* Vertically center any text */
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+
+    transition: background 0.15s linear;
+
+    pointer-events: auto;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    vertical-align: middle;
+  }
+
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+  }
+
+  :host(:hover) {
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+  }
+
+  svg, img, ::slotted(svg), ::slotted(img) {
+    width: var(--media-button-icon-width, 24px);
+    height: var(--media-button-icon-height);
+    transform: var(--media-button-icon-transform);
+    transition: var(--media-button-icon-transition);
+    fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
+  }
+</style>
+  
+  <slot name="forward"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="-3 -3 24 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(7.4 17.6)">15</text><path d="M8.52,3V0l5.61,4-5.61,4V5A5.54,5.54,0,0,0,6.6,15.48V17.6A7.5,7.5,0,0,1,8.52,3Z"></path></svg></slot>
+</template></media-seek-forward-button>
+          <media-mute-button tabindex="0" role="button" aria-label="mute"><template shadowroot="open">
+<style>
+  :host {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
+
+    padding: 10px;
+
+    /* Vertically center any text */
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+
+    transition: background 0.15s linear;
+
+    pointer-events: auto;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    vertical-align: middle;
+  }
+
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+  }
+
+  :host(:hover) {
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+  }
+
+  svg, img, ::slotted(svg), ::slotted(img) {
+    width: var(--media-button-icon-width, 24px);
+    height: var(--media-button-icon-height);
+    transform: var(--media-button-icon-transform);
+    transition: var(--media-button-icon-transition);
+    fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
+  }
+</style>
+
+  <style>
+  /* Default to High slot/icon. */
+  :host(:not([media-volume-level])) slot:not([name=high]) > *, 
+  :host(:not([media-volume-level])) ::slotted(:not([slot=high])),
+  :host([media-volume-level=high]) slot:not([name=high]) > *, 
+  :host([media-volume-level=high]) ::slotted(:not([slot=high])) {
+    display: none;
+  }
+
+  :host([media-volume-level=off]) slot:not([name=off]) > *, 
+  :host([media-volume-level=off]) ::slotted(:not([slot=off])) {
+    display: none;
+  }
+
+  :host([media-volume-level=low]) slot:not([name=low]) > *, 
+  :host([media-volume-level=low]) ::slotted(:not([slot=low])) {
+    display: none;
+  }
+
+  :host([media-volume-level=medium]) slot:not([name=medium]) > *, 
+  :host([media-volume-level=medium]) ::slotted(:not([slot=medium])) {
+    display: none;
+  }
+  </style>
+
+  <slot name="off"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
+  <slot name="low"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
+  <slot name="medium"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
+  <slot name="high"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
+</template></media-mute-button>
+          <media-volume-range style="--media-range-track-background-internal:linear-gradient(to right, var(--media-range-bar-color, #fff) 0%, var(--media-range-bar-color, #fff) NaN%,var(--media-range-track-background-color, #333) NaN%, var(--media-range-track-background-color, #333) 100%)"><template shadowroot="open">
+  <style>
+    :host {
+      --thumb-height: var(--media-range-thumb-height, 10px);
+      --track-height: var(--media-range-track-height, 4px);
+
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
+      box-sizing: border-box;
+      background: var(--media-control-background, rgba(20,20,30, 0.7));
+      transition: background 0.15s linear;
+      height: 44px;
+      width: 100px;
+      padding: 0 10px;
+
+      pointer-events: auto;
+    }
+
+    /*
+      Only show outline when keyboard focusing.
+      https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+    */
+    :host-context([media-keyboard-control]):host(:focus),
+    :host-context([media-keyboard-control]):host(:focus-within) {
+      box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+    }
+
+    :host(:hover) {
+      background: var(--media-control-hover-background, rgba(50,50,60, 0.7));
+    }
+
+    input[type=range] {
+      /* Reset */
+      -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+      background: transparent; /* Otherwise white in Chrome */
+
+      /* Fill host with the range */
+      min-height: 100%;
+      width: var(--media-range-track-width, 100%); /* Specific width is required for Firefox. */
+
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Special styling for WebKit/Blink */
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      
+  height: var(--thumb-height);
+  width: var(--media-range-thumb-width, 10px);
+  border: var(--media-range-thumb-border, none);
+  border-radius: var(--media-range-thumb-border-radius, 10px);
+  background: var(--media-range-thumb-background, #fff);
+  box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
+  cursor: pointer;
+  transition: var(--media-range-thumb-transition, none);
+  transform: var(--media-range-thumb-transform, none);
+  opacity: var(--media-range-thumb-opacity, 1);
+
+      /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+      margin-top: calc(calc(0px - var(--thumb-height) + var(--track-height)) / 2);
+    }
+    input[type=range]::-moz-range-thumb { 
+  height: var(--thumb-height);
+  width: var(--media-range-thumb-width, 10px);
+  border: var(--media-range-thumb-border, none);
+  border-radius: var(--media-range-thumb-border-radius, 10px);
+  background: var(--media-range-thumb-background, #fff);
+  box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
+  cursor: pointer;
+  transition: var(--media-range-thumb-transition, none);
+  transform: var(--media-range-thumb-transform, none);
+  opacity: var(--media-range-thumb-opacity, 1);
+ }
+
+    input[type=range]::-webkit-slider-runnable-track { 
+  width: var(--media-range-track-width, 100%);
+  min-width: 40px;
+  height: var(--track-height);
+  border: var(--media-range-track-border, none);
+  border-radius: var(--media-range-track-border-radius, 0);
+  background: var(--media-range-track-background-internal, var(--media-range-track-background-color, #eee));
+
+  box-shadow: var(--media-range-track-box-shadow, none);
+  transition: var(--media-range-track-transition, none);
+  cursor: pointer;
+ }
+    input[type=range]::-moz-range-track { 
+  width: var(--media-range-track-width, 100%);
+  min-width: 40px;
+  height: var(--track-height);
+  border: var(--media-range-track-border, none);
+  border-radius: var(--media-range-track-border-radius, 0);
+  background: var(--media-range-track-background-internal, var(--media-range-track-background-color, #eee));
+
+  box-shadow: var(--media-range-track-box-shadow, none);
+  transition: var(--media-range-track-transition, none);
+  cursor: pointer;
+ }
+    input[type=range]::-ms-track {
+      /* Reset */
+      width: 100%;
+      cursor: pointer;
+      /* Hides the slider so custom styles can be added */
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+
+      
+  width: var(--media-range-track-width, 100%);
+  min-width: 40px;
+  height: var(--track-height);
+  border: var(--media-range-track-border, none);
+  border-radius: var(--media-range-track-border-radius, 0);
+  background: var(--media-range-track-background-internal, var(--media-range-track-background-color, #eee));
+
+  box-shadow: var(--media-range-track-box-shadow, none);
+  transition: var(--media-range-track-transition, none);
+  cursor: pointer;
+
+    }
+
+    /* Eventually want to move towards different styles for focus-visible
+       https://github.com/WICG/focus-visible/blob/master/src/focus-visible.js
+       Youtube appears to do this by de-focusing a button after a button click */
+    input[type=range]:focus {
+      outline: 0;
+    }
+    input[type=range]:focus::-webkit-slider-runnable-track {
+      outline: 0;
+    }
+
+    input[type=range]:disabled::-webkit-slider-thumb {
+      background-color: #777;
+    }
+
+    input[type=range]:disabled::-webkit-slider-runnable-track {
+      background-color: #777;
+    }
+
+  </style>
+  <input aria-label="volume" id="range" type="range" min="0" max="1000" step="1" value="0">
+</template></media-volume-range>
+          <media-time-range style="--media-range-track-background-internal:linear-gradient(to right, var(--media-range-bar-color, #fff) 0%, var(--media-range-bar-color, #fff) NaN%,var(--media-range-track-background-color, #333) NaN%, var(--media-range-track-background-color, #333) 100%)"><template shadowroot="open">
+  <style>
+    :host {
+      --thumb-height: var(--media-range-thumb-height, 10px);
+      --track-height: var(--media-range-track-height, 4px);
+
+      position: relative;
+      display: inline-block;
+      vertical-align: middle;
+      box-sizing: border-box;
+      background: var(--media-control-background, rgba(20,20,30, 0.7));
+      transition: background 0.15s linear;
+      height: 44px;
+      width: 100px;
+      padding: 0 10px;
+
+      pointer-events: auto;
+    }
+
+    /*
+      Only show outline when keyboard focusing.
+      https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+    */
+    :host-context([media-keyboard-control]):host(:focus),
+    :host-context([media-keyboard-control]):host(:focus-within) {
+      box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+    }
+
+    :host(:hover) {
+      background: var(--media-control-hover-background, rgba(50,50,60, 0.7));
+    }
+
+    input[type=range] {
+      /* Reset */
+      -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
+      background: transparent; /* Otherwise white in Chrome */
+
+      /* Fill host with the range */
+      min-height: 100%;
+      width: var(--media-range-track-width, 100%); /* Specific width is required for Firefox. */
+
+      box-sizing: border-box;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Special styling for WebKit/Blink */
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      
+  height: var(--thumb-height);
+  width: var(--media-range-thumb-width, 10px);
+  border: var(--media-range-thumb-border, none);
+  border-radius: var(--media-range-thumb-border-radius, 10px);
+  background: var(--media-range-thumb-background, #fff);
+  box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
+  cursor: pointer;
+  transition: var(--media-range-thumb-transition, none);
+  transform: var(--media-range-thumb-transform, none);
+  opacity: var(--media-range-thumb-opacity, 1);
+
+      /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+      margin-top: calc(calc(0px - var(--thumb-height) + var(--track-height)) / 2);
+    }
+    input[type=range]::-moz-range-thumb { 
+  height: var(--thumb-height);
+  width: var(--media-range-thumb-width, 10px);
+  border: var(--media-range-thumb-border, none);
+  border-radius: var(--media-range-thumb-border-radius, 10px);
+  background: var(--media-range-thumb-background, #fff);
+  box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
+  cursor: pointer;
+  transition: var(--media-range-thumb-transition, none);
+  transform: var(--media-range-thumb-transform, none);
+  opacity: var(--media-range-thumb-opacity, 1);
+ }
+
+    input[type=range]::-webkit-slider-runnable-track { 
+  width: var(--media-range-track-width, 100%);
+  min-width: 40px;
+  height: var(--track-height);
+  border: var(--media-range-track-border, none);
+  border-radius: var(--media-range-track-border-radius, 0);
+  background: var(--media-range-track-background-internal, var(--media-range-track-background-color, #eee));
+
+  box-shadow: var(--media-range-track-box-shadow, none);
+  transition: var(--media-range-track-transition, none);
+  cursor: pointer;
+ }
+    input[type=range]::-moz-range-track { 
+  width: var(--media-range-track-width, 100%);
+  min-width: 40px;
+  height: var(--track-height);
+  border: var(--media-range-track-border, none);
+  border-radius: var(--media-range-track-border-radius, 0);
+  background: var(--media-range-track-background-internal, var(--media-range-track-background-color, #eee));
+
+  box-shadow: var(--media-range-track-box-shadow, none);
+  transition: var(--media-range-track-transition, none);
+  cursor: pointer;
+ }
+    input[type=range]::-ms-track {
+      /* Reset */
+      width: 100%;
+      cursor: pointer;
+      /* Hides the slider so custom styles can be added */
+      background: transparent;
+      border-color: transparent;
+      color: transparent;
+
+      
+  width: var(--media-range-track-width, 100%);
+  min-width: 40px;
+  height: var(--track-height);
+  border: var(--media-range-track-border, none);
+  border-radius: var(--media-range-track-border-radius, 0);
+  background: var(--media-range-track-background-internal, var(--media-range-track-background-color, #eee));
+
+  box-shadow: var(--media-range-track-box-shadow, none);
+  transition: var(--media-range-track-transition, none);
+  cursor: pointer;
+
+    }
+
+    /* Eventually want to move towards different styles for focus-visible
+       https://github.com/WICG/focus-visible/blob/master/src/focus-visible.js
+       Youtube appears to do this by de-focusing a button after a button click */
+    input[type=range]:focus {
+      outline: 0;
+    }
+    input[type=range]:focus::-webkit-slider-runnable-track {
+      outline: 0;
+    }
+
+    input[type=range]:disabled::-webkit-slider-thumb {
+      background-color: #777;
+    }
+
+    input[type=range]:disabled::-webkit-slider-runnable-track {
+      background-color: #777;
+    }
+
+  </style>
+  <input aria-label="seek" id="range" type="range" min="0" max="1000" step="1" value="0">
+
+  <style>
+    #thumbnailContainer {
+      display: none;
+    }
+
+    media-thumbnail-preview {
+      /* Scale the thumbnail preview to 50% and reposition appropriately to not take up too much real-estate. */
+      transform: scale(0.5) translateY(50%) translateX(-100%);
+      position: absolute;
+      bottom: calc(100% + 5px);
+      border: 2px solid #fff;
+      border-radius: 2px;
+      background-color: #000;
+    }
+
+    /* Can't get this working. Trying a downward triangle. */
+    /* media-thumbnail-preview::after {
+      content: "";
+      display: block;
+      width: 300px;
+      height: 300px;
+      margin: 100px;
+      background-color: #ff0;
+    } */
+
+    :host([media-preview-image]:hover) #thumbnailContainer {
+      display: block;
+      animation: fadeIn ease 0.5s;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        /* transform-origin: bottom center; */
+        /* transform: scale(0.7); */
+        margin-top: 10px;
+        opacity: 0;
+      }
+      100% {
+        /* transform-origin: bottom center; */
+        /* transform: scale(1); */
+        margin-top: 0;
+        opacity: 1;
+      }
+    }
+  </style>
+  <div class="enabled" id="thumbnailContainer">
+    <media-thumbnail-preview><template shadowroot="open">
+  <style>
+    :host {
+      background-color: #000;
+      height: auto;
+      width: auto;
+    }
+
+    img {
+      object-fit: none;
+    }
+  </style>
+  <img crossorigin loading="eager" decoding="async">
+</template></media-thumbnail-preview>
+  </div>
+</template></media-time-range>
+          <media-time-display tabindex="0" aria-label="playback time" role="progressbar" aria-valuetext="video not loaded, unknown time." show-duration remaining><template shadowroot="open">
+  <style>
+    :host {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      box-sizing: border-box;
+      background: var(--media-control-background, rgba(20,20,30, 0.7));
+  
+      padding: 10px;
+
+      font-size: 14px;
+      line-height: 24px;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      color: #ffffff;
+      pointer-events: auto;
+    }
+
+    #container {
+      /* NOTE: We don't currently have more generic sizing vars */
+      height: var(--media-text-content-height, auto);
+    }
+  </style>
+  <span id="container">
+  <slot></slot>
+  </span>
+</template></media-time-display>
+          <media-captions-button aria-checked="false" aria-label="closed captions" tabindex="0" role="switch" default-showing><template shadowroot="open">
+<style>
+  :host {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
+
+    padding: 10px;
+
+    /* Vertically center any text */
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+
+    transition: background 0.15s linear;
+
+    pointer-events: auto;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    vertical-align: middle;
+  }
+
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+  }
+
+  :host(:hover) {
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+  }
+
+  svg, img, ::slotted(svg), ::slotted(img) {
+    width: var(--media-button-icon-width, 24px);
+    height: var(--media-button-icon-height);
+    transform: var(--media-button-icon-transform);
+    transition: var(--media-button-icon-transition);
+    fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
+  }
+</style>
+
+  <style>
+  :host([aria-checked="true"]) slot:not([name=on]) > *, 
+  :host([aria-checked="true"]) ::slotted(:not([slot=on])) {
+    display: none;
+  }
+
+  /* Double negative, but safer if display doesn't equal 'block' */
+  :host(:not([aria-checked="true"])) slot:not([name=off]) > *, 
+  :host(:not([aria-checked="true"])) ::slotted(:not([slot=off])) {
+    display: none;
+  }
+  </style>
+
+  <slot name="on">
+<svg aria-hidden="true" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" version="1.0" viewbox="0 0 153 125.71389" width="auto" height="24">
+  <g transform="scale(6.3080558,6.3080558)" id="g12">
+    <path class="icon" d="M 21.9806,9.0135 C 21.9505,5.8358 21.8299,4.4502 21.077,3.4712 C 20.9415,3.2605 20.6854,3.14 20.4746,2.9895 C 19.7366,2.4472 16.2577,2.2515 12.2215,2.2515 C 8.1853,2.2515 4.54077,2.4472 3.81787,2.9895 C 3.59192,3.14 3.33581,3.2605 3.1853,3.4712 C 2.44726,4.4502 2.34192,5.8358 2.29675,9.0135 C 2.34192,12.1914 2.44726,13.5769 3.1853,14.5558 C 3.33581,14.7817 3.59192,14.8871 3.81787,15.0377 C 4.54077,15.595 8.1853,15.7757 12.2215,15.8058 C 16.2577,15.7757 19.7366,15.595 20.4746,15.0377 C 20.6854,14.8871 20.9415,14.7817 21.077,14.5558 C 21.8299,13.5769 21.9505,12.1914 21.9806,9.0135 z " style="fill-rule:evenodd;stroke:none" id="path16"></path>
+    <path class="icon" d="M 11.6896,8.1906 C 11.4853,5.704 10.1628,4.239 7.79723,4.239 C 5.63596,4.239 3.93706,6.1879 3.93706,9.31964 C 3.93706,12.4648 5.48544,14.4271 8.04452,14.4271 C 10.0875,14.4271 11.5176,12.9218 11.7434,10.4217 L 9.30256,10.4217 C 9.20579,11.3492 8.81871,12.0616 8.00151,12.0616 C 6.71121,12.0616 6.47467,10.7847 6.47467,9.42716 C 6.47467,7.5588 7.0123,6.6046 7.90474,6.6046 C 8.70045,6.6046 9.20579,7.1825 9.28106,8.1906 L 11.6896,8.1906 z " style="fill:#000000;fill-rule:evenodd;stroke:none" id="path20"></path>
+    <path class="icon" d="M 20.1199,8.1906 C 19.9156,5.704 18.5931,4.239 16.2275,4.239 C 14.0662,4.239 12.3674,6.1879 12.3674,9.31964 C 12.3674,12.4648 13.9157,14.4271 16.4748,14.4271 C 18.5178,14.4271 19.9479,12.9218 20.1736,10.4217 L 17.7328,10.4217 C 17.6361,11.3492 17.249,12.0616 16.4318,12.0616 C 15.1415,12.0616 14.9049,10.7847 14.9049,9.42716 C 14.9049,7.5588 15.4426,6.6046 16.335,6.6046 C 17.1307,6.6046 17.6361,7.1825 17.7113,8.1906 L 20.1199,8.1906 z " style="fill:#000000;fill-rule:evenodd;stroke:none" id="path22"></path>
+    <path class="icon" d="M 2,20 L 22,20" stroke-width="4" stroke="var(--media-icon-color, #eee)" id="path24"></path>
+  </g>
+</svg>
+</slot>
+  <slot name="off">
+<svg aria-hidden="true" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" version="1.0" viewbox="0 0 153 125.71389" width="auto" height="24">
+  <g transform="scale(6.3080558,6.3080558)" id="g12">
+    <path class="icon" d="M 21.9806,9.0135 C 21.9505,5.8358 21.8299,4.4502 21.077,3.4712 C 20.9415,3.2605 20.6854,3.14 20.4746,2.9895 C 19.7366,2.4472 16.2577,2.2515 12.2215,2.2515 C 8.1853,2.2515 4.54077,2.4472 3.81787,2.9895 C 3.59192,3.14 3.33581,3.2605 3.1853,3.4712 C 2.44726,4.4502 2.34192,5.8358 2.29675,9.0135 C 2.34192,12.1914 2.44726,13.5769 3.1853,14.5558 C 3.33581,14.7817 3.59192,14.8871 3.81787,15.0377 C 4.54077,15.595 8.1853,15.7757 12.2215,15.8058 C 16.2577,15.7757 19.7366,15.595 20.4746,15.0377 C 20.6854,14.8871 20.9415,14.7817 21.077,14.5558 C 21.8299,13.5769 21.9505,12.1914 21.9806,9.0135 z " style="fill-rule:evenodd;stroke:none" id="path16"></path>
+    <path class="icon" d="M 11.6896,8.1906 C 11.4853,5.704 10.1628,4.239 7.79723,4.239 C 5.63596,4.239 3.93706,6.1879 3.93706,9.31964 C 3.93706,12.4648 5.48544,14.4271 8.04452,14.4271 C 10.0875,14.4271 11.5176,12.9218 11.7434,10.4217 L 9.30256,10.4217 C 9.20579,11.3492 8.81871,12.0616 8.00151,12.0616 C 6.71121,12.0616 6.47467,10.7847 6.47467,9.42716 C 6.47467,7.5588 7.0123,6.6046 7.90474,6.6046 C 8.70045,6.6046 9.20579,7.1825 9.28106,8.1906 L 11.6896,8.1906 z " style="fill:#000000;fill-rule:evenodd;stroke:none" id="path20"></path>
+    <path class="icon" d="M 20.1199,8.1906 C 19.9156,5.704 18.5931,4.239 16.2275,4.239 C 14.0662,4.239 12.3674,6.1879 12.3674,9.31964 C 12.3674,12.4648 13.9157,14.4271 16.4748,14.4271 C 18.5178,14.4271 19.9479,12.9218 20.1736,10.4217 L 17.7328,10.4217 C 17.6361,11.3492 17.249,12.0616 16.4318,12.0616 C 15.1415,12.0616 14.9049,10.7847 14.9049,9.42716 C 14.9049,7.5588 15.4426,6.6046 16.335,6.6046 C 17.1307,6.6046 17.6361,7.1825 17.7113,8.1906 L 20.1199,8.1906 z " style="fill:#000000;fill-rule:evenodd;stroke:none" id="path22"></path>
+  </g>
+</svg>
+</slot>
+</template></media-captions-button>
+          <media-playback-rate-button tabindex="0" role="button"><template shadowroot="open">
+<style>
+  :host {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
+
+    padding: 10px;
+
+    /* Vertically center any text */
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+
+    transition: background 0.15s linear;
+
+    pointer-events: auto;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    vertical-align: middle;
+  }
+
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+  }
+
+  :host(:hover) {
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+  }
+
+  svg, img, ::slotted(svg), ::slotted(img) {
+    width: var(--media-button-icon-width, 24px);
+    height: var(--media-button-icon-height);
+    transform: var(--media-button-icon-transform);
+    transition: var(--media-button-icon-transition);
+    fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
+  }
+</style>
+
+  <style>
+  :host {
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: bold;
+  }
+
+  #container {
+    height: var(--media-text-content-height, 24px);
+  }
+  </style>
+
+  <span id="container">1x</span>
+</template></media-playback-rate-button>
+          <media-pip-button media-pip-unavailable="unsupported" tabindex="0" role="button" aria-label="enter picture in picture mode"><template shadowroot="open">
+<style>
+  :host {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
+
+    padding: 10px;
+
+    /* Vertically center any text */
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+
+    transition: background 0.15s linear;
+
+    pointer-events: auto;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    vertical-align: middle;
+  }
+
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+  }
+
+  :host(:hover) {
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+  }
+
+  svg, img, ::slotted(svg), ::slotted(img) {
+    width: var(--media-button-icon-width, 24px);
+    height: var(--media-button-icon-height);
+    transform: var(--media-button-icon-transform);
+    transition: var(--media-button-icon-transition);
+    fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
+  }
+</style>
+
+  <style>
+  :host([media-is-pip]) slot:not([name=exit]) > *, 
+  :host([media-is-pip]) ::slotted(:not([slot=exit])) {
+    display: none;
+  }
+
+  /* Double negative, but safer if display doesn't equal 'block' */
+  :host(:not([media-is-pip])) slot:not([name=enter]) > *, 
+  :host(:not([media-is-pip])) ::slotted(:not([slot=enter])) {
+    display: none;
+  }
+  </style>
+
+  <slot name="enter"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98V5c0-1.1-.9-2-2-2zm0 16.01H3V4.98h18v14.03z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
+  <slot name="exit"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M19 7h-8v6h8V7zm2-4H3c-1.1 0-2 .9-2 2v14c0 1.1.9 1.98 2 1.98h18c1.1 0 2-.88 2-1.98V5c0-1.1-.9-2-2-2zm0 16.01H3V4.98h18v14.03z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
+</template></media-pip-button>
+          <media-fullscreen-button tabindex="0" role="button" aria-label="enter fullscreen mode"><template shadowroot="open">
+<style>
+  :host {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
+
+    padding: 10px;
+
+    /* Vertically center any text */
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+
+    transition: background 0.15s linear;
+
+    pointer-events: auto;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    vertical-align: middle;
+  }
+
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+  }
+
+  :host(:hover) {
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+  }
+
+  svg, img, ::slotted(svg), ::slotted(img) {
+    width: var(--media-button-icon-width, 24px);
+    height: var(--media-button-icon-height);
+    transform: var(--media-button-icon-transform);
+    transition: var(--media-button-icon-transition);
+    fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
+  }
+</style>
+
+  <style>
+  :host([media-is-fullscreen]) slot:not([name=exit]) > *, 
+  :host([media-is-fullscreen]) ::slotted(:not([slot=exit])) {
+    display: none;
+  }
+
+  /* Double negative, but safer if display doesn't equal 'block' */
+  :host(:not([media-is-fullscreen])) slot:not([name=enter]) > *, 
+  :host(:not([media-is-fullscreen])) ::slotted(:not([slot=enter])) {
+    display: none;
+  }
+  </style>
+
+  <slot name="enter"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path d="M0 0h24v24H0z" fill="none"></path>
+  <path class="icon" d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"></path>
+</svg></slot>
+  <slot name="exit"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path d="M0 0h24v24H0z" fill="none"></path>
+  <path class="icon" d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"></path>
+</svg></slot>
+</template></media-fullscreen-button>
+          <media-airplay-button media-airplay-unavailable="unsupported" tabindex="0" role="button" aria-label="air play"><template shadowroot="open">
+<style>
+  :host {
+    display: inline-block;
+    width: auto;
+    height: auto;
+    vertical-align: middle;
+    box-sizing: border-box;
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
+
+    padding: 10px;
+
+    /* Vertically center any text */
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff;
+    text-align: center;
+
+    transition: background 0.15s linear;
+
+    pointer-events: auto;
+    cursor: pointer;
+    font-family: Arial, sans-serif;
+    vertical-align: middle;
+  }
+
+  /*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */
+  :host-context([media-keyboard-control]):host(:focus),
+  :host-context([media-keyboard-control]):host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+  }
+
+  :host(:hover) {
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+  }
+
+  svg, img, ::slotted(svg), ::slotted(img) {
+    width: var(--media-button-icon-width, 24px);
+    height: var(--media-button-icon-height);
+    transform: var(--media-button-icon-transform);
+    transition: var(--media-button-icon-transition);
+    fill: var(--media-icon-color, #eee);
+    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+    min-width: 100%;
+    min-height: 100%;
+  }
+
+  ::slotted(div), ::slotted(span) {
+    height: 24px;
+  }
+</style>
+
+  <style>
+  </style>
+
+  <slot name="airplay"><svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 18"><defs><style>.cls-1{fill:var(--media-icon-color, #eee);}</style></defs><title>Mux Player SVG Icons_v2</title><path class="cls-1" d="M10.19,11.22a.25.25,0,0,0-.38,0L4.35,17.59a.25.25,0,0,0,.19.41H15.46a.25.25,0,0,0,.19-.41Z"></path><path class="cls-1" d="M19,0H1A1,1,0,0,0,0,1V14a1,1,0,0,0,1,1H3.94L5,13.75H1.25V1.25h17.5v12.5H15L16.06,15H19a1,1,0,0,0,1-1V1A1,1,0,0,0,19,0Z"></path></svg></slot>
+</template></media-airplay-button>
+        </media-control-bar>
+      </media-controller>
+
+      <script>
+        // Polyfill for Declarative Shadow DOM
+        // In this page it won't make a big improvement but for example if your
+        // web component is above the fold and there is a lot of other HTML below
+        // the fold this will speed up the render of your web component.
+        if (!HTMLTemplateElement.prototype.hasOwnProperty('shadowRoot')) {
+          (function attachShadowRoots(root) {
+            root.querySelectorAll("template[shadowroot]").forEach(template => {
+              const mode = template.getAttribute("shadowroot");
+              const shadowRoot = template.parentNode.attachShadow({ mode });
+              shadowRoot.appendChild(template.content);
+              template.remove();
+              attachShadowRoots(shadowRoot);
+            });
+          })(document);
+        }
+      </script>
+
+      <div class="examples">
+        <a href="./">View more examples</a>
+      </div>
+    </main>
+  </body>

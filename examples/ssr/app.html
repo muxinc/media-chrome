@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome SSR Usage Example</title>
+    <script type="module" src="../../dist/index.js"></script>
+    <style>
+      .examples {
+        margin-top: 20px;
+      }
+
+      media-controller {
+        display: block;
+        width: 720px;
+        aspect-ratio: auto 3 / 2;
+      }
+
+      media-loading-indicator {
+        --media-loading-icon-width: 100px;
+      }
+
+      media-airplay-button[media-airplay-unavailable] {
+        display: none;
+      }
+
+      media-volume-range[media-volume-unavailable] {
+        display: none;
+      }
+
+      media-pip-button[media-pip-unavailable] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome SSR (Server-Side Rendering) Usage Example</h1>
+      <media-controller>
+        <video
+          slot="media"
+          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+          preload="none"
+          muted
+          crossorigin
+        ></video>
+        <media-poster-image
+          slot="poster"
+          src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
+          placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
+        >
+        </media-poster-image>
+        <div slot="centered-chrome" no-auto-hide>
+          <media-loading-indicator media-loading></media-loading-indicator>
+        </div>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+          <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+          <media-mute-button></media-mute-button>
+          <media-volume-range></media-volume-range>
+          <media-time-range></media-time-range>
+          <media-time-display show-duration remaining></media-time-display>
+          <media-captions-button default-showing></media-captions-button>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-pip-button></media-pip-button>
+          <media-fullscreen-button></media-fullscreen-button>
+          <media-airplay-button></media-airplay-button>
+        </media-control-bar>
+      </media-controller>
+
+      <script>
+        // Polyfill for Declarative Shadow DOM
+        // In this page it won't make a big improvement but for example if your
+        // web component is above the fold and there is a lot of other HTML below
+        // the fold this will speed up the render of your web component.
+        if (!HTMLTemplateElement.prototype.hasOwnProperty('shadowRoot')) {
+          (function attachShadowRoots(root) {
+            root.querySelectorAll("template[shadowroot]").forEach(template => {
+              const mode = template.getAttribute("shadowroot");
+              const shadowRoot = template.parentNode.attachShadow({ mode });
+              shadowRoot.appendChild(template.content);
+              template.remove();
+              attachShadowRoots(shadowRoot);
+            });
+          })(document);
+        }
+      </script>
+
+      <div class="examples">
+        <a href="./">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>

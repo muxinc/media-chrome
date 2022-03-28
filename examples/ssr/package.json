@@ -1,0 +1,13 @@
+{
+  "name": "media-chrome-ssr-example",
+  "version": "0.0.1",
+  "description": "Server-side render Media Chrome.",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "node ./server.js"
+  },
+  "devDependencies": {
+    "linkedom": "^0.14.5"
+  }
+}
