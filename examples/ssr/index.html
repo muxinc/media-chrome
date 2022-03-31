@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html><html lang="en">
   <head>
     <meta name="viewport" content="width=device-width">
     <title>Media Chrome SSR Usage Example</title>
@@ -35,7 +34,7 @@
   <body>
     <main>
       <h1>Media Chrome SSR (Server-Side Rendering) Usage Example</h1>
-      <media-controller user-inactive="user-inactive" aria-label="video player" role="region" media-pip-unavailable="unsupported" media-airplay-unavailable="unsupported"><template shadowroot="open">
+      <media-controller media-current-time="0" media-volume-level="off" media-volume="1" media-muted media-paused media-pip-unavailable="unsupported" media-airplay-unavailable="unsupported" user-inactive="user-inactive" aria-label="video player" role="region"><template shadowroot="open">
   <style>
     :host {
       box-sizing: border-box;
@@ -173,7 +172,7 @@
     }
   </style>
 
-  <img aria-hidden="true" id="image">
+  <img style="background-image:url('data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k=')" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg" aria-hidden="true" id="image">
 </template>
         </media-poster-image>
         <div slot="centered-chrome" no-auto-hide>
@@ -244,7 +243,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
 
   <slot></slot>
 </template>
-          <media-play-button tabindex="0" role="button" aria-label="pause"><template shadowroot="open">
+          <media-play-button media-paused tabindex="0" role="button" aria-label="play"><template shadowroot="open">
 <style>
   :host {
     display: inline-block;
@@ -316,7 +315,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
   <slot name="play"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M8 5v14l11-7z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
   <slot name="pause"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
 </template></media-play-button>
-          <media-seek-backward-button tabindex="0" role="button" aria-label="seek back 15 seconds" seek-offset="15"><template shadowroot="open">
+          <media-seek-backward-button media-current-time="0" tabindex="0" role="button" aria-label="seek back 15 seconds" seek-offset="15"><template shadowroot="open">
 <style>
   :host {
     display: inline-block;
@@ -375,7 +374,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
   
   <slot name="backward"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 24 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(1.68 17.6)">15</text><path d="M9.48,3V0L3.87,4l5.61,4V5a5.54,5.54,0,0,1,1.92,10.5V17.6A7.5,7.5,0,0,0,9.48,3Z"></path></svg></slot>
 </template></media-seek-backward-button>
-          <media-seek-forward-button tabindex="0" role="button" aria-label="seek forward 15 seconds" seek-offset="15"><template shadowroot="open">
+          <media-seek-forward-button media-current-time="0" tabindex="0" role="button" aria-label="seek forward 15 seconds" seek-offset="15"><template shadowroot="open">
 <style>
   :host {
     display: inline-block;
@@ -434,7 +433,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
   
   <slot name="forward"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="-3 -3 24 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(7.4 17.6)">15</text><path d="M8.52,3V0l5.61,4-5.61,4V5A5.54,5.54,0,0,0,6.6,15.48V17.6A7.5,7.5,0,0,1,8.52,3Z"></path></svg></slot>
 </template></media-seek-forward-button>
-          <media-mute-button tabindex="0" role="button" aria-label="mute"><template shadowroot="open">
+          <media-mute-button media-volume-level="off" tabindex="0" role="button" aria-label="unmute"><template shadowroot="open">
 <style>
   :host {
     display: inline-block;
@@ -521,7 +520,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
   <slot name="medium"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
   <slot name="high"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"></path><path d="M0 0h24v24H0z" fill="none"></path></svg></slot>
 </template></media-mute-button>
-          <media-volume-range style="--media-range-track-background-internal:linear-gradient(to right, var(--media-range-bar-color, #fff) 0%, var(--media-range-bar-color, #fff) NaN%,var(--media-range-track-background-color, #333) NaN%, var(--media-range-track-background-color, #333) 100%)"><template shadowroot="open">
+          <media-volume-range media-volume="1" media-muted style="--media-range-track-background-internal:linear-gradient(to right, var(--media-range-bar-color, #fff) 0%, var(--media-range-bar-color, #fff) 0%,var(--media-range-track-background-color, #333) 0%, var(--media-range-track-background-color, #333) 100%)"><template shadowroot="open">
   <style>
     :host {
       --thumb-height: var(--media-range-thumb-height, 10px);
@@ -664,9 +663,9 @@ svg, img, ::slotted(svg), ::slotted(img) {
     }
 
   </style>
-  <input aria-label="volume" id="range" type="range" min="0" max="1000" step="1" value="0">
+  <input aria-valuetext="0%" aria-label="volume" id="range" type="range" min="0" max="1000" step="1" value="0">
 </template></media-volume-range>
-          <media-time-range style="--media-range-track-background-internal:linear-gradient(to right, var(--media-range-bar-color, #fff) 0%, var(--media-range-bar-color, #fff) NaN%,var(--media-range-track-background-color, #333) NaN%, var(--media-range-track-background-color, #333) 100%)"><template shadowroot="open">
+          <media-time-range media-current-time="0" style="--media-range-track-background-internal:linear-gradient(to right, var(--media-range-bar-color, #fff) 0%, var(--media-range-bar-color, #fff) 0%,var(--media-range-track-background-color, #333) 0%, var(--media-range-track-background-color, #333) 100%)"><template shadowroot="open">
   <style>
     :host {
       --thumb-height: var(--media-range-thumb-height, 10px);
@@ -809,7 +808,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
     }
 
   </style>
-  <input aria-label="seek" id="range" type="range" min="0" max="1000" step="1" value="0">
+  <input aria-valuetext="video not loaded, unknown time." aria-label="seek" id="range" type="range" min="0" max="1000" step="1" value="0">
 
   <style>
     #thumbnailContainer {
@@ -873,7 +872,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
 </template></media-thumbnail-preview>
   </div>
 </template></media-time-range>
-          <media-time-display tabindex="0" aria-label="playback time" role="progressbar" aria-valuetext="video not loaded, unknown time." show-duration remaining><template shadowroot="open">
+          <media-time-display media-current-time="0" tabindex="0" aria-label="playback time" role="progressbar" aria-valuetext="video not loaded, unknown time." show-duration remaining><template shadowroot="open">
   <style>
     :host {
       display: inline-flex;
@@ -897,9 +896,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
       height: var(--media-text-content-height, auto);
     }
   </style>
-  <span id="container">
-  <slot></slot>
-  </span>
+  <span id="container">0:00 / 0:00</span>
 </template></media-time-display>
           <media-captions-button aria-checked="false" aria-label="closed captions" tabindex="0" role="switch" default-showing><template shadowroot="open">
 <style>
@@ -1302,3 +1299,4 @@ svg, img, ::slotted(svg), ::slotted(img) {
       </div>
     </main>
   </body>
+  

@@ -7,7 +7,7 @@
   "scripts": {
     "build": "node ./server.js"
   },
-  "devDependencies": {
+  "dependencies": {
     "linkedom": "^0.14.5"
   }
 }
