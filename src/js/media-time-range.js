@@ -34,14 +34,15 @@ template.innerHTML = `
     }
 
     media-thumbnail-preview {
-      --thumb-min-width: var(--media-thumbnail-preview-min-width, 120px);
-      --thumb-max-width: var(--media-thumbnail-preview-max-width, 200px);
-      --thumb-min-height: var(--media-thumbnail-preview-min-height, 80px);
-      --thumb-max-height: var(--media-thumbnail-preview-max-height, 160px);
+      --thumb-preview-min-width: var(--media-thumbnail-preview-min-width, 120px);
+      --thumb-preview-max-width: var(--media-thumbnail-preview-max-width, 200px);
+      --thumb-preview-min-height: var(--media-thumbnail-preview-min-height, 80px);
+      --thumb-preview-max-height: var(--media-thumbnail-preview-max-height, 160px);
+      --thumb-preview-border: 2px solid #fff;
       transform-origin: 50% 100%;
       position: absolute;
       bottom: calc(100% + 5px);
-      border: var(--media-thumbnail-preview-border, 2px solid #fff);
+      border: var(--media-thumbnail-preview-border, var(--thumb-preview-border, 2px solid #fff));
       border-radius: var(--media-thumbnail-preview-border-radius, 2px);
       background-color: #000;
     }
@@ -228,16 +229,16 @@ class MediaTimeRange extends MediaChromeRange {
 
         const thumbStyle = getComputedStyle(this.thumbnailPreview);
         const thumbMinWidth = parseInt(
-          thumbStyle.getPropertyValue('--thumb-min-width')
+          thumbStyle.getPropertyValue('--thumb-preview-min-width')
         );
         const thumbMaxWidth = parseInt(
-          thumbStyle.getPropertyValue('--thumb-max-width')
+          thumbStyle.getPropertyValue('--thumb-preview-max-width')
         );
         const thumbMinHeight = parseInt(
-          thumbStyle.getPropertyValue('--thumb-min-height')
+          thumbStyle.getPropertyValue('--thumb-preview-min-height')
         );
         const thumbMaxHeight = parseInt(
-          thumbStyle.getPropertyValue('--thumb-max-height')
+          thumbStyle.getPropertyValue('--thumb-preview-max-height')
         );
 
         // Use client dimensions instead of offset dimensions to exclude borders.
@@ -260,11 +261,21 @@ class MediaTimeRange extends MediaChromeRange {
             : 1;
 
         this.thumbnailPreview.style.transform = `translateX(${thumbnailLeft}px) scale(${thumbScale})`;
+
+        let thumbBorderWidth = parseInt(
+          thumbStyle.getPropertyValue('--media-thumbnail-preview-border')
+        );
+        if (Number.isNaN(thumbBorderWidth)) {
+          thumbBorderWidth = parseInt(
+            thumbStyle.getPropertyValue('--thumb-preview-border')
+          );
+        }
+
         this.thumbnailPreview.style.borderWidth = `${Math.round(
-          2 / thumbScale
+          thumbBorderWidth / thumbScale
         )}px`;
         this.thumbnailPreview.style.borderRadius = `${Math.round(
-          2 / thumbScale
+          thumbBorderWidth / thumbScale
         )}px`;
 
         const detail = mousePercent * duration;
