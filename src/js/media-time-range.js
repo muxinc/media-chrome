@@ -41,8 +41,8 @@ template.innerHTML = `
       transform-origin: 50% 100%;
       position: absolute;
       bottom: calc(100% + 5px);
-      border: 2px solid #fff;
-      border-radius: 2px;
+      border: var(--media-thumbnail-preview-border, 2px solid #fff);
+      border-radius: var(--media-thumbnail-preview-border-radius, 2px);
       background-color: #000;
     }
 
