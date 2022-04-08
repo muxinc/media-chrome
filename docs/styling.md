@@ -59,9 +59,13 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 - `<media-time-range/>` ([docs](./media-time-range.md))
 
-| Name                          | CSS Property          | Default Value | Description                            | Notes                                                                         |
-| ----------------------------- | --------------------- | ------------- | -------------------------------------- | ----------------------------------------------------------------------------- |
-| `--media-time-buffered-color` | `<linear-color-stop>` | `#777`        | background color of the buffered range | This is a `<linear-color-stop>` part of the `linear-gradient()` CSS function. |
+| Name                                   | CSS Property          | Default Value | Description                            | Notes                                                                                      |
+| -------------------------------------- | --------------------- | ------------- | -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `--media-time-buffered-color`          | `<linear-color-stop>` | `#777`        | background color of the buffered range | This is a `<linear-color-stop>` part of the `linear-gradient()` CSS function.              |
+| `--media-thumbnail-preview-min-width`  | `width`               | `120px`       | minimum thumbnail preview width        | The maximum CSS properties have priority over the minimum. Only `px` values are supported. |
+| `--media-thumbnail-preview-max-width`  | `width`               | `200px`       | maximum thumbnail preview width        | The maximum CSS properties have priority over the minimum. Only `px` values are supported. |
+| `--media-thumbnail-preview-min-height` | `height`              | `80px`        | minimum thumbnail preview height       | The maximum CSS properties have priority over the minimum. Only `px` values are supported. |
+| `--media-thumbnail-preview-max-height` | `height`              | `160px`       | maximum thumbnail preview height       | The maximum CSS properties have priority over the minimum. Only `px` values are supported. |
 
 ## Text Displays
 
