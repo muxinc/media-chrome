@@ -82,7 +82,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 | Name                          | CSS Property | Default Value | Description                | Notes                               |
 | ----------------------------- | ------------ | ------------- | -------------------------- | ----------------------------------- |
-| `--media-loading-icon-width`  | `width`      | `44px`        | width of the loading icon  |                                     |
+| `--media-loading-icon-width`  | `width`      | `100px`        | width of the loading icon  |                                     |
 | `--media-loading-icon-height` | `height`     | `auto`        | height of the loading icon |                                     |
 | `--media-icon-color`          | `fill`       | `#fff`        | color of the loading icon  | Only applies to `<img>` and `<svg>` |
 
