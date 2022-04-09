@@ -316,7 +316,10 @@ class MediaController extends MediaContainer {
         if (e) {
           isPip = e.type == 'enterpictureinpicture';
         } else {
-          isPip = this.isPip;
+          const pipElement =
+            this.getRootNode().pictureInPictureElement ??
+            document.pictureInPictureElement;
+          isPip = this.media && containsWithShadow(this.media, pipElement);
         }
         this.propagateMediaState(MediaUIAttributes.MEDIA_IS_PIP, isPip);
       },
@@ -626,13 +629,6 @@ class MediaController extends MediaContainer {
    * Media Controller should not mimic the HTMLMediaElement API.
    * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
    */
-
-  get isPip() {
-    const pipElement =
-      this.getRootNode().pictureInPictureElement ??
-      document.pictureInPictureElement;
-    return this.media && containsWithShadow(this.media, pipElement);
-  }
 }
 
 const getPaused = (el) => {
