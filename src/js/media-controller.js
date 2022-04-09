@@ -622,19 +622,24 @@ class MediaController extends MediaContainer {
     els.splice(index, 1);
   }
 
-  // Mimick the media element API, but use it to dispatch media UI events
-  // so that everything happens through the events.
-  // Not sure how far we should take this API
-  play() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_PLAY_REQUEST));
-  }
-
-  pause() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_PAUSE_REQUEST));
-  }
+  /**
+   * Media Controller should not mimic the HTMLMediaElement API.
+   * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
+   */
 
   get airplayUnavailable() {
     return this._airplayUnavailable;
+  }
+
+  get pipUnavailable() {
+    return this._pipUnavailable;
+  }
+
+  get isPip() {
+    const pipElement =
+      this.getRootNode().pictureInPictureElement ??
+      document.pictureInPictureElement;
+    return this.media && containsWithShadow(this.media, pipElement);
   }
 
   get paused() {
@@ -647,21 +652,10 @@ class MediaController extends MediaContainer {
     return !!(this.media && this.media.muted);
   }
 
-  set muted(mute) {
-    const eventName = mute ? MEDIA_MUTE_REQUEST : MEDIA_UNMUTE_REQUEST;
-    this.dispatchEvent(new window.CustomEvent(eventName));
-  }
-
   get volume() {
     const media = this.media;
 
     return media ? media.volume : 1;
-  }
-
-  set volume(volume) {
-    this.dispatchEvent(
-      new window.CustomEvent(MEDIA_VOLUME_REQUEST, { detail: volume })
-    );
   }
 
   get volumeLevel() {
@@ -686,24 +680,10 @@ class MediaController extends MediaContainer {
     return this._volumeUnavailable;
   }
 
-  requestFullscreen() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_FULLSCREEN_REQUEST));
-  }
-
-  exitFullscreen() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_EXIT_FULLSCREEN_REQUEST));
-  }
-
   get currentTime() {
     const media = this.media;
 
     return media ? media.currentTime : 0;
-  }
-
-  set currentTime(time) {
-    this.dispatchEvent(
-      new window.CustomEvent(MEDIA_SEEK_REQUEST, { detail: time })
-    );
   }
 
   get duration() {
@@ -716,12 +696,6 @@ class MediaController extends MediaContainer {
     const media = this.media;
 
     return media ? media.playbackRate : 1;
-  }
-
-  set playbackRate(rate) {
-    this.dispatchEvent(
-      new window.CustomEvent(MEDIA_PLAYBACK_RATE_REQUEST, { detail: rate })
-    );
   }
 
   get subtitleTracks() {
@@ -744,31 +718,6 @@ class MediaController extends MediaContainer {
       kind: TextTrackKinds.CAPTIONS,
       mode: TextTrackModes.SHOWING,
     });
-  }
-
-  get isPip() {
-    const pipElement =
-      this.getRootNode().pictureInPictureElement ??
-      document.pictureInPictureElement;
-    return this.media && containsWithShadow(this.media, pipElement);
-  }
-
-  requestPictureInPicture() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_ENTER_PIP_REQUEST));
-  }
-
-  exitPictureInPicture() {
-    this.dispatchEvent(new window.CustomEvent(MEDIA_EXIT_PIP_REQUEST));
-  }
-
-  requestPreview(time) {
-    this.dispatchEvent(
-      new window.CustomEvent(MEDIA_PREVIEW_REQUEST, { detail: time })
-    );
-  }
-
-  get pipUnavailable() {
-    return this._pipUnavailable;
   }
 }
 
