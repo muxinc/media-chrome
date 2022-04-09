@@ -222,7 +222,7 @@ class MediaController extends MediaContainer {
         );
       },
       MEDIA_SHOW_CAPTIONS_REQUEST: (e) => {
-        const tracks = this.captionTracks;
+        const tracks = getCaptionTracks(this);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
       },
@@ -230,17 +230,17 @@ class MediaController extends MediaContainer {
       // we don't want them shown (rather than "hiding" them).
       // For a discussion why, see: https://github.com/muxinc/media-chrome/issues/60
       MEDIA_DISABLE_CAPTIONS_REQUEST: (e) => {
-        const tracks = this.captionTracks;
+        const tracks = getCaptionTracks(this);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
       },
       MEDIA_SHOW_SUBTITLES_REQUEST: (e) => {
-        const tracks = this.subtitleTracks;
+        const tracks = getSubtitleTracks(this);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
       },
       MEDIA_DISABLE_SUBTITLES_REQUEST: (e) => {
-        const tracks = this.subtitleTracks;
+        const tracks = getSubtitleTracks(this);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
       },
@@ -283,7 +283,7 @@ class MediaController extends MediaContainer {
     // Pass media state to child and associated control elements
     this._mediaStatePropagators = {
       'play,pause,emptied': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, this.paused);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, getPaused(this));
       },
       'playing,emptied': () => {
         // We want to let the user know that the media started playing at any point (`media-has-played`).
@@ -292,11 +292,11 @@ class MediaController extends MediaContainer {
         this.propagateMediaState(MediaUIAttributes.MEDIA_HAS_PLAYED, !this.media?.paused);
       }, 
       volumechange: () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_MUTED, this.muted);
-        this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME, this.volume);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_MUTED, getMuted(this));
+        this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME, getVolume(this));
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_VOLUME_LEVEL,
-          this.volumeLevel
+          getVolumeLevel(this)
         );
       },
       [fullscreenApi.event]: () => {
@@ -323,13 +323,13 @@ class MediaController extends MediaContainer {
       'timeupdate,loadedmetadata': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_CURRENT_TIME,
-          this.currentTime
+          getCurrentTime(this)
         );
       },
       'durationchange,loadedmetadata,emptied': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_DURATION,
-          this.duration
+          getDuration(this)
         );
       },
       'progress,emptied': () => {
@@ -341,7 +341,7 @@ class MediaController extends MediaContainer {
       ratechange: () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_PLAYBACK_RATE,
-          this.playbackRate
+          getPlaybackRate(this)
         );
       },
       'waiting,playing,emptied': () => {
@@ -380,29 +380,29 @@ class MediaController extends MediaContainer {
       'addtrack,removetrack,loadstart': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_CAPTIONS_LIST,
-          stringifyTextTrackList(this.captionTracks) || undefined
+          stringifyTextTrackList(getCaptionTracks(this)) || undefined
         );
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_SUBTITLES_LIST,
-          stringifyTextTrackList(this.subtitleTracks) || undefined
+          stringifyTextTrackList(getSubtitleTracks(this)) || undefined
         );
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
-          stringifyTextTrackList(this.showingCaptionTracks) || undefined
+          stringifyTextTrackList(getShowingCaptionTracks(this)) || undefined
         );
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
-          stringifyTextTrackList(this.showingSubtitleTracks) || undefined
+          stringifyTextTrackList(getShowingSubtitleTracks(this)) || undefined
         );
       },
       change: () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
-          stringifyTextTrackList(this.showingCaptionTracks) || undefined
+          stringifyTextTrackList(getShowingCaptionTracks(this)) || undefined
         );
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
-          stringifyTextTrackList(this.showingSubtitleTracks) || undefined
+          stringifyTextTrackList(getShowingSubtitleTracks(this)) || undefined
         );
       },
     };
@@ -566,31 +566,31 @@ class MediaController extends MediaContainer {
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_CAPTIONS_LIST,
-        stringifyTextTrackList(this.captionTracks) || undefined
+        stringifyTextTrackList(getCaptionTracks(this)) || undefined
       );
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_SUBTITLES_LIST,
-        stringifyTextTrackList(this.subtitleTracks) || undefined
+        stringifyTextTrackList(getSubtitleTracks(this)) || undefined
       );
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
-        stringifyTextTrackList(this.showingCaptionTracks) || undefined
+        stringifyTextTrackList(getShowingCaptionTracks(this)) || undefined
       );
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
-        stringifyTextTrackList(this.showingSubtitleTracks) || undefined
+        stringifyTextTrackList(getShowingSubtitleTracks(this)) || undefined
       );
-      propagateMediaState([el], MediaUIAttributes.MEDIA_PAUSED, this.paused);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_PAUSED, getPaused(this));
       // propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_MUTED, this.muted);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME, this.volume);
+      propagateMediaState([el], MediaUIAttributes.MEDIA_MUTED, getMuted(this));
+      propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME, getVolume(this));
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_VOLUME_LEVEL,
-        this.volumeLevel
+        getVolumeLevel(this)
       );
       // const fullscreenEl = this.getRootNode()[fullscreenApi.element];
       // propagateMediaState([el], MediaUIAttributes.MEDIA_IS_FULLSCREEN, fullscreenEl === this);
@@ -598,17 +598,17 @@ class MediaController extends MediaContainer {
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_CURRENT_TIME,
-        this.currentTime
+        getCurrentTime(this)
       );
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_DURATION,
-        this.duration
+        getDuration(this)
       );
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_PLAYBACK_RATE,
-        this.playbackRate
+        getPlaybackRate(this)
       );
     }
   }
@@ -633,81 +633,81 @@ class MediaController extends MediaContainer {
       document.pictureInPictureElement;
     return this.media && containsWithShadow(this.media, pipElement);
   }
-
-  get paused() {
-    if (!this.media) return true;
-
-    return this.media.paused;
-  }
-
-  get muted() {
-    return !!(this.media && this.media.muted);
-  }
-
-  get volume() {
-    const media = this.media;
-
-    return media ? media.volume : 1;
-  }
-
-  get volumeLevel() {
-    let level = 'high';
-
-    if (!this.media) return level;
-
-    const { muted, volume } = this.media;
-
-    if (volume === 0 || muted) {
-      level = 'off';
-    } else if (volume < 0.5) {
-      level = 'low';
-    } else if (volume < 0.75) {
-      level = 'medium';
-    }
-
-    return level;
-  }
-
-  get currentTime() {
-    const media = this.media;
-
-    return media ? media.currentTime : 0;
-  }
-
-  get duration() {
-    const media = this.media;
-
-    return media ? media.duration : NaN;
-  }
-
-  get playbackRate() {
-    const media = this.media;
-
-    return media ? media.playbackRate : 1;
-  }
-
-  get subtitleTracks() {
-    return getTextTracksList(this.media, { kind: TextTrackKinds.SUBTITLES });
-  }
-
-  get captionTracks() {
-    return getTextTracksList(this.media, { kind: TextTrackKinds.CAPTIONS });
-  }
-
-  get showingSubtitleTracks() {
-    return getTextTracksList(this.media, {
-      kind: TextTrackKinds.SUBTITLES,
-      mode: TextTrackModes.SHOWING,
-    });
-  }
-
-  get showingCaptionTracks() {
-    return getTextTracksList(this.media, {
-      kind: TextTrackKinds.CAPTIONS,
-      mode: TextTrackModes.SHOWING,
-    });
-  }
 }
+
+const getPaused = (el) => {
+  if (!el.media) return true;
+
+  return el.media.paused;
+};
+
+const getMuted = (el) => {
+  return !!(el.media && el.media.muted);
+};
+
+const getVolume = (el) => {
+  const media = el.media;
+
+  return media ? media.volume : 1;
+};
+
+const getVolumeLevel = (el) => {
+  let level = 'high';
+
+  if (!el.media) return level;
+
+  const { muted, volume } = el.media;
+
+  if (volume === 0 || muted) {
+    level = 'off';
+  } else if (volume < 0.5) {
+    level = 'low';
+  } else if (volume < 0.75) {
+    level = 'medium';
+  }
+
+  return level;
+};
+
+const getCurrentTime = (el) => {
+  const media = el.media;
+
+  return media ? media.currentTime : 0;
+};
+
+const getDuration = (el) => {
+  const media = el.media;
+
+  return media ? media.duration : NaN;
+};
+
+const getPlaybackRate = (el) => {
+  const media = el.media;
+
+  return media ? media.playbackRate : 1;
+};
+
+const getSubtitleTracks = (el) => {
+  return getTextTracksList(el.media, { kind: TextTrackKinds.SUBTITLES });
+};
+
+const getCaptionTracks = (el) => {
+  return getTextTracksList(el.media, { kind: TextTrackKinds.CAPTIONS });
+};
+
+const getShowingSubtitleTracks = (el) => {
+  return getTextTracksList(el.media, {
+    kind: TextTrackKinds.SUBTITLES,
+    mode: TextTrackModes.SHOWING,
+  });
+};
+
+const getShowingCaptionTracks = (el) => {
+  return getTextTracksList(el.media, {
+    kind: TextTrackKinds.CAPTIONS,
+    mode: TextTrackModes.SHOWING,
+  });
+};
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
