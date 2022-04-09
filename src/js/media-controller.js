@@ -63,7 +63,7 @@ class MediaController extends MediaContainer {
       volumeSupportPromise.then(() => {
         if (!volumeSupported) {
           this._volumeUnavailable = AvailabilityStates.UNSUPPORTED;
-          this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, this.volumeUnavailable);
+          this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, this._volumeUnavailable);
         }
       });
     }
@@ -350,7 +350,7 @@ class MediaController extends MediaContainer {
       },
     };
 
-    if (this.airplayUnavailable !== AvailabilityStates.UNSUPPORTED) {
+    if (this._airplayUnavailable !== AvailabilityStates.UNSUPPORTED) {
       const airplaySupporHandler = (event) => {
         // NOTE: since we invoke all these event handlers without arguments whenever a media is attached,
         // need to account for the possibility that event is undefined (CJP).
@@ -361,7 +361,7 @@ class MediaController extends MediaContainer {
         }
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE,
-          this.airplayUnavailable
+          this._airplayUnavailable
         );
       };
       // NOTE: only adding this if airplay is supported, in part to avoid unnecessary battery consumption per
@@ -548,17 +548,17 @@ class MediaController extends MediaContainer {
     propagateMediaState(
       [el],
       MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE,
-      this.volumeUnavailable
+      this._volumeUnavailable
     );
     propagateMediaState(
       [el],
       MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE,
-      this.airplayUnavailable
+      this._airplayUnavailable
     );
     propagateMediaState(
       [el],
       MediaUIAttributes.MEDIA_PIP_UNAVAILABLE,
-      this.pipUnavailable,
+      this._pipUnavailable,
     );
 
     // TODO: Update to propagate all states when registered
@@ -627,14 +627,6 @@ class MediaController extends MediaContainer {
    * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
    */
 
-  get airplayUnavailable() {
-    return this._airplayUnavailable;
-  }
-
-  get pipUnavailable() {
-    return this._pipUnavailable;
-  }
-
   get isPip() {
     const pipElement =
       this.getRootNode().pictureInPictureElement ??
@@ -674,10 +666,6 @@ class MediaController extends MediaContainer {
     }
 
     return level;
-  }
-
-  get volumeUnavailable() {
-    return this._volumeUnavailable;
   }
 
   get currentTime() {
