@@ -25,16 +25,80 @@
         display: none;
       }
 
+      media-controller {
+        --media-aspect-ratio: auto;
+        --media-control-background: transparent;
+        --media-control-hover-background: transparent;
+        --media-range-track-background-color: rgba(255, 255, 255, 0.5);
+        --media-range-track-border-radius: 3px;
+        --media-aspect-ratio: auto;
+        display: inline-block;
+        width: auto;
+        height: auto;
+      }
+
+      media-controller::part(media-layer) {
+        /* "reset" current styles for media-layer */
+        position: initial;
+        top: initial;
+        left: initial;
+        bottom: initial;
+        right: initial;
+        flex-flow: initial;
+        align-items: initial;
+        /* end of "reset" current styles for media-layer */
+        display: inline-block;
+        min-width: 100%;
+        min-height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+      }
+
+      media-controller :is(mux-video, media-poster-image) {
+        min-width: 100%;
+        min-height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+      }
+
     </style>
   </head>
   <body>
     <main>
       <h1>Media Chrome Advanced Video Usage Example</h1>
-      <media-controller>
+      <media-controller-test>
         <video
           slot="media"
+          src="https://stream.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM/high.mp4"
+          muted
+          crossorigin
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM/storyboard.vtt"
+          />
+          <track
+            label="English"
+            kind="captions"
+            srclang="en"
+            src="./vtt/en-cc.vtt"
+          />
+        </video>
+        <media-poster-image
+          slot="poster"
+          src="https://image.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM/thumbnail.jpg"
+          placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
+        ></media-poster-image>
+
+        <!-- <video
+          slot="media"
           src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-          preload="none"
           muted
           crossorigin
         >
@@ -50,12 +114,12 @@
             srclang="en"
             src="./vtt/en-cc.vtt"
           />
-        </video>
-        <media-poster-image
-          slot="poster"
-          src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
-          placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
-        ></media-poster-image>
+      </video>
+      <media-poster-image
+        slot="poster"
+        src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
+        placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
+      ></media-poster-image> -->
         <div slot="centered-chrome" no-auto-hide>
           <media-loading-indicator media-loading></media-loading-indicator>
         </div>
@@ -73,7 +137,7 @@
           <media-fullscreen-button></media-fullscreen-button>
           <media-airplay-button></media-airplay-button>
         </media-control-bar>
-      </media-controller>
+      </media-controller-test>
       <div class="examples">
         <a href="./">View more examples</a>
       </div>

@@ -4,7 +4,9 @@ export * as timeUtils from './utils/time.js';
 import MediaAirplayButton from './media-airplay-button.js';
 import MediaChromeButton from './media-chrome-button.js';
 // import MediaContainer from './src/js/media-container.js';
+// import MediaContainerTest from './src/js/media-container-test.js';
 import MediaController from './media-controller.js';
+import MediaControllerTest from './media-controller-test.js';
 import MediaChromeRange from './media-chrome-range.js';
 import MediaControlBar from './media-control-bar.js';
 import MediaCurrentTimeDisplay from './media-current-time-display.js';
@@ -25,6 +27,7 @@ import MediaTimeRange from './media-time-range.js';
 import MediaLoadingIndicator from './media-loading-indicator.js';
 import MediaTitleElement from './media-title-element.js';
 import MediaVolumeRange from './media-volume-range.js';
+import MediaSized from './media-sized.js';
 import { Window as window } from './utils/server-safe-globals.js';
 
 // Alias <media-controller> as <media-chrome>
@@ -54,6 +57,7 @@ export {
   MediaChromeButton,
   MediaContainer,
   MediaController,
+  MediaControllerTest,
   MediaChromeRange,
   MediaControlBar,
   MediaCurrentTimeDisplay,
@@ -75,4 +79,5 @@ export {
   MediaTitleElement,
   MediaLoadingIndicator,
   MediaVolumeRange,
+  MediaSized,
 };
