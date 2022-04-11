@@ -15,10 +15,6 @@ a {
   box-sizing: border-box;
 }
 
-media-loading-indicator {
-  --media-loading-icon-width: 100px;
-}
-
 media-airplay-button[media-airplay-unavailable] {
   display: none;
 }
