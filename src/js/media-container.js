@@ -193,6 +193,26 @@ class MediaContainer extends window.HTMLElement {
 
     const observer = new MutationObserver(mutationCallback);
     observer.observe(this, { childList: true, subtree: true });
+
+    // Handles the case when the slotted media element is a slot element itself.
+    // e.g. chaining media slots for media themes.
+    let currentMedia = this.media;
+    let chainedSlot = this.querySelector(':scope > slot[slot=media]');
+    if (chainedSlot) {
+      chainedSlot.addEventListener('slotchange', () => {
+        const slotEls = chainedSlot.assignedElements({ flatten: true });
+        if (!slotEls.length) {
+          this.mediaUnsetCallback(currentMedia);
+          return;
+        }
+        if (this.media) {
+          currentMedia = this.media
+          this.handleMediaUpdated(this.media).then((media) =>
+            this.mediaSetCallback(media)
+          );
+        }
+      });
+    }
   }
 
   static get observedAttributes() {
