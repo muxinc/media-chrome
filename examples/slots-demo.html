@@ -24,12 +24,16 @@
       padding: 10px;
     }
 
+    video {
+      max-width: 960px;
+      aspect-ratio: 16 / 9;
+    }
+
     media-control-bar {
       background: none;
     }
 
     media-controller {
-      aspect-ratio: 16 / 9;
       --media-control-background: none;
     }
 
@@ -101,7 +105,7 @@
           <div
             slot="poster"
             class="first"
-            style="font-size: 128px"
+            style="font-size: 128px; line-height: initial;"
           >This is a poster.</div>
           <span slot="centered-chrome">
             <media-seek-backward-button></media-seek-backward-button>
