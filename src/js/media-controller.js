@@ -631,28 +631,28 @@ class MediaController extends MediaContainer {
    */
 }
 
-const getPaused = (el) => {
-  if (!el.media) return true;
+const getPaused = (controller) => {
+  if (!controller.media) return true;
 
-  return el.media.paused;
+  return controller.media.paused;
 };
 
-const getMuted = (el) => {
-  return !!(el.media && el.media.muted);
+const getMuted = (controller) => {
+  return !!(controller.media && controller.media.muted);
 };
 
-const getVolume = (el) => {
-  const media = el.media;
+const getVolume = (controller) => {
+  const media = controller.media;
 
   return media ? media.volume : 1;
 };
 
-const getVolumeLevel = (el) => {
+const getVolumeLevel = (controller) => {
   let level = 'high';
 
-  if (!el.media) return level;
+  if (!controller.media) return level;
 
-  const { muted, volume } = el.media;
+  const { muted, volume } = controller.media;
 
   if (volume === 0 || muted) {
     level = 'off';
@@ -665,41 +665,41 @@ const getVolumeLevel = (el) => {
   return level;
 };
 
-const getCurrentTime = (el) => {
-  const media = el.media;
+const getCurrentTime = (controller) => {
+  const media = controller.media;
 
   return media ? media.currentTime : 0;
 };
 
-const getDuration = (el) => {
-  const media = el.media;
+const getDuration = (controller) => {
+  const media = controller.media;
 
   return media ? media.duration : NaN;
 };
 
-const getPlaybackRate = (el) => {
-  const media = el.media;
+const getPlaybackRate = (controller) => {
+  const media = controller.media;
 
   return media ? media.playbackRate : 1;
 };
 
-const getSubtitleTracks = (el) => {
-  return getTextTracksList(el.media, { kind: TextTrackKinds.SUBTITLES });
+const getSubtitleTracks = (controller) => {
+  return getTextTracksList(controller.media, { kind: TextTrackKinds.SUBTITLES });
 };
 
-const getCaptionTracks = (el) => {
-  return getTextTracksList(el.media, { kind: TextTrackKinds.CAPTIONS });
+const getCaptionTracks = (controller) => {
+  return getTextTracksList(controller.media, { kind: TextTrackKinds.CAPTIONS });
 };
 
-const getShowingSubtitleTracks = (el) => {
-  return getTextTracksList(el.media, {
+const getShowingSubtitleTracks = (controller) => {
+  return getTextTracksList(controller.media, {
     kind: TextTrackKinds.SUBTITLES,
     mode: TextTrackModes.SHOWING,
   });
 };
 
-const getShowingCaptionTracks = (el) => {
-  return getTextTracksList(el.media, {
+const getShowingCaptionTracks = (controller) => {
+  return getTextTracksList(controller.media, {
     kind: TextTrackKinds.CAPTIONS,
     mode: TextTrackModes.SHOWING,
   });
