@@ -7,6 +7,20 @@
   </head>
   <body>
     <style>
+      .examples {
+        margin-top: 20px;
+      }
+
+      /* Hide custom elements that are not defined yet */
+      media-control-bar :not(:defined) {
+        display: none;
+      }
+
+      video {
+        width: 720px;
+        aspect-ratio: 16 / 9;
+      }
+
       media-control-bar > * {
         height: 42px;
         --media-control-background: #000;
@@ -620,6 +634,9 @@
           </media-fullscreen-button>
         </media-control-bar>
       </media-controller>
+      <div class="examples">
+        <a href="../">View more examples</a>
+      </div>
     </main>
   </body>
 </html>

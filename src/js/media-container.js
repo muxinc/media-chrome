@@ -23,10 +23,11 @@ template.innerHTML = `
       box-sizing: border-box;
       position: relative;
       display: inline-block;
+      line-height: 0;
       background-color: #000;
     }
 
-    :host(:not([audio])) *[part~=layer] {
+    :host(:not([audio])) *[part~=layer]:not([part~=media-layer]) {
       position: absolute;
       top: 0;
       left: 0;
@@ -41,11 +42,6 @@ template.innerHTML = `
 
     :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer])  {
       pointer-events: auto;
-    }
-    
-    ::slotted([slot=poster]) {
-      width: 100%;
-      height: 100%;
     }
     
     :host(:not([audio])) *[part~=layer][part~=centered-layer] {
@@ -66,19 +62,8 @@ template.innerHTML = `
     }
 
     /* Video specific styles */
-    :host(:not([audio])) {
-      aspect-ratio: var(--media-aspect-ratio, auto 3 / 2);
-      width: 720px;
-    }
-
     :host(:not([audio])) .spacer {
       flex-grow: 1;
-    }
-
-    @supports not (aspect-ratio: 1 / 1) {
-      :host(:not([audio])) {
-        height: 480px;
-      }
     }
 
     /* Safari needs this to actually make the element fill the window */

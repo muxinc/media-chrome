@@ -5,6 +5,18 @@
     <title>Media Chrome HLS Media Example</title>
     <script type="module" src="https://unpkg.com/hls-video-element@0"></script>
     <script type="module" src="../../dist/index.js"></script>
+    <style>
+      hls-video {
+        display: inline-block;
+        width: 720px;
+        aspect-ratio: 16 / 9;
+        background-color: #000;
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
   </head>
   <body>
     <main>
@@ -29,6 +41,9 @@
           <media-fullscreen-button></media-fullscreen-button>
         </media-control-bar>
       </media-controller>
+      <div class="examples">
+        <a href="../">View more examples</a>
+      </div>
     </main>
   </body>
 </html>
