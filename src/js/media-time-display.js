@@ -5,7 +5,7 @@ import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
-const DEFAULT_TIMES_SEP = ' / ';
+const DEFAULT_TIMES_SEP = '&nbsp;/&nbsp;';
 
 const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
   const showRemaining = el.getAttribute('remaining') != null;
@@ -52,12 +52,6 @@ const updateAriaValueText = (el) => {
 };
 
 class MediaTimeDisplay extends MediaTextDisplay {
-  constructor() {
-    super();
-
-    this.shadowRoot.styleSheets[0].addRule(':host', 'white-space: nowrap');
-  }
-
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
