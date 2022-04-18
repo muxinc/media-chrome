@@ -52,6 +52,12 @@ const updateAriaValueText = (el) => {
 };
 
 class MediaTimeDisplay extends MediaTextDisplay {
+  constructor() {
+    super();
+
+    this.shadowRoot.styleSheets[0].addRule(':host', 'white-space: nowrap');
+  }
+
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
