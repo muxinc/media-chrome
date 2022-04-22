@@ -18,9 +18,11 @@ class MediaTheme extends HTMLElement {
 
     // Clone the template in the shadow dom
     this.shadowRoot.append(template.content.cloneNode(true));
+  }
 
+  get mediaController() {
     // Expose the media controller if API access is needed
-    this.mediaController = this.shadowRoot.querySelector('media-controller');
+    return this.shadowRoot.querySelector('media-controller');
   }
 }
 
