@@ -25,6 +25,7 @@ import MediaTimeRange from './media-time-range.js';
 import MediaLoadingIndicator from './media-loading-indicator.js';
 import MediaTitleElement from './media-title-element.js';
 import MediaVolumeRange from './media-volume-range.js';
+import MediaTheme from './themes/media-theme.js';
 import { Window as window } from './utils/server-safe-globals.js';
 
 // Alias <media-controller> as <media-chrome>
@@ -75,4 +76,5 @@ export {
   MediaTitleElement,
   MediaLoadingIndicator,
   MediaVolumeRange,
+  MediaTheme,
 };

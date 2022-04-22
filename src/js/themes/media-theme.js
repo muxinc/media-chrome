@@ -1,28 +1,26 @@
 class MediaTheme extends HTMLElement {
-  constructor(template = ``, options = {}) {
+  static template = '';
+
+  constructor() {
     super();
+    this.attachShadow({ mode: 'open' });
+  }
 
-    options = Object.assign(
-      {
-        // Default options
-      },
-      options
-    );
+  connectedCallback() {
+    this.render();
+  }
 
-    // Expose the template publicaly for other uses
-    this.template = template;
+  render() {
+    this.shadowRoot.textContent = '';
 
-    // Not sure if this is best practice or if we should just
-    // innerHTML the template string in the shadow dom
-    const templateEl = document.createElement('template');
-    templateEl.innerHTML = template;
+    const template = document.createElement('template');
+    template.innerHTML = this.constructor.template;
 
     // Clone the template in the shadow dom
-    const shadow = this.attachShadow({ mode: 'open' });
-    shadow.appendChild(templateEl.content.cloneNode(true));
+    this.shadowRoot.append(template.content.cloneNode(true));
 
     // Expose the media controller if API access is needed
-    this.mediaController = shadow.querySelector('media-controller');
+    this.mediaController = this.shadowRoot.querySelector('media-controller');
   }
 }
 
