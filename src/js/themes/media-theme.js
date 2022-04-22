@@ -1,4 +1,10 @@
-class MediaTheme extends HTMLElement {
+import { defineCustomElement } from '../utils/defineCustomElement.js';
+import {
+  Window as window,
+  Document as document,
+} from '../utils/server-safe-globals.js';
+
+class MediaTheme extends window.HTMLElement {
   static template = '';
 
   constructor() {
@@ -26,8 +32,6 @@ class MediaTheme extends HTMLElement {
   }
 }
 
-if (!customElements.get('media-theme')) {
-  customElements.define('media-theme', MediaTheme);
-}
+defineCustomElement('media-theme', MediaTheme);
 
 export default MediaTheme;
