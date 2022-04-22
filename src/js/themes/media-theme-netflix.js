@@ -7,6 +7,7 @@
 </media-theme-netflix>
 */
 
+import { defineCustomElement } from '../utils/defineCustomElement.js';
 import MediaTheme from './media-theme.js';
 
 const template = `
@@ -134,8 +135,6 @@ class MediaThemeNetflix extends MediaTheme {
   static template = template;
 }
 
-if (!customElements.get('media-theme-netflix')) {
-  customElements.define('media-theme-netflix', MediaThemeNetflix);
-}
+defineCustomElement('media-theme-netflix', MediaThemeNetflix);
 
 export default MediaThemeNetflix;
