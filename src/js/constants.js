@@ -124,6 +124,12 @@ export const ReadyStates = {
   HAVE_ENOUGH_DATA: 4,
 };
 
+export const PointerTypes = {
+  MOUSE: 'mouse',
+  PEN: 'pen',
+  TOUCH: 'touch',
+};
+
 export const AvailabilityStates = {
   UNAVAILABLE: 'unavailable',
   UNSUPPORTED: 'unsupported',
