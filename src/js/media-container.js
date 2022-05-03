@@ -232,11 +232,11 @@ class MediaContainer extends window.HTMLElement {
         new window.CustomEvent(eventName, { composed: true, bubbles: true })
       );
     };
+    media.addEventListener('click', this._mediaClickPlayToggle, false);
   }
 
   handleMediaUpdated(media) {
     const resolveMediaPromise = (media) => {
-      // media.addEventListener('click', this._mediaClickPlayToggle, false);
 
       return Promise.resolve(media);
     };
@@ -267,7 +267,7 @@ class MediaContainer extends window.HTMLElement {
   }
 
   mediaUnsetCallback(media) {
-    // media.removeEventListener('click', this._mediaClickPlayToggle);
+    media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 
   connectedCallback() {
