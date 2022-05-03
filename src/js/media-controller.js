@@ -299,13 +299,15 @@ class MediaController extends MediaContainer {
           getVolumeLevel(this)
         );
       },
-      [fullscreenApi.event]: () => {
-        // If media-chrome is in the shadow dom this.getRootNode().host will
-        // be the fullscreen element otherwise this controller will be.
-        let fullscreenEl = document[fullscreenApi.element];
+      [fullscreenApi.event]: (e) => {
+        // Safari doesn't support ShadowRoot.fullscreenElement and document.fullscreenElement
+        // could be several ancestors up the tree. Use event.target instead.
+        const isSomeElementFullscreen = !!document[fullscreenApi.element];
+        const fullscreenEl = isSomeElementFullscreen && e?.target;
+        const isFullScreen = containsComposedNode(this, fullscreenEl);
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_IS_FULLSCREEN,
-          fullscreenEl === (this.getRootNode().host ?? this)
+          isFullScreen
         );
       },
       'enterpictureinpicture,leavepictureinpicture': (e) => {
