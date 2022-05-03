@@ -15,7 +15,7 @@ import {
 } from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
-import { containsWithShadow } from './utils/element-utils.js';
+import { containsComposedNode } from './utils/element-utils.js';
 
 import {
   MediaUIEvents,
@@ -319,7 +319,7 @@ class MediaController extends MediaContainer {
           const pipElement =
             this.getRootNode().pictureInPictureElement ??
             document.pictureInPictureElement;
-          isPip = this.media && containsWithShadow(this.media, pipElement);
+          isPip = this.media && containsComposedNode(this.media, pipElement);
         }
         this.propagateMediaState(MediaUIAttributes.MEDIA_IS_PIP, isPip);
       },
