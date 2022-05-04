@@ -3,7 +3,6 @@ export { default as labels } from './labels/labels.js';
 export * as timeUtils from './utils/time.js';
 import MediaAirplayButton from './media-airplay-button.js';
 import MediaChromeButton from './media-chrome-button.js';
-import MediaChromeGesture from './media-chrome-gesture.js';
 import MediaDisplayGestureReceiver from './media-display-gesture-receiver.js';
 // import MediaContainer from './src/js/media-container.js';
 import MediaController from './media-controller.js';
@@ -18,7 +17,6 @@ import MediaFullscreenButton from './media-fullscreen-button.js';
 import MediaMuteButton from './media-mute-button.js';
 import MediaPipButton from './media-pip-button.js';
 import MediaPlayButton from './media-play-button.js';
-import MediaPlayGesture from './media-play-gesture.js';
 import MediaPlaybackRateButton from './media-playback-rate-button.js';
 import MediaPosterImage from './media-poster-image.js';
 import MediaProgressRange from './media-progress-range.js';
@@ -55,7 +53,6 @@ if (!window.customElements.get('media-container')) {
 
 export {
   MediaAirplayButton,
-  MediaChromeGesture,
   MediaChromeButton,
   MediaDisplayGestureReceiver,
   MediaContainer,
@@ -71,7 +68,6 @@ export {
   MediaMuteButton,
   MediaPipButton,
   MediaPlayButton,
-  MediaPlayGesture,
   MediaPlaybackRateButton,
   MediaPosterImage,
   MediaProgressRange,
