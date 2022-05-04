@@ -14,6 +14,7 @@ import {
 } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
+import { containsComposedNode } from './utils/element-utils.js';
 // Guarantee that `<media-display-gesture-receiver/>` is available for use in the template
 import './media-display-gesture-receiver.js';
 
@@ -46,7 +47,8 @@ template.innerHTML = `
       pointer-events: auto;
     }
 
-    :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]) {
+    :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]),
+    :host(:not([audio])[gestures-disabled]) media-display-gesture-receiver[slot=gestures-chrome] {
       pointer-events: none;
     }
     
@@ -55,7 +57,8 @@ template.innerHTML = `
       justify-content: center;
     }
 
-    :host(:not([audio])) ::slotted(media-display-gesture-receiver[slot=gestures-chrome]), media-display-gesture-receiver[slot=gestures-chrome] {
+    :host(:not([audio])) ::slotted(media-display-gesture-receiver[slot=gestures-chrome]), 
+    :host(:not([audio])) media-display-gesture-receiver[slot=gestures-chrome] {
       align-self: stretch;
       flex-grow: 1;
     }
@@ -335,7 +338,7 @@ class MediaContainer extends window.HTMLElement {
     });
 
     this.addEventListener('mousemove', (e) => {
-      if (e.target === this) return;
+      if (!containsComposedNode(this, e.target)) return;
 
       // Stay visible if hovered over control bar
       this.removeAttribute('user-inactive');
@@ -346,8 +349,8 @@ class MediaContainer extends window.HTMLElement {
       this.dispatchEvent(evt);
       window.clearTimeout(this._inactiveTimeout);
 
-      // If hovering over the media element we're free to make inactive
-      if (e.target === this.media) {
+      // If hovering over something other than controls, we're free to make inactive
+      if ([this, this.media].includes(e.target)) {
         scheduleInactive();
       }
     });
