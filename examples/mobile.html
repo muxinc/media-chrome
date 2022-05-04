@@ -11,9 +11,15 @@
         margin: 0px;
       }
 
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 320px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
       video {
-        width: 320px;
-        aspect-ratio: 16 / 9;
+        width: 100%;      /* prevents video to expand beyond its container */
       }
 
       .examples {

@@ -15,10 +15,8 @@ export const getAllSlotted = (el, name) => {
 
 export const getSlotted = (el, name) => getAllSlotted(el, name)[0];
 
-export const containsWithShadow = (refNode, otherNode) => {
-  if (!refNode || !otherNode) return false;
-  if (refNode.contains(otherNode)) return true;
-  return [refNode, ...refNode.querySelectorAll("*")].some((el) => {
-    return containsWithShadow(el.shadowRoot, otherNode);
-  });
-}
+export const containsComposedNode = (rootNode, childNode) => {
+  if (!rootNode || !childNode) return false;
+  if (rootNode.contains(childNode)) return true;
+  return containsComposedNode(rootNode, childNode.getRootNode().host);
+};
