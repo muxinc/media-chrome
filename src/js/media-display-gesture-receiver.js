@@ -57,10 +57,7 @@ class MediaDisplayGestureReceiver extends window.HTMLElement {
     this.addEventListener('pointerdown', pointerDownHandler);
 
     this.addEventListener('click', (event) => {
-      if (!event.pointerType) {
-        event.pointerType = this._pointerType;
-      }
-      const { pointerType } = event;
+      const { pointerType = this._pointerType } = event;
       // NOTE: While there are cases where we may have a stale this._pointerType,
       // we're guaranteed that the most recent this._pointerType will correspond
       // to the current click event definitionally. As such, this clearing is technically
