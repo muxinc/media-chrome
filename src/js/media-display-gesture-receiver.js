@@ -71,9 +71,6 @@ class MediaDisplayGestureReceiver extends window.HTMLElement {
       } else if (pointerType === PointerTypes.MOUSE) {
         this.handleMouseClick(event);
         return;
-      } else if (pointerType === PointerTypes.PEN) {
-        this.handlePenTap(event);
-        return;
       }
     });
   }
@@ -117,8 +114,6 @@ class MediaDisplayGestureReceiver extends window.HTMLElement {
   // NOTE: Currently "baking in" actions + attrs until we come up with
   // a more robust architecture (CJP)
   handleTap(_evt) {}
-
-  handlePenTap(_evt) {}
 
   handleMouseClick(_evt) {
     const eventName =
