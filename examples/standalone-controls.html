@@ -5,9 +5,15 @@
     <title>Media Chrome Standalone Controls Example</title>
     <script type="module" src="../dist/index.js"></script>
     <style>
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 640px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
       video {
-        width: 640px;
-        height: 360px;
+        width: 100%;      /* prevents video to expand beyond its container */
       }
 
       .examples {

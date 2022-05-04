@@ -4,14 +4,15 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Wistia Media Example</title>
     <style>
-      .examples {
-        margin-top: 20px;
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 720px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
 
       wistia-video {
-        display: inline-block;
-        width: 720px;
-        aspect-ratio: 16 / 9;
+        width: 100%;      /* prevents video to expand beyond its container */
         background-color: #000;
       }
 
@@ -27,6 +28,9 @@
         display: none;
       }
 
+      .examples {
+        margin-top: 20px;
+      }
     </style>
     <script type="module" src="https://unpkg.com/wistia-video-element@0.0.4/dist/wistia-video-element.js"></script>
     <script type="module" src="../../dist/index.js"></script>

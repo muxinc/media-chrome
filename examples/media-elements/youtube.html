@@ -9,10 +9,15 @@
     ></script>
     <script type="module" src="../../dist/index.js"></script>
     <style>
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 720px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
       youtube-video {
-        display: inline-block;
-        width: 720px;
-        aspect-ratio: 16 / 9;
+        width: 100%;      /* prevents video to expand beyond its container */
         background-color: #000;
       }
 
