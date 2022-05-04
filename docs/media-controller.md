@@ -60,6 +60,28 @@ Example (`autohide` disabled):
 </media-controller>
 ```
 
+- `gestures-disabled` - (`video` only) Use this to turn off any built in or custom gestures, such as "click to toggle play/pause".
+
+Example (disabling gestures via `gestures-disabled`):
+
+```html
+<media-controller gestures-disabled>
+  <video
+    slot="media"
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+  ></video>
+  <media-control-bar>
+    <media-seek-backward-button></media-seek-backward-button>
+    <media-play-button></media-play-button>
+    <media-seek-forward-button></media-seek-forward-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-range></media-time-range>
+    <media-time-display></media-time-display>
+  </media-control-bar>
+</media-controller>
+```
+
 # Styling
 
 - `aspect-ratio` - While this is [a standard CSS style](https://css-tricks.com/almanac/properties/a/aspect-ratio/), it's fairly new, and you're likely to want to use it frequently on `<media-controller/>`, at least for `video` use cases. Most often, you'll want the `aspect-ratio` to match your video content's aspect ratio.
