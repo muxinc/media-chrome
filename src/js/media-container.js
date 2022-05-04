@@ -14,6 +14,8 @@ import {
 } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
+// Guarantee that `<media-display-gesture-receiver/>` is available for use in the template
+import './media-display-gesture-receiver.js';
 
 const template = document.createElement('template');
 
@@ -43,10 +45,19 @@ template.innerHTML = `
     :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer])  {
       pointer-events: auto;
     }
+
+    :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]) {
+      pointer-events: none;
+    }
     
     :host(:not([audio])) *[part~=layer][part~=centered-layer] {
       align-items: center;
       justify-content: center;
+    }
+
+    :host(:not([audio])) ::slotted(media-display-gesture-receiver[slot=gestures-chrome]), media-display-gesture-receiver[slot=gestures-chrome] {
+      align-self: stretch;
+      flex-grow: 1;
     }
 
     .spacer {
@@ -102,7 +113,9 @@ template.innerHTML = `
     <slot name="poster"></slot>
   </span>
   <span part="layer gesture-layer">
-    <slot name="gestures-chrome"></slot>
+    <slot name="gestures-chrome">
+      <media-display-gesture-receiver slot="gestures-chrome"></media-display-gesture-receiver>
+    </slot>
   </span>
   <span part="layer vertical-layer">
     <slot name="top-chrome"></slot>
@@ -201,7 +214,7 @@ class MediaContainer extends window.HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['autohide'].concat(MEDIA_UI_ATTRIBUTE_NAMES);
+    return ['autohide', 'gestures-disabled'].concat(MEDIA_UI_ATTRIBUTE_NAMES);
   }
 
   // Could share this code with media-chrome-html-element instead
