@@ -3,7 +3,7 @@ export { default as labels } from './labels/labels.js';
 export * as timeUtils from './utils/time.js';
 import MediaAirplayButton from './media-airplay-button.js';
 import MediaChromeButton from './media-chrome-button.js';
-import MediaDisplayGestureReceiver from './media-display-gesture-receiver.js';
+import MediaGestureReceiver from './media-gesture-receiver.js';
 // import MediaContainer from './src/js/media-container.js';
 import MediaController from './media-controller.js';
 import MediaChromeRange from './media-chrome-range.js';
@@ -54,7 +54,7 @@ if (!window.customElements.get('media-container')) {
 export {
   MediaAirplayButton,
   MediaChromeButton,
-  MediaDisplayGestureReceiver,
+  MediaGestureReceiver,
   MediaContainer,
   MediaController,
   MediaChromeRange,
