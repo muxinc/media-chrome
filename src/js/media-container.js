@@ -15,8 +15,8 @@ import {
 import { MediaUIEvents, MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { containsComposedNode } from './utils/element-utils.js';
-// Guarantee that `<media-display-gesture-receiver/>` is available for use in the template
-import './media-display-gesture-receiver.js';
+// Guarantee that `<media-gesture-receiver/>` is available for use in the template
+import './media-gesture-receiver.js';
 
 const template = document.createElement('template');
 
@@ -48,7 +48,7 @@ template.innerHTML = `
     }
 
     :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]),
-    :host(:not([audio])[gestures-disabled]) media-display-gesture-receiver[slot=gestures-chrome] {
+    :host(:not([audio])[gestures-disabled]) media-gesture-receiver[slot=gestures-chrome] {
       pointer-events: none;
     }
     
@@ -57,8 +57,8 @@ template.innerHTML = `
       justify-content: center;
     }
 
-    :host(:not([audio])) ::slotted(media-display-gesture-receiver[slot=gestures-chrome]), 
-    :host(:not([audio])) media-display-gesture-receiver[slot=gestures-chrome] {
+    :host(:not([audio])) ::slotted(media-gesture-receiver[slot=gestures-chrome]), 
+    :host(:not([audio])) media-gesture-receiver[slot=gestures-chrome] {
       align-self: stretch;
       flex-grow: 1;
     }
@@ -117,7 +117,7 @@ template.innerHTML = `
   </span>
   <span part="layer gesture-layer">
     <slot name="gestures-chrome">
-      <media-display-gesture-receiver slot="gestures-chrome"></media-display-gesture-receiver>
+      <media-gesture-receiver slot="gestures-chrome"></media-gesture-receiver>
     </slot>
   </span>
   <span part="layer vertical-layer">

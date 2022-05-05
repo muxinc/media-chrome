@@ -20,7 +20,7 @@ template.innerHTML = `
 </style>
 `;
 
-class MediaDisplayGestureReceiver extends window.HTMLElement {
+class MediaGestureReceiver extends window.HTMLElement {
   // NOTE: Currently "baking in" actions + attrs until we come up with
   // a more robust architecture (CJP)
   static get observedAttributes() {
@@ -127,8 +127,8 @@ class MediaDisplayGestureReceiver extends window.HTMLElement {
 }
 
 defineCustomElement(
-  'media-display-gesture-receiver',
-  MediaDisplayGestureReceiver
+  'media-gesture-receiver',
+  MediaGestureReceiver
 );
 
-export default MediaDisplayGestureReceiver;
+export default MediaGestureReceiver;
