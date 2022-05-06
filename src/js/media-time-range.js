@@ -35,7 +35,7 @@ template.innerHTML = `
 
     media-thumbnail-preview {
       --thumb-preview-min-width: var(--media-thumbnail-preview-min-width, 120px);
-      --thumb-preview-max-width: var(--media-thumbnail-preview-max-width, 200px);
+      --thumb-preview-max-width: var(--media-thumbnail-preview-max-width, 180px);
       --thumb-preview-min-height: var(--media-thumbnail-preview-min-height, 80px);
       --thumb-preview-max-height: var(--media-thumbnail-preview-max-height, 160px);
       --thumb-preview-border: 2px solid #fff;
