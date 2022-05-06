@@ -5,6 +5,17 @@
     <title>Media Chrome Vertical Video Usage Example</title>
     <script type="module" src="../dist/index.js"></script>
     <style>
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 360px;       /* allows the container to shrink if small */
+        aspect-ratio: 9 / 16;   /* set container aspect ratio if preload=none */
+      }
+
+      video {
+        width: 100%;      /* prevents video to expand beyond its container */
+      }
+
       .examples {
         margin-top: 20px;
       }
@@ -54,17 +65,10 @@
         </div>
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
-          <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
           <media-mute-button></media-mute-button>
-          <media-volume-range></media-volume-range>
           <media-time-range></media-time-range>
-          <media-time-display show-duration remaining></media-time-display>
-          <media-captions-button default-showing></media-captions-button>
-          <media-playback-rate-button></media-playback-rate-button>
-          <media-pip-button></media-pip-button>
+          <media-time-display remaining></media-time-display>
           <media-fullscreen-button></media-fullscreen-button>
-          <media-airplay-button></media-airplay-button>
         </media-control-bar>
       </media-controller>
       <div class="examples">
