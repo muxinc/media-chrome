@@ -25,47 +25,50 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     #thumbnailContainer {
-      display: none;
+      position: absolute;
+      left: 0;
+      top: 0;
+      transition: visibility .25s, opacity .25s;
+      visibility: hidden;
+      opacity: 0;
     }
 
     media-thumbnail-preview {
-      /* Scale the thumbnail preview to 50% and reposition appropriately to not take up too much real-estate. */
-      transform: scale(0.5) translateY(50%) translateX(-100%);
+      --thumb-preview-min-width: var(--media-thumbnail-preview-min-width, 120px);
+      --thumb-preview-max-width: var(--media-thumbnail-preview-max-width, 180px);
+      --thumb-preview-min-height: var(--media-thumbnail-preview-min-height, 80px);
+      --thumb-preview-max-height: var(--media-thumbnail-preview-max-height, 160px);
+      --thumb-preview-border: 2px solid #fff;
+      transform-origin: 50% 100%;
       position: absolute;
       bottom: calc(100% + 5px);
-      border: 2px solid #fff;
-      border-radius: 2px;
+      border: var(--media-thumbnail-preview-border, var(--thumb-preview-border, 2px solid #fff));
+      border-radius: var(--media-thumbnail-preview-border-radius, 2px);
       background-color: #000;
     }
 
-    /* Can't get this working. Trying a downward triangle. */
+    /*
+      This is a downward triangle. Commented out for now because it would also
+      require scaling the px properties below in JS; bottom and border-width.
+    */
     /* media-thumbnail-preview::after {
       content: "";
       display: block;
-      width: 300px;
-      height: 300px;
-      margin: 100px;
-      background-color: #ff0;
+      width: 0;
+      height: 0;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -10px;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid #fff;
     } */
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) #thumbnailContainer {
-      display: block;
-      animation: fadeIn ease 0.5s;
-    }
-
-    @keyframes fadeIn {
-      0% {
-        /* transform-origin: bottom center; */
-        /* transform: scale(0.7); */
-        margin-top: 10px;
-        opacity: 0;
-      }
-      100% {
-        /* transform-origin: bottom center; */
-        /* transform: scale(1); */
-        margin-top: 0;
-        opacity: 1;
-      }
+      transition: visibility .5s, opacity .5s;
+      visibility: visible;
+      opacity: 1;
     }
   </style>
   <div id="thumbnailContainer">
@@ -222,9 +225,58 @@ class MediaTimeRange extends MediaChromeRange {
 
         // Get thumbnail center position
         const leftPadding = rangeRect.left - this.getBoundingClientRect().left;
-        const thumbnailLeft = leftPadding + mousePercent * rangeRect.width;
+        const thumbnailOffset = leftPadding + mousePercent * rangeRect.width;
 
-        this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
+        const thumbStyle = getComputedStyle(this.thumbnailPreview);
+        const thumbMinWidth = parseInt(
+          thumbStyle.getPropertyValue('--thumb-preview-min-width')
+        );
+        const thumbMaxWidth = parseInt(
+          thumbStyle.getPropertyValue('--thumb-preview-max-width')
+        );
+        const thumbMinHeight = parseInt(
+          thumbStyle.getPropertyValue('--thumb-preview-min-height')
+        );
+        const thumbMaxHeight = parseInt(
+          thumbStyle.getPropertyValue('--thumb-preview-max-height')
+        );
+
+        // Use client dimensions instead of offset dimensions to exclude borders.
+        const { clientWidth, clientHeight } = this.thumbnailPreview;
+        const maxThumbRatio = Math.min(
+          thumbMaxWidth / clientWidth,
+          thumbMaxHeight / clientHeight
+        );
+        const minThumbRatio = Math.max(
+          thumbMinWidth / clientWidth,
+          thumbMinHeight / clientHeight
+        );
+        const thumbnailLeft = thumbnailOffset - clientWidth / 2;
+        // maxThumbRatio scales down and takes priority, minThumbRatio scales up.
+        const thumbScale =
+          maxThumbRatio < 1
+            ? maxThumbRatio
+            : minThumbRatio > 1
+            ? minThumbRatio
+            : 1;
+
+        this.thumbnailPreview.style.transform = `translateX(${thumbnailLeft}px) scale(${thumbScale})`;
+
+        let thumbBorderWidth = parseInt(
+          thumbStyle.getPropertyValue('--media-thumbnail-preview-border')
+        );
+        if (Number.isNaN(thumbBorderWidth)) {
+          thumbBorderWidth = parseInt(
+            thumbStyle.getPropertyValue('--thumb-preview-border')
+          );
+        }
+
+        this.thumbnailPreview.style.borderWidth = `${Math.round(
+          thumbBorderWidth / thumbScale
+        )}px`;
+        this.thumbnailPreview.style.borderRadius = `${Math.round(
+          thumbBorderWidth / thumbScale
+        )}px`;
 
         const detail = mousePercent * duration;
         const mediaPreviewEvt = new window.CustomEvent(

@@ -22,6 +22,7 @@ template.innerHTML = `
     }
 
     img {
+      display: block;
       object-fit: none;
     }
   </style>
