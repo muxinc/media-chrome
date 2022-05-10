@@ -32,6 +32,7 @@ const trackStyles = `
 
   box-shadow: var(--media-range-track-box-shadow, none);
   transition: var(--media-range-track-transition, none);
+  transform: translate(var(--media-range-track-translate-x, 0), var(--media-range-track-translate-y, 0));
   cursor: pointer;
 `;
 
@@ -88,7 +89,12 @@ template.innerHTML = `
       /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
       margin-top: calc(calc(0px - var(--thumb-height) + var(--track-height)) / 2);
     }
-    input[type=range]::-moz-range-thumb { ${thumbStyles} }
+
+    /* The thumb is not positioned relative to the track in Firefox */
+    input[type=range]::-moz-range-thumb {
+      ${thumbStyles}
+      translate: var(--media-range-track-translate-x, 0) var(--media-range-track-translate-y, 0);
+    }
 
     input[type=range]::-webkit-slider-runnable-track { ${trackStyles} }
     input[type=range]::-moz-range-track { ${trackStyles} }
@@ -121,7 +127,6 @@ template.innerHTML = `
     input[type=range]:disabled::-webkit-slider-runnable-track {
       background-color: #777;
     }
-
   </style>
   <input id="range" type="range" min="0" max="1000" step="1" value="0">
 `;
