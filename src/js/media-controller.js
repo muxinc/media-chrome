@@ -304,7 +304,12 @@ class MediaController extends MediaContainer {
         // could be several ancestors up the tree. Use event.target instead.
         const isSomeElementFullscreen = !!document[fullscreenApi.element];
         const fullscreenEl = isSomeElementFullscreen && e?.target;
-        const isFullScreen = containsComposedNode(this, fullscreenEl);
+        // Either:
+        // 1. The fullscreenElement is the <media-controller/> instance or one of its descendants (e.g. for iOS, which only supports
+        //    fullscreen mode for the <audio/> or <video/> tag, even if it's deeply nested in the Shadow DOM of a Custom Element)
+        // 2. The <media-controller/> instance is itself within the Shadow DOM of a Custom Element or one of its descendants that has
+        //    been made the fullscreenElement.
+        const isFullScreen = containsComposedNode(this, fullscreenEl) || containsComposedNode(fullscreenEl?.shadowRoot, this);
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_IS_FULLSCREEN,
           isFullScreen
