@@ -28,10 +28,11 @@ const trackStyles = `
   height: var(--track-height);
   border: var(--media-range-track-border, none);
   border-radius: var(--media-range-track-border-radius, 0);
-  background: var(--media-range-track-background-internal, var(--media-range-track-background-color, #eee));
+  background: var(--media-range-track-background-internal, var(--media-range-track-background, #eee));
 
   box-shadow: var(--media-range-track-box-shadow, none);
   transition: var(--media-range-track-transition, none);
+  transform: translate(var(--media-range-track-translate-x, 0), var(--media-range-track-translate-y, 0));
   cursor: pointer;
 `;
 
@@ -88,7 +89,12 @@ template.innerHTML = `
       /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
       margin-top: calc(calc(0px - var(--thumb-height) + var(--track-height)) / 2);
     }
-    input[type=range]::-moz-range-thumb { ${thumbStyles} }
+
+    /* The thumb is not positioned relative to the track in Firefox */
+    input[type=range]::-moz-range-thumb {
+      ${thumbStyles}
+      translate: var(--media-range-track-translate-x, 0) var(--media-range-track-translate-y, 0);
+    }
 
     input[type=range]::-webkit-slider-runnable-track { ${trackStyles} }
     input[type=range]::-moz-range-track { ${trackStyles} }
@@ -121,7 +127,6 @@ template.innerHTML = `
     input[type=range]:disabled::-webkit-slider-runnable-track {
       background-color: #777;
     }
-
   </style>
   <input id="range" type="range" min="0" max="1000" step="1" value="0">
 `;
@@ -210,7 +215,7 @@ class MediaChromeRange extends window.HTMLElement {
 
     let colorArray = [
       ['var(--media-range-bar-color, #fff)', rangePercent],
-      ['var(--media-range-track-background-color, #333)', 100],
+      ['var(--media-range-track-background, #333)', 100],
     ];
 
     return colorArray;

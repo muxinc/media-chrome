@@ -23,7 +23,7 @@ const template = `
     --media-range-thumb-background: rgba(255, 0, 0, 1);
     --media-range-track-height: 4px;
     --media-range-track-transition: height 0.2s ease;
-    --media-range-track-background-color: #555;
+    --media-range-track-background: #555;
     --media-range-bar-color: rgb(229, 9, 20);
     --media-control-hover-background: none;
     --media-control-background: none;
