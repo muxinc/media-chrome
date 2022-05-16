@@ -290,6 +290,11 @@ class MediaTimeRange extends MediaChromeRange {
 
     const stopTrackingMouse = () => {
       window.removeEventListener('mousemove', mouseMoveHandler);
+      const endEvt = new window.CustomEvent(
+        MediaUIEvents.MEDIA_PREVIEW_REQUEST,
+        {composed: true, bubbles: true, detail: null}
+      );
+      this.dispatchEvent(endEvt);
     };
 
     // Trigger when the mouse moves over the range
