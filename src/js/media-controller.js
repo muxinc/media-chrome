@@ -197,6 +197,14 @@ class MediaController extends MediaContainer {
         if (!(track && track.cues)) return;
 
         const time = e.detail;
+
+        // if time is null, then we're done previewing and want to remove the attributes
+        if (time === null) {
+          this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, undefined);
+          this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, undefined);
+          return;
+        }
+
         const cue = Array.prototype.find.call(
           track.cues,
           (c) => c.startTime >= time
