@@ -280,6 +280,38 @@ class CastableVideo extends HTMLVideoElement {
       this.contentType
     );
 
+    const subtitles = [...this.querySelectorAll('track')].filter(({ kind }) => {
+      return kind === 'subtitles' || kind === 'captions';
+    });
+
+    if (subtitles.length) {
+      mediaInfo.textTrackStyle = new chrome.cast.media.TextTrackStyle();
+      mediaInfo.textTrackStyle.backgroundColor = '#00000000';
+      mediaInfo.textTrackStyle.edgeColor = '#000000FF';
+      mediaInfo.textTrackStyle.edgeType =
+        chrome.cast.media.TextTrackEdgeType.OUTLINE;
+      // mediaInfo.textTrackStyle.fontFamily =
+      //   chrome.cast.media.TextTrackFontGenericFamily.CASUAL;
+      mediaInfo.textTrackStyle.fontScale = 1.0;
+      mediaInfo.textTrackStyle.foregroundColor = '#FFFFFF';
+
+      mediaInfo.tracks = subtitles.map((trackEl, i) => {
+        const trackId = i + 1;
+        const track = new chrome.cast.media.Track(
+          trackId,
+          chrome.cast.media.TrackType.TEXT
+        );
+        track.trackContentId = trackEl.src;
+        track.trackContentType = 'text/vtt';
+        track.subtype = trackEl.kind === 'captions' ?
+          chrome.cast.media.TextTrackType.CAPTIONS :
+          chrome.cast.media.TextTrackType.SUBTITLES;
+        track.name = trackEl.label;
+        track.language = trackEl.srclang;
+        return track;
+      });
+    }
+
     if (this.streamType?.includes('live')) {
       mediaInfo.streamType = chrome.cast.media.StreamType.LIVE;
     } else {
@@ -297,6 +329,14 @@ class CastableVideo extends HTMLVideoElement {
     const request = new chrome.cast.media.LoadRequest(mediaInfo);
     request.currentTime = super.currentTime ?? 0;
     request.autoplay = !this.#localState.paused;
+
+    for (let i = 0; i < subtitles.length; i++) {
+      const trackId = i + 1;
+      if (subtitles[i].track.mode === 'showing') {
+        request.activeTrackIds = [trackId];
+        break;
+      }
+    }
 
     await CastableVideo.#castContext?.getCurrentSession().loadMedia(request);
 
