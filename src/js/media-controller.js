@@ -345,6 +345,12 @@ class MediaController extends MediaContainer {
           getDuration(this)
         );
       },
+      'loadedmetadata,emptied,progress': () => {
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_SEEKABLE,
+          getSeekable(this).join(':')
+        );
+      },
       'progress,emptied': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_BUFFERED,
@@ -620,6 +626,11 @@ class MediaController extends MediaContainer {
       );
       propagateMediaState(
         [el],
+        MediaUIAttributes.MEDIA_SEEKABLE,
+        getSeekable(this).join(':')
+      );
+      propagateMediaState(
+        [el],
         MediaUIAttributes.MEDIA_PLAYBACK_RATE,
         getPlaybackRate(this)
       );
@@ -682,9 +693,17 @@ const getCurrentTime = (controller) => {
 };
 
 const getDuration = (controller) => {
-  const media = controller.media;
+  const media = controller?.media;
+  if (!Number.isFinite(media?.duration)) return NaN;
+  return media.duration;
+};
 
-  return media ? media.duration : NaN;
+const getSeekable = (controller) => {
+  const media = controller?.media;
+  if (!media?.seekable?.length) return [];
+  const start = media.seekable.start(0);
+  const end = media.seekable.end(media.seekable.length - 1);
+  return [Number(start.toFixed(3)), Number(end.toFixed(3))];
 };
 
 const getPlaybackRate = (controller) => {
@@ -962,8 +981,8 @@ const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
 function serializeTimeRanges(timeRanges = []) {
   return Array.from(timeRanges)
     .map((_, i) => [
-      Number(timeRanges.start(i).toFixed(2)),
-      Number(timeRanges.end(i).toFixed(2)),
+      Number(timeRanges.start(i).toFixed(3)),
+      Number(timeRanges.end(i).toFixed(3)),
     ].join(':'))
     .join(' ');
 }

@@ -82,6 +82,7 @@ class MediaTimeRange extends MediaChromeRange {
       ...super.observedAttributes,
       'thumbnails',
       MediaUIAttributes.MEDIA_DURATION,
+      MediaUIAttributes.MEDIA_SEEKABLE,
       MediaUIAttributes.MEDIA_CURRENT_TIME,
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
       MediaUIAttributes.MEDIA_BUFFERED,
@@ -121,13 +122,20 @@ class MediaTimeRange extends MediaChromeRange {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
-      this.range.value = +newValue;
+      this.range.value = this.mediaCurrentTime;
       updateAriaValueText(this);
       this.updateBar();
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
       // Since our range's step is 1, floor the max value to ensure reasonable rendering
-      this.range.max = Math.floor(+newValue);
+      this.range.max = Math.floor(this.mediaSeekableEnd ?? this.mediaDuration ?? 0);
+      updateAriaValueText(this);
+      this.updateBar();
+    }
+    if (attrName === MediaUIAttributes.MEDIA_SEEKABLE) {
+      this.range.min = this.mediaSeekableStart ?? 0;
+      // Since our range's step is 1, floor the max value to ensure reasonable rendering
+      this.range.max = Math.floor(this.mediaSeekableEnd ?? this.mediaDuration ?? 0);
       updateAriaValueText(this);
       this.updateBar();
     }
@@ -137,61 +145,58 @@ class MediaTimeRange extends MediaChromeRange {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  // mediaBufferedSet(bufferedRanges) {
-  //   this.updateBar();
-  // }
-
-  // mediaSetCallback(media) {
-  //   // Come back to this...
-  //   // If readyState is supported, and the range is used before
-  //   // the media is ready, use the play promise to set the time.
-  //   // if (media.readyState !== undefined && media.readyState == 0) {
-  //   //   // range.addEventListener('change', this.playIfNotReady);
-  //   // }
-  // }
-
-  // mediaUnsetCallback(media) {
-  //   // this.range.removeEventListener('change', this.playIfNotReady);
-  //   // TODO: Reset value after media is unset
-  // }
-
   get mediaDuration() {
-    return +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+    return attrVal != null ? +attrVal : undefined;
   }
 
   get mediaCurrentTime() {
-    return +this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+    return attrVal != null ? +attrVal : undefined;
   }
 
   get mediaBuffered() {
     const buffered = this.getAttribute(MediaUIAttributes.MEDIA_BUFFERED);
-    if (buffered) {
-      return buffered.split(' ').map((timePair) => timePair.split(':'));
-    }
+    if (!buffered) return [];
+    return buffered.split(' ').map((timePair) => timePair.split(':').map(timeStr => +timeStr));
+  }
+
+  get mediaSeekable() {
+    const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
+    if (!seekable) return undefined;
+    // Only currently supports a single, contiguous seekable range (CJP)
+    return seekable.split(':');
+  }
+
+  get mediaSeekableEnd() {
+    const [, end] = this.mediaSeekable ?? [];
+    return end;
+  }
+
+  get mediaSeekableStart() {
+    const [start] = this.mediaSeekable ?? [];
+    return start;
   }
 
   /* Add a buffered progress bar */
   getBarColors() {
     let colorsArray = super.getBarColors();
+    const { range } = this;
+    // Use mediaCurrentTime instead of range.value for precision (CJP)
+    const currentTime = this.mediaCurrentTime;
+    const relativeMax = range.max - range.min;
+    const buffered = this.mediaBuffered;
 
-    if (
-      !this.mediaBuffered ||
-      !this.mediaBuffered.length ||
-      this.mediaDuration <= 0
-    ) {
+    if (!buffered.length || !Number.isFinite(relativeMax) || relativeMax <= 0) {
       return colorsArray;
     }
 
-    const buffered = this.mediaBuffered;
-    let currentBufferedEnd = 0;
-    for (const [start, end] of buffered) {
-      if (this.mediaCurrentTime >= start && this.mediaCurrentTime <= end) {
-        currentBufferedEnd = end;
-        break;
-      }
-    }
+    // Find the buffered range that "contains" the current time and get its end. If none, just assume the 
+    // start of the media timeline/range.min for visualization purposes.
+    const [, bufferedEnd = range.min] = buffered.find(([start, end]) => start <= currentTime && currentTime <= end) ?? [];
+    const relativeBufferedEnd = bufferedEnd - range.min;
 
-    const buffPercent = (currentBufferedEnd / this.mediaDuration) * 100;
+    const buffPercent = (relativeBufferedEnd / relativeMax) * 100;
     colorsArray.splice(1, 0, [
       'var(--media-time-buffered-color, #777)',
       buffPercent,
