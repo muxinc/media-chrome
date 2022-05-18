@@ -211,7 +211,9 @@ class MediaChromeRange extends window.HTMLElement {
   */
   getBarColors() {
     const range = this.range;
-    const rangePercent = (range.value / range.max) * 100;
+    const relativeValue = range.value - range.min;
+    const relativeMax = range.max - range.min;
+    const rangePercent = (relativeValue / relativeMax) * 100;
 
     let colorArray = [
       ['var(--media-range-bar-color, #fff)', rangePercent],

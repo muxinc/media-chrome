@@ -10,43 +10,38 @@ const DEFAULT_TIMES_SEP = '&nbsp;/&nbsp;';
 const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
   const showRemaining = el.getAttribute('remaining') != null;
   const showDuration = el.getAttribute('show-duration') != null;
-  const currentTime = +el.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
-  const duration = +el.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+  const currentTime = el.mediaCurrentTime;
+  const endTime = el.mediaDuration ?? el.mediaSeekableEnd;
 
   const timeLabel = showRemaining
-    ? formatTime(0 - (duration - currentTime))
+    ? formatTime(0 - (endTime - currentTime))
     : formatTime(currentTime);
 
   if (!showDuration) return timeLabel;
-  return `${timeLabel}${timesSep}${formatTime(duration)}`;
+  return `${timeLabel}${timesSep}${formatTime(endTime)}`;
 };
 
 const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
 const updateAriaValueText = (el) => {
-  if (
-    !(
-      el.hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) &&
-      el.hasAttribute(MediaUIAttributes.MEDIA_DURATION)
-    )
-  ) {
+  const currentTime = el.mediaCurrentTime;
+  const endTime = el.mediaDuration || el.mediaSeekableEnd;
+  if (currentTime == null || endTime == null) {
     el.setAttribute('aria-valuetext', DEFAULT_MISSING_TIME_PHRASE);
     return;
   }
-  const showRemaining = el.getAttribute('remaining') != null;
-  const showDuration = el.getAttribute('show-duration') != null;
-  const currentTime = +el.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
-  const duration = +el.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+  const showRemaining = el.hasAttribute('remaining');
+  const showDuration = el.hasAttribute('show-duration');
 
   const currentTimePhrase = showRemaining
-    ? formatAsTimePhrase(0 - (duration - currentTime))
+    ? formatAsTimePhrase(0 - (endTime - currentTime))
     : formatAsTimePhrase(currentTime);
 
   if (!showDuration) {
     el.setAttribute('aria-valuetext', currentTimePhrase);
     return;
   }
-  const totalTimePhrase = formatAsTimePhrase(duration);
+  const totalTimePhrase = formatAsTimePhrase(endTime);
   const fullPhrase = `${currentTimePhrase} of ${totalTimePhrase}`;
   el.setAttribute('aria-valuetext', fullPhrase);
 };
@@ -57,6 +52,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_CURRENT_TIME,
       MediaUIAttributes.MEDIA_DURATION,
+      MediaUIAttributes.MEDIA_SEEKABLE,
       'remaining',
       'show-duration',
     ];
@@ -74,6 +70,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
       [
         MediaUIAttributes.MEDIA_CURRENT_TIME,
         MediaUIAttributes.MEDIA_DURATION,
+        MediaUIAttributes.MEDIA_SEEKABLE,
         'remaining',
         'show-duration',
       ].includes(attrName)
@@ -83,6 +80,33 @@ class MediaTimeDisplay extends MediaTextDisplay {
       this.container.innerHTML = timesLabel;
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
+  }
+
+  get mediaDuration() {
+    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+    return attrVal != null ? +attrVal : undefined;
+  }
+
+  get mediaCurrentTime() {
+    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+    return attrVal != null ? +attrVal : undefined;
+  }
+
+  get mediaSeekable() {
+    const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
+    if (!seekable) return undefined;
+    // Only currently supports a single, contiguous seekable range (CJP)
+    return seekable.split(':').map((time) => +time);
+  }
+
+  get mediaSeekableEnd() {
+    const [, end] = this.mediaSeekable ?? [];
+    return end;
+  }
+
+  get mediaSeekableStart() {
+    const [start] = this.mediaSeekable ?? [];
+    return start;
   }
 }
 
