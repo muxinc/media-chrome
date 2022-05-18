@@ -46,13 +46,16 @@
         <video
           slot="media"
           is="castable-video"
-          cast-src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
           poster="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
           src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
           preload="none"
           muted
           crossorigin
         >
+          <source
+            type="application/x-mpegURL"
+            src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
+          >
           <track
             label="thumbnails"
             default

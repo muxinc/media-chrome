@@ -132,14 +132,18 @@ class CastableVideo extends HTMLVideoElement {
 
     const { CAST_STATE_CHANGED } = cast.framework.CastContextEventType;
     CastableVideo.#castContext.addEventListener(CAST_STATE_CHANGED, () => {
-      this.dispatchEvent(new CustomEvent('caststatechanged', {
-        detail: CastableVideo.#castContext.getCastState()
-      }));
+      this.dispatchEvent(
+        new CustomEvent('caststatechanged', {
+          detail: CastableVideo.#castContext.getCastState(),
+        })
+      );
     });
 
-    this.dispatchEvent(new CustomEvent('caststatechanged', {
-      detail: CastableVideo.#castContext.getCastState()
-    }));
+    this.dispatchEvent(
+      new CustomEvent('caststatechanged', {
+        detail: CastableVideo.#castContext.getCastState(),
+      })
+    );
 
     this.#remotePlayer = new cast.framework.RemotePlayer();
     new cast.framework.RemotePlayerController(this.#remotePlayer);
@@ -321,7 +325,12 @@ class CastableVideo extends HTMLVideoElement {
 
   // Allow the cast source url to be different than <video src>, could be a blob.
   get castSrc() {
-    return this.getAttribute('cast-src') ?? this.currentSrc;
+    // Try the first <source src> for usage with even more native markup.
+    return (
+      this.getAttribute('cast-src') ??
+      this.querySelector('source')?.src ??
+      this.currentSrc
+    );
   }
 
   set castSrc(val) {
