@@ -350,16 +350,6 @@ class MediaController extends MediaContainer {
       // Note this relies on a customized video[is=castable-video] element.
       'entercast,leavecast': (e) => {
         const isCast = this.media && globalThis.CastableVideo?.castElement === this.media;
-
-        // Prevent auto hiding controls while casting.
-        if (isCast && this.autohide >= 0) {
-          this._prevAutohide = this.autohide;
-          this.setAttribute('autohide', '-1');
-          this.removeAttribute('user-inactive');
-        } else if (this._prevAutohide >= 0) {
-          this.setAttribute('autohide', this._prevAutohide);
-        }
-
         this.propagateMediaState(MediaUIAttributes.MEDIA_IS_CAST, isCast);
       },
       'timeupdate,loadedmetadata': () => {
