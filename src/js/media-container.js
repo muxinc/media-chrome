@@ -31,7 +31,7 @@ template.innerHTML = `
     }
 
     /* applies to all layers that aren't the media layer, unless media is an audio element */
-    :host(:not([audio])) *[part~=layer]:not([part~=media-layer]) {
+    :host(:not([audio])) [part~=layer]:not([part~=media-layer]) {
       position: absolute;
       top: 0;
       left: 0;
