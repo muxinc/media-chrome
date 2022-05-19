@@ -30,7 +30,7 @@ template.innerHTML = `
       background-color: #000;
     }
 
-    :host(:not([audio])) *[part~=layer]:not([part~=media-layer]) {
+    :host(:not([audio])) [part~=layer]:not([part~=media-layer]) {
       position: absolute;
       top: 0;
       left: 0;
@@ -43,21 +43,28 @@ template.innerHTML = `
       background: none;
     }
 
-    :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer])  {
-      pointer-events: auto;
-    }
-
+    /*
+     * if gestures are disabled, don't accept pointer-events
+     */
     :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]),
     :host(:not([audio])[gestures-disabled]) media-gesture-receiver[slot=gestures-chrome] {
       pointer-events: none;
     }
-    
+
+    /*
+     * any slotted element that isn't a poster or media slot should be pointer-events auto
+     * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
+     */
+    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator)) {
+      pointer-events: auto;
+    }
+
     :host(:not([audio])) *[part~=layer][part~=centered-layer] {
       align-items: center;
       justify-content: center;
     }
 
-    :host(:not([audio])) ::slotted(media-gesture-receiver[slot=gestures-chrome]), 
+    :host(:not([audio])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
     :host(:not([audio])) media-gesture-receiver[slot=gestures-chrome] {
       align-self: stretch;
       flex-grow: 1;
@@ -85,11 +92,6 @@ template.innerHTML = `
       /* Needs to use !important otherwise easy to break */
       width: 100% !important;
       height: 100% !important;
-    }
-
-    /* Need to revisit this. May be too presumptuous for user-inactive behavior */
-    ::slotted(:not([slot=media]):not([slot=poster])) {
-      pointer-events: auto;
     }
 
     /* Only add these if auto hide is not disabled */
