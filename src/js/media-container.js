@@ -64,7 +64,7 @@ template.innerHTML = `
       justify-content: center;
     }
 
-    :host(:not([audio])) ::slotted(media-gesture-receiver[slot=gestures-chrome]), 
+    :host(:not([audio])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
     :host(:not([audio])) media-gesture-receiver[slot=gestures-chrome] {
       align-self: stretch;
       flex-grow: 1;
