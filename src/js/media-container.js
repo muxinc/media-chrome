@@ -30,7 +30,6 @@ template.innerHTML = `
       background-color: #000;
     }
 
-    /* applies to all layers that aren't the media layer, unless media is an audio element */
     :host(:not([audio])) [part~=layer]:not([part~=media-layer]) {
       position: absolute;
       top: 0;
@@ -44,25 +43,20 @@ template.innerHTML = `
       background: none;
     }
 
-    /* applies to gesture-layer and media-layer unless media is an audio element */
-    :host(:not([audio])) :is([part~=gesture-layer],[part~=media-layer])  {
-      pointer-events: auto;
-    }
-
-    /* Need to revisit this. May be too presumptuous for user-inactive behavior */
-    /* any slotted element that isn't a poster or media slot should be pointer-events auto */
-    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator)) {
-      pointer-events: auto;
-    }
-
     /*
-     * if media isn't an audio elements and gestures are disabled
-     * applies to gestures-chrome, which is the slotted gestures element
-     * or media-gesture-receiver element, which is a gestures element
+     * if gestures are disabled, don't accept pointer-events
      */
     :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]),
     :host(:not([audio])[gestures-disabled]) media-gesture-receiver[slot=gestures-chrome] {
       pointer-events: none;
+    }
+
+    /*
+     * any slotted element that isn't a poster or media slot should be pointer-events auto
+     * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
+     */
+    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator)) {
+      pointer-events: auto;
     }
 
     :host(:not([audio])) *[part~=layer][part~=centered-layer] {
