@@ -348,9 +348,15 @@ class MediaController extends MediaContainer {
         this.propagateMediaState(MediaUIAttributes.MEDIA_IS_PIP, isPip);
       },
       // Note this relies on a customized video[is=castable-video] element.
-      'entercast,leavecast': (e) => {
-        const isCast = this.media && globalThis.CastableVideo?.castElement === this.media;
-        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_CAST, isCast);
+      'entercast,leavecast,castchange': (e) => {
+        let castState = this.media && globalThis.CastableVideo?.castElement === this.media;
+
+        // While the cast is connecting set media-is-cast="connecting"
+        if (e?.type === 'castchange' && e?.detail === 'CONNECTING') {
+          castState = 'connecting';
+        }
+
+        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_CAST, castState);
       },
       'timeupdate,loadedmetadata': () => {
         this.propagateMediaState(
@@ -417,7 +423,7 @@ class MediaController extends MediaContainer {
         );
       };
       // Note this relies on a customized video[is=castable-video] element.
-      this._mediaStatePropagators['caststatechanged'] = castSupportHandler;
+      this._mediaStatePropagators['castchange'] = castSupportHandler;
     }
 
     /**

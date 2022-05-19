@@ -145,14 +145,14 @@ class CastableVideo extends HTMLVideoElement {
     const { CAST_STATE_CHANGED } = cast.framework.CastContextEventType;
     CastableVideo.#castContext.addEventListener(CAST_STATE_CHANGED, () => {
       this.dispatchEvent(
-        new CustomEvent('caststatechanged', {
+        new CustomEvent('castchange', {
           detail: CastableVideo.#castContext.getCastState(),
         })
       );
     });
 
     this.dispatchEvent(
-      new CustomEvent('caststatechanged', {
+      new CustomEvent('castchange', {
         detail: CastableVideo.#castContext.getCastState(),
       })
     );
