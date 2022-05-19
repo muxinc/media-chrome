@@ -45,7 +45,7 @@ class CastableVideo extends HTMLVideoElement {
     // Should the receiver application be stopped or just disconnected.
     const stopCasting = true;
     try {
-      await CastableVideo.#castContext.endCurrentSession(stopCasting);
+      await this.#castContext.endCurrentSession(stopCasting);
     } catch (err) {
       console.error(error);
       return;
@@ -77,11 +77,16 @@ class CastableVideo extends HTMLVideoElement {
       return cast.framework.CastContext.getInstance();
   }
 
+  static get #currentSession() {
+    return this.#castContext?.getCurrentSession();
+  }
+
   #castAvailable = false;
   #localState = { paused: false };
   #remoteState = { paused: false, currentTime: 0, muted: false };
   #remotePlayer;
   #remoteListeners = [];
+  #textTrackState = new Map();
 
   constructor() {
     super();
@@ -129,6 +134,11 @@ class CastableVideo extends HTMLVideoElement {
     if (!CastableVideo.#isCastFrameworkAvailable || this.#castAvailable) return;
     this.#castAvailable = true;
     this.#setOptions();
+
+    this.textTracks.addEventListener(
+      'change',
+      this.#onLocalTextTracksChange.bind(this)
+    );
 
     const { CAST_STATE_CHANGED } = cast.framework.CastContextEventType;
     CastableVideo.#castContext.addEventListener(CAST_STATE_CHANGED, () => {
@@ -241,6 +251,50 @@ class CastableVideo extends HTMLVideoElement {
     });
   }
 
+  #getTrackId(track) {
+    return this.#textTrackState.get(track)?.trackId;
+  }
+
+  #onLocalTextTracksChange() {
+    if (!this.castPlayer) return;
+
+    // Note this could also include audio or video tracks, diff against local state.
+    const activeTrackIds =
+      CastableVideo.#currentSession?.getSessionObj().media[0].activeTrackIds;
+
+    const subtitles = [...this.textTracks].filter(
+      ({ kind }) => kind === 'subtitles' || kind === 'captions'
+    );
+    const hiddenSubtitles = subtitles.filter(({ mode }) => mode !== 'showing');
+    const hiddenTrackIds = hiddenSubtitles.map(this.#getTrackId, this);
+    const showingSubtitle = subtitles.find(({ mode }) => mode === 'showing');
+
+    let requestTrackIds = activeTrackIds;
+
+    if (activeTrackIds.length) {
+      // Filter out all local hidden subtitle trackId's.
+      requestTrackIds = requestTrackIds.filter(
+        (id) => !hiddenTrackIds.includes(id)
+      );
+    }
+
+    if (!requestTrackIds.includes(showingSubtitle)) {
+      const showingTrackId = this.#getTrackId(showingSubtitle);
+      if (showingTrackId) {
+        requestTrackIds = [...requestTrackIds, showingTrackId];
+      }
+    }
+
+    const request = new chrome.cast.media.EditTracksInfoRequest(
+      requestTrackIds
+    );
+    CastableVideo.#currentSession?.getSessionObj().media[0].editTracksInfo(
+      request,
+      () => {},
+      (error) => console.error(error)
+    );
+  }
+
   async requestCast(options = {}) {
     this.#setOptions(options);
     CastableVideo.#castElement = this;
@@ -280,32 +334,43 @@ class CastableVideo extends HTMLVideoElement {
       this.contentType
     );
 
+    mediaInfo.textTrackStyle = new chrome.cast.media.TextTrackStyle();
+    mediaInfo.textTrackStyle.backgroundColor = '#00000000';
+    mediaInfo.textTrackStyle.edgeColor = '#000000FF';
+    mediaInfo.textTrackStyle.edgeType =
+      chrome.cast.media.TextTrackEdgeType.OUTLINE;
+    mediaInfo.textTrackStyle.fontScale = 1.0;
+    mediaInfo.textTrackStyle.foregroundColor = '#FFFFFF';
+
+    // First give all text tracks a unique ID and save them in a Map().
+    [...this.textTracks]
+      .filter(({ kind }) => kind === 'subtitles' || kind === 'captions')
+      .forEach((track) => {
+        if (!this.#textTrackState.has(track)) {
+          const trackId = this.#textTrackState.size + 1;
+          this.#textTrackState.set(track, { trackId });
+        }
+      });
+
     const subtitles = [...this.querySelectorAll('track')].filter(({ kind }) => {
       return kind === 'subtitles' || kind === 'captions';
     });
 
     if (subtitles.length) {
-      mediaInfo.textTrackStyle = new chrome.cast.media.TextTrackStyle();
-      mediaInfo.textTrackStyle.backgroundColor = '#00000000';
-      mediaInfo.textTrackStyle.edgeColor = '#000000FF';
-      mediaInfo.textTrackStyle.edgeType =
-        chrome.cast.media.TextTrackEdgeType.OUTLINE;
-      // mediaInfo.textTrackStyle.fontFamily =
-      //   chrome.cast.media.TextTrackFontGenericFamily.CASUAL;
-      mediaInfo.textTrackStyle.fontScale = 1.0;
-      mediaInfo.textTrackStyle.foregroundColor = '#FFFFFF';
-
       mediaInfo.tracks = subtitles.map((trackEl, i) => {
-        const trackId = i + 1;
+        const trackId = this.#getTrackId(subtitles[i].track);
+        if (!trackId) return;
+
         const track = new chrome.cast.media.Track(
           trackId,
           chrome.cast.media.TrackType.TEXT
         );
         track.trackContentId = trackEl.src;
         track.trackContentType = 'text/vtt';
-        track.subtype = trackEl.kind === 'captions' ?
-          chrome.cast.media.TextTrackType.CAPTIONS :
-          chrome.cast.media.TextTrackType.SUBTITLES;
+        track.subtype =
+          trackEl.kind === 'captions'
+            ? chrome.cast.media.TextTrackType.CAPTIONS
+            : chrome.cast.media.TextTrackType.SUBTITLES;
         track.name = trackEl.label;
         track.language = trackEl.srclang;
         return track;
@@ -331,14 +396,14 @@ class CastableVideo extends HTMLVideoElement {
     request.autoplay = !this.#localState.paused;
 
     for (let i = 0; i < subtitles.length; i++) {
-      const trackId = i + 1;
-      if (subtitles[i].track.mode === 'showing') {
+      const trackId = this.#getTrackId(subtitles[i].track);
+      if (subtitles[i].track.mode === 'showing' && trackId) {
         request.activeTrackIds = [trackId];
         break;
       }
     }
 
-    await CastableVideo.#castContext?.getCurrentSession().loadMedia(request);
+    await CastableVideo.#currentSession?.loadMedia(request);
 
     this.dispatchEvent(new Event('volumechange'));
   }
