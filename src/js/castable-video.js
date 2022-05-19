@@ -140,6 +140,8 @@ class CastableVideo extends HTMLVideoElement {
       this.#onLocalTextTracksChange.bind(this)
     );
 
+    // Cast state: NO_DEVICES_AVAILABLE, NOT_CONNECTED, CONNECTING, CONNECTED
+    // https://developers.google.com/cast/docs/reference/web_sender/cast.framework#.CastState
     const { CAST_STATE_CHANGED } = cast.framework.CastContextEventType;
     CastableVideo.#castContext.addEventListener(CAST_STATE_CHANGED, () => {
       this.dispatchEvent(
