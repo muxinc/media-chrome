@@ -51,7 +51,7 @@ template.innerHTML = `
 
     /* Need to revisit this. May be too presumptuous for user-inactive behavior */
     /* any slotted element that isn't a poster or media slot should be pointer-events auto */
-    ::slotted(:not([slot=media]):not([slot=poster])) {
+    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator)) {
       pointer-events: auto;
     }
 
