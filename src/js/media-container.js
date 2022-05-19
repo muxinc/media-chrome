@@ -30,6 +30,7 @@ template.innerHTML = `
       background-color: #000;
     }
 
+    /* applies to all layers that aren't the media layer, unless media is an audio element */
     :host(:not([audio])) *[part~=layer]:not([part~=media-layer]) {
       position: absolute;
       top: 0;
@@ -43,15 +44,27 @@ template.innerHTML = `
       background: none;
     }
 
-    :host(:not([audio])) :is([part~=gestures-layer],[part~=media-layer])  {
+    /* applies to gesture-layer and media-layer unless media is an audio element */
+    :host(:not([audio])) :is([part~=gesture-layer],[part~=media-layer])  {
       pointer-events: auto;
     }
 
+    /* Need to revisit this. May be too presumptuous for user-inactive behavior */
+    /* any slotted element that isn't a poster or media slot should be pointer-events auto */
+    ::slotted(:not([slot=media]):not([slot=poster])) {
+      pointer-events: auto;
+    }
+
+    /*
+     * if media isn't an audio elements and gestures are disabled
+     * applies to gestures-chrome, which is the slotted gestures element
+     * or media-gesture-receiver element, which is a gestures element
+     */
     :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]),
     :host(:not([audio])[gestures-disabled]) media-gesture-receiver[slot=gestures-chrome] {
       pointer-events: none;
     }
-    
+
     :host(:not([audio])) *[part~=layer][part~=centered-layer] {
       align-items: center;
       justify-content: center;
@@ -85,11 +98,6 @@ template.innerHTML = `
       /* Needs to use !important otherwise easy to break */
       width: 100% !important;
       height: 100% !important;
-    }
-
-    /* Need to revisit this. May be too presumptuous for user-inactive behavior */
-    ::slotted(:not([slot=media]):not([slot=poster])) {
-      pointer-events: auto;
     }
 
     /* Only add these if auto hide is not disabled */
