@@ -25,7 +25,15 @@
           src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
           muted
           preload="none"
-        ></video>
+          crossorigin
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+          />
+        </video>
         <h3 slot="title">
           <b>My Title</b>
           <span>P2:E4 Episode 4</span>
