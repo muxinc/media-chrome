@@ -10,8 +10,8 @@ const DEFAULT_TIMES_SEP = '&nbsp;/&nbsp;';
 const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
   const showRemaining = el.getAttribute('remaining') != null;
   const showDuration = el.getAttribute('show-duration') != null;
-  const currentTime = el.mediaCurrentTime;
-  const endTime = el.mediaDuration ?? el.mediaSeekableEnd;
+  const currentTime = el.mediaCurrentTime ?? 0;
+  const endTime = el.mediaDuration ?? el.mediaSeekableEnd ?? 0;
 
   const timeLabel = showRemaining
     ? formatTime(0 - (endTime - currentTime))
