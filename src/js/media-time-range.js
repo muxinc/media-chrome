@@ -313,7 +313,7 @@ class MediaTimeRange extends MediaChromeRange {
         trackMouse();
 
         let offRangeHandler = (evt) => {
-          if (evt.target != this && !this.contains(evt.target)) {
+          if (!evt.composedPath().includes(this)) {
             window.removeEventListener('mousemove', offRangeHandler);
             rangeEntered = false;
             stopTrackingMouse();
