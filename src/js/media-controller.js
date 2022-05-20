@@ -611,9 +611,11 @@ class MediaController extends MediaContainer {
         MediaUIAttributes.MEDIA_VOLUME_LEVEL,
         getVolumeLevel(this)
       );
-      // const fullscreenEl = this.getRootNode()[fullscreenApi.element];
-      // propagateMediaState([el], MediaUIAttributes.MEDIA_IS_FULLSCREEN, fullscreenEl === this);
-      // propagateMediaState([el], MediaUIAttributes.MEDIA_IS_PIP, isPip);
+      propagateMediaState(
+        [el],
+        MediaUIAttributes.MEDIA_IS_FULLSCREEN,
+        this.hasAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN)
+      );
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_CURRENT_TIME,
