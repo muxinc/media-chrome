@@ -3,8 +3,6 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Advanced Video Usage Example</title>
-    <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/castable-video"></script>
     <script type="module" src="../dist/index.js"></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
@@ -19,10 +17,6 @@
       }
 
       media-airplay-button[media-airplay-unavailable] {
-        display: none;
-      }
-
-      media-cast-button[media-cast-unavailable] {
         display: none;
       }
 
@@ -45,17 +39,11 @@
       <media-controller>
         <video
           slot="media"
-          is="castable-video"
-          poster="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
           src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
           preload="none"
           muted
           crossorigin
         >
-          <source
-            type="application/x-mpegURL"
-            src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
-          >
           <track
             label="thumbnails"
             default
@@ -90,7 +78,6 @@
           <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>
           <media-airplay-button></media-airplay-button>
-          <media-cast-button></media-cast-button>
         </media-control-bar>
       </media-controller>
       <div class="examples">
