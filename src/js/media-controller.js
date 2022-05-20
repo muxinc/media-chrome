@@ -177,7 +177,7 @@ class MediaController extends MediaContainer {
       MEDIA_ENTER_CAST_REQUEST: () => {
         const media = this.media;
 
-        if (!CastableVideo?.castEnabled) return;
+        if (!globalThis.CastableVideoElement?.castEnabled) return;
 
         // Exit fullscreen if needed
         if (document[fullscreenApi.element]) {
@@ -189,8 +189,8 @@ class MediaController extends MediaContainer {
         media.requestCast();
       },
       MEDIA_EXIT_CAST_REQUEST: async () => {
-        if (CastableVideo.castElement) {
-          CastableVideo.exitCast();
+        if (globalThis.CastableVideoElement?.castElement) {
+          globalThis.CastableVideoElement.exitCast();
         }
       },
       MEDIA_SEEK_REQUEST: (e) => {
@@ -349,7 +349,7 @@ class MediaController extends MediaContainer {
       },
       // Note this relies on a customized video[is=castable-video] element.
       'entercast,leavecast,castchange': (e) => {
-        const castElement = globalThis.CastableVideo?.castElement;
+        const castElement = globalThis.CastableVideoElement?.castElement;
         let castState = this.media && containsComposedNode(this.media, castElement);
 
         // While the cast is connecting set media-is-cast="connecting"
