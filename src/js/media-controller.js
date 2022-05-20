@@ -349,7 +349,8 @@ class MediaController extends MediaContainer {
       },
       // Note this relies on a customized video[is=castable-video] element.
       'entercast,leavecast,castchange': (e) => {
-        let castState = this.media && globalThis.CastableVideo?.castElement === this.media;
+        const castElement = globalThis.CastableVideo?.castElement;
+        let castState = this.media && containsComposedNode(this.media, castElement);
 
         // While the cast is connecting set media-is-cast="connecting"
         if (e?.type === 'castchange' && e?.detail === 'CONNECTING') {
