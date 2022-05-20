@@ -31,9 +31,9 @@ slotTemplate.innerHTML = `
 `;
 
 const updateAriaLabel = (el) => {
-  const isFullScreen =
+  const isCast =
     el.getAttribute(MediaUIAttributes.MEDIA_IS_CAST) != null;
-  const label = isFullScreen
+  const label = isCast
     ? verbs.EXIT_CAST()
     : verbs.ENTER_CAST();
   el.setAttribute('aria-label', label);
