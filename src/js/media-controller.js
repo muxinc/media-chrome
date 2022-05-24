@@ -357,7 +357,7 @@ class MediaController extends MediaContainer {
           castState = 'connecting';
         }
 
-        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_CAST, castState);
+        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_CASTING, castState);
       },
       'timeupdate,loadedmetadata': () => {
         this.propagateMediaState(

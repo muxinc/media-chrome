@@ -99,7 +99,7 @@ template.innerHTML = `
     }
 
     /* Hide controls when inactive, not paused, not audio and auto hide not disabled */
-    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([${MediaUIAttributes.MEDIA_IS_CAST}]):not([audio])) ::slotted(:not([slot=media]):not([no-auto-hide])) {
+    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([audio])) ::slotted(:not([slot=media]):not([no-auto-hide])) {
       opacity: 0;
       transition: opacity 1s;
     }

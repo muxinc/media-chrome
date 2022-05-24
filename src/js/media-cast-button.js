@@ -14,14 +14,14 @@ const exitIcon = `<svg aria-hidden="true" viewBox="0 0 24 24"><g><path class="ca
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
   <style>
-  :host([${MediaUIAttributes.MEDIA_IS_CAST}]) slot:not([name=exit]) > *,
-  :host([${MediaUIAttributes.MEDIA_IS_CAST}]) ::slotted(:not([slot=exit])) {
+  :host([${MediaUIAttributes.MEDIA_IS_CASTING}]) slot:not([name=exit]) > *,
+  :host([${MediaUIAttributes.MEDIA_IS_CASTING}]) ::slotted(:not([slot=exit])) {
     display: none;
   }
 
   /* Double negative, but safer if display doesn't equal 'block' */
-  :host(:not([${MediaUIAttributes.MEDIA_IS_CAST}])) slot:not([name=enter]) > *,
-  :host(:not([${MediaUIAttributes.MEDIA_IS_CAST}])) ::slotted(:not([slot=enter])) {
+  :host(:not([${MediaUIAttributes.MEDIA_IS_CASTING}])) slot:not([name=enter]) > *,
+  :host(:not([${MediaUIAttributes.MEDIA_IS_CASTING}])) ::slotted(:not([slot=enter])) {
     display: none;
   }
   </style>
@@ -32,7 +32,7 @@ slotTemplate.innerHTML = `
 
 const updateAriaLabel = (el) => {
   const isCast =
-    el.getAttribute(MediaUIAttributes.MEDIA_IS_CAST) != null;
+    el.getAttribute(MediaUIAttributes.MEDIA_IS_CASTING) != null;
   const label = isCast
     ? verbs.EXIT_CAST()
     : verbs.ENTER_CAST();
@@ -43,7 +43,7 @@ class MediaCastButton extends MediaChromeButton {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      MediaUIAttributes.MEDIA_IS_CAST,
+      MediaUIAttributes.MEDIA_IS_CASTING,
       MediaUIAttributes.MEDIA_CAST_UNAVAILABLE,
     ];
   }
@@ -58,7 +58,7 @@ class MediaCastButton extends MediaChromeButton {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_IS_CAST) {
+    if (attrName === MediaUIAttributes.MEDIA_IS_CASTING) {
       updateAriaLabel(this);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -66,7 +66,7 @@ class MediaCastButton extends MediaChromeButton {
 
   handleClick(_e) {
     const eventName =
-      this.getAttribute(MediaUIAttributes.MEDIA_IS_CAST) != null
+      this.getAttribute(MediaUIAttributes.MEDIA_IS_CASTING) != null
         ? MediaUIEvents.MEDIA_EXIT_CAST_REQUEST
         : MediaUIEvents.MEDIA_ENTER_CAST_REQUEST;
     this.dispatchEvent(
