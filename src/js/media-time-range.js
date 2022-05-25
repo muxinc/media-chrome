@@ -213,9 +213,9 @@ class MediaTimeRange extends MediaChromeRange {
     );
     thumbnailContainer.classList.add('enabled');
 
-    let mouseMoveHandler;
+    let pointermoveHandler;
     const trackMouse = () => {
-      mouseMoveHandler = (evt) => {
+      pointermoveHandler = (evt) => {
         const duration = +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
 
         // If no duration we can't calculate which time to show
@@ -290,11 +290,11 @@ class MediaTimeRange extends MediaChromeRange {
         );
         this.dispatchEvent(mediaPreviewEvt);
       };
-      window.addEventListener('mousemove', mouseMoveHandler, false);
+      window.addEventListener('pointermove', pointermoveHandler, false);
     };
 
     const stopTrackingMouse = () => {
-      window.removeEventListener('mousemove', mouseMoveHandler);
+      window.removeEventListener('pointermove', pointermoveHandler);
       const endEvt = new window.CustomEvent(
         MediaUIEvents.MEDIA_PREVIEW_REQUEST,
         {composed: true, bubbles: true, detail: null}
@@ -304,7 +304,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     // Trigger when the mouse moves over the range
     let rangeEntered = false;
-    let rangeMouseMoveHander = (evt) => {
+    let rangepointermoveHander = (evt) => {
       const mediaDurationStr = this.getAttribute(
         MediaUIAttributes.MEDIA_DURATION
       );
@@ -314,15 +314,15 @@ class MediaTimeRange extends MediaChromeRange {
 
         let offRangeHandler = (evt) => {
           if (!evt.composedPath().includes(this)) {
-            window.removeEventListener('mousemove', offRangeHandler);
+            window.removeEventListener('pointermove', offRangeHandler);
             rangeEntered = false;
             stopTrackingMouse();
           }
         };
-        window.addEventListener('mousemove', offRangeHandler, false);
+        window.addEventListener('pointermove', offRangeHandler, false);
       }
     };
-    this.addEventListener('mousemove', rangeMouseMoveHander, false);
+    this.addEventListener('pointermove', rangepointermoveHander, false);
   }
 }
 
