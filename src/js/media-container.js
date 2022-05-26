@@ -331,6 +331,13 @@ class MediaContainer extends window.HTMLElement {
       scheduleInactive();
     });
 
+    // when we get a tap, we want to unhide
+    this.addEventListener('pointerup', (e) => {
+      if (e.pointerType === 'touch') {
+        scheduleInactive();
+      }
+    });
+
     // Allow for focus styles only when using the keyboard to navigate
     this.addEventListener('keyup', (e) => {
       this.setAttribute('media-keyboard-control', 'media-keyboard-control');
@@ -339,13 +346,14 @@ class MediaContainer extends window.HTMLElement {
       this.removeAttribute('media-keyboard-control');
     });
 
-    this.addEventListener('mousemove', (e) => {
+    // pointermove doesn't happen with touch on taps
+    this.addEventListener('pointermove', (e) => {
       if (!containsComposedNode(this, e.target)) return;
 
       // Stay visible if hovered over control bar
       this.removeAttribute('user-inactive');
       const evt = new window.CustomEvent(
-        MediaStateChangeEvents.USER_INACTIVE, 
+        MediaStateChangeEvents.USER_INACTIVE,
         { composed: true, bubbles: true, detail: false }
       );
       this.dispatchEvent(evt);
@@ -362,7 +370,7 @@ class MediaContainer extends window.HTMLElement {
       if (this.autohide < 0) return;
       this.setAttribute('user-inactive', 'user-inactive');
       const evt = new window.CustomEvent(
-        MediaStateChangeEvents.USER_INACTIVE, 
+        MediaStateChangeEvents.USER_INACTIVE,
         { composed: true, bubbles: true, detail: true }
       );
       this.dispatchEvent(evt);
