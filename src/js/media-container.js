@@ -344,12 +344,19 @@ class MediaContainer extends window.HTMLElement {
     // when we get a tap, we want to unhide
     this.addEventListener('pointerup', (e) => {
       if (e.pointerType === 'touch') {
-        scheduleInactive();
+        if (this.hasAttribute('user-inactive')) {
+          scheduleInactive();
+        } else {
+          setInactive();
+        }
       }
     });
 
-    // pointermove doesn't happen with touch on taps
     this.addEventListener('pointermove', (e) => {
+      // pointermove doesn't happen with touch on taps on iOS, but does on android,
+      // so, only run pointermove for mouse
+      if (e.pointerType !== 'mouse') return;
+
       if (!containsComposedNode(this, e.target)) return;
 
       setActive();
