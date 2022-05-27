@@ -382,7 +382,7 @@ class MediaController extends MediaContainer {
       'loadedmetadata,emptied,progress': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_SEEKABLE,
-          getSeekable(this).join(':')
+          getSeekable(this)?.join(':')
         );
       },
       'progress,emptied': () => {
@@ -684,7 +684,7 @@ class MediaController extends MediaContainer {
       propagateMediaState(
         [el],
         MediaUIAttributes.MEDIA_SEEKABLE,
-        getSeekable(this).join(':')
+        getSeekable(this)?.join(':')
       );
       propagateMediaState(
         [el],
@@ -757,9 +757,11 @@ const getDuration = (controller) => {
 
 const getSeekable = (controller) => {
   const media = controller?.media;
-  if (!media?.seekable?.length) return [];
+  if (!media?.seekable?.length) return undefined;
   const start = media.seekable.start(0);
   const end = media.seekable.end(media.seekable.length - 1);
+  // Account for cases where metadata from slotted media has an "empty" seekable (CJP)
+  if (!start && !end) return undefined;
   return [Number(start.toFixed(3)), Number(end.toFixed(3))];
 };
 
