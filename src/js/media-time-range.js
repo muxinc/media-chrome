@@ -165,7 +165,7 @@ class MediaTimeRange extends MediaChromeRange {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
     if (!seekable) return undefined;
     // Only currently supports a single, contiguous seekable range (CJP)
-    return seekable.split(':');
+    return seekable.split(':').map((time) => +time);
   }
 
   get mediaSeekableEnd() {
