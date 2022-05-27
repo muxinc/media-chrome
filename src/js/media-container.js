@@ -304,25 +304,35 @@ class MediaContainer extends window.HTMLElement {
     // This allows things like autoplay and programmatic playing to also initiate hiding controls (CJP)
     this.setAttribute('user-inactive', 'user-inactive');
 
-    const scheduleInactive = () => {
+    const setInactive = () => {
+      if (this.autohide < 0) return;
+      this.setAttribute('user-inactive', 'user-inactive');
+      const evt = new window.CustomEvent(
+        MediaStateChangeEvents.USER_INACTIVE,
+        { composed: true, bubbles: true, detail: true }
+      );
+      this.dispatchEvent(evt);
+    };
+
+    const setActive = () => {
       this.removeAttribute('user-inactive');
       const evt = new window.CustomEvent(
-        MediaStateChangeEvents.USER_INACTIVE, 
+        MediaStateChangeEvents.USER_INACTIVE,
         { composed: true, bubbles: true, detail: false }
       );
       this.dispatchEvent(evt);
+    }
+
+    const scheduleInactive = () => {
+      setActive();
+
       window.clearTimeout(this._inactiveTimeout);
 
       // Setting autohide to -1 turns off autohide
       if (this.autohide < 0) return;
 
       this._inactiveTimeout = window.setTimeout(() => {
-        this.setAttribute('user-inactive', 'user-inactive');
-        const evt = new window.CustomEvent(
-          MediaStateChangeEvents.USER_INACTIVE, 
-          { composed: true, bubbles: true, detail: true }
-        );
-        this.dispatchEvent(evt);
+        setInactive();
       }, this.autohide * 1000);
     };
 
@@ -338,25 +348,12 @@ class MediaContainer extends window.HTMLElement {
       }
     });
 
-    // Allow for focus styles only when using the keyboard to navigate
-    this.addEventListener('keyup', (e) => {
-      this.setAttribute('media-keyboard-control', 'media-keyboard-control');
-    });
-    this.addEventListener('mouseup', (e) => {
-      this.removeAttribute('media-keyboard-control');
-    });
-
     // pointermove doesn't happen with touch on taps
     this.addEventListener('pointermove', (e) => {
       if (!containsComposedNode(this, e.target)) return;
 
+      setActive();
       // Stay visible if hovered over control bar
-      this.removeAttribute('user-inactive');
-      const evt = new window.CustomEvent(
-        MediaStateChangeEvents.USER_INACTIVE,
-        { composed: true, bubbles: true, detail: false }
-      );
-      this.dispatchEvent(evt);
       window.clearTimeout(this._inactiveTimeout);
 
       // If hovering over something other than controls, we're free to make inactive
@@ -367,13 +364,15 @@ class MediaContainer extends window.HTMLElement {
 
     // Immediately hide if mouse leaves the container
     this.addEventListener('mouseleave', (e) => {
-      if (this.autohide < 0) return;
-      this.setAttribute('user-inactive', 'user-inactive');
-      const evt = new window.CustomEvent(
-        MediaStateChangeEvents.USER_INACTIVE,
-        { composed: true, bubbles: true, detail: true }
-      );
-      this.dispatchEvent(evt);
+      setInactive();
+    });
+
+    // Allow for focus styles only when using the keyboard to navigate
+    this.addEventListener('keyup', (e) => {
+      this.setAttribute('media-keyboard-control', 'media-keyboard-control');
+    });
+    this.addEventListener('mouseup', (e) => {
+      this.removeAttribute('media-keyboard-control');
     });
   }
 
