@@ -52,6 +52,9 @@ class MediaController extends MediaContainer {
     if (!airplaySupported) {
       this._airplayUnavailable = AvailabilityStates.UNSUPPORTED;
     }
+    if (!castSupported) {
+      this._castUnavailable = AvailabilityStates.UNSUPPORTED;
+    }
     if (!pipSupported) {
       this._pipUnavailable = AvailabilityStates.UNSUPPORTED;
     }
@@ -169,6 +172,25 @@ class MediaController extends MediaContainer {
         if (document.pictureInPictureElement) {
           // Should be async
           document.exitPictureInPicture();
+        }
+      },
+      MEDIA_ENTER_CAST_REQUEST: () => {
+        const media = this.media;
+
+        if (!globalThis.CastableVideoElement?.castEnabled) return;
+
+        // Exit fullscreen if needed
+        if (document[fullscreenApi.element]) {
+          document[fullscreenApi.exit]();
+        }
+
+        // Open the browser cast menu.
+        // Note this relies on a customized video[is=castable-video] element.
+        media.requestCast();
+      },
+      MEDIA_EXIT_CAST_REQUEST: async () => {
+        if (globalThis.CastableVideoElement?.castElement) {
+          globalThis.CastableVideoElement.exitCast();
         }
       },
       MEDIA_SEEK_REQUEST: (e) => {
@@ -333,6 +355,18 @@ class MediaController extends MediaContainer {
         }
         this.propagateMediaState(MediaUIAttributes.MEDIA_IS_PIP, isPip);
       },
+      // Note this relies on a customized video[is=castable-video] element.
+      'entercast,leavecast,castchange': (e) => {
+        const castElement = globalThis.CastableVideoElement?.castElement;
+        let castState = this.media && containsComposedNode(this.media, castElement);
+
+        // While the cast is connecting set media-is-cast="connecting"
+        if (e?.type === 'castchange' && e?.detail === 'CONNECTING') {
+          castState = 'connecting';
+        }
+
+        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_CASTING, castState);
+      },
       'timeupdate,loadedmetadata': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_CURRENT_TIME,
@@ -389,6 +423,22 @@ class MediaController extends MediaContainer {
       // whenever these are added/removed. (CJP)
       this._mediaStatePropagators['webkitplaybacktargetavailabilitychanged'] =
         airplaySupporHandler;
+    }
+
+    if (this._castUnavailable !== AvailabilityStates.UNSUPPORTED) {
+      const castSupportHandler = (event) => {
+        if (event?.detail === 'NO_DEVICES_AVAILABLE') {
+          this._castUnavailable = AvailabilityStates.UNAVAILABLE;
+        } else {
+          this._castUnavailable = undefined;
+        }
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_CAST_UNAVAILABLE,
+          this._castUnavailable
+        );
+      };
+      // Note this relies on a customized video[is=castable-video] element.
+      this._mediaStatePropagators['castchange'] = castSupportHandler;
     }
 
     /**
@@ -573,6 +623,11 @@ class MediaController extends MediaContainer {
       [el],
       MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE,
       this._airplayUnavailable
+    );
+    propagateMediaState(
+      [el],
+      MediaUIAttributes.MEDIA_CAST_UNAVAILABLE,
+      this._castUnavailable
     );
     propagateMediaState(
       [el],
@@ -979,6 +1034,7 @@ const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
 });
 
 const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
+const castSupported = !!window.chrome;
 
 function serializeTimeRanges(timeRanges = []) {
   return Array.from(timeRanges)
