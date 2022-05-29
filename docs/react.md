@@ -10,19 +10,19 @@ To follow React conventions, the wrapper components use PascalCase for the compo
 
 - `<media-controller>` becomes `<MediaController/>`
 - `<media-play-button>` becomes `<MediaPlayButton/>`
-- `<media-volume-range>` becomes `<MediaVolueRange>`
+- `<media-volume-range>` becomes `<MediaVolumeRange>`
 
 and so on. For a complete list of components, see our [README](../README.md#included-elements)
 
 ## Property Names
 
-Also to keep things "idiomatically React," the wrapper components use camelCase prop names for any kebab-case attribute names, so
+Also, to keep things "idiomatically React", the wrapper components use camelCase prop names for any kebab-case attribute names, so
 
 - `seek-offset` becomes `seekOffset`
 - `show-duration` becomes `showDuration`
 - `no-subtitles-fallback` becomes `noSubtitlesFallback`
 
-and so on. Additionally, we'll automatically translate "special" React attributes like (`className`)[https://reactjs.org/docs/dom-elements.html#classname].
+and so on. Additionally, we'll automatically translate "special" React attributes like [`className`](https://reactjs.org/docs/dom-elements.html#classname).
 
 ## Property Values
 
