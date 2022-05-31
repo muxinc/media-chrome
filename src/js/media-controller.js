@@ -427,10 +427,11 @@ class MediaController extends MediaContainer {
 
     if (this._castUnavailable !== AvailabilityStates.UNSUPPORTED) {
       const castSupportHandler = (event) => {
-        if (event?.detail === 'NO_DEVICES_AVAILABLE') {
-          this._castUnavailable = AvailabilityStates.UNAVAILABLE;
-        } else {
+        // Cast state: NO_DEVICES_AVAILABLE, NOT_CONNECTED, CONNECTING, CONNECTED
+        if (event?.detail.includes('CONNECT')) {
           this._castUnavailable = undefined;
+        } else {
+          this._castUnavailable = AvailabilityStates.UNAVAILABLE;
         }
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_CAST_UNAVAILABLE,
