@@ -376,7 +376,7 @@ class MediaContainer extends window.HTMLElement {
 
     // Allow for focus styles only when using the keyboard to navigate
     this.addEventListener('keyup', (e) => {
-      this.setAttribute('media-keyboard-control', 'media-keyboard-control');
+      this.setAttribute('media-keyboard-control', '');
     });
     this.addEventListener('mouseup', (e) => {
       this.removeAttribute('media-keyboard-control');
