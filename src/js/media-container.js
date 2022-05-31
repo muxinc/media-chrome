@@ -344,10 +344,10 @@ class MediaContainer extends window.HTMLElement {
     // when we get a tap, we want to unhide
     this.addEventListener('pointerup', (e) => {
       if (e.pointerType === 'touch') {
-        if (this.hasAttribute('user-inactive')) {
-          scheduleInactive();
-        } else {
+        if ([this, this.media].includes(e.target) && !this.hasAttribute('user-inactive')) {
           setInactive();
+        } else {
+          scheduleInactive();
         }
       }
     });
