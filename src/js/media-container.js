@@ -122,6 +122,9 @@ template.innerHTML = `
       <media-gesture-receiver slot="gestures-chrome"></media-gesture-receiver>
     </slot>
   </span>
+  <span part="layer text-track-renderer">
+    <slot name="text-track-renderer"></slot>
+  </span>
   <span part="layer vertical-layer">
     <slot name="top-chrome"></slot>
     <span class="spacer"><slot name="middle-chrome"></slot></span>
@@ -196,6 +199,19 @@ class MediaContainer extends window.HTMLElement {
 
     const observer = new MutationObserver(mutationCallback);
     observer.observe(this, { childList: true, subtree: true });
+
+    let textTrackRendererSlot = this.shadowRoot.querySelector('slot[name=text-track-renderer]');
+    if (textTrackRendererSlot) {
+      textTrackRendererSlot.addEventListener('slotchange', () => {
+        const ttR = textTrackRendererSlot.assignedElements()[0];
+        if (ttR) {
+          this.setAttribute(MediaUIAttributes.MEDIA_CUSTOM_TEXT, '');
+          ttR.mediaController = this;
+        } else {
+          this.removeAttribute(MediaUIAttributes.MEDIA_CUSTOM_TEXT);
+        }
+      });
+    }
 
     // Handles the case when the slotted media element is a slot element itself.
     // e.g. chaining media slots for media themes.
@@ -376,7 +392,7 @@ class MediaContainer extends window.HTMLElement {
 
     // Allow for focus styles only when using the keyboard to navigate
     this.addEventListener('keyup', (e) => {
-      this.setAttribute('media-keyboard-control', '');
+      this.stAttribute('media-keyboard-control', '');
     });
     this.addEventListener('mouseup', (e) => {
       this.removeAttribute('media-keyboard-control');

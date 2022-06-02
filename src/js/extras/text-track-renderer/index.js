@@ -1,44 +1,28 @@
-/*
-  <media-control-bar>
-
-  Auto position contorls in a line and set some base colors
-*/
-import { MediaUIAttributes } from './constants.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
   Window as window,
   Document as document,
 } from './utils/server-safe-globals.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { verbs } from './labels/labels.js';
 
-const template = document.createElement('template');
-
-template.innerHTML = `
+const slotTemplate = document.createElement('template');
+slotTemplate.innerHTML = `
   <style>
-    :host {
-      /* Need position to display above video for some reason */
-      box-sizing: border-box;
-      display: inline-flex;
-      color: var(--media-icon-color, #eee);
-      --media-loading-icon-width: 44px;
-    }
-
-    media-time-range,
-    ::slotted(media-time-range),
-    ::slotted(media-progress-range),
-    ::slotted(media-clip-selector) {
-      flex-grow: 1;
-    }
+  :host {
+    width: 100%;
+    height: 100%;
   </style>
 
-  <slot></slot>
+ <div class="text-track-display"></div>
 `;
 
-class MediaControlBar extends window.HTMLElement {
+class TextTrackRenderer extends HTMLElement {
   static get observedAttributes() {
     return [MediaUIAttributes.MEDIA_CONTROLLER];
   }
 
-  constructor() {
+  constructor(options = {}) {
     super();
 
     this.attachShadow({ mode: 'open' });
@@ -80,6 +64,6 @@ class MediaControlBar extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-control-bar', MediaControlBar);
+defineCustomElement('text-track-renderer', TextTrackRenderer);
 
-export default MediaControlBar;
+export default TextTrackRenderer;
