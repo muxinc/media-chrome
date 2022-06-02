@@ -1,16 +1,16 @@
 import {
   Window as window,
   Document as document,
-} from '../../utils/server-safe-globals.js';
+} from '../utils/server-safe-globals.js';
 import {
   splitTextTracksStr,
   stringifyTextTrackList,
   getTextTracksList,
   updateTracksModeTo,
-} from '../../utils/captions.js';
-import { defineCustomElement } from '../../utils/defineCustomElement.js';
-import { MediaUIEvents, MediaUIAttributes } from '../../constants.js';
-import { verbs } from '../../labels/labels.js';
+} from '../utils/captions.js';
+import { defineCustomElement } from '../utils/defineCustomElement.js';
+import { MediaUIEvents, MediaUIAttributes } from '../constants.js';
+import { verbs } from '../labels/labels.js';
 
 const template = document.createElement('template');
 template.innerHTML = `
