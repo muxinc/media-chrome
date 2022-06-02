@@ -113,6 +113,8 @@ class TextTrackRenderer extends HTMLElement {
 
     console.log('!!', track);
 
+    track.mode = 'hidden';
+
     track.addEventListener('cuechange', () => {
       while (this.display.firstChild) {
         this.display.removeChild(this.display.firstChild);
