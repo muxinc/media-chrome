@@ -96,6 +96,8 @@ class TextTrackRenderer extends HTMLElement {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
     }
+
+    this.track.mode = 'showing';
   }
 
   set mediaController(newMC) {
@@ -110,6 +112,8 @@ class TextTrackRenderer extends HTMLElement {
     const mc = this._mc;
 
     const [track] = getTextTracksList(mc.media, {kind: 'captions', mode: 'showing'});
+
+    this.track = track;
 
     console.log('!!', track);
 
