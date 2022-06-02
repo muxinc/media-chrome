@@ -206,7 +206,9 @@ class MediaContainer extends window.HTMLElement {
         const ttR = textTrackRendererSlot.assignedElements()[0];
         if (ttR) {
           this.setAttribute(MediaUIAttributes.MEDIA_CUSTOM_TEXT, '');
+          setTimeout(() => {
           ttR.mediaController = this;
+          }, 1);
         } else {
           this.removeAttribute(MediaUIAttributes.MEDIA_CUSTOM_TEXT);
         }

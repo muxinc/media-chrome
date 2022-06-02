@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Advanced Video Usage Example</title>
     <script type="module" src="../dist/index.js"></script>
+    <script type="module" src="../dist/extras/text-track-renderer/index.js"></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
@@ -58,7 +59,7 @@
             src="./vtt/en-cc.vtt"
           />
         </video>
-        <div slot="text-track-renderer"></div>
+        <text-track-renderer slot="text-track-renderer"></text-track-renderer>
         <media-poster-image
           slot="poster"
           src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
