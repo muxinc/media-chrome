@@ -797,9 +797,15 @@ const getShowingCaptionTracks = (controller) => {
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 const getMediaUIAttributesFrom = (child) => {
-  const {
-    constructor: { observedAttributes },
-  } = child;
+  let { observedAttributes } = child.constructor;
+
+  // observedAttributes are only available if the custom element was upgraded.
+  // example: media-gesture-receiver in the shadow DOM requires an upgrade.
+  if (!observedAttributes && child.nodeName?.includes('-')) {
+    window.customElements.upgrade(child);
+    ({ observedAttributes } = child.constructor);
+  }
+
   const mediaChromeAttributesList = child
     ?.getAttribute?.(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES)
     ?.split?.(/\s+/);
