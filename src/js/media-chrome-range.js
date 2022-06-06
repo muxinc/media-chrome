@@ -101,9 +101,17 @@ template.innerHTML = `
       ${trackStyles}
     }
 
-    /* Eventually want to move towards different styles for focus-visible
-       https://github.com/WICG/focus-visible/blob/master/src/focus-visible.js
-       Youtube appears to do this by de-focusing a button after a button click */
+    /*
+     * set input to focus-visible, unless host-context is available (in chrome)
+     * in which case we can have the focus ring be on the host itself
+     */
+    :host-context([media-keyboard-control]):host(:focus),
+    :host-context([media-keyboard-control]):host(:focus-within) {
+      box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+    }
+    :host-context([media-keyboard-control]) input[type=range]:focus-visible {
+      box-shadow: none;
+    }
     input[type=range]:focus-visible {
       box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
     }
