@@ -55,15 +55,6 @@ template.innerHTML = `
       pointer-events: auto;
     }
 
-    /*
-      Only show outline when keyboard focusing.
-      https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
-    */
-    :host-context([media-keyboard-control]):host(:focus),
-    :host-context([media-keyboard-control]):host(:focus-within) {
-      box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
-    }
-
     :host(:hover) {
       background: var(--media-control-hover-background, rgba(50,50,60, 0.7));
     }
@@ -113,6 +104,9 @@ template.innerHTML = `
     /* Eventually want to move towards different styles for focus-visible
        https://github.com/WICG/focus-visible/blob/master/src/focus-visible.js
        Youtube appears to do this by de-focusing a button after a button click */
+    input[type=range]:focus-visible {
+      box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+    }
     input[type=range]:focus {
       outline: 0;
     }
