@@ -20,7 +20,8 @@
     "dev": "node ./scripts/esbuild.js",
     "start": "yarn dev",
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
-    "publish-patch": "yarn run build && np patch --no-tests --any-branch"
+    "publish-patch": "yarn run build && np patch --no-tests --any-branch",
+    "publish-canary": "yarn run build && np $(semver $(npm pkg get version | sed 's/\"//g') -i prerelease --preid canary)+$(git rev-parse --short HEAD) --tag canary --no-release-draft --any-branch"
   },
   "repository": {
     "type": "git",
@@ -49,6 +50,7 @@
     "prettier": "^2.5.1",
     "react": "^17.0.2",
     "rimraf": "^3.0.2",
+    "semver": "^7.3.7",
     "sinon": "^11.1.2"
   },
   "dependencies": {}
