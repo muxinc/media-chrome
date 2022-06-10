@@ -21,7 +21,7 @@
     "start": "yarn dev",
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
     "publish-patch": "yarn run build && np patch --no-tests --any-branch",
-    "publish-canary": "yarn run build && np $(semver $(npm pkg get version | sed 's/\"//g') -i prerelease --preid canary)+$(git rev-parse --short HEAD) --tag canary --no-release-draft --any-branch --no-yarn"
+    "publish-canary": "yarn run build && npm version $(semver $(npm pkg get version | sed 's/\"//g') -i prerelease --preid canary)+$(git rev-parse --short HEAD) --git-tag-version false && npm publish --tag canary"
   },
   "repository": {
     "type": "git",
