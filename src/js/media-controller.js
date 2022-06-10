@@ -674,6 +674,11 @@ class MediaController extends MediaContainer {
       );
       propagateMediaState(
         [el],
+        MediaUIAttributes.MEDIA_IS_CASTING,
+        this.hasAttribute(MediaUIAttributes.MEDIA_IS_CASTING)
+      );
+      propagateMediaState(
+        [el],
         MediaUIAttributes.MEDIA_CURRENT_TIME,
         getCurrentTime(this)
       );
