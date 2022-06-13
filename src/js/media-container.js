@@ -44,6 +44,15 @@ template.innerHTML = `
     }
 
     /*
+     * when in audio mode, hide the gesture-layer which causes media-controller to be taller than the control bar
+     *
+     */
+    :host([audio]) [part~=layer][part~=gesture-layer] {
+      height: 0;
+      display: block;
+    }
+
+    /*
      * if gestures are disabled, don't accept pointer-events
      */
     :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]),
