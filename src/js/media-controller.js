@@ -391,7 +391,7 @@ class MediaController extends MediaContainer {
           serializeTimeRanges(this.media?.buffered)
         );
       },
-      ratechange: () => {
+      'ratechange,loadstart': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_PLAYBACK_RATE,
           getPlaybackRate(this)
