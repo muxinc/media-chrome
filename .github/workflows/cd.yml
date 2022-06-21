@@ -1,0 +1,45 @@
+name: CD
+
+concurrency: production
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      version_type:
+        type: choice
+        required: true
+        description: Version
+        options:
+        - conventional
+        - patch
+        - minor
+        - major
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history for all tags and branches
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          # this line is required for the setup-node action to be able to run the npm publish below.
+          registry-url: 'https://registry.npmjs.org'
+      - uses: fregante/setup-git-user@v1
+      - run: yarn install --frozen-lockfile
+      - run: yarn test
+      - run: yarn build
+      - run: npm run publish-release -- ${{ inputs.version_type }}
+        if: ${{ inputs.version_type != 'conventional' }}
+      - run: npm run publish-release
+        if: ${{ inputs.version_type == 'conventional' }}

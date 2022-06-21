@@ -20,8 +20,8 @@
     "dev": "node ./scripts/esbuild.js",
     "start": "yarn dev",
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
-    "publish-patch": "yarn run build && np patch --no-tests --any-branch",
-    "publish-canary": "yarn run build && npm version $(semver $(npm view media-chrome versions --json | jq -r '.[-1]' | sed -r 's/-[a-z0-9]{7}$//g') -i prerelease --preid canary)-$(git rev-parse --short HEAD) --git-tag-version false && npm publish --tag canary"
+    "publish-release": ". ./scripts/publish.sh; release",
+    "publish-canary": ". ./scripts/publish.sh; canary"
   },
   "repository": {
     "type": "git",
@@ -45,13 +45,14 @@
   "devDependencies": {
     "@open-wc/testing": "^3.0.1",
     "@web/test-runner": "^0.13.20",
+    "conventional-changelog-cli": "^2.2.2",
+    "conventional-github-releaser": "^3.1.5",
+    "conventional-recommended-bump": "^6.1.0",
     "esbuild": "^0.14.23",
-    "np": "^7.6.0",
     "prettier": "^2.5.1",
     "react": "^17.0.2",
     "rimraf": "^3.0.2",
     "semver": "^7.3.7",
     "sinon": "^11.1.2"
-  },
-  "dependencies": {}
+  }
 }
