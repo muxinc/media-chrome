@@ -17,7 +17,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn test
       - run: yarn build
-      - run: npm run publish-canary
+      - run: npm run publish-release -- canary
         if: ${{ github.ref == 'refs/heads/main' }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
