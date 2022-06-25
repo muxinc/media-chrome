@@ -39,7 +39,6 @@ template.innerHTML = `
       max-height: var(--media-thumbnail-preview-max-height, 160px);
       min-width: var(--media-thumbnail-preview-min-width, 120px);
       min-height: var(--media-thumbnail-preview-min-height, 80px);
-      width: 100%;
       position: absolute;
       bottom: calc(100% + 5px);
       border: var(--media-thumbnail-preview-border, 2px solid #fff);
@@ -135,14 +134,18 @@ class MediaTimeRange extends MediaChromeRange {
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
       // Since our range's step is 1, floor the max value to ensure reasonable rendering
-      this.range.max = Math.floor(this.mediaSeekableEnd ?? this.mediaDuration ?? 1000);
+      this.range.max = Math.floor(
+        this.mediaSeekableEnd ?? this.mediaDuration ?? 1000
+      );
       updateAriaValueText(this);
       this.updateBar();
     }
     if (attrName === MediaUIAttributes.MEDIA_SEEKABLE) {
       this.range.min = this.mediaSeekableStart ?? 0;
       // Since our range's step is 1, floor the max value to ensure reasonable rendering
-      this.range.max = Math.floor(this.mediaSeekableEnd ?? this.mediaDuration ?? 1000);
+      this.range.max = Math.floor(
+        this.mediaSeekableEnd ?? this.mediaDuration ?? 1000
+      );
       updateAriaValueText(this);
       this.updateBar();
     }
@@ -165,7 +168,9 @@ class MediaTimeRange extends MediaChromeRange {
   get mediaBuffered() {
     const buffered = this.getAttribute(MediaUIAttributes.MEDIA_BUFFERED);
     if (!buffered) return [];
-    return buffered.split(' ').map((timePair) => timePair.split(':').map(timeStr => +timeStr));
+    return buffered
+      .split(' ')
+      .map((timePair) => timePair.split(':').map((timeStr) => +timeStr));
   }
 
   get mediaSeekable() {
@@ -198,9 +203,12 @@ class MediaTimeRange extends MediaChromeRange {
       return colorsArray;
     }
 
-    // Find the buffered range that "contains" the current time and get its end. If none, just assume the 
+    // Find the buffered range that "contains" the current time and get its end. If none, just assume the
     // start of the media timeline/range.min for visualization purposes.
-    const [, bufferedEnd = range.min] = buffered.find(([start, end]) => start <= currentTime && currentTime <= end) ?? [];
+    const [, bufferedEnd = range.min] =
+      buffered.find(
+        ([start, end]) => start <= currentTime && currentTime <= end
+      ) ?? [];
     const relativeBufferedEnd = bufferedEnd - range.min;
 
     const buffPercent = (relativeBufferedEnd / relativeMax) * 100;
@@ -223,8 +231,9 @@ class MediaTimeRange extends MediaChromeRange {
     let pointermoveHandler;
     const trackMouse = () => {
       pointermoveHandler = (evt) => {
-        const duration = +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+        if (evt.composedPath().includes(thumbnailContainer)) return;
 
+        const duration = +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
         // If no duration we can't calculate which time to show
         if (!duration) return;
 
@@ -238,13 +247,27 @@ class MediaTimeRange extends MediaChromeRange {
 
         // Get thumbnail center position
         const leftPadding = rangeRect.left - rect.left;
+        const rightPadding = rect.right - rangeRect.right;
         const thumbnailOffset = leftPadding + mousePercent * rangeRect.width;
 
-        // Use client dimensions instead of offset dimensions to exclude borders.
-        const { clientWidth, clientHeight } = this.thumbnailPreview;
-        const thumbnailLeft = thumbnailOffset - clientWidth / 2;
+        // Use offset dimensions to include borders.
+        const thumbWidth = this.thumbnailPreview.offsetWidth;
+        const thumbLeft = thumbnailOffset - thumbWidth / 2;
 
-        this.thumbnailPreview.style.transform = `translateX(${thumbnailLeft}px)`;
+        // Get the element that enforces the bounding box for the hover preview.
+        const mediaBounds = this.getAttribute('media-bounds')
+          ? document.getElementById(this.getAttribute('media-bounds'))
+          : this.parentElement;
+
+        const mediaBoundsRect = mediaBounds.getBoundingClientRect();
+        const offsetLeft = rect.left - mediaBoundsRect.left;
+        const offsetRight =
+          mediaBoundsRect.right - rect.left - thumbWidth - rightPadding;
+        const thumbMin = leftPadding - offsetLeft;
+        const thumbMax = offsetRight;
+        const thumbX = Math.max(thumbMin, Math.min(thumbLeft, thumbMax));
+
+        this.thumbnailPreview.style.transform = `translateX(${thumbX}px)`;
 
         const detail = mousePercent * duration;
         const mediaPreviewEvt = new window.CustomEvent(
@@ -260,7 +283,7 @@ class MediaTimeRange extends MediaChromeRange {
       window.removeEventListener('pointermove', pointermoveHandler);
       const endEvt = new window.CustomEvent(
         MediaUIEvents.MEDIA_PREVIEW_REQUEST,
-        {composed: true, bubbles: true, detail: null}
+        { composed: true, bubbles: true, detail: null }
       );
       this.dispatchEvent(endEvt);
     };
