@@ -46,6 +46,10 @@ const template = `
     position: relative;
   }
 
+  media-control-bar:last-child {
+    padding: 0 10px 0 5px;
+  }
+
   media-play-button {
     --media-button-icon-width: 30px;
     padding: 6px 10px;
@@ -55,7 +59,8 @@ const template = `
     height: auto;
 
     --media-range-track-transition: height 0.1s linear;
-    --media-range-track-background: #444;
+    --media-range-track-background: rgba(255,255,255,.2);
+    --media-time-buffered-color: rgba(255,255,255,.4);
 
     --media-range-bar-color: rgb(229, 9, 20);
     --media-progress-buffered-color: #999;
@@ -67,6 +72,10 @@ const template = `
     --media-range-thumb-transform: scale(0) translate(0%, 0%);
   }
 
+  media-time-range {
+    height: 5px;
+  }
+
   media-time-range:hover {
     --media-range-track-height: 5px;
     --media-range-thumb-transform: scale(1) translate(0%, 0%);
@@ -75,7 +84,7 @@ const template = `
   media-volume-range {
     padding-left: 0px;
 
-    --media-range-track-background: #fff;
+    --media-range-track-background: rgba(255,255,255,.2);
     --media-range-bar-color: #fff;
     --media-range-thumb-background: #fff;
   }
@@ -102,6 +111,10 @@ const template = `
   media-volume-range:focus,
   media-volume-range:focus-within {
     width: 70px;
+  }
+
+  media-fullscreen-button {
+    --media-button-icon-transform: scale(1.3);
   }
 
   .ytp-gradient-bottom {
