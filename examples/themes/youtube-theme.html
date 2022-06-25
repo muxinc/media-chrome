@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Youtube Theme Example</title>
     <script type="module" src="../../dist/index.js"></script>
+    <script type="module" src="../../src/js/themes/media-theme-youtube.js"></script>
     <!-- <script type="module" src="https://unpkg.com/youtube-video-element@0"></script> -->
   </head>
   <body>
@@ -13,7 +14,7 @@
       }
 
       /** add styles to prevent CLS (Cumulative Layout Shift) */
-      media-controller:not([audio]) {
+      media-theme-youtube {
         display: block;         /* expands the container if preload=none */
         max-width: 720px;       /* allows the container to shrink if small */
         aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
@@ -22,118 +23,27 @@
       video {
         width: 100%;      /* prevents video to expand beyond its container */
       }
-
-      .media-theme-youtube * {
-        font-size: 13px;
-        font-family: Roboto, Arial, sans-serif;
-        color: #ddd;
-
-        --media-range-track-height: 3px;
-        --media-range-thumb-height: 13px;
-        --media-range-thumb-width: 13px;
-        --media-range-thumb-border-radius: 13px;
-
-        --media-icon-color: #ddd;
-      }
-
-      .media-theme-youtube *:hover {
-        color: #fff;
-        --media-icon-color: #fff;
-      }
-
-      .media-theme-youtube media-control-bar > *:hover {
-        background: transparent;
-      }
-
-      .media-theme-youtube media-play-button {
-        --media-button-icon-width: 30px;
-        padding: 6px 10px;
-      }
-
-      .media-theme-youtube media-time-range {
-        height: auto;
-
-        --media-range-track-transition: height 0.1s linear;
-        --media-range-track-background: #444;
-
-        --media-range-bar-color: rgb(229, 9, 20);
-        --media-progress-buffered-color: #999;
-
-        --media-range-thumb-border-radius: 13px;
-        --media-range-thumb-background: #f00;
-
-        --media-range-thumb-transition: transform 0.1s linear;
-        --media-range-thumb-transform: scale(0) translate(0%, 0%);
-      }
-
-      .media-theme-youtube media-time-range:hover {
-        --media-range-track-height: 5px;
-        --media-range-thumb-transform: scale(1) translate(0%, 0%);
-      }
-
-      .media-theme-youtube media-volume-range {
-        padding-left: 0px;
-
-        --media-range-track-background: #fff;
-        --media-range-bar-color: #fff;
-        --media-range-thumb-background: #fff;
-      }
-
-      .media-theme-youtube .control-spacer {
-        flex-grow: 1;
-      }
-
-      .media-theme-youtube media-mute-button + media-volume-range {
-        width: 0px;
-        overflow: hidden;
-        padding-right: 0px;
-
-        /* Set the internal width so it reveals, not grows */
-        --media-range-track-width: 60px;
-        transition: width 0.2s ease-in;
-      }
-
-      /* Expand volume control in all relevant states */
-      .media-theme-youtube media-mute-button:hover + media-volume-range,
-      .media-theme-youtube media-mute-button:focus + media-volume-range,
-      .media-theme-youtube media-mute-button:focus-within + media-volume-range,
-      .media-theme-youtube media-volume-range:hover,
-      .media-theme-youtube media-volume-range:focus,
-      .media-theme-youtube media-volume-range:focus-within {
-        width: 70px;
-      }
     </style>
     <main>
       <h1>Media Chrome Youtube Theme Example</h1>
-      <media-controller class="media-theme-youtube">
+
+      <media-theme-youtube>
         <video
           slot="media"
-          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+          src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+          poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
           muted
-          preload="none"
           crossorigin
         >
           <track
             label="thumbnails"
             default
             kind="metadata"
-            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+            src="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.vtt"
           />
         </video>
-        <media-control-bar>
-          <media-time-range></media-time-range>
-        </media-control-bar>
-        <media-control-bar>
-          <media-play-button></media-play-button>
-          <media-mute-button></media-mute-button>
-          <media-volume-range></media-volume-range>
-          <media-time-display show-duration></media-time-display>
-          <span class="control-spacer"></span>
-          <media-playback-rate-button></media-playback-rate-button>
-          <media-pip-button></media-pip-button>
-          <media-fullscreen-button></media-fullscreen-button>
-        </media-control-bar>
-      </media-controller>
+      </media-theme-youtube>
+
       <div class="examples">
         <a href="../">View more examples</a>
       </div>
