@@ -28,9 +28,28 @@ template.innerHTML = `
       position: absolute;
       left: 0;
       top: 0;
+      width: 100%;
       transition: visibility .25s, opacity .25s;
       visibility: hidden;
       opacity: 0;
+    }
+
+    media-thumbnail-preview {
+      max-width: var(--media-thumbnail-preview-max-width, 180px);
+      max-height: var(--media-thumbnail-preview-max-height, 160px);
+      min-width: var(--media-thumbnail-preview-min-width, 120px);
+      min-height: var(--media-thumbnail-preview-min-height, 80px);
+      width: 100%;
+      position: absolute;
+      bottom: calc(100% + 5px);
+      border: var(--media-thumbnail-preview-border, 2px solid #fff);
+      border-radius: var(--media-thumbnail-preview-border-radius, 2px);
+    }
+
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) #thumbnail-container {
+      transition: visibility .5s, opacity .5s;
+      visibility: visible;
+      opacity: 1;
     }
 
     #time-range-container {
@@ -51,26 +70,6 @@ template.innerHTML = `
 
     #time-range-container:hover #time-range-hover-padding {
       display: block;
-    }
-
-    media-thumbnail-preview {
-      --thumb-preview-min-width: var(--media-thumbnail-preview-min-width, 120px);
-      --thumb-preview-max-width: var(--media-thumbnail-preview-max-width, 180px);
-      --thumb-preview-min-height: var(--media-thumbnail-preview-min-height, 80px);
-      --thumb-preview-max-height: var(--media-thumbnail-preview-max-height, 160px);
-      --thumb-preview-border: 2px solid #fff;
-      transform-origin: 50% 100%;
-      position: absolute;
-      bottom: calc(100% + 5px);
-      border: var(--media-thumbnail-preview-border, var(--thumb-preview-border, 2px solid #fff));
-      border-radius: var(--media-thumbnail-preview-border-radius, 2px);
-      background-color: #000;
-    }
-
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) #thumbnail-container {
-      transition: visibility .5s, opacity .5s;
-      visibility: visible;
-      opacity: 1;
     }
   </style>
   <div id="thumbnail-container">
@@ -230,6 +229,7 @@ class MediaTimeRange extends MediaChromeRange {
         if (!duration) return;
 
         // Get mouse position percent
+        const rect = this.getBoundingClientRect();
         const rangeRect = this.range.getBoundingClientRect();
         let mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
 
@@ -237,59 +237,14 @@ class MediaTimeRange extends MediaChromeRange {
         mousePercent = Math.max(0, Math.min(1, mousePercent));
 
         // Get thumbnail center position
-        const leftPadding = rangeRect.left - this.getBoundingClientRect().left;
+        const leftPadding = rangeRect.left - rect.left;
         const thumbnailOffset = leftPadding + mousePercent * rangeRect.width;
-
-        const thumbStyle = getComputedStyle(this.thumbnailPreview);
-        const thumbMinWidth = parseInt(
-          thumbStyle.getPropertyValue('--thumb-preview-min-width')
-        );
-        const thumbMaxWidth = parseInt(
-          thumbStyle.getPropertyValue('--thumb-preview-max-width')
-        );
-        const thumbMinHeight = parseInt(
-          thumbStyle.getPropertyValue('--thumb-preview-min-height')
-        );
-        const thumbMaxHeight = parseInt(
-          thumbStyle.getPropertyValue('--thumb-preview-max-height')
-        );
 
         // Use client dimensions instead of offset dimensions to exclude borders.
         const { clientWidth, clientHeight } = this.thumbnailPreview;
-        const maxThumbRatio = Math.min(
-          thumbMaxWidth / clientWidth,
-          thumbMaxHeight / clientHeight
-        );
-        const minThumbRatio = Math.max(
-          thumbMinWidth / clientWidth,
-          thumbMinHeight / clientHeight
-        );
         const thumbnailLeft = thumbnailOffset - clientWidth / 2;
-        // maxThumbRatio scales down and takes priority, minThumbRatio scales up.
-        const thumbScale =
-          maxThumbRatio < 1
-            ? maxThumbRatio
-            : minThumbRatio > 1
-            ? minThumbRatio
-            : 1;
 
-        this.thumbnailPreview.style.transform = `translateX(${thumbnailLeft}px) scale(${thumbScale})`;
-
-        let thumbBorderWidth = parseInt(
-          thumbStyle.getPropertyValue('--media-thumbnail-preview-border')
-        );
-        if (Number.isNaN(thumbBorderWidth)) {
-          thumbBorderWidth = parseInt(
-            thumbStyle.getPropertyValue('--thumb-preview-border')
-          );
-        }
-
-        this.thumbnailPreview.style.borderWidth = `${Math.round(
-          thumbBorderWidth / thumbScale
-        )}px`;
-        this.thumbnailPreview.style.borderRadius = `${Math.round(
-          thumbBorderWidth / thumbScale
-        )}px`;
+        this.thumbnailPreview.style.transform = `translateX(${thumbnailLeft}px)`;
 
         const detail = mousePercent * duration;
         const mediaPreviewEvt = new window.CustomEvent(

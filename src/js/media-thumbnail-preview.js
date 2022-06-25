@@ -17,13 +17,14 @@ template.innerHTML = `
   <style>
     :host {
       background-color: #000;
-      height: auto;
-      width: auto;
+      box-sizing: border-box;
+      display: inline-block;
+      overflow: hidden;
     }
 
     img {
-      display: block;
-      object-fit: none;
+      display: none;
+      position: relative;
     }
   </style>
   <img crossorigin loading="eager" decoding="async" />
@@ -96,25 +97,53 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE
     );
     if (!(mediaPreviewCoordsStr && mediaPreviewImage)) return;
-    const img = this.shadowRoot.querySelector('img');
+
     const [x, y, w, h] = mediaPreviewCoordsStr
       .split(/\s+/)
       .map((coord) => +coord);
-    const src = mediaPreviewImage;
+    const src = mediaPreviewImage.split('#')[0];
+
+    const computedStyle = getComputedStyle(this);
+    const { maxWidth, maxHeight, minWidth, minHeight } = computedStyle;
+
+    const maxThumbRatio = Math.min(
+      parseInt(maxWidth) / w,
+      parseInt(maxHeight) / h
+    );
+    const minThumbRatio = Math.max(
+      parseInt(minWidth) / w,
+      parseInt(minHeight) / h
+    );
+
+    // maxThumbRatio scales down and takes priority, minThumbRatio scales up.
+    const thumbScale =
+      maxThumbRatio < 1 ? maxThumbRatio : minThumbRatio > 1 ? minThumbRatio : 1;
+
+    this.style.width = `${w * thumbScale}px`;
+    this.style.height = `${h * thumbScale}px`;
+    this.style.aspectRatio = `${w} / ${h}`;
+
+    const img = this.shadowRoot.querySelector('img');
 
     const resize = () => {
-      img.style.height = `${h}px`;
-      img.style['aspect-ratio'] = `${w} / ${h}`;
+      img.style.width = `${this.imgWidth * thumbScale}px`;
+      img.style.height = `${this.imgHeight * thumbScale}px`;
+      img.style.display = 'block';
     };
 
     if (img.src !== src) {
-      img.onload = resize;
+      img.onload = () => {
+        this.imgWidth = img.naturalWidth;
+        this.imgHeight = img.naturalHeight;
+        resize();
+      }
       img.src = src;
       resize();
     }
 
     resize();
-    img.style['object-position'] = `-${x}px -${y}px`
+    img.style.left = `-${x * thumbScale}px`;
+    img.style.top = `-${y * thumbScale}px`;
   }
 }
 
