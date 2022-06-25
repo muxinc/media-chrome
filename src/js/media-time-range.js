@@ -47,24 +47,6 @@ template.innerHTML = `
       background-color: #000;
     }
 
-    /*
-      This is a downward triangle. Commented out for now because it would also
-      require scaling the px properties below in JS; bottom and border-width.
-    */
-    /* media-thumbnail-preview::after {
-      content: "";
-      display: block;
-      width: 0;
-      height: 0;
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: -10px;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 10px solid #fff;
-    } */
-
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) #thumbnailContainer {
       transition: visibility .5s, opacity .5s;
       visibility: visible;
