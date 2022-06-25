@@ -33,6 +33,26 @@ template.innerHTML = `
       opacity: 0;
     }
 
+    #time-range-container {
+      z-index: 3;
+      position: relative;
+      height: 100%;
+      cursor: pointer;
+    }
+
+    #time-range-hover-padding {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: var(--media-time-range-hover-bottom, -5px);
+      height: var(--media-time-range-hover-height, max(calc(100% + 5px), 20px));
+    }
+
+    #time-range-container:hover #time-range-hover-padding {
+      display: block;
+    }
+
     media-thumbnail-preview {
       --thumb-preview-min-width: var(--media-thumbnail-preview-min-width, 120px);
       --thumb-preview-max-width: var(--media-thumbnail-preview-max-width, 180px);
@@ -56,6 +76,9 @@ template.innerHTML = `
   <div id="thumbnail-container">
     <media-thumbnail-preview></media-thumbnail-preview>
   </div>
+  <div id="time-range-container">
+    <div id="time-range-hover-padding"></div>
+  </div>
 `;
 
 class MediaTimeRange extends MediaChromeRange {
@@ -75,6 +98,9 @@ class MediaTimeRange extends MediaChromeRange {
     super();
 
     this.shadowRoot.appendChild(template.content.cloneNode(true));
+
+    const container = this.shadowRoot.querySelector('#time-range-container');
+    container.append(this.range);
 
     this.range.addEventListener('input', () => {
       const newTime = this.range.value;
