@@ -24,7 +24,7 @@ const template = document.createElement('template');
 
 template.innerHTML = `
   <style>
-    #thumbnailContainer {
+    #thumbnail-container {
       position: absolute;
       left: 0;
       top: 0;
@@ -47,13 +47,13 @@ template.innerHTML = `
       background-color: #000;
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) #thumbnailContainer {
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) #thumbnail-container {
       transition: visibility .5s, opacity .5s;
       visibility: visible;
       opacity: 1;
     }
   </style>
-  <div id="thumbnailContainer">
+  <div id="thumbnail-container">
     <media-thumbnail-preview></media-thumbnail-preview>
   </div>
 `;
@@ -191,7 +191,7 @@ class MediaTimeRange extends MediaChromeRange {
       'media-thumbnail-preview'
     );
     const thumbnailContainer = this.shadowRoot.querySelector(
-      '#thumbnailContainer'
+      '#thumbnail-container'
     );
     thumbnailContainer.classList.add('enabled');
 
