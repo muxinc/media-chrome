@@ -23,11 +23,14 @@ const updateAriaValueText = (el) => {
 const template = document.createElement('template');
 template.innerHTML = `
   <style>
-    #thumbnail-container {
+    [part~=box] {
+      display: inline-block;
       position: absolute;
       left: 0;
-      top: 0;
-      width: 100%;
+      bottom: calc(100% + 10px);
+    }
+
+    [part~=preview-box] {
       transition: visibility .25s, opacity .25s;
       visibility: hidden;
       opacity: 0;
@@ -39,13 +42,11 @@ template.innerHTML = `
       max-height: var(--media-thumbnail-preview-max-height, 160px);
       min-width: var(--media-thumbnail-preview-min-width, 120px);
       min-height: var(--media-thumbnail-preview-min-height, 80px);
-      position: absolute;
-      bottom: calc(100% + var(--media-thumbnail-preview-bottom, 10px));
       border: var(--media-thumbnail-preview-border, 2px solid #fff);
       border-radius: var(--media-thumbnail-preview-border-radius, 2px);
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) #thumbnail-container {
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~=preview-box] {
       transition: visibility .5s, opacity .5s;
       visibility: visible;
       opacity: 1;
@@ -70,9 +71,17 @@ template.innerHTML = `
       display: block;
     }
   </style>
-  <div id="thumbnail-container">
-    <media-thumbnail-preview></media-thumbnail-preview>
-  </div>
+  <span part="box preview-box">
+    <slot name="preview">
+      <media-thumbnail-preview></media-thumbnail-preview>
+    </slot>
+  </span>
+  <span part="box current-box">
+    <slot name="current">
+      <!-- Example: add the current time to the playhead -->
+      <!-- <media-current-time-display></media-current-time-display> -->
+    </slot>
+  </span>
   <div id="time-range-container">
     <div id="time-range-hover-padding"></div>
   </div>
@@ -130,6 +139,7 @@ class MediaTimeRange extends MediaChromeRange {
       this.range.value = this.mediaCurrentTime;
       updateAriaValueText(this);
       this.updateBar();
+      this.updateCurrentBox();
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
       // Since our range's step is 1, floor the max value to ensure reasonable rendering
@@ -138,6 +148,7 @@ class MediaTimeRange extends MediaChromeRange {
       );
       updateAriaValueText(this);
       this.updateBar();
+      this.updateCurrentBox();
     }
     if (attrName === MediaUIAttributes.MEDIA_SEEKABLE) {
       this.range.min = this.mediaSeekableStart ?? 0;
@@ -218,55 +229,34 @@ class MediaTimeRange extends MediaChromeRange {
     return colorsArray;
   }
 
+  updateCurrentBox() {
+    const currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
+    const percent = this.range.value / (this.range.max - this.range.min);
+    const boxPos = getBoxPosition(this, currentBox, percent);
+    currentBox.style.transform = `translateX(${boxPos}px)`;
+  }
+
   enableThumbnails() {
-    this.thumbnailPreview = this.shadowRoot.querySelector(
-      'media-thumbnail-preview'
-    );
-    const thumbnailContainer = this.shadowRoot.querySelector(
-      '#thumbnail-container'
-    );
-    thumbnailContainer.classList.add('enabled');
+    const boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
+    const previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
 
     let pointermoveHandler;
     const trackMouse = () => {
       pointermoveHandler = (evt) => {
-        if (evt.composedPath().includes(thumbnailContainer)) return;
+        if ([...boxes].some((b) => evt.composedPath().includes(b))) return;
 
         const duration = +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
         // If no duration we can't calculate which time to show
         if (!duration) return;
 
         // Get mouse position percent
-        const rect = this.getBoundingClientRect();
         const rangeRect = this.range.getBoundingClientRect();
         let mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
-
         // Lock between 0 and 1
         mousePercent = Math.max(0, Math.min(1, mousePercent));
 
-        // Get thumbnail center position
-        const leftPadding = rangeRect.left - rect.left;
-        const rightPadding = rect.right - rangeRect.right;
-        const thumbnailOffset = leftPadding + mousePercent * rangeRect.width;
-
-        // Use offset dimensions to include borders.
-        const thumbWidth = this.thumbnailPreview.offsetWidth;
-        const thumbLeft = thumbnailOffset - thumbWidth / 2;
-
-        // Get the element that enforces the bounding box for the hover preview.
-        const mediaBounds = this.getAttribute('media-bounds')
-          ? document.getElementById(this.getAttribute('media-bounds'))
-          : this.parentElement;
-
-        const mediaBoundsRect = mediaBounds.getBoundingClientRect();
-        const offsetLeft = rect.left - mediaBoundsRect.left;
-        const offsetRight =
-          mediaBoundsRect.right - rect.left - thumbWidth - rightPadding;
-        const thumbMin = leftPadding - offsetLeft;
-        const thumbMax = offsetRight;
-        const thumbX = Math.max(thumbMin, Math.min(thumbLeft, thumbMax));
-
-        this.thumbnailPreview.style.transform = `translateX(${thumbX}px)`;
+        const boxPos = getBoxPosition(this, previewBox, mousePercent);
+        previewBox.style.transform = `translateX(${boxPos}px)`;
 
         const detail = mousePercent * duration;
         const mediaPreviewEvt = new window.CustomEvent(
@@ -289,7 +279,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     // Trigger when the mouse moves over the range
     let rangeEntered = false;
-    let rangepointermoveHander = (evt) => {
+    let rangepointermoveHander = () => {
       const mediaDurationStr = this.getAttribute(
         MediaUIAttributes.MEDIA_DURATION
       );
@@ -300,7 +290,7 @@ class MediaTimeRange extends MediaChromeRange {
         let offRangeHandler = (evt) => {
           if (
             !evt.composedPath().includes(this) ||
-            evt.composedPath().includes(thumbnailContainer)
+            [...boxes].some((b) => evt.composedPath().includes(b))
           ) {
             window.removeEventListener('pointermove', offRangeHandler);
             rangeEntered = false;
@@ -312,6 +302,34 @@ class MediaTimeRange extends MediaChromeRange {
     };
     this.addEventListener('pointermove', rangepointermoveHander, false);
   }
+}
+
+function getBoxPosition(el, box, percent) {
+  const rect = el.getBoundingClientRect();
+  const rangeRect = el.range.getBoundingClientRect();
+
+  // Get preview box center position
+  const leftPadding = rangeRect.left - rect.left;
+  const rightPadding = rect.right - rangeRect.right;
+  const boxOffset = leftPadding + percent * rangeRect.width;
+
+  // Use offset dimensions to include borders.
+  const boxWidth = box.offsetWidth;
+  const boxLeft = boxOffset - boxWidth / 2;
+
+  // Get the element that enforces the bounding box for the hover preview.
+  const mediaBounds = el.getAttribute('media-bounds')
+    ? document.getElementById(el.getAttribute('media-bounds'))
+    : el.parentElement;
+
+  const mediaBoundsRect = mediaBounds.getBoundingClientRect();
+  const offsetLeft = rect.left - mediaBoundsRect.left;
+  const offsetRight =
+    mediaBoundsRect.right - rect.left - boxWidth - rightPadding;
+  const boxMin = leftPadding - offsetLeft;
+  const boxMax = offsetRight;
+
+  return Math.max(boxMin, Math.min(boxLeft, boxMax));
 }
 
 defineCustomElement('media-time-range', MediaTimeRange);
