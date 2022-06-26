@@ -202,10 +202,8 @@ class MediaChromeRange extends window.HTMLElement {
     });
     gradientStr = gradientStr.slice(0, gradientStr.length - 1) + ')';
 
-    this.style.setProperty(
-      '--media-range-track-background-internal',
-      gradientStr
-    );
+    const { style } = findCSSRule(this.shadowRoot, ':host');
+    style.setProperty('--media-range-track-background-internal', gradientStr);
   }
 
   /*
@@ -218,12 +216,31 @@ class MediaChromeRange extends window.HTMLElement {
     const relativeMax = range.max - range.min;
     const rangePercent = (relativeValue / relativeMax) * 100;
 
+    let thumbPercent = 0;
+    // If the range thumb is at min or max don't correct the time range.
+    // Ideally the thumb center would go all the way to min and max values
+    // but input[type=range] doesn't play like that.
+    if (range.value > range.min && range.value < range.max) {
+      const thumbWidth =
+        getComputedStyle(this).getPropertyValue('--media-range-thumb-width') ||
+        '10px';
+      const thumbOffset = parseInt(thumbWidth) * (0.5 - rangePercent / 100);
+      thumbPercent = (thumbOffset / range.offsetWidth) * 100;
+    }
+
     let colorArray = [
-      ['var(--media-range-bar-color, #fff)', rangePercent],
+      ['var(--media-range-bar-color, #fff)', rangePercent + thumbPercent],
       ['var(--media-range-track-background, #333)', 100],
     ];
 
     return colorArray;
+  }
+}
+
+function findCSSRule(el, selectorText) {
+  for (let style of el.querySelectorAll('style')) {
+    for (let rule of style.sheet.cssRules)
+      if (rule.selectorText === selectorText) return rule;
   }
 }
 
