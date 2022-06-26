@@ -56,7 +56,8 @@ const template = `
   }
 
   media-time-range {
-    height: auto;
+    width: 100%;
+    height: 5px;
 
     --media-range-track-transition: height 0.1s linear;
     --media-range-track-background: rgba(255,255,255,.2);
@@ -70,10 +71,6 @@ const template = `
 
     --media-range-thumb-transition: transform 0.1s linear;
     --media-range-thumb-transform: scale(0) translate(0%, 0%);
-  }
-
-  media-time-range {
-    height: 5px;
   }
 
   media-time-range:hover {
@@ -118,15 +115,15 @@ const template = `
   }
 
   .ytp-gradient-bottom {
-    height: 61px;
     padding-top: 37px;
-    bottom: 0;
-    background-position: bottom;
-    width: 100%;
     position: absolute;
-    background-repeat: repeat-x;
-    transition: opacity .25s cubic-bezier(0,0,0.2,1);
+    width: 100%;
+    height: 170px;
+    bottom: 0;
     pointer-events: none;
+    background-position: bottom;
+    background-repeat: repeat-x;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAACqCAYAAABsziWkAAAAAXNSR0IArs4c6QAAAQVJREFUOE9lyNdHBQAAhfHb3nvvuu2997jNe29TJJEkkkgSSSSJJJJEEkkiifRH5jsP56Xz8PM5gcC/xfDEmjhKxEOCSaREEiSbFEqkQppJpzJMJiWyINvkUCIX8kw+JQqg0BRRxaaEEqVQZsopUQGVpooS1VBjglStqaNEPTSYRko0QbNpoUQrtJl2qsN0UqILuk0PJXqhz/RTYgAGzRA1bEYoMQpjZpwSExAyk5SYgmkzQ82aOUqEIWKilJiHBbNIiSVYhhVYhTVYhw3YhC3Yhh3YhT3YhwM4hCM4hhM4hTM4hwu4hCu4hhu4hTu4hwd4hCd4hhd4hTd4hw/4hC/4hh/4/QM2/id28uIEJAAAAABJRU5ErkJggg==");
   }
 </style>
 
@@ -134,10 +131,8 @@ const template = `
   <slot name="media" slot="media"></slot>
   <slot name="poster" slot="poster"></slot>
 
-  <div class="ytp-gradient-bottom" style="height: 170px; background-image: url(&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAACqCAYAAABsziWkAAAAAXNSR0IArs4c6QAAAQVJREFUOE9lyNdHBQAAhfHb3nvvuu2997jNe29TJJEkkkgSSSSJJJJEEkkiifRH5jsP56Xz8PM5gcC/xfDEmjhKxEOCSaREEiSbFEqkQppJpzJMJiWyINvkUCIX8kw+JQqg0BRRxaaEEqVQZsopUQGVpooS1VBjglStqaNEPTSYRko0QbNpoUQrtJl2qsN0UqILuk0PJXqhz/RTYgAGzRA1bEYoMQpjZpwSExAyk5SYgmkzQ82aOUqEIWKilJiHBbNIiSVYhhVYhTVYhw3YhC3Yhh3YhT3YhwM4hCM4hhM4hTM4hwu4hCu4hhu4hTu4hwd4hCd4hhd4hTd4hw/4hC/4hh/4/QM2/id28uIEJAAAAABJRU5ErkJggg==&quot;);"></div>
-  <media-control-bar>
-    <media-time-range></media-time-range>
-  </media-control-bar>
+  <div class="ytp-gradient-bottom"></div>
+  <media-time-range></media-time-range>
   <media-control-bar>
     <media-play-button></media-play-button>
     <media-mute-button></media-mute-button>
