@@ -21,7 +21,6 @@ const updateAriaValueText = (el) => {
 };
 
 const template = document.createElement('template');
-
 template.innerHTML = `
   <style>
     #thumbnail-container {
@@ -35,6 +34,7 @@ template.innerHTML = `
     }
 
     media-thumbnail-preview {
+      background-color: #000;
       max-width: var(--media-thumbnail-preview-max-width, 180px);
       max-height: var(--media-thumbnail-preview-max-height, 160px);
       min-width: var(--media-thumbnail-preview-min-width, 120px);
@@ -55,7 +55,6 @@ template.innerHTML = `
       z-index: 3;
       position: relative;
       height: 100%;
-      cursor: pointer;
     }
 
     #time-range-hover-padding {

@@ -12,11 +12,9 @@ import { defineCustomElement } from './utils/defineCustomElement.js';
 import { MediaUIAttributes } from './constants.js';
 
 const template = document.createElement('template');
-
 template.innerHTML = `
   <style>
     :host {
-      background-color: #000;
       box-sizing: border-box;
       display: inline-block;
       overflow: hidden;
@@ -30,7 +28,7 @@ template.innerHTML = `
   <img crossorigin loading="eager" decoding="async" />
 `;
 
-class MediaThumbnailPreviewElement extends window.HTMLElement {
+class MediaThumbnailPreview extends window.HTMLElement {
   static get observedAttributes() {
     return [
       MediaUIAttributes.MEDIA_CONTROLLER,
@@ -105,30 +103,28 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
 
     const computedStyle = getComputedStyle(this);
     const { maxWidth, maxHeight, minWidth, minHeight } = computedStyle;
+    const maxRatio = Math.min(parseInt(maxWidth) / w, parseInt(maxHeight) / h);
+    const minRatio = Math.max(parseInt(minWidth) / w, parseInt(minHeight) / h);
 
-    const maxThumbRatio = Math.min(
-      parseInt(maxWidth) / w,
-      parseInt(maxHeight) / h
-    );
-    const minThumbRatio = Math.max(
-      parseInt(minWidth) / w,
-      parseInt(minHeight) / h
-    );
+    // maxRatio scales down and takes priority, minRatio scales up.
+    const isScalingDown = maxRatio < 1;
+    const scale = isScalingDown ? maxRatio : minRatio > 1 ? minRatio : 1;
 
-    // maxThumbRatio scales down and takes priority, minThumbRatio scales up.
-    const thumbScale =
-      maxThumbRatio < 1 ? maxThumbRatio : minThumbRatio > 1 ? minThumbRatio : 1;
-
-    this.style.width = `${w * thumbScale}px`;
-    this.style.height = `${h * thumbScale}px`;
-    this.style.aspectRatio = `${w} / ${h}`;
-
+    const { style } = findCSSRule(this.shadowRoot, ':host');
+    const imgStyle = findCSSRule(this.shadowRoot, 'img').style;
     const img = this.shadowRoot.querySelector('img');
 
+    // Revert one set of extremum to its initial value on a known scale direction.
+    const extremum = isScalingDown ? 'min' : 'max';
+    style.setProperty(`${extremum}-width`, 'initial', 'important');
+    style.setProperty(`${extremum}-height`, 'initial', 'important');
+    style.width = `${w * scale}px`;
+    style.height = `${h * scale}px`;
+
     const resize = () => {
-      img.style.width = `${this.imgWidth * thumbScale}px`;
-      img.style.height = `${this.imgHeight * thumbScale}px`;
-      img.style.display = 'block';
+      imgStyle.width = `${this.imgWidth * scale}px`;
+      imgStyle.height = `${this.imgHeight * scale}px`;
+      imgStyle.display = 'block';
     };
 
     if (img.src !== src) {
@@ -136,17 +132,23 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
         this.imgWidth = img.naturalWidth;
         this.imgHeight = img.naturalHeight;
         resize();
-      }
+      };
       img.src = src;
       resize();
     }
 
     resize();
-    img.style.left = `-${x * thumbScale}px`;
-    img.style.top = `-${y * thumbScale}px`;
+    imgStyle.transform = `translate(-${x * scale}px, -${y * scale}px)`;
   }
 }
 
-defineCustomElement('media-thumbnail-preview', MediaThumbnailPreviewElement);
+function findCSSRule(el, selectorText) {
+  for (let style of el.querySelectorAll('style')) {
+    for (let rule of style.sheet.cssRules)
+      if (rule.selectorText === selectorText) return rule;
+  }
+}
 
-export default MediaThumbnailPreviewElement;
+defineCustomElement('media-thumbnail-preview', MediaThumbnailPreview);
+
+export default MediaThumbnailPreview;
