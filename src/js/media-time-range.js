@@ -40,7 +40,7 @@ template.innerHTML = `
       min-width: var(--media-thumbnail-preview-min-width, 120px);
       min-height: var(--media-thumbnail-preview-min-height, 80px);
       position: absolute;
-      bottom: calc(100% + 5px);
+      bottom: calc(100% + var(--media-thumbnail-preview-bottom, 10px));
       border: var(--media-thumbnail-preview-border, 2px solid #fff);
       border-radius: var(--media-thumbnail-preview-border-radius, 2px);
     }
