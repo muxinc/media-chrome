@@ -29,7 +29,8 @@ const trackStyles = `
   border: var(--media-range-track-border, none);
   border-radius: var(--media-range-track-border-radius, 0);
   background: var(--media-range-track-background-internal,
-    var(--media-range-track-background, #eee));
+    var(--media-range-track-background, #eee)),
+    var(--media-range-track-background, #333);
 
   box-shadow: var(--media-range-track-box-shadow, none);
   transition: var(--media-range-track-transition, none);
@@ -51,7 +52,8 @@ template.innerHTML = `
       transition: background 0.15s linear;
       height: 44px;
       width: 100px;
-      padding: 0 10px;
+      padding-left: var(--media-range-padding-left, 10px);
+      padding-right: var(--media-range-padding-right, 10px);
 
       pointer-events: auto;
     }
@@ -230,7 +232,7 @@ class MediaChromeRange extends window.HTMLElement {
 
     let colorArray = [
       ['var(--media-range-bar-color, #fff)', rangePercent + thumbPercent],
-      ['var(--media-range-track-background, #333)', 100],
+      ['transparent', 100],
     ];
 
     return colorArray;

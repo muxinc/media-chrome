@@ -52,23 +52,26 @@ template.innerHTML = `
       opacity: 1;
     }
 
-    #time-range-container {
-      z-index: 3;
-      position: relative;
-      height: 100%;
-    }
-
-    #time-range-hover-padding {
+    #range-hover {
+      /* Add z-index so it overlaps the top of the control buttons if they are right under. */
+      z-index: 1;
       display: none;
+      box-sizing: border-box;
       position: absolute;
-      left: 0;
-      right: 0;
+      left: var(--media-range-padding-left, 10px);
+      right: var(--media-range-padding-right, 10px);
       bottom: var(--media-time-range-hover-bottom, -5px);
       height: var(--media-time-range-hover-height, max(calc(100% + 5px), 20px));
     }
 
-    #time-range-container:hover #time-range-hover-padding {
+    :host(:hover) #range-hover {
       display: block;
+    }
+
+    #range {
+      z-index: 2;
+      position: relative;
+      height: var(--media-range-track-height, 4px);
     }
   </style>
   <span part="box preview-box">
@@ -82,9 +85,8 @@ template.innerHTML = `
       <!-- <media-current-time-display></media-current-time-display> -->
     </slot>
   </span>
-  <div id="time-range-container">
-    <div id="time-range-hover-padding"></div>
-  </div>
+  <div id="range-hover"></div>
+  <div id="range-temp"></div>
 `;
 
 class MediaTimeRange extends MediaChromeRange {
@@ -104,9 +106,7 @@ class MediaTimeRange extends MediaChromeRange {
     super();
 
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-
-    const container = this.shadowRoot.querySelector('#time-range-container');
-    container.append(this.range);
+    this.shadowRoot.querySelector('#range-temp').replaceWith(this.range);
 
     this.range.addEventListener('input', () => {
       const newTime = this.range.value;
