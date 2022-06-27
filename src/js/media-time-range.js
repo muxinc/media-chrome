@@ -23,14 +23,14 @@ const updateAriaValueText = (el) => {
 const template = document.createElement('template');
 template.innerHTML = `
   <style>
-    [part~=box] {
+    [part~="box"] {
       display: inline-block;
       position: absolute;
       left: 0;
       bottom: calc(100% + 10px);
     }
 
-    [part~=preview-box] {
+    [part~="preview-box"] {
       transition: visibility .25s, opacity .25s;
       visibility: hidden;
       opacity: 0;
@@ -46,7 +46,7 @@ template.innerHTML = `
       border-radius: var(--media-thumbnail-preview-border-radius, 2px);
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~=preview-box] {
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~="preview-box"] {
       transition: visibility .5s, opacity .5s;
       visibility: visible;
       opacity: 1;
@@ -233,7 +233,11 @@ class MediaTimeRange extends MediaChromeRange {
     const currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
     const percent = this.range.value / (this.range.max - this.range.min);
     const boxPos = getBoxPosition(this, currentBox, percent);
-    currentBox.style.transform = `translateX(${boxPos}px)`;
+    const { style } = getOrInsertCSSRule(
+      this.shadowRoot,
+      '[part~="current-box"]'
+    );
+    style.transform = `translateX(${boxPos}px)`;
   }
 
   enableThumbnails() {
@@ -256,7 +260,11 @@ class MediaTimeRange extends MediaChromeRange {
         mousePercent = Math.max(0, Math.min(1, mousePercent));
 
         const boxPos = getBoxPosition(this, previewBox, mousePercent);
-        previewBox.style.transform = `translateX(${boxPos}px)`;
+        const { style } = getOrInsertCSSRule(
+          this.shadowRoot,
+          '[part~="preview-box"]'
+        );
+        style.transform = `translateX(${boxPos}px)`;
 
         const detail = mousePercent * duration;
         const mediaPreviewEvt = new window.CustomEvent(
@@ -302,6 +310,22 @@ class MediaTimeRange extends MediaChromeRange {
     };
     this.addEventListener('pointermove', rangepointermoveHander, false);
   }
+}
+
+/**
+ * Get or insert a CSS rule with a selector in an element containing <style> tags.
+ * @param  {Element} styleParent
+ * @param  {string} selectorText
+ * @return {CSSStyleRule|undefined}
+ */
+function getOrInsertCSSRule(styleParent, selectorText) {
+  let style;
+  for (style of styleParent.querySelectorAll('style')) {
+    for (let rule of style.sheet.cssRules)
+      if (rule.selectorText === selectorText) return rule;
+  }
+  style.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
+  return style.sheet.cssRules[style.sheet.cssRules.length - 1];
 }
 
 function getBoxPosition(el, box, percent) {

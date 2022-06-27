@@ -204,7 +204,7 @@ class MediaChromeRange extends window.HTMLElement {
     });
     gradientStr = gradientStr.slice(0, gradientStr.length - 1) + ')';
 
-    const { style } = findCSSRule(this.shadowRoot, ':host');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('--media-range-track-background-internal', gradientStr);
   }
 
@@ -239,11 +239,20 @@ class MediaChromeRange extends window.HTMLElement {
   }
 }
 
-function findCSSRule(el, selectorText) {
-  for (let style of el.querySelectorAll('style')) {
+/**
+ * Get or insert a CSS rule with a selector in an element containing <style> tags.
+ * @param  {Element} styleParent
+ * @param  {string} selectorText
+ * @return {CSSStyleRule|undefined}
+ */
+function getOrInsertCSSRule(styleParent, selectorText) {
+  let style;
+  for (style of styleParent.querySelectorAll('style')) {
     for (let rule of style.sheet.cssRules)
       if (rule.selectorText === selectorText) return rule;
   }
+  style.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
+  return style.sheet.cssRules[style.sheet.cssRules.length - 1];
 }
 
 defineCustomElement('media-chrome-range', MediaChromeRange);

@@ -110,8 +110,8 @@ class MediaThumbnailPreview extends window.HTMLElement {
     const isScalingDown = maxRatio < 1;
     const scale = isScalingDown ? maxRatio : minRatio > 1 ? minRatio : 1;
 
-    const { style } = findCSSRule(this.shadowRoot, ':host');
-    const imgStyle = findCSSRule(this.shadowRoot, 'img').style;
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    const imgStyle = getOrInsertCSSRule(this.shadowRoot, 'img').style;
     const img = this.shadowRoot.querySelector('img');
 
     // Revert one set of extremum to its initial value on a known scale direction.
@@ -142,11 +142,20 @@ class MediaThumbnailPreview extends window.HTMLElement {
   }
 }
 
-function findCSSRule(el, selectorText) {
-  for (let style of el.querySelectorAll('style')) {
+/**
+ * Get or insert a CSS rule with a selector in an element containing <style> tags.
+ * @param  {Element} styleParent
+ * @param  {string} selectorText
+ * @return {CSSStyleRule|undefined}
+ */
+function getOrInsertCSSRule(styleParent, selectorText) {
+  let style;
+  for (style of styleParent.querySelectorAll('style')) {
     for (let rule of style.sheet.cssRules)
       if (rule.selectorText === selectorText) return rule;
   }
+  style.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
+  return style.sheet.cssRules[style.sheet.cssRules.length - 1];
 }
 
 defineCustomElement('media-thumbnail-preview', MediaThumbnailPreview);
