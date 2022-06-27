@@ -132,7 +132,9 @@ const template = `
   <slot name="poster" slot="poster"></slot>
 
   <div class="ytp-gradient-bottom"></div>
-  <media-time-range></media-time-range>
+  <media-time-range>
+    <media-thumbnail-preview slot="preview"></media-thumbnail-preview>
+  </media-time-range>
   <media-control-bar>
     <media-play-button></media-play-button>
     <media-mute-button></media-mute-button>

@@ -36,7 +36,8 @@ template.innerHTML = `
       opacity: 0;
     }
 
-    media-thumbnail-preview {
+    media-thumbnail-preview,
+    ::slotted(media-thumbnail-preview) {
       background-color: #000;
       max-width: var(--media-thumbnail-preview-max-width, 180px);
       max-height: var(--media-thumbnail-preview-max-height, 160px);
