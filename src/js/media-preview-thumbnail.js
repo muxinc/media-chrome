@@ -1,5 +1,5 @@
 /*
-  <media-thumbnail-preview media="#myVideo" time="10.00">
+  <media-preview-thumbnail media="#myVideo" time="10.00">
 
   Uses the "thumbnails" track of a video element to show an image relative to
   the video time given in the `time` attribute.
@@ -28,7 +28,7 @@ template.innerHTML = `
   <img crossorigin loading="eager" decoding="async" />
 `;
 
-class MediaThumbnailPreview extends window.HTMLElement {
+class MediaPreviewThumbnail extends window.HTMLElement {
   static get observedAttributes() {
     return [
       MediaUIAttributes.MEDIA_CONTROLLER,
@@ -158,6 +158,6 @@ function getOrInsertCSSRule(styleParent, selectorText) {
   return style.sheet.cssRules[style.sheet.cssRules.length - 1];
 }
 
-defineCustomElement('media-thumbnail-preview', MediaThumbnailPreview);
+defineCustomElement('media-preview-thumbnail', MediaPreviewThumbnail);
 
-export default MediaThumbnailPreview;
+export default MediaPreviewThumbnail;

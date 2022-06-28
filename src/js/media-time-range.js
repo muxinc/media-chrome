@@ -36,15 +36,15 @@ template.innerHTML = `
       opacity: 0;
     }
 
-    media-thumbnail-preview,
-    ::slotted(media-thumbnail-preview) {
+    media-preview-thumbnail,
+    ::slotted(media-preview-thumbnail) {
       background-color: #000;
-      max-width: var(--media-thumbnail-preview-max-width, 180px);
-      max-height: var(--media-thumbnail-preview-max-height, 160px);
-      min-width: var(--media-thumbnail-preview-min-width, 120px);
-      min-height: var(--media-thumbnail-preview-min-height, 80px);
-      border: var(--media-thumbnail-preview-border, 2px solid #fff);
-      border-radius: var(--media-thumbnail-preview-border-radius, 2px);
+      max-width: var(--media-preview-thumbnail-max-width, 180px);
+      max-height: var(--media-preview-thumbnail-max-height, 160px);
+      min-width: var(--media-preview-thumbnail-min-width, 120px);
+      min-height: var(--media-preview-thumbnail-min-height, 80px);
+      border: var(--media-preview-thumbnail-border, 2px solid #fff);
+      border-radius: var(--media-preview-thumbnail-border-radius, 2px);
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~="preview-box"] {
@@ -77,7 +77,7 @@ template.innerHTML = `
   </style>
   <span part="box preview-box">
     <slot name="preview">
-      <media-thumbnail-preview></media-thumbnail-preview>
+      <media-preview-thumbnail></media-preview-thumbnail>
     </slot>
   </span>
   <span part="box current-box">

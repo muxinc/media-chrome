@@ -133,7 +133,7 @@ const template = `
 
   <div class="ytp-gradient-bottom"></div>
   <media-time-range>
-    <media-thumbnail-preview slot="preview"></media-thumbnail-preview>
+    <media-preview-thumbnail slot="preview"></media-preview-thumbnail>
   </media-time-range>
   <media-control-bar>
     <media-play-button></media-play-button>
