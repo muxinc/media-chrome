@@ -30,20 +30,6 @@ import {
   getTextTracksList,
   updateTracksModeTo,
 } from './utils/captions.js';
-const {
-  MEDIA_PLAY_REQUEST,
-  MEDIA_PAUSE_REQUEST,
-  MEDIA_MUTE_REQUEST,
-  MEDIA_UNMUTE_REQUEST,
-  MEDIA_VOLUME_REQUEST,
-  MEDIA_ENTER_FULLSCREEN_REQUEST,
-  MEDIA_EXIT_FULLSCREEN_REQUEST,
-  MEDIA_SEEK_REQUEST,
-  MEDIA_PREVIEW_REQUEST,
-  MEDIA_ENTER_PIP_REQUEST,
-  MEDIA_EXIT_PIP_REQUEST,
-  MEDIA_PLAYBACK_RATE_REQUEST,
-} = MediaUIEvents;
 
 class MediaController extends MediaContainer {
   constructor() {
@@ -274,7 +260,7 @@ class MediaController extends MediaContainer {
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
       },
-      MEDIA_AIRPLAY_REQUEST: (_e) => {
+      MEDIA_AIRPLAY_REQUEST: () => {
         const { media } = this;
         if (!media) return;
         if (
@@ -956,7 +942,7 @@ const monitorForMediaStateReceivers = (
 
   // Observe any changes to the DOM for any descendants that are identifiable as Media State Receivers
   // and register or unregister them, depending on the change that occurred.
-  const mutationCallback = (mutationsList, _observer) => {
+  const mutationCallback = (mutationsList) => {
     mutationsList.forEach((mutationRecord) => {
       const {
         addedNodes = [],
@@ -1035,7 +1021,7 @@ export const hasVolumeSupportAsync = async (mediaEl = getTestMediaEl()) => {
  * @param  {number} ms
  * @return {Promise}
  */
-export const delay = (ms) => new Promise((resolve, reject) => setTimeout(resolve, ms));
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const hasPipSupport = (mediaEl = getTestMediaEl()) =>
   typeof mediaEl?.requestPictureInPicture === 'function';

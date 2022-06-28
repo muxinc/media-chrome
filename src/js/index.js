@@ -54,6 +54,7 @@ if (!window.customElements.get('media-container')) {
 
 export {
   MediaAirplayButton,
+  MediaCastButton,
   MediaChromeButton,
   MediaGestureReceiver,
   MediaContainer,

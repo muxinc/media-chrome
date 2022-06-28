@@ -12,6 +12,7 @@
   "scripts": {
     "format": "prettier --write .",
     "clean": "rimraf dist",
+    "lint": "eslint src/js",
     "build:esm": "esbuild src/js/*.js src/js/*/*.js --target=es2019 --format=esm --outdir=dist --minify --sourcemap",
     "build:cjs": "esbuild src/js/*.js src/js/*/*.js --target=es2019 --format=cjs --outdir=dist/cjs --minify --sourcemap",
     "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome",
