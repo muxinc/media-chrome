@@ -197,14 +197,20 @@ class MediaController extends MediaContainer {
         // No media (yet), so bail early
         if (!media) return;
 
+        const time = e.detail;
+
+        // if time is null, then we're done previewing and want to remove the attributes
+        if (time === null) {
+          this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, undefined);
+        }
+        this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, time);
+
         const [track] = getTextTracksList(media, {
           kind: TextTrackKinds.METADATA,
           label: 'thumbnails',
         });
         // No thumbnails track (yet) or no cues available in thumbnails track, so bail early.
         if (!(track && track.cues)) return;
-
-        const time = e.detail;
 
         // if time is null, then we're done previewing and want to remove the attributes
         if (time === null) {

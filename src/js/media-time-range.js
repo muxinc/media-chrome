@@ -24,10 +24,12 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     [part~="box"] {
-      display: inline-block;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       position: absolute;
       left: 0;
-      bottom: calc(100% + 10px);
+      bottom: 100%;
     }
 
     [part~="preview-box"] {
@@ -38,6 +40,8 @@ template.innerHTML = `
 
     media-preview-thumbnail,
     ::slotted(media-preview-thumbnail) {
+      visibility: hidden;
+      transition: visibility 0s .25s;
       background-color: #000;
       max-width: var(--media-preview-thumbnail-max-width, 180px);
       max-height: var(--media-preview-thumbnail-max-height, 160px);
@@ -47,7 +51,23 @@ template.innerHTML = `
       border-radius: var(--media-preview-thumbnail-border-radius, 2px);
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~="preview-box"] {
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) media-preview-thumbnail,
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) ::slotted(media-preview-thumbnail) {
+      visibility: visible;
+      transition-delay: 0s;
+    }
+
+    media-preview-time-display,
+    ::slotted(media-preview-time-display) {
+      background: var(--media-preview-time-background,
+        var(--media-control-background, rgba(20,20,30, 0.7)));
+      border-radius: var(--media-preview-time-border-radius, 0);
+      padding: var(--media-preview-time-padding, 2px 10px);
+      margin: var(--media-preview-time-margin, 5px 0);
+    }
+
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~="preview-box"],
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) [part~="preview-box"] {
       transition: visibility .5s, opacity .5s;
       visibility: visible;
       opacity: 1;
@@ -78,6 +98,7 @@ template.innerHTML = `
   <span part="box preview-box">
     <slot name="preview">
       <media-preview-thumbnail></media-preview-thumbnail>
+      <media-preview-time-display></media-preview-time-display>
     </slot>
   </span>
   <span part="box current-box">
@@ -99,6 +120,7 @@ class MediaTimeRange extends MediaChromeRange {
       MediaUIAttributes.MEDIA_SEEKABLE,
       MediaUIAttributes.MEDIA_CURRENT_TIME,
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
+      MediaUIAttributes.MEDIA_PREVIEW_TIME,
       MediaUIAttributes.MEDIA_BUFFERED,
     ];
   }
