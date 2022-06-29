@@ -33,6 +33,9 @@ const template = `
     --media-range-thumb-height: 13px;
     --media-range-thumb-width: 13px;
     --media-range-thumb-border-radius: 13px;
+    --media-preview-thumbnail-border: 2px solid #fff;
+    --media-preview-thumbnail-border-radius: 2px;
+    --media-preview-time-margin: 10px 0;
 
     --media-icon-color: var(--primary-color);
   }

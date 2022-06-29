@@ -23,6 +23,13 @@ const updateAriaValueText = (el) => {
 const template = document.createElement('template');
 template.innerHTML = `
   <style>
+    :host {
+      --media-preview-background-color: rgba(20,20,30, .5);
+      --media-preview-background: var(--media-control-background,
+        var(--media-preview-background-color));
+      --media-preview-border-radius: 3px;
+    }
+
     [part~="box"] {
       display: flex;
       flex-direction: column;
@@ -42,28 +49,43 @@ template.innerHTML = `
     ::slotted(media-preview-thumbnail) {
       visibility: hidden;
       transition: visibility 0s .25s;
-      background-color: #000;
+      background: var(--media-preview-time-background, var(--media-preview-background));
+      box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 2px rgba(0,0,0, .4));
       max-width: var(--media-preview-thumbnail-max-width, 180px);
       max-height: var(--media-preview-thumbnail-max-height, 160px);
       min-width: var(--media-preview-thumbnail-min-width, 120px);
       min-height: var(--media-preview-thumbnail-min-height, 80px);
-      border: var(--media-preview-thumbnail-border, 2px solid #fff);
-      border-radius: var(--media-preview-thumbnail-border-radius, 2px);
+      border: var(--media-preview-thumbnail-border);
+      border-radius: var(--media-preview-thumbnail-border-radius,
+        var(--media-preview-border-radius) var(--media-preview-border-radius) 0 0);
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) media-preview-thumbnail,
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) ::slotted(media-preview-thumbnail) {
-      visibility: visible;
       transition-delay: 0s;
+      visibility: visible;
     }
 
     media-preview-time-display,
     ::slotted(media-preview-time-display) {
-      background: var(--media-preview-time-background,
-        var(--media-control-background, rgba(20,20,30, 0.7)));
-      border-radius: var(--media-preview-time-border-radius, 0);
-      padding: var(--media-preview-time-padding, 2px 10px);
-      margin: var(--media-preview-time-margin, 5px 0);
+      min-width: 0;
+      /* delay changing these CSS props until the preview box transition is ended */
+      transition: min-width 0s .25s, border-radius 0s .25s;
+      background: var(--media-preview-time-background, var(--media-preview-background));
+      border-radius: var(--media-preview-time-border-radius,
+        var(--media-preview-border-radius) var(--media-preview-border-radius)
+        var(--media-preview-border-radius) var(--media-preview-border-radius));
+      padding: var(--media-preview-time-padding, 1px 10px 0);
+      margin: var(--media-preview-time-margin, 0 0 10px);
+      text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / 75%));
+    }
+
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-time-display,
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) ::slotted(media-preview-time-display) {
+      transition-delay: 0s;
+      min-width: 100%;
+      border-radius: var(--media-preview-time-border-radius,
+        0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~="preview-box"],
@@ -149,7 +171,7 @@ class MediaTimeRange extends MediaChromeRange {
     //   media.play().then(this.setMediaTimeWithRange);
     // };
 
-    this.enableThumbnails();
+    this.enableBoxes();
   }
 
   connectedCallback() {
@@ -263,7 +285,7 @@ class MediaTimeRange extends MediaChromeRange {
     style.transform = `translateX(${boxPos}px)`;
   }
 
-  enableThumbnails() {
+  enableBoxes() {
     const boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     const previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
 
