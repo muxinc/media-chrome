@@ -49,10 +49,28 @@
     "conventional-github-releaser": "^3.1.5",
     "conventional-recommended-bump": "^6.1.0",
     "esbuild": "^0.14.23",
+    "eslint": "^8.18.0",
     "prettier": "^2.5.1",
     "react": "^17.0.2",
     "rimraf": "^3.0.2",
     "semver": "^7.3.7",
     "sinon": "^11.1.2"
+  },
+  "eslintConfig": {
+    "globals": {
+      "globalThis": "writable"
+    },
+    "env": {
+      "browser": true,
+      "es6": true,
+      "mocha": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "ecmaVersion": 2022,
+      "sourceType": "module"
+    }
   }
 }
