@@ -44,10 +44,15 @@
           crossorigin
           poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
           src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
-          muted
-          autoplay
-          loop
-        ></videojs-video>
+          playsinline
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.vtt"
+          />
+        </videojs-video>
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
