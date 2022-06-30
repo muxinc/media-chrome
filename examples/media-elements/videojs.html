@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Media Chrome Wistia Media Example</title>
+    <title>Media Chrome Video.js Media Example</title>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
@@ -11,7 +11,7 @@
         aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
 
-      wistia-video {
+      videojs-video {
         width: 100%;      /* prevents video to expand beyond its container */
         background-color: #000;
       }
@@ -32,19 +32,27 @@
         margin-top: 20px;
       }
     </style>
-    <script type="module" src="https://unpkg.com/wistia-video-element"></script>
+    <script type="module" src="https://unpkg.com/videojs-video-element"></script>
     <script type="module" src="../../dist/index.js"></script>
   </head>
   <body>
     <main>
-      <h1>Media Chrome Wistia Media Example</h1>
+      <h1>Media Chrome Video.js Media Example</h1>
       <media-controller style="aspect-ratio: 16 / 9;">
-        <wistia-video
+        <videojs-video
           slot="media"
           crossorigin
-          src="https://wesleyluyten.wistia.com/medias/oifkgmxnkb"
+          poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
+          src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
           playsinline
-        ></wistia-video>
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.vtt"
+          />
+        </videojs-video>
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
