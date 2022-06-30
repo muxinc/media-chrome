@@ -177,8 +177,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     this._refreshBar = () => {
       const delta = (performance.now() - this._updateTimestamp) / 1000;
-      this.range.value = this._updateCurrentTime + delta;
-
+      this.range.value = this.mediaCurrentTime + delta;
       this.updateBar();
       this.updateCurrentBox();
 
@@ -199,7 +198,6 @@ class MediaTimeRange extends MediaChromeRange {
       attrName === MediaUIAttributes.MEDIA_PAUSED
     ) {
       this._updateTimestamp = performance.now();
-      this._updateCurrentTime = this.mediaCurrentTime;
       this.range.value = this.mediaCurrentTime;
       updateAriaValueText(this);
       this.updateBar();
