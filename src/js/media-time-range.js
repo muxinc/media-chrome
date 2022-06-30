@@ -50,7 +50,7 @@ template.innerHTML = `
       visibility: hidden;
       transition: visibility 0s .25s;
       background: var(--media-preview-time-background, var(--media-preview-background));
-      box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 2px rgba(0,0,0, .4));
+      box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 4px rgba(0,0,0, .2));
       max-width: var(--media-preview-thumbnail-max-width, 180px);
       max-height: var(--media-preview-thumbnail-max-height, 160px);
       min-width: var(--media-preview-thumbnail-min-width, 120px);
@@ -77,7 +77,7 @@ template.innerHTML = `
         var(--media-preview-border-radius) var(--media-preview-border-radius));
       padding: var(--media-preview-time-padding, 1px 10px 0);
       margin: var(--media-preview-time-margin, 0 0 10px);
-      text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / 75%));
+      text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgba(0,0,0, .75));
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-time-display,
@@ -138,6 +138,7 @@ class MediaTimeRange extends MediaChromeRange {
     return [
       ...super.observedAttributes,
       'thumbnails',
+      MediaUIAttributes.MEDIA_PAUSED,
       MediaUIAttributes.MEDIA_DURATION,
       MediaUIAttributes.MEDIA_SEEKABLE,
       MediaUIAttributes.MEDIA_CURRENT_TIME,
@@ -154,6 +155,9 @@ class MediaTimeRange extends MediaChromeRange {
     this.shadowRoot.querySelector('#range-temp').replaceWith(this.range);
 
     this.range.addEventListener('input', () => {
+      // Cancel color bar refreshing when seeking.
+      cancelAnimationFrame(this._refreshId);
+
       const newTime = this.range.value;
       const detail = newTime;
       const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
@@ -171,7 +175,17 @@ class MediaTimeRange extends MediaChromeRange {
     //   media.play().then(this.setMediaTimeWithRange);
     // };
 
-    this.enableBoxes();
+    this._refreshBar = () => {
+      const delta = (performance.now() - this._updateTimestamp) / 1000;
+      this.range.value = this._updateCurrentTime + delta;
+
+      this.updateBar();
+      this.updateCurrentBox();
+
+      this._refreshId = requestAnimationFrame(this._refreshBar);
+    };
+
+    this._enableBoxes();
   }
 
   connectedCallback() {
@@ -180,11 +194,21 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
+    if (
+      attrName === MediaUIAttributes.MEDIA_CURRENT_TIME ||
+      attrName === MediaUIAttributes.MEDIA_PAUSED
+    ) {
+      this._updateTimestamp = performance.now();
+      this._updateCurrentTime = this.mediaCurrentTime;
       this.range.value = this.mediaCurrentTime;
       updateAriaValueText(this);
       this.updateBar();
       this.updateCurrentBox();
+
+      cancelAnimationFrame(this._refreshId);
+      if (!this.mediaPaused) {
+        this._refreshId = requestAnimationFrame(this._refreshBar);
+      }
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
       // Since our range's step is 1, floor the max value to ensure reasonable rendering
@@ -208,6 +232,10 @@ class MediaTimeRange extends MediaChromeRange {
       this.updateBar();
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
+  }
+
+  get mediaPaused() {
+    return this.hasAttribute(MediaUIAttributes.MEDIA_PAUSED);
   }
 
   get mediaDuration() {
@@ -249,8 +277,6 @@ class MediaTimeRange extends MediaChromeRange {
   getBarColors() {
     let colorsArray = super.getBarColors();
     const { range } = this;
-    // Use mediaCurrentTime instead of range.value for precision (CJP)
-    const currentTime = this.mediaCurrentTime;
     const relativeMax = range.max - range.min;
     const buffered = this.mediaBuffered;
 
@@ -258,8 +284,11 @@ class MediaTimeRange extends MediaChromeRange {
       return colorsArray;
     }
 
-    // Find the buffered range that "contains" the current time and get its end. If none, just assume the
-    // start of the media timeline/range.min for visualization purposes.
+    // Find the buffered range that "contains" the current time and get its end.
+    // If none, just assume the start of the media timeline/range.min for
+    // visualization purposes.
+    // Use mediaCurrentTime instead of range.value for precision (CJP)
+    const currentTime = this.mediaCurrentTime;
     const [, bufferedEnd = range.min] =
       buffered.find(
         ([start, end]) => start <= currentTime && currentTime <= end
@@ -285,7 +314,7 @@ class MediaTimeRange extends MediaChromeRange {
     style.transform = `translateX(${boxPos}px)`;
   }
 
-  enableBoxes() {
+  _enableBoxes() {
     const boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     const previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
 

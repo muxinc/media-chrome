@@ -133,7 +133,7 @@ template.innerHTML = `
       background-color: #777;
     }
   </style>
-  <input id="range" type="range" min="0" max="1000" step="1" value="0">
+  <input id="range" type="range" min="0" max="1000" step="any" value="0">
 `;
 
 class MediaChromeRange extends window.HTMLElement {
