@@ -28,10 +28,7 @@ const trackStyles = `
   height: var(--track-height);
   border: var(--media-range-track-border, none);
   border-radius: var(--media-range-track-border-radius, 0);
-  background: var(--media-range-track-background-internal,
-    var(--media-range-track-background, #eee)),
-    var(--media-range-track-background, #333);
-
+  background: var(--media-range-track-progress-internal, var(--media-range-track-background, #eee));
   box-shadow: var(--media-range-track-box-shadow, none);
   transition: var(--media-range-track-transition, none);
   transform: translate(var(--media-range-track-translate-x, 0), var(--media-range-track-translate-y, 0));
@@ -104,6 +101,52 @@ template.innerHTML = `
       ${trackStyles}
     }
 
+    #background,
+    #pointer {
+      ${trackStyles}
+      width: auto;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: var(--media-range-padding-left, 10px);
+      right: var(--media-range-padding-left, 10px);
+      background: var(--media-range-track-background, #333);
+    }
+
+    #pointer {
+      min-width: auto;
+      right: auto;
+      background: var(--media-range-track-pointer-background);
+      border-right: var(--media-range-track-pointer-border-right);
+      transition: visibility .25s, opacity .25s;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    :host(:hover) #pointer {
+      transition: visibility .5s, opacity .5s;
+      visibility: visible;
+      opacity: 1;
+    }
+
+    #hoverzone {
+      /* Add z-index so it overlaps the top of the control buttons if they are right under. */
+      z-index: 1;
+      display: var(--media-time-range-hover-display, none);
+      box-sizing: border-box;
+      position: absolute;
+      left: var(--media-range-padding-left, 10px);
+      right: var(--media-range-padding-right, 10px);
+      bottom: var(--media-time-range-hover-bottom, -5px);
+      height: var(--media-time-range-hover-height, max(calc(100% + 5px), 20px));
+    }
+
+    #range {
+      z-index: 2;
+      position: relative;
+      height: var(--media-range-track-height, 4px);
+    }
+
     /*
      * set input to focus-visible, unless host-context is available (in chrome)
      * in which case we can have the focus ring be on the host itself
@@ -133,6 +176,9 @@ template.innerHTML = `
       background-color: #777;
     }
   </style>
+  <div id="background"></div>
+  <div id="pointer"></div>
+  <div id="hoverzone"></div>
   <input id="range" type="range" min="0" max="1000" step="any" value="0">
 `;
 
@@ -185,6 +231,17 @@ class MediaChromeRange extends window.HTMLElement {
     }
   }
 
+  updatePointerBar(evt) {
+    // Get mouse position percent
+    const rangeRect = this.range.getBoundingClientRect();
+    let mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
+    // Lock between 0 and 1
+    mousePercent = Math.max(0, Math.min(1, mousePercent));
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, '#pointer');
+    style.setProperty('width', `${mousePercent * rangeRect.width}px`);
+  }
+
   /*
     Native ranges have a single color for the whole track, which is different
     from most video players that have a colored "bar" to the left of the handle
@@ -205,7 +262,7 @@ class MediaChromeRange extends window.HTMLElement {
     gradientStr = gradientStr.slice(0, gradientStr.length - 1) + ')';
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('--media-range-track-background-internal', gradientStr);
+    style.setProperty('--media-range-track-progress-internal', gradientStr);
   }
 
   /*

@@ -95,26 +95,8 @@ template.innerHTML = `
       opacity: 1;
     }
 
-    #range-hover {
-      /* Add z-index so it overlaps the top of the control buttons if they are right under. */
-      z-index: 1;
-      display: none;
-      box-sizing: border-box;
-      position: absolute;
-      left: var(--media-range-padding-left, 10px);
-      right: var(--media-range-padding-right, 10px);
-      bottom: var(--media-time-range-hover-bottom, -5px);
-      height: var(--media-time-range-hover-height, max(calc(100% + 5px), 20px));
-    }
-
-    :host(:hover) #range-hover {
-      display: block;
-    }
-
-    #range {
-      z-index: 2;
-      position: relative;
-      height: var(--media-range-track-height, 4px);
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
+      --media-time-range-hover-display: block;
     }
   </style>
   <span part="box preview-box">
@@ -129,8 +111,6 @@ template.innerHTML = `
       <!-- <media-current-time-display></media-current-time-display> -->
     </slot>
   </span>
-  <div id="range-hover"></div>
-  <div id="range-temp"></div>
 `;
 
 class MediaTimeRange extends MediaChromeRange {
@@ -152,7 +132,6 @@ class MediaTimeRange extends MediaChromeRange {
     super();
 
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.shadowRoot.querySelector('#range-temp').replaceWith(this.range);
 
     this.range.addEventListener('input', () => {
       // Cancel color bar refreshing when seeking.
@@ -295,7 +274,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     const buffPercent = (relativeBufferedEnd / relativeMax) * 100;
     colorsArray.splice(1, 0, [
-      'var(--media-time-buffered-color, #777)',
+      'var(--media-time-buffered-color, rgba(255,255,255, .4))',
       buffPercent,
     ]);
     return colorsArray;
@@ -320,6 +299,8 @@ class MediaTimeRange extends MediaChromeRange {
     const trackMouse = () => {
       pointermoveHandler = (evt) => {
         if ([...boxes].some((b) => evt.composedPath().includes(b))) return;
+
+        this.updatePointerBar(evt);
 
         const duration = +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
         // If no duration we can't calculate which time to show
