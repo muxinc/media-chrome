@@ -7,6 +7,7 @@ import {
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
 
 const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
@@ -363,22 +364,6 @@ class MediaTimeRange extends MediaChromeRange {
     };
     this.addEventListener('pointermove', rangepointermoveHander, false);
   }
-}
-
-/**
- * Get or insert a CSS rule with a selector in an element containing <style> tags.
- * @param  {Element} styleParent
- * @param  {string} selectorText
- * @return {CSSStyleRule|undefined}
- */
-function getOrInsertCSSRule(styleParent, selectorText) {
-  let style;
-  for (style of styleParent.querySelectorAll('style')) {
-    for (let rule of style.sheet.cssRules)
-      if (rule.selectorText === selectorText) return rule;
-  }
-  style.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
-  return style.sheet.cssRules[style.sheet.cssRules.length - 1];
 }
 
 function getBoxPosition(el, box, percent) {
