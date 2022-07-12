@@ -495,7 +495,9 @@ class MediaController extends MediaContainer {
         return;
       }
 
-      this.keyboardShortcutHandler(e);
+      if (!this.hasAttribute('noshortcuts')) {
+        this.keyboardShortcutHandler(e);
+      }
     };
 
     this.addEventListener('keydown', (e) => {
