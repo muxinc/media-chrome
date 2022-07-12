@@ -49,6 +49,7 @@ const {
 } = MediaUIEvents;
 
 const ButtonPressedKeys = ['Enter', ' ', 'f', 'm', 'k', 'ArrowLeft', 'ArrowRight'];
+const DEFAULT_SEEK_OFFSET = 10;
 
 /**
  * Media Controller should not mimic the HTMLMediaElement API.
@@ -751,7 +752,7 @@ class MediaController extends MediaContainer {
       }
 
       let eventName, currentTimeStr, currentTime, detail, evt;
-      const seekOffset = 10;
+      const seekOffset = DEFAULT_SEEK_OFFSET;
 
       // These event triggers were copied from the revelant buttons
       switch (e.key) {
