@@ -17,6 +17,9 @@ import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 import { containsComposedNode } from './utils/element-utils.js';
 
+import MediaChromeRange from './media-chrome-range.js';
+import MediaChromeButton from './media-chrome-button.js';
+
 import {
   MediaUIEvents,
   MediaUIAttributes,
@@ -45,6 +48,12 @@ const {
   MEDIA_PLAYBACK_RATE_REQUEST,
 } = MediaUIEvents;
 
+const ButtonPressedKeys = ['Enter', ' ', 'f', 'm', 'k', 'ArrowLeft', 'ArrowRight'];
+
+/**
+ * Media Controller should not mimic the HTMLMediaElement API.
+ * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
+ */
 class MediaController extends MediaContainer {
   constructor() {
     super();
@@ -477,6 +486,26 @@ class MediaController extends MediaContainer {
         );
       },
     };
+
+    // copied from media-chrome-button
+    const keyUpHandler = (e) => {
+      const { key } = e;
+      if (!ButtonPressedKeys.includes(key)) {
+        this.removeEventListener('keyup', keyUpHandler);
+        return;
+      }
+
+      this.keyboardShortcutHandler(e);
+    };
+
+    this.addEventListener('keydown', (e) => {
+      const { metaKey, altKey, key } = e;
+      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+        this.removeEventListener('keyup', keyUpHandler);
+        return;
+      }
+      this.addEventListener('keyup', keyUpHandler);
+    });
   }
 
   mediaSetCallback(media) {
@@ -710,10 +739,90 @@ class MediaController extends MediaContainer {
     els.splice(index, 1);
   }
 
-  /**
-   * Media Controller should not mimic the HTMLMediaElement API.
-   * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
-   */
+  keyboardShortcutHandler(e) {
+    if (this.contains(e.target) || this.shadowRoot.contains(e.target)) {
+      // ignore space bar and enter
+      if (e.target instanceof MediaChromeButton && [' ', 'Enter'].includes(e.key)) {
+        return;
+      } else if (e.target instanceof MediaChromeRange && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+        return;
+      }
+
+      let eventName, currentTimeStr, currentTime, detail, evt;
+      const seekOffset = 10;
+
+      // These event triggers were copied from the revelant buttons
+      switch (e.key) {
+        case ' ':
+        case 'k':
+          eventName =
+            this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
+              ? MediaUIEvents.MEDIA_PLAY_REQUEST
+              : MediaUIEvents.MEDIA_PAUSE_REQUEST;
+          this.dispatchEvent(
+            new window.CustomEvent(eventName, { composed: true, bubbles: true })
+          );
+          break;
+
+        case 'm':
+          eventName =
+            this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off'
+              ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
+              : MediaUIEvents.MEDIA_MUTE_REQUEST;
+          this.dispatchEvent(
+            new window.CustomEvent(eventName, { composed: true, bubbles: true })
+          );
+          break;
+
+        case 'f':
+          eventName =
+            this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null
+              ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
+              : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
+          this.dispatchEvent(
+            new window.CustomEvent(eventName, { composed: true, bubbles: true })
+          );
+          break;
+
+        case 'ArrowLeft':
+          currentTimeStr = this.getAttribute(
+            MediaUIAttributes.MEDIA_CURRENT_TIME
+          );
+          currentTime =
+            currentTimeStr && !Number.isNaN(+currentTimeStr)
+              ? +currentTimeStr
+              : DEFAULT_TIME;
+          detail = Math.max(currentTime - seekOffset, 0);
+          evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+            composed: true,
+            bubbles: true,
+            detail,
+          });
+          this.dispatchEvent(evt);
+          break;
+
+        case 'ArrowRight':
+          currentTimeStr = this.getAttribute(
+            MediaUIAttributes.MEDIA_CURRENT_TIME
+          );
+          currentTime =
+            currentTimeStr && !Number.isNaN(+currentTimeStr)
+              ? +currentTimeStr
+              : DEFAULT_TIME;
+          detail = Math.max(currentTime + seekOffset, 0);
+          evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+            composed: true,
+            bubbles: true,
+            detail,
+          });
+          this.dispatchEvent(evt);
+          break;
+
+        default:
+          break;
+      }
+    }
+  }
 }
 
 const getPaused = (controller) => {

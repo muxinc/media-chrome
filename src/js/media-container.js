@@ -17,8 +17,6 @@ import { nouns } from './labels/labels.js';
 import { containsComposedNode } from './utils/element-utils.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
-import MediaChromeRange from './media-chrome-range.js';
-import MediaChromeButton from './media-chrome-button.js';
 
 const template = document.createElement('template');
 
@@ -350,8 +348,6 @@ class MediaContainer extends window.HTMLElement {
     // Unhide for keyboard controlling
     this.addEventListener('keyup', (e) => {
       scheduleInactive();
-
-      this.handleKeyupEvent(e);
     });
 
     // when we get a tap, we want to unhide
@@ -394,90 +390,6 @@ class MediaContainer extends window.HTMLElement {
     this.addEventListener('mouseup', (e) => {
       this.removeAttribute('media-keyboard-control');
     });
-  }
-
-  handleKeyupEvent(e) {
-    if (this.contains(e.target) || this.shadowRoot.contains(e.target)) {
-      // ignore space bar and enter
-      if (e.target instanceof MediaChromeButton && [' ', 'Enter'].includes(e.key)) {
-        return;
-      } else if (e.target instanceof MediaChromeRange && ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-        return;
-      }
-
-      let eventName, currentTimeStr, currentTime, detail, evt;
-      const seekOffset = 10;
-
-      switch (e.key) {
-        case ' ':
-        case 'k':
-          eventName =
-            this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
-              ? MediaUIEvents.MEDIA_PLAY_REQUEST
-              : MediaUIEvents.MEDIA_PAUSE_REQUEST;
-          this.dispatchEvent(
-            new window.CustomEvent(eventName, { composed: true, bubbles: true })
-          );
-          break;
-
-        case 'm':
-          eventName =
-            this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off'
-              ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
-              : MediaUIEvents.MEDIA_MUTE_REQUEST;
-          this.dispatchEvent(
-            new window.CustomEvent(eventName, { composed: true, bubbles: true })
-          );
-          break;
-
-        case 'f':
-          eventName =
-            this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null
-              ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
-              : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
-          this.dispatchEvent(
-            new window.CustomEvent(eventName, { composed: true, bubbles: true })
-          );
-          break;
-
-        case 'ArrowLeft':
-          currentTimeStr = this.getAttribute(
-            MediaUIAttributes.MEDIA_CURRENT_TIME
-          );
-          currentTime =
-            currentTimeStr && !Number.isNaN(+currentTimeStr)
-              ? +currentTimeStr
-              : DEFAULT_TIME;
-          detail = Math.max(currentTime - seekOffset, 0);
-          evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
-            composed: true,
-            bubbles: true,
-            detail,
-          });
-          this.dispatchEvent(evt);
-          break;
-
-        case 'ArrowRight':
-          currentTimeStr = this.getAttribute(
-            MediaUIAttributes.MEDIA_CURRENT_TIME
-          );
-          currentTime =
-            currentTimeStr && !Number.isNaN(+currentTimeStr)
-              ? +currentTimeStr
-              : DEFAULT_TIME;
-          detail = Math.max(currentTime + seekOffset, 0);
-          evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
-            composed: true,
-            bubbles: true,
-            detail,
-          });
-          this.dispatchEvent(evt);
-          break;
-
-        default:
-          break;
-      }
-    }
   }
 
   set autohide(seconds) {
