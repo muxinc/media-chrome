@@ -108,7 +108,7 @@ template.innerHTML = `
       width: auto;
       position: absolute;
       top: 50%;
-      transform: translateY(-50%);
+      transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px) - 50%));
       left: var(--media-range-padding-left, 10px);
       right: var(--media-range-padding-left, 10px);
       background: var(--media-range-track-background, #333);
