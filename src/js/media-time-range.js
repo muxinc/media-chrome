@@ -31,6 +31,7 @@ template.innerHTML = `
       --media-preview-border-radius: 3px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;
+      color: #fff;
     }
 
     [part~="box"] {
@@ -71,6 +72,7 @@ template.innerHTML = `
 
     media-preview-time-display,
     ::slotted(media-preview-time-display) {
+      color: unset;
       min-width: 0;
       /* delay changing these CSS props until the preview box transition is ended */
       transition: min-width 0s .25s, border-radius 0s .25s;
