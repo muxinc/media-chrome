@@ -29,6 +29,8 @@ template.innerHTML = `
       --media-preview-background: var(--media-control-background,
         var(--media-preview-background-color));
       --media-preview-border-radius: 3px;
+      --media-box-padding-left: 10px;
+      --media-box-padding-right: 10px;
     }
 
     [part~="box"] {
@@ -371,8 +373,12 @@ function getBoxPosition(el, box, percent) {
   const rangeRect = el.range.getBoundingClientRect();
 
   // Get preview box center position
-  const leftPadding = rangeRect.left - rect.left;
-  const rightPadding = rect.right - rangeRect.right;
+  const leftPadding = parseInt(
+    getComputedStyle(el).getPropertyValue('--media-box-padding-left')
+  );
+  const rightPadding = parseInt(
+    getComputedStyle(el).getPropertyValue('--media-box-padding-right')
+  );
   const boxOffset = leftPadding + percent * rangeRect.width;
 
   // Use offset dimensions to include borders.

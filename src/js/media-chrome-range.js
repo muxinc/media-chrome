@@ -52,8 +52,9 @@ template.innerHTML = `
       width: 100px;
       padding-left: var(--media-range-padding-left, 10px);
       padding-right: var(--media-range-padding-right, 10px);
-
       pointer-events: auto;
+      /* needed for vertical align issue 1px off */
+      font-size: 0;
     }
 
     :host(:hover) {
