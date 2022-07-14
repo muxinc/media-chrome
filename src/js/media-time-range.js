@@ -176,6 +176,11 @@ class MediaTimeRange extends MediaChromeRange {
     super.connectedCallback();
   }
 
+  disconnectedCallback() {
+    cancelAnimationFrame(this._refreshId);
+    super.disconnectedCallback();
+  }
+
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (
       attrName === MediaUIAttributes.MEDIA_CURRENT_TIME ||
