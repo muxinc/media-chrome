@@ -6,6 +6,10 @@
   </head>
   <body>
     <style>
+      .examples {
+        margin-top: 20px;
+      }
+
       .media-theme-spotify {
         display: inline-block;
         min-width: 250px;
@@ -19,6 +23,8 @@
         --media-range-track-height: 4px;
         --media-range-track-background: rgba(255, 255, 255, 0.3);
         --media-range-thumb-box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 4px 0px;
+        --media-preview-time-background: rgba(20,20,30, 1);
+        --media-preview-time-margin: 0 0 -9px;
       }
 
       .media-theme-spotify .custom-chrome {
@@ -31,6 +37,11 @@
         --media-control-hover-background: none;
       }
 
+      .media-theme-spotify media-time-range {
+        --media-box-padding-left: 7px;
+        --media-box-padding-right: 7px;
+      }
+
       .media-theme-spotify media-time-range:not(:hover) {
         --media-range-thumb-opacity: 0;
       }
@@ -38,10 +49,11 @@
       .media-theme-spotify media-text-display {
         font-size: 14px;
         line-height: 19px;
-        padding: 0 10px;
+        padding: 0 8px;
       }
 
-      .media-theme-spotify media-time-display {
+      .media-theme-spotify media-time-display,
+      .media-theme-spotify media-preview-time-display {
         font-size: 10px;
       }
 
@@ -100,8 +112,7 @@
       <media-controller class="media-theme-spotify" audio>
         <audio
           slot="media"
-          src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
-          preload="none"
+          src="https://stream.mux.com/O4h5z00885HEucNNa1rV02wZapcGp01FXXoJd35AHmGX7g/audio.m4a"
         ></audio>
         <span class="custom-chrome">
           <span class="media-poster">
@@ -111,12 +122,18 @@
             <media-text-display><b>Emotion (Deluxe)</b></media-text-display>
             <media-text-display>Carly Rae Jepsen</media-text-display>
             <media-control-bar>
-              <media-time-range></media-time-range>
+              <media-time-range>
+                <media-preview-time-display slot="preview"></media-preview-time-display>
+              </media-time-range>
               <media-time-display remaining></media-time-display>
             </media-control-bar>
           </span>
         </span>
       </media-controller>
+
+      <div class="examples">
+        <a href="../">View more examples</a>
+      </div>
     </main>
   </body>
 </html>

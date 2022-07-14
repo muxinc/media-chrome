@@ -14,7 +14,7 @@ _From [Mux](https://mux.com?utm_source=github&utm_medium=social&utm_campaign=med
 ## Video Example
 
 ```html
-<script type="module" src="https://unpkg.com/media-chrome@0.6"></script>
+<script type="module" src="https://unpkg.com/media-chrome@0.7"></script>
 
 <media-controller>
   <video
@@ -49,12 +49,12 @@ _From [Mux](https://mux.com?utm_source=github&utm_medium=social&utm_campaign=med
 ## Audio Example
 
 ```html
-<script type="module" src="https://unpkg.com/media-chrome@0.6"></script>
+<script type="module" src="https://unpkg.com/media-chrome@0.7"></script>
 
 <media-controller audio>
   <audio
     slot="media"
-    src="https://file-examples-com.github.io/uploads/2017/11/file_example_MP3_700KB.mp3"
+    src="https://stream.mux.com/O4h5z00885HEucNNa1rV02wZapcGp01FXXoJd35AHmGX7g/audio.m4a"
   ></audio>
   <media-control-bar>
     <media-play-button></media-play-button>
@@ -94,7 +94,7 @@ Load the module in the `<head>` of your HTML page. Note the `type="module"`, tha
 > Modules are always loaded asynchronously by the browser, so it's ok to load them in the head :thumbsup:, and best for registering web components quickly.
 
 ```html
-<script type="module" src="https://unpkg.com/media-chrome@0.6"></script>
+<script type="module" src="https://unpkg.com/media-chrome@0.7"></script>
 ```
 
 ### Option 2: Bundled via npm
@@ -193,7 +193,7 @@ import 'media-chrome/dist/extras/media-clip-selector';
 ```html
 <script
   type="module"
-  src="https://unpkg.com/media-chrome@0.6/dist/extras/media-clip-selector"
+  src="https://unpkg.com/media-chrome@0.7/dist/extras/media-clip-selector"
 ></script>
 ```
 
