@@ -69,10 +69,10 @@ class MediaControlBar extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    const mediaControllerSelector = this.getAttribute(
+    const mediaControllerId = this.getAttribute(
       MediaUIAttributes.MEDIA_CONTROLLER
     );
-    if (mediaControllerSelector) {
+    if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
     }

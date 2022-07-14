@@ -73,6 +73,7 @@ export const MediaUIAttributes = {
   MEDIA_CURRENT_TIME: 'media-current-time',
   MEDIA_DURATION: 'media-duration',
   MEDIA_SEEKABLE: 'media-seekable',
+  MEDIA_PREVIEW_TIME: 'media-preview-time',
   MEDIA_PREVIEW_IMAGE: 'media-preview-image',
   MEDIA_PREVIEW_COORDS: 'media-preview-coords',
   MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',

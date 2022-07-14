@@ -20,3 +20,22 @@ export const containsComposedNode = (rootNode, childNode) => {
   if (rootNode.contains(childNode)) return true;
   return containsComposedNode(rootNode, childNode.getRootNode().host);
 };
+
+/**
+ * Get or insert a CSS rule with a selector in an element containing <style> tags.
+ * @param  {Element} styleParent
+ * @param  {string} selectorText
+ * @return {CSSStyleRule|{ style: { setProperty: () => {} } }}
+ */
+export function getOrInsertCSSRule(styleParent, selectorText) {
+  let style;
+  for (style of styleParent.querySelectorAll('style')) {
+    for (let rule of style.sheet?.cssRules ?? [])
+      if (rule.selectorText === selectorText) return rule;
+  }
+  // If there is no style sheet return an empty style rule.
+  if (!style?.sheet) return { style: { setProperty: () => {} } };
+
+  style.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
+  return style.sheet.cssRules[style.sheet.cssRules.length - 1];
+}

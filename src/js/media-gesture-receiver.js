@@ -102,10 +102,10 @@ class MediaGestureReceiver extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    const mediaControllerSelector = this.getAttribute(
+    const mediaControllerId = this.getAttribute(
       MediaUIAttributes.MEDIA_CONTROLLER
     );
-    if (mediaControllerSelector) {
+    if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
     }
@@ -113,9 +113,9 @@ class MediaGestureReceiver extends window.HTMLElement {
 
   // NOTE: Currently "baking in" actions + attrs until we come up with
   // a more robust architecture (CJP)
-  handleTap(_evt) {}
+  handleTap() {}
 
-  handleMouseClick(_evt) {
+  handleMouseClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
         ? MediaUIEvents.MEDIA_PLAY_REQUEST

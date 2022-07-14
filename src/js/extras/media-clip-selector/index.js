@@ -79,7 +79,7 @@ template.innerHTML = `
       top: 0;
     }
 
-    media-thumbnail-preview {
+    media-preview-thumbnail {
       position: absolute;
       bottom: 10px;
       border: 2px solid #fff;
@@ -93,7 +93,7 @@ template.innerHTML = `
     }
 
     /* Can't get this working. Trying a downward triangle. */
-    /* media-thumbnail-preview::after {
+    /* media-preview-thumbnail::after {
       content: "";
       display: block;
       width: 300px;
@@ -123,7 +123,7 @@ template.innerHTML = `
     }
   </style>
   <div id="thumbnailContainer">
-    <media-thumbnail-preview></media-thumbnail-preview>
+    <media-preview-thumbnail></media-preview-thumbnail>
   </div>
   <div id="selectorContainer">
     <div id="timeline"></div>
@@ -401,7 +401,7 @@ class MediaClipSelector extends window.HTMLElement {
    */
   enableThumbnails() {
     this.thumbnailPreview = this.shadowRoot.querySelector(
-      'media-thumbnail-preview'
+      'media-preview-thumbnail'
     );
     const thumbnailContainer = this.shadowRoot.querySelector(
       '#thumbnailContainer'

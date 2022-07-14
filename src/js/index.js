@@ -22,7 +22,8 @@ import MediaPlaybackRateButton from './media-playback-rate-button.js';
 import MediaPosterImage from './media-poster-image.js';
 import MediaProgressRange from './media-progress-range.js';
 import MediaSeekBackwardButton from './media-seek-backward-button.js';
-import MediaThumbnailPreview from './media-thumbnail-preview.js';
+import MediaPreviewTimeDisplay from './media-preview-time-display.js';
+import MediaPreviewThumbnail from './media-preview-thumbnail.js';
 import MediaTimeRange from './media-time-range.js';
 import MediaLoadingIndicator from './media-loading-indicator.js';
 import MediaTitleElement from './media-title-element.js';
@@ -54,6 +55,7 @@ if (!window.customElements.get('media-container')) {
 
 export {
   MediaAirplayButton,
+  MediaCastButton,
   MediaChromeButton,
   MediaGestureReceiver,
   MediaContainer,
@@ -73,8 +75,8 @@ export {
   MediaPosterImage,
   MediaProgressRange,
   MediaSeekBackwardButton,
-  MediaThumbnailPreview,
-  MediaThumbnailPreview as MediaThumbnailPreviewElement,
+  MediaPreviewTimeDisplay,
+  MediaPreviewThumbnail,
   MediaTimeRange,
   MediaTitleElement,
   MediaLoadingIndicator,

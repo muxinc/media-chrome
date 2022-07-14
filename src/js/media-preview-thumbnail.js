@@ -1,5 +1,5 @@
 /*
-  <media-thumbnail-preview media="#myVideo" time="10.00">
+  <media-preview-thumbnail media="#myVideo" time="10.00">
 
   Uses the "thumbnails" track of a video element to show an image relative to
   the video time given in the `time` attribute.
@@ -10,26 +10,26 @@ import {
 } from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { MediaUIAttributes } from './constants.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
 
 const template = document.createElement('template');
-
 template.innerHTML = `
   <style>
     :host {
-      background-color: #000;
-      height: auto;
-      width: auto;
+      box-sizing: border-box;
+      display: inline-block;
+      overflow: hidden;
     }
 
     img {
-      display: block;
-      object-fit: none;
+      display: none;
+      position: relative;
     }
   </style>
   <img crossorigin loading="eager" decoding="async" />
 `;
 
-class MediaThumbnailPreviewElement extends window.HTMLElement {
+class MediaPreviewThumbnail extends window.HTMLElement {
   static get observedAttributes() {
     return [
       MediaUIAttributes.MEDIA_CONTROLLER,
@@ -57,10 +57,10 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    const mediaControllerSelector = this.getAttribute(
+    const mediaControllerId = this.getAttribute(
       MediaUIAttributes.MEDIA_CONTROLLER
     );
-    if (mediaControllerSelector) {
+    if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
     }
@@ -96,28 +96,53 @@ class MediaThumbnailPreviewElement extends window.HTMLElement {
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE
     );
     if (!(mediaPreviewCoordsStr && mediaPreviewImage)) return;
-    const img = this.shadowRoot.querySelector('img');
+
     const [x, y, w, h] = mediaPreviewCoordsStr
       .split(/\s+/)
       .map((coord) => +coord);
-    const src = mediaPreviewImage;
+    const src = mediaPreviewImage.split('#')[0];
+
+    const computedStyle = getComputedStyle(this);
+    const { maxWidth, maxHeight, minWidth, minHeight } = computedStyle;
+    const maxRatio = Math.min(parseInt(maxWidth) / w, parseInt(maxHeight) / h);
+    const minRatio = Math.max(parseInt(minWidth) / w, parseInt(minHeight) / h);
+
+    // maxRatio scales down and takes priority, minRatio scales up.
+    const isScalingDown = maxRatio < 1;
+    const scale = isScalingDown ? maxRatio : minRatio > 1 ? minRatio : 1;
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    const imgStyle = getOrInsertCSSRule(this.shadowRoot, 'img').style;
+    const img = this.shadowRoot.querySelector('img');
+
+    // Revert one set of extremum to its initial value on a known scale direction.
+    const extremum = isScalingDown ? 'min' : 'max';
+    style.setProperty(`${extremum}-width`, 'initial', 'important');
+    style.setProperty(`${extremum}-height`, 'initial', 'important');
+    style.width = `${w * scale}px`;
+    style.height = `${h * scale}px`;
 
     const resize = () => {
-      img.style.height = `${h}px`;
-      img.style['aspect-ratio'] = `${w} / ${h}`;
+      imgStyle.width = `${this.imgWidth * scale}px`;
+      imgStyle.height = `${this.imgHeight * scale}px`;
+      imgStyle.display = 'block';
     };
 
     if (img.src !== src) {
-      img.onload = resize;
+      img.onload = () => {
+        this.imgWidth = img.naturalWidth;
+        this.imgHeight = img.naturalHeight;
+        resize();
+      };
       img.src = src;
       resize();
     }
 
     resize();
-    img.style['object-position'] = `-${x}px -${y}px`
+    imgStyle.transform = `translate(-${x * scale}px, -${y * scale}px)`;
   }
 }
 
-defineCustomElement('media-thumbnail-preview', MediaThumbnailPreviewElement);
+defineCustomElement('media-preview-thumbnail', MediaPreviewThumbnail);
 
-export default MediaThumbnailPreviewElement;
+export default MediaPreviewThumbnail;

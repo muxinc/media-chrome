@@ -149,11 +149,11 @@ class MediaContainer extends window.HTMLElement {
     super();
 
     // Set up the Shadow DOM
-    const shadow = this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     // Watch for child adds/removes and update the media element if necessary
-    const mutationCallback = (mutationsList, observer) => {
+    const mutationCallback = (mutationsList) => {
       const media = this.media;
 
       for (let mutation of mutationsList) {
@@ -251,7 +251,7 @@ class MediaContainer extends window.HTMLElement {
 
   mediaSetCallback(media) {
     // Toggle play/pause with clicks on the media element itself
-    this._mediaClickPlayToggle = (_e) => {
+    this._mediaClickPlayToggle = () => {
       const eventName = media.paused
         ? MediaUIEvents.MEDIA_PLAY_REQUEST
         : MediaUIEvents.MEDIA_PAUSE_REQUEST;
@@ -293,7 +293,7 @@ class MediaContainer extends window.HTMLElement {
     return resolveMediaPromise(media);
   }
 
-  mediaUnsetCallback(media) {
+  mediaUnsetCallback() {
     // media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 
@@ -346,7 +346,7 @@ class MediaContainer extends window.HTMLElement {
     };
 
     // Unhide for keyboard controlling
-    this.addEventListener('keyup', (e) => {
+    this.addEventListener('keyup', () => {
       scheduleInactive();
     });
 
@@ -379,15 +379,15 @@ class MediaContainer extends window.HTMLElement {
     });
 
     // Immediately hide if mouse leaves the container
-    this.addEventListener('mouseleave', (e) => {
+    this.addEventListener('mouseleave', () => {
       setInactive();
     });
 
     // Allow for focus styles only when using the keyboard to navigate
-    this.addEventListener('keyup', (e) => {
+    this.addEventListener('keyup', () => {
       this.setAttribute('media-keyboard-control', '');
     });
-    this.addEventListener('mouseup', (e) => {
+    this.addEventListener('mouseup', () => {
       this.removeAttribute('media-keyboard-control');
     });
   }
