@@ -393,9 +393,10 @@ function getBoxPosition(el, box, percent) {
   const boxLeft = boxOffset - boxWidth / 2;
 
   // Get the element that enforces the bounding box for the hover preview.
-  const mediaBounds = el.getAttribute('media-bounds')
-    ? document.getElementById(el.getAttribute('media-bounds'))
-    : el.parentElement;
+  const mediaBounds =
+    (el.getAttribute('media-bounds')
+      ? document.getElementById(el.getAttribute('media-bounds'))
+      : el.parentElement) ?? el;
 
   const mediaBoundsRect = mediaBounds.getBoundingClientRect();
   const offsetLeft = rect.left - mediaBoundsRect.left;
