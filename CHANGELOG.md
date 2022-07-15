@@ -1,39 +1,13 @@
-# [0.8.0](https://github.com/muxinc/media-chrome/compare/v0.6.8...v0.8.0) (2022-07-15)
+# [0.8.0](https://github.com/muxinc/media-chrome/compare/v0.7.0...v0.8.0) (2022-07-15)
 
 
 ### Bug Fixes
 
 * audio examples, spotify example ([#265](https://github.com/muxinc/media-chrome/issues/265)) ([128d5c7](https://github.com/muxinc/media-chrome/commit/128d5c780d3238b314ba10b906a9c3890180a8a7))
 * box bounds element type error ([6b61552](https://github.com/muxinc/media-chrome/commit/6b615523bce9d3807432563952d90c2dde0e6324))
-* cast availability ([#251](https://github.com/muxinc/media-chrome/issues/251)) ([97d20f7](https://github.com/muxinc/media-chrome/commit/97d20f77dc2ef6b648371dd36fa3920dce77f1a1))
-* casting state on new cast-button ([fd51440](https://github.com/muxinc/media-chrome/commit/fd514400bf14e3bd3ea895d4ca4c51acd5f9147d))
-* chrome-button focus ring consistency ([9d83108](https://github.com/muxinc/media-chrome/commit/9d83108204bc2246ad3648fb8bd6b6c9ffd7c52d))
-* focus ring on chrome-range input element ([a1899e9](https://github.com/muxinc/media-chrome/commit/a1899e9c402c9449c3aaee6a67ca1e770dfbb1de))
-* have improved styling with host-context and chrome-range ([335b875](https://github.com/muxinc/media-chrome/commit/335b875c845b2a8ce72486c11598dd7f0f663735))
-* hide gesture-layer when in audio mode ([77f7005](https://github.com/muxinc/media-chrome/commit/77f70054f3e8d08a194b7e2c64ccd8cbbc792c66))
-* reset playbackRate UI after loadstart ([#249](https://github.com/muxinc/media-chrome/issues/249)) ([59f4ed4](https://github.com/muxinc/media-chrome/commit/59f4ed40dd04f7711b856a01e0fe5fa43474f1ae))
-* text-display should have consistent focus ring to chrome-button ([f1bad34](https://github.com/muxinc/media-chrome/commit/f1bad345b9fd782f0449f97f48d708c234357447))
-
-
-### Features
-
-* improve time range behavior ([#255](https://github.com/muxinc/media-chrome/issues/255)) ([2aa7223](https://github.com/muxinc/media-chrome/commit/2aa7223977a1f8106807d26852b0108efd9aaa4e))
-
 
 
 # [0.7.0](https://github.com/muxinc/media-chrome/compare/v0.6.8...v0.7.0) (2022-07-14)
-
-
-### Bug Fixes
-
-* cast availability ([#251](https://github.com/muxinc/media-chrome/issues/251)) ([97d20f7](https://github.com/muxinc/media-chrome/commit/97d20f77dc2ef6b648371dd36fa3920dce77f1a1))
-* casting state on new cast-button ([fd51440](https://github.com/muxinc/media-chrome/commit/fd514400bf14e3bd3ea895d4ca4c51acd5f9147d))
-* chrome-button focus ring consistency ([9d83108](https://github.com/muxinc/media-chrome/commit/9d83108204bc2246ad3648fb8bd6b6c9ffd7c52d))
-* focus ring on chrome-range input element ([a1899e9](https://github.com/muxinc/media-chrome/commit/a1899e9c402c9449c3aaee6a67ca1e770dfbb1de))
-* have improved styling with host-context and chrome-range ([335b875](https://github.com/muxinc/media-chrome/commit/335b875c845b2a8ce72486c11598dd7f0f663735))
-* hide gesture-layer when in audio mode ([77f7005](https://github.com/muxinc/media-chrome/commit/77f70054f3e8d08a194b7e2c64ccd8cbbc792c66))
-* reset playbackRate UI after loadstart ([#249](https://github.com/muxinc/media-chrome/issues/249)) ([59f4ed4](https://github.com/muxinc/media-chrome/commit/59f4ed40dd04f7711b856a01e0fe5fa43474f1ae))
-* text-display should have consistent focus ring to chrome-button ([f1bad34](https://github.com/muxinc/media-chrome/commit/f1bad345b9fd782f0449f97f48d708c234357447))
 
 
 ### Features
