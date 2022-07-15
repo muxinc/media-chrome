@@ -137,10 +137,10 @@ class MediaLoadingIndicator extends window.HTMLElement {
       clearTimeout(this.loadingDelayHandle);
       this.loadingDelayHandle = undefined;
     }
-    const mediaControllerSelector = this.getAttribute(
+    const mediaControllerId = this.getAttribute(
       MediaUIAttributes.MEDIA_CONTROLLER
     );
-    if (mediaControllerSelector) {
+    if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
     }
