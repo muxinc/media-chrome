@@ -24,22 +24,22 @@ slotTemplate.innerHTML = `
   :host(:not([${MediaUIAttributes.MEDIA_VOLUME_LEVEL}])) ::slotted(:not([slot=high])),
   :host([${MediaUIAttributes.MEDIA_VOLUME_LEVEL}=high]) slot:not([name=high]) > *, 
   :host([${MediaUIAttributes.MEDIA_VOLUME_LEVEL}=high]) ::slotted(:not([slot=high])) {
-    display: none;
+    display: none !important;
   }
 
   :host([${MediaUIAttributes.MEDIA_VOLUME_LEVEL}=off]) slot:not([name=off]) > *, 
   :host([${MediaUIAttributes.MEDIA_VOLUME_LEVEL}=off]) ::slotted(:not([slot=off])) {
-    display: none;
+    display: none !important;
   }
 
   :host([${MediaUIAttributes.MEDIA_VOLUME_LEVEL}=low]) slot:not([name=low]) > *, 
   :host([${MediaUIAttributes.MEDIA_VOLUME_LEVEL}=low]) ::slotted(:not([slot=low])) {
-    display: none;
+    display: none !important;
   }
 
   :host([${MediaUIAttributes.MEDIA_VOLUME_LEVEL}=medium]) slot:not([name=medium]) > *, 
   :host([${MediaUIAttributes.MEDIA_VOLUME_LEVEL}=medium]) ::slotted(:not([slot=medium])) {
-    display: none;
+    display: none !important;
   }
   </style>
 
