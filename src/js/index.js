@@ -13,6 +13,7 @@ import MediaCurrentTimeDisplay from './media-current-time-display.js';
 import MediaDurationDisplay from './media-duration-display.js';
 import MediaTimeDisplay from './media-time-display.js';
 import MediaCaptionsButton from './media-captions-button.js';
+import MediaCaptionsList from './media-captions-list.js';
 import MediaSeekForwardButton from './media-seek-forward-button.js';
 import MediaFullscreenButton from './media-fullscreen-button.js';
 import MediaMuteButton from './media-mute-button.js';
@@ -28,6 +29,8 @@ import MediaTimeRange from './media-time-range.js';
 import MediaLoadingIndicator from './media-loading-indicator.js';
 import MediaTitleElement from './media-title-element.js';
 import MediaVolumeRange from './media-volume-range.js';
+import MediaChromeList from './media-chrome-list.js';
+import MediaChromeListItem from './media-chrome-list-item.js';
 import MediaTheme from './themes/media-theme.js';
 import { Window as window } from './utils/server-safe-globals.js';
 
@@ -60,12 +63,15 @@ export {
   MediaGestureReceiver,
   MediaContainer,
   MediaController,
+  MediaChromeList,
+  MediaChromeListItem,
   MediaChromeRange,
   MediaControlBar,
   MediaCurrentTimeDisplay,
   MediaDurationDisplay,
   MediaTimeDisplay,
   MediaCaptionsButton,
+  MediaCaptionsList,
   MediaSeekForwardButton,
   MediaFullscreenButton,
   MediaMuteButton,
