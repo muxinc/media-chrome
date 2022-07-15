@@ -76,13 +76,13 @@ slotTemplate.innerHTML = `
   <style>
   :host([aria-checked="true"]) slot:not([name=on]) > *, 
   :host([aria-checked="true"]) ::slotted(:not([slot=on])) {
-    display: none;
+    display: none !important;
   }
 
   /* Double negative, but safer if display doesn't equal 'block' */
   :host(:not([aria-checked="true"])) slot:not([name=off]) > *, 
   :host(:not([aria-checked="true"])) ::slotted(:not([slot=off])) {
-    display: none;
+    display: none !important;
   }
   </style>
 

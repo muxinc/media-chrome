@@ -17,12 +17,12 @@ slotTemplate.innerHTML = `
   <style>
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] > *, 
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) ::slotted([slot=pause]) {
-    display: none;
+    display: none !important;
   }
 
   :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=play] > *, 
   :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) ::slotted([slot=play]) {
-    display: none;
+    display: none !important;
   }
   </style>
 

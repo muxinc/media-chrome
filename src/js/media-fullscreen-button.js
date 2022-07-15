@@ -30,13 +30,13 @@ slotTemplate.innerHTML = `
   <style>
   :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot:not([name=exit]) > *, 
   :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) ::slotted(:not([slot=exit])) {
-    display: none;
+    display: none !important;
   }
 
   /* Double negative, but safer if display doesn't equal 'block' */
   :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) slot:not([name=enter]) > *, 
   :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) ::slotted(:not([slot=enter])) {
-    display: none;
+    display: none !important;
   }
   </style>
 
