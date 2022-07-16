@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome with Casting Example</title>
+    <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    <script type="module" src="https://unpkg.com/castable-video"></script>
+    <script type="module" src="../dist/index.js"></script>
+    <style>
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 720px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
+      video {
+        width: 100%;      /* prevents video to expand beyond its container */
+      }
+
+      media-airplay-button[media-airplay-unavailable] {
+        display: none;
+      }
+
+      media-volume-range[media-volume-unavailable] {
+        display: none;
+      }
+
+      media-pip-button[media-pip-unavailable] {
+        display: none;
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome with Casting Example</h1>
+      <media-controller>
+        <video
+          slot="media"
+          is="castable-video"
+          src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+          poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
+          muted
+          crossorigin
+          playsinline
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.vtt"
+          />
+          <track
+            label="English"
+            kind="captions"
+            srclang="en"
+            src="./vtt/bbb-en-cc.vtt"
+          />
+        </video>
+        <media-loading-indicator media-loading slot="centered-chrome" no-auto-hide></media-loading-indicator>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+          <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+          <media-mute-button></media-mute-button>
+          <media-volume-range></media-volume-range>
+          <media-time-range></media-time-range>
+          <media-time-display show-duration remaining></media-time-display>
+          <media-captions-button default-showing></media-captions-button>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-pip-button></media-pip-button>
+          <media-airplay-button></media-airplay-button>
+          <media-cast-button></media-cast-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+      <div class="examples">
+        <a href="./">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>
