@@ -29,8 +29,7 @@ import MediaTimeRange from './media-time-range.js';
 import MediaLoadingIndicator from './media-loading-indicator.js';
 import MediaTitleElement from './media-title-element.js';
 import MediaVolumeRange from './media-volume-range.js';
-import MediaChromeList from './media-chrome-list.js';
-import MediaChromeListItem from './media-chrome-list-item.js';
+import MediaChromeListbox from './media-chrome-listbox.js';
 import MediaTheme from './themes/media-theme.js';
 import { Window as window } from './utils/server-safe-globals.js';
 
@@ -63,8 +62,7 @@ export {
   MediaGestureReceiver,
   MediaContainer,
   MediaController,
-  MediaChromeList,
-  MediaChromeListItem,
+  MediaChromeListbox,
   MediaChromeRange,
   MediaControlBar,
   MediaCurrentTimeDisplay,
