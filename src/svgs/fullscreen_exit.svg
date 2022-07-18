@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-  <path d="M0 0h24v24H0z" fill="none"/>
-  <path class="icon" d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><path d="M14.5,3.5V0H12V6h6V3.5ZM12,18h2.5V14.5H18V12H12ZM0,14.5H3.5V18H6V12H0Zm3.5-11H0V6H6V0H3.5Z"/></svg>
