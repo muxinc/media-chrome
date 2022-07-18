@@ -1,3 +1,11 @@
+## [0.8.1](https://github.com/muxinc/media-chrome/compare/v0.8.0...v0.8.1) (2022-07-18)
+
+
+### Bug Fixes
+
+* timerange progress jumpy w/out playback rate ([2b2d360](https://github.com/muxinc/media-chrome/commit/2b2d360cd9b6f9d08068c00869c95ea1b2ff68de))
+
+
 # [0.8.0](https://github.com/muxinc/media-chrome/compare/v0.7.0...v0.8.0) (2022-07-15)
 
 
