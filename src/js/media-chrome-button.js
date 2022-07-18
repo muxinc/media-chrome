@@ -72,8 +72,6 @@ template.innerHTML = `
 </style>
 `;
 
-const ButtonPressedKeys = ['Enter', ' '];
-
 class MediaChromeButton extends window.HTMLElement {
   static get observedAttributes() {
     return [MediaUIAttributes.MEDIA_CONTROLLER];
@@ -107,7 +105,7 @@ class MediaChromeButton extends window.HTMLElement {
     // but this should be good enough for most use cases.
     const keyUpHandler = (e) => {
       const { key } = e;
-      if (!ButtonPressedKeys.includes(key)) {
+      if (!this.keysUsed.includes(key)) {
         this.removeEventListener('keyup', keyUpHandler);
         return;
       }
@@ -117,7 +115,7 @@ class MediaChromeButton extends window.HTMLElement {
 
     this.addEventListener('keydown', (e) => {
       const { metaKey, altKey, key } = e;
-      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+      if (metaKey || altKey || !this.keysUsed.includes(key)) {
         this.removeEventListener('keyup', keyUpHandler);
         return;
       }
@@ -159,6 +157,10 @@ class MediaChromeButton extends window.HTMLElement {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
     }
+  }
+
+  get keysUsed() {
+    return ['Enter', ' '];
   }
 
   handleClick() {}

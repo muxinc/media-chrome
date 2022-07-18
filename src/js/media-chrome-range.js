@@ -224,6 +224,10 @@ class MediaChromeRange extends window.HTMLElement {
 
     return colorArray;
   }
+
+  get keysUsed() {
+    return ['ArrowUp', 'ArrowRight', 'ArrowDown', 'ArrowLeft'];
+  }
 }
 
 defineCustomElement('media-chrome-range', MediaChromeRange);
