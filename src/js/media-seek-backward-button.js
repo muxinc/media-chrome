@@ -11,7 +11,7 @@ import { getSlotted, updateIconText } from './utils/element-utils.js';
 const DEFAULT_SEEK_OFFSET = 30;
 
 const backwardIcon =
-  '<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15 18"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><title>Mux Player SVG Icons_v3</title><text class="text value" transform="translate(0.18 17.6)">${DEFAULT_SEEK_OFFSET}</text><path d="M8,3V0L2.37,4,8,7.94V5A5.54,5.54,0,0,1,9.9,15.48V17.6A7.5,7.5,0,0,0,8,3Z"/></svg>';
+  `<svg aria-hidden="true" viewBox="0 0 15 18"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(0.18 17.6)">${DEFAULT_SEEK_OFFSET}</text><path d="M8,3V0L2.37,4,8,7.94V5A5.54,5.54,0,0,1,9.9,15.48V17.6A7.5,7.5,0,0,0,8,3Z"/></svg>`;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `  

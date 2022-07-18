@@ -8,13 +8,13 @@ import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
 const offIcon =
-  '<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><title>Mux Player SVG Icons_v3</title><path d="M13.5,9A4.5,4.5,0,0,0,11,5V7.18l2.45,2.45A4.23,4.23,0,0,0,13.5,9ZM16,9a6.84,6.84,0,0,1-.54,2.64L17,13.15A8.8,8.8,0,0,0,18,9,9,9,0,0,0,11,.23V2.29A7,7,0,0,1,16,9ZM1.27,0,0,1.27,4.73,6H0v6H4l5,5V10.27l4.25,4.25A6.92,6.92,0,0,1,11,15.7v2.06A9,9,0,0,0,14.69,16l2,2.05L18,16.73l-9-9ZM9,1,6.91,3.09,9,5.18Z"/></svg>';
+  '<svg aria-hidden="true" viewBox="0 0 18 18"><path d="M13.5,9A4.5,4.5,0,0,0,11,5V7.18l2.45,2.45A4.23,4.23,0,0,0,13.5,9ZM16,9a6.84,6.84,0,0,1-.54,2.64L17,13.15A8.8,8.8,0,0,0,18,9,9,9,0,0,0,11,.23V2.29A7,7,0,0,1,16,9ZM1.27,0,0,1.27,4.73,6H0v6H4l5,5V10.27l4.25,4.25A6.92,6.92,0,0,1,11,15.7v2.06A9,9,0,0,0,14.69,16l2,2.05L18,16.73l-9-9ZM9,1,6.91,3.09,9,5.18Z"/></svg>';
 
 const lowIcon =
-  '<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><title>Mux Player SVG Icons_v3</title><path d="M0,6v6H4l5,5V1L4,6ZM13.5,9A4.5,4.5,0,0,0,11,5V13A4.47,4.47,0,0,0,13.5,9Z"/></svg>';
+  '<svg aria-hidden="true" viewBox="0 0 18 18"><path d="M0,6v6H4l5,5V1L4,6ZM13.5,9A4.5,4.5,0,0,0,11,5V13A4.47,4.47,0,0,0,13.5,9Z"/></svg>';
 
 const highIcon =
-  '<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 18"><title>Mux Player SVG Icons_v3</title><path d="M0,6v6H4l5,5V1L4,6ZM13.5,9A4.5,4.5,0,0,0,11,5V13A4.47,4.47,0,0,0,13.5,9ZM11,.23V2.29a7,7,0,0,1,0,13.42v2.06A9,9,0,0,0,11,.23Z"/></svg>';
+  '<svg aria-hidden="true" viewBox="0 0 18 18"><path d="M0,6v6H4l5,5V1L4,6ZM13.5,9A4.5,4.5,0,0,0,11,5V13A4.47,4.47,0,0,0,13.5,9ZM11,.23V2.29a7,7,0,0,1,0,13.42v2.06A9,9,0,0,0,11,.23Z"/></svg>';
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `

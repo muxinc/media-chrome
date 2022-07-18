@@ -7,14 +7,11 @@ import { defineCustomElement } from './utils/defineCustomElement.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
-const playIcon =
-  `<svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-  xmlns="http://www.w3.org/2000/svg">
+const playIcon = `<svg aria-hidden="true" viewBox="0 0 18 18">
   <path d="M3 18L18 9L3 0V18Z"/>
 </svg>`;
-const pauseIcon =
-  `<svg width="18" height="18" viewBox="0 0 18 18" fill="none"
-  xmlns="http://www.w3.org/2000/svg">
+
+const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 18 18">
   <path d="M3 17H7V1H3V17ZM11 1V17H15V1H11Z"/>
 </svg>`;
 
