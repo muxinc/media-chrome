@@ -130,6 +130,7 @@ class MediaTimeRange extends MediaChromeRange {
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
       MediaUIAttributes.MEDIA_PREVIEW_TIME,
       MediaUIAttributes.MEDIA_BUFFERED,
+      MediaUIAttributes.MEDIA_PLAYBACK_RATE,
     ];
   }
 
@@ -161,7 +162,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     this._refreshBar = () => {
       const delta = (performance.now() - this._updateTimestamp) / 1000;
-      this.range.value = this.mediaCurrentTime + delta;
+      this.range.value = this.mediaCurrentTime + delta * this.mediaPlaybackRate;
       this.updateBar();
       this.updateCurrentBox();
 
@@ -233,6 +234,11 @@ class MediaTimeRange extends MediaChromeRange {
   get mediaCurrentTime() {
     const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
     return attrVal != null ? +attrVal : undefined;
+  }
+
+  get mediaPlaybackRate() {
+    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_PLAYBACK_RATE);
+    return attrVal != null ? +attrVal : 1;
   }
 
   get mediaBuffered() {
