@@ -493,7 +493,7 @@ class MediaController extends MediaContainer {
         return;
       }
 
-      if (!this.hasAttribute('noshortcuts')) {
+      if (!this.hasAttribute('nohotkeys')) {
         this.keyboardShortcutHandler(e);
       }
     };
