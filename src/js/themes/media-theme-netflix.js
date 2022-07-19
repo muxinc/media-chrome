@@ -28,8 +28,7 @@ const template = `
     --media-control-hover-background: none;
     --media-control-background: none;
 
-    --media-button-icon-width: 50px;
-    --media-button-icon-height: 50px;
+    --media-button-icon-height: 35px;
     --media-button-icon-transform: scale(1);
     --media-button-icon-transition: transform 0.2s ease;
   }
@@ -61,10 +60,12 @@ const template = `
   media-seek-forward-button,
   media-mute-button,
   media-fullscreen-button {
-    height: 80px;
+    padding: 40px 20px;
   }
 
   media-fullscreen-button {
+    --media-button-icon-height: 50px;
+    padding: 30px 20px;
     margin-right: 10px;
   }
 
