@@ -741,9 +741,17 @@ class MediaController extends MediaContainer {
 
   keyboardShortcutHandler(e) {
     if (this.contains(e.target) || this.shadowRoot.contains(e.target)) {
-      console.log(e.target.keysUsed);
       // if the event's key is already handled by the target, skip keyboard shortcuts
-      if ((e.target?.keysUsed ?? []).includes(e.key)) {
+      // keysUsed is either an attribute or a property.
+      // The attribute is a DOM array and the property is a JS array
+      // In the attribute Space represents the space key and gets convered to ' '
+      const keysUsed = (
+          e.target.hasAttribute('keysused') ?
+          e.target.getAttribute('keysused').split(' ').map(key => key.trim() === 'Space' ? ' ' : key.trim()).filter(Boolean) :
+          e.target?.keysUsed
+        ) ?? [];
+
+      if (keysUsed.includes(e.key)) {
         return;
       }
 
