@@ -745,11 +745,9 @@ class MediaController extends MediaContainer {
       // keysUsed is either an attribute or a property.
       // The attribute is a DOM array and the property is a JS array
       // In the attribute Space represents the space key and gets convered to ' '
-      const keysUsed = (
-          e.target.hasAttribute('keysused') ?
-          e.target.getAttribute('keysused').split(' ').map(key => key.trim() === 'Space' ? ' ' : key.trim()).filter(Boolean) :
-          e.target?.keysUsed
-        ) ?? [];
+      const keysUsed = (e.target.getAttribute('keysused')?.split(' ') ?? e.target?.keysUsed ?? [])
+        .map(key => key === 'Space' ? ' ' : key)
+        .filter(Boolean);
 
       if (keysUsed.includes(e.key)) {
         return;
