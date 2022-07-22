@@ -31,7 +31,18 @@ import {
   updateTracksModeTo,
 } from './utils/captions.js';
 
+const ButtonPressedKeys = ['Enter', ' ', 'f', 'm', 'k', 'ArrowLeft', 'ArrowRight'];
+const DEFAULT_SEEK_OFFSET = 10;
+
+/**
+ * Media Controller should not mimic the HTMLMediaElement API.
+ * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
+ */
 class MediaController extends MediaContainer {
+  static get observedAttributes() {
+    return super.observedAttributes.concat('nohotkeys');
+  }
+
   constructor() {
     super();
 
@@ -469,6 +480,20 @@ class MediaController extends MediaContainer {
         );
       },
     };
+
+    this.enableHotkeys();
+  }
+
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === 'nohotkeys') {
+      if (newValue !== oldValue && newValue === '') {
+        this.disableHotkeys();
+      } else if (newValue !== oldValue && newValue === null) {
+        this.enableHotkeys();
+      }
+    }
+
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   mediaSetCallback(media) {
@@ -702,10 +727,121 @@ class MediaController extends MediaContainer {
     els.splice(index, 1);
   }
 
-  /**
-   * Media Controller should not mimic the HTMLMediaElement API.
-   * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
-   */
+  #keyUpHandler(e) {
+    const { key } = e;
+    if (!ButtonPressedKeys.includes(key)) {
+      this.removeEventListener('keyup', this.#keyUpHandler);
+      return;
+    }
+
+    this.keyboardShortcutHandler(e);
+  }
+
+  #keyDownHandler(e) {
+    const { metaKey, altKey, key } = e;
+    if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+      this.removeEventListener('keyup', this.#keyUpHandler);
+      return;
+    }
+    this.addEventListener('keyup', this.#keyUpHandler);
+  }
+
+  enableHotkeys() {
+    this.addEventListener('keydown', this.#keyDownHandler);
+  }
+
+  disableHotkeys() {
+    this.removeEventListener('keydown', this.#keyDownHandler);
+    this.removeEventListener('keyup', this.#keyUpHandler);
+  }
+
+  keyboardShortcutHandler(e) {
+    // if the event's key is already handled by the target, skip keyboard shortcuts
+    // keysUsed is either an attribute or a property.
+    // The attribute is a DOM array and the property is a JS array
+    // In the attribute Space represents the space key and gets convered to ' '
+    const keysUsed = (e.target.getAttribute('keysused')?.split(' ') ?? e.target?.keysUsed ?? [])
+      .map(key => key === 'Space' ? ' ' : key)
+      .filter(Boolean);
+
+    if (keysUsed.includes(e.key)) {
+      return;
+    }
+
+    let eventName, currentTimeStr, currentTime, detail, evt;
+    const seekOffset = DEFAULT_SEEK_OFFSET;
+
+    // These event triggers were copied from the revelant buttons
+    switch (e.key) {
+      case ' ':
+      case 'k':
+        eventName =
+          this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
+            ? MediaUIEvents.MEDIA_PLAY_REQUEST
+            : MediaUIEvents.MEDIA_PAUSE_REQUEST;
+        this.dispatchEvent(
+          new window.CustomEvent(eventName, { composed: true, bubbles: true })
+        );
+        break;
+
+      case 'm':
+        eventName =
+          this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off'
+            ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
+            : MediaUIEvents.MEDIA_MUTE_REQUEST;
+        this.dispatchEvent(
+          new window.CustomEvent(eventName, { composed: true, bubbles: true })
+        );
+        break;
+
+      case 'f':
+        eventName =
+          this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null
+            ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
+            : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
+        this.dispatchEvent(
+          new window.CustomEvent(eventName, { composed: true, bubbles: true })
+        );
+        break;
+
+      case 'ArrowLeft':
+        currentTimeStr = this.getAttribute(
+          MediaUIAttributes.MEDIA_CURRENT_TIME
+        );
+        currentTime =
+          currentTimeStr && !Number.isNaN(+currentTimeStr)
+            ? +currentTimeStr
+            : DEFAULT_TIME;
+        detail = Math.max(currentTime - seekOffset, 0);
+        evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+          composed: true,
+          bubbles: true,
+          detail,
+        });
+        this.dispatchEvent(evt);
+        break;
+
+      case 'ArrowRight':
+        currentTimeStr = this.getAttribute(
+          MediaUIAttributes.MEDIA_CURRENT_TIME
+        );
+        currentTime =
+          currentTimeStr && !Number.isNaN(+currentTimeStr)
+            ? +currentTimeStr
+            : DEFAULT_TIME;
+        detail = Math.max(currentTime + seekOffset, 0);
+        evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+          composed: true,
+          bubbles: true,
+          detail,
+        });
+        this.dispatchEvent(evt);
+        break;
+
+      default:
+        break;
+    }
+  }
 }
 
 const getPaused = (controller) => {
