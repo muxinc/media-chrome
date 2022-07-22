@@ -738,7 +738,7 @@ class MediaController extends MediaContainer {
   #keyUpHandler(e) {
     const { key } = e;
     if (!ButtonPressedKeys.includes(key)) {
-      this.removeEventListener('keyup', keyUpHandler);
+      this.removeEventListener('keyup', this.#keyUpHandler);
       return;
     }
 
