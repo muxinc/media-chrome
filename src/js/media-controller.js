@@ -53,6 +53,10 @@ const DEFAULT_SEEK_OFFSET = 10;
  * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
  */
 class MediaController extends MediaContainer {
+  static get observedAttributes() {
+    return super.observedAttributes.concat('nohotkeys');
+  }
+
   constructor() {
     super();
 
@@ -485,27 +489,19 @@ class MediaController extends MediaContainer {
       },
     };
 
-    // copied from media-chrome-button
-    const keyUpHandler = (e) => {
-      const { key } = e;
-      if (!ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
-        return;
-      }
+    this.enableHotkeys();
+  }
 
-      if (!this.hasAttribute('nohotkeys')) {
-        this.keyboardShortcutHandler(e);
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === 'nohotkeys') {
+      if (newValue !== oldValue && newValue === '') {
+        this.disableHotkeys();
+      } else if (newValue !== oldValue && newValue === null) {
+        this.enableHotkeys();
       }
-    };
+    }
 
-    this.addEventListener('keydown', (e) => {
-      const { metaKey, altKey, key } = e;
-      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
-        return;
-      }
-      this.addEventListener('keyup', keyUpHandler);
-    });
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   mediaSetCallback(media) {
@@ -737,6 +733,34 @@ class MediaController extends MediaContainer {
     if (index < 0) return;
 
     els.splice(index, 1);
+  }
+
+  #keyUpHandler(e) {
+    const { key } = e;
+    if (!ButtonPressedKeys.includes(key)) {
+      this.removeEventListener('keyup', keyUpHandler);
+      return;
+    }
+
+    this.keyboardShortcutHandler(e);
+  }
+
+  #keyDownHandler(e) {
+    const { metaKey, altKey, key } = e;
+    if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+      this.removeEventListener('keyup', this.#keyUpHandler);
+      return;
+    }
+    this.addEventListener('keyup', this.#keyUpHandler);
+  }
+
+  enableHotkeys() {
+    this.addEventListener('keydown', this.#keyDownHandler);
+  }
+
+  disableHotkeys() {
+    this.removeEventListener('keydown', this.#keyDownHandler);
+    this.removeEventListener('keyup', this.#keyUpHandler);
   }
 
   keyboardShortcutHandler(e) {
