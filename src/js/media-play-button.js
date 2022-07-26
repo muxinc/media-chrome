@@ -7,12 +7,12 @@ import { defineCustomElement } from './utils/defineCustomElement.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
-const playIcon = `<svg aria-hidden="true" viewBox="0 0 18 18">
-  <path d="M3 18L18 9L3 0V18Z"/>
+const playIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
+  <path d="m6 21 15-9L6 3v18Z"/>
 </svg>`;
 
-const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 18 18">
-  <path d="M3 17H7V1H3V17ZM11 1V17H15V1H11Z"/>
+const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
+  <path d="M6 20h4V4H6v16Zm8-16v16h4V4h-4Z"/>
 </svg>`;
 
 const slotTemplate = document.createElement('template');

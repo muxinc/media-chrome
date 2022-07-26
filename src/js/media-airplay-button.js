@@ -7,7 +7,10 @@ import {
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
-const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 20 18"><path d="M19.13,0H.87A.87.87,0,0,0,0,.87V14.13A.87.87,0,0,0,.87,15h3.4L6,13H2V2H18V13H14l1.72,2h3.4a.87.87,0,0,0,.87-.87V.87A.87.87,0,0,0,19.13,0ZM10.38,11.44a.5.5,0,0,0-.76,0L4.71,17.17a.5.5,0,0,0,.38.83h9.82a.5.5,0,0,0,.38-.83Z"/></svg>`;
+const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
+  <path d="M22.13 3H3.87a.87.87 0 0 0-.87.87v13.26a.87.87 0 0 0 .87.87h3.4L9 16H5V5h16v11h-4l1.72 2h3.4a.87.87 0 0 0 .87-.87V3.87a.87.87 0 0 0-.86-.87Zm-8.75 11.44a.5.5 0 0 0-.76 0l-4.91 5.73a.5.5 0 0 0 .38.83h9.82a.501.501 0 0 0 .38-.83l-4.91-5.73Z"/>
+</svg>
+`;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `

@@ -15,9 +15,13 @@ import {
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
-const enterFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 18 18"><path d="M12,0V2.5h3.5V6H18V0ZM0,6H2.5V2.5H6V0H0Zm15.5,9.5H12V18h6V12H15.5ZM2.5,12H0v6H6V15.5H2.5Z"/></svg>`;
+const enterFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
+  <path d="M16 3v2.5h3.5V9H22V3h-6ZM4 9h2.5V5.5H10V3H4v6Zm15.5 9.5H16V21h6v-6h-2.5v3.5ZM6.5 15H4v6h6v-2.5H6.5V15Z"/>
+</svg>`;
 
-const exitFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 18 18"><path d="M14.5,3.5V0H12V6h6V3.5ZM12,18h2.5V14.5H18V12H12ZM0,14.5H3.5V18H6V12H0Zm3.5-11H0V6H6V0H3.5Z"/></svg>`;
+const exitFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
+  <path d="M18.5 6.5V3H16v6h6V6.5h-3.5ZM16 21h2.5v-3.5H22V15h-6v6ZM4 17.5h3.5V21H10v-6H4v2.5Zm3.5-11H4V9h6V3H7.5v3.5Z"/>
+</svg>`;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `

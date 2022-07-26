@@ -54,7 +54,7 @@ template.innerHTML = `
 
   svg, img, ::slotted(svg), ::slotted(img) {
     width: var(--media-button-icon-width);
-    height: var(--media-button-icon-height, 18px);
+    height: var(--media-button-icon-height, 24px);
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);
     fill: var(--media-icon-color, #eee);
