@@ -1,3 +1,12 @@
+# [0.9.0](https://github.com/muxinc/media-chrome/compare/v0.8.1...v0.9.0) (2022-08-01)
+
+
+### Features
+
+* keyboard shortcut support ([#263](https://github.com/muxinc/media-chrome/issues/263)) ([7542ce7](https://github.com/muxinc/media-chrome/commit/7542ce7bc0db14928f83ba6670e1527a54cf801e))
+
+
+
 ## [0.8.1](https://github.com/muxinc/media-chrome/compare/v0.8.0...v0.8.1) (2022-07-18)
 
 
