@@ -39,6 +39,7 @@ const template = `
     --media-range-thumb-width: 20px;
     --media-range-thumb-border-radius: 20px;
     --media-time-buffered-color: #777;
+    --media-range-track-pointer-border-right: 2px solid #fff;
   }
 
   media-time-range:hover {
@@ -60,12 +61,12 @@ const template = `
   media-seek-forward-button,
   media-mute-button,
   media-fullscreen-button {
-    padding: 40px 20px;
+    --media-button-icon-height: 45px;
+    padding: 30px 17px;
   }
 
   media-fullscreen-button {
     --media-button-icon-height: 50px;
-    padding: 30px 20px;
     margin-right: 10px;
   }
 
