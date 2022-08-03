@@ -19,12 +19,12 @@ slotTemplate.innerHTML = `
   <style>
   :host {
     font-size: 14px;
-    line-height: 18px;
+    line-height: 24px;
     font-weight: bold;
   }
 
   #container {
-    height: var(--media-text-content-height, 18px);
+    height: var(--media-text-content-height, 24px);
   }
   </style>
 

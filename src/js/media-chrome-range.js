@@ -41,17 +41,21 @@ template.innerHTML = `
     :host {
       --thumb-height: var(--media-range-thumb-height, 10px);
       --track-height: var(--media-range-track-height, 4px);
+      --media-range-padding: var(--media-control-padding, 10px);
+      --_media-range-padding: var(--media-range-padding, 10px);
 
       position: relative;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       vertical-align: middle;
       box-sizing: border-box;
       background: var(--media-control-background, rgba(20,20,30, 0.7));
       transition: background 0.15s linear;
-      height: 44px;
       width: 100px;
-      padding-left: var(--media-range-padding-left, 10px);
-      padding-right: var(--media-range-padding-right, 10px);
+      padding: calc(10px + var(--_media-range-padding));
+      padding-left: var(--media-range-padding-left, var(--_media-range-padding));
+      padding-right: var(--media-range-padding-right, var(--_media-range-padding));
       pointer-events: auto;
       /* needed for vertical align issue 1px off */
       font-size: 0;
@@ -110,8 +114,8 @@ template.innerHTML = `
       position: absolute;
       top: 50%;
       transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px) - 50%));
-      left: var(--media-range-padding-left, 10px);
-      right: var(--media-range-padding-right, 10px);
+      left: var(--media-range-padding-left, var(--_media-range-padding));
+      right: var(--media-range-padding-right, var(--_media-range-padding));
       background: var(--media-range-track-background, #333);
     }
 
@@ -137,8 +141,8 @@ template.innerHTML = `
       display: var(--media-time-range-hover-display, none);
       box-sizing: border-box;
       position: absolute;
-      left: var(--media-range-padding-left, 10px);
-      right: var(--media-range-padding-right, 10px);
+      left: var(--media-range-padding-left, var(--_media-range-padding));
+      right: var(--media-range-padding-right, var(--_media-range-padding));
       bottom: var(--media-time-range-hover-bottom, -5px);
       height: var(--media-time-range-hover-height, max(calc(100% + 5px), 20px));
     }

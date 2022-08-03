@@ -13,12 +13,11 @@ template.innerHTML = `
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: auto;
-    height: auto;
+    vertical-align: middle;
     box-sizing: border-box;
     background: var(--media-control-background, rgba(20,20,30, 0.7));
 
-    padding: 10px;
+    padding: var(--media-control-padding, 10px);
 
     /* Vertically center any text */
     font-size: 14px;

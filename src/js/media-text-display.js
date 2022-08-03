@@ -14,13 +14,14 @@ template.innerHTML = `
       display: inline-flex;
       justify-content: center;
       align-items: center;
+      vertical-align: middle;
       box-sizing: border-box;
       background: var(--media-control-background, rgba(20,20,30, 0.7));
   
-      padding: 10px;
+      padding: var(--media-control-padding, 10px);
 
       font-size: 14px;
-      line-height: 18px;
+      line-height: 24px;
       font-family: Arial, sans-serif;
       text-align: center;
       color: #ffffff;
