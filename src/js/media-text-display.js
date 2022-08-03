@@ -21,7 +21,7 @@ template.innerHTML = `
       padding: var(--media-control-padding, 10px);
 
       font-size: 14px;
-      line-height: var(--media-text-content-height, var(--media-button-control-height, 24px));
+      line-height: var(--media-text-content-height, var(--media-control-height, 24px));
       font-family: Arial, sans-serif;
       text-align: center;
       color: #ffffff;

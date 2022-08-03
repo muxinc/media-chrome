@@ -53,7 +53,7 @@ template.innerHTML = `
       background: var(--media-control-background, rgba(20,20,30, 0.7));
       transition: background 0.15s linear;
       width: 100px;
-      height: calc(var(--media-button-control-height, 24px) + 2 * var(--_media-range-padding));
+      height: calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
       padding-left: var(--media-range-padding-left, var(--_media-range-padding));
       padding-right: var(--media-range-padding-right, var(--_media-range-padding));
       pointer-events: auto;
