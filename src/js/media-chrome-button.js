@@ -21,6 +21,7 @@ template.innerHTML = `
 
     /* Vertically center any text */
     font-size: 14px;
+    line-height: var(--media-button-icon-height, 24px);
     font-weight: bold;
     color: #fff;
 
@@ -61,10 +62,6 @@ template.innerHTML = `
     max-width: 100%;
     max-height: 100%;
     min-width: 100%;
-  }
-
-  ::slotted(div), ::slotted(span) {
-    height: 18px;
   }
 </style>
 `;
