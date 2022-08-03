@@ -80,7 +80,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 | Name                          | CSS Property | Default Value         | Description                                                     | Notes                                                                |
 | ----------------------------- | ------------ | --------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------- |
 | `--media-control-background`  | `background` | `rgba(20,20,30, 0.7)` | background color of the component                               | Applies to other components as well ([See notes below \*\*](#notes)) |
-| `--media-text-content-height` | `height`     | `18px`                | height of the underlying text container for text-based elements | Also applies to `<media-captions-button>` ([See §Buttons](#Buttons)) |
+| `--media-text-content-height` | `height`     | `24px`                | height of the underlying text container for text-based elements | Also applies to `<media-captions-button>` ([See §Buttons](#Buttons)) |
 
 ## Indicators
 

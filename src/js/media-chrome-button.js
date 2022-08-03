@@ -21,7 +21,7 @@ template.innerHTML = `
 
     /* Vertically center any text */
     font-size: 14px;
-    line-height: var(--media-button-icon-height, 24px);
+    line-height: var(--media-text-content-height, var(--media-button-control-height, 24px));
     font-weight: bold;
     color: #fff;
 
@@ -54,7 +54,7 @@ template.innerHTML = `
 
   svg, img, ::slotted(svg), ::slotted(img) {
     width: var(--media-button-icon-width);
-    height: var(--media-button-icon-height, 24px);
+    height: var(--media-button-icon-height, var(--media-button-control-height, 24px));
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);
     fill: var(--media-icon-color, #eee);
