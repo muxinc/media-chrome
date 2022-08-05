@@ -28,8 +28,7 @@ const template = `
     --media-control-hover-background: none;
     --media-control-background: none;
 
-    --media-button-icon-width: 50px;
-    --media-button-icon-height: 50px;
+    --media-button-icon-height: 35px;
     --media-button-icon-transform: scale(1);
     --media-button-icon-transition: transform 0.2s ease;
   }
@@ -40,6 +39,7 @@ const template = `
     --media-range-thumb-width: 20px;
     --media-range-thumb-border-radius: 20px;
     --media-time-buffered-color: #777;
+    --media-range-track-pointer-border-right: 2px solid #fff;
   }
 
   media-time-range:hover {
@@ -61,10 +61,12 @@ const template = `
   media-seek-forward-button,
   media-mute-button,
   media-fullscreen-button {
-    height: 80px;
+    --media-button-icon-height: 45px;
+    padding: 30px 17px;
   }
 
   media-fullscreen-button {
+    --media-button-icon-height: 50px;
     margin-right: 10px;
   }
 

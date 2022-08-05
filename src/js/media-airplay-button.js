@@ -6,7 +6,11 @@ import {
 } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
-const airplayIcon = `<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 18"><defs><style>.cls-1{fill:var(--media-icon-color, #eee);}</style></defs><title>Mux Player SVG Icons_v2</title><path class="cls-1" d="M10.19,11.22a.25.25,0,0,0-.38,0L4.35,17.59a.25.25,0,0,0,.19.41H15.46a.25.25,0,0,0,.19-.41Z"/><path class="cls-1" d="M19,0H1A1,1,0,0,0,0,1V14a1,1,0,0,0,1,1H3.94L5,13.75H1.25V1.25h17.5v12.5H15L16.06,15H19a1,1,0,0,0,1-1V1A1,1,0,0,0,19,0Z"/></svg>`;
+
+const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
+  <path d="M22.13 3H3.87a.87.87 0 0 0-.87.87v13.26a.87.87 0 0 0 .87.87h3.4L9 16H5V5h16v11h-4l1.72 2h3.4a.87.87 0 0 0 .87-.87V3.87a.87.87 0 0 0-.86-.87Zm-8.75 11.44a.5.5 0 0 0-.76 0l-4.91 5.73a.5.5 0 0 0 .38.83h9.82a.501.501 0 0 0 .38-.83l-4.91-5.73Z"/>
+</svg>
+`;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `

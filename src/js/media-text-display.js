@@ -14,13 +14,14 @@ template.innerHTML = `
       display: inline-flex;
       justify-content: center;
       align-items: center;
+      vertical-align: middle;
       box-sizing: border-box;
       background: var(--media-control-background, rgba(20,20,30, 0.7));
   
-      padding: 10px;
+      padding: var(--media-control-padding, 10px);
 
       font-size: 14px;
-      line-height: 24px;
+      line-height: var(--media-text-content-height, var(--media-control-height, 24px));
       font-family: Arial, sans-serif;
       text-align: center;
       color: #ffffff;
@@ -41,11 +42,6 @@ template.innerHTML = `
     :host(:where(:focus)) {
       box-shadow: none;
       outline: 0;
-    }
-
-    #container {
-      /* NOTE: We don't currently have more generic sizing vars */
-      height: var(--media-text-content-height, auto);
     }
   </style>
   <span id="container">

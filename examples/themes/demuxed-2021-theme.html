@@ -27,6 +27,10 @@
         width: 100%;      /* prevents video to expand beyond its container */
       }
 
+      media-controller {
+        --media-button-icon-height: 22px;
+      }
+
       media-control-bar > * {
         height: 42px;
         --media-control-background: #000;
@@ -60,6 +64,7 @@
       }
 
       *[slot='centered-chrome'] media-play-button {
+        --media-button-icon-height: 100%;
         width: 30%;
       }
 
@@ -82,7 +87,7 @@
         }
 
         .desktop-only {
-          display: initial;
+          display: inline-flex;
         }
 
         *[slot='centered-chrome'] media-play-button:not([media-paused]) {

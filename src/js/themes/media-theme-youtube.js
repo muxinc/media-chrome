@@ -114,10 +114,6 @@ const template = `
     width: 70px;
   }
 
-  media-fullscreen-button {
-    --media-button-icon-transform: scale(1.3);
-  }
-
   .ytp-gradient-bottom {
     padding-top: 37px;
     position: absolute;

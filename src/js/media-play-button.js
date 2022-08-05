@@ -7,10 +7,13 @@ import { defineCustomElement } from './utils/defineCustomElement.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
-const playIcon =
-  '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M8 5v14l11-7z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
-const pauseIcon =
-  '<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path class="icon" d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/><path d="M0 0h24v24H0z" fill="none"/></svg>';
+const playIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
+  <path d="m6 21 15-9L6 3v18Z"/>
+</svg>`;
+
+const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
+  <path d="M6 20h4V4H6v16Zm8-16v16h4V4h-4Z"/>
+</svg>`;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `

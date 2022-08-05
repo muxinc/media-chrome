@@ -11,7 +11,7 @@ import { getSlotted, updateIconText } from './utils/element-utils.js';
 const DEFAULT_SEEK_OFFSET = 30;
 
 const backwardIcon =
-  `<svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="-3 -3 24 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(1.68 17.6)">${DEFAULT_SEEK_OFFSET}</text><path d="M9.48,3V0L3.87,4l5.61,4V5a5.54,5.54,0,0,1,1.92,10.5V17.6A7.5,7.5,0,0,0,9.48,3Z"/></svg>`;
+  `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(2.18 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3L4.37 7 10 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 10 6Z"/></svg>`;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `  

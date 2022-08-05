@@ -16,18 +16,6 @@ const DEFAULT_RATE = 1;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
-  <style>
-  :host {
-    font-size: 14px;
-    line-height: 24px;
-    font-weight: bold;
-  }
-
-  #container {
-    height: var(--media-text-content-height, 24px);
-  }
-  </style>
-
   <span id="container"></span>
 `;
 
