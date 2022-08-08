@@ -204,7 +204,10 @@ class MediaChromeListbox extends HTMLElement {
 
     if (this.activeElement) {
       this.activeElement.classList.add('focused');
-      this.updateScroll();
+      this.activeElement.scrollIntoView({
+        block: 'nearest',
+        inline: 'nearest',
+      });
     }
   }
 
@@ -219,7 +222,7 @@ class MediaChromeListbox extends HTMLElement {
 
   get activeIndex() {
     const idx = this.listItemElements.indexOf(this.activeElement);
-    return idx <= 0 ? idx : undefined;
+    return idx >= 0 ? idx : undefined;
   }
 
   set activeIndex(value) {
@@ -308,23 +311,6 @@ class MediaChromeListbox extends HTMLElement {
     if (evt.target.getAttribute('role') !== 'option') return;
     this.selectedElement = evt.target;
     this.activeElement = evt.target;
-  }
-
-  /**
-   * Check if the selected option is in view, and scroll if not
-   */
-  updateScroll() {
-    const { activeElement } = this;
-    const { listboxElement: listbox } = this;
-    if (!activeElement || listbox.scrollHeight <= listbox.clientHeight) return;
-
-    const scrollBottom = listbox.clientHeight + listbox.scrollTop;
-    var elementBottom = activeElement.offsetTop + activeElement.offsetHeight;
-    if (elementBottom > scrollBottom) {
-      listbox.scrollTop = elementBottom - listbox.clientHeight;
-    } else if (activeElement.offsetTop < listbox.scrollTop) {
-      listbox.scrollTop = activeElement.offsetTop;
-    }
   }
 
   /**
