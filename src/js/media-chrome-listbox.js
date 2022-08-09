@@ -15,7 +15,7 @@ template.innerHTML = `
         background: white;
     }
     
-    [role="listbox"]#listbox {
+    [role="listbox"] {
         max-height: 18em;
         overflow-y: auto;
     }
@@ -43,7 +43,7 @@ template.innerHTML = `
   </style>
   <div>
     <span id="listbox-label" tabindex="-1" class="listbox-label">${DEFAULT_LISTBOX_LABEL}</span>
-    <ul id="listbox" role="listbox" aria-labelledby="listbox-label">
+    <ul role="listbox" aria-labelledby="listbox-label">
     </ul>
   </div>
 `;
@@ -70,6 +70,7 @@ const DEFAULT_ITEM_RENDERER = 'li';
 
 class MediaChromeListbox extends HTMLElement {
   static get observedAttributes() {
+    // Discuss title (as attribute, as "baked in", as context for screen readers wrt A11Y)
     return ['title', MediaUIAttributes.MEDIA_CONTROLLER];
   }
 
@@ -104,6 +105,7 @@ class MediaChromeListbox extends HTMLElement {
       }
     }
     if (attrName === 'title') {
+      console.log('title', newValue);
       this.listboxLabelElement.innerText = newValue ?? DEFAULT_LISTBOX_LABEL;
     }
   }
@@ -170,11 +172,11 @@ class MediaChromeListbox extends HTMLElement {
   }
 
   get listboxLabelElement() {
-    return this.shadowRoot.getElementById('listbox-label');
+    return this.shadowRoot.querySelector('.listbox-label');
   }
 
   get listboxElement() {
-    return this.shadowRoot?.getElementById('listbox');
+    return this.shadowRoot?.querySelector('[role="listbox"]');
   }
 
   get listItemElements() {
