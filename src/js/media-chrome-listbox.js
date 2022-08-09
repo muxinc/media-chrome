@@ -11,20 +11,11 @@ template.innerHTML = `
         margin: 1em 0 0;
         padding: 0;
         min-height: 18em;
+        max-height: 18em;
+        overflow-y: auto;
         border: 1px solid #aaa;
         background: white;
     }
-    
-    [role="listbox"] {
-        max-height: 18em;
-        overflow-y: auto;
-    }
-    
-    [role="listbox"] + *,
-    .listbox-label + * {
-        margin-top: 1em;
-    }
-    
     [role="option"] {
         display: block;
         padding: 0 1em 0 1.5em;
@@ -41,10 +32,8 @@ template.innerHTML = `
         content: "✓";
     }
   </style>
-  <div>
-    <ul tabindex="0" role="listbox" aria-label="${DEFAULT_LISTBOX_LABEL}">
-    </ul>
-  </div>
+  <ul tabindex="0" role="listbox" aria-label="${DEFAULT_LISTBOX_LABEL}">
+  </ul>
 `;
 
 const isNil = (x) => x == undefined;
