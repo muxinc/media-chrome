@@ -16,8 +16,10 @@ const isCC = (extendedTextTrackStr = '') =>
   extendedTextTrackStr?.startsWith?.(CC_PREFIX);
 const withoutCC = (extendedTextTrackStr = '') => {
   if (!isCC(extendedTextTrackStr)) return extendedTextTrackStr;
-  return extendedTextTrackStr.slice(CC_PREFIX.length);
+  return extendedTextTrackStr.slice(CC_PREFIX.length + 1);
 };
+
+const withCC = (textTrackStr = '') => `${CC_PREFIX}:${textTrackStr}`;
 
 const DEFAULT_UNKNOWN_LABEL = 'UNKNOWN';
 const DEFAULT_CC_LABEL_PART = '(cc)';
@@ -31,9 +33,7 @@ const DEFAULT_FORMATTER = (value) => {
 const parseAsSubCCStr = (str, kind = TextTrackKinds.SUBTITLES) => {
   if (!str) return [];
   if (kind === TextTrackKinds.SUBTITLES) return splitTextTracksStr(str);
-  return splitTextTracksStr(str).map(
-    (textTrackStr) => `${CC_PREFIX}:${textTrackStr}`
-  );
+  return splitTextTracksStr(str).map(withCC);
 };
 
 class MediaCaptionsList extends MediaChromeListbox {
@@ -74,8 +74,18 @@ class MediaCaptionsList extends MediaChromeListbox {
         MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
       ].includes(attrName) &&
       oldValue !== newValue
+      && !this.stateUpdaterId
     ) {
-      this.selectedValue = newValue;
+      // Discuss this simple scheduling as a means of avoiding edge case updates as a result of 
+      // unsetting + resetting via distinct events + separation of captions vs. subtitles (CJP)
+      this.stateUpdaterId = setTimeout(() => {
+        this.selectedValue = this.hasAttribute(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING)
+          ? withCC(this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING))
+          : this.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING)
+          ? this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING)
+          : undefined;
+       this.stateUpdaterId = undefined;
+      });
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
@@ -99,6 +109,7 @@ class MediaCaptionsList extends MediaChromeListbox {
       this.dispatchEvent(evt);
     }
     // Discuss this "being presumptuous" (could require it to always be set "from the outside", but would need some refactoring)
+    // Discuss "internally managed state" vs. "externally provided state"
     super.selectedElement = element;
     if (element) {
       const type = isCC(this.selectedValue)
