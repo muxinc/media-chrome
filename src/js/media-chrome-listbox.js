@@ -111,7 +111,6 @@ class MediaChromeListbox extends HTMLElement {
   }
 
   connectedCallback() {
-    this.setAttribute('role', 'button');
     this.setAttribute('tabindex', 0);
 
     const mediaControllerId = this.getAttribute(
