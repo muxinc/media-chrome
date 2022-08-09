@@ -86,9 +86,10 @@ class MediaChromeListbox extends HTMLElement {
     this._defaultItemRenderer = itemRenderer;
     this.keysSoFar = '';
     this.handleFocus = this.handleFocus.bind(this);
+    this.handleBlur = this.handleBlur.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
     this.handleItemClick = this.handleItemClick.bind(this);
-    this.handleItemChange = function () {};
+    // this.handleItemChange = function () {};
     this.registerEvents();
   }
 
@@ -290,12 +291,17 @@ class MediaChromeListbox extends HTMLElement {
    */
   registerEvents() {
     this.listboxElement.addEventListener('focus', this.handleFocus);
+    this.listboxElement.addEventListener('blur', this.handleBlur);
     this.listboxElement.addEventListener('keydown', this.handleKeyPress);
     this.listboxElement.addEventListener('click', this.handleItemClick);
   }
 
   handleFocus(evt) {
-    this.activeElement = this.selectedElement ?? this.listItemElements[0];
+    this.activeElement = this.selectedElement;
+  }
+
+  handleBlur(evt) {
+    this.activeElement = undefined;
   }
 
   /**
