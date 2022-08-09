@@ -96,7 +96,7 @@ class MediaCaptionsList extends MediaChromeListbox {
 
   // Discuss well-defined method instead of getter/setter
   set selectedElement(element) {
-    if (element === this.selectedElement) return;
+    if (element?.id === this.selectedElement?.id) return;
     if (!!this.selectedElement) {
       const type = isCC(this.selectedValue)
         ? MediaUIEvents.MEDIA_DISABLE_CAPTIONS_REQUEST

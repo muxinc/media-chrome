@@ -42,8 +42,7 @@ template.innerHTML = `
     }
   </style>
   <div>
-    <span id="listbox-label" tabindex="-1" class="listbox-label">${DEFAULT_LISTBOX_LABEL}</span>
-    <ul role="listbox" aria-labelledby="listbox-label">
+    <ul tabindex="0" role="listbox" aria-label="${DEFAULT_LISTBOX_LABEL}">
     </ul>
   </div>
 `;
@@ -105,14 +104,11 @@ class MediaChromeListbox extends HTMLElement {
       }
     }
     if (attrName === 'title') {
-      console.log('title', newValue);
-      this.listboxLabelElement.innerText = newValue ?? DEFAULT_LISTBOX_LABEL;
+      this.listboxElement.setAttribute('aria-label', newValue ?? DEFAULT_LISTBOX_LABEL);
     }
   }
 
   connectedCallback() {
-    this.setAttribute('tabindex', 0);
-
     const mediaControllerId = this.getAttribute(
       MediaUIAttributes.MEDIA_CONTROLLER
     );
@@ -168,10 +164,6 @@ class MediaChromeListbox extends HTMLElement {
         )} format property. Must be a function, null, or undefined`
       );
     }
-  }
-
-  get listboxLabelElement() {
-    return this.shadowRoot.querySelector('.listbox-label');
   }
 
   get listboxElement() {
@@ -254,12 +246,14 @@ class MediaChromeListbox extends HTMLElement {
   }
 
   get selectedElement() {
-    return this.listboxElement.querySelector('[aria-selected]') ?? undefined;
+    return this.listboxElement.querySelector('[aria-selected="true"]') ?? undefined;
   }
 
   set selectedElement(element) {
-    if (element === this.selectedElement) return;
-    this.selectedElement?.removeAttribute('aria-selected');
+    if (element?.id === this.selectedElement?.id) return;
+    // NOTE: Commenting this out to test/explore explicit `aria-selected` on all elements ("true"|"false") (CJP)
+    // this.selectedElement?.removeAttribute('aria-selected');
+    this.selectedElement?.setAttribute('aria-selected', 'false');
     element?.setAttribute('aria-selected', 'true');
   }
 
@@ -281,6 +275,9 @@ class MediaChromeListbox extends HTMLElement {
       listItemEl.innerText = this.format(value);
       if (value === selectedValue) {
         this.selectedElement = listItemEl;
+      } else {
+        // NOTE: Adding this to test/explore explicit `aria-selected` on all elements ("true"|"false") (CJP)
+        listItemEl?.setAttribute('aria-selected', 'false');
       }
       return listItemEl;
     });
@@ -292,13 +289,12 @@ class MediaChromeListbox extends HTMLElement {
    *  Register events for the listbox interactions
    */
   registerEvents() {
-    this.addEventListener('focus', this.handleFocus);
-    this.addEventListener('keydown', this.handleKeyPress);
+    this.listboxElement.addEventListener('focus', this.handleFocus);
+    this.listboxElement.addEventListener('keydown', this.handleKeyPress);
     this.listboxElement.addEventListener('click', this.handleItemClick);
   }
 
   handleFocus(evt) {
-    // this.listboxElement.focus();
     this.activeElement = this.selectedElement ?? this.listItemElements[0];
   }
 
@@ -310,8 +306,8 @@ class MediaChromeListbox extends HTMLElement {
    */
   handleItemClick(evt) {
     if (evt.target.getAttribute('role') !== 'option') return;
-    this.selectedElement = evt.target;
     this.activeElement = evt.target;
+    this.selectedElement = evt.target;
   }
 
   /**
