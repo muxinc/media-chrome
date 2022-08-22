@@ -491,6 +491,9 @@ class MediaController extends MediaContainer {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'nohotkeys') {
       if (newValue !== oldValue && newValue === '') {
+        if (this.hasAttribute('hotkeys')) {
+          console.warn('Both `hotkeys` and `nohotkeys` have been enabled. No hotkeys will trigger functionality.');
+        }
         this.disableHotkeys();
       } else if (newValue !== oldValue && newValue === null) {
         this.enableHotkeys();
