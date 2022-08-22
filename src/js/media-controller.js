@@ -13,6 +13,7 @@ import {
   Window as window,
   Document as document,
 } from './utils/server-safe-globals.js';
+import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 import { containsComposedNode } from './utils/element-utils.js';
@@ -40,11 +41,14 @@ const DEFAULT_SEEK_OFFSET = 10;
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {
-    return super.observedAttributes.concat('nohotkeys');
+    return super.observedAttributes.concat('nohotkeys', 'hotkeys');
   }
+
+  #hotKeys = new AttributeTokenList(this, 'hotkeys');
 
   constructor() {
     super();
+
 
     if (!airplaySupported) {
       this._airplayUnavailable = AvailabilityStates.UNSUPPORTED;
@@ -491,6 +495,8 @@ class MediaController extends MediaContainer {
       } else if (newValue !== oldValue && newValue === null) {
         this.enableHotkeys();
       }
+    } else if (attrName === 'hotkeys') {
+        this.#hotKeys.value = newValue;
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -753,6 +759,10 @@ class MediaController extends MediaContainer {
   disableHotkeys() {
     this.removeEventListener('keydown', this.#keyDownHandler);
     this.removeEventListener('keyup', this.#keyUpHandler);
+  }
+
+  get hotKeys() {
+    return this.#hotKeys;
   }
 
   keyboardShortcutHandler(e) {
