@@ -104,6 +104,30 @@ Example (hotkeys disabled):
 </media-controller>
 ```
 
+- `hotkeys` - Use this to only allow certain hotkeys to work.
+
+If both `hotkeys` and `nohotkeys` are added to the MediaController, `nohotkeys` wins out and all hotkeys will be disabled.
+
+Example (only fullscreen hotkey allowed):
+
+```html
+<media-controller hotkeys="f">
+  <video
+    slot="media"
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+  ></video>
+  <media-control-bar>
+    <media-seek-backward-button></media-seek-backward-button>
+    <media-play-button></media-play-button>
+    <media-seek-forward-button></media-seek-forward-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-range></media-time-range>
+    <media-time-display></media-time-display>
+  </media-control-bar>
+</media-controller>
+```
+
 # Styling
 
 - `aspect-ratio` - While this is [a standard CSS style](https://css-tricks.com/almanac/properties/a/aspect-ratio/), it's fairly new, and you're likely to want to use it frequently on `<media-controller/>`, at least for `video` use cases. Most often, you'll want the `aspect-ratio` to match your video content's aspect ratio.
@@ -321,4 +345,15 @@ class MyInteractiveElement extends window.HTMLElement {
     return ['Enter', ' '];
   }
 }
+```
+
+### hotKeys property
+
+A `hootKeys` property is available on the Media Controller. It is an [AttributeTokenList](../src/js/utils/attribute-token-list.js), which is based on the [DOMTokenList API](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList) (like `classList`). This allows you to add and remove which shortcuts are allowed.
+
+Since, by default all the hotkeys listed above work, if you only wanted `Space` to toggle playback and `f` to toggle fullscreen, and didn't want the other functionality, you can add `Space` and `f` to the `hotKeys`. This will disable the other hotkeys.
+```js
+const mc = document.querySelector('media-controller')
+mc.hotKeys.add('f');
+mc.hotKeys.adD('Space');
 ```
