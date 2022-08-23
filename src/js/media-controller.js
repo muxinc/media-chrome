@@ -769,7 +769,7 @@ class MediaController extends MediaContainer {
   }
 
   #hotkeyEnabled(key) {
-    return !this.hasAttribute('hotkeys') || this.#hotKeys.contains(key);
+    return this.#hotKeys.value === '' || this.#hotKeys.contains(key);
   }
 
   keyboardShortcutHandler(e) {
