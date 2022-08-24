@@ -768,10 +768,6 @@ class MediaController extends MediaContainer {
     return this.#hotKeys;
   }
 
-  #hotkeyEnabled(key) {
-    return this.#hotKeys.value === '' || this.#hotKeys.contains(key);
-  }
-
   keyboardShortcutHandler(e) {
     // if the event's key is already handled by the target, skip keyboard shortcuts
     // keysUsed is either an attribute or a property.
@@ -788,16 +784,14 @@ class MediaController extends MediaContainer {
     let eventName, currentTimeStr, currentTime, detail, evt;
     const seekOffset = DEFAULT_SEEK_OFFSET;
 
+    // if the blocklist contains the key, skip handling it.
+    if (this.#hotKeys.contains(`no${e.key.toLowerCase()}`)) return;
+    if (e.key === ' ' && this.#hotKeys.contains(`nospace`)) return;
+
     // These event triggers were copied from the revelant buttons
     switch (e.key) {
       case ' ':
       case 'k':
-        if (!this.#hotkeyEnabled('Space') &&
-            !this.#hotkeyEnabled(' ') &&
-            !this.#hotkeyEnabled('k')) {
-          break;
-        }
-
         eventName =
           this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
             ? MediaUIEvents.MEDIA_PLAY_REQUEST
@@ -808,8 +802,6 @@ class MediaController extends MediaContainer {
         break;
 
       case 'm':
-        if (!this.#hotkeyEnabled('m')) break;
-
         eventName =
           this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off'
             ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
@@ -820,8 +812,6 @@ class MediaController extends MediaContainer {
         break;
 
       case 'f':
-        if (!this.#hotkeyEnabled('f')) break;
-
         eventName =
           this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null
             ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
@@ -832,8 +822,6 @@ class MediaController extends MediaContainer {
         break;
 
       case 'ArrowLeft':
-        if (!this.#hotkeyEnabled('ArrowLeft')) break;
-
         currentTimeStr = this.getAttribute(
           MediaUIAttributes.MEDIA_CURRENT_TIME
         );
@@ -851,8 +839,6 @@ class MediaController extends MediaContainer {
         break;
 
       case 'ArrowRight':
-        if (!this.#hotkeyEnabled('ArrowRight')) break;
-
         currentTimeStr = this.getAttribute(
           MediaUIAttributes.MEDIA_CURRENT_TIME
         );
