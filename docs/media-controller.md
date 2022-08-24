@@ -82,7 +82,7 @@ Example (disabling gestures via `gestures-disabled`):
 </media-controller>
 ```
 
-- `nohotkeys` - Use this to turn off keyboard shortcuts.
+- `nohotkeys` - Use this to turn off *all* keyboard shortcuts.
 
 Example (hotkeys disabled):
 
@@ -104,14 +104,14 @@ Example (hotkeys disabled):
 </media-controller>
 ```
 
-- `hotkeys` - Use this to only allow certain hotkeys to work.
+- `hotkeys` - Use this to turn off certain hotkeys.
 
-If both `hotkeys` and `nohotkeys` are added to the MediaController, `nohotkeys` wins out and all hotkeys will be disabled.
+If both `hotkeys` and `nohotkeys` are added to the MediaController, all hotkeys will be disabled.
 
-Example (only fullscreen hotkey allowed):
+Example (disallow seeking shortcuts):
 
 ```html
-<media-controller hotkeys="f">
+<media-controller hotkeys="noarrowleft noarrowright">
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -349,11 +349,10 @@ class MyInteractiveElement extends window.HTMLElement {
 
 ### hotKeys property
 
-A `hootKeys` property is available on the Media Controller. It is an [AttributeTokenList](../src/js/utils/attribute-token-list.js), which is based on the [DOMTokenList API](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList) (like `classList`). This allows you to add and remove which shortcuts are allowed.
+A `hotKeys` property is available on the Media Controller. It is an [AttributeTokenList](../src/js/utils/attribute-token-list.js), which is based on the [DOMTokenList API](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList) (like `classList`). This allows you to add and remove which shortcuts are allowed.
 
-Since, by default all the hotkeys listed above work, if you only wanted `Space` to toggle playback and `f` to toggle fullscreen, and didn't want the other functionality, you can add `Space` and `f` to the `hotKeys`. This will disable the other hotkeys.
+If you have a live player with no DVR functionality, you might want to turn off the seeking hotkeys. You can do this programmatically like so:
 ```js
 const mc = document.querySelector('media-controller')
-mc.hotKeys.add('f');
-mc.hotKeys.adD('Space');
+mc.hotKeys.add('noarrowleft', 'noarrowright);
 ```
