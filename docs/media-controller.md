@@ -347,12 +347,12 @@ class MyInteractiveElement extends window.HTMLElement {
 }
 ```
 
-### hotKeys property
+### hotkeys property
 
-A `hotKeys` property is available on the Media Controller. It is an [AttributeTokenList](../src/js/utils/attribute-token-list.js), which is based on the [DOMTokenList API](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList) (like `classList`). This allows you to add and remove which shortcuts are allowed.
+A `hotkeys` property is available on the Media Controller. It is an [AttributeTokenList](../src/js/utils/attribute-token-list.js), which is based on the [DOMTokenList API](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList) (like `classList`). This allows you to add and remove which shortcuts are allowed.
 
 If you have a live player with no DVR functionality, you might want to turn off the seeking hotkeys. You can do this programmatically like so:
 ```js
 const mc = document.querySelector('media-controller')
-mc.hotKeys.add('noarrowleft', 'noarrowright);
+mc.hotkeys.add('noarrowleft', 'noarrowright);
 ```

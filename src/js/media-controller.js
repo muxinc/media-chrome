@@ -49,7 +49,6 @@ class MediaController extends MediaContainer {
   constructor() {
     super();
 
-
     if (!airplaySupported) {
       this._airplayUnavailable = AvailabilityStates.UNSUPPORTED;
     }
@@ -764,7 +763,7 @@ class MediaController extends MediaContainer {
     this.removeEventListener('keyup', this.#keyUpHandler);
   }
 
-  get hotKeys() {
+  get hotkeys() {
     return this.#hotKeys;
   }
 
