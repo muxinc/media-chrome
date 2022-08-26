@@ -13,6 +13,7 @@ import {
   Window as window,
   Document as document,
 } from './utils/server-safe-globals.js';
+import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 import { containsComposedNode } from './utils/element-utils.js';
@@ -40,8 +41,10 @@ const DEFAULT_SEEK_OFFSET = 10;
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {
-    return super.observedAttributes.concat('nohotkeys');
+    return super.observedAttributes.concat('nohotkeys', 'hotkeys');
   }
+
+  #hotKeys = new AttributeTokenList(this, 'hotkeys');
 
   constructor() {
     super();
@@ -487,10 +490,15 @@ class MediaController extends MediaContainer {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'nohotkeys') {
       if (newValue !== oldValue && newValue === '') {
+        if (this.hasAttribute('hotkeys')) {
+          console.warn('Both `hotkeys` and `nohotkeys` have been set. All hotkeys will be disabled.');
+        }
         this.disableHotkeys();
       } else if (newValue !== oldValue && newValue === null) {
         this.enableHotkeys();
       }
+    } else if (attrName === 'hotkeys') {
+        this.#hotKeys.value = newValue;
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -755,6 +763,10 @@ class MediaController extends MediaContainer {
     this.removeEventListener('keyup', this.#keyUpHandler);
   }
 
+  get hotkeys() {
+    return this.#hotKeys;
+  }
+
   keyboardShortcutHandler(e) {
     // if the event's key is already handled by the target, skip keyboard shortcuts
     // keysUsed is either an attribute or a property.
@@ -770,6 +782,10 @@ class MediaController extends MediaContainer {
 
     let eventName, currentTimeStr, currentTime, detail, evt;
     const seekOffset = DEFAULT_SEEK_OFFSET;
+
+    // if the blocklist contains the key, skip handling it.
+    if (this.#hotKeys.contains(`no${e.key.toLowerCase()}`)) return;
+    if (e.key === ' ' && this.#hotKeys.contains(`nospace`)) return;
 
     // These event triggers were copied from the revelant buttons
     switch (e.key) {

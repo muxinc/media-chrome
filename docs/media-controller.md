@@ -82,12 +82,36 @@ Example (disabling gestures via `gestures-disabled`):
 </media-controller>
 ```
 
-- `nohotkeys` - Use this to turn off keyboard shortcuts.
+- `nohotkeys` - Use this to turn off *all* keyboard shortcuts.
 
 Example (hotkeys disabled):
 
 ```html
 <media-controller nohotkeys>
+  <video
+    slot="media"
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+  ></video>
+  <media-control-bar>
+    <media-seek-backward-button></media-seek-backward-button>
+    <media-play-button></media-play-button>
+    <media-seek-forward-button></media-seek-forward-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-range></media-time-range>
+    <media-time-display></media-time-display>
+  </media-control-bar>
+</media-controller>
+```
+
+- `hotkeys` - Use this to turn off certain hotkeys.
+
+If both `hotkeys` and `nohotkeys` are added to the MediaController, all hotkeys will be disabled.
+
+Example (disallow seeking shortcuts):
+
+```html
+<media-controller hotkeys="noarrowleft noarrowright">
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -321,4 +345,14 @@ class MyInteractiveElement extends window.HTMLElement {
     return ['Enter', ' '];
   }
 }
+```
+
+### hotkeys property
+
+A `hotkeys` property is available on the Media Controller. It is an [AttributeTokenList](../src/js/utils/attribute-token-list.js), which is based on the [DOMTokenList API](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList) (like `classList`). This allows you to add and remove which shortcuts are allowed.
+
+If you have a live player with no DVR functionality, you might want to turn off the seeking hotkeys. You can do this programmatically like so:
+```js
+const mc = document.querySelector('media-controller')
+mc.hotkeys.add('noarrowleft', 'noarrowright);
 ```
