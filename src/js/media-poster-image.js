@@ -13,20 +13,22 @@ template.innerHTML = `
       pointer-events: none;
       display: inline-block;
       box-sizing: border-box;
-  
+
       width: auto;
       height: auto;
     }
-  
+
     img {
       max-width: 100%;
       max-height: 100%;
       min-width: 100%;
       min-height: 100%;
-      background-size: cover;
+      background-size: contain;
+      background-position: center;
       background-repeat: no-repeat;
+      object-fit: contain;
     }
-  
+
     :host([${MediaUIAttributes.MEDIA_HAS_PLAYED}]) img {
       display: none;
     }
