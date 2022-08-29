@@ -27,7 +27,7 @@ template.innerHTML = `
       position: relative;
       display: inline-block;
       line-height: 0;
-      background-color: #000;
+      background-color: var(--media-background-color, #000);
     }
 
     :host(:not([audio])) [part~=layer]:not([part~=media-layer]) {
