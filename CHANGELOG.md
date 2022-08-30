@@ -1,3 +1,19 @@
+# [0.10.0](https://github.com/muxinc/media-chrome/compare/v0.9.0...v0.10.0) (2022-08-29)
+
+
+### Bug Fixes
+
+* prevent media-poster-image from stretching ([07fbd55](https://github.com/muxinc/media-chrome/commit/07fbd55494fe6d34401a7839230065913bda8a69))
+
+
+### Features
+
+* add a --media-background-color css var ([a4633c6](https://github.com/muxinc/media-chrome/commit/a4633c615ecaf9c6385881f85a46a2e663661aef))
+* Add hotkeys blocklist ([#286](https://github.com/muxinc/media-chrome/issues/286)) ([eb0d770](https://github.com/muxinc/media-chrome/commit/eb0d770da5667c21c39f0e858a8499066ee95d79))
+* icons refresh + sizing by height ([#273](https://github.com/muxinc/media-chrome/issues/273)) ([56ddc03](https://github.com/muxinc/media-chrome/commit/56ddc0313e86a8af31c17bd8fde9939ba68173aa))
+
+
+
 # [0.9.0](https://github.com/muxinc/media-chrome/compare/v0.8.1...v0.9.0) (2022-08-01)
 
 
