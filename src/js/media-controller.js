@@ -159,14 +159,31 @@ class MediaController extends MediaContainer {
       MEDIA_ENTER_PIP_REQUEST: () => {
         const media = this.media;
 
-        if (!document.pictureInPictureEnabled) return;
+        if (!document.pictureInPictureEnabled) {
+          alert('Picture-in-picture is not supported.');
+        };
+
+        if (!media.requestPictureInPicture) {
+          alert('This media does not support picture-in-picture.');
+        }
+
+        if (typeof media.readyState === 'number' && media.readyState == 0 ) {
+          alert('The video is not ready yet.');
+        }
 
         // Exit fullscreen if needed
         if (document[fullscreenApi.element]) {
           document[fullscreenApi.exit]();
         }
 
-        media.requestPictureInPicture();
+        media.requestPictureInPicture().catch(err => {
+          if (err.code === 11) {
+            // InvalidStateError
+            alert('The video is not ready yet.');
+          } else {
+            throw err;
+          }
+        });
       },
       MEDIA_EXIT_PIP_REQUEST: () => {
         if (document.pictureInPictureElement) {
