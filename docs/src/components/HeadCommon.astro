@@ -8,9 +8,9 @@ import '../styles/index.css';
 <meta name="viewport" content="width=device-width" />
 <meta name="generator" content={Astro.generator} />
 
-<link rel="icon" sizes="16x16" href="/favicon/android-icon-16x16.png"/>
-<link rel="icon" sizes="32x32" href="/favicon/android-icon-32x32.png"/>
-<link rel="icon" sizes="96x96" href="/favicon/favicon-96x96.png"/>
+<link rel="icon" sizes="16x16" href="/favicon/android-icon-16x16.png" />
+<link rel="icon" sizes="32x32" href="/favicon/android-icon-32x32.png" />
+<link rel="icon" sizes="96x96" href="/favicon/favicon-96x96.png" />
 
 <link rel="sitemap" href="/sitemap.xml" />
 
@@ -18,24 +18,25 @@ import '../styles/index.css';
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link
-	href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap"
-	rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400&display=swap"
+  rel="stylesheet"
 />
 
 <!-- Scrollable a11y code helper -->
-<script src="/make-scrollable-code-focusable.js" is:inline>
-
-</script>
+<script src="/make-scrollable-code-focusable.js" is:inline></script>
 
 <!-- This is intentionally inlined to avoid FOUC -->
 <script is:inline>
-	const root = document.documentElement;
-	const theme = localStorage.getItem('theme');
-	if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-		root.classList.add('theme-dark');
-	} else {
-		root.classList.remove('theme-dark');
-	}
+  const root = document.documentElement;
+  const theme = localStorage.getItem('theme');
+  if (
+    theme === 'dark' ||
+    (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)
+  ) {
+    root.classList.add('theme-dark');
+  } else {
+    root.classList.remove('theme-dark');
+  }
 </script>
 
 <!-- Global site tag (gtag.js) - Google Analytics -->

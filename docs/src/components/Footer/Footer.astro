@@ -1,19 +1,21 @@
 ---
 import AvatarList from './AvatarList.astro';
 type Props = {
-	path: string;
+  path: string;
 };
 const { path } = Astro.props as Props;
 ---
 
 <footer>
-	An open source project by <a href="https://mux.com?utm_source=mediachrome.com">Mux</a>.
+  An open source project by <a href="https://mux.com?utm_source=mediachrome.com"
+    >Mux</a
+  >.
 </footer>
 
 <style>
-	footer {
-		margin-top: auto;
-		padding: 2rem;
-		border-top: 3px solid var(--theme-divider);
-	}
+  footer {
+    margin-top: auto;
+    padding: 2rem;
+    border-top: 3px solid var(--theme-divider);
+  }
 </style>

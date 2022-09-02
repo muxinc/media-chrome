@@ -9,7 +9,7 @@ import Search from './Search';
 import ThemeToggleButton from './ThemeToggleButton';
 
 type Props = {
-	currentPage: string;
+  currentPage: string;
 };
 
 const { currentPage } = Astro.props as Props;
@@ -17,134 +17,138 @@ const lang = getLanguageFromURL(currentPage);
 ---
 
 <header>
-	<SkipToContent />
-	<nav class="nav-wrapper" title="Top Navigation">
-		<div class="menu-toggle">
-			<SidebarToggle client:idle />
-		</div>
-		<div class="logo flex">
-			<a href="/">
-				<AstroLogo size={38} />
-				<h1><span>Media</span><span>Chrome</span><strong>Docs</strong></h1>
-			</a>
-		</div>
-		<ThemeToggleButton client:visible />
-		{KNOWN_LANGUAGE_CODES.length > 1 && <LanguageSelect lang={lang} client:idle />}
-		<div class="search-item">
-			<Search client:idle />
-		</div>
-	</nav>
+  <SkipToContent />
+  <nav class="nav-wrapper" title="Top Navigation">
+    <div class="menu-toggle">
+      <SidebarToggle client:idle />
+    </div>
+    <div class="logo flex">
+      <a href="/">
+        <AstroLogo size={38} />
+        <h1><span>Media</span><span>Chrome</span><strong>Docs</strong></h1>
+      </a>
+    </div>
+    <ThemeToggleButton client:visible />
+    {
+      KNOWN_LANGUAGE_CODES.length > 1 && (
+        <LanguageSelect lang={lang} client:idle />
+      )
+    }
+    <div class="search-item">
+      <Search client:idle />
+    </div>
+  </nav>
 </header>
 
 <style>
-	header {
-		z-index: 11;
-		height: var(--theme-navbar-height);
-		width: 100%;
-		background-color: var(--theme-navbar-bg);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		overflow: hidden;
-		position: sticky;
-		top: 0;
-	}
-
-	.logo {
-		flex: 1;
-		display: flex;
-		overflow: hidden;
-		width: 30px;
-		font-size: 2rem;
-		flex-shrink: 0;
-		font-weight: 600;
-		line-height: 1;
-		color: hsla(var(--color-base-white), 100%, 1);
-		gap: 0.25em;
-		z-index: -1;
-	}
-
-	.logo a {
-		display: flex;
-		padding: 0.5em 0.25em;
-		margin: -0.5em -0.25em;
-		text-decoration: none;
-	}
-
-	.logo a {
-		transition: color 100ms ease-out;
-		color: var(--theme-text);
-	}
-
-	.logo a:hover,
-	.logo a:focus {
-		color: var(--theme-text-accent);
-	}
-
-	.logo h1 {
-		display: none;
-		font: inherit;
-		color: inherit;
-		margin: 0;
-    font-family: var(--font-mono);
-	}
-
-  .logo h1 span {
-    margin-right: .1em;
+  header {
+    z-index: 11;
+    height: var(--theme-navbar-height);
+    width: 100%;
+    background-color: var(--theme-navbar-bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: sticky;
+    top: 0;
   }
 
-	.nav-wrapper {
-		display: flex;
-		align-items: center;
-		justify-content: flex-end;
-		gap: 1em;
-		width: 100%;
-		max-width: 90em;
-		padding: 0 1rem;
-	}
+  .logo {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    width: 30px;
+    font-size: 2rem;
+    flex-shrink: 0;
+    font-weight: 600;
+    line-height: 1;
+    color: hsla(var(--color-base-white), 100%, 1);
+    gap: 0.25em;
+    z-index: -1;
+  }
 
-	@media (min-width: 50em) {
-		header {
-			position: static;
-			padding: 2rem 0rem;
-		}
+  .logo a {
+    display: flex;
+    padding: 0.5em 0.25em;
+    margin: -0.5em -0.25em;
+    text-decoration: none;
+  }
 
-		.logo {
-			width: auto;
-			margin: 0;
-			z-index: 0;
-		}
+  .logo a {
+    transition: color 100ms ease-out;
+    color: var(--theme-text);
+  }
 
-		.logo h1 {
-			display: initial;
-		}
+  .logo a:hover,
+  .logo a:focus {
+    color: var(--theme-text-accent);
+  }
 
-		.menu-toggle {
-			display: none;
-		}
-	}
+  .logo h1 {
+    display: none;
+    font: inherit;
+    color: inherit;
+    margin: 0;
+    font-family: var(--font-mono);
+  }
 
-	/** Style Algolia */
-	:root {
-		--docsearch-primary-color: var(--theme-accent);
-		--docsearch-logo-color: var(--theme-text);
-	}
+  .logo h1 span {
+    margin-right: 0.1em;
+  }
 
-	.search-item {
-		display: none;
-		position: relative;
-		z-index: 10;
-		flex-grow: 1;
-		padding-right: 0.7rem;
-		display: flex;
-		max-width: 200px;
-	}
+  .nav-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1em;
+    width: 100%;
+    max-width: 90em;
+    padding: 0 1rem;
+  }
 
-	@media (min-width: 50em) {
-		.search-item {
-			max-width: 400px;
-		}
-	}
+  @media (min-width: 50em) {
+    header {
+      position: static;
+      padding: 2rem 0rem;
+    }
+
+    .logo {
+      width: auto;
+      margin: 0;
+      z-index: 0;
+    }
+
+    .logo h1 {
+      display: initial;
+    }
+
+    .menu-toggle {
+      display: none;
+    }
+  }
+
+  /** Style Algolia */
+  :root {
+    --docsearch-primary-color: var(--theme-accent);
+    --docsearch-logo-color: var(--theme-text);
+  }
+
+  .search-item {
+    display: none;
+    position: relative;
+    z-index: 10;
+    flex-grow: 1;
+    padding-right: 0.7rem;
+    display: flex;
+    max-width: 200px;
+  }
+
+  @media (min-width: 50em) {
+    .search-item {
+      max-width: 400px;
+    }
+  }
 </style>
 
 <style is:global>

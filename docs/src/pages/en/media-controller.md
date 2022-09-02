@@ -86,7 +86,7 @@ Example (disabling gestures via `gestures-disabled`):
 </media-controller>
 ```
 
-- `nohotkeys` - Use this to turn off *all* keyboard shortcuts.
+- `nohotkeys` - Use this to turn off _all_ keyboard shortcuts.
 
 Example (hotkeys disabled):
 
@@ -327,22 +327,24 @@ As we work through other common use cases, both internally and with the communit
 
 By default, Media Controller has keyboard shortcuts that will trigger behavior when specific keys are pressed when the focus is inside the Media Controller.
 The following controls are supported:
-| Key     | Behavior          |
+| Key | Behavior |
 |---------|-------------------|
-| Space   | Toggle Playback   |
-| `k`     | Toggle Playback   |
-| `m`     | Toggle mute       |
-| `f`     | Toggle fullscreen |
-| ⬅       | Seek back 10s     |
-| ➡       | Seek forward 10s  |
+| Space | Toggle Playback |
+| `k` | Toggle Playback |
+| `m` | Toggle mute |
+| `f` | Toggle fullscreen |
+| ⬅ | Seek back 10s |
+| ➡ | Seek forward 10s |
 
 If you are implementing an interactive element that uses any of these keys, you can stopPropagation in your `keyup` handler. Alternatively, you can add a `keysUsed` property on the element or a `keysused` attribute. The values are those that match the `key` property on the KeyboardEvent. You can find a list of those values [on mdn](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values). Additionally, since the DOM list can't have the Space key represented as `" "`, we will accept `Space` as an alternative name for it.
 Example (`keysused` attribute):
+
 ```html
-   <media-time-range keysused="ArrowLeft ArrowRight Space"></media-time-range>
+<media-time-range keysused="ArrowLeft ArrowRight Space"></media-time-range>
 ```
 
 Example (`keysUsed` property):
+
 ```js
 class MyInteractiveElement extends window.HTMLElement {
   get keysUsed() {
