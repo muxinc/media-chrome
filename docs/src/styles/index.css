@@ -44,15 +44,16 @@ nav ul {
 }
 
 /* Typography */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+:is(h1, h2, h3, h4, h5, h6),
+.content > section > .heading-wrapper {
   margin-bottom: 1rem;
   font-weight: bold;
-  line-height: 1;
+  line-height: 1.3;
+}
+
+:is(h1, h2, h3, h4, h5, h6) + *,
+.content > section > .heading-wrapper + * {
+  margin-top: 0;
 }
 
 h1,
@@ -60,33 +61,116 @@ h2 {
   max-width: 40ch;
 }
 
-:is(h2, h3):not(:first-child) {
+:is(h2):not(:first-child),
+.heading-wrapper:not(:first-child):is(.level-h2) {
+  margin-top: 4rem;
+}
+
+:is(h3, h4):not(:first-child),
+.heading-wrapper:not(:first-child):is(.level-h3, .level-h4) {
   margin-top: 3rem;
 }
 
-:is(h4, h5, h6):not(:first-child) {
+:is(h5, h6):not(:first-child),
+.heading-wrapper:not(:first-child):is(.level-h5, .level-h6) {
   margin-top: 2rem;
 }
 
+:is(h1, h2, h3, h4, h5, h6, .heading-wrapper)
+  + nav
+  + :is(h1, h2, h3, h4, h5, h6, .heading-wrapper):not(:first-child) {
+  margin-top: 0;
+}
+
+:is(h1, h2, h3, h4, h5) code {
+  --border-radius: 4px;
+  --padding-block: 0.1rem;
+  --padding-inline: 0.4rem;
+  font-weight: 400;
+}
+
 h1 {
-  font-size: 2.75rem;
-  font-weight: 800;
+  font-size: 2.5rem; /* 40px */
+  font-weight: 900;
+}
+
+@media (min-width: 37.75em) {
+  h1 {
+    font-size: 3rem; /* 48px */
+  }
 }
 
 h2 {
-  font-size: 2.5rem;
+  font-size: 1.875rem; /* 30px */
 }
 
 h3 {
-  font-size: 1.75rem;
+  font-size: 1.5rem; /* 24px */
 }
 
 h4 {
-  font-size: 1.3rem;
+  font-size: 1.25rem; /* 20px */
 }
 
 h5 {
-  font-size: 1rem;
+  font-size: 1rem; /* 16px */
+}
+
+.heading-wrapper {
+  --icon-size-x: 2rem;
+  --icon-size-y: 1.5rem;
+  margin-inline-end: var(--icon-size-x);
+}
+
+.heading-wrapper:not(:first-child) {
+  margin-block: 0;
+}
+
+.heading-wrapper > * {
+  display: inline;
+  margin-bottom: 0;
+}
+
+.heading-wrapper > .anchor-link {
+  position: relative;
+  display: inline-flex;
+  margin-inline-end: calc(-1 * var(--icon-size-x));
+  width: var(--icon-size-x);
+  height: var(--icon-size-y);
+  color: var(--theme-text-light);
+  text-decoration: none;
+  justify-content: center;
+  vertical-align: baseline;
+}
+
+/* Float anchor links to the left of headings on larger screens. */
+@media (min-width: 50em) {
+  .heading-wrapper {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    align-items: baseline;
+    margin-inline-start: calc(-1 * var(--icon-size-x));
+  }
+
+  .heading-wrapper > .anchor-link {
+    margin-inline-end: 0;
+  }
+}
+
+.heading-wrapper > .anchor-link {
+  opacity: 0.5;
+}
+
+@media (hover: hover) {
+  .heading-wrapper > .anchor-link {
+    opacity: 0;
+  }
+}
+
+.heading-wrapper:hover > .anchor-link,
+.anchor-link:focus {
+  opacity: 1;
 }
 
 p {
