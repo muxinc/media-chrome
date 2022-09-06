@@ -131,6 +131,7 @@ class MediaTimeRange extends MediaChromeRange {
       MediaUIAttributes.MEDIA_PREVIEW_TIME,
       MediaUIAttributes.MEDIA_BUFFERED,
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
+      MediaUIAttributes.MEDIA_LOADING,
     ];
   }
 
@@ -185,7 +186,8 @@ class MediaTimeRange extends MediaChromeRange {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (
       attrName === MediaUIAttributes.MEDIA_CURRENT_TIME ||
-      attrName === MediaUIAttributes.MEDIA_PAUSED
+      attrName === MediaUIAttributes.MEDIA_PAUSED ||
+      attrName === MediaUIAttributes.MEDIA_LOADING
     ) {
       this._updateTimestamp = performance.now();
       this.range.value = this.mediaCurrentTime;
@@ -194,7 +196,7 @@ class MediaTimeRange extends MediaChromeRange {
       this.updateCurrentBox();
 
       cancelAnimationFrame(this._refreshId);
-      if (!this.mediaPaused) {
+      if (!this.mediaPaused && !this.mediaLoading) {
         this._refreshId = requestAnimationFrame(this._refreshBar);
       }
     }
@@ -224,6 +226,10 @@ class MediaTimeRange extends MediaChromeRange {
 
   get mediaPaused() {
     return this.hasAttribute(MediaUIAttributes.MEDIA_PAUSED);
+  }
+
+  get mediaLoading() {
+    return this.hasAttribute(MediaUIAttributes.MEDIA_LOADING);
   }
 
   get mediaDuration() {
