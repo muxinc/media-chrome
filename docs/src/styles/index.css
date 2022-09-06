@@ -96,7 +96,7 @@ h1 {
 
 @media (min-width: 37.75em) {
   h1 {
-    font-size: 3rem; /* 48px */
+    font-size: 2.75rem; /* 44px */
   }
 }
 
@@ -330,8 +330,7 @@ th {
   padding: 6px;
   text-align: left;
 }
-td:first-child,
-td:nth-child(2) {
+td:first-child {
   white-space: nowrap;
 }
 th {
