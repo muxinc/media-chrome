@@ -69,8 +69,6 @@ template.innerHTML = `
     }
 
     :host(:not([audio])) *[part~=layer][part~=centered-layer] {
-      display: flex;
-      flex-grow: 1;
       align-items: center;
       justify-content: center;
     }
