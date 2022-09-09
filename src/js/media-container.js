@@ -69,6 +69,8 @@ template.innerHTML = `
     }
 
     :host(:not([audio])) *[part~=layer][part~=centered-layer] {
+      display: flex;
+      flex-grow: 1;
       align-items: center;
       justify-content: center;
     }
@@ -79,7 +81,9 @@ template.innerHTML = `
       flex-grow: 1;
     }
 
-    .spacer {
+    slot[name=middle-chrome] {
+      display: inline;
+      flex-grow: 1;
       pointer-events: none;
       background: none;
     }
@@ -132,13 +136,11 @@ template.innerHTML = `
     </slot>
   </span>
   <span part="layer vertical-layer">
-    <slot name="top-chrome"></slot>
-    <span class="spacer"><slot name="middle-chrome"></slot></span>
-    <span part="layer centered-layer">
-      <slot name="centered-chrome"></slot>
-    </span>
+    <slot name="top-chrome" part="top chrome"></slot>
+    <slot name="middle-chrome" part="middle chrome"></slot>
+    <slot name="centered-chrome" part="layer centered-layer center centered chrome"></slot>
     <!-- default, effectively "bottom-chrome" -->
-    <slot></slot>
+    <slot part="bottom chrome"></slot>
   </span>
 `;
 
