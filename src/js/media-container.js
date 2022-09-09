@@ -124,17 +124,11 @@ template.innerHTML = `
     }
   </style>
 
-  <span part="layer media-layer">
-    <slot name="media"></slot>
-  </span>
-  <span part="layer poster-layer">
-    <slot name="poster"></slot>
-  </span>
-  <span part="layer gesture-layer">
-    <slot name="gestures-chrome">
-      <media-gesture-receiver slot="gestures-chrome"></media-gesture-receiver>
-    </slot>
-  </span>
+  <slot name="media" part="layer media-layer"></slot>
+  <slot name="poster" part="layer poster-layer"></slot>
+  <slot name="gestures-chrome" part="layer gesture-layer">
+    <media-gesture-receiver slot="gestures-chrome"></media-gesture-receiver>
+  </slot>
   <span part="layer vertical-layer">
     <slot name="top-chrome" part="top chrome"></slot>
     <slot name="middle-chrome" part="middle chrome"></slot>
