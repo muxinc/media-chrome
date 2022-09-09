@@ -1,3 +1,12 @@
+## [0.10.2](https://github.com/muxinc/media-chrome/compare/v0.10.0...v0.10.2) (2022-09-09)
+
+
+### Bug Fixes
+
+* prevent hotkeys from scrolling page ([#296](https://github.com/muxinc/media-chrome/issues/296)) ([34b9882](https://github.com/muxinc/media-chrome/commit/34b9882f9b5c18fbc659383871e4ea9357be6e1a)), closes [#295](https://github.com/muxinc/media-chrome/issues/295)
+
+
+
 ## [0.10.1](https://github.com/muxinc/media-chrome/compare/v0.10.0...v0.10.1) (2022-09-07)
 
 ### Bug Fixes
