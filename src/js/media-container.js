@@ -134,11 +134,11 @@ template.innerHTML = `
   <span part="layer vertical-layer">
     <slot name="top-chrome"></slot>
     <span class="spacer"><slot name="middle-chrome"></slot></span>
+    <span part="layer centered-layer">
+      <slot name="centered-chrome"></slot>
+    </span>
     <!-- default, effectively "bottom-chrome" -->
     <slot></slot>
-  </span>
-  <span part="layer centered-layer">
-    <slot name="centered-chrome"></slot>
   </span>
 `;
 
