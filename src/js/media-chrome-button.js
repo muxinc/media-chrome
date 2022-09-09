@@ -113,7 +113,7 @@ class MediaChromeButton extends window.HTMLElement {
         this.removeEventListener('keyup', keyUpHandler);
         return;
       }
-      this.addEventListener('keyup', keyUpHandler);
+      this.addEventListener('keyup', keyUpHandler, {once: true});
     });
   }
 

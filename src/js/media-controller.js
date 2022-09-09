@@ -763,7 +763,7 @@ class MediaController extends MediaContainer {
       e.preventDefault();
     }
 
-    this.addEventListener('keyup', this.#keyUpHandler);
+    this.addEventListener('keyup', this.#keyUpHandler, {once: true});
   }
 
   enableHotkeys() {
