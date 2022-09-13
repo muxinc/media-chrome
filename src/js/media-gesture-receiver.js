@@ -40,45 +40,7 @@ class MediaGestureReceiver extends window.HTMLElement {
     }
 
     this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
-
     shadow.appendChild(buttonHTML);
-
-    this._pointerType = undefined;
-    const pointerDownHandler = (e) => {
-      // Since not all browsers have updated to be spec compliant, where 'click' events should be PointerEvents,
-      // we can use use 'pointerdown' to reliably determine the pointer type. (CJP).
-      this._pointerType = e.pointerType;
-    };
-
-    window.addEventListener('pointerdown', pointerDownHandler);
-
-    // Cannot use composedPath or target because this is a layer on top and pointer events are disabled.
-    // Attach to window and check if click is in this element's bounding box to keep <video> right-click menu.
-    window.addEventListener('click', (event) => {
-      const { clientX, clientY } = event;
-      const { left, top, width, height } = this.getBoundingClientRect();
-      const x = clientX - left;
-      const y = clientY - top;
-      if (x < 0 || y < 0 || x > width || y > height) {
-        return;
-      }
-
-      const { pointerType = this._pointerType } = event;
-      // NOTE: While there are cases where we may have a stale this._pointerType,
-      // we're guaranteed that the most recent this._pointerType will correspond
-      // to the current click event definitionally. As such, this clearing is technically
-      // unnecessary (CJP)
-      this._pointerType = undefined;
-
-      // NOTE: Longer term, we'll likely want to delay this to support double click/double tap (CJP)
-      if (pointerType === PointerTypes.TOUCH) {
-        this.handleTap(event);
-        return;
-      } else if (pointerType === PointerTypes.MOUSE) {
-        this.handleMouseClick(event);
-        return;
-      }
-    });
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -105,6 +67,9 @@ class MediaGestureReceiver extends window.HTMLElement {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.associateElement?.(this);
     }
+
+    window.addEventListener('pointerdown', this);
+    window.addEventListener('click', this);
   }
 
   disconnectedCallback() {
@@ -114,6 +79,44 @@ class MediaGestureReceiver extends window.HTMLElement {
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
+    }
+
+    window.removeEventListener('pointerdown', this);
+    window.removeEventListener('click', this);
+  }
+
+  handleEvent(event) {
+    if (event.type === 'pointerdown') {
+      // Since not all browsers have updated to be spec compliant, where 'click' events should be PointerEvents,
+      // we can use use 'pointerdown' to reliably determine the pointer type. (CJP).
+      this._pointerType = event.pointerType;
+    } else if (event.type === 'click') {
+      // Cannot use composedPath or target because this is a layer on top and pointer events are disabled.
+      // Attach to window and check if click is in this element's bounding box to keep <video> right-click menu.
+      const { clientX, clientY } = event;
+      const { left, top, width, height } = this.getBoundingClientRect();
+      const x = clientX - left;
+      const y = clientY - top;
+      // In case this element has no dimensions (or display: none) return.
+      if (x < 0 || y < 0 || x > width || y > height || (width === 0 && height === 0)) {
+        return;
+      }
+
+      const { pointerType = this._pointerType } = event;
+      // NOTE: While there are cases where we may have a stale this._pointerType,
+      // we're guaranteed that the most recent this._pointerType will correspond
+      // to the current click event definitionally. As such, this clearing is technically
+      // unnecessary (CJP)
+      this._pointerType = undefined;
+
+      // NOTE: Longer term, we'll likely want to delay this to support double click/double tap (CJP)
+      if (pointerType === PointerTypes.TOUCH) {
+        this.handleTap(event);
+        return;
+      } else if (pointerType === PointerTypes.MOUSE) {
+        this.handleMouseClick(event);
+        return;
+      }
     }
   }
 
