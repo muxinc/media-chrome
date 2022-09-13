@@ -73,7 +73,7 @@ _From [Mux](https://mux.com?utm_source=github&utm_medium=social&utm_campaign=med
 
 ## Advanced Usage
 
-For a more in depth discussion of working with `<media-controller/>`, including more complex controls layouts, check out [the docs](./docs/media-controller.md).
+For a more in depth discussion of working with `<media-controller/>`, including more complex controls layouts, check out [the docs](https://media-chrome-docs.vercel.app/en/media-controller).
 
 ## _Quick_ Demo
 
@@ -161,26 +161,26 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 
 ### Included elements
 
-| Element                        | Description                                                                                                                                                                                                                                                                    |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `<media-controller>`           | Wraps controls and the media element, and handles communication between them. ([docs](./docs/media-controller.md))                                                                                                                                                             |
-| `<media-control-bar>`          | Optional controls container to help align the controls in the standard fashion.                                                                                                                                                                                                |
-| `<media-play-button>`          | Toggle media playback. ([docs](./docs/media-play-button.md))                                                                                                                                                                                                                   |
-| `<media-mute-button>`          | Toggle the sound. The icon responds to volume changes and acts as part of the typical volume control. ([docs](./docs/media-mute-button.md))                                                                                                                                    |
-| `<media-volume-range>`         | Change the volume of the sound. ([docs](./docs/media-volume-range.md))                                                                                                                                                                                                         |
-| `<media-time-range>`           | See how far the playhead is through the media duration, and seek to new times. ([docs](./docs/media-time-range.md))                                                                                                                                                            |
-| `<media-time-display>`         | Show the time of the playhead.<br><br>Options: <br>`<media-time-display remaining>` Show as remaining time <br>`<media-time-display show-duration>` Also show the duration after a slash. Ex: `1:00 / 2:00`. ([docs](./docs/media-time-display.md))                            |
-| `<media-duration-display>`     | Show the duration of the media                                                                                                                                                                                                                                                 |
-| `<media-fullscreen-button>`    | Toggle fullscreen viewing. ([docs](./docs/media-fullscreen-button.md))                                                                                                                                                                                                         |
-| `<media-pip-button>`           | Toggle picture-in-picture mode of the video. ([docs](./docs/media-pip-button.md))                                                                                                                                                                                              |
-| `<media-playback-rate-button>` | Change the speed of playback. ([docs](./docs/media-playback-rate-button.md))                                                                                                                                                                                                   |
-| `<media-seek-backward-button>` | Jump back `n` seconds in the media (default 30). ([docs](./docs/media-seek-backward-button.md))                                                                                                                                                                                |
-| `<media-seek-forward-button>`  | Jump ahead `n` seconds in the media (default 30). ([docs](./docs/media-seek-forward-button.md))                                                                                                                                                                                |
-| `<media-captions-button>`      | Show/disable captions (if no captions are available, will fallback to subtitles by default unless `no-subtitles-fallback` attribute is set). ([docs](./docs/media-captions-button.md))                                                                                         |
-| `<media-poster-image>`         | Show a poster image that's displayed until media begins playing for the first time. Optionally also accepts a `placeholder-src` attribute that can be used for content that immediately loads, such as an inlined, low-resolution image. ([docs](./docs/media-poster-image.md) |
-| `<media-airplay-button>`       | Bring up the AirPlay menu to select/deselect AirPlay playback (Safari only). ([docs](./docs/media-airplay-button.md))                                                                                                                                                          |
-| `<media-loading-indicator>`    | Show when your media content is loading/buffering. ([docs](./docs/media-loading-indicator.md))                                                                                                                                                                                 |
-| More to come                   | Requests and contributions welcome                                                                                                                                                                                                                                             |
+| Element                        | Description                                                                                                                                                                                                                                                                                                  |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `<media-controller>`           | Wraps controls and the media element, and handles communication between them. ([docs](https://media-chrome-docs.vercel.app/en/media-controller))                                                                                                                                                             |
+| `<media-control-bar>`          | Optional controls container to help align the controls in the standard fashion.                                                                                                                                                                                                                              |
+| `<media-play-button>`          | Toggle media playback. ([docs](https://media-chrome-docs.vercel.app/en/media-play-button))                                                                                                                                                                                                                   |
+| `<media-mute-button>`          | Toggle the sound. The icon responds to volume changes and acts as part of the typical volume control. ([docs](https://media-chrome-docs.vercel.app/en/media-mute-button))                                                                                                                                    |
+| `<media-volume-range>`         | Change the volume of the sound. ([docs](https://media-chrome-docs.vercel.app/en/media-volume-range))                                                                                                                                                                                                         |
+| `<media-time-range>`           | See how far the playhead is through the media duration, and seek to new times. ([docs](https://media-chrome-docs.vercel.app/en/media-time-range))                                                                                                                                                            |
+| `<media-time-display>`         | Show the time of the playhead.<br><br>Options: <br>`<media-time-display remaining>` Show as remaining time <br>`<media-time-display show-duration>` Also show the duration after a slash. Ex: `1:00 / 2:00`. ([docs](https://media-chrome-docs.vercel.app/en/media-time-display))                            |
+| `<media-duration-display>`     | Show the duration of the media                                                                                                                                                                                                                                                                               |
+| `<media-fullscreen-button>`    | Toggle fullscreen viewing. ([docs](https://media-chrome-docs.vercel.app/en/media-fullscreen-button))                                                                                                                                                                                                         |
+| `<media-pip-button>`           | Toggle picture-in-picture mode of the video. ([docs](https://media-chrome-docs.vercel.app/en/media-pip-button))                                                                                                                                                                                              |
+| `<media-playback-rate-button>` | Change the speed of playback. ([docs](https://media-chrome-docs.vercel.app/en/media-playback-rate-button))                                                                                                                                                                                                   |
+| `<media-seek-backward-button>` | Jump back `n` seconds in the media (default 30). ([docs](https://media-chrome-docs.vercel.app/en/media-seek-backward-button))                                                                                                                                                                                |
+| `<media-seek-forward-button>`  | Jump ahead `n` seconds in the media (default 30). ([docs](https://media-chrome-docs.vercel.app/en/media-seek-forward-button))                                                                                                                                                                                |
+| `<media-captions-button>`      | Show/disable captions (if no captions are available, will fallback to subtitles by default unless `no-subtitles-fallback` attribute is set). ([docs](https://media-chrome-docs.vercel.app/en/media-captions-button))                                                                                         |
+| `<media-poster-image>`         | Show a poster image that's displayed until media begins playing for the first time. Optionally also accepts a `placeholder-src` attribute that can be used for content that immediately loads, such as an inlined, low-resolution image. ([docs](https://media-chrome-docs.vercel.app/en/media-poster-image) |
+| `<media-airplay-button>`       | Bring up the AirPlay menu to select/deselect AirPlay playback (Safari only). ([docs](https://media-chrome-docs.vercel.app/en/media-airplay-button))                                                                                                                                                          |
+| `<media-loading-indicator>`    | Show when your media content is loading/buffering. ([docs](https://media-chrome-docs.vercel.app/en/media-loading-indicator))                                                                                                                                                                                 |
+| More to come                   | Requests and contributions welcome                                                                                                                                                                                                                                                                           |
 
 ### Extras
 
@@ -229,7 +229,7 @@ Be sure to include the `slot="media"` attribute in the player's tag.
 
 ## Use with React
 
-While you technically can use the Media Chrome directly with React, it can sometimes be a bit clunky to work with Web Components in React, and some things just don't feel idiomatic to the framework. To help with this, we've published some React wrapper components for all of our core Elements. You can read up on using them [here](./docs/react.md).
+While you technically can use the Media Chrome directly with React, it can sometimes be a bit clunky to work with Web Components in React, and some things just don't feel idiomatic to the framework. To help with this, we've published some React wrapper components for all of our core Elements. You can read up on using them [here](https://media-chrome-docs.vercel.app/en/react).
 
 ## Why?
 
@@ -257,9 +257,9 @@ Web components. @heff spoke about [the potential of web components for video](ht
 
 Listen for the `update` event on the element to get the selected start and end timestamps. Full example in examples/clip-selector.html.
 
-![media clip selector example](./docs/assets/media-clip-selector.gif?raw=true)
+![media clip selector example](https://media-chrome-docs.vercel.app/en/assets/media-clip-selector.gif?raw=true)
 
 ## Architecture
 
 - [Architecture Notes](./ARCHITECTURE.md)
-- [Architecture Diagrams](./docs/architecture-diagrams.md)
+- [Architecture Diagrams](https://media-chrome-docs.vercel.app/en/architecture-diagrams)
