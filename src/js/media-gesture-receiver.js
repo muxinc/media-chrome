@@ -6,7 +6,6 @@ import {
 } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
-
 template.innerHTML = `
 <style>
   :host {
@@ -15,6 +14,12 @@ template.innerHTML = `
   }
 </style>
 `;
+
+const resizeObserver = new ResizeObserver((entries) => {
+  for (const entry of entries) {
+    entry.target.rect = entry.target.getBoundingClientRect();
+  }
+});
 
 class MediaGestureReceiver extends window.HTMLElement {
   // NOTE: Currently "baking in" actions + attrs until we come up with
@@ -68,6 +73,8 @@ class MediaGestureReceiver extends window.HTMLElement {
       mediaControllerEl?.associateElement?.(this);
     }
 
+    this.rect = this.getBoundingClientRect();
+    resizeObserver.observe(this);
     window.addEventListener('pointerdown', this);
     window.addEventListener('click', this);
   }
@@ -81,11 +88,15 @@ class MediaGestureReceiver extends window.HTMLElement {
       mediaControllerEl?.unassociateElement?.(this);
     }
 
+    resizeObserver.unobserve(this);
+    this.rect = undefined;
     window.removeEventListener('pointerdown', this);
     window.removeEventListener('click', this);
   }
 
   handleEvent(event) {
+    if (!this.rect) return;
+
     if (event.type === 'pointerdown') {
       // Since not all browsers have updated to be spec compliant, where 'click' events should be PointerEvents,
       // we can use use 'pointerdown' to reliably determine the pointer type. (CJP).
@@ -94,7 +105,7 @@ class MediaGestureReceiver extends window.HTMLElement {
       // Cannot use composedPath or target because this is a layer on top and pointer events are disabled.
       // Attach to window and check if click is in this element's bounding box to keep <video> right-click menu.
       const { clientX, clientY } = event;
-      const { left, top, width, height } = this.getBoundingClientRect();
+      const { left, top, width, height } = this.rect;
       const x = clientX - left;
       const y = clientY - top;
       // In case this element has no dimensions (or display: none) return.
