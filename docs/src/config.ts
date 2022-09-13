@@ -1,6 +1,6 @@
 export const SITE = {
   title: 'Media Chrome Docs',
-  description: 'Your website description.',
+  description: 'Documentation for Media Chrome, a set of fully customizable media player controls using web components.',
   defaultLanguage: 'en_US',
 };
 
