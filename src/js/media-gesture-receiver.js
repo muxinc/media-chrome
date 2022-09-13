@@ -11,11 +11,7 @@ template.innerHTML = `
 <style>
   :host {
     display: inline-block;
-    width: auto;
-    height: auto;
     box-sizing: border-box;
-
-    pointer-events: auto;
   }
 </style>
 `;
@@ -54,9 +50,19 @@ class MediaGestureReceiver extends window.HTMLElement {
       this._pointerType = e.pointerType;
     };
 
-    this.addEventListener('pointerdown', pointerDownHandler);
+    window.addEventListener('pointerdown', pointerDownHandler);
 
-    this.addEventListener('click', (event) => {
+    // Cannot use composedPath or target because this is a layer on top and pointer events are disabled.
+    // Attach to window and check if click is in this element's bounding box to keep <video> right-click menu.
+    window.addEventListener('click', (event) => {
+      const { clientX, clientY } = event;
+      const { left, top, width, height } = this.getBoundingClientRect();
+      const x = clientX - left;
+      const y = clientY - top;
+      if (x < 0 || y < 0 || x > width || y > height) {
+        return;
+      }
+
       const { pointerType = this._pointerType } = event;
       // NOTE: While there are cases where we may have a stale this._pointerType,
       // we're guaranteed that the most recent this._pointerType will correspond
