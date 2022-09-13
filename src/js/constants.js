@@ -80,6 +80,7 @@ export const MediaUIAttributes = {
   MEDIA_CONTROLLER: 'media-controller',
   MEDIA_LOADING: 'media-loading',
   MEDIA_BUFFERED: 'media-buffered',
+  MEDIA_CLICK: 'media-click',
 };
 
 // Maps from state change event type -> attribute name

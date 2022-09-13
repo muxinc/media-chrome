@@ -11,11 +11,7 @@ template.innerHTML = `
 <style>
   :host {
     display: inline-block;
-    width: auto;
-    height: auto;
     box-sizing: border-box;
-
-    pointer-events: auto;
   }
 </style>
 `;
@@ -24,7 +20,7 @@ class MediaGestureReceiver extends window.HTMLElement {
   // NOTE: Currently "baking in" actions + attrs until we come up with
   // a more robust architecture (CJP)
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CONTROLLER, MediaUIAttributes.MEDIA_PAUSED];
+    return [MediaUIAttributes.MEDIA_CONTROLLER, MediaUIAttributes.MEDIA_PAUSED, MediaUIAttributes.MEDIA_CLICK];
   }
 
   constructor(options = {}) {
@@ -46,33 +42,6 @@ class MediaGestureReceiver extends window.HTMLElement {
     this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
     shadow.appendChild(buttonHTML);
-
-    this._pointerType = undefined;
-    const pointerDownHandler = (e) => {
-      // Since not all browsers have updated to be spec compliant, where 'click' events should be PointerEvents,
-      // we can use use 'pointerdown' to reliably determine the pointer type. (CJP).
-      this._pointerType = e.pointerType;
-    };
-
-    this.addEventListener('pointerdown', pointerDownHandler);
-
-    this.addEventListener('click', (event) => {
-      const { pointerType = this._pointerType } = event;
-      // NOTE: While there are cases where we may have a stale this._pointerType,
-      // we're guaranteed that the most recent this._pointerType will correspond
-      // to the current click event definitionally. As such, this clearing is technically
-      // unnecessary (CJP)
-      this._pointerType = undefined;
-
-      // NOTE: Longer term, we'll likely want to delay this to support double click/double tap (CJP)
-      if (pointerType === PointerTypes.TOUCH) {
-        this.handleTap(event);
-        return;
-      } else if (pointerType === PointerTypes.MOUSE) {
-        this.handleMouseClick(event);
-        return;
-      }
-    });
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -84,6 +53,22 @@ class MediaGestureReceiver extends window.HTMLElement {
       if (newValue) {
         const mediaControllerEl = document.getElementById(newValue);
         mediaControllerEl?.associateElement?.(this);
+      }
+    }
+
+    if (attrName === MediaUIAttributes.MEDIA_CLICK && newValue) {
+      const [pointerType, offsets] = newValue.split(' ');
+      const [offsetX, offsetY] = offsets.split(':');
+      const { x, y, width, height } = this.getBoundingClientRect();
+      if (offsetX >= x && offsetY >= y && offsetX <= width && offsetY <= height) {
+        // NOTE: Longer term, we'll likely want to delay this to support double click/double tap (CJP)
+        if (pointerType === PointerTypes.TOUCH) {
+          this.handleTap();
+          return;
+        } else if (pointerType === PointerTypes.MOUSE) {
+          this.handleMouseClick();
+          return;
+        }
       }
     }
   }
