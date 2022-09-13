@@ -12,7 +12,7 @@ import {
   Window as window,
   Document as document,
 } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
+import { MediaUIEvents, MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { containsComposedNode } from './utils/element-utils.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
@@ -251,15 +251,14 @@ class MediaContainer extends window.HTMLElement {
 
   mediaSetCallback(media) {
     // Toggle play/pause with clicks on the media element itself
-    this._mediaClickPlayToggle = (event) => {
-      this.propagateMediaState(MediaUIAttributes.MEDIA_CLICK, `${event.pointerType} ${event.offsetX}:${event.offsetY}`);
-      this.propagateMediaState(MediaUIAttributes.MEDIA_CLICK, undefined);
+    this._mediaClickPlayToggle = () => {
+      const eventName = media.paused
+        ? MediaUIEvents.MEDIA_PLAY_REQUEST
+        : MediaUIEvents.MEDIA_PAUSE_REQUEST;
+      this.dispatchEvent(
+        new window.CustomEvent(eventName, { composed: true, bubbles: true })
+      );
     };
-    media.addEventListener('click', this._mediaClickPlayToggle);
-  }
-
-  mediaUnsetCallback(media) {
-    media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 
   handleMediaUpdated(media) {
@@ -292,6 +291,10 @@ class MediaContainer extends window.HTMLElement {
 
     // Exists and isn't a custom element. Resolve.
     return resolveMediaPromise(media);
+  }
+
+  mediaUnsetCallback() {
+    // media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 
   connectedCallback() {
