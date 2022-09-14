@@ -79,7 +79,9 @@ template.innerHTML = `
       flex-grow: 1;
     }
 
-    .spacer {
+    slot[name=middle-chrome] {
+      display: inline;
+      flex-grow: 1;
       pointer-events: none;
       background: none;
     }
@@ -120,25 +122,17 @@ template.innerHTML = `
     }
   </style>
 
-  <span part="layer media-layer">
-    <slot name="media"></slot>
-  </span>
-  <span part="layer poster-layer">
-    <slot name="poster"></slot>
-  </span>
-  <span part="layer gesture-layer">
-    <slot name="gestures-chrome">
-      <media-gesture-receiver slot="gestures-chrome"></media-gesture-receiver>
-    </slot>
-  </span>
+  <slot name="media" part="layer media-layer"></slot>
+  <slot name="poster" part="layer poster-layer"></slot>
+  <slot name="gestures-chrome" part="layer gesture-layer">
+    <media-gesture-receiver slot="gestures-chrome"></media-gesture-receiver>
+  </slot>
   <span part="layer vertical-layer">
-    <slot name="top-chrome"></slot>
-    <span class="spacer"><slot name="middle-chrome"></slot></span>
+    <slot name="top-chrome" part="top chrome"></slot>
+    <slot name="middle-chrome" part="middle chrome"></slot>
+    <slot name="centered-chrome" part="layer centered-layer center centered chrome"></slot>
     <!-- default, effectively "bottom-chrome" -->
-    <slot></slot>
-  </span>
-  <span part="layer centered-layer">
-    <slot name="centered-chrome"></slot>
+    <slot part="bottom chrome"></slot>
   </span>
 `;
 
@@ -366,7 +360,7 @@ class MediaContainer extends window.HTMLElement {
       // so, only run pointermove for mouse
       if (e.pointerType !== 'mouse') return;
 
-      if (!containsComposedNode(this, e.target)) return;
+      if (e.target === this) return;
 
       setActive();
       // Stay visible if hovered over control bar
