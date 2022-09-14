@@ -57,7 +57,7 @@ template.innerHTML = `
      */
     :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]),
     :host(:not([audio])[gestures-disabled]) media-gesture-receiver[slot=gestures-chrome] {
-      pointer-events: none;
+      display: none;
     }
 
     /*
