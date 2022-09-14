@@ -360,7 +360,7 @@ class MediaContainer extends window.HTMLElement {
       // so, only run pointermove for mouse
       if (e.pointerType !== 'mouse') return;
 
-      if (!containsComposedNode(this, e.target)) return;
+      if (e.target === this) return;
 
       setActive();
       // Stay visible if hovered over control bar
