@@ -1,3 +1,20 @@
+## [0.10.4](https://github.com/muxinc/media-chrome/compare/v0.10.2...v0.10.4) (2022-09-15)
+
+
+### Bug Fixes
+
+* `gestures-disabled` attribute ([#304](https://github.com/muxinc/media-chrome/issues/304)) ([0c18074](https://github.com/muxinc/media-chrome/commit/0c1807488c694b34bd64b95134ec0d6de7291ac7))
+* fix [#299](https://github.com/muxinc/media-chrome/issues/299) right click on media element ([#301](https://github.com/muxinc/media-chrome/issues/301)) ([a498bb1](https://github.com/muxinc/media-chrome/commit/a498bb15a5b9eebacc177e21e8206ffcbc717940))
+* gesture captured on controls bug ([#305](https://github.com/muxinc/media-chrome/issues/305)) ([917839b](https://github.com/muxinc/media-chrome/commit/917839b5d1ebd788ec4f6a44952b6c1bc3b2b512))
+* keyup handlers for some keyboard behavior should only apply once ([#300](https://github.com/muxinc/media-chrome/issues/300)) ([34fb6d3](https://github.com/muxinc/media-chrome/commit/34fb6d3113acb04f0071c53f4efa3e1b03ba23ee))
+
+
+### Features
+
+* fix order of layers + add chrome CSS parts ([#298](https://github.com/muxinc/media-chrome/issues/298)) ([2c81cbc](https://github.com/muxinc/media-chrome/commit/2c81cbc15800bf6986e3d0d6e67468bc42daf6e1))
+
+
+
 ## [0.10.3](https://github.com/muxinc/media-chrome/compare/v0.10.2...v0.10.3) (2022-09-14)
 
 
