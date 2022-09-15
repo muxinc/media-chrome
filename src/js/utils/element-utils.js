@@ -21,6 +21,13 @@ export const containsComposedNode = (rootNode, childNode) => {
   return containsComposedNode(rootNode, childNode.getRootNode().host);
 };
 
+export const closestComposedNode = (childNode, selector) => {
+  if (!childNode) return null;
+  const closest = childNode.closest(selector);
+  if (closest) return closest;
+  return closestComposedNode(childNode.getRootNode().host, selector);
+};
+
 /**
  * Get or insert a CSS rule with a selector in an element containing <style> tags.
  * @param  {Element} styleParent

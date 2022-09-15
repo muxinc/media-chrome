@@ -1,5 +1,6 @@
 import { MediaUIAttributes, MediaUIEvents, PointerTypes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
+import { closestComposedNode } from './utils/element-utils.js';
 import {
   Window as window,
   Document as document,
@@ -60,32 +61,30 @@ class MediaGestureReceiver extends window.HTMLElement {
     this.setAttribute('tabindex', -1);
     this.setAttribute('aria-hidden', true);
 
-    const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
-    );
-    if (mediaControllerId) {
-      const mediaControllerEl = document.getElementById(mediaControllerId);
+    const mediaControllerEl = getMediaControllerEl(this);
+    if (this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER)) {
       mediaControllerEl?.associateElement?.(this);
     }
 
-    window.addEventListener('pointerdown', this);
-    window.addEventListener('click', this);
+    mediaControllerEl?.addEventListener('pointerdown', this);
+    mediaControllerEl?.addEventListener('click', this);
   }
 
   disconnectedCallback() {
-    const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
-    );
-    if (mediaControllerId) {
-      const mediaControllerEl = document.getElementById(mediaControllerId);
+    const mediaControllerEl = getMediaControllerEl(this);
+    if (this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER)) {
       mediaControllerEl?.unassociateElement?.(this);
     }
 
-    window.removeEventListener('pointerdown', this);
-    window.removeEventListener('click', this);
+    mediaControllerEl?.removeEventListener('pointerdown', this);
+    mediaControllerEl?.removeEventListener('click', this);
   }
 
   handleEvent(event) {
+    const composedTarget = event.composedPath()?.[0];
+    const allowList = ['video', 'media-controller'];
+    if (!allowList.includes(composedTarget?.localName)) return;
+
     if (event.type === 'pointerdown') {
       // Since not all browsers have updated to be spec compliant, where 'click' events should be PointerEvents,
       // we can use use 'pointerdown' to reliably determine the pointer type. (CJP).
@@ -97,8 +96,14 @@ class MediaGestureReceiver extends window.HTMLElement {
       const { left, top, width, height } = this.getBoundingClientRect();
       const x = clientX - left;
       const y = clientY - top;
-      // In case this element has no dimensions (or display: none) return.
-      if (x < 0 || y < 0 || x > width || y > height || (width === 0 && height === 0)) {
+      if (
+        x < 0 ||
+        y < 0 ||
+        x > width ||
+        y > height ||
+        // In case this element has no dimensions (or display: none) return.
+        (width === 0 && height === 0)
+      ) {
         return;
       }
 
@@ -135,9 +140,16 @@ class MediaGestureReceiver extends window.HTMLElement {
   }
 }
 
-defineCustomElement(
-  'media-gesture-receiver',
-  MediaGestureReceiver
-);
+function getMediaControllerEl(controlEl) {
+  const mediaControllerId = controlEl.getAttribute(
+    MediaUIAttributes.MEDIA_CONTROLLER
+  );
+  if (mediaControllerId) {
+    return document.getElementById(mediaControllerId);
+  }
+  return closestComposedNode(controlEl, 'media-controller');
+}
+
+defineCustomElement('media-gesture-receiver', MediaGestureReceiver);
 
 export default MediaGestureReceiver;

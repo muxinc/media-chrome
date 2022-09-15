@@ -14,7 +14,6 @@ import {
 } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
-import { containsComposedNode } from './utils/element-utils.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
 
