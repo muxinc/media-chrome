@@ -191,6 +191,7 @@ class MediaController extends MediaContainer {
             if (media.readyState === 0 && media.preload === 'none') {
               function cleanup() {
                 media.removeEventListener('loadedmetadata', tryPip);
+                media.preload = 'none';
               }
 
               function tryPip() {
@@ -202,7 +203,7 @@ class MediaController extends MediaContainer {
               media.preload = 'metadata';
 
               // No easy way to know if this failed and we should clean up
-              // quickly if it doesn't to prevent other issues
+              // quickly if it doesn't to prevent an awkward delay for the user
               setTimeout(()=>{
                 if (media.readyState === 0) warnNotReady();
                 cleanup();
