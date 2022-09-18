@@ -187,7 +187,7 @@ class MediaController extends MediaContainer {
             // if we can rely on readyState and preload
             // Only works in Chrome currently. Safari doesn't allow triggering
             // in an event listener. Also requires readyState == 4.
-            // Firefox doesn't do PiP yet.
+            // Firefox doesn't have the PiP API yet.
             if (media.readyState === 0 && media.preload === 'none') {
               function cleanup() {
                 media.removeEventListener('loadedmetadata', tryPip);
