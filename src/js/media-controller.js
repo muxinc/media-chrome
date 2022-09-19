@@ -159,14 +159,64 @@ class MediaController extends MediaContainer {
       MEDIA_ENTER_PIP_REQUEST: () => {
         const media = this.media;
 
-        if (!document.pictureInPictureEnabled) return;
+        if (!document.pictureInPictureEnabled) {
+          console.warn('MediaChrome: Picture-in-picture is not enabled');
+          // Placeholder for emitting a user-facing warning
+          return;
+        };
+
+        if (!media.requestPictureInPicture) {
+          console.warn('MediaChrome: The current media does not support picture-in-picture');
+          // Placeholder for emitting a user-facing warning
+          return;
+        }
 
         // Exit fullscreen if needed
         if (document[fullscreenApi.element]) {
           document[fullscreenApi.exit]();
         }
 
-        media.requestPictureInPicture();
+        const warnNotReady = (err) => {
+          console.warn('MediaChrome: The media is not ready for picture-in-picture. It must have a readyState > 0.');
+        };
+
+        media.requestPictureInPicture().catch(err => {
+          // InvalidStateError, readyState == 0 (Not ready)
+          if (err.code === 11) {
+            // We can assume the viewer wants the video to load, so attempt to
+            // if we can rely on readyState and preload
+            // Only works in Chrome currently. Safari doesn't allow triggering
+            // in an event listener. Also requires readyState == 4.
+            // Firefox doesn't have the PiP API yet.
+            if (media.readyState === 0 && media.preload === 'none') {
+              function cleanup() {
+                media.removeEventListener('loadedmetadata', tryPip);
+                media.preload = 'none';
+              }
+
+              function tryPip() {
+                media.requestPictureInPicture().catch(warnNotReady);
+                cleanup();
+              }
+
+              media.addEventListener('loadedmetadata', tryPip);
+              media.preload = 'metadata';
+
+              // No easy way to know if this failed and we should clean up
+              // quickly if it doesn't to prevent an awkward delay for the user
+              setTimeout(()=>{
+                if (media.readyState === 0) warnNotReady();
+                cleanup();
+              }, 1000);
+            } else {
+              // Rethrow if unknown context
+              throw err;
+            }
+          } else {
+            // Rethrow if unknown context
+            throw err;
+          }
+        });
       },
       MEDIA_EXIT_PIP_REQUEST: () => {
         if (document.pictureInPictureElement) {
