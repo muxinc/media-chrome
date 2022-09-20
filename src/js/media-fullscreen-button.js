@@ -26,15 +26,21 @@ const exitFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
   <style>
-  :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot:not([name=exit]) > *, 
+  :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot:not([name=exit]) > *,
   :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) ::slotted(:not([slot=exit])) {
     display: none !important;
   }
 
   /* Double negative, but safer if display doesn't equal 'block' */
-  :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) slot:not([name=enter]) > *, 
+  :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) slot:not([name=enter]) > *,
   :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) ::slotted(:not([slot=enter])) {
     display: none !important;
+  }
+
+  :host(:disabled),
+  :host([aria-disabled]) {
+    cursor: not-allowed;
+    opacity: 60%;
   }
   </style>
 
@@ -58,6 +64,20 @@ class MediaFullscreenButton extends MediaChromeButton {
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
+
+    if (!document.fullscreenEnabled) {
+      this.disable();
+    }
+  }
+
+  disable() {
+    this.setAttribute('disabled', '');
+    this.setAttribute('aria-disabled', '');
+  }
+
+  enable() {
+    this.removeAttribute('disabled');
+    this.removeAttribute('aria-disabled');
   }
 
   connectedCallback() {
