@@ -17,7 +17,7 @@ import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 import { containsComposedNode } from './utils/element-utils.js';
-import MediaCaptionsButton from './media-captions-button.js';
+import { toggleSubsCaps } from './utils/captions.js';
 
 import {
   MediaUIEvents,
@@ -884,7 +884,7 @@ class MediaController extends MediaContainer {
         break;
 
       case 'c':
-        MediaCaptionsButton.prototype.handleClick.call(this, e);
+        toggleSubsCaps(this);
         break;
 
       case 'ArrowLeft':
