@@ -556,6 +556,11 @@ class MediaController extends MediaContainer {
 
   mediaSetCallback(media) {
     super.mediaSetCallback(media);
+
+    if (!media.hasAttribute('tabindex')) {
+      media.setAttribute('tabindex', -1);
+    }
+
     // Listen for media state changes and propagate them to children and associated els
     Object.keys(this._mediaStatePropagators).forEach((key) => {
       const events = key.split(',');
