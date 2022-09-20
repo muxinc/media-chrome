@@ -25,12 +25,12 @@ _None_
 ### Example
 
 ```html
-<media-fullscreen-button>
+<media-mute-button>
   <svg slot="off"><!-- your SVG --></svg>
   <svg slot="low"><!-- your SVG --></svg>
   <svg slot="medium"><!-- your SVG --></svg>
   <svg slot="high"><!-- your SVG --></svg>
-</media-fullscreen-button>
+</media-mute-button>
 ```
 
 ## Styling
