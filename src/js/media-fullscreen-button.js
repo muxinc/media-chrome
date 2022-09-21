@@ -36,12 +36,6 @@ slotTemplate.innerHTML = `
   :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) ::slotted(:not([slot=enter])) {
     display: none !important;
   }
-
-  :host(:disabled),
-  :host([aria-disabled]) {
-    cursor: not-allowed;
-    opacity: 60%;
-  }
   </style>
 
   <slot name="enter">${enterFullscreenIcon}</slot>
@@ -59,25 +53,15 @@ const updateAriaLabel = (el) => {
 
 class MediaFullscreenButton extends MediaChromeButton {
   static get observedAttributes() {
-    return [...super.observedAttributes, MediaUIAttributes.MEDIA_IS_FULLSCREEN];
+    return [
+      ...super.observedAttributes,
+      MediaUIAttributes.MEDIA_IS_FULLSCREEN,
+      MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE
+    ];
   }
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
-
-    if (!document.fullscreenEnabled) {
-      this.disable();
-    }
-  }
-
-  disable() {
-    this.setAttribute('disabled', '');
-    this.setAttribute('aria-disabled', '');
-  }
-
-  enable() {
-    this.removeAttribute('disabled');
-    this.removeAttribute('aria-disabled');
   }
 
   connectedCallback() {
