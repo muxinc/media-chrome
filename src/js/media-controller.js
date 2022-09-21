@@ -53,6 +53,9 @@ class MediaController extends MediaContainer {
     if (!airplaySupported) {
       this._airplayUnavailable = AvailabilityStates.UNSUPPORTED;
     }
+    if (!fullscreenEnabled) {
+      this._fullscreenUnavailable = AvailabilityStates.UNAVAILABLE;
+    }
     if (!castSupported) {
       this._castUnavailable = AvailabilityStates.UNSUPPORTED;
     }
@@ -133,6 +136,10 @@ class MediaController extends MediaContainer {
       //   - Element.requestFullscreen()
       //
       MEDIA_ENTER_FULLSCREEN_REQUEST: () => {
+        if (!document.fullscreenEnabled) {
+          console.warn('Fullscreen support is unavailable; not entering fullscreen');
+          return;
+        }
         const media = this.media;
 
         if (document.pictureInPictureElement) {
@@ -704,6 +711,11 @@ class MediaController extends MediaContainer {
     );
     propagateMediaState(
       [el],
+      MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE,
+      this._fullscreenUnavailable
+    );
+    propagateMediaState(
+      [el],
       MediaUIAttributes.MEDIA_CAST_UNAVAILABLE,
       this._castUnavailable
     );
@@ -1261,6 +1273,7 @@ const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
 
 const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
 const castSupported = !!window.chrome;
+const fullscreenEnabled = document.fullscreenEnabled;
 
 function serializeTimeRanges(timeRanges = []) {
   return Array.from(timeRanges)

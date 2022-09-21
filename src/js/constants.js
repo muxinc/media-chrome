@@ -54,6 +54,7 @@ export const MediaStateChangeEvents = {
 
 export const MediaUIAttributes = {
   MEDIA_AIRPLAY_UNAVAILABLE: 'media-airplay-unavailable',
+  MEDIA_FULLSCREEN_UNAVAILABLE: 'media-fullscreen-unavailable',
   MEDIA_PIP_UNAVAILABLE: 'media-pip-unavailable',
   MEDIA_CAST_UNAVAILABLE: 'media-cast-unavailable',
   MEDIA_PAUSED: 'media-paused',
