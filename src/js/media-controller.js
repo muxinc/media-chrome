@@ -136,7 +136,7 @@ class MediaController extends MediaContainer {
       //
       MEDIA_ENTER_FULLSCREEN_REQUEST: () => {
         if (!document.fullscreenEnabled) {
-          console.warn('Fullscreen support is disabled, not entering fullscreen');
+          console.warn('Fullscreen support is unavailable; not entering fullscreen');
           return;
         }
         const media = this.media;
