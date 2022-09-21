@@ -17,6 +17,7 @@ import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/stringUtils.js';
 import { containsComposedNode } from './utils/element-utils.js';
+import { toggleSubsCaps } from './utils/captions.js';
 
 import {
   MediaUIEvents,
@@ -32,7 +33,7 @@ import {
   updateTracksModeTo,
 } from './utils/captions.js';
 
-const ButtonPressedKeys = ['Enter', ' ', 'f', 'm', 'k', 'ArrowLeft', 'ArrowRight'];
+const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;
 
 /**
@@ -376,7 +377,7 @@ class MediaController extends MediaContainer {
         // Since these propagators are all called when boostrapping state, let's verify this is
         // a real playing event by checking that 1) there's media and 2) it isn't currently paused.
         this.propagateMediaState(MediaUIAttributes.MEDIA_HAS_PLAYED, !this.media?.paused);
-      }, 
+      },
       volumechange: () => {
         this.propagateMediaState(MediaUIAttributes.MEDIA_MUTED, getMuted(this));
         this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME, getVolume(this));
@@ -880,6 +881,10 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(
           new window.CustomEvent(eventName, { composed: true, bubbles: true })
         );
+        break;
+
+      case 'c':
+        toggleSubsCaps(this);
         break;
 
       case 'ArrowLeft':

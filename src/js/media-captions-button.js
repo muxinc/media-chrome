@@ -6,7 +6,7 @@ import {
 } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
-import { splitTextTracksStr } from './utils/captions.js';
+import { splitTextTracksStr, isCCOn, toggleSubsCaps } from './utils/captions.js';
 
 const ccIconOn = `<svg aria-hidden="true" viewBox="0 0 26 24">
   <path d="M22.83 5.68a2.58 2.58 0 0 0-2.3-2.5c-3.62-.24-11.44-.24-15.06 0a2.58 2.58 0 0 0-2.3 2.5c-.23 4.21-.23 8.43 0 12.64a2.58 2.58 0 0 0 2.3 2.5c3.62.24 11.44.24 15.06 0a2.58 2.58 0 0 0 2.3-2.5c.23-4.21.23-8.43 0-12.64Zm-11.39 9.45a3.07 3.07 0 0 1-1.91.57 3.06 3.06 0 0 1-2.34-1 3.75 3.75 0 0 1-.92-2.67 3.92 3.92 0 0 1 .92-2.77 3.18 3.18 0 0 1 2.43-1 2.94 2.94 0 0 1 2.13.78c.364.359.62.813.74 1.31l-1.43.35a1.49 1.49 0 0 0-1.51-1.17 1.61 1.61 0 0 0-1.29.58 2.79 2.79 0 0 0-.5 1.89 3 3 0 0 0 .49 1.93 1.61 1.61 0 0 0 1.27.58 1.48 1.48 0 0 0 1-.37 2.1 2.1 0 0 0 .59-1.14l1.4.44a3.23 3.23 0 0 1-1.07 1.69Zm7.22 0a3.07 3.07 0 0 1-1.91.57 3.06 3.06 0 0 1-2.34-1 3.75 3.75 0 0 1-.92-2.67 3.88 3.88 0 0 1 .93-2.77 3.14 3.14 0 0 1 2.42-1 3 3 0 0 1 2.16.82 2.8 2.8 0 0 1 .73 1.31l-1.43.35a1.49 1.49 0 0 0-1.51-1.21 1.61 1.61 0 0 0-1.29.58A2.79 2.79 0 0 0 15 12a3 3 0 0 0 .49 1.93 1.61 1.61 0 0 0 1.27.58 1.44 1.44 0 0 0 1-.37 2.1 2.1 0 0 0 .6-1.15l1.4.44a3.17 3.17 0 0 1-1.1 1.7Z"/>
@@ -37,16 +37,6 @@ slotTemplate.innerHTML = `
 
 const updateAriaChecked = (el) => {
   el.setAttribute('aria-checked', isCCOn(el));
-};
-
-const isCCOn = (el) => {
-  const showingCaptions = !!el.getAttribute(
-    MediaUIAttributes.MEDIA_CAPTIONS_SHOWING
-  );
-  const showingSubtitlesAsCaptions =
-    !el.hasAttribute('no-subtitles-fallback') &&
-    !!el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
-  return showingCaptions || showingSubtitlesAsCaptions;
 };
 
 class MediaCaptionsButton extends MediaChromeButton {
@@ -126,66 +116,7 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   handleClick(_e) {
-    const ccIsOn = isCCOn(this);
-    if (ccIsOn) {
-      // Closed Captions is on. Clicking should disable any currently showing captions (and subtitles, if relevant)
-      // For why we are requesting tracks to `mode="disabled"` and not `mode="hidden"`, see: https://github.com/muxinc/media-chrome/issues/60
-      const captionsShowingStr = this.getAttribute(
-        MediaUIAttributes.MEDIA_CAPTIONS_SHOWING
-      );
-      // If we have currently showing captions track(s), request for them to be disabled.
-      if (captionsShowingStr) {
-        const evt = new window.CustomEvent(
-          MediaUIEvents.MEDIA_DISABLE_CAPTIONS_REQUEST,
-          { composed: true, bubbles: true, detail: captionsShowingStr }
-        );
-        this.dispatchEvent(evt);
-      }
-      const subtitlesShowingStr = this.getAttribute(
-        MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
-      );
-      // If we have currently showing subtitles track(s) and we're using subtitle fallback (true/"on" by default), request for them to be disabled.
-      if (subtitlesShowingStr && !this.hasAttribute('no-subtitles-fallback')) {
-        const evt = new window.CustomEvent(
-          MediaUIEvents.MEDIA_DISABLE_SUBTITLES_REQUEST,
-          { composed: true, bubbles: true, detail: subtitlesShowingStr }
-        );
-        this.dispatchEvent(evt);
-      }
-    } else {
-      // Closed Captions is off. Clicking should show the first relevant captions track or subtitles track if we're using subtitle fallback (true/"on" by default)
-      const [ccTrackStr] =
-        splitTextTracksStr(
-          this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST) ?? ''
-        ) ?? [];
-      if (ccTrackStr) {
-        // If we have at least one captions track, request for the first one to be showing.
-        const evt = new window.CustomEvent(
-          MediaUIEvents.MEDIA_SHOW_CAPTIONS_REQUEST,
-          { composed: true, bubbles: true, detail: ccTrackStr }
-        );
-        this.dispatchEvent(evt);
-      } else if (!this.hasAttribute('no-subtitles-fallback')) {
-        // If we don't have a captions track and we're using subtitles fallback (true/"on" by default), check if we have any subtitles available.
-        const [subTrackStr] =
-          splitTextTracksStr(
-            this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST) ?? ''
-          ) ?? [];
-        if (subTrackStr) {
-          // If we have at least one subtitles track (and didn't have any captions tracks), request for the first one to be showing as a fallback for captions.
-          const evt = new window.CustomEvent(
-            MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,
-            { composed: true, bubbles: true, detail: subTrackStr }
-          );
-          this.dispatchEvent(evt);
-        }
-      } else {
-        // If we end up here, it means we have an enabled CC-button that a user has clicked on but there are no captions and no subtitles (or we've disabled subtitles fallback).
-        console.error(
-          'Attempting to enable closed captions but none are available! Please verify your media content if this is unexpected.'
-        );
-      }
-    }
+    toggleSubsCaps(this);
   }
 }
 

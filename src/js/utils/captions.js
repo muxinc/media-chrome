@@ -1,3 +1,5 @@
+import { MediaUIEvents, MediaUIAttributes } from '../constants.js';
+
 // NOTE: This is generic for any CSS/html list representation. Consider renaming and moving to generic module.
 /**
  * Splits a string (representing TextTracks) into an array of strings based on whitespace.
@@ -223,4 +225,91 @@ export const getTextTracksList = (media, filterPredOrObj = () => true) => {
       : textTrackObjAsPred(filterPredOrObj);
 
   return Array.from(media.textTracks).filter(filterPred);
+};
+
+
+/**
+ * Are captions enabled?
+ *
+ * @param {HTMLElement} el - An HTMLElement that has caption related attributes on it.
+ * @returns {boolean} Whether captions are enabled or not
+ */
+export const isCCOn = (el) => {
+  const showingCaptions = !!el.getAttribute(
+    MediaUIAttributes.MEDIA_CAPTIONS_SHOWING
+  );
+  const showingSubtitlesAsCaptions =
+    !el.hasAttribute('no-subtitles-fallback') &&
+    !!el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
+  return showingCaptions || showingSubtitlesAsCaptions;
+};
+
+/**
+ * Trigger the appropriate event on the provided element that will toggle either captions or subtitles as appropriate.
+ *
+ * This was originally in media-captions-button.
+ *
+ * @param {HTMLElement} el - An HTMLElement that has caption related attributes on it.
+ */
+export const toggleSubsCaps = (el) => {
+  const ccIsOn = isCCOn(el);
+  if (ccIsOn) {
+    // Closed Captions is on. Clicking should disable any currently showing captions (and subtitles, if relevant)
+    // For why we are requesting tracks to `mode="disabled"` and not `mode="hidden"`, see: https://github.com/muxinc/media-chrome/issues/60
+    const captionsShowingStr = el.getAttribute(
+      MediaUIAttributes.MEDIA_CAPTIONS_SHOWING
+    );
+    // If we have currently showing captions track(s), request for them to be disabled.
+    if (captionsShowingStr) {
+      const evt = new window.CustomEvent(
+        MediaUIEvents.MEDIA_DISABLE_CAPTIONS_REQUEST,
+        { composed: true, bubbles: true, detail: captionsShowingStr }
+      );
+      el.dispatchEvent(evt);
+    }
+    const subtitlesShowingStr = el.getAttribute(
+      MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
+    );
+    // If we have currently showing subtitles track(s) and we're using subtitle fallback (true/"on" by default), request for them to be disabled.
+    if (subtitlesShowingStr && !el.hasAttribute('no-subtitles-fallback')) {
+      const evt = new window.CustomEvent(
+        MediaUIEvents.MEDIA_DISABLE_SUBTITLES_REQUEST,
+        { composed: true, bubbles: true, detail: subtitlesShowingStr }
+      );
+      el.dispatchEvent(evt);
+    }
+  } else {
+    // Closed Captions is off. Clicking should show the first relevant captions track or subtitles track if we're using subtitle fallback (true/"on" by default)
+    const [ccTrackStr] =
+      splitTextTracksStr(
+        el.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST) ?? ''
+      ) ?? [];
+    if (ccTrackStr) {
+      // If we have at least one captions track, request for the first one to be showing.
+      const evt = new window.CustomEvent(
+        MediaUIEvents.MEDIA_SHOW_CAPTIONS_REQUEST,
+        { composed: true, bubbles: true, detail: ccTrackStr }
+      );
+      el.dispatchEvent(evt);
+    } else if (!el.hasAttribute('no-subtitles-fallback')) {
+      // If we don't have a captions track and we're using subtitles fallback (true/"on" by default), check if we have any subtitles available.
+      const [subTrackStr] =
+        splitTextTracksStr(
+          el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST) ?? ''
+        ) ?? [];
+      if (subTrackStr) {
+        // If we have at least one subtitles track (and didn't have any captions tracks), request for the first one to be showing as a fallback for captions.
+        const evt = new window.CustomEvent(
+          MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,
+          { composed: true, bubbles: true, detail: subTrackStr }
+        );
+        el.dispatchEvent(evt);
+      }
+    } else {
+      // If we end up here, it means we have an enabled CC-button that a user has clicked on but there are no captions and no subtitles (or we've disabled subtitles fallback).
+      console.error(
+        'Attempting to enable closed captions but none are available! Please verify your media content if this is unexpected.'
+      );
+    }
+  }
 };
