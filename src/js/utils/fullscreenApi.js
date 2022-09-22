@@ -6,6 +6,7 @@ export const fullscreenApi = {
   event: 'fullscreenchange',
   element: 'fullscreenElement',
   error: 'fullscreenerror',
+  enabled: 'fullscreenEnabled',
 };
 
 if (document.fullscreenElement === undefined) {
@@ -17,4 +18,5 @@ if (document.fullscreenElement === undefined) {
   fullscreenApi.event = 'webkitfullscreenchange';
   fullscreenApi.element = 'webkitFullscreenElement';
   fullscreenApi.error = 'webkitfullscreenerror';
+  fullscreenApi.enabled = 'webkitFullscreenEnabled';
 }
