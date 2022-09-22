@@ -1,3 +1,18 @@
+# [0.11.0](https://github.com/muxinc/media-chrome/compare/v0.10.4...v0.11.0) (2022-09-22)
+
+
+### Bug Fixes
+
+* mark fullscreen button as unavailable if fullscreen is disabled ([#311](https://github.com/muxinc/media-chrome/issues/311)) ([a198f0a](https://github.com/muxinc/media-chrome/commit/a198f0ab8de0076df8134c993c3825af9814653c))
+* set tabindex on media element, if not set ([#312](https://github.com/muxinc/media-chrome/issues/312)) ([e7450b8](https://github.com/muxinc/media-chrome/commit/e7450b80ae6954e440539ba8517be139de6478f1)), closes [#309](https://github.com/muxinc/media-chrome/issues/309)
+
+
+### Features
+
+* add a hotkey for toggling captions: c ([#308](https://github.com/muxinc/media-chrome/issues/308)) ([e76b528](https://github.com/muxinc/media-chrome/commit/e76b5289f42fae800dba5815b24616d9e652f194))
+
+
+
 ## [0.10.4](https://github.com/muxinc/media-chrome/compare/v0.10.2...v0.10.4) (2022-09-15)
 
 
