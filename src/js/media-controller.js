@@ -136,7 +136,7 @@ class MediaController extends MediaContainer {
       //   - Element.requestFullscreen()
       //
       MEDIA_ENTER_FULLSCREEN_REQUEST: () => {
-        if (!document.fullscreenEnabled) {
+        if (!fullscreenEnabled) {
           console.warn('Fullscreen support is unavailable; not entering fullscreen');
           return;
         }
@@ -1282,7 +1282,7 @@ const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
 
 const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
 const castSupported = !!window.chrome;
-const fullscreenEnabled = document.fullscreenEnabled;
+const fullscreenEnabled = document[fullscreenApi.enabled];
 
 function serializeTimeRanges(timeRanges = []) {
   return Array.from(timeRanges)
