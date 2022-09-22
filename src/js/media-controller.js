@@ -732,6 +732,9 @@ class MediaController extends MediaContainer {
 
     if (this.media) {
       Object.keys(MediaUIAttributes).forEach((attribute) => {
+        // skip availability delegates as they were completed above
+        if (attribute.includes('UNAVAILABLE')) return;
+
         propagateMediaState(
           [el],
           MediaUIAttributes[attribute],
