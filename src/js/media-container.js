@@ -21,6 +21,16 @@ const template = document.createElement('template');
 
 template.innerHTML = `
   <style>
+
+    /*
+     * outline on media is turned off because it is allowed to get focus to faciliate hotkeys.
+     * However, on keyboard interactions, the focus outline is shown,
+     * which is particularly noticeable when going fullscreen via hotkeys.
+     */
+    :host([media-is-fullscreen])  ::slotted([slot=media]) {
+      outline: none;
+    }
+
     :host {
       box-sizing: border-box;
       position: relative;
