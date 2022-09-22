@@ -730,67 +730,17 @@ class MediaController extends MediaContainer {
       this._pipUnavailable,
     );
 
-    // TODO: Update to propagate all states when registered
     if (this.media) {
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_CAPTIONS_LIST,
-        stringifyTextTrackList(getCaptionTracks(this)) || undefined
-      );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_SUBTITLES_LIST,
-        stringifyTextTrackList(getSubtitleTracks(this)) || undefined
-      );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
-        stringifyTextTrackList(getShowingCaptionTracks(this)) || undefined
-      );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
-        stringifyTextTrackList(getShowingSubtitleTracks(this)) || undefined
-      );
-      propagateMediaState([el], MediaUIAttributes.MEDIA_PAUSED, getPaused(this));
-      // propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME_LEVEL, level);
-      propagateMediaState([el], MediaUIAttributes.MEDIA_MUTED, getMuted(this));
-      propagateMediaState([el], MediaUIAttributes.MEDIA_VOLUME, getVolume(this));
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_VOLUME_LEVEL,
-        getVolumeLevel(this)
-      );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_IS_FULLSCREEN,
-        this.hasAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN)
-      );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_IS_CASTING,
-        this.hasAttribute(MediaUIAttributes.MEDIA_IS_CASTING)
-      );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_CURRENT_TIME,
-        getCurrentTime(this)
-      );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_DURATION,
-        getDuration(this)
-      );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_SEEKABLE,
-        getSeekable(this)?.join(':')
-      );
-      propagateMediaState(
-        [el],
-        MediaUIAttributes.MEDIA_PLAYBACK_RATE,
-        getPlaybackRate(this)
-      );
+      Object.keys(MediaUIAttributes).forEach((attribute) => {
+        // skip availability delegates as they were completed above
+        if (attribute.includes('UNAVAILABLE')) return;
+
+        propagateMediaState(
+          [el],
+          MediaUIAttributes[attribute],
+          Delegates[MediaUIAttributes[attribute]] ? Delegates[MediaUIAttributes[attribute]](this) : Delegates.default(this, MediaUIAttributes[attribute])
+        );
+      });
     }
   }
 
@@ -943,6 +893,60 @@ class MediaController extends MediaContainer {
     }
   }
 }
+
+const Delegates = {
+  default(el, attribute) {
+    return el.getAttribute(attribute);
+  },
+
+  [MediaUIAttributes.MEDIA_CAPTIONS_LIST](el) {
+    return stringifyTextTrackList(getCaptionTracks(el)) || undefined;
+  },
+
+  [MediaUIAttributes.MEDIA_SUBTITLES_LIST](el) {
+    return stringifyTextTrackList(getSubtitleTracks(el)) || undefined;
+  },
+
+  [MediaUIAttributes.MEDIA_SUBTITLES_LIST](el) {
+    return stringifyTextTrackList(getSubtitleTracks(el)) || undefined;
+  },
+
+  [MediaUIAttributes.MEDIA_CAPTIONS_SHOWING](el) {
+    return stringifyTextTrackList(getShowingCaptionTracks(el)) || undefined;
+  },
+
+  [MediaUIAttributes.MEDIA_PAUSED](el) {
+    return getPaused(el);
+  },
+
+  [MediaUIAttributes.MEDIA_MUTED](el) {
+    return getMuted(el);
+  },
+
+  [MediaUIAttributes.MEDIA_VOLUME](el) {
+    return getVolume(el);
+  },
+
+  [MediaUIAttributes.MEDIA_VOLUME_LEVEL](el) {
+    return getVolumeLevel(el);
+  },
+
+  [MediaUIAttributes.MEDIA_CURRENT_TIME](el) {
+    return getCurrentTime(el);
+  },
+
+  [MediaUIAttributes.MEDIA_DURATION](el) {
+    return getDuration(el);
+  },
+
+  [MediaUIAttributes.MEDIA_SEEKABLE](el) {
+    return getSeekable(el)?.join(':');
+  },
+
+  [MediaUIAttributes.MEDIA_PLAYBACK_RATE](el) {
+    return getPlaybackRate(el);
+  }
+};
 
 const getPaused = (controller) => {
   if (!controller.media) return true;
