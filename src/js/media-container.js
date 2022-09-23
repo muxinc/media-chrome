@@ -21,12 +21,11 @@ const template = document.createElement('template');
 
 template.innerHTML = `
   <style>
-
-    /*
+    ${/*
      * outline on media is turned off because it is allowed to get focus to faciliate hotkeys.
      * However, on keyboard interactions, the focus outline is shown,
      * which is particularly noticeable when going fullscreen via hotkeys.
-     */
+     */''}
     :host([media-is-fullscreen])  ::slotted([slot=media]) {
       outline: none;
     }
@@ -52,27 +51,26 @@ template.innerHTML = `
       background: none;
     }
 
-    /*
+    ${/*
      * when in audio mode, hide the gesture-layer which causes media-controller to be taller than the control bar
-     *
-     */
+     */''}
     :host([audio]) [part~=layer][part~=gesture-layer] {
       height: 0;
       display: block;
     }
 
-    /*
+    ${/*
      * if gestures are disabled, don't accept pointer-events
-     */
+     */''}
     :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]),
     :host(:not([audio])[gestures-disabled]) media-gesture-receiver[slot=gestures-chrome] {
       display: none;
     }
 
-    /*
+    ${/*
      * any slotted element that isn't a poster or media slot should be pointer-events auto
      * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
-     */
+     */''}
     ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator)) {
       pointer-events: auto;
     }
@@ -95,32 +93,32 @@ template.innerHTML = `
       background: none;
     }
 
-    /* Position the media and poster elements to fill the container */
+    ${/* Position the media and poster elements to fill the container */''}
     ::slotted([slot=media]),
     ::slotted([slot=poster]) {
       width: 100%;
       height: 100%;
     }
 
-    /* Video specific styles */
+    ${/* Video specific styles */''}
     :host(:not([audio])) .spacer {
       flex-grow: 1;
     }
 
-    /* Safari needs this to actually make the element fill the window */
+    ${/* Safari needs this to actually make the element fill the window */''}
     :host(:-webkit-full-screen) {
-      /* Needs to use !important otherwise easy to break */
+      ${/* Needs to use !important otherwise easy to break */''}
       width: 100% !important;
       height: 100% !important;
     }
 
-    /* Only add these if auto hide is not disabled */
+    ${/* Only add these if auto hide is not disabled */''}
     ::slotted(:not([slot=media]):not([no-auto-hide])) {
       opacity: 1;
       transition: opacity 0.25s;
     }
 
-    /* Hide controls when inactive, not paused, not audio and auto hide not disabled */
+    ${/* Hide controls when inactive, not paused, not audio and auto hide not disabled */''}
     :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([audio])) ::slotted(:not([slot=media]):not([no-auto-hide])) {
       opacity: 0;
       transition: opacity 1s;
@@ -140,7 +138,7 @@ template.innerHTML = `
     <slot name="top-chrome" part="top chrome"></slot>
     <slot name="middle-chrome" part="middle chrome"></slot>
     <slot name="centered-chrome" part="layer centered-layer center centered chrome"></slot>
-    <!-- default, effectively "bottom-chrome" -->
+    ${/* default, effectively "bottom-chrome" */''}
     <slot part="bottom chrome"></slot>
   </span>
 `;

@@ -15,7 +15,7 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     :host {
-      /* Need position to display above video for some reason */
+      ${/* Need position to display above video for some reason */''}
       box-sizing: border-box;
       display: inline-flex;
       color: var(--media-icon-color, #eee);

@@ -57,7 +57,7 @@ template.innerHTML = `
       padding-left: var(--media-range-padding-left, var(--_media-range-padding));
       padding-right: var(--media-range-padding-right, var(--_media-range-padding));
       pointer-events: auto;
-      /* needed for vertical align issue 1px off */
+      ${/* needed for vertical align issue 1px off */''}
       font-size: 0;
     }
 
@@ -66,28 +66,28 @@ template.innerHTML = `
     }
 
     input[type=range] {
-      /* Reset */
-      -webkit-appearance: none; /* Hides the slider so that custom slider can be made */
-      background: transparent; /* Otherwise white in Chrome */
+      ${/* Reset */''}
+      -webkit-appearance: none; ${/* Hides the slider so that custom slider can be made */''}
+      background: transparent; ${/* Otherwise white in Chrome */''}
 
-      /* Fill host with the range */
+      ${/* Fill host with the range */''}
       min-height: 100%;
-      width: var(--media-range-track-width, 100%); /* Specific width is required for Firefox. */
+      width: var(--media-range-track-width, 100%); ${/* Specific width is required for Firefox. */''}
 
       box-sizing: border-box;
       padding: 0;
       margin: 0;
     }
 
-    /* Special styling for WebKit/Blink */
+    ${/* Special styling for WebKit/Blink */''}
     input[type=range]::-webkit-slider-thumb {
       -webkit-appearance: none;
       ${thumbStyles}
-      /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+      ${/* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */''}
       margin-top: calc(calc(0px - var(--thumb-height) + var(--track-height)) / 2);
     }
 
-    /* The thumb is not positioned relative to the track in Firefox */
+    ${/* The thumb is not positioned relative to the track in Firefox */''}
     input[type=range]::-moz-range-thumb {
       ${thumbStyles}
       translate: var(--media-range-track-translate-x, 0) var(--media-range-track-translate-y, 0);
@@ -96,10 +96,10 @@ template.innerHTML = `
     input[type=range]::-webkit-slider-runnable-track { ${trackStyles} }
     input[type=range]::-moz-range-track { ${trackStyles} }
     input[type=range]::-ms-track {
-      /* Reset */
+      ${/* Reset */''}
       width: 100%;
       cursor: pointer;
-      /* Hides the slider so custom styles can be added */
+      ${/* Hides the slider so custom styles can be added */''}
       background: transparent;
       border-color: transparent;
       color: transparent;
@@ -136,7 +136,7 @@ template.innerHTML = `
     }
 
     #hoverzone {
-      /* Add z-index so it overlaps the top of the control buttons if they are right under. */
+      ${/* Add z-index so it overlaps the top of the control buttons if they are right under. */''}
       z-index: 1;
       display: var(--media-time-range-hover-display, none);
       box-sizing: border-box;
@@ -153,10 +153,10 @@ template.innerHTML = `
       height: var(--media-range-track-height, 4px);
     }
 
-    /*
+    ${/*
      * set input to focus-visible, unless host-context is available (in chrome)
      * in which case we can have the focus ring be on the host itself
-     */
+     */''}
     :host-context([media-keyboard-control]):host(:focus),
     :host-context([media-keyboard-control]):host(:focus-within) {
       box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);

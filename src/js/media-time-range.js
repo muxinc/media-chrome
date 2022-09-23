@@ -74,7 +74,7 @@ template.innerHTML = `
     ::slotted(media-preview-time-display) {
       color: unset;
       min-width: 0;
-      /* delay changing these CSS props until the preview box transition is ended */
+      ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: min-width 0s .25s, border-radius 0s .25s;
       background: var(--media-preview-time-background, var(--media-preview-background));
       border-radius: var(--media-preview-time-border-radius,
@@ -112,8 +112,8 @@ template.innerHTML = `
   </span>
   <span part="box current-box">
     <slot name="current">
-      <!-- Example: add the current time to the playhead -->
-      <!-- <media-current-time-display></media-current-time-display> -->
+      ${/* Example: add the current time to the playhead
+        <media-current-time-display></media-current-time-display> */''}
     </slot>
   </span>
 `;
