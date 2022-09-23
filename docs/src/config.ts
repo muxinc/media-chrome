@@ -53,6 +53,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'React usage', link: 'en/react/' },
       { text: 'Prevent layout shift', link: 'en/prevent-layout-shift/' },
       { text: 'Position controls', link: 'en/position-controls/' },
+      { text: 'Responsive controls', link: 'en/responsive-controls/' },
       { text: 'Keyboard shortcuts', link: 'en/keyboard-shortcuts/' },
     ],
     'Core Concepts': [
