@@ -190,7 +190,10 @@ template.innerHTML = `
 
 class MediaChromeRange extends window.HTMLElement {
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CONTROLLER];
+    return [
+      'disabled',
+      'aria-disabled',
+      MediaUIAttributes.MEDIA_CONTROLLER];
   }
 
   constructor() {
@@ -212,6 +215,16 @@ class MediaChromeRange extends window.HTMLElement {
       if (newValue) {
         const mediaControllerEl = document.getElementById(newValue);
         mediaControllerEl?.associateElement?.(this);
+      }
+    } else if (
+      attrName === 'disabled' ||
+      attrName === 'aria-disabled' &&
+      oldValue !== newValue
+    ) {
+      if (newValue == null) {
+        this.range.removeAttribute(attrName);
+      } else {
+        this.range.setAttribute(attrName, newValue);
       }
     }
   }
