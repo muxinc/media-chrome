@@ -82,13 +82,15 @@ width is smaller than `484px` and only show the timerange at the bottom of the p
 
 ## Observe player resizing
 
-This will require the [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
-to detect any size changes to the container of the player. You might be tempted
-to use media queries for this but that solution will probably backfire because
-a media query listens to the browser viewport dimensions, not the player container
-dimensions. Soon we'll be able to use a CSS only solution called 
-[CSS container queries](https://caniuse.com/css-container-queries) 
-but until that's widely supported a little Javascript will do.
+Since we're still waiting for 
+[CSS Container Queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries) 
+to get [wider adoption](https://caniuse.com/css-container-queries), 
+this will require [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
+to detect any size changes to the container of the player. 
+
+You might be tempted to use media queries for this but that solution will probably 
+backfire because a media query listens to the browser viewport dimensions, 
+not the player container dimensions.
 
 ```html
 <script>
