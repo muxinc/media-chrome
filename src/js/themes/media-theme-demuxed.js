@@ -97,7 +97,7 @@ const template = `
 
   media-time-display, media-preview-time-display {
     font-size: 14px;
-    font-family: itc-avant-garde-gothic-pro;
+    font-family: sofia-pro, sans-serif;
   }
 
   .demuxed-gradient-bottom {
@@ -145,7 +145,7 @@ const template = `
         c0.2,0,0.3-0.1,0.4-0.2c0.3-0.3,0.3-0.6,0-0.9L19.4,14z"/>
         </g>
       </svg>
-      <svg slot="on" viewBox="0 0 16 16">
+      <svg slot="high" viewBox="0 0 16 16">
         <g transform="translate(-6, -6)">
           <g>
             <path d="M17.8,20c-0.5,0-0.9-0.4-0.9-0.9V8.9c0-0.5,0.4-0.9,0.9-0.9s0.9,0.4,0.9,0.9v10.2C18.7,19.6,18.3,20,17.8,20z"/>
