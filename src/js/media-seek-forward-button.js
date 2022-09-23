@@ -64,6 +64,8 @@ class MediaSeekForwardButton extends MediaChromeButton {
       updateSeekIconValue(this);
       updateAriaLabel(this);
     }
+
+    super.attributeChangedCallback(attrName, _oldValue, newValue);
   }
 
   handleClick() {
