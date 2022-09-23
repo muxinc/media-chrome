@@ -14,9 +14,6 @@ const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
-  <style>
-  </style>
-
   <slot name="airplay">${airplayIcon}</slot>
 `;
 

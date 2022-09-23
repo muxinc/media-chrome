@@ -19,7 +19,7 @@ template.innerHTML = `
 
     padding: var(--media-control-padding, 10px);
 
-    /* Vertically center any text */
+    ${/* Vertically center any text */''}
     font-size: 14px;
     line-height: var(--media-text-content-height, var(--media-control-height, 24px));
     font-weight: bold;
@@ -32,17 +32,17 @@ template.innerHTML = `
     font-family: Arial, sans-serif;
   }
 
-  /*
+  ${/*
     Only show outline when keyboard focusing.
     https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
-  */
+  */''}
   :host(:focus-visible) {
     box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
     outline: 0;
   }
-  /*
+  ${/*
    * hide default focus ring, particularly when using mouse
-   */
+   */''}
   :host(:where(:focus)) {
     box-shadow: none;
     outline: 0;

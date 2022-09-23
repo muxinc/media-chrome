@@ -28,17 +28,18 @@ template.innerHTML = `
       pointer-events: auto;
     }
 
-    /*
+    ${/*
       Only show outline when keyboard focusing.
       https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
-    */
+    */''}
     :host(:focus-visible) {
       box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
       outline: 0;
     }
-    /*
+
+    ${/*
      * hide default focus ring, particularly when using mouse
-     */
+     */''}
     :host(:where(:focus)) {
       box-shadow: none;
       outline: 0;

@@ -19,7 +19,7 @@ slotTemplate.innerHTML = `
     display: none !important;
   }
 
-  /* Double negative, but safer if display doesn't equal 'block' */
+  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
   :host(:not([${MediaUIAttributes.MEDIA_IS_CASTING}])) slot:not([name=enter]) > *,
   :host(:not([${MediaUIAttributes.MEDIA_IS_CASTING}])) ::slotted(:not([slot=enter])) {
     display: none !important;
