@@ -91,30 +91,42 @@ class MediaChromeButton extends window.HTMLElement {
 
     shadow.appendChild(buttonHTML);
 
-    this.addEventListener('click', (e) => {
-      this.handleClick(e);
-    });
+    this.enable();
+  }
 
-    // NOTE: There are definitely some "false positive" cases with multi-key pressing,
-    // but this should be good enough for most use cases.
-    const keyUpHandler = (e) => {
-      const { key } = e;
-      if (!this.keysUsed.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
-        return;
-      }
+  #clickHandler = (e) => {
+    this.handleClick(e);
+  }
 
-      this.handleClick(e);
-    };
+  // NOTE: There are definitely some "false positive" cases with multi-key pressing,
+  // but this should be good enough for most use cases.
+  #keyUpHandler = (e) => {
+    const { key } = e;
+    if (!this.keysUsed.includes(key)) {
+      this.removeEventListener('keyup', keyUpHandler);
+      return;
+    }
 
-    this.addEventListener('keydown', (e) => {
-      const { metaKey, altKey, key } = e;
-      if (metaKey || altKey || !this.keysUsed.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
-        return;
-      }
-      this.addEventListener('keyup', keyUpHandler, {once: true});
-    });
+    this.handleClick(e);
+  }
+
+  #keydownHandler = (e) => {
+    const { metaKey, altKey, key } = e;
+    if (metaKey || altKey || !this.keysUsed.includes(key)) {
+      this.removeEventListener('keyup', this.#keyUpHandler);
+      return;
+    }
+    this.addEventListener('keyup', this.#keyUpHandler, {once: true});
+  }
+
+  enable() {
+    this.addEventListener('click', this.#clickHandler);
+    this.addEventListener('keydown', this.#keydownHandler);
+  }
+
+  disable() {
+    this.removeEventListener('click', this.#clickHandler);
+    this.removeEventListener('keyup', this.#keyUpHandler);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
