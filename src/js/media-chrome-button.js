@@ -68,7 +68,7 @@ template.innerHTML = `
 
 class MediaChromeButton extends window.HTMLElement {
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CONTROLLER];
+    return ['disabled', MediaUIAttributes.MEDIA_CONTROLLER];
   }
 
   constructor(options = {}) {
@@ -138,6 +138,12 @@ class MediaChromeButton extends window.HTMLElement {
       if (newValue) {
         const mediaControllerEl = document.getElementById(newValue);
         mediaControllerEl?.associateElement?.(this);
+      }
+    } else if (attrName === 'disabled' && newValue !== oldValue) {
+      if (newValue == null) {
+        this.enable();
+      } else {
+        this.disable();
       }
     }
   }
