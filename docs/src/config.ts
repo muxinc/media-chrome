@@ -34,9 +34,9 @@ export const COMMUNITY_INVITE_URL = `https://github.com/muxinc/media-chrome/disc
 
 // See "Algolia" section of the README for more information.
 export const ALGOLIA = {
-  indexName: 'dev_media_chrome',
-  appId: '57LJZR6XKN',
-  apiKey: 'ec6de967b91bcd3b0ea96b5fcfedaa7d',
+  indexName: 'media-chrome',
+  appId: 'NJ7A3MEPOW',
+  apiKey: '6407505886c20678488d1379bff30b8f',
 };
 
 export type Sidebar = Record<
