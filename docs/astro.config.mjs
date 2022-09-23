@@ -30,7 +30,7 @@ const createSROnlyLabel = (text) => {
 
 // https://astro.build/config
 export default defineConfig({
-  site: `https://www.media-chrome.org/`,
+  site: `https://media-chrome-docs.vercel.app/`,
   integrations: [
     // Enable Preact to support Preact JSX components.
     preact(),
