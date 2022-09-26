@@ -177,7 +177,7 @@ class MediaTimeRange extends MediaChromeRange {
     this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
 
-    this._enableBoxes();
+    this.#enableBoxes();
   }
 
   connectedCallback() {
@@ -230,9 +230,9 @@ class MediaTimeRange extends MediaChromeRange {
     }
     if (attrName === 'disabled') {
       if (newValue == null) {
-        this._enableBoxes();
+        this.#enableBoxes();
       } else {
-        this._disableBoxes();
+        this.#disableBoxes();
       }
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -396,11 +396,11 @@ class MediaTimeRange extends MediaChromeRange {
     }
   }
 
-  _enableBoxes() {
+  #enableBoxes() {
     this.addEventListener('pointermove', this.#rangepointermoveHandler, false);
   }
 
-  _disableBoxes() {
+  #disableBoxes() {
     window.removeEventListener('pointermove', this.#offRangeHandler);
     this.removeEventListener('pointermove', this.#rangepointermoveHandler);
     this.#rangeEntered = false;

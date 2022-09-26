@@ -100,10 +100,10 @@ class MediaChromeButton extends window.HTMLElement {
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
-  #keyUpHandler = (e) => {
+  #keyupHandler = (e) => {
     const { key } = e;
     if (!this.keysUsed.includes(key)) {
-      this.removeEventListener('keyup', keyUpHandler);
+      this.removeEventListener('keyup', keyupHandler);
       return;
     }
 
@@ -113,10 +113,10 @@ class MediaChromeButton extends window.HTMLElement {
   #keydownHandler = (e) => {
     const { metaKey, altKey, key } = e;
     if (metaKey || altKey || !this.keysUsed.includes(key)) {
-      this.removeEventListener('keyup', this.#keyUpHandler);
+      this.removeEventListener('keyup', this.#keyupHandler);
       return;
     }
-    this.addEventListener('keyup', this.#keyUpHandler, {once: true});
+    this.addEventListener('keyup', this.#keyupHandler, {once: true});
   }
 
   enable() {
@@ -127,7 +127,7 @@ class MediaChromeButton extends window.HTMLElement {
 
   disable() {
     this.removeEventListener('click', this.#clickHandler);
-    this.removeEventListener('keyup', this.#keyUpHandler);
+    this.removeEventListener('keyup', this.#keyupHandler);
     this.removeAttribute('tabindex');
   }
 
