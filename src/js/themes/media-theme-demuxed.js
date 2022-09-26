@@ -56,7 +56,7 @@ const template = `
     margin: 0 0 0 5px;
   }
 
-  media-play-button, media-mute-button, media-seek-forward-button, media-captions-button, media-pip-button, media-fullscreen-button, media-settings-button, media-cinema-button {
+  media-control-bar media-play-button, media-mute-button, media-seek-forward-button, media-captions-button, media-pip-button, media-fullscreen-button, media-settings-button, media-cinema-button {
     position: relative;
     flex: none;
     margin: 0 5px;
@@ -69,11 +69,29 @@ const template = `
     border-radius: 9999px;
   }
 
+  span media-play-button {
+    position: relative;
+    flex: none;
+    margin: 0 5px;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    height: 96px;
+    width: 96px;
+    background: rgba(0,0,0,0.8);
+    border-radius: 9999px;
+  }
+
+  span media-play-button svg {
+    filter: invert(100%);
+    height: 64px;
+  }
+
   media-settings-button, media-cinema-button {
     cursor: pointer;
   }
 
-  svg {
+  media-control-bar svg {
     position: absolute;
     overflow: hidden;
     width: 100%;
@@ -121,14 +139,14 @@ const template = `
       align-items: flex-start;
     }
 
-    media-play-button, media-mute-button, media-seek-forward-button, media-captions-button, media-pip-button, media-settings-button, media-cinema-button {
+    media-control-bar media-play-button, media-mute-button, media-seek-forward-button, media-captions-button, media-pip-button, media-settings-button, media-cinema-button {
       display: none;
     }
 
     media-fullscreen-button {
       position: absolute;
       top: 8px;
-      right: 16px;
+      right: 20px;
     }
 
     media-time-range {
@@ -138,6 +156,16 @@ const template = `
     media-time-display {
       padding: 0 10px;
     }
+
+    span media-play-button {
+      z-index: 1;
+      height: 72px;
+      width: 72px;
+    }
+
+    span media-play-button svg {
+      height: 44px;
+    }
   }
 </style>
 
@@ -145,6 +173,25 @@ const template = `
   <slot name="media" slot="media"></slot>
   <slot name="poster" slot="poster"></slot>
   <div class="demuxed-gradient-bottom"></div>
+  <span slot="centered-chrome">
+    <media-play-button>
+      <svg slot="play" viewBox="0 0 16 16">
+        <g transform="translate(-6, -6)">
+          <path d="M19.6,13.2L11.1,9c-0.6-0.3-1.2,0.1-1.2,0.7v8.5c0,0.6,0.7,1,1.2,0.7l8.5-4.2C20.2,14.4,20.2,13.6,19.6,13.2z"/>
+        </g>
+      </svg>
+      <svg slot="pause" viewBox="0 0 16 16">
+        <g transform="translate(-6, -6)">
+          <g>
+            <path d="M17.8,20c-0.5,0-0.9-0.4-0.9-0.9V8.9c0-0.5,0.4-0.9,0.9-0.9s0.9,0.4,0.9,0.9v10.2C18.7,19.6,18.3,20,17.8,20z"/>
+          </g>
+          <g>
+            <path d="M10.1,20c-0.5,0-0.9-0.4-0.9-0.9V8.9C9.2,8.4,9.6,8,10.1,8S11,8.4,11,8.9v10.2C10.9,19.6,10.5,20,10.1,20z"/>
+          </g>
+        </g>
+      </svg>
+    </media-play-button>
+  </span>
   <media-control-bar>
     <media-play-button>
       <svg slot="play" viewBox="0 0 16 16">
