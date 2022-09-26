@@ -82,6 +82,5 @@ export {
   MediaTitleElement,
   MediaLoadingIndicator,
   MediaVolumeRange,
-  MediaTheme,
-  MediaThemeDemuxed,
+  MediaTheme
 };
