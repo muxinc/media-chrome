@@ -69,6 +69,10 @@ const template = `
     border-radius: 9999px;
   }
 
+  media-control-bar media-play-button:hover, media-mute-button:hover, media-seek-forward-button:hover, media-captions-button:hover, media-pip-button:hover, media-fullscreen-button:hover, media-settings-button:hover, media-cinema-button:hover {
+    box-shadow: 0 0 0 calc(2px) var(--tertiary-color);
+  }
+
   span media-play-button {
     position: relative;
     flex: none;
@@ -80,6 +84,10 @@ const template = `
     width: 96px;
     background: rgba(0,0,0,0.8);
     border-radius: 9999px;
+  }
+
+  span media-play-button:hover {
+    box-shadow: 0 0 0 calc(2px) var(--tertiary-color);
   }
 
   span media-play-button svg {
