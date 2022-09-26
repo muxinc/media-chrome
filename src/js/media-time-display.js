@@ -55,13 +55,18 @@ class MediaTimeDisplay extends MediaTextDisplay {
       MediaUIAttributes.MEDIA_SEEKABLE,
       'remaining',
       'show-duration',
+      'disabled',
     ];
+  }
+
+  constructor() {
+    super();
+    this.enable();
   }
 
   connectedCallback() {
     this.setAttribute('role', 'progressbar');
     this.setAttribute('aria-label', nouns.PLAYBACK_TIME());
-    this.setAttribute('tabindex', 0);
     super.connectedCallback();
   }
 
@@ -78,8 +83,23 @@ class MediaTimeDisplay extends MediaTextDisplay {
       const timesLabel = formatTimesLabel(this);
       updateAriaValueText(this);
       this.container.innerHTML = timesLabel;
+    } else if (attrName === 'disabled' && newValue !== oldValue) {
+      if (newValue == null) {
+        this.enable();
+      } else {
+        this.disable();
+      }
     }
+
     super.attributeChangedCallback(attrName, oldValue, newValue);
+  }
+
+  enable() {
+    this.setAttribute('tabindex', 0);
+  }
+
+  disable() {
+    this.removeAttribute('tabindex');
   }
 
   get mediaDuration() {
