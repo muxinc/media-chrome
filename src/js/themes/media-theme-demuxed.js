@@ -111,6 +111,34 @@ const template = `
     background-repeat: repeat-x;
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAACqCAYAAABsziWkAAAAAXNSR0IArs4c6QAAAQVJREFUOE9lyNdHBQAAhfHb3nvvuu2997jNe29TJJEkkkgSSSSJJJJEEkkiifRH5jsP56Xz8PM5gcC/xfDEmjhKxEOCSaREEiSbFEqkQppJpzJMJiWyINvkUCIX8kw+JQqg0BRRxaaEEqVQZsopUQGVpooS1VBjglStqaNEPTSYRko0QbNpoUQrtJl2qsN0UqILuk0PJXqhz/RTYgAGzRA1bEYoMQpjZpwSExAyk5SYgmkzQ82aOUqEIWKilJiHBbNIiSVYhhVYhTVYhw3YhC3Yhh3YhT3YhwM4hCM4hhM4hTM4hwu4hCu4hhu4hTu4hwd4hCd4hhd4hTd4hw/4hC/4hh/4/QM2/id28uIEJAAAAABJRU5ErkJggg==");
   }
+
+  @media (max-width: 720px) {
+    media-control-bar {
+      background: transparent;
+      margin: 0;
+      padding: 12px 8px;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    media-play-button, media-mute-button, media-seek-forward-button, media-captions-button, media-pip-button, media-settings-button, media-cinema-button {
+      display: none;
+    }
+
+    media-fullscreen-button {
+      position: absolute;
+      top: 8px;
+      right: 16px;
+    }
+
+    media-time-range {
+      width: 100%;
+    }
+
+    media-time-display {
+      padding: 0 10px;
+    }
+  }
 </style>
 
 <media-controller>
