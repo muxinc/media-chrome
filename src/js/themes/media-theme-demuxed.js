@@ -24,7 +24,7 @@ const template = `
 
   media-controller {
     width: 100%;
-    height: 100%;
+    aspect-ratio: 16 / 9;
 
     --media-control-background: var(--secondary-color);
     --media-control-hover-background: transparent;
