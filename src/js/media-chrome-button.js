@@ -68,7 +68,7 @@ template.innerHTML = `
 
 class MediaChromeButton extends window.HTMLElement {
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CONTROLLER];
+    return ['disabled', MediaUIAttributes.MEDIA_CONTROLLER];
   }
 
   constructor(options = {}) {
@@ -91,30 +91,44 @@ class MediaChromeButton extends window.HTMLElement {
 
     shadow.appendChild(buttonHTML);
 
-    this.addEventListener('click', (e) => {
-      this.handleClick(e);
-    });
+    this.enable();
+  }
 
-    // NOTE: There are definitely some "false positive" cases with multi-key pressing,
-    // but this should be good enough for most use cases.
-    const keyUpHandler = (e) => {
-      const { key } = e;
-      if (!this.keysUsed.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
-        return;
-      }
+  #clickListener = (e) => {
+    this.handleClick(e);
+  }
 
-      this.handleClick(e);
-    };
+  // NOTE: There are definitely some "false positive" cases with multi-key pressing,
+  // but this should be good enough for most use cases.
+  #keyupListener = (e) => {
+    const { key } = e;
+    if (!this.keysUsed.includes(key)) {
+      this.removeEventListener('keyup', keyupListener);
+      return;
+    }
 
-    this.addEventListener('keydown', (e) => {
-      const { metaKey, altKey, key } = e;
-      if (metaKey || altKey || !this.keysUsed.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
-        return;
-      }
-      this.addEventListener('keyup', keyUpHandler, {once: true});
-    });
+    this.handleClick(e);
+  }
+
+  #keydownListener = (e) => {
+    const { metaKey, altKey, key } = e;
+    if (metaKey || altKey || !this.keysUsed.includes(key)) {
+      this.removeEventListener('keyup', this.#keyupListener);
+      return;
+    }
+    this.addEventListener('keyup', this.#keyupListener, {once: true});
+  }
+
+  enable() {
+    this.addEventListener('click', this.#clickListener);
+    this.addEventListener('keydown', this.#keydownListener);
+    this.setAttribute('tabindex', 0);
+  }
+
+  disable() {
+    this.removeEventListener('click', this.#clickListener);
+    this.removeEventListener('keyup', this.#keyupListener);
+    this.removeAttribute('tabindex');
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -127,12 +141,17 @@ class MediaChromeButton extends window.HTMLElement {
         const mediaControllerEl = document.getElementById(newValue);
         mediaControllerEl?.associateElement?.(this);
       }
+    } else if (attrName === 'disabled' && newValue !== oldValue) {
+      if (newValue == null) {
+        this.enable();
+      } else {
+        this.disable();
+      }
     }
   }
 
   connectedCallback() {
     this.setAttribute('role', 'button');
-    this.setAttribute('tabindex', 0);
 
     const mediaControllerId = this.getAttribute(
       MediaUIAttributes.MEDIA_CONTROLLER

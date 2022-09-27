@@ -123,6 +123,7 @@ class MediaTimeRange extends MediaChromeRange {
     return [
       ...super.observedAttributes,
       'thumbnails',
+      'disabled',
       MediaUIAttributes.MEDIA_PAUSED,
       MediaUIAttributes.MEDIA_DURATION,
       MediaUIAttributes.MEDIA_SEEKABLE,
@@ -134,6 +135,9 @@ class MediaTimeRange extends MediaChromeRange {
       MediaUIAttributes.MEDIA_LOADING,
     ];
   }
+
+  #boxes;
+  #previewBox;
 
   constructor() {
     super();
@@ -170,7 +174,10 @@ class MediaTimeRange extends MediaChromeRange {
       this._refreshId = requestAnimationFrame(this._refreshBar);
     };
 
-    this._enableBoxes();
+    this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
+    this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
+
+    this.#enableBoxes();
   }
 
   connectedCallback() {
@@ -220,6 +227,13 @@ class MediaTimeRange extends MediaChromeRange {
     }
     if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
       this.updateBar();
+    }
+    if (attrName === 'disabled') {
+      if (newValue == null) {
+        this.#enableBoxes();
+      } else {
+        this.#disableBoxes();
+      }
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
@@ -313,77 +327,84 @@ class MediaTimeRange extends MediaChromeRange {
     style.transform = `translateX(${boxPos}px)`;
   }
 
-  _enableBoxes() {
-    const boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
-    const previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
+  #pointermoveHandler = (evt) => {
+    if ([...this.#boxes].some((b) => evt.composedPath().includes(b))) return;
 
-    let pointermoveHandler;
-    const trackMouse = () => {
-      pointermoveHandler = (evt) => {
-        if ([...boxes].some((b) => evt.composedPath().includes(b))) return;
+    this.updatePointerBar(evt);
 
-        this.updatePointerBar(evt);
+    const duration = +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+    // If no duration we can't calculate which time to show
+    if (!duration) return;
 
-        const duration = +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
-        // If no duration we can't calculate which time to show
-        if (!duration) return;
+    // Get mouse position percent
+    const rangeRect = this.range.getBoundingClientRect();
+    let mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
+    // Lock between 0 and 1
+    mousePercent = Math.max(0, Math.min(1, mousePercent));
 
-        // Get mouse position percent
-        const rangeRect = this.range.getBoundingClientRect();
-        let mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
-        // Lock between 0 and 1
-        mousePercent = Math.max(0, Math.min(1, mousePercent));
+    const boxPos = getBoxPosition(this, this.#previewBox, mousePercent);
+    const { style } = getOrInsertCSSRule(
+      this.shadowRoot,
+      '[part~="preview-box"]'
+    );
+    style.transform = `translateX(${boxPos}px)`;
 
-        const boxPos = getBoxPosition(this, previewBox, mousePercent);
-        const { style } = getOrInsertCSSRule(
-          this.shadowRoot,
-          '[part~="preview-box"]'
-        );
-        style.transform = `translateX(${boxPos}px)`;
+    const detail = mousePercent * duration;
+    const mediaPreviewEvt = new window.CustomEvent(
+      MediaUIEvents.MEDIA_PREVIEW_REQUEST,
+      { composed: true, bubbles: true, detail }
+    );
+    this.dispatchEvent(mediaPreviewEvt);
+  }
 
-        const detail = mousePercent * duration;
-        const mediaPreviewEvt = new window.CustomEvent(
-          MediaUIEvents.MEDIA_PREVIEW_REQUEST,
-          { composed: true, bubbles: true, detail }
-        );
-        this.dispatchEvent(mediaPreviewEvt);
-      };
-      window.addEventListener('pointermove', pointermoveHandler, false);
-    };
+  // Trigger when the mouse moves over the range
+  #rangeEntered = false
 
-    const stopTrackingMouse = () => {
-      window.removeEventListener('pointermove', pointermoveHandler);
-      const endEvt = new window.CustomEvent(
-        MediaUIEvents.MEDIA_PREVIEW_REQUEST,
-        { composed: true, bubbles: true, detail: null }
-      );
-      this.dispatchEvent(endEvt);
-    };
+  #offRangeHandler = (evt) => {
+    if (
+      !evt.composedPath().includes(this) ||
+      [...this.#boxes].some((b) => evt.composedPath().includes(b))
+    ) {
+      window.removeEventListener('pointermove', this.#offRangeHandler);
+      this.#rangeEntered = false;
+      this.#stopTrackingMouse();
+    }
+  }
 
-    // Trigger when the mouse moves over the range
-    let rangeEntered = false;
-    let rangepointermoveHander = () => {
-      const mediaDurationStr = this.getAttribute(
-        MediaUIAttributes.MEDIA_DURATION
-      );
-      if (!rangeEntered && mediaDurationStr) {
-        rangeEntered = true;
-        trackMouse();
+  #trackMouse = () => {
+    window.addEventListener('pointermove', this.#pointermoveHandler, false);
+  }
 
-        let offRangeHandler = (evt) => {
-          if (
-            !evt.composedPath().includes(this) ||
-            [...boxes].some((b) => evt.composedPath().includes(b))
-          ) {
-            window.removeEventListener('pointermove', offRangeHandler);
-            rangeEntered = false;
-            stopTrackingMouse();
-          }
-        };
-        window.addEventListener('pointermove', offRangeHandler, false);
-      }
-    };
-    this.addEventListener('pointermove', rangepointermoveHander, false);
+  #stopTrackingMouse = () => {
+    window.removeEventListener('pointermove', this.#pointermoveHandler);
+    const endEvt = new window.CustomEvent(
+      MediaUIEvents.MEDIA_PREVIEW_REQUEST,
+      { composed: true, bubbles: true, detail: null }
+    );
+    this.dispatchEvent(endEvt);
+  }
+
+  #rangepointermoveHandler = () => {
+    const mediaDurationStr = this.getAttribute(
+      MediaUIAttributes.MEDIA_DURATION
+    );
+    if (!this.#rangeEntered && mediaDurationStr) {
+      this.#rangeEntered = true;
+      this.#trackMouse();
+
+      window.addEventListener('pointermove', this.#offRangeHandler, false);
+    }
+  }
+
+  #enableBoxes() {
+    this.addEventListener('pointermove', this.#rangepointermoveHandler, false);
+  }
+
+  #disableBoxes() {
+    window.removeEventListener('pointermove', this.#offRangeHandler);
+    this.removeEventListener('pointermove', this.#rangepointermoveHandler);
+    this.#rangeEntered = false;
+    this.#stopTrackingMouse();
   }
 }
 
