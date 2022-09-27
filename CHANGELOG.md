@@ -1,3 +1,18 @@
+# [0.12.0](https://github.com/muxinc/media-chrome/compare/v0.11.0...v0.12.0) (2022-09-27)
+
+
+### Bug Fixes
+
+* Safari still uses webkitFullscreenEnabled ([#316](https://github.com/muxinc/media-chrome/issues/316)) ([3850429](https://github.com/muxinc/media-chrome/commit/3850429b2c04327290acb7cbb103c76b8303f502))
+
+
+### Features
+
+* remove minify/srcmap esm/cjs, add esm-module ([#318](https://github.com/muxinc/media-chrome/issues/318)) ([5ea0d24](https://github.com/muxinc/media-chrome/commit/5ea0d24bc18de58587b8f90137f72cfde585879f))
+* support being able to disable buttons, range, and time-display ([#320](https://github.com/muxinc/media-chrome/issues/320)) ([d4129c2](https://github.com/muxinc/media-chrome/commit/d4129c2ee6ef79fafff440e0ba7b3bf9dff55a07))
+
+
+
 ## [0.11.1](https://github.com/muxinc/media-chrome/compare/v0.11.0...v0.11.1) (2022-09-23)
 
 
