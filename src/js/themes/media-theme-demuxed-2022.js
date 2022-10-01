@@ -160,10 +160,10 @@ const template = `
   }
 
   div[slot="top-chrome"] {
-    width: calc(100% - 32px);
+    width: calc(100% - 36px);
     display: flex;
     flex-direction: row-reverse;
-    padding-right: 32px;
+    padding-right: 36px;
   }
 
   div[slot="top-chrome"] .small-button {
@@ -176,14 +176,14 @@ const template = `
   }
 
   .media-volume-range-wrapper {
-    width: 120px;
+    width: 122px;
     height: 34px;
     overflow: hidden;
     opacity: 0;
     transform: rotate(-90deg);
     position: absolute;
-    top: -74px;
-    left: -50px;
+    top: -75px;
+    left: -52px;
     border-left: 16px solid transparent;
   }
 
