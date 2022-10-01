@@ -31,7 +31,7 @@ const template = `
   }
 
   media-captions-button.small-button {
-    display: flex;
+    display: none;
   }
 
   media-captions-button[media-captions-list].small-button {
