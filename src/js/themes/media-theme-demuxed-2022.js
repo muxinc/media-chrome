@@ -85,11 +85,7 @@ const template = `
     border-radius: 9999px;
   }
 
-  media-captions-button.small-button:has(> svg[slot="off"]) {
-    background-color: var(--tertiary-color);
-  }
-
-  media-captions-button.small-button:has(> svg[slot="off"]) svg {
+  media-captions-button.small-button svg[slot="off"] {
     filter: invert();
   }
 
