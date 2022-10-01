@@ -30,6 +30,14 @@ const template = `
     display: none;
   }
 
+  media-captions-button.small-button {
+    display: none;
+  }
+
+  media-captions-button[media-captions-list].small-button {
+    display: flex;
+  }
+
   media-controller {
     width: 100%;
     aspect-ratio: 16 / 9;
