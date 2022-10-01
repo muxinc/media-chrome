@@ -530,6 +530,9 @@ const template = `
 
 class MediaThemeDemuxed extends MediaTheme {
   static template = template;
+  static get observedAttributes() {
+    return ["stream-type"];
+  }
   #breakpoints = { xs: 396, sm: 484, md: 576, lg: 768, xl: 960 };
 
   #getBreakpoints(rect) {
@@ -548,6 +551,13 @@ class MediaThemeDemuxed extends MediaTheme {
     });
 
     resizeObserver.observe(this.shadowRoot.querySelector('media-controller'));
+  }
+
+  attributeChangedCallback(name, _oldValue, newValue) {
+    if(name == "stream-type" && newValue == "live") {
+      this.querySelector('[slot="media"]').muted = true;
+      this.querySelector('[slot="media"]').play();
+    }
   }
 }
 
