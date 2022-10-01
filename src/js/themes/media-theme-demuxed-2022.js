@@ -31,7 +31,7 @@ const template = `
   }
 
   media-captions-button.small-button {
-    display: none;
+    display: flex;
   }
 
   media-captions-button[media-captions-list].small-button {
@@ -83,6 +83,14 @@ const template = `
     width: 32px;
     background: white;
     border-radius: 9999px;
+  }
+
+  media-captions-button.small-button:has(> svg[slot="off"]) {
+    background-color: var(--tertiary-color);
+  }
+
+  media-captions-button.small-button:has(> svg[slot="off"]) svg {
+    filter: invert();
   }
 
   .small-button svg {
@@ -328,9 +336,6 @@ const template = `
     </media-time-range>
     <media-captions-button class="small-button">
       <svg slot="off" viewBox="0 0 16 16">
-        <style type="text/css">
-          .st0{fill:#FFFFFF;}
-        </style>
         <g transform="translate(-6, -6)">
           <g>
             <path d="M18.6,19.7H9.4c-1.4,0-2.6-1.1-2.6-2.6v-6.2c0-1.4,1.1-2.6,2.6-2.6h9.3c1.4,0,2.6,1.1,2.6,2.6v6.2C21.2,18.6,20,19.7,18.6,19.7z"/>
@@ -352,9 +357,6 @@ const template = `
         </g>
       </svg>
       <svg slot="on" viewBox="0 0 16 16">
-        <style type="text/css">
-          .st0{fill:#000000;}
-        </style>
         <g transform="translate(-6, -6)">
           <g>
             <path d="M18.6,19.7H9.4c-1.4,0-2.6-1.1-2.6-2.6v-6.2c0-1.4,1.1-2.6,2.6-2.6h9.3c1.4,0,2.6,1.1,2.6,2.6v6.2C21.2,18.6,20,19.7,18.6,19.7z"/>
