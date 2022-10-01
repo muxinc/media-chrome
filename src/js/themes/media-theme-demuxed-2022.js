@@ -18,26 +18,6 @@ const template = `
     --tertiary-color: #7596CC;
   }
 
-  media-airplay-button[media-airplay-unavailable].small-button {
-    display: none;
-  }
-
-  media-cast-button[media-cast-unavailable].small-button {
-    display: none;
-  }
-
-  media-pip-button[media-pip-unavailable].small-button {
-    display: none;
-  }
-
-  media-captions-button.small-button {
-    display: none;
-  }
-
-  media-captions-button[media-captions-list].small-button {
-    display: flex;
-  }
-
   media-controller {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -48,7 +28,7 @@ const template = `
     --media-icon-color: var(--primary-color);
 
     --media-range-track-height: 6px;
-    --media-range-track-background: var(--tertiary-color);
+    --media-range-track-background: rgba(0,0,0,0.4);
     --media-range-track-border-radius: 9999px;
 
     --media-range-thumb-background: var(--tertiary-color);
@@ -102,6 +82,11 @@ const template = `
     box-shadow: 0 0 0 calc(2px) var(--tertiary-color);
   }
 
+  media-cinema-button.small-button {
+    display: none;
+    cursor: pointer;
+  }
+
   div[slot="centered-chrome"] media-play-button {
     position: relative;
     flex: none;
@@ -122,11 +107,6 @@ const template = `
   div[slot="centered-chrome"] media-play-button svg {
     filter: invert(100%);
     height: 64px;
-  }
-
-  media-cinema-button.small-button {
-    display: none;
-    cursor: pointer;
   }
 
   media-time-range {
@@ -193,7 +173,6 @@ const template = `
     --media-range-track-width: 80px;
   }
 
-  /* Expand volume control in all relevant states */
   media-mute-button:hover + .media-volume-range-wrapper,
   media-mute-button:focus + .media-volume-range-wrapper,
   media-mute-button:focus-within + .media-volume-range-wrapper,
@@ -203,6 +182,26 @@ const template = `
     opacity: 1;
   }
 
+  media-airplay-button[media-airplay-unavailable].small-button {
+    display: none;
+  }
+
+  media-cast-button[media-cast-unavailable].small-button {
+    display: none;
+  }
+
+  media-pip-button[media-pip-unavailable].small-button {
+    display: none;
+  }
+
+  media-captions-button.small-button {
+    display: none;
+  }
+
+  media-captions-button[media-captions-list].small-button {
+    display: flex;
+  }
+
   @media (max-width: 720px) {
     media-control-bar {
       background: transparent;
@@ -210,6 +209,10 @@ const template = `
       padding: 12px 8px;
       flex-direction: column;
       align-items: flex-start;
+    }
+
+    .media-volume-range-wrapper {
+      display: none;
     }
 
     .small-button {
@@ -223,7 +226,7 @@ const template = `
 
     div[slot="top-chrome"] .small-button {
       display: flex;
-      margin: 16px 7px;
+      margin: 22px 7px;
     }
 
     media-airplay-button[media-airplay-unavailable].small-button {
@@ -318,18 +321,6 @@ const template = `
         </g>
       </svg>
     </media-play-button>
-    <media-seek-forward-button class="small-button">
-      <svg slot="forward" viewBox="0 0 16 16">
-        <g transform="translate(-6, -6)">
-          <g>
-            <g>
-              <path d="M9.1,19.1c-0.1,0-0.2,0-0.3-0.1c-0.2-0.1-0.3-0.4-0.3-0.6V9.5c0-0.3,0.1-0.5,0.3-0.6C8.9,8.8,9.2,8.9,9.4,9l6.5,4.4c0.2,0.1,0.3,0.3,0.3,0.5s-0.1,0.4-0.3,0.5l-6.5,4.4C9.3,19.1,9.2,19.1,9.1,19.1z"/>
-            </g>
-          </g>
-          <path d="M18.8,19.1L18.8,19.1c-0.5,0-0.8-0.4-0.8-0.8V9.7c0-0.5,0.4-0.8,0.8-0.8l0,0c0.5,0,0.8,0.4,0.8,0.8v8.6C19.7,18.7,19.3,19.1,18.8,19.1z"/>
-        </g>
-      </svg>
-    </media-seek-forward-button>
     <div class="media-volume-wrapper">
       <media-mute-button class="small-button">
         <svg slot="off" viewBox="0 0 16 16">
@@ -396,6 +387,18 @@ const template = `
         <media-volume-range></media-volume-range>
       </div>
     </div>
+    <media-seek-forward-button class="small-button">
+      <svg slot="forward" viewBox="0 0 16 16">
+        <g transform="translate(-6, -6)">
+          <g>
+            <g>
+              <path d="M9.1,19.1c-0.1,0-0.2,0-0.3-0.1c-0.2-0.1-0.3-0.4-0.3-0.6V9.5c0-0.3,0.1-0.5,0.3-0.6C8.9,8.8,9.2,8.9,9.4,9l6.5,4.4c0.2,0.1,0.3,0.3,0.3,0.5s-0.1,0.4-0.3,0.5l-6.5,4.4C9.3,19.1,9.2,19.1,9.1,19.1z"/>
+            </g>
+          </g>
+          <path d="M18.8,19.1L18.8,19.1c-0.5,0-0.8-0.4-0.8-0.8V9.7c0-0.5,0.4-0.8,0.8-0.8l0,0c0.5,0,0.8,0.4,0.8,0.8v8.6C19.7,18.7,19.3,19.1,18.8,19.1z"/>
+        </g>
+      </svg>
+    </media-seek-forward-button>
     <media-time-display show-duration></media-time-display>
     <media-time-range>
       <media-preview-thumbnail slot="preview"></media-preview-thumbnail>
@@ -445,18 +448,6 @@ const template = `
         </g>
       </svg>
     </media-captions-button>
-    <!--
-    <media-settings-button class="small-button">
-      <svg viewBox="0 0 16 16">
-        <style type="text/css">
-          .st0{fill:#FFFFFF;}
-        </style>
-        <g transform="translate(-6, -6)">
-          <path d="M20.9,13.2h-1.3c-0.2-1-0.5-1.9-1.1-2.6l0.9-0.9c0.3-0.3,0.3-0.8,0-1.1c-0.3-0.3-0.8-0.3-1.1,0l-0.9,0.9c-0.8-0.5-1.7-1-2.6-1.1V7.1c0-0.5-0.3-0.8-0.8-0.8s-0.8,0.3-0.8,0.8v1.3c-1,0.2-1.9,0.5-2.6,1.1L9.7,8.5c-0.3-0.3-0.8-0.3-1.1,0c-0.3,0.3-0.3,0.8,0,1.1l0.9,0.9c-0.5,0.8-1,1.7-1.1,2.6H7.1c-0.5,0-0.8,0.3-0.8,0.8s0.3,0.8,0.8,0.8h1.3c0.2,1,0.5,1.9,1.1,2.6l-0.9,0.9c-0.3,0.3-0.3,0.8,0,1.1c0.2,0.2,0.4,0.2,0.5,0.2s0.4-0.1,0.5-0.2l0.9-0.9c0.8,0.5,1.7,1,2.6,1.1v1.5c0,0.5,0.3,0.8,0.8,0.8s0.8-0.3,0.8-0.8v-1.3c1-0.2,1.9-0.5,2.6-1.1l0.9,0.9c0.2,0.2,0.4,0.2,0.5,0.2s0.4-0.1,0.5-0.2c0.3-0.3,0.3-0.8,0-1.1l-0.9-0.9c0.5-0.8,1-1.7,1.1-2.6h1.3c0.5,0,0.8-0.3,0.8-0.8S21.3,13.2,20.9,13.2z M13.9,18.2c-2.3,0-4.2-1.8-4.2-4.2l0,0l0,0c0-2.3,1.8-4.2,4.2-4.2s4.2,1.8,4.2,4.2S16.2,18.2,13.9,18.2z"/>
-        </g>
-      </svg>
-    </media-settings-button>
-    -->
     <media-pip-button class="small-button">
       <svg slot="enter" viewBox="0 0 16 16">
         <style type="text/css">
