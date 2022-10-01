@@ -124,7 +124,8 @@ const template = `
     height: 64px;
   }
 
-  media-cinema-button {
+  media-cinema-button.small-button {
+    display: none;
     cursor: pointer;
   }
 
@@ -167,6 +168,39 @@ const template = `
 
   div[slot="top-chrome"] .small-button {
     margin: 32px 8px;
+  }
+
+  .media-volume-wrapper {
+    position: relative;
+    padding-left: 6px;
+  }
+
+  .media-volume-range-wrapper {
+    width: 120px;
+    height: 34px;
+    overflow: hidden;
+    opacity: 0;
+    transform: rotate(-90deg);
+    position: absolute;
+    top: -74px;
+    left: -50px;
+    border-left: 16px solid transparent;
+  }
+
+  media-volume-range {
+    border-radius: 0 9999px 9999px 0;
+    background: rgba(0,0,0,0.2);
+    --media-range-track-width: 80px;
+  }
+
+  /* Expand volume control in all relevant states */
+  media-mute-button:hover + .media-volume-range-wrapper,
+  media-mute-button:focus + .media-volume-range-wrapper,
+  media-mute-button:focus-within + .media-volume-range-wrapper,
+  .media-volume-range-wrapper:hover,
+  .media-volume-range-wrapper:focus,
+  .media-volume-range-wrapper:focus-within {
+    opacity: 1;
   }
 
   @media (max-width: 720px) {
@@ -284,35 +318,6 @@ const template = `
         </g>
       </svg>
     </media-play-button>
-    <media-mute-button class="small-button">
-      <svg slot="off" viewBox="0 0 16 16">
-        <g transform="translate(-6, -6)">
-          <path d="M13,8.2l-2.8,2.9v0.1H7.4c-0.5,0-0.9,0.4-0.9,0.9V16c0,0.5,0.4,0.9,0.9,0.9h2.8l2.8,2.9c0.3,0.3,0.8,0.1,0.8-0.3v-11
-        C13.8,8.1,13.3,7.9,13,8.2z"/>
-          <path d="M19.4,14l2-2c0.3-0.3,0.3-0.6,0-0.9c-0.3-0.3-0.6-0.3-0.9,0l-2,2l-2-2c-0.3-0.3-0.6-0.3-0.9,0c-0.3,0.3-0.3,0.6,0,0.9l2,2
-        l-2,2c-0.3,0.3-0.3,0.6,0,0.9c0.1,0.1,0.3,0.2,0.4,0.2c0.2,0,0.3-0.1,0.4-0.2l2-2l2,2c0.1,0.1,0.3,0.2,0.4,0.2
-        c0.2,0,0.3-0.1,0.4-0.2c0.3-0.3,0.3-0.6,0-0.9L19.4,14z"/>
-        </g>
-      </svg>
-      <svg slot="high" viewBox="0 0 16 16">
-        <g transform="translate(-6, -6)">
-          <g id="_x2D_e-speaker_00000056397674509617663590000017246565507478500284_">
-            <path d="M13.1,8.2l-2.8,3l0,0H7.5c-0.5,0-0.9,0.4-0.9,0.9V16c0,0.5,0.4,0.9,0.9,0.9h2.8l2.8,2.9c0.3,0.3,0.8,0.1,0.8-0.3v-11
-              C13.9,8.1,13.4,7.9,13.1,8.2z"/>
-          </g>
-          <g>
-            <g>
-              <path d="M18.6,19.8c-0.2,0-0.3-0.1-0.4-0.2c-0.3-0.3-0.3-0.6,0-0.9c1.3-1.2,2-2.8,2-4.5s-0.7-3.3-2-4.5c-0.3-0.3-0.3-0.6,0-0.9
-                c0.3-0.3,0.6-0.3,0.9,0c1.5,1.5,2.3,3.4,2.3,5.4c0,2.1-0.8,4-2.3,5.4C18.9,19.7,18.7,19.8,18.6,19.8z"/>
-            </g>
-            <g>
-              <path d="M16.3,17.4c-0.2,0-0.3-0.1-0.4-0.2c-0.3-0.3-0.3-0.6,0-0.9c0.6-0.6,1-1.4,1-2.3s-0.4-1.6-1-2.3c-0.3-0.3-0.3-0.6,0-0.9
-                c0.3-0.3,0.6-0.3,0.9,0c0.9,0.8,1.4,2,1.4,3.2s-0.5,2.3-1.4,3.2C16.6,17.4,16.4,17.4,16.3,17.4z"/>
-            </g>
-          </g>
-        </g>
-      </svg>
-    </media-mute-button>
     <media-seek-forward-button class="small-button">
       <svg slot="forward" viewBox="0 0 16 16">
         <g transform="translate(-6, -6)">
@@ -324,7 +329,73 @@ const template = `
           <path d="M18.8,19.1L18.8,19.1c-0.5,0-0.8-0.4-0.8-0.8V9.7c0-0.5,0.4-0.8,0.8-0.8l0,0c0.5,0,0.8,0.4,0.8,0.8v8.6C19.7,18.7,19.3,19.1,18.8,19.1z"/>
         </g>
       </svg>
-    </media-seek-forward-button class="small-button">
+    </media-seek-forward-button>
+    <div class="media-volume-wrapper">
+      <media-mute-button class="small-button">
+        <svg slot="off" viewBox="0 0 16 16">
+          <g transform="translate(-6, -6)">
+            <path d="M13,8.2l-2.8,2.9v0.1H7.4c-0.5,0-0.9,0.4-0.9,0.9V16c0,0.5,0.4,0.9,0.9,0.9h2.8l2.8,2.9c0.3,0.3,0.8,0.1,0.8-0.3v-11
+          C13.8,8.1,13.3,7.9,13,8.2z"/>
+            <path d="M19.4,14l2-2c0.3-0.3,0.3-0.6,0-0.9c-0.3-0.3-0.6-0.3-0.9,0l-2,2l-2-2c-0.3-0.3-0.6-0.3-0.9,0c-0.3,0.3-0.3,0.6,0,0.9l2,2
+          l-2,2c-0.3,0.3-0.3,0.6,0,0.9c0.1,0.1,0.3,0.2,0.4,0.2c0.2,0,0.3-0.1,0.4-0.2l2-2l2,2c0.1,0.1,0.3,0.2,0.4,0.2
+          c0.2,0,0.3-0.1,0.4-0.2c0.3-0.3,0.3-0.6,0-0.9L19.4,14z"/>
+          </g>
+        </svg>
+        <svg slot="low" viewBox="0 0 16 16">
+          <g transform="translate(-6, -6)">
+            <g id="_x2D_e-speaker_00000056397674509617663590000017246565507478500284_">
+              <path d="M13.1,8.2l-2.8,3l0,0H7.5c-0.5,0-0.9,0.4-0.9,0.9V16c0,0.5,0.4,0.9,0.9,0.9h2.8l2.8,2.9c0.3,0.3,0.8,0.1,0.8-0.3v-11
+                C13.9,8.1,13.4,7.9,13.1,8.2z"/>
+            </g>
+            <g>
+              <g>
+                <path d="M16.3,17.4c-0.2,0-0.3-0.1-0.4-0.2c-0.3-0.3-0.3-0.6,0-0.9c0.6-0.6,1-1.4,1-2.3s-0.4-1.6-1-2.3c-0.3-0.3-0.3-0.6,0-0.9
+                  c0.3-0.3,0.6-0.3,0.9,0c0.9,0.8,1.4,2,1.4,3.2s-0.5,2.3-1.4,3.2C16.6,17.4,16.4,17.4,16.3,17.4z"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+        <svg slot="medium" viewBox="0 0 16 16">
+          <g transform="translate(-6, -6)">
+            <g id="_x2D_e-speaker_00000056397674509617663590000017246565507478500284_">
+              <path d="M13.1,8.2l-2.8,3l0,0H7.5c-0.5,0-0.9,0.4-0.9,0.9V16c0,0.5,0.4,0.9,0.9,0.9h2.8l2.8,2.9c0.3,0.3,0.8,0.1,0.8-0.3v-11
+                C13.9,8.1,13.4,7.9,13.1,8.2z"/>
+            </g>
+            <g>
+              <g>
+                <path d="M18.6,19.8c-0.2,0-0.3-0.1-0.4-0.2c-0.3-0.3-0.3-0.6,0-0.9c1.3-1.2,2-2.8,2-4.5s-0.7-3.3-2-4.5c-0.3-0.3-0.3-0.6,0-0.9
+                  c0.3-0.3,0.6-0.3,0.9,0c1.5,1.5,2.3,3.4,2.3,5.4c0,2.1-0.8,4-2.3,5.4C18.9,19.7,18.7,19.8,18.6,19.8z"/>
+              </g>
+              <g>
+                <path d="M16.3,17.4c-0.2,0-0.3-0.1-0.4-0.2c-0.3-0.3-0.3-0.6,0-0.9c0.6-0.6,1-1.4,1-2.3s-0.4-1.6-1-2.3c-0.3-0.3-0.3-0.6,0-0.9
+                  c0.3-0.3,0.6-0.3,0.9,0c0.9,0.8,1.4,2,1.4,3.2s-0.5,2.3-1.4,3.2C16.6,17.4,16.4,17.4,16.3,17.4z"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+        <svg slot="high" viewBox="0 0 16 16">
+          <g transform="translate(-6, -6)">
+            <g id="_x2D_e-speaker_00000056397674509617663590000017246565507478500284_">
+              <path d="M13.1,8.2l-2.8,3l0,0H7.5c-0.5,0-0.9,0.4-0.9,0.9V16c0,0.5,0.4,0.9,0.9,0.9h2.8l2.8,2.9c0.3,0.3,0.8,0.1,0.8-0.3v-11
+                C13.9,8.1,13.4,7.9,13.1,8.2z"/>
+            </g>
+            <g>
+              <g>
+                <path d="M18.6,19.8c-0.2,0-0.3-0.1-0.4-0.2c-0.3-0.3-0.3-0.6,0-0.9c1.3-1.2,2-2.8,2-4.5s-0.7-3.3-2-4.5c-0.3-0.3-0.3-0.6,0-0.9
+                  c0.3-0.3,0.6-0.3,0.9,0c1.5,1.5,2.3,3.4,2.3,5.4c0,2.1-0.8,4-2.3,5.4C18.9,19.7,18.7,19.8,18.6,19.8z"/>
+              </g>
+              <g>
+                <path d="M16.3,17.4c-0.2,0-0.3-0.1-0.4-0.2c-0.3-0.3-0.3-0.6,0-0.9c0.6-0.6,1-1.4,1-2.3s-0.4-1.6-1-2.3c-0.3-0.3-0.3-0.6,0-0.9
+                  c0.3-0.3,0.6-0.3,0.9,0c0.9,0.8,1.4,2,1.4,3.2s-0.5,2.3-1.4,3.2C16.6,17.4,16.4,17.4,16.3,17.4z"/>
+              </g>
+            </g>
+          </g>
+        </svg>
+      </media-mute-button>
+      <div class="media-volume-range-wrapper">
+        <media-volume-range></media-volume-range>
+      </div>
+    </div>
     <media-time-display show-duration></media-time-display>
     <media-time-range>
       <media-preview-thumbnail slot="preview"></media-preview-thumbnail>
@@ -373,7 +444,7 @@ const template = `
           </g>
         </g>
       </svg>
-    </media-captions-button class="small-button">
+    </media-captions-button>
     <!--
     <media-settings-button class="small-button">
       <svg viewBox="0 0 16 16">
