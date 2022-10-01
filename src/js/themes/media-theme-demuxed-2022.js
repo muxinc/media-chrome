@@ -18,6 +18,10 @@ const template = `
     --tertiary-color: #7596CC;
   }
 
+  :host([stream-type="live"]) media-time-range, :host([stream-type="live"]) media-time-display {
+    opacity: 0;
+  }
+
   media-controller {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -478,7 +482,7 @@ const template = `
           .st0{fill:#FFFFFF;}
         </style>
         <g transform="translate(-6, -6)">
-		      <path d="M19.2,17.6H8.8c-0.4,0-0.7-0.3-0.7-0.7v-5.8c0-0.4,0.3-0.7,0.7-0.7h10.4c0.4,0,0.7,0.3,0.7,0.7v5.8C19.9,17.3,19.6,17.6,19.2,17.6z M9.5,16.2h9v-4.4h-9V16.2z"/>
+          <path d="M19.2,17.6H8.8c-0.4,0-0.7-0.3-0.7-0.7v-5.8c0-0.4,0.3-0.7,0.7-0.7h10.4c0.4,0,0.7,0.3,0.7,0.7v5.8C19.9,17.3,19.6,17.6,19.2,17.6z M9.5,16.2h9v-4.4h-9V16.2z"/>
         </g>
       </svg>
     </media-cinema-button>
