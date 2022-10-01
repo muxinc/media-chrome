@@ -277,8 +277,8 @@ const template = `
       </svg>
     </media-cast-button>
     <media-airplay-button class="small-button">
-      <svg slot="airplay" viewBox="0 0 24 24">
-        <g transform="translate(-0.7, 0.5)">
+      <svg slot="airplay" viewBox="0 0 23 23">
+        <g transform="translate(-1.25, 0.5)">
           <path d="M22.13 3H3.87a.87.87 0 0 0-.87.87v13.26a.87.87 0 0 0 .87.87h3.4L9 16H5V5h16v11h-4l1.72 2h3.4a.87.87 0 0 0 .87-.87V3.87a.87.87 0 0 0-.86-.87Zm-8.75 11.44a.5.5 0 0 0-.76 0l-4.91 5.73a.5.5 0 0 0 .38.83h9.82a.501.501 0 0 0 .38-.83l-4.91-5.73Z"/>
         </g>
       </svg>
