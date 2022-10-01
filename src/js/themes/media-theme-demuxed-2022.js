@@ -206,65 +206,63 @@ const template = `
     display: flex;
   }
 
-  @media (max-width: 720px) {
-    media-control-bar {
-      background: transparent;
-      margin: 0;
-      padding: 12px 8px;
-      flex-direction: column;
-      align-items: flex-start;
-    }
+  media-controller.sm media-control-bar {
+    background: transparent;
+    margin: 0;
+    padding: 12px 8px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
-    .media-volume-range-wrapper {
-      display: none;
-    }
+  media-controller.sm .media-volume-range-wrapper {
+    display: none;
+  }
 
-    .small-button {
-      display: none;
-    }
+  media-controller.sm .small-button {
+    display: none;
+  }
 
-    div[slot="top-chrome"] {
-      width: calc(100% - 14px);
-      padding-right: 14px;
-    }
+  media-controller.sm div[slot="top-chrome"] {
+    width: calc(100% - 14px);
+    padding-right: 14px;
+  }
 
-    div[slot="top-chrome"] .small-button {
-      display: flex;
-      margin: 22px 7px;
-    }
+  media-controller.sm div[slot="top-chrome"] .small-button {
+    display: flex;
+    margin: 22px 7px;
+  }
 
-    media-airplay-button[media-airplay-unavailable].small-button {
-      display: none;
-    }
-  
-    media-cast-button[media-cast-unavailable].small-button {
-      display: none;
-    }
+  media-controller.sm media-airplay-button[media-airplay-unavailable].small-button {
+    display: none;
+  }
 
-    media-fullscreen-button.small-button {
-      display: flex;
-      position: absolute;
-      top: 8px;
-      right: 20px;
-    }
+  media-controller.sm media-cast-button[media-cast-unavailable].small-button {
+    display: none;
+  }
 
-    media-time-range {
-      width: 100%;
-    }
+  media-controller.sm media-fullscreen-button.small-button {
+    display: flex;
+    position: absolute;
+    top: 8px;
+    right: 20px;
+  }
 
-    media-time-display {
-      padding: 0 10px;
-    }
+  media-controller.sm media-time-range {
+    width: 100%;
+  }
 
-    div[slot="centered-chrome"] media-play-button {
-      z-index: 1;
-      height: 72px;
-      width: 72px;
-    }
+  media-controller.sm  media-time-display {
+    padding: 0 10px;
+  }
 
-    div[slot="centered-chrome"] media-play-button svg {
-      height: 44px;
-    }
+  media-controller.sm  div[slot="centered-chrome"] media-play-button {
+    z-index: 1;
+    height: 72px;
+    width: 72px;
+  }
+
+  media-controller.sm div[slot="centered-chrome"] media-play-button svg {
+    height: 44px;
   }
 </style>
 
