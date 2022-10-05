@@ -296,7 +296,7 @@ const template = `
         <media-volume-range></media-volume-range>
       </div>
     </div>
-    <media-seek-forward-button class="small-button">
+    <media-seek-forward-button style="display: none;" class="small-button">
       <svg slot="forward" viewBox="0 0 16 16"><path d="M3.1 13.1c-.1 0-.2 0-.3-.1-.2-.1-.3-.4-.3-.6V3.5c0-.3.1-.5.3-.6.1-.1.4 0 .6.1l6.5 4.4c.2.1.3.3.3.5s-.1.4-.3.5l-6.5 4.4c-.1.3-.2.3-.3.3zM12.8 13.1c-.5 0-.8-.4-.8-.8V3.7c0-.5.4-.8.8-.8.5 0 .8.4.8.8v8.6c.1.4-.3.8-.8.8z"/></svg> 
     </media-seek-forward-button>
     <media-time-display show-duration></media-time-display>
@@ -328,7 +328,7 @@ class MediaThemeDemuxed extends MediaTheme {
   static get observedAttributes() {
     return ["stream-type"];
   }
-  #breakpoints = { xs: 396, sm: 484, md: 576, lg: 768, xl: 960 };
+  #breakpoints = { xs: 360, sm: 600, md: 760, lg: 960, xl: 1100 };
 
   #getBreakpoints(rect) {
     return Object.keys(this.#breakpoints).filter((key) => {
@@ -339,7 +339,7 @@ class MediaThemeDemuxed extends MediaTheme {
   connectedCallback() {
     this.render();
     
-    const resizeObserver = new ResizeObserver((entries) => {
+    const resizeObserver = new window.ResizeObserver((entries) => {
       entries.forEach((entry) => {
         entry.target.className = this.#getBreakpoints(entry.contentRect).join(' ');
       });
@@ -349,9 +349,10 @@ class MediaThemeDemuxed extends MediaTheme {
   }
 
   attributeChangedCallback(name, _oldValue, newValue) {
-    if(name == "stream-type" && newValue == "live") {
-      this.querySelector('[slot="media"]').muted = true;
-      this.querySelector('[slot="media"]').play();
+    if(name === "stream-type" && newValue === "live") {
+      const media = this.querySelector('[slot="media"]');
+      media.muted = true;
+      media.play();
     }
   }
 }
