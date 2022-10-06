@@ -110,3 +110,16 @@ Our current styling architecture is still quite nascent and is very likely to un
 \* Unlike most Media Chrome buttons, the `<media-playback-rate-button/>` button displays text (and not an icon/svg), so many [button styles](#buttons) don't apply to it and some [text display styles](#text-displays) do apply to it (unlike most buttons).
 
 \*\* A few CSS Variables are more "global" in their application, so make sure you define and scope them via selectors appropriately.
+
+## Images
+
+### Elements
+
+- `<media-poster-image/>` ([docs](./media-poster-image))
+
+| Name                          | CSS Property          | Default Value | Description                                                                                     | Notes |
+| ----------------------------- | --------------------- | ------------- | ----------------------------------------------------------------------------------------------- | ----- |
+| `--media-object-fit`          | `object-fit`          | `contain`     | how the content of the image should be resized to fit the custom element                        |       |
+| `--media-object-position`     | `object-position`     | `center`      | specifies the alignment of the image within the custom element's box                            |       |
+| `--media-background-size`     | `background-size`     | `contain`     | how the content of the background placeholder image should be resized to fit the custom element |       |
+| `--media-background-position` | `background-position` | `center`      | specifies the alignment of the background placeholder image within the custom element's box     |       |
