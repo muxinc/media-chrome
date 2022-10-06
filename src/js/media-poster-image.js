@@ -13,9 +13,6 @@ template.innerHTML = `
       pointer-events: none;
       display: inline-block;
       box-sizing: border-box;
-
-      width: auto;
-      height: auto;
     }
 
     img {
@@ -23,10 +20,11 @@ template.innerHTML = `
       max-height: 100%;
       min-width: 100%;
       min-height: 100%;
-      background-size: contain;
-      background-position: center;
       background-repeat: no-repeat;
-      object-fit: contain;
+      background-position: var(--media-background-position, var(--media-object-position, center));
+      background-size: var(--media-background-size, var(--media-object-fit, contain));
+      object-fit: var(--media-object-fit, contain);
+      object-position: var(--media-object-position, center);
     }
 
     :host([${MediaUIAttributes.MEDIA_HAS_PLAYED}]) img {
