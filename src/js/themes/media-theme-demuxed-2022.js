@@ -204,63 +204,83 @@ const template = `
     display: flex;
   }
 
-  media-controller:not(.md) media-control-bar {
+  media-captions-button[media-subtitles-list].small-button {
+    display: flex;
+  }
+
+  media-controller:not(.sm) media-control-bar {
+    position: static;
     background: transparent;
     margin: 0;
-    padding: 12px 8px;
-    flex-direction: column;
-    align-items: flex-start;
+    padding: 22px 15px;
   }
 
-  media-controller:not(.md) .media-volume-range-wrapper {
+  media-controller:not(.sm) .media-volume-range-wrapper {
     display: none;
   }
 
-  media-controller:not(.md) .small-button {
+  media-controller:not(.sm) .small-button {
     display: none;
+    width: 48px;
+    height: 48px;
   }
 
-  media-controller:not(.md) div[slot="top-chrome"] {
-    width: calc(100% - 14px);
-    padding-right: 14px;
+  media-controller:not(.sm) .small-button svg {
+    transform: scale(1.5);
   }
 
-  media-controller:not(.md) div[slot="top-chrome"] .small-button {
+  media-controller:not(.sm) div[slot="top-chrome"] {
+    width: calc(100% - 13px);
+    padding-right: 13px;
+  }
+
+  media-controller:not(.sm) div[slot="top-chrome"] .small-button {
     display: flex;
-    margin: 22px 7px;
+    margin: 24px 7px;
   }
 
-  media-controller:not(.md) media-airplay-button[media-airplay-unavailable].small-button {
+  media-controller:not(.sm) media-airplay-button[media-airplay-unavailable].small-button {
     display: none;
   }
 
-  media-controller:not(.md) media-cast-button[media-cast-unavailable].small-button {
+  media-controller:not(.sm) media-cast-button[media-cast-unavailable].small-button {
     display: none;
   }
 
-  media-controller:not(.md) media-fullscreen-button.small-button {
+  media-controller:not(.sm) media-fullscreen-button.small-button {
     display: flex;
     position: absolute;
-    top: 8px;
     right: 20px;
   }
 
-  media-controller:not(.md) media-time-range {
-    width: 100%;
+  media-controller:not(.sm) media-mute-button.small-button {
+    display: flex;
   }
 
-  media-controller:not(.md) media-time-display {
-    padding: 0 10px;
+  media-controller:not(.sm) media-captions-button.small-button {
+    display: flex;
+    position: absolute;
+    top: 24px;
+    left: 16px;
   }
 
-  media-controller:not(.md) div[slot="centered-chrome"] media-play-button {
+  media-controller:not(.sm) media-time-range {
+    display: none;
+  }
+
+  media-controller:not(.sm) media-time-display {
+    display: none;
+  }
+
+  media-controller:not(.sm) div[slot="centered-chrome"] media-play-button {
     z-index: 1;
     height: 72px;
     width: 72px;
   }
 
-  media-controller:not(.md) div[slot="centered-chrome"] media-play-button svg {
-    height: 44px;
+  media-controller:not(.sm) div[slot="centered-chrome"] media-play-button svg {
+    margin-left: -2px;
+    height: 48px;
   }
 </style>
 
