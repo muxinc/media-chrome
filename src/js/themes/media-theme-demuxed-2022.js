@@ -226,7 +226,7 @@ const template = `
   }
 
   media-controller:not(.sm) .small-button svg {
-    transform: scale(1.5);
+    transform: scale(1.4);
   }
 
   media-controller:not(.sm) div[slot="top-chrome"] {
@@ -236,7 +236,7 @@ const template = `
 
   media-controller:not(.sm) div[slot="top-chrome"] .small-button {
     display: flex;
-    margin: 24px 7px;
+    margin: 22px 7px;
   }
 
   media-controller:not(.sm) media-airplay-button[media-airplay-unavailable].small-button {
@@ -258,9 +258,8 @@ const template = `
   }
 
   media-controller:not(.sm) media-captions-button.small-button {
-    display: flex;
     position: absolute;
-    top: 24px;
+    top: 22px;
     left: 16px;
   }
 
