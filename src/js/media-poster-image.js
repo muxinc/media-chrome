@@ -35,6 +35,9 @@ template.innerHTML = `
   <img aria-hidden="true" id="image"/>
 `;
 
+const unsetBackgroundImage = (el) => {
+  el.style.removeProperty('background-image');
+}
 const setBackgroundImage = (el, image) => {
   el.style['background-image'] = `url('${image}')`;
 }
@@ -55,11 +58,19 @@ class MediaPosterImage extends window.HTMLElement {
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
     if (attrName === 'src') {
-      this.image.setAttribute('src', newValue);
+      if (newValue == null) {
+        this.image.removeAttribute('src');
+      } else {
+        this.image.setAttribute('src', newValue);
+      }
     }
 
     if (attrName === 'placeholder-src') {
-      setBackgroundImage(this.image, newValue);
+      if (newValue == null) {
+        unsetBackgroundImage(this.image);
+      } else {
+        setBackgroundImage(this.image, newValue);
+      }
     }
   }
 }
