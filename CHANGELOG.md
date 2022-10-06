@@ -1,3 +1,17 @@
+# [0.13.0](https://github.com/muxinc/media-chrome/compare/v0.12.0...v0.13.0) (2022-10-06)
+
+
+### Bug Fixes
+
+* properly unset poster image sources when they're removed ([#328](https://github.com/muxinc/media-chrome/issues/328)) ([87daae5](https://github.com/muxinc/media-chrome/commit/87daae56b9816818918b7d980e41b780caefbe8c))
+
+
+### Features
+
+* add poster object fit and position css vars ([#327](https://github.com/muxinc/media-chrome/issues/327)) ([a02bf20](https://github.com/muxinc/media-chrome/commit/a02bf20070a9462d0e085bec90f8c97a295ba4df))
+
+
+
 # [0.12.0](https://github.com/muxinc/media-chrome/compare/v0.11.0...v0.12.0) (2022-09-27)
 
 
