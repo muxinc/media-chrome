@@ -32,7 +32,13 @@ export const closestComposedNode = (childNode, selector) => {
  * Get or insert a CSS rule with a selector in an element containing <style> tags.
  * @param  {Element|ShadowRoot} styleParent
  * @param  {string} selectorText
- * @return {CSSStyleRule|{ style: { setProperty: () => void } }}
+ * @return {CSSStyleRule |
+ * { style: { setProperty: () => void,
+ * width: string,
+ * height: string,
+ * display: string,
+ * transform: string,
+ * }}}
  */
 export function getOrInsertCSSRule(styleParent, selectorText) {
   let style;
