@@ -33,6 +33,9 @@ export const isServer =
 export const Window = isServer ? windowShim : window;
 /**
   * @type { document & {webkitExitFullscreen?: boolean} |
-  * {createElement, fullscreenElement, webkitExitFullscreen} }
+  * {createElement,
+  * fullscreenElement,
+  * webkitExitFullscreen,
+  * getElementById} }
   */
 export const Document = isServer ? documentShim : window.document;
