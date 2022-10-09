@@ -34,10 +34,10 @@ export const closestComposedNode = (childNode, selector) => {
  * @param  {string} selectorText
  * @return {CSSStyleRule |
  * { style: { setProperty: () => void,
- * width: string,
- * height: string,
- * display: string,
- * transform: string,
+ * width?: string,
+ * height?: string,
+ * display?: string,
+ * transform?: string,
  * }}}
  */
 export function getOrInsertCSSRule(styleParent, selectorText) {

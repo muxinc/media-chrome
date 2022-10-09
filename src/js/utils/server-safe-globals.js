@@ -10,16 +10,12 @@ const windowShim = {
     whenDefined: function () {},
   },
   CustomEvent: function CustomEvent() {},
-  addEventListener: function () {},
-  removeEventListener: function () {},
 };
 
 const documentShim = {
   createElement: function () {
     return new windowShim.HTMLElement();
   },
-  fullscreenElement: null,
-  webkitExitFullscreen: null,
 };
 
 export const isServer =
@@ -27,31 +23,33 @@ export const isServer =
   typeof window.customElements === 'undefined';
 
 /**
-  * @type { window &
+  * @type { window & { WebKitPlaybackTargetAvailabilityEvent?,
+  *   chrome?,
+  * } |
   * {HTMLElement,
   * customElements,
   * CustomEvent,
-  * addEventListener,
-  * removeEventListener,
-  * setTimeout,
-  * clearTimeout,
-  * localStorage,
+  * addEventListener?,
+  * removeEventListener?,
+  * setTimeout?,
+  * clearTimeout?,
+  * localStorage?,
   * WebKitPlaybackTargetAvailabilityEvent?,
-  * document,
+  * document?,
   * chrome?,
   * } }
   * */
 export const Window = isServer ? windowShim : window;
 /**
-  * @type { document &
+  * @type { document & { webkitExitFullscreen? } |
   * {createElement,
-  * fullscreenElement,
+  * fullscreenElement?,
   * webkitExitFullscreen?,
-  * getElementById,
-  * pictureInPictureElement,
-  * exitPictureInPicture,
-  * pictureInPictureEnabled,
-  * requestPictureInPicture,
+  * getElementById?,
+  * pictureInPictureElement?,
+  * exitPictureInPicture?,
+  * pictureInPictureEnabled?,
+  * requestPictureInPicture?,
   * } }
   */
 export const Document = isServer ? documentShim : window.document;
