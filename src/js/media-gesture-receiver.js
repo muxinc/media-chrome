@@ -127,9 +127,13 @@ class MediaGestureReceiver extends window.HTMLElement {
 
   // NOTE: Currently "baking in" actions + attrs until we come up with
   // a more robust architecture (CJP)
-  handleTap() {}
+  /**
+   * @abstract
+   * @argument {Event} e
+   */
+  handleTap(e) {}
 
-  handleMouseClick() {
+  handleMouseClick(e) {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
         ? MediaUIEvents.MEDIA_PLAY_REQUEST
