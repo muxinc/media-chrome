@@ -28,7 +28,14 @@ export const isServer =
 
 /**
   * @type { window |
-  * {HTMLElement, customElements, CustomEvent, addEventListener, removeEventListener} }
+  * {HTMLElement,
+  * customElements,
+  * CustomEvent,
+  * addEventListener,
+  * removeEventListener,
+  * setTimeout,
+  * clearTimeout
+  * } }
   * */
 export const Window = isServer ? windowShim : window;
 /**
@@ -36,6 +43,7 @@ export const Window = isServer ? windowShim : window;
   * {createElement,
   * fullscreenElement,
   * webkitExitFullscreen,
-  * getElementById} }
+  * getElementById,
+  * } }
   */
 export const Document = isServer ? documentShim : window.document;
