@@ -328,6 +328,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   #pointermoveHandler = (evt) => {
+    // @ts-ignore
     if ([...this.#boxes].some((b) => evt.composedPath().includes(b))) return;
 
     this.updatePointerBar(evt);
@@ -363,6 +364,7 @@ class MediaTimeRange extends MediaChromeRange {
   #offRangeHandler = (evt) => {
     if (
       !evt.composedPath().includes(this) ||
+      // @ts-ignore
       [...this.#boxes].some((b) => evt.composedPath().includes(b))
     ) {
       window.removeEventListener('pointermove', this.#offRangeHandler);
