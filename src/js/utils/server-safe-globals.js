@@ -27,23 +27,31 @@ export const isServer =
   typeof window.customElements === 'undefined';
 
 /**
-  * @type { window |
+  * @type { window &
   * {HTMLElement,
   * customElements,
   * CustomEvent,
   * addEventListener,
   * removeEventListener,
   * setTimeout,
-  * clearTimeout
+  * clearTimeout,
+  * localStorage,
+  * WebKitPlaybackTargetAvailabilityEvent?,
+  * document,
+  * chrome?,
   * } }
   * */
 export const Window = isServer ? windowShim : window;
 /**
-  * @type { document & {webkitExitFullscreen?: boolean} |
+  * @type { document &
   * {createElement,
   * fullscreenElement,
-  * webkitExitFullscreen,
+  * webkitExitFullscreen?,
   * getElementById,
+  * pictureInPictureElement,
+  * exitPictureInPicture,
+  * pictureInPictureEnabled,
+  * requestPictureInPicture,
   * } }
   */
 export const Document = isServer ? documentShim : window.document;

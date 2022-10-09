@@ -244,13 +244,23 @@ class MediaContainer extends window.HTMLElement {
   }
 
   // First direct child with slot=media, or null
+  /**
+   * @returns {HTMLVideoElement &
+   * {buffered,
+   * webkitEnterFullscreen?,
+   * webkitExitFullscreen?,
+   * requestCast?,
+   * webkitShowPlaybackTargetPicker?,
+   * }}
+   */
   get media() {
-    /** @type {HTMLSlotElement} */
+    /** @type {HTMLVideoElement} */
     let media = this.querySelector(':scope > [slot=media]');
 
     // Chaining media slots for media templates
     if (media?.nodeName == 'SLOT')
-      return media.assignedElements({ flatten: true })[0];
+      // @ts-ignore
+      media = media.assignedElements({ flatten: true })[0];
 
     return media;
   }

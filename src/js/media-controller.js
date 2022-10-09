@@ -35,6 +35,7 @@ import {
 
 const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;
+const DEFAULT_TIME = 0;
 
 /**
  * Media Controller should not mimic the HTMLMediaElement API.
@@ -302,6 +303,7 @@ class MediaController extends MediaContainer {
         // Since this isn't really "global state", we may want to consider moving this "down" to the component level,
         // probably pulled out into its own module/set of functions (CJP)
         const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
+          // @ts-ignore
           ? media.querySelector('track[label="thumbnails"]')?.src
           : undefined;
         const url = new URL(cue.text, base);
@@ -413,6 +415,7 @@ class MediaController extends MediaContainer {
           isPip = e.type == 'enterpictureinpicture';
         } else {
           const pipElement =
+            // @ts-ignore
             this.getRootNode().pictureInPictureElement ??
             document.pictureInPictureElement;
           isPip = this.media && containsComposedNode(this.media, pipElement);
@@ -1284,7 +1287,34 @@ const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
 const castSupported = !!window.chrome;
 const fullscreenEnabled = document[fullscreenApi.enabled];
 
-function serializeTimeRanges(timeRanges = []) {
+/** @type {TimeRanges} */
+const emptyTimeRanges = Object.freeze({
+  length: 0,
+  start(index) {
+    const unsignedIdx = index >>> 0;
+    if (unsignedIdx >= this.length) {
+      throw new DOMException(
+        `Failed to execute 'start' on 'TimeRanges': The index provided (${unsignedIdx}) is greater than or equal to the maximum bound (${this.length}).`
+      );
+    }
+    return 0;
+  },
+  end(index) {
+    const unsignedIdx = index >>> 0;
+    if (unsignedIdx >= this.length) {
+      throw new DOMException(
+        `Failed to execute 'end' on 'TimeRanges': The index provided (${unsignedIdx}) is greater than or equal to the maximum bound (${this.length}).`
+      );
+    }
+    return 0;
+  },
+});
+
+/**
+ * @argument {TimeRanges} [timeRanges]
+ */
+function serializeTimeRanges(timeRanges = emptyTimeRanges) {
+  // @ts-ignore
   return Array.from(timeRanges)
     .map((_, i) => [
       Number(timeRanges.start(i).toFixed(3)),
