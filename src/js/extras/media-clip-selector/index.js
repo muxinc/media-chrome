@@ -19,6 +19,7 @@ function lockBetweenZeroAndOne(num) {
   return Math.max(0, Math.min(1, num));
 }
 
+// @ts-ignore
 template.innerHTML = `
   <style>
     #selectorContainer {
@@ -137,6 +138,10 @@ template.innerHTML = `
   </div>
 `;
 
+
+/**
+ * @extends {HTMLElement}
+ */
 class MediaClipSelector extends window.HTMLElement {
   static get observedAttributes() {
     return [
@@ -150,18 +155,28 @@ class MediaClipSelector extends window.HTMLElement {
     super();
 
     const shadow = this.attachShadow({ mode: 'open' });
+    // @ts-ignore
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.draggingEl = null;
 
+    /** @type {HTMLElement} */
     this.wrapper = this.shadowRoot.querySelector('#selectorContainer');
+    /** @type {HTMLElement} */
     this.selection = this.shadowRoot.querySelector('#selection');
+    /** @type {HTMLElement} */
     this.playhead = this.shadowRoot.querySelector('#playhead');
+    /** @type {HTMLElement} */
     this.leftTrim = this.shadowRoot.querySelector('#leftTrim');
+    /** @type {HTMLElement} */
     this.spacerFirst = this.shadowRoot.querySelector('#spacerFirst');
+    /** @type {HTMLElement} */
     this.startHandle = this.shadowRoot.querySelector('#startHandle');
+    /** @type {HTMLElement} */
     this.spacerMiddle = this.shadowRoot.querySelector('#spacerMiddle');
+    /** @type {HTMLElement} */
     this.endHandle = this.shadowRoot.querySelector('#endHandle');
+    /** @type {HTMLElement} */
     this.spacerLast = this.shadowRoot.querySelector('#spacerLast');
 
     this._clickHandler = this.handleClick.bind(this);
@@ -365,6 +380,7 @@ class MediaClipSelector extends window.HTMLElement {
      * if paused, we don't need to do anything else, but if it is playing
      * we want to loop within the selection range
      */
+    // @ts-ignore
     if (!this.mediaPaused) {
       const { startTime, endTime } = this.getCurrentClipBounds();
 
@@ -384,6 +400,7 @@ class MediaClipSelector extends window.HTMLElement {
   }
 
   mediaUnsetCallback(media) {
+    // @ts-ignore
     super.mediaUnsetCallback(media);
 
     this.wrapper.removeEventListener('touchstart', this._dragStart);
@@ -400,9 +417,11 @@ class MediaClipSelector extends window.HTMLElement {
    * this code shared between the two components
    */
   enableThumbnails() {
+    /** @type {HTMLElement} */
     this.thumbnailPreview = this.shadowRoot.querySelector(
       'media-preview-thumbnail'
     );
+    /** @type {HTMLElement} */
     const thumbnailContainer = this.shadowRoot.querySelector(
       '#thumbnailContainer'
     );
@@ -468,6 +487,10 @@ class MediaClipSelector extends window.HTMLElement {
   }
 
   disableThumbnails() {
+    /** @type {HTMLElement} */
+    const thumbnailContainer = this.shadowRoot.querySelector(
+      '#thumbnailContainer'
+    );
     thumbnailContainer.classList.remove('enabled');
   }
 }

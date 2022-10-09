@@ -10,6 +10,8 @@ const windowShim = {
     whenDefined: function () {},
   },
   CustomEvent: function CustomEvent() {},
+  addEventListener: function () {},
+  removeEventListener: function () {},
 };
 
 const documentShim = {
@@ -19,6 +21,10 @@ const documentShim = {
 };
 
 export const isServer =
-  typeof window === 'undefined' || typeof window.customElements === 'undefined';
+  typeof window === 'undefined' ||
+  typeof window.customElements === 'undefined';
+
+/** @type {window | {HTMLElement, customElements, CustomEvent, addEventListener, removeEventListener}} */
 export const Window = isServer ? windowShim : window;
+/** @type {document | {createElement}} */
 export const Document = isServer ? documentShim : window.document;
