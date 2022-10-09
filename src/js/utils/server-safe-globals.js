@@ -18,13 +18,21 @@ const documentShim = {
   createElement: function () {
     return new windowShim.HTMLElement();
   },
+  fullscreenElement: null,
+  webkitExitFullscreen: null,
 };
 
 export const isServer =
   typeof window === 'undefined' ||
   typeof window.customElements === 'undefined';
 
-/** @type {window | {HTMLElement, customElements, CustomEvent, addEventListener, removeEventListener}} */
+/**
+  * @type { window |
+  * {HTMLElement, customElements, CustomEvent, addEventListener, removeEventListener} }
+  * */
 export const Window = isServer ? windowShim : window;
-/** @type {document | {createElement}} */
+/**
+  * @type { document & {webkitExitFullscreen?: boolean} |
+  * {createElement, fullscreenElement, webkitExitFullscreen} }
+  */
 export const Document = isServer ? documentShim : window.document;

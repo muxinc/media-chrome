@@ -69,8 +69,11 @@ export function formatTime(seconds, guide) {
   }
 
   seconds = seconds < 0 ? 0 : seconds;
+  /** @type {number|string} */
   let s = Math.floor(seconds % 60);
+  /** @type {number|string} */
   let m = Math.floor((seconds / 60) % 60);
+  /** @type {number|string} */
   let h = Math.floor(seconds / 3600);
   const gm = Math.floor((guide / 60) % 60);
   const gh = Math.floor(guide / 3600);
