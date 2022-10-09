@@ -188,6 +188,9 @@ template.innerHTML = `
   <input id="range" type="range" min="0" max="1000" step="any" value="0">
 `;
 
+/**
+ * @extends {HTMLElement}
+ */
 class MediaChromeRange extends window.HTMLElement {
   static get observedAttributes() {
     return [
@@ -202,6 +205,8 @@ class MediaChromeRange extends window.HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
+    /** @type {Omit<HTMLInputElement, "value" | "min" | "max"> &
+      * {value: number, min: number, max: number}} */
     this.range = this.shadowRoot.querySelector('#range');
     this.range.addEventListener('input', this.updateBar.bind(this));
   }
@@ -271,6 +276,7 @@ class MediaChromeRange extends window.HTMLElement {
     const colorArray = this.getBarColors();
 
     let gradientStr = 'linear-gradient(to right, ';
+    /** @type {number|string} */
     let prevPercent = 0;
     colorArray.forEach((color) => {
       if (color[1] < prevPercent) return;
