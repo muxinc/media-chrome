@@ -1283,7 +1283,18 @@ const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
 
 const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
 const castSupported = !!window.chrome;
-const fullscreenEnabled = document[fullscreenApi.enabled];
+
+export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {
+  let fullscreenEnabled = document[fullscreenApi.enabled];
+
+  if (!fullscreenEnabled && mediaEl) {
+    fullscreenEnabled = 'webkitSupportsFullscreen' in mediaEl;
+  }
+
+  return fullscreenEnabled;
+};
+const fullscreenEnabled = hasFullscreenSupport();
+
 
 function serializeTimeRanges(timeRanges = []) {
   return Array.from(timeRanges)
