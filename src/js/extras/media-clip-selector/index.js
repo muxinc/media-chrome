@@ -468,6 +468,9 @@ class MediaClipSelector extends window.HTMLElement {
   }
 
   disableThumbnails() {
+    const thumbnailContainer = this.shadowRoot.querySelector(
+      '#thumbnailContainer'
+    );
     thumbnailContainer.classList.remove('enabled');
   }
 }

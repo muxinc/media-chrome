@@ -103,7 +103,7 @@ class MediaChromeButton extends window.HTMLElement {
   #keyupListener = (e) => {
     const { key } = e;
     if (!this.keysUsed.includes(key)) {
-      this.removeEventListener('keyup', keyupListener);
+      this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
 
