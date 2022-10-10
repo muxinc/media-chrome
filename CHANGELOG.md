@@ -1,3 +1,19 @@
+# [0.14.0](https://github.com/muxinc/media-chrome/compare/v0.12.0...v0.14.0) (2022-10-10)
+
+
+### Bug Fixes
+
+* a couple of fixes ([#331](https://github.com/muxinc/media-chrome/issues/331)) ([f4df42f](https://github.com/muxinc/media-chrome/commit/f4df42fb66ff33f40cc1937905f5933bec75aa38))
+* properly check iphones for fullscreen unavailability ([#332](https://github.com/muxinc/media-chrome/issues/332)) ([c32c74e](https://github.com/muxinc/media-chrome/commit/c32c74ebf73219919bd96a15796ea008884cd600))
+* properly unset poster image sources when they're removed ([#328](https://github.com/muxinc/media-chrome/issues/328)) ([87daae5](https://github.com/muxinc/media-chrome/commit/87daae56b9816818918b7d980e41b780caefbe8c))
+
+
+### Features
+
+* add poster object fit and position css vars ([#327](https://github.com/muxinc/media-chrome/issues/327)) ([a02bf20](https://github.com/muxinc/media-chrome/commit/a02bf20070a9462d0e085bec90f8c97a295ba4df))
+
+
+
 # [0.13.0](https://github.com/muxinc/media-chrome/compare/v0.12.0...v0.13.0) (2022-10-06)
 
 
