@@ -35,6 +35,7 @@ import {
 
 const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;
+const DEFAULT_TIME = 0;
 
 /**
  * Media Controller should not mimic the HTMLMediaElement API.
