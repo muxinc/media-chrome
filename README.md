@@ -11,6 +11,10 @@ Fully customizable media player controls using web components (native custom ele
 
 _From [Mux](https://mux.com?utm_source=github&utm_medium=social&utm_campaign=media-chrome) and the creator of [Video.js](https://videojs.com/)._
 
+## Documentation
+
+Visit the [official documentation for Media Chrome](https://media-chrome-docs.vercel.app/en/get-started) for the latest up-to-date usage instructions.
+
 ## Video Example
 
 ```html
