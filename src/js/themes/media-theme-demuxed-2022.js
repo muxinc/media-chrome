@@ -40,6 +40,10 @@ const template = `
     --media-range-thumb-height: 14px;
   }
 
+  media-controller[media-is-fullscreen] {
+    aspect-ratio: auto;
+  }
+
   media-control-bar {
     position: relative;
     margin: 30px;
