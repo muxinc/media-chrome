@@ -1,5 +1,202 @@
-<script is:inline>
-  // Redirect your homepage to the first page of documentation.
-  // If you have a landing page, remove this script and add it here!
-  window.location.pathname = `/en/get-started`;
-</script>
+---
+import HeadCommon from '../components/HeadCommon.astro';
+import HeadSEO from '../components/HeadSEO.astro';
+import Header from '../components/Header/Header.astro';
+import Footer from '../components/Footer/Footer.astro';
+import * as CONFIG from '../config';
+
+const currentPage = Astro.url.pathname;
+---
+
+<html dir="ltr" lang="en">
+  <head>
+    <HeadCommon />
+    <title>{CONFIG.SITE.title}</title>
+    <script>
+      import 'media-chrome';
+    </script>
+  </head>
+  <body>
+    <Header currentPage={currentPage} />
+    <main class="layout">
+      <article class="content">
+        <img
+          class="image"
+          src="/assets/comp.png"
+          alt="Media Chrome 3D Illustration"
+          width="800"
+        />
+        <div class="intro">
+          <h1>The <span>de facto</span> media player toolkit.</h1>
+          <p>
+            Open-source, accessible tooling to help you build the media player
+            of your dreams.
+          </p>
+          <code class="install">npm install media-chrome</code>
+          <a class="cta" href="/en/get-started">Visit the docs &rarr;</a>
+        </div>
+
+        <div class="features">
+          <div>
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+            <h3>Framework-agnostic</h3>
+            <p>Use React, Angular, Svelte, or anything else.</p>
+          </div>
+
+          <div>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            <h3>Extensible</h3>
+            <p>Add your own player features</p>
+          </div>
+
+          <div>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+            <h3>Open-source</h3>
+            <p>Free to use + contribute</p>
+          </div>
+
+          <div>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 14l9-5-9-5-9 5 9 5z"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path></svg>
+            <h3>Accessible</h3>
+            <p>Built with a11y in mind</p>
+          </div>
+
+          <div>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path></svg>
+            <h3>Compatible</h3>
+            <p>Works with many different platforms</p>
+          </div>
+          <div>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+            <h3>Customizable</h3>
+            <p>Use simple CSS to style the controls</p>
+          </div>
+        </div>
+      </article>
+    </main>
+    <Footer />
+    <style>
+      .content {
+        padding: 0;
+        max-width: 70em;
+        width: 100%;
+        height: 100%;
+        margin: 0 auto;
+        text-align: center;
+      }
+
+      .image {
+        width: 100%;
+        max-width: 86%;
+        height: auto;
+        margin: 0 auto;
+        display: block;
+        background: radial-gradient(
+          circle at center,
+          #b6c6db 17%,
+          transparent 60%
+        );
+      }
+
+      :root.theme-dark .image {
+        background: radial-gradient(
+          circle at center,
+          #383f75 17%,
+          transparent 60%
+        );
+      }
+
+      .intro {
+        transform: translateY(-20px);
+        padding: 0 1em;
+      }
+
+      .intro h1 {
+        font-size: 3em;
+      }
+
+      .intro span {
+        border-bottom: 7px solid white;
+      }
+
+      .intro p {
+        font-size: 1.5em;
+        margin-bottom: 2.7em;
+      }
+
+      .install {
+        font-size: 1.2em;
+        color: white;
+        padding: 1em;
+        border-radius: 2em;
+        text-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+        background-image: linear-gradient(
+          45deg,
+          hsl(240deg 48% 67%) 0%,
+          hsl(273deg 43% 64%) 11%,
+          hsl(307deg 41% 63%) 22%,
+          hsl(329deg 61% 68%) 33%,
+          hsl(344deg 76% 71%) 44%,
+          hsl(358deg 85% 74%) 56%,
+          hsl(12deg 88% 72%) 67%,
+          hsl(23deg 82% 69%) 78%,
+          hsl(34deg 72% 65%) 89%,
+          hsl(46deg 58% 63%) 100%
+        );
+        margin-bottom: 1em;
+        display: inline-block;
+      }
+      .cta {
+        color: white;
+        display: block;
+        font-size: 1.2em;
+      }
+
+      .features {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        margin-bottom: 5em;
+      }
+
+      .features > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: top;
+        margin: 1em;
+        background-color: rgb(230, 230, 239);
+        padding: 2.5em;
+        border-radius: .5em;
+      }
+
+      .features svg {
+        margin-bottom: 1em;
+        width: 40px;
+        height: 40px;
+        stroke:#285dad;
+      }
+
+      .features :is(h3):not(:first-child) {
+        margin-top: 0;
+        color: rgb(20, 21, 34);
+      }
+
+      .features p {
+        color: rgb(94, 82, 109);
+        font-size: 1.1em;
+      }
+
+      @media (min-width: 768px) {
+        .intro {
+          transform: translateY(-120px);
+        }
+        .intro h1 {
+          font-size: 4em;
+        }
+        .install {
+          font-size: 1.7em;
+        }
+      }
+    </style>
+  </body>
+</html>
