@@ -165,6 +165,8 @@ class MediaChromeButton extends window.HTMLElement {
   }
 
   disconnectedCallback() {
+    this.disable();
+
     const mediaControllerId = this.getAttribute(
       MediaUIAttributes.MEDIA_CONTROLLER
     );

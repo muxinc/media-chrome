@@ -73,6 +73,10 @@ class MediaTimeDisplay extends MediaTextDisplay {
     super.connectedCallback();
   }
 
+  disconnectedCallback() {
+    this.disable();
+  }
+
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (
       [
