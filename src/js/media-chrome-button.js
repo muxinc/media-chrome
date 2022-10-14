@@ -90,8 +90,6 @@ class MediaChromeButton extends window.HTMLElement {
     this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
     shadow.appendChild(buttonHTML);
-
-    this.enable();
   }
 
   #clickListener = (e) => {
@@ -151,6 +149,10 @@ class MediaChromeButton extends window.HTMLElement {
   }
 
   connectedCallback() {
+    if (!this.hasAttribute('disabled')) {
+      this.enable();
+    }
+
     this.setAttribute('role', 'button');
 
     const mediaControllerId = this.getAttribute(
