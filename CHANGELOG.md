@@ -1,3 +1,13 @@
+## [0.14.1](https://github.com/muxinc/media-chrome/compare/v0.14.0...v0.14.1) (2022-10-14)
+
+
+### Bug Fixes
+
+* call disable on disconnectedCallback ([35f1242](https://github.com/muxinc/media-chrome/commit/35f1242f7affc4e3534e656a82ce6d143200f879))
+* don't set attributes in a constructor ([433560e](https://github.com/muxinc/media-chrome/commit/433560e2327f6a136b38cbf8cc64bba9451097c8)), closes [#335](https://github.com/muxinc/media-chrome/issues/335)
+
+
+
 # [0.14.0](https://github.com/muxinc/media-chrome/compare/v0.12.0...v0.14.0) (2022-10-10)
 
 
