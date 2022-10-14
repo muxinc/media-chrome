@@ -359,6 +359,8 @@ class MediaContainer extends window.HTMLElement {
         } else {
           scheduleInactive();
         }
+      } else {
+        scheduleInactive();
       }
     });
 
