@@ -34,6 +34,7 @@ const trackStyles = `
   transition: var(--media-range-track-transition, none);
   transform: translate(var(--media-range-track-translate-x, 0), var(--media-range-track-translate-y, 0));
   cursor: pointer;
+  box-sizing: border-box;
 `;
 
 template.innerHTML = `
@@ -109,8 +110,11 @@ template.innerHTML = `
 
     #background,
     #pointer {
-      ${trackStyles}
-      width: auto;
+      min-width: 40px;
+      width: var(--media-range-track-width, auto);
+      height: var(--track-height);
+      border-radius: var(--media-range-track-border-radius, 0);
+      box-sizing: border-box;
       position: absolute;
       top: 50%;
       transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px) - 50%));
