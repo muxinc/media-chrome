@@ -7,7 +7,7 @@ import {
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
+import { getOrInsertCSSRule, closestComposedNode } from './utils/element-utils.js';
 
 const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
@@ -428,7 +428,7 @@ function getBoxPosition(el, box, percent) {
   // Get the element that enforces the bounding box for the hover preview.
   const mediaBounds =
     (el.getAttribute('media-bounds')
-      ? document.getElementById(el.getAttribute('media-bounds'))
+      ? closestComposedNode(el, `#${el.getAttribute('media-bounds')}`)
       : el.parentElement) ?? el;
 
   const mediaBoundsRect = mediaBounds.getBoundingClientRect();
