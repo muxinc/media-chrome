@@ -28,6 +28,8 @@ const trackStyles = `
   min-width: 40px;
   height: var(--track-height);
   border: var(--media-range-track-border, none);
+  outline: var(--media-range-track-outline);
+  outline-offset: var(--media-range-track-outline-offset);
   border-radius: var(--media-range-track-border-radius, 0);
   background: var(--media-range-track-progress-internal, var(--media-range-track-background, #eee));
   box-shadow: var(--media-range-track-box-shadow, none);
@@ -115,7 +117,6 @@ template.innerHTML = `
       width: var(--media-range-track-width, 100%);
       height: var(--track-height);
       border-radius: var(--media-range-track-border-radius, 0);
-      box-sizing: border-box;
       position: absolute;
       top: 50%;
       transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px) - 50%));
@@ -141,7 +142,6 @@ template.innerHTML = `
       ${/* Add z-index so it overlaps the top of the control buttons if they are right under. */''}
       z-index: 1;
       display: var(--media-time-range-hover-display, none);
-      box-sizing: border-box;
       position: absolute;
       width: 100%;
       bottom: var(--media-time-range-hover-bottom, -5px);
@@ -151,7 +151,6 @@ template.innerHTML = `
     #range {
       z-index: 2;
       position: relative;
-      height: var(--media-range-track-height, 4px);
     }
 
     ${/*
