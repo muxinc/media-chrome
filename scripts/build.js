@@ -40,6 +40,7 @@ await esbuild.build({
   entryPoints: ['src/js/index.js'],
   format: 'esm',
   bundle: true,
+  minify: true,
   sourcemap: true,
   outfile: 'dist/media-chrome.mjs',
 });
