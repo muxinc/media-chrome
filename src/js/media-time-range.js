@@ -34,13 +34,20 @@ template.innerHTML = `
       color: #fff;
     }
 
-    [part~="box"] {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    #preview-rail,
+    #current-rail {
+      width: 100%;
       position: absolute;
       left: 0;
       bottom: 100%;
+      pointer-events: none;
+    }
+
+    [part~="box"] {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      transform: translateX(-50%);
     }
 
     [part~="preview-box"] {
@@ -104,18 +111,18 @@ template.innerHTML = `
       --media-time-range-hover-display: block;
     }
   </style>
-  <span part="box preview-box">
-    <slot name="preview">
+  <div id="preview-rail">
+    <slot name="preview" part="box preview-box">
       <media-preview-thumbnail></media-preview-thumbnail>
       <media-preview-time-display></media-preview-time-display>
     </slot>
-  </span>
-  <span part="box current-box">
-    <slot name="current">
+  </div>
+  <div id="current-rail">
+    <slot name="current" part="box current-box">
       ${/* Example: add the current time to the playhead
         <media-current-time-display></media-current-time-display> */''}
     </slot>
-  </span>
+  </div>
 `;
 
 class MediaTimeRange extends MediaChromeRange {
@@ -142,7 +149,7 @@ class MediaTimeRange extends MediaChromeRange {
   constructor() {
     super();
 
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
+    this.container.appendChild(template.content.cloneNode(true));
 
     this.range.addEventListener('input', () => {
       // Cancel color bar refreshing when seeking.
@@ -318,13 +325,13 @@ class MediaTimeRange extends MediaChromeRange {
 
   updateCurrentBox() {
     const currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
-    const percent = this.range.value / (this.range.max - this.range.min);
-    const boxPos = getBoxPosition(this, currentBox, percent);
+    const boxRatio = this.range.value / (this.range.max - this.range.min);
+    const boxPos = getBoxPosition(this, currentBox, boxRatio);
     const { style } = getOrInsertCSSRule(
       this.shadowRoot,
-      '[part~="current-box"]'
+      '#current-rail'
     );
-    style.transform = `translateX(${boxPos}px)`;
+    style.transform = `translateX(${boxPos})`;
   }
 
   #pointermoveHandler = (evt) => {
@@ -338,18 +345,18 @@ class MediaTimeRange extends MediaChromeRange {
 
     // Get mouse position percent
     const rangeRect = this.range.getBoundingClientRect();
-    let mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
+    let mouseRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
     // Lock between 0 and 1
-    mousePercent = Math.max(0, Math.min(1, mousePercent));
+    mouseRatio = Math.max(0, Math.min(1, mouseRatio));
 
-    const boxPos = getBoxPosition(this, this.#previewBox, mousePercent);
+    const boxPos = getBoxPosition(this, this.#previewBox, mouseRatio);
     const { style } = getOrInsertCSSRule(
       this.shadowRoot,
-      '[part~="preview-box"]'
+      '#preview-rail'
     );
-    style.transform = `translateX(${boxPos}px)`;
+    style.transform = `translateX(${boxPos})`;
 
-    const detail = mousePercent * duration;
+    const detail = mouseRatio * duration;
     const mediaPreviewEvt = new window.CustomEvent(
       MediaUIEvents.MEDIA_PREVIEW_REQUEST,
       { composed: true, bubbles: true, detail }
@@ -408,37 +415,35 @@ class MediaTimeRange extends MediaChromeRange {
   }
 }
 
-function getBoxPosition(el, box, percent) {
-  const rect = el.getBoundingClientRect();
-  const rangeRect = el.range.getBoundingClientRect();
+function getBoxPosition(el, box, ratio) {
+  let position = `${ratio * 100}%`;
 
-  // Get preview box center position
+  // Get the element that enforces the bounds for the time range boxes.
+  const bounds =
+    (el.getAttribute('media-bounds')
+      ? closestComposedNode(el, `#${el.getAttribute('media-bounds')}`)
+      : el.parentElement) ?? el;
+
   const leftPadding = parseInt(
     getComputedStyle(el).getPropertyValue('--media-box-padding-left')
   );
   const rightPadding = parseInt(
     getComputedStyle(el).getPropertyValue('--media-box-padding-right')
   );
-  const boxOffset = leftPadding + percent * rangeRect.width;
 
   // Use offset dimensions to include borders.
   const boxWidth = box.offsetWidth;
-  const boxLeft = boxOffset - boxWidth / 2;
+  if (!boxWidth) return position;
 
-  // Get the element that enforces the bounding box for the hover preview.
-  const mediaBounds =
-    (el.getAttribute('media-bounds')
-      ? closestComposedNode(el, `#${el.getAttribute('media-bounds')}`)
-      : el.parentElement) ?? el;
+  const rangeRect = el.range.getBoundingClientRect();
+  const mediaBoundsRect = bounds.getBoundingClientRect();
+  const boxMin = leftPadding - (rangeRect.left - mediaBoundsRect.left - boxWidth / 2);
+  const boxMax = mediaBoundsRect.right - rangeRect.left - boxWidth / 2 - rightPadding;
 
-  const mediaBoundsRect = mediaBounds.getBoundingClientRect();
-  const offsetLeft = rect.left - mediaBoundsRect.left;
-  const offsetRight =
-    mediaBoundsRect.right - rect.left - boxWidth - rightPadding;
-  const boxMin = leftPadding - offsetLeft;
-  const boxMax = offsetRight;
+  if (!Number.isNaN(boxMin)) position = `max(${boxMin}px, ${position})`;
+  if (!Number.isNaN(boxMax)) position = `min(${position}, ${boxMax}px)`;
 
-  return Math.max(boxMin, Math.min(boxLeft, boxMax));
+  return position;
 }
 
 defineCustomElement('media-time-range', MediaTimeRange);
