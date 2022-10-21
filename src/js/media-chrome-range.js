@@ -151,6 +151,7 @@ template.innerHTML = `
     #range {
       z-index: 2;
       position: relative;
+      height: var(--media-range-track-height, 4px);
     }
 
     ${/*
