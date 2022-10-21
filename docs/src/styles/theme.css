@@ -55,18 +55,18 @@
   --color-blue-dark: var(--color-base-blue-dark), 39%;
   --color-green: var(--color-base-green), 42%;
   --color-orange: var(--color-base-orange), 50%;
-  --color-purple: var(--color-base-purple), 54%;
+  --color-purple: var(--color-base-purple), 61%;
   --color-red: var(--color-base-red), 54%;
   --color-yellow: var(--color-base-yellow), 59%;
-  --color-magenta: var(--color-base-magenta), 49%;
+  --color-magenta: var(--color-base-magenta), 59%;
   --color-white-pointer: var(--color-base-white-pointer), 98%;
 }
 
 :root {
   color-scheme: light;
-  --theme-accent: hsla(var(--color-blue), 1);
-  --theme-text-accent: hsla(var(--color-blue), 1);
-  --theme-accent-opacity: 0.15;
+  --theme-accent: hsla(var(--color-magenta), 1);
+  --theme-text-accent: hsla(var(--color-magenta), 1);
+  --theme-accent-opacity: 0.1;
   --theme-divider: hsla(var(--color-gray-95), 1);
   --theme-text: hsla(var(--color-gray-10), 1);
   --theme-text-light: hsla(var(--color-gray-40), 1);
@@ -75,15 +75,16 @@
   --theme-bg: hsla(var(--color-base-white), 100%, 1);
   --theme-bg-hover: hsla(var(--color-gray-95), 1);
   --theme-bg-offset: hsla(var(--color-gray-90), 1);
-  --theme-bg-accent: hsla(var(--color-blue), var(--theme-accent-opacity));
+  --theme-bg-accent: hsla(var(--color-magenta), var(--theme-accent-opacity));
   --theme-code-inline-bg: hsla(var(--color-gray-95), 1);
   --theme-code-inline-text: var(--theme-text);
   --theme-code-bg: hsla(217, 19%, 27%, 1);
   --theme-code-text: hsla(var(--color-gray-95), 1);
-  --theme-navbar-bg: hsla(var(--color-base-white), 100%, 1);
-  --theme-navbar-height: 6rem;
-  --theme-selection-color: hsla(var(--color-blue), 1);
-  --theme-selection-bg: hsla(var(--color-blue), var(--theme-accent-opacity));
+  --theme-navbar-bg: hsla(var(--color-base-white), 100%, .8);
+  --theme-navbar-height: 5rem;
+  --theme-selection-color: hsla(var(--color-magenta), 1);
+  --theme-selection-bg: hsla(var(--color-magenta), var(--theme-accent-opacity));
+  --theme-footer-bg: hsla(var(--color-black), 1);
 }
 
 body {
@@ -94,24 +95,25 @@ body {
 :root.theme-dark {
   color-scheme: dark;
   --theme-accent-opacity: 0.15;
-  --theme-accent: hsla(var(--color-blue), 1);
-  --theme-text-accent: hsla(var(--color-blue), 1);
+  --theme-accent: hsla(var(--color-purple), 1);
+  --theme-text-accent: hsla(var(--color-purple), 1);
   --theme-divider: hsla(var(--color-gray-10), 1);
   --theme-text: hsla(var(--color-gray-90), 1);
   --theme-text-light: hsla(var(--color-gray-80), 1);
 
   /* @@@: not used anywhere */
   --theme-text-lighter: hsla(var(--color-gray-40), 1);
-  --theme-bg: hsla(215, 28%, 17%, 1);
+  --theme-bg: hsla(211, 29%, 14%, 1);
   --theme-bg-hover: hsla(var(--color-gray-40), 1);
   --theme-bg-offset: hsla(var(--color-gray-5), 1);
   --theme-code-inline-bg: hsla(var(--color-gray-10), 1);
   --theme-code-inline-text: hsla(var(--color-base-white), 100%, 1);
   --theme-code-bg: hsla(var(--color-gray-5), 1);
   --theme-code-text: hsla(var(--color-base-white), 100%, 1);
-  --theme-navbar-bg: hsla(215, 28%, 17%, 1);
-  --theme-selection-color: hsla(var(--color-base-white), 100%, 1);
+  --theme-navbar-bg: hsla(211, 29%, 14%, .8);
+  --theme-selection-color: hsla(var(--color-purple), 100%, 1);
   --theme-selection-bg: hsla(var(--color-purple), var(--theme-accent-opacity));
+  --theme-footer-bg: hsla(211, 29%, 14%, 1);
 
   /* DocSearch [Algolia] */
   --docsearch-modal-background: var(--theme-bg);
