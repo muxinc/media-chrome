@@ -418,6 +418,10 @@ class MediaTimeRange extends MediaChromeRange {
 function getBoxPosition(el, box, ratio) {
   let position = `${ratio * 100}%`;
 
+  // Use offset dimensions to include borders.
+  const boxWidth = box.offsetWidth;
+  if (!boxWidth) return position;
+
   // Get the element that enforces the bounds for the time range boxes.
   const bounds =
     (el.getAttribute('media-bounds')
@@ -431,17 +435,13 @@ function getBoxPosition(el, box, ratio) {
     getComputedStyle(el).getPropertyValue('--media-box-padding-right')
   );
 
-  // Use offset dimensions to include borders.
-  const boxWidth = box.offsetWidth;
-  if (!boxWidth) return position;
-
   const rangeRect = el.range.getBoundingClientRect();
   const mediaBoundsRect = bounds.getBoundingClientRect();
-  const boxMin = leftPadding - (rangeRect.left - mediaBoundsRect.left - boxWidth / 2);
-  const boxMax = mediaBoundsRect.right - rangeRect.left - boxWidth / 2 - rightPadding;
+  const boxMin = (leftPadding - (rangeRect.left - mediaBoundsRect.left - boxWidth / 2)) / rangeRect.width * 100;
+  const boxMax = (mediaBoundsRect.right - rangeRect.left - boxWidth / 2 - rightPadding) / rangeRect.width * 100;
 
-  if (!Number.isNaN(boxMin)) position = `max(${boxMin}px, ${position})`;
-  if (!Number.isNaN(boxMax)) position = `min(${position}, ${boxMax}px)`;
+  if (!Number.isNaN(boxMin)) position = `max(${boxMin}%, ${position})`;
+  if (!Number.isNaN(boxMax)) position = `min(${position}, ${boxMax}%)`;
 
   return position;
 }
