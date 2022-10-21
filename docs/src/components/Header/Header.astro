@@ -25,7 +25,7 @@ const lang = getLanguageFromURL(currentPage);
     <div class="logo flex">
       <a href="/">
         <AstroLogo size={38} />
-        <h1><span>Media</span><span>Chrome</span><strong>Docs</strong></h1>
+        <h1><span>&lt;media-chrome&gt;</span><strong>docs</strong></h1>
       </a>
     </div>
     <ThemeToggleButton client:visible />
@@ -46,6 +46,8 @@ const lang = getLanguageFromURL(currentPage);
     height: var(--theme-navbar-height);
     width: 100%;
     background-color: var(--theme-navbar-bg);
+    backdrop-filter: saturate(180%) blur(5px);
+    border-bottom: 1px solid var(--theme-divider);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -94,7 +96,14 @@ const lang = getLanguageFromURL(currentPage);
   }
 
   .logo h1 span {
-    margin-right: 0.1em;
+    margin-right: .25em;
+  }
+
+  .logo h1 strong {
+    text-transform: uppercase;
+    display: inline-block;
+    vertical-align: middle;
+    font-size: .45em;
   }
 
   .nav-wrapper {
@@ -109,7 +118,6 @@ const lang = getLanguageFromURL(currentPage);
 
   @media (min-width: 50em) {
     header {
-      position: static;
       padding: 2rem 0rem;
     }
 
