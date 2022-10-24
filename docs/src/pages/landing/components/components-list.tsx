@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { MediaChromeListItem } from "../types";
+import { MediaChromeListItem } from "../../../types";
 import MediaChromeListItemRenderer from "./media-chrome-list-item-renderer";
 
 const noop = () => {};

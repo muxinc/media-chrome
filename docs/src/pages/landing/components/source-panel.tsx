@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { MediaChromeListItem } from "../types";
+import { MediaChromeListItem } from "../../../types";
 import HtmlRenderer from "./html-renderer";
 import MediaChromeHtmlRenderer from "./media-chrome-html-renderer";
 

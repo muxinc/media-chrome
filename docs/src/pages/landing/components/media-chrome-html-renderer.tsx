@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-import { MediaChromeListItem } from "../types";
+import { MediaChromeListItem } from "../../../types";
 import HtmlRenderer from "./html-renderer";
 
 const toMediaChromeName = (name: string = "") => `media-${name}`;

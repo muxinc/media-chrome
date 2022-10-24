@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import clsx from "clsx";
 import { useState, useRef, useEffect } from "react";
-import { MediaChromeListItem } from "../types/index.js";
+import { MediaChromeListItem } from "../../../types/index.js";
 import mux from 'mux-embed';
 import {
   MediaController,
@@ -17,7 +17,7 @@ import {
   MediaPlaybackRateButton,
   MediaPipButton,
   MediaFullscreenButton,
-} from "media-chrome/dist/react";
+} from "media-chrome/dist/react/index.js";
 
 const hasSelectedAncestor = (...ancestors: any) => {
   return (self: any, selectedItem?: MediaChromeListItem) =>

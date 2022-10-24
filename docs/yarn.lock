@@ -2483,10 +2483,10 @@ mdurl@^1.0.0:
   resolved "https://registry.yarnpkg.com/mdurl/-/mdurl-1.0.1.tgz#fe85b2ec75a59037f2adfec100fd6c601761152e"
   integrity sha512-/sKlQJCBYVY9Ers9hqzKou4H6V5UWc/M59TH2dvkt+84itfnq7uFOMLpOiOS4ujvHP4etln18fmIxA5R5fll0g==
 
-media-chrome@^0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.11.1.tgz#03b27c42493083b11b0d4c0f6298719c46bb54b3"
-  integrity sha512-XLoOssPAAi3Se82puUnDDFdrVh4Vl8bU1Qn5rnikvJOZenqAk+M5AEZh4Pe5IOMebg75kDZl/FEaj7bYSQ7GZg==
+media-chrome@^0.14.1:
+  version "0.14.1"
+  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-0.14.1.tgz#b75f8a1c1f6a7c51e9847715ae50c712740f0ef1"
+  integrity sha512-K1JDJKHH9Y1y6P84X3IwGLV8Cgv4+GvOlWKCDRQWB3gtZ0PPdVZCymReymGbGuGqJFdwy/RZzB0k/6RMo0arXQ==
 
 merge-stream@^2.0.0:
   version "2.0.0"

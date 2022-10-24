@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
 import clsx from "clsx";
 import React, { useEffect } from "react";
-import { MediaChromeListItem } from "../types";
+import { MediaChromeListItem } from "../../../types";
 import Description from "./description";
 import X from "./icons/x";
 

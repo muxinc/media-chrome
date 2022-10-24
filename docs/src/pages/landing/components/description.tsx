@@ -1,5 +1,5 @@
 import React from "react";
-import { MediaChromeListItem } from "../types";
+import { MediaChromeListItem } from "../../../types";
 
 const toAttrsStrings = (
   htmlAttrs: { [k: string]: string | boolean | undefined } = {}
