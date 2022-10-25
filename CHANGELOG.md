@@ -1,3 +1,12 @@
+## [0.15.1](https://github.com/muxinc/media-chrome/compare/v0.15.0...v0.15.1) (2022-10-25)
+
+
+### Bug Fixes
+
+* use composedPath for checking target in schedule inactive event handler ([#355](https://github.com/muxinc/media-chrome/issues/355)) ([c44711d](https://github.com/muxinc/media-chrome/commit/c44711d131dec5ad6981c838a17f9738f74a00d9))
+
+
+
 # [0.15.0](https://github.com/muxinc/media-chrome/compare/v0.14.1...v0.15.0) (2022-10-25)
 
 
