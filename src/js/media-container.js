@@ -359,7 +359,7 @@ class MediaContainer extends window.HTMLElement {
         } else {
           scheduleInactive();
         }
-      } else if (['media-play-button', 'media-fullscreen-button'].includes(e.target.nodeName.toLowerCase())) {
+      } else if (e.composedPath().some(el => ['media-play-button', 'media-fullscreen-button'].includes(el?.nodeName?.toLowerCase()))) {
         scheduleInactive();
       }
     });
