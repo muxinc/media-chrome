@@ -73,6 +73,7 @@ export const PlayerPanel: React.FC<{
       )}
       style={{
         aspectRatio: "16/9",
+        overflow: "hidden"
       }}
     >
       <video
@@ -84,6 +85,7 @@ export const PlayerPanel: React.FC<{
         muted
         className="h-full w-full"
         ref={videoRef}
+        tabIndex={-1}
       >
         <track
           label="English"
