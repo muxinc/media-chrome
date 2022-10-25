@@ -1,3 +1,18 @@
+# [0.15.0](https://github.com/muxinc/media-chrome/compare/v0.14.1...v0.15.0) (2022-10-25)
+
+
+### Bug Fixes
+
+* clicking in play/fullscreen buttons should schedule inactive ([#338](https://github.com/muxinc/media-chrome/issues/338)) ([0b640d0](https://github.com/muxinc/media-chrome/commit/0b640d03a665a113017a3bf8f050c787e2829434)), closes [#188](https://github.com/muxinc/media-chrome/issues/188)
+* preview bounds in shadow dom ([#342](https://github.com/muxinc/media-chrome/issues/342)) ([e0b5fa9](https://github.com/muxinc/media-chrome/commit/e0b5fa98378a297042cc957acbc47e67f8acb582))
+
+
+### Features
+
+* remove esm-module ([#352](https://github.com/muxinc/media-chrome/issues/352)) ([921eda8](https://github.com/muxinc/media-chrome/commit/921eda86043b2fdd76e8bb2974b815103f05bf99))
+
+
+
 ## [0.14.1](https://github.com/muxinc/media-chrome/compare/v0.14.0...v0.14.1) (2022-10-14)
 
 
