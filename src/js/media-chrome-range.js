@@ -28,6 +28,8 @@ const trackStyles = `
   min-width: 40px;
   height: var(--track-height);
   border: var(--media-range-track-border, none);
+  outline: var(--media-range-track-outline);
+  outline-offset: var(--media-range-track-outline-offset);
   border-radius: var(--media-range-track-border-radius, 0);
   background: var(--media-range-track-progress-internal, var(--media-range-track-background, #eee));
   box-shadow: var(--media-range-track-box-shadow, none);
@@ -44,12 +46,10 @@ template.innerHTML = `
       --media-range-padding: var(--media-control-padding, 10px);
       --_media-range-padding: var(--media-range-padding, 10px);
 
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       vertical-align: middle;
       box-sizing: border-box;
+      display: inline-block;
+      position: relative;
       background: var(--media-control-background, rgba(20,20,30, 0.7));
       transition: background 0.15s linear;
       width: 100px;
@@ -63,6 +63,11 @@ template.innerHTML = `
 
     :host(:hover) {
       background: var(--media-control-hover-background, rgba(50,50,60, 0.7));
+    }
+
+    #container {
+      position: relative;
+      height: 100%;
     }
 
     input[type=range] {
@@ -109,19 +114,18 @@ template.innerHTML = `
 
     #background,
     #pointer {
-      ${trackStyles}
-      width: auto;
+      min-width: 40px;
+      width: var(--media-range-track-width, 100%);
+      height: var(--track-height);
+      border-radius: var(--media-range-track-border-radius, 0);
       position: absolute;
       top: 50%;
       transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px) - 50%));
-      left: var(--media-range-padding-left, var(--_media-range-padding));
-      right: var(--media-range-padding-right, var(--_media-range-padding));
       background: var(--media-range-track-background, #333);
     }
 
     #pointer {
       min-width: auto;
-      right: auto;
       background: var(--media-range-track-pointer-background);
       border-right: var(--media-range-track-pointer-border-right);
       transition: visibility .25s, opacity .25s;
@@ -139,10 +143,8 @@ template.innerHTML = `
       ${/* Add z-index so it overlaps the top of the control buttons if they are right under. */''}
       z-index: 1;
       display: var(--media-time-range-hover-display, none);
-      box-sizing: border-box;
       position: absolute;
-      left: var(--media-range-padding-left, var(--_media-range-padding));
-      right: var(--media-range-padding-right, var(--_media-range-padding));
+      width: 100%;
       bottom: var(--media-time-range-hover-bottom, -5px);
       height: var(--media-time-range-hover-height, max(calc(100% + 5px), 20px));
     }
@@ -182,10 +184,12 @@ template.innerHTML = `
       background-color: #777;
     }
   </style>
-  <div id="background"></div>
-  <div id="pointer"></div>
-  <div id="hoverzone"></div>
-  <input id="range" type="range" min="0" max="1000" step="any" value="0">
+  <div id="container">
+    <div id="background"></div>
+    <div id="pointer"></div>
+    <div id="hoverzone"></div>
+    <input id="range" type="range" min="0" max="1000" step="any" value="0">
+  </div>
 `;
 
 class MediaChromeRange extends window.HTMLElement {
@@ -202,6 +206,7 @@ class MediaChromeRange extends window.HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
+    this.container = this.shadowRoot.querySelector('#container');
     this.range = this.shadowRoot.querySelector('#range');
     this.range.addEventListener('input', this.updateBar.bind(this));
   }
