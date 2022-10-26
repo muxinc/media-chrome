@@ -76,6 +76,7 @@ const MediaChromeListItemRenderer: React.FC<{
       onClick={() => selectItem(value)}
       className={clsx("block w-full", {
         "outline-black": active && showActive && !selected,
+        "outline": active && showActive && !selected,
       })}
     >
       <div
