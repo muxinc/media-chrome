@@ -7,7 +7,7 @@ const Toggle: React.FC<{
   return (
     <div>
       <span className="mr-4">{label}</span>
-      <div className="switch focus-within:outline-black">
+      <div className="switch focus-within:outline-black focus-within:outline">
         <input
           id={id}
           type="checkbox"
