@@ -36,7 +36,8 @@ template.innerHTML = `
 
     #preview-rail,
     #current-rail {
-      width: 100%;
+      ${/* 1% of parent element and upscale by 100 in the translateX() */''}
+      width: 1%;
       position: absolute;
       left: 0;
       bottom: 100%;
@@ -44,7 +45,10 @@ template.innerHTML = `
     }
 
     [part~="box"] {
-      display: inline-flex;
+      ${/* absolute position is needed here so the box doesn't overflow the bounds */''}
+      position: absolute;
+      bottom: 100%;
+      display: flex;
       flex-direction: column;
       align-items: center;
       transform: translateX(-50%);
@@ -416,7 +420,7 @@ class MediaTimeRange extends MediaChromeRange {
 }
 
 function getBoxPosition(el, box, ratio) {
-  let position = `${ratio * 100}%`;
+  let position = `${ratio * 100 * 100}%`;
 
   // Use offset dimensions to include borders.
   const boxWidth = box.offsetWidth;
@@ -440,8 +444,8 @@ function getBoxPosition(el, box, ratio) {
   const boxMin = (leftPadding - (rangeRect.left - mediaBoundsRect.left - boxWidth / 2)) / rangeRect.width * 100;
   const boxMax = (mediaBoundsRect.right - rangeRect.left - boxWidth / 2 - rightPadding) / rangeRect.width * 100;
 
-  if (!Number.isNaN(boxMin)) position = `max(${boxMin}%, ${position})`;
-  if (!Number.isNaN(boxMax)) position = `min(${position}, ${boxMax}%)`;
+  if (!Number.isNaN(boxMin)) position = `max(${boxMin * 100}%, ${position})`;
+  if (!Number.isNaN(boxMax)) position = `min(${position}, ${boxMax * 100}%)`;
 
   return position;
 }
