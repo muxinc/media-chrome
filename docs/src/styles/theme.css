@@ -74,7 +74,7 @@
   --theme-text-lighter: hsla(var(--color-gray-80), 1);
   --theme-bg: hsla(var(--color-base-white), 100%, 1);
   --theme-bg-hover: hsla(var(--color-magenta), var(--theme-accent-opacity));
-  --theme-bg-offset: hsla(var(--color-gray-90), 1);
+  --theme-bg-offset: hsla(var(--color-gray-95), 1);
   --theme-bg-accent: hsla(var(--color-magenta), var(--theme-accent-opacity));
   --theme-code-inline-bg: hsla(var(--color-gray-95), 1);
   --theme-code-inline-text: var(--theme-text);

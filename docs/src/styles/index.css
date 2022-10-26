@@ -322,7 +322,7 @@ table {
 /* Zebra striping */
 
 tr:nth-of-type(even) {
-  background: var(--theme-bg-hover);
+  background: var(--theme-bg-offset);
 }
 td,
 th {
@@ -333,7 +333,7 @@ td:first-child {
   white-space: nowrap;
 }
 th {
-  background: var(--theme-bg-hover);
+  background: var(--theme-bg-offset);
   font-weight: bold;
 }
 
