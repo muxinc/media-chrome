@@ -23,7 +23,7 @@
     "clsx": "^1.2.1",
     "hastscript": "^7.1.0",
     "html-escaper": "^3.0.3",
-    "media-chrome": "^0.14.1",
+    "media-chrome": "file:..",
     "mux-embed": "^4.14.0",
     "preact": "^10.11.2",
     "react": "^18.2.0",
