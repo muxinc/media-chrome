@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "format": "prettier --write .",
-    "dev": "astro dev",
+    "dev": "(cd .. && yarn build:esm --watch=forever) & astro dev",
     "start": "astro dev",
     "check": "astro check && tsc",
+    "prebuild": "cd .. && yarn build",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -23,7 +24,7 @@
     "clsx": "^1.2.1",
     "hastscript": "^7.1.0",
     "html-escaper": "^3.0.3",
-    "media-chrome": "file:..",
+    "media-chrome": "link:..",
     "mux-embed": "^4.14.0",
     "preact": "^10.11.2",
     "react": "^18.2.0",
