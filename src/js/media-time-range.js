@@ -424,8 +424,8 @@ function getBoxPosition(el, box, ratio) {
 
   // Get the element that enforces the bounds for the time range boxes.
   const bounds =
-    (el.getAttribute('media-bounds')
-      ? closestComposedNode(el, `#${el.getAttribute('media-bounds')}`)
+    (el.getAttribute('bounds')
+      ? closestComposedNode(el, `#${el.getAttribute('bounds')}`)
       : el.parentElement) ?? el;
 
   const leftPadding = parseInt(
