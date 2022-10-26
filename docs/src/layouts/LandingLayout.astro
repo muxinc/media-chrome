@@ -1,0 +1,36 @@
+---
+import '../styles/toggle.css';
+import HeadCommon from '../components/HeadCommon.astro';
+import HeadSEO from '../components/HeadSEO.astro';
+import * as CONFIG from '../config';
+import type { MarkdownHeading } from 'astro';
+
+type Props = {
+  headings: MarkdownHeading[];
+};
+
+const { headings } = Astro.props as Props;
+const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(/\/$/, '');
+const currentPage = Astro.url.pathname;
+const currentFile = `src/pages${currentPage.replace(/\/$/, '')}.md`;
+const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
+---
+
+<html
+  dir={'ltr'}
+  lang={'en-us'}
+  class="initial"
+>
+  <head>
+    <HeadCommon />
+    <HeadSEO frontmatter={{}} canonicalUrl={canonicalURL} />
+    <title>{CONFIG.SITE.title}</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="font-mono">
+    <slot />
+  </body>
+</html>

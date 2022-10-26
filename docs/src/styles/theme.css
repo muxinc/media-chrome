@@ -64,17 +64,17 @@
 
 :root {
   color-scheme: light;
+  --theme-accent-opacity: 0.1;
   --theme-accent: hsla(var(--color-magenta), 1);
   --theme-text-accent: hsla(var(--color-magenta), 1);
-  --theme-accent-opacity: 0.1;
   --theme-divider: hsla(var(--color-gray-95), 1);
   --theme-text: hsla(var(--color-gray-10), 1);
   --theme-text-light: hsla(var(--color-gray-40), 1);
   /* @@@: not used anywhere */
   --theme-text-lighter: hsla(var(--color-gray-80), 1);
   --theme-bg: hsla(var(--color-base-white), 100%, 1);
-  --theme-bg-hover: hsla(var(--color-gray-95), 1);
-  --theme-bg-offset: hsla(var(--color-gray-90), 1);
+  --theme-bg-hover: hsla(var(--color-magenta), var(--theme-accent-opacity));
+  --theme-bg-offset: hsla(var(--color-gray-95), 1);
   --theme-bg-accent: hsla(var(--color-magenta), var(--theme-accent-opacity));
   --theme-code-inline-bg: hsla(var(--color-gray-95), 1);
   --theme-code-inline-text: var(--theme-text);
@@ -104,8 +104,9 @@ body {
   /* @@@: not used anywhere */
   --theme-text-lighter: hsla(var(--color-gray-40), 1);
   --theme-bg: hsla(211, 29%, 14%, 1);
-  --theme-bg-hover: hsla(var(--color-gray-40), 1);
+  --theme-bg-hover: hsla(var(--color-purple), var(--theme-accent-opacity));
   --theme-bg-offset: hsla(var(--color-gray-5), 1);
+  --theme-bg-accent: hsla(var(--color-purple), var(--theme-accent-opacity));
   --theme-code-inline-bg: hsla(var(--color-gray-10), 1);
   --theme-code-inline-text: hsla(var(--color-base-white), 100%, 1);
   --theme-code-bg: hsla(var(--color-gray-5), 1);
