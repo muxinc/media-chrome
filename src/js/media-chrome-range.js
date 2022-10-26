@@ -46,6 +46,7 @@ template.innerHTML = `
       --media-range-padding: var(--media-control-padding, 10px);
       --_media-range-padding: var(--media-range-padding, 10px);
 
+      vertical-align: middle;
       box-sizing: border-box;
       display: inline-block;
       position: relative;
