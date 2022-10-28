@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Winamp Theme Example</title>
+    <script type="module" src="../../dist/index.js"></script>
+    <style>
+      body {
+        --media-range-background: transparent;
+
+        --media-range-track-height: 1px;
+        --media-range-track-background: transparent;
+
+        --media-range-thumb-width: 28px;
+        --media-range-thumb-height: 10px;
+        --media-range-thumb-border-radius: 0;
+        --media-range-thumb-background: 58px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/POSBAR.BMP);
+       
+        --media-preview-time-background: transparent;
+        --media-preview-time-margin: 0;
+        --media-preview-time-padding: 0;
+      }
+      media-controller {
+        display: block;
+        max-width: 640px;
+        aspect-ratio: 16 / 9;
+      }
+      @font-face {
+        font-family: winamp;
+        src: url("winamp.ttf") format("truetype");
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome Winamp Theme Example</h1>
+
+      <div style="position: relative; width: 275px; height: 116px; background: url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/MAIN.BMP);">
+        <div style="position: absolute; top: 88px; left: 16px; display: flex;">
+          <media-seek-backward-button media-controller="controller" style="display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;">
+            <div slot="backward" style="width: 23px; height: 18px; background: 137px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/CBUTTONS.BMP);"></div>
+          </media-seek-backward-button>
+          <media-play-button media-controller="controller" style="display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;">
+            <div slot="play" style="width: 23px; height: 18px; background: 114px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/CBUTTONS.BMP);"></div>
+            <div slot="pause" style="width: 23px; height: 18px; background: 91px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/CBUTTONS.BMP);"></div>
+          </media-play-button>
+          <media-seek-forward-button media-controller="controller" style="display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;">
+            <div slot="forward" style="width: 23px; height: 18px; background: 45px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/CBUTTONS.BMP);"></div>
+          </media-seek-forward-button>
+        </div>
+        <media-time-display media-controller="controller" style="position: absolute; background: black; line-height: 20px; top: 23px; left: 61px; padding: 0; color: #00F800; letter-spacing: -0.04rem; font-family: 'winamp'; font-size: 83%; font-smooth: never; -webkit-font-smoothing: none;"></media-time-display>
+        <media-time-range media-controller="controller" style="position: absolute; top: 71px; background: transparent; left: 17px; height: 12px; width: 248px; padding: 0;"></media-time-range>
+      </div>
+
+      <br>
+
+      <media-controller id="controller">
+        <video
+          playsinline
+          slot="media"
+          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+        >
+          <track
+            label="English"
+            kind="captions"
+            srclang="en"
+            default
+            src="./vtt/en-cc.vtt"
+          />
+        </video>
+      </media-controller>
+
+      <media-mute-button media-controller="controller"></media-mute-button>
+      <media-seek-backward-button
+        media-controller="controller"
+      ></media-seek-backward-button>
+      <media-seek-forward-button
+        media-controller="controller"
+      ></media-seek-forward-button>
+      <media-volume-range media-controller="controller"></media-volume-range>
+      <media-time-display
+        media-controller="controller"
+        remaining
+        show-duration
+      ></media-time-display>
+      <media-captions-button
+        media-controller="controller"
+      ></media-captions-button>
+      <media-playback-rate-button
+        media-controller="controller"
+      ></media-playback-rate-button>
+      <media-pip-button media-controller="controller"></media-pip-button>
+      <media-fullscreen-button
+        media-controller="controller"
+      ></media-fullscreen-button>
+
+    </main>
+  </body>
+</html>
