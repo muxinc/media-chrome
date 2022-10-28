@@ -1,3 +1,12 @@
+# [0.16.0](https://github.com/muxinc/media-chrome/compare/v0.15.1...v0.16.0) (2022-10-28)
+
+
+### Features
+
+* box percentage positioning & time range border glitch ([#345](https://github.com/muxinc/media-chrome/issues/345)) ([57f1023](https://github.com/muxinc/media-chrome/commit/57f1023fa2e7d3b20b76b07b1ae45218e99360d7))
+
+
+
 ## [0.15.1](https://github.com/muxinc/media-chrome/compare/v0.15.0...v0.15.1) (2022-10-25)
 
 
