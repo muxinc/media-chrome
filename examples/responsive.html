@@ -5,12 +5,13 @@
     <title>Responsive Media Chrome Example</title>
     <script type="module" src="../dist/index.js"></script>
     <style>
-      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      /* add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
         display: block;         /* expands the container if preload=none */
         max-width: 1280px;       /* allows the container to shrink if small */
         aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
 
+        /* set media-controller as a container for Container Queries (CQ) */
         container: media-chrome / inline-size;
       }
       video {
@@ -24,6 +25,18 @@
         justify-content: space-evenly;
       }
 
+      /*
+       * Using container queries, define various breakpoints.
+       * Unfortunately, due to differing levels of support for CQ,
+       * we need to design these queries in a stacking context since
+       * it isn't currently possible to do
+       * `(min-width: 420px) and (max-width: 590px)`, though, that would've made
+       * things simpler.
+       * Because of this, we start at the medium size `(max-width: 590px)`.
+       *
+       * This size shows the center controls and
+       * hides the play toggle and seek buttons from the bottom control bar.
+       */
       @container (max-width: 590px) {
         .centered-controls-overlay {
           display: flex;
@@ -37,6 +50,13 @@
           display: none;
         }
       }
+      /*
+       * This is the small size `(max-width: 420px)`, which for this simple
+       * responsive example hides the bottom control bar
+       * and only uses the center controls.
+       *
+       * Must come after the medium size so that it properly hides the control bar
+       */
       @container (max-width: 420px) {
         .centered-controls-overlay {
           display: flex;
@@ -45,6 +65,10 @@
           display: none;
         }
       }
+      /*
+       * The "default" layout which sides the center controls
+       * and shows the control bar.
+       */
       @container (min-width: 590px) {
         .centered-controls-overlay {
           display: none;
@@ -54,6 +78,9 @@
         }
       }
 
+      /*
+       * Some styles to make the center controls look nicer
+       */
       media-controller .centered-controls-overlay {
         align-self: stretch;
       }
