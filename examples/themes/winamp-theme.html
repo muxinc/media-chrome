@@ -26,8 +26,12 @@
         aspect-ratio: 16 / 9;
       }
       @font-face {
+        font-family: winamp-numbers;
+        src: url("./winamp-theme/winamp-numbers.ttf") format("truetype");
+      }
+      @font-face {
         font-family: winamp;
-        src: url("winamp.ttf") format("truetype");
+        src: url("./winamp-theme/winamp.ttf") format("truetype");
       }
     </style>
   </head>
@@ -48,8 +52,19 @@
             <div slot="forward" style="width: 23px; height: 18px; background: 45px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/CBUTTONS.BMP);"></div>
           </media-seek-forward-button>
         </div>
-        <media-time-display media-controller="controller" style="position: absolute; background: black; line-height: 20px; top: 23px; left: 61px; padding: 0; color: #00F800; letter-spacing: -0.04rem; font-family: 'winamp'; font-size: 83%; font-smooth: never; -webkit-font-smoothing: none;"></media-time-display>
-        <media-time-range media-controller="controller" style="position: absolute; top: 71px; background: transparent; left: 17px; height: 12px; width: 248px; padding: 0;"></media-time-range>
+        <media-time-display media-controller="controller" style="position: absolute; background: black; line-height: 20px; top: 23px; left: 61px; padding: 0; color: #00E201; letter-spacing: -0.04rem; font-family: 'winamp-numbers'; font-size: 83%; font-smooth: never; -webkit-font-smoothing: none;"></media-time-display>
+        <media-time-range media-controller="controller" style="position: absolute; top: 71px; left: 17px; background: transparent; height: 12px; width: 248px; padding: 0;"></media-time-range>
+        <media-volume-range media-controller="controller" style="position: absolute; top: 58px; left: 108px; background: 0 -2px url(./winamp-theme/VOLUME.png); height: 8px; width: 68px; padding: 0;"></media-volume-range>
+        <!-- Extra visual details -->
+        <img src="./winamp-theme/HEADER.png">
+        <img src="./winamp-theme/DISPLAY.png" style="position: absolute; left: 10px; top: 22px;">
+        <div style="position: absolute; left: 215px; top: 40px; width: 50px; height: 15px; display: flex;">
+          <div style="width: 24px; height: 13px; background: 24px 13px url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/MONOSTER.BMP)"></div>
+          <div style="width: 26px; height: 13px; background: 0px 25px url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/MONOSTER.BMP)"></div>
+        </div>
+        <marquee style="position: absolute; left: 111px; top: 27px; width: 153px; letter-spacing: 0.02rem; font-family: winamp; font-size: 6px; color: #00E201; font-smooth: never; -webkit-font-smoothing: none; text-transform: uppercase;" scrolldelay="200">Media Chrome, it really whips the llama's ass!</marquee>
+        <div style="position: absolute; left: 111px; top: 43px; width: 153px; letter-spacing: 0.02rem; font-family: winamp; font-size: 6px; color: #00E201; font-smooth: never; -webkit-font-smoothing: none;">192</div>
+        <div style="position: absolute; left: 156px; top: 43px; width: 153px; letter-spacing: 0.02rem; font-family: winamp; font-size: 6px; color: #00E201; font-smooth: never; -webkit-font-smoothing: none;">44</div>
       </div>
 
       <br>
@@ -71,18 +86,6 @@
       </media-controller>
 
       <media-mute-button media-controller="controller"></media-mute-button>
-      <media-seek-backward-button
-        media-controller="controller"
-      ></media-seek-backward-button>
-      <media-seek-forward-button
-        media-controller="controller"
-      ></media-seek-forward-button>
-      <media-volume-range media-controller="controller"></media-volume-range>
-      <media-time-display
-        media-controller="controller"
-        remaining
-        show-duration
-      ></media-time-display>
       <media-captions-button
         media-controller="controller"
       ></media-captions-button>
