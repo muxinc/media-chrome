@@ -3867,12 +3867,24 @@ function initializePolyfill(updateCallback) {
     return state => {
       const rootQueryDescriptors = [];
 
+      const pushReference = query => {
+        rootQueryDescriptors.push([new Reference(query), 0
+        /* None */
+        ]);
+      };
+
       for (const adoptedStyleSheet of node.adoptedStyleSheets) {
         if (adoptedStyleSheet) {
           for (const query of getDescriptorsForStyleSheet(adoptedStyleSheet)) {
-            rootQueryDescriptors.push([new Reference(query), 0
-            /* None */
-            ]);
+            pushReference(query);
+          }
+        }
+      }
+
+      for (const styleSheet of node.styleSheets) {
+        if (styleSheet) {
+          for (const query of getDescriptorsForStyleSheet(styleSheet)) {
+            pushReference(query);
           }
         }
       }
