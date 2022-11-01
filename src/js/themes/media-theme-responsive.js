@@ -10,7 +10,8 @@
 import { defineCustomElement } from '../utils/defineCustomElement.js';
 import MediaTheme from './media-theme.js';
 
-const style = `
+const template = `
+<style>
   :host {
     display: inline-block;
   }
@@ -92,9 +93,8 @@ const style = `
   media-pip-button[media-pip-unavailable] {
     display: none;
   }
-  `;
+</style>
 
-const template = `
 <media-controller>
   <slot name="media" slot="media"></slot>
   <slot name="poster" slot="poster"></slot>
@@ -123,7 +123,6 @@ const template = `
 
 class MediaThemeResponsive extends MediaTheme {
   static template = template;
-  static style = style;
 }
 
 defineCustomElement('media-theme-responsive', MediaThemeResponsive);
