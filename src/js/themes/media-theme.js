@@ -6,7 +6,6 @@ import {
 
 class MediaTheme extends window.HTMLElement {
   static template = '';
-  static style = '';
 
   constructor() {
     super();
@@ -20,28 +19,11 @@ class MediaTheme extends window.HTMLElement {
   render() {
     this.shadowRoot.textContent = '';
 
-    const style = this.constructor.style;
-    let template = this.constructor.template;
-
-    if (style !== '' && !constructableSheetSupported) {
-      template = `
-        <style>${style}</style>
-        ${template}
-        `;
-    }
-
-    const templateEl = document.createElement('template');
-    templateEl.innerHTML = template;
+    const template = document.createElement('template');
+    template.innerHTML = this.constructor.template;
 
     // Clone the template in the shadow dom
-    this.shadowRoot.append(templateEl.content.cloneNode(true));
-
-    if (style !== '' && constructableSheetSupported) {
-      const sheet = new CSSStyleSheet();
-      sheet.replaceSync(style);
-
-      this.shadowRoot.adoptedStyleSheets = [sheet];
-    }
+    this.shadowRoot.append(template.content.cloneNode(true));
   }
 
   get mediaController() {
@@ -49,18 +31,6 @@ class MediaTheme extends window.HTMLElement {
     return this.shadowRoot.querySelector('media-controller');
   }
 }
-
-const supportsConstructableStylesheetTest = () => {
-  try {
-    new CSSStyleSheet();
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
-const constructableSheetSupported = supportsConstructableStylesheetTest();
-
 
 defineCustomElement('media-theme', MediaTheme);
 
