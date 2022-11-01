@@ -10,7 +10,9 @@ provide one configuration for a responsive media player. However media themes
 will be introduced soon that can provide responsive behavior by default.
 
 There are different techniques available to make your Media Chrome controls 
-responsive but we'll keep it simple in this guide and make use of 
+responsive. We'll show you a future facing method using
+[Container Queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries)
+(CQ) and a simple but cross browser method using a
 [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
 and CSS classes.
 
@@ -80,7 +82,40 @@ That looks pretty good but the controls are static no matter the size of the pla
 Lets change that, for this exercise we'll make a big center play button when the player 
 width is smaller than `484px` and only show the timerange at the bottom of the player. 
 
-## Observe player resizing
+## Using Container Queries
+
+You might already be familiar with [Media Queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries)
+in CSS. They allow you to have different CSS selectors depending on the size of the page itself.
+However, since we're building a video player, that doesn't help us much.
+Instead, we are finally getting Container Queries
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Using Resize Observer
+
+### Observe player resizing
 
 Since we're still waiting for 
 [CSS Container Queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries) 
@@ -114,7 +149,7 @@ not the player container dimensions.
 This little snippet will output the defined breakpoints as class names whenever
 the width of the player is smaller than the defined breakpoint.
 
-## CSS classes & properties
+### CSS classes & properties
 
 Now it's as simple as adding some CSS classes and CSS properties to hide and show controls based
 on the breakpoints. 
@@ -179,7 +214,7 @@ on the breakpoints.
 </script>
 ```
 
-## Responsive Media Chrome player
+### Responsive Media Chrome player
 
 Try changing the size of the player embed below to see if the controls
 show and hide like expected.
