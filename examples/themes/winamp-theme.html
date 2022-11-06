@@ -128,6 +128,18 @@
         width: 9px; height: 9px; background: 0 0 url(./winamp-theme/PLAY.png);
       }
 
+      media-play-button.vu-meter {
+        display: block; overflow: hidden; background: none; position: absolute; top: 40px; left: 20px; padding: 0; width: 88px; height: 22px;
+      }
+
+      media-play-button.vu-meter div[slot="play"] {
+        width: 88px; height: 22px; background: none;
+      }
+
+      media-play-button.vu-meter div[slot="pause"] {
+        width: 88px; height: 22px; background: 0 0 url(./winamp-theme/VU.gif);
+      }
+
       .display {
         position: absolute; left: 10px; top: 22px;
       }
@@ -163,6 +175,10 @@
         <div class="kbps">192</div>
         <div class="khz">44</div>
         <media-play-button media-controller="controller" class="play-pause-indicator">
+          <div slot="play"></div>
+          <div slot="pause"></div>
+        </media-play-button>
+        <media-play-button media-controller="controller" class="vu-meter">
           <div slot="play"></div>
           <div slot="pause"></div>
         </media-play-button>
