@@ -14,24 +14,122 @@
         --media-range-thumb-width: 28px;
         --media-range-thumb-height: 10px;
         --media-range-thumb-border-radius: 0;
-        --media-range-thumb-background: 58px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/POSBAR.BMP);
+        --media-range-thumb-background: 58px 0 url(./winamp-theme/POSBAR.BMP);
        
         --media-preview-time-background: transparent;
         --media-preview-time-margin: 0;
         --media-preview-time-padding: 0;
       }
+
       media-controller {
         display: block;
         max-width: 640px;
         aspect-ratio: 16 / 9;
       }
+
+      media-volume-range {
+        --media-range-thumb-width: 14px;
+        --media-range-thumb-height: 10px;
+        --media-range-thumb-border-radius: 0;
+        --media-range-thumb-background: 53px 443px url(./winamp-theme/BALANCE.BMP);
+      }
+
       @font-face {
         font-family: winamp-numbers;
         src: url("./winamp-theme/winamp-numbers.ttf") format("truetype");
       }
+
       @font-face {
         font-family: winamp;
         src: url("./winamp-theme/winamp.ttf") format("truetype");
+      }
+
+      .wrapper {
+        position: relative; width: 275px; height: 116px; background: url(./winamp-theme/MAIN.BMP);
+      }
+
+      .controls {
+        position: absolute; top: 88px; left: 16px; display: flex;
+      }
+
+      media-seek-backward-button {
+        display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;
+      }
+
+      media-seek-backward-button div[slot="backward"] {
+        width: 23px; height: 18px; background: 137px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button {
+        display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;
+      }
+
+      media-play-button div[slot="play"] {
+        width: 23px; height: 18px; background: 114px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button div[slot="pause"] {
+        width: 23px; height: 18px; background: 91px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-seek-forward-button {
+        display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;
+      }
+
+      media-seek-forward-button div[slot="forward"] {
+        width: 23px; height: 18px; background: 45px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+      
+      media-time-display {
+        position: absolute; background: black; line-height: 20px; top: 23px; left: 61px; padding: 0; color: #00E201; letter-spacing: -0.04rem; font-family: 'winamp-numbers'; font-size: 83%; font-smooth: never; -webkit-font-smoothing: none;
+      }
+
+      media-time-range {
+        position: absolute; top: 71px; left: 17px; background: transparent; height: 12px; width: 248px; padding: 0;
+      }
+
+      media-volume-range {
+        position: absolute; top: 58px; left: 108px; background: 0 -2px url(./winamp-theme/VOLUME.png); height: 10px; width: 68px; padding: 0;
+      }
+
+      .monoster {
+        position: absolute; left: 215px; top: 40px; width: 50px; height: 15px; display: flex;
+      }
+
+      .monoster :first-child {
+        width: 24px; height: 13px; background: 24px 13px url(./winamp-theme/MONOSTER.BMP);
+      }
+
+      .monoster :last-child {
+        width: 26px; height: 13px; background: 0px 25px url(./winamp-theme/MONOSTER.BMP);
+      }
+
+      marquee {
+        position: absolute; left: 111px; top: 27px; width: 153px; letter-spacing: 0.02rem; font-family: winamp; font-size: 6px; color: #00E201; font-smooth: never; -webkit-font-smoothing: none; text-transform: uppercase;
+      }
+
+      .kbps {
+        position: absolute; left: 111px; top: 43px; width: 153px; letter-spacing: 0.02rem; font-family: winamp; font-size: 6px; color: #00E201; font-smooth: never; -webkit-font-smoothing: none;
+      }
+
+      .khz {
+        position: absolute; left: 156px; top: 43px; width: 153px; letter-spacing: 0.02rem; font-family: winamp; font-size: 6px; color: #00E201; font-smooth: never; -webkit-font-smoothing: none;
+      }
+
+      media-play-button.play-pause-indicator {
+        display: block; overflow: hidden; background: none; position: absolute; top: 28px; left: 24px; padding: 0; width: 9px; height: 9px;
+      }
+
+      media-play-button.play-pause-indicator div[slot="play"] {
+        width: 9px; height: 9px; background: 0 0 url(./winamp-theme/STOP.png);
+      }
+
+      media-play-button.play-pause-indicator div[slot="pause"] {
+        width: 9px; height: 9px; background: 0 0 url(./winamp-theme/PLAY.png);
+      }
+
+      .display {
+        position: absolute; left: 10px; top: 22px;
       }
     </style>
   </head>
@@ -39,32 +137,35 @@
     <main>
       <h1>Media Chrome Winamp Theme Example</h1>
 
-      <div style="position: relative; width: 275px; height: 116px; background: url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/MAIN.BMP);">
-        <div style="position: absolute; top: 88px; left: 16px; display: flex;">
-          <media-seek-backward-button media-controller="controller" style="display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;">
-            <div slot="backward" style="width: 23px; height: 18px; background: 137px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/CBUTTONS.BMP);"></div>
+      <div class="wrapper">
+        <div class="controls">
+          <media-seek-backward-button media-controller="controller">
+            <div slot="backward"></div>
           </media-seek-backward-button>
-          <media-play-button media-controller="controller" style="display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;">
-            <div slot="play" style="width: 23px; height: 18px; background: 114px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/CBUTTONS.BMP);"></div>
-            <div slot="pause" style="width: 23px; height: 18px; background: 91px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/CBUTTONS.BMP);"></div>
+          <media-play-button media-controller="controller">
+            <div slot="play"></div>
+            <div slot="pause"></div>
           </media-play-button>
-          <media-seek-forward-button media-controller="controller" style="display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;">
-            <div slot="forward" style="width: 23px; height: 18px; background: 45px 0 url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/CBUTTONS.BMP);"></div>
+          <media-seek-forward-button media-controller="controller">
+            <div slot="forward"></div>
           </media-seek-forward-button>
         </div>
-        <media-time-display media-controller="controller" style="position: absolute; background: black; line-height: 20px; top: 23px; left: 61px; padding: 0; color: #00E201; letter-spacing: -0.04rem; font-family: 'winamp-numbers'; font-size: 83%; font-smooth: never; -webkit-font-smoothing: none;"></media-time-display>
-        <media-time-range media-controller="controller" style="position: absolute; top: 71px; left: 17px; background: transparent; height: 12px; width: 248px; padding: 0;"></media-time-range>
-        <media-volume-range media-controller="controller" style="position: absolute; top: 58px; left: 108px; background: 0 -2px url(./winamp-theme/VOLUME.png); height: 8px; width: 68px; padding: 0;"></media-volume-range>
-        <!-- Extra visual details -->
-        <img src="./winamp-theme/HEADER.png">
-        <img src="./winamp-theme/DISPLAY.png" style="position: absolute; left: 10px; top: 22px;">
-        <div style="position: absolute; left: 215px; top: 40px; width: 50px; height: 15px; display: flex;">
-          <div style="width: 24px; height: 13px; background: 24px 13px url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/MONOSTER.BMP)"></div>
-          <div style="width: 26px; height: 13px; background: 0px 25px url(https://raw.githubusercontent.com/captbaritone/webamp/master/packages/webamp/assets/skins/base-2.91/MONOSTER.BMP)"></div>
+        <media-time-display media-controller="controller"></media-time-display>
+        <media-time-range media-controller="controller"></media-time-range>
+        <media-volume-range media-controller="controller"></media-volume-range>
+        <img class="header" src="./winamp-theme/HEADER.png">
+        <img class="display" src="./winamp-theme/DISPLAY.png">
+        <div class="monoster">
+          <div></div>
+          <div></div>
         </div>
-        <marquee style="position: absolute; left: 111px; top: 27px; width: 153px; letter-spacing: 0.02rem; font-family: winamp; font-size: 6px; color: #00E201; font-smooth: never; -webkit-font-smoothing: none; text-transform: uppercase;" scrolldelay="200">Media Chrome, it really whips the llama's ass!</marquee>
-        <div style="position: absolute; left: 111px; top: 43px; width: 153px; letter-spacing: 0.02rem; font-family: winamp; font-size: 6px; color: #00E201; font-smooth: never; -webkit-font-smoothing: none;">192</div>
-        <div style="position: absolute; left: 156px; top: 43px; width: 153px; letter-spacing: 0.02rem; font-family: winamp; font-size: 6px; color: #00E201; font-smooth: never; -webkit-font-smoothing: none;">44</div>
+        <marquee scrolldelay="200">Media Chrome, it really whips the llama's ass!</marquee>
+        <div class="kbps">192</div>
+        <div class="khz">44</div>
+        <media-play-button media-controller="controller" class="play-pause-indicator">
+          <div slot="play"></div>
+          <div slot="pause"></div>
+        </media-play-button>
       </div>
 
       <br>
