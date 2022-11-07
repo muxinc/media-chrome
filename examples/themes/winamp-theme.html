@@ -10,11 +10,6 @@
 
         --media-range-track-height: 1px;
         --media-range-track-background: transparent;
-
-        --media-range-thumb-width: 28px;
-        --media-range-thumb-height: 10px;
-        --media-range-thumb-border-radius: 0;
-        --media-range-thumb-background: 58px 0 url(./winamp-theme/POSBAR.BMP);
        
         --media-preview-time-background: transparent;
         --media-preview-time-margin: 0;
@@ -27,7 +22,14 @@
         aspect-ratio: 16 / 9;
       }
 
-      media-volume-range {
+      media-time-range, media-time-range:active, media-time-range:hover {
+        --media-range-thumb-width: 28px;
+        --media-range-thumb-height: 10px;
+        --media-range-thumb-border-radius: 0;
+        --media-range-thumb-background: 58px 0 url(./winamp-theme/POSBAR.BMP);
+      }
+
+      media-volume-range, media-volume-range:active, media-volume-range:hover {
         --media-range-thumb-width: 14px;
         --media-range-thumb-height: 10px;
         --media-range-thumb-border-radius: 0;
@@ -46,6 +48,9 @@
 
       .wrapper {
         position: relative; width: 275px; height: 116px; background: url(./winamp-theme/MAIN.BMP);
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
       }
 
       .controls {
@@ -57,19 +62,63 @@
       }
 
       media-seek-backward-button div[slot="backward"] {
-        width: 23px; height: 18px; background: 137px 0 url(./winamp-theme/CBUTTONS.BMP);
+        width: 23px; height: 18px; background: 136px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-seek-backward-button:active div[slot="backward"] {
+        width: 23px; height: 18px; background: 136px 18px url(./winamp-theme/CBUTTONS.BMP);
       }
 
       media-play-button {
         display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;
       }
 
-      media-play-button div[slot="play"] {
+      media-play-button.play div[slot="play"] {
         width: 23px; height: 18px; background: 114px 0 url(./winamp-theme/CBUTTONS.BMP);
       }
 
-      media-play-button div[slot="pause"] {
+      media-play-button.play div[slot="pause"] {
+        width: 23px; height: 18px; background: 114px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button.play:active div[slot="play"] {
+        width: 23px; height: 18px; background: 114px 18px url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button.play:active div[slot="pause"] {
+        width: 23px; height: 18px; background: 114px 18px url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button.pause div[slot="pause"] {
         width: 23px; height: 18px; background: 91px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button.pause div[slot="play"] {
+        width: 23px; height: 18px; background: 91px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button.pause:active div[slot="play"] {
+        width: 23px; height: 18px; background: 91px 18px url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button.pause:active div[slot="pause"] {
+        width: 23px; height: 18px; background: 91px 18px url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button.stop div[slot="pause"] {
+        width: 23px; height: 18px; background: 68px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button.stop div[slot="play"] {
+        width: 23px; height: 18px; background: 68px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button.stop:active div[slot="play"] {
+        width: 23px; height: 18px; background: 68px 18px url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-play-button.stop:active div[slot="pause"] {
+        width: 23px; height: 18px; background: 68px 18px url(./winamp-theme/CBUTTONS.BMP);
       }
 
       media-seek-forward-button {
@@ -79,7 +128,23 @@
       media-seek-forward-button div[slot="forward"] {
         width: 23px; height: 18px; background: 45px 0 url(./winamp-theme/CBUTTONS.BMP);
       }
-      
+
+      media-seek-forward-button:active div[slot="forward"] {
+        width: 23px; height: 18px; background: 45px 18px url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-fullscreen-button {
+        display: block; overflow: hidden; padding: 0; margin-top: 1px; margin-left: 6px; width: 22px; height: 16px;
+      }
+
+      media-fullscreen-button div[slot="enter"] {
+        width: 23px; height: 16px; background: 22px 0 url(./winamp-theme/CBUTTONS.BMP);
+      }
+
+      media-fullscreen-button:active div[slot="enter"] {
+        width: 23px; height: 16px; background: 22px 20px url(./winamp-theme/CBUTTONS.BMP);
+      }
+
       media-time-display {
         position: absolute; background: black; line-height: 20px; top: 23px; left: 61px; padding: 0; color: #00E201; letter-spacing: -0.04rem; font-family: 'winamp-numbers'; font-size: 83%; font-smooth: never; -webkit-font-smoothing: none;
       }
@@ -90,6 +155,10 @@
 
       media-volume-range {
         position: absolute; top: 58px; left: 108px; background: 0 -2px url(./winamp-theme/VOLUME.png); height: 10px; width: 68px; padding: 0;
+      }
+
+      .balance {
+        position: absolute; top: 58px; left: 177px; background: -9px -2px url(./winamp-theme/BALANCE.BMP); height: 10px; width: 37px; padding: 0;
       }
 
       .monoster {
@@ -143,6 +212,30 @@
       .display {
         position: absolute; left: 10px; top: 22px;
       }
+
+      .eq {
+        position: absolute; left: 220px; top: 57px; width: 22px; height: 12px; background: 0 0 url(./winamp-theme/EQ.png);
+      }
+
+      .pl {
+        position: absolute; left: 243px; top: 57px; width: 22px; height: 12px; background: 0 0 url(./winamp-theme/PL.png);
+      }
+
+      .loop {
+        position: absolute; left: 211px; top: 89px; width: 28px; height: 14px; background: 0 0 url(./winamp-theme/LOOP.png);
+      }
+
+      media-captions-button {
+        position: absolute; left: 165px; top: 89px; width: 46px; height: 14px; padding: 0; overflow: hidden;
+      }
+      
+      media-captions-button div[slot="on"] {
+        width: 46px; height: 14px; background: 0 0 url(./winamp-theme/SHUFFLE.png) no-repeat;
+      }
+      
+      media-captions-button div[slot="off"] {
+        width: 46px; height: 14px; background: 0 0 url(./winamp-theme/SHUFFLE.png) no-repeat;
+      }
     </style>
   </head>
   <body>
@@ -154,19 +247,38 @@
           <media-seek-backward-button media-controller="controller">
             <div slot="backward"></div>
           </media-seek-backward-button>
-          <media-play-button media-controller="controller">
+          <media-play-button class="play" media-controller="controller">
+            <div slot="play"></div>
+            <div slot="pause"></div>
+          </media-play-button>
+          <media-play-button class="pause" media-controller="controller">
+            <div slot="play"></div>
+            <div slot="pause"></div>
+          </media-play-button>
+          <media-play-button class="stop" media-controller="controller">
             <div slot="play"></div>
             <div slot="pause"></div>
           </media-play-button>
           <media-seek-forward-button media-controller="controller">
             <div slot="forward"></div>
           </media-seek-forward-button>
+          <media-fullscreen-button media-controller="controller">
+            <div slot="enter"></div>
+          </media-fullscreen-button>
         </div>
         <media-time-display media-controller="controller"></media-time-display>
         <media-time-range media-controller="controller"></media-time-range>
         <media-volume-range media-controller="controller"></media-volume-range>
         <img class="header" src="./winamp-theme/HEADER.png">
         <img class="display" src="./winamp-theme/DISPLAY.png">
+        <div class="eq"></div>
+        <div class="pl"></div>
+        <div class="loop"></div>
+        <media-captions-button media-controller="controller">
+          <div slot="on"></div>
+          <div slot="off"></div>
+        </media-captions-button>
+        <div class="balance"></div>
         <div class="monoster">
           <div></div>
           <div></div>
@@ -183,9 +295,7 @@
           <div slot="pause"></div>
         </media-play-button>
       </div>
-
       <br>
-
       <media-controller id="controller">
         <video
           playsinline
@@ -201,19 +311,6 @@
           />
         </video>
       </media-controller>
-
-      <media-mute-button media-controller="controller"></media-mute-button>
-      <media-captions-button
-        media-controller="controller"
-      ></media-captions-button>
-      <media-playback-rate-button
-        media-controller="controller"
-      ></media-playback-rate-button>
-      <media-pip-button media-controller="controller"></media-pip-button>
-      <media-fullscreen-button
-        media-controller="controller"
-      ></media-fullscreen-button>
-
     </main>
   </body>
 </html>
