@@ -71,6 +71,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Captions button', link: 'en/media-captions-button' },
       { text: 'PiP button', link: 'en/media-pip-button' },
       { text: 'Airplay button', link: 'en/media-airplay-button' },
+      { text: 'Cast button', link: 'en/media-cast-button' },
       { text: 'Fullscreen button', link: 'en/media-fullscreen-button' },
       { text: 'Playback Rate button', link: 'en/media-playback-rate-button' },
       { text: 'Loading indicator', link: 'en/media-loading-indicator' },
