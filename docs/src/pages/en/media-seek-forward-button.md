@@ -2,12 +2,38 @@
 title: <media-seek-forward-button>
 description: Media Seek Forward Button
 layout: ../../layouts/MainLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-seek-forward-button.js
 ---
 
 Button to jump ahead 30 seconds in the media.
 
-- [Source](https://github.com/muxinc/media-chrome/tree/main/src/js/media-seek-forward-button.js)
-- [Example](https://media-chrome.mux.dev/examples/control-elements/media-seek-forward-button.html) ([Example Source](../examples/control-elements/media-seek-forward-button.html))
+<h3>Default</h3>
+
+<media-seek-forward-button></media-seek-forward-button>
+
+```html
+<media-seek-forward-button></media-seek-forward-button>
+```
+
+<h3>Adjust seek offset (10 seconds)</h3>
+
+<media-seek-forward-button seek-offset="10"></media-seek-forward-button>
+
+```html
+<media-seek-forward-button seek-offset="10"></media-seek-forward-button>
+```
+
+<h3>Alternate content</h3>
+
+<media-seek-forward-button>
+  <span slot="forward">Forward</span>
+</media-seek-forward-button>
+
+```html
+<media-seek-forward-button>
+  <span slot="forward">Forward</span>
+</media-seek-forward-button>
+```
 
 ## Attributes
 
@@ -21,13 +47,6 @@ Button to jump ahead 30 seconds in the media.
 | --------- | ------------ | ------------------------------------------------------- |
 | `forward` | `svg`        | The element shown for the seek forward button's display |
 
-### Example
-
-```html
-<media-seek-forward-button>
-  <svg slot="forward"><!-- your SVG --></svg>
-</media-seek-forward-button>
-```
 
 ## Styling
 
