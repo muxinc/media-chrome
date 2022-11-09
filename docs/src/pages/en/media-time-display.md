@@ -72,8 +72,6 @@ Display only component to show the time of the playhead.
 
 _None_
 
-### Example
-
 ## Styling
 
 See our [styling docs](./styling#Text-Displays)

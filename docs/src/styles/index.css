@@ -483,7 +483,9 @@ media-fullscreen-button,
 media-mute-button,
 media-volume-range,
 media-time-range,
-media-time-display {
+media-time-display,
+media-current-time-display,
+media-duration-display {
   display: inline-flex;
   box-sizing: border-box;
   height: 44px;

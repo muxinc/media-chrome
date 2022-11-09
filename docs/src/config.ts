@@ -65,6 +65,8 @@ export const SIDEBAR: Sidebar = {
       { text: 'Seek backward button', link: 'en/media-seek-backward-button' },
       { text: 'Seek forward button', link: 'en/media-seek-forward-button' },
       { text: 'Time display', link: 'en/media-time-display' },
+      { text: 'Current Time display', link: 'en/media-current-time-display' },
+      { text: 'Duration display', link: 'en/media-duration-display' },
       { text: 'Volume range', link: 'en/media-volume-range' },
       { text: 'Mute button', link: 'en/media-mute-button' },
       { text: 'Time range', link: 'en/media-time-range' },
