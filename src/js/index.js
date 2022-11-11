@@ -8,6 +8,8 @@ import MediaGestureReceiver from './media-gesture-receiver.js';
 // import MediaContainer from './src/js/media-container.js';
 import MediaController from './media-controller.js';
 import MediaChromeRange from './media-chrome-range.js';
+import MediaChromeListbox from './media-chrome-listbox.js';
+import MediaChromeListitem from './media-chrome-listitem.js';
 import MediaControlBar from './media-control-bar.js';
 import MediaCurrentTimeDisplay from './media-current-time-display.js';
 import MediaDurationDisplay from './media-duration-display.js';
