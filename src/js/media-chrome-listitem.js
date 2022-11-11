@@ -13,7 +13,7 @@ template.innerHTML = `
     display: block;
   }
 </style>
-<li role="option">
+<li>
   <slot></slot>
 </li>
 `;
@@ -66,7 +66,7 @@ class MediaChromeListitem extends window.HTMLElement {
       this.enable();
     }
 
-    this.setAttribute('role', 'listitem');
+    this.setAttribute('role', 'option');
 
     const mediaControllerId = this.getAttribute(
       MediaUIAttributes.MEDIA_CONTROLLER
