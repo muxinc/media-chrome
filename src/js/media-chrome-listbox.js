@@ -59,7 +59,11 @@ class MediaChromeListbox extends window.HTMLElement {
       return;
     }
 
-    this.handleKeyUp(e);
+    if (key.startsWith('Arrow')) {
+      this.handleMovement(e);
+    } else {
+      this.handleSelection(e);
+    }
   }
 
   #keydownListener = (e) => {
@@ -134,9 +138,26 @@ class MediaChromeListbox extends window.HTMLElement {
     return ['Enter', ' ', 'ArrowDown', 'ArrowUp'];
   }
 
-  handleKeyUp(e) {
+  handleSelection(e) {
+    if (e.target === this) return;
+
+    const selected = e.target.getAttribute('aria-selected') === 'true';
+
+    const slot = this.shadowRoot.querySelector('slot');
+
+    if (this.getAttribute('aria-multiselectable') !== 'true') {
+      slot.assignedElements().forEach(el => el.removeAttribute('aria-selected'));
+    }
+
+    if (selected) {
+      e.target.removeAttribute('aria-selected');
+    } else {
+      e.target.setAttribute('aria-selected', 'true');
+    }
+  }
+
+  handleMovement(e) {
     const { key } = e;
-    console.log(e.target);
 
     let currentOption = e.target;
     if (e.target === this) {
@@ -159,13 +180,13 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   handleClick(e) {
-    console.log('click', e.target);
-
     const slot = this.shadowRoot.querySelector('slot');
     if (e.target !== this) {
       slot.assignedElements().forEach(el => el.setAttribute('tabindex', '-1'));
       e.target.setAttribute('tabindex', '0');
     }
+
+    this.handleSelection(e);
   }
 }
 

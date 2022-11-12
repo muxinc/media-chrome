@@ -20,7 +20,7 @@ template.innerHTML = `
 
 class MediaChromeListitem extends window.HTMLElement {
   static get observedAttributes() {
-    return ['disabled', MediaUIAttributes.MEDIA_CONTROLLER];
+    return ['disabled', 'aria-selected', MediaUIAttributes.MEDIA_CONTROLLER];
   }
 
   constructor(options = {}) {

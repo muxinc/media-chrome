@@ -25,7 +25,9 @@
 
       media-chrome-listitem[tabindex="0"] {
         background-color: red;
-        color: blue;
+      }
+      media-chrome-listitem[aria-selected="true"]::before {
+        content: '✅';
       }
 
       .examples {
@@ -36,7 +38,7 @@
   <body>
     <main>
       <h1>Media Chrome Advanced Video Usage Example</h1>
-      <media-chrome-listbox>
+      <media-chrome-listbox aria-multiselectable="true">
         <media-chrome-listitem>foo</media-chrome-listitem>
         <media-chrome-listitem>bar</media-chrome-listitem>
         <media-chrome-listitem><img src="https://placekitten.com/100/100"></media-chrome-listitem>
