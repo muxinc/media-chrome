@@ -43,7 +43,14 @@ class MediaChromeListbox extends window.HTMLElement {
 
     slot.addEventListener('slotchange', () => {
       const els = slot.assignedElements();
-      els[0].setAttribute('tabindex', 0);
+      let elToSelect = els.filter(el => el.getAttribute('aria-selected') === 'true')[0];
+
+      if (!elToSelect) {
+        elToSelect = els[0];
+      }
+
+      
+      elToSelect.setAttribute('tabindex', 0);
       console.log(slot.assignedElements());
     });
   }
