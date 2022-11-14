@@ -35,7 +35,9 @@ class MediaChromeListitem extends window.HTMLElement {
   }
 
   enable() {
-    this.setAttribute('tabindex', -1);
+    if (!this.hasAttribute('tabindex')) {
+      this.setAttribute('tabindex', -1);
+    }
   }
 
   disable() {

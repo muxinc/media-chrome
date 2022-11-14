@@ -43,15 +43,28 @@ class MediaChromeListbox extends window.HTMLElement {
 
     slot.addEventListener('slotchange', () => {
       const els = slot.assignedElements();
+
+      const activeEls = els.some(el => el.getAttribute('tabindex') === '0');
+
+      console.log(els, activeEls);
+
+      // if the user set an element as active, we should use that
+      // rather than assume a default
+      if (activeEls) {
+        return;
+      }
+
+      // default to the aria-selected element if there isn't an
+      // active element already
       let elToSelect = els.filter(el => el.getAttribute('aria-selected') === 'true')[0];
 
+      // if there isn't an active element or a selected element,
+      // default to the first element
       if (!elToSelect) {
         elToSelect = els[0];
       }
-
       
       elToSelect.setAttribute('tabindex', 0);
-      console.log(slot.assignedElements());
     });
   }
 
