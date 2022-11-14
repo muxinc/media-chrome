@@ -161,10 +161,21 @@ class MediaChromeListbox extends window.HTMLElement {
     return ['Enter', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
   }
 
-  handleSelection(e) {
+  #getItem(e) {
     if (e.target === this) return;
 
-    const selected = e.target.getAttribute('aria-selected') === 'true';
+    const composedPath = e.composedPath();
+    const slotIndex = composedPath.findIndex(el => el.nodeName === 'SLOT');
+
+    return composedPath[slotIndex - 1];
+  }
+
+  handleSelection(e) {
+    const item = this.#getItem(e);
+
+    if (!item) return;
+
+    const selected = item.getAttribute('aria-selected') === 'true';
 
     const slot = this.shadowRoot.querySelector('slot');
 
@@ -173,17 +184,17 @@ class MediaChromeListbox extends window.HTMLElement {
     }
 
     if (selected) {
-      e.target.removeAttribute('aria-selected');
+      item.removeAttribute('aria-selected');
     } else {
-      e.target.setAttribute('aria-selected', 'true');
+      item.setAttribute('aria-selected', 'true');
     }
   }
 
   handleMovement(e) {
     const { key } = e;
 
-    let currentOption = e.target;
-    if (e.target === this) {
+    let currentOption = this.#getItem(e);
+    if (!currentOption) {
       const slot = this.shadowRoot.querySelector('slot');
       currentOption = slot.assignedElements()
         .filter(el => el.getAttribute('tabindex') === '0')[0];
@@ -218,11 +229,14 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   handleClick(e) {
+    const item = this.#getItem(e);
+
+    if (!item) return;
+
     const slot = this.shadowRoot.querySelector('slot');
-    if (e.target !== this) {
-      slot.assignedElements().forEach(el => el.setAttribute('tabindex', '-1'));
-      e.target.setAttribute('tabindex', '0');
-    }
+
+    slot.assignedElements().forEach(el => el.setAttribute('tabindex', '-1'));
+    item.setAttribute('tabindex', '0');
 
     this.handleSelection(e);
   }
