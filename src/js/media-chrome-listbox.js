@@ -22,6 +22,9 @@ template.innerHTML = `
 `;
 
 class MediaChromeListbox extends window.HTMLElement {
+  #keysSoFar = '';
+  #clearKeysTimeout = null;
+
   static get observedAttributes() {
     return ['disabled', MediaUIAttributes.MEDIA_CONTROLLER];
   }
@@ -53,8 +56,8 @@ class MediaChromeListbox extends window.HTMLElement {
   // but this should be good enough for most use cases.
   #keyupListener = (e) => {
     const { key } = e;
-    console.log(key);
-    if (!this.keysUsed.includes(key)) {
+    // only cancel on Escape
+    if (key === 'Escape') {
       this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
@@ -68,7 +71,7 @@ class MediaChromeListbox extends window.HTMLElement {
 
   #keydownListener = (e) => {
     const { metaKey, altKey, key } = e;
-    if (metaKey || altKey || !this.keysUsed.includes(key)) {
+    if (metaKey || altKey) {
       this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
@@ -167,11 +170,24 @@ class MediaChromeListbox extends window.HTMLElement {
     }
 
     let nextOption;
-
-    if (key === 'ArrowDown') nextOption = currentOption.nextElementSibling;
-    if (key === 'ArrowUp') nextOption = currentOption.previousElementSibling;
-    if (key === 'Home') nextOption = this.shadowRoot.querySelector('slot').assignedElements().shift();
-    if (key === 'End') nextOption = this.shadowRoot.querySelector('slot').assignedElements().pop();
+    
+    switch (key) {
+      case 'ArrowDown':
+        nextOption = currentOption.nextElementSibling;
+        break;
+      case 'ArrowUp':
+        nextOption = currentOption.previousElementSibling;
+        break;
+      case 'Home':
+        nextOption = this.shadowRoot.querySelector('slot').assignedElements().shift();
+        break;
+      case 'End':
+        nextOption = this.shadowRoot.querySelector('slot').assignedElements().pop();
+        break;
+      default:
+        nextOption = this.#searchItem(key);
+        break;
+    }
 
     if (nextOption) {
       const slot = this.shadowRoot.querySelector('slot');
@@ -189,6 +205,25 @@ class MediaChromeListbox extends window.HTMLElement {
     }
 
     this.handleSelection(e);
+  }
+
+  #searchItem(key) {
+    this.#keysSoFar += key;
+
+    this.#clearKeysOnDelay();
+
+    const slot = this.shadowRoot.querySelector('slot');
+    return slot.assignedElements().filter(el => el.textContent.startsWith(this.#keysSoFar))[0];
+  }
+
+  #clearKeysOnDelay() {
+    window.clearTimeout(this.#clearKeysTimeout);
+    this.#clearKeysTimeout = null;
+
+    this.#clearKeysTimeout = window.setTimeout(() => {
+      this.#keysSoFar = '';
+      this.#clearKeysTimeout = null;
+    }, 500);
   }
 }
 
