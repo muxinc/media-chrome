@@ -246,8 +246,22 @@ class MediaChromeListbox extends window.HTMLElement {
 
     this.#clearKeysOnDelay();
 
-    const slot = this.shadowRoot.querySelector('slot');
-    return slot.assignedElements().filter(el => el.textContent.startsWith(this.#keysSoFar))[0];
+    const els = this.shadowRoot.querySelector('slot').assignedElements();
+    els.forEach(el => console.log(el.textContext, el.getAttribute('tabindex')));
+    const activeIndex = els.findIndex(el => el.getAttribute('tabindex' === '0'));
+
+    const after = els.slice(activeIndex).filter(el => el.textContent.startsWith(this.#keysSoFar));
+    const before = els.slice(0, activeIndex - 1).filter(el => el.textContent.startsWith(this.#keysSoFar));
+
+    console.log(activeIndex, before, after);
+    // return [
+    //   // start at current item
+    //   ...els.slice(activeIndex).filter(el => el.textContent.startsWith(this.#keysSoFar)),
+    //   // but also look at things before current item
+    //   ...els.slice(0, activeIndex - 1).filter(el => el.textContent.startsWith(this.#keysSoFar))
+    // ][0];
+    //
+    return;
   }
 
   #clearKeysOnDelay() {
