@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Advanced Video Usage Example</title>
+    <script type="module" src="../../dist/media-chrome-listbox.js"></script>
+    <script type="module" src="../../dist/media-chrome-listitem.js"></script>
+    <style>
+      media-chrome-listitem[tabindex="0"] {
+        background-color: red;
+      }
+      media-chrome-listitem[aria-selected="true"]::before {
+        content: '✅';
+      }
+
+      [disabled] {
+        opacity: 60%;
+        cursor: not-allowed;
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Listbox</h1>
+      <media-chrome-listbox aria-multiselectable="true">
+        <media-chrome-listitem>foo</media-chrome-listitem>
+        <media-chrome-listitem>bar</media-chrome-listitem>
+        <media-chrome-listitem>lorem</media-chrome-listitem>
+        <media-chrome-listitem>ipsum</media-chrome-listitem>
+        <media-chrome-listitem>dolor</media-chrome-listitem>
+        <media-chrome-listitem>sit</media-chrome-listitem>
+        <media-chrome-listitem>amet</media-chrome-listitem>
+        <media-chrome-listitem>consectetur</media-chrome-listitem>
+        <media-chrome-listitem>adipiscing</media-chrome-listitem>
+        <media-chrome-listitem tabindex="0">elit</media-chrome-listitem>
+        <media-chrome-listitem aria-selected="true"><span>foo</span>foo</media-chrome-listitem>
+        <media-chrome-listitem>bar</media-chrome-listitem>
+        <media-chrome-listitem><img src="https://placekitten.com/100/100"></media-chrome-listitem>
+        <media-chrome-listitem disabled>baz</media-chrome-listitem>
+      </media-chrome-listbox>
+      <div class="examples">
+        <a href="./">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>
