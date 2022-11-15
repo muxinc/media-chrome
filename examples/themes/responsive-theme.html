@@ -3,8 +3,9 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Responsive Theme Example</title>
-    <!-- build of the polyfill using this PR https://github.com/GoogleChromeLabs/container-query-polyfill/pull/57 -->
-    <script src="./container-query-polyfill.modern.js"></script>
+    <!-- include the Container Query (CQ) polyfill -->
+    <!-- using a community fork since the original went into maintenance mode -->
+    <script src="https://cdn.jsdelivr.net/npm/shadow-container-query-polyfill@1/dist/shadow-container-query-polyfill.modern.js"></script>
     <script type="module" src="../../dist/index.js"></script>
     <script type="module" src="../../src/js/themes/media-theme-responsive.js"></script>
   </head>
