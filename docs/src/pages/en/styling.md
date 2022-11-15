@@ -4,7 +4,7 @@ description: Styling Media Chrome
 layout: ../../layouts/MainLayout.astro
 ---
 
-Media Chrome is written using [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). As such, you can do a lot of styling to the component through standard CSS properties, style attributes, and selectors. However, there are enough situations where you might want to style more specific details of some `<media-chrome/>` elements (e.g. the size or color of the drag thumb on the `<media-volume-range/>`) or easily update some styles more globally for `<media-chrome/` elements (e.g. changing the background color for all the control/display elements). To accomplish this, `<media-chrome/>` relies primarily on [CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) to update specific styles for various elements.
+Media Chrome is written using [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components). As such, you can do a lot of styling to the component through standard CSS properties, style attributes, and selectors. However, there are enough situations where you might want to style more specific details of some `<media-chrome>` elements (e.g. the size or color of the drag thumb on the `<media-volume-range>`) or easily update some styles more globally for `<media-chrome>` elements (e.g. changing the background color for all the control/display elements). To accomplish this, `<media-chrome>` relies primarily on [CSS Variables](https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties) to update specific styles for various elements.
 
 ### An Important Caveat
 
@@ -14,14 +14,14 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 ### Elements
 
-- `<media-captions-button/>` ([docs](./media-captions-button))
-- `<media-fullscreen-button/>` ([docs](./media-fullscreen-button))
-- `<media-mute-button/>` ([docs](./media-mute-button))
-- `<media-pip-button/>` ([docs](./media-pip-button))
-- `<media-play-button/>` ([docs](./media-play-button))
-- `<media-playback-rate-button/>` ([docs](./media-playback-rate-button)) ([See notes below \*](#notes))
-- `<media-seek-backward-button/>` ([docs](./media-seek-backward-button))
-- `<media-seek-forward-button/>` ([docs](./media-seek-forward-button))
+- `<media-captions-button>` ([docs](./media-captions-button))
+- `<media-fullscreen-button>` ([docs](./media-fullscreen-button))
+- `<media-mute-button>` ([docs](./media-mute-button))
+- `<media-pip-button>` ([docs](./media-pip-button))
+- `<media-play-button>` ([docs](./media-play-button))
+- `<media-playback-rate-button>` ([docs](./media-playback-rate-button)) ([See notes below \*](#notes))
+- `<media-seek-backward-button>` ([docs](./media-seek-backward-button))
+- `<media-seek-forward-button>` ([docs](./media-seek-forward-button))
 
 | Name                               | CSS Property  | Default Value                       | Description                                                                                       | Notes                                                                                                                                                                |
 | ---------------------------------- | ------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -40,8 +40,8 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 ### Elements
 
-- `<media-time-range/>` ([docs](./media-time-range))
-- `<media-volume-range/>` ([docs](./media-volume-range))
+- `<media-time-range>` ([docs](./media-time-range))
+- `<media-volume-range>` ([docs](./media-volume-range))
 
 | Name                                | CSS Property    | Default Value             | Description                                                                                                                | Notes                                                                                                                                                                  |
 | ----------------------------------- | --------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -68,7 +68,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 | `--media-range-track-translate-x`   | `translate`     | `0`                       | apply a [translation](https://developer.mozilla.org/en-US/docs/Web/CSS/translate) to the underlying slider's track display | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
 | `--media-range-track-translate-y`   | `translate`     | `0`                       | apply a [translation](https://developer.mozilla.org/en-US/docs/Web/CSS/translate) to the underlying slider's track display | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
 
-- `<media-time-range/>` ([docs](./media-time-range))
+- `<media-time-range>` ([docs](./media-time-range))
 
 | Name                                      | CSS Property          | Default Value    | Description                            | Notes                                                                                      |
 | ----------------------------------------- | --------------------- | ---------------- | -------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -84,7 +84,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 ### Elements
 
-- `<media-time-display/>` ([docs](./media-time-display))
+- `<media-time-display>` ([docs](./media-time-display))
 
 | Name                          | CSS Property | Default Value                       | Description                                                     | Notes                                                                |
 | ----------------------------- | ------------ | ----------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------- |
@@ -97,7 +97,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 ### Elements
 
-- `<media-loading-indicator/>` ([docs](./media-loading-indicator))
+- `<media-loading-indicator>` ([docs](./media-loading-indicator))
 
 | Name                          | CSS Property | Default Value | Description                | Notes                               |
 | ----------------------------- | ------------ | ------------- | -------------------------- | ----------------------------------- |
@@ -107,7 +107,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 # Notes
 
-\* Unlike most Media Chrome buttons, the `<media-playback-rate-button/>` button displays text (and not an icon/svg), so many [button styles](#buttons) don't apply to it and some [text display styles](#text-displays) do apply to it (unlike most buttons).
+\* Unlike most Media Chrome buttons, the `<media-playback-rate-button>` button displays text (and not an icon/svg), so many [button styles](#buttons) don't apply to it and some [text display styles](#text-displays) do apply to it (unlike most buttons).
 
 \*\* A few CSS Variables are more "global" in their application, so make sure you define and scope them via selectors appropriately.
 
@@ -115,7 +115,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 ### Elements
 
-- `<media-poster-image/>` ([docs](./media-poster-image))
+- `<media-poster-image>` ([docs](./media-poster-image))
 
 | Name                          | CSS Property          | Default Value | Description                                                                                     | Notes |
 | ----------------------------- | --------------------- | ------------- | ----------------------------------------------------------------------------------------------- | ----- |
