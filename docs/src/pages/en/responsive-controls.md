@@ -6,8 +6,7 @@ layout: ../../layouts/MainLayout.astro
 
 One thing you'll quickly notice is that Media Chrome is not responsive out of
 the box. This is by design, there are way too many permutations possible to
-provide one configuration for a responsive media player. However media themes
-will be introduced soon that can provide responsive behavior by default.
+provide one configuration for a responsive media player.
 
 There are different techniques available to make your Media Chrome controls 
 responsive. We'll show you a future facing method using
@@ -148,41 +147,6 @@ The combined HTML for the player should look like this:
   </media-control-bar>
 </media-controller>
 ```
-And it'll look like this:
-<style>
-  #responsive-combined {
-    display: block;
-    aspect-ratio: 16 / 9;
-  }
-  #responsive-combined video {
-    width: 100%;
-  }
-</style>
-<media-controller id="responsive-combined">
-  <video
-    playsinline
-    slot="media"
-    src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
-    poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
-  ></video>
-  <div class="center" slot="centered-chrome">
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
-    <media-play-button></media-play-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
-  </div>
-  <media-control-bar class="bottom">
-    <media-play-button></media-play-button>
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
-    <media-mute-button></media-mute-button>
-    <media-volume-range></media-volume-range>
-    <media-time-display></media-time-display>
-    <media-time-range></media-time-range>
-    <media-duration-display></media-duration-display>
-    <media-playback-rate-button></media-playback-rate-button>
-    <media-fullscreen-button></media-fullscreen-button>
-  </media-control-bar>
-</media-controller>
 
 ### Default behavior
 
