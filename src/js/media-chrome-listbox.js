@@ -48,8 +48,6 @@ class MediaChromeListbox extends window.HTMLElement {
 
       const activeEls = els.some(el => el.getAttribute('tabindex') === '0');
 
-      console.log(els, activeEls);
-
       // if the user set an element as active, we should use that
       // rather than assume a default
       if (activeEls) {
@@ -209,10 +207,10 @@ class MediaChromeListbox extends window.HTMLElement {
         nextOption = currentOption.previousElementSibling;
         break;
       case 'Home':
-        nextOption = this.#assignedElements.shift();
+        nextOption = this.#assignedElements[0];
         break;
       case 'End':
-        nextOption = this.#assignedElements.pop();
+        nextOption = this.#assignedElements[this.#assignedElements.length - 1];
         break;
       default:
         nextOption = this.#searchItem(key);
