@@ -24,6 +24,8 @@ template.innerHTML = `
 class MediaChromeListbox extends window.HTMLElement {
   #keysSoFar = '';
   #clearKeysTimeout = null;
+  #slot;
+  #assignedElements;
 
   static get observedAttributes() {
     return ['disabled', MediaUIAttributes.MEDIA_CONTROLLER];
@@ -39,10 +41,10 @@ class MediaChromeListbox extends window.HTMLElement {
 
     shadow.appendChild(listboxHTML);
 
-    const slot = this.shadowRoot.querySelector('slot');
+    this.#slot = this.shadowRoot.querySelector('slot');
 
-    slot.addEventListener('slotchange', () => {
-      const els = slot.assignedElements();
+    this.#slot.addEventListener('slotchange', () => {
+      const els = this.#assignedElements = this.#slot.assignedElements();
 
       const activeEls = els.some(el => el.getAttribute('tabindex') === '0');
 
@@ -177,10 +179,8 @@ class MediaChromeListbox extends window.HTMLElement {
 
     const selected = item.getAttribute('aria-selected') === 'true';
 
-    const slot = this.shadowRoot.querySelector('slot');
-
     if (this.getAttribute('aria-multiselectable') !== 'true') {
-      slot.assignedElements().forEach(el => el.removeAttribute('aria-selected'));
+      this.#assignedElements.forEach(el => el.removeAttribute('aria-selected'));
     }
 
     if (selected) {
@@ -195,8 +195,7 @@ class MediaChromeListbox extends window.HTMLElement {
 
     let currentOption = this.#getItem(e);
     if (!currentOption) {
-      const slot = this.shadowRoot.querySelector('slot');
-      currentOption = slot.assignedElements()
+      currentOption = this.#assignedElements
         .filter(el => el.getAttribute('tabindex') === '0')[0];
     }
 
@@ -210,10 +209,10 @@ class MediaChromeListbox extends window.HTMLElement {
         nextOption = currentOption.previousElementSibling;
         break;
       case 'Home':
-        nextOption = this.shadowRoot.querySelector('slot').assignedElements().shift();
+        nextOption = this.#assignedElements.shift();
         break;
       case 'End':
-        nextOption = this.shadowRoot.querySelector('slot').assignedElements().pop();
+        nextOption = this.#assignedElements.pop();
         break;
       default:
         nextOption = this.#searchItem(key);
@@ -221,8 +220,7 @@ class MediaChromeListbox extends window.HTMLElement {
     }
 
     if (nextOption) {
-      const slot = this.shadowRoot.querySelector('slot');
-      slot.assignedElements().forEach(el => el.setAttribute('tabindex', '-1'));
+      this.#assignedElements.forEach(el => el.setAttribute('tabindex', '-1'));
       nextOption.setAttribute('tabindex', '0');
       nextOption.focus();
     }
@@ -233,9 +231,7 @@ class MediaChromeListbox extends window.HTMLElement {
 
     if (!item) return;
 
-    const slot = this.shadowRoot.querySelector('slot');
-
-    slot.assignedElements().forEach(el => el.setAttribute('tabindex', '-1'));
+    this.#assignedElements.forEach(el => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
 
     this.handleSelection(e);
@@ -246,7 +242,7 @@ class MediaChromeListbox extends window.HTMLElement {
 
     this.#clearKeysOnDelay();
 
-    const els = this.shadowRoot.querySelector('slot').assignedElements();
+    const els = this.#assignedElements;
     els.forEach(el => console.log(el.textContext, el.getAttribute('tabindex')));
     const activeIndex = els.findIndex(el => el.getAttribute('tabindex' === '0'));
 
