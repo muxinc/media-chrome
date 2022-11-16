@@ -178,11 +178,11 @@ class MediaChromeListbox extends window.HTMLElement {
     const selected = item.getAttribute('aria-selected') === 'true';
 
     if (this.getAttribute('aria-multiselectable') !== 'true') {
-      this.#assignedElements.forEach(el => el.removeAttribute('aria-selected'));
+      this.#assignedElements.forEach(el => el.setAttribute('aria-selected', 'false'));
     }
 
     if (selected) {
-      item.removeAttribute('aria-selected');
+      item.setAttribute('aria-selected', 'false');
     } else {
       item.setAttribute('aria-selected', 'true');
     }

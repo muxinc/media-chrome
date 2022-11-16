@@ -38,6 +38,9 @@ class MediaChromeListitem extends window.HTMLElement {
     if (!this.hasAttribute('tabindex')) {
       this.setAttribute('tabindex', -1);
     }
+    if (!this.hasAttribute('aria-selected')) {
+      this.setAttribute('aria-selected', "false");
+    }
   }
 
   disable() {
