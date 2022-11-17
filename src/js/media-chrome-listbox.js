@@ -236,7 +236,7 @@ class MediaChromeListbox extends window.HTMLElement {
 
     if (!item) return;
 
-    els.forEach(el => el.setAttribute('tabindex', '-1'));
+    this.#items.forEach(el => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
 
     this.handleSelection(e);
