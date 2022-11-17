@@ -41,8 +41,8 @@ class MediaChromeListbox extends window.HTMLElement {
     this.#slot = this.shadowRoot.querySelector('slot');
 
     this.#slot.addEventListener('slotchange', () => {
-      const els = this.#assignedElements = this.#slot.assignedElements();
-
+      this.#assignedElements = this.#slot.assignedElements();
+      const els = this.#items;
       const activeEls = els.some(el => el.getAttribute('tabindex') === '0');
 
       // if the user set an element as active, we should use that
@@ -63,6 +63,10 @@ class MediaChromeListbox extends window.HTMLElement {
       
       elToSelect.setAttribute('tabindex', 0);
     });
+  }
+
+  get #items() {
+    return this.#assignedElements.filter(el => !el.hasAttribute('disabled'));
   }
 
   #clickListener = (e) => {
@@ -183,11 +187,11 @@ class MediaChromeListbox extends window.HTMLElement {
 
   handleMovement(e) {
     const { key } = e;
+    const els = this.#items;
 
     let currentOption = this.#getItem(e);
     if (!currentOption) {
-      currentOption = this.#assignedElements
-        .filter(el => el.getAttribute('tabindex') === '0')[0];
+      currentOption = els.filter(el => el.getAttribute('tabindex') === '0')[0];
     }
 
     let nextOption;
@@ -200,10 +204,10 @@ class MediaChromeListbox extends window.HTMLElement {
         nextOption = currentOption.previousElementSibling;
         break;
       case 'Home':
-        nextOption = this.#assignedElements[0];
+        nextOption = els[0];
         break;
       case 'End':
-        nextOption = this.#assignedElements[this.#assignedElements.length - 1];
+        nextOption = els[els.length - 1];
         break;
       default:
         nextOption = this.#searchItem(key);
@@ -211,7 +215,7 @@ class MediaChromeListbox extends window.HTMLElement {
     }
 
     if (nextOption) {
-      this.#assignedElements.forEach(el => el.setAttribute('tabindex', '-1'));
+      els.forEach(el => el.setAttribute('tabindex', '-1'));
       nextOption.setAttribute('tabindex', '0');
       nextOption.focus();
     }
@@ -222,7 +226,7 @@ class MediaChromeListbox extends window.HTMLElement {
 
     if (!item) return;
 
-    this.#assignedElements.forEach(el => el.setAttribute('tabindex', '-1'));
+    els.forEach(el => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
 
     this.handleSelection(e);
@@ -233,8 +237,7 @@ class MediaChromeListbox extends window.HTMLElement {
 
     this.#clearKeysOnDelay();
 
-    const els = this.#assignedElements;
-    els.forEach(el => console.log(el.textContext, el.getAttribute('tabindex')));
+    const els = this.#items;
     const activeIndex = els.findIndex(el => el.getAttribute('tabindex') === '0');
 
     const after = els.slice(activeIndex).filter(el => el.textContent.startsWith(this.#keysSoFar));
