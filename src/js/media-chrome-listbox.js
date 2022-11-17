@@ -162,9 +162,9 @@ class MediaChromeListbox extends window.HTMLElement {
     if (e.target === this) return;
 
     const composedPath = e.composedPath();
-    const slotIndex = composedPath.findIndex(el => el.nodeName === 'SLOT');
+    const index = composedPath.findIndex(el => el.nodeName === 'MEDIA-CHROME-LISTITEM');
 
-    return composedPath[slotIndex - 1];
+    return composedPath[index];
   }
 
   handleSelection(e) {
