@@ -12,9 +12,6 @@ template.innerHTML = `
   :host ul {
     list-style: none;
   }
-  ::slotted([tabindex="0"]) {
-    background-color: lightgrey;
-  }
 </style>
 <ul tabindex="0" role="listbox">
   <slot></slot>
@@ -101,13 +98,11 @@ class MediaChromeListbox extends window.HTMLElement {
   enable() {
     this.addEventListener('click', this.#clickListener);
     this.addEventListener('keydown', this.#keydownListener);
-    this.setAttribute('tabindex', 0);
   }
 
   disable() {
     this.removeEventListener('click', this.#clickListener);
     this.removeEventListener('keyup', this.#keyupListener);
-    this.removeAttribute('tabindex');
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -133,8 +128,6 @@ class MediaChromeListbox extends window.HTMLElement {
     if (!this.hasAttribute('disabled')) {
       this.enable();
     }
-
-    this.setAttribute('role', 'listbox');
 
     const mediaControllerId = this.getAttribute(
       MediaUIAttributes.MEDIA_CONTROLLER
