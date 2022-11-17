@@ -235,20 +235,12 @@ class MediaChromeListbox extends window.HTMLElement {
 
     const els = this.#assignedElements;
     els.forEach(el => console.log(el.textContext, el.getAttribute('tabindex')));
-    const activeIndex = els.findIndex(el => el.getAttribute('tabindex' === '0'));
+    const activeIndex = els.findIndex(el => el.getAttribute('tabindex') === '0');
 
     const after = els.slice(activeIndex).filter(el => el.textContent.startsWith(this.#keysSoFar));
     const before = els.slice(0, activeIndex - 1).filter(el => el.textContent.startsWith(this.#keysSoFar));
 
-    console.log(activeIndex, before, after);
-    // return [
-    //   // start at current item
-    //   ...els.slice(activeIndex).filter(el => el.textContent.startsWith(this.#keysSoFar)),
-    //   // but also look at things before current item
-    //   ...els.slice(0, activeIndex - 1).filter(el => el.textContent.startsWith(this.#keysSoFar))
-    // ][0];
-    //
-    return;
+    return [...after, ...before][0];
   }
 
   #clearKeysOnDelay() {
