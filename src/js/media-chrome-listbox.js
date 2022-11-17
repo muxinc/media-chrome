@@ -234,7 +234,7 @@ class MediaChromeListbox extends window.HTMLElement {
   handleClick(e) {
     const item = this.#getItem(e);
 
-    if (!item) return;
+    if (!item || item.hasAttribute('disabled')) return;
 
     this.#items.forEach(el => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
