@@ -199,9 +199,19 @@ class MediaChromeListbox extends window.HTMLElement {
     switch (key) {
       case 'ArrowDown':
         nextOption = currentOption.nextElementSibling;
+
+        if (nextOption.hasAttribute('disabled')) {
+          nextOption = nextOption.nextElementSibling;
+        }
+
         break;
       case 'ArrowUp':
         nextOption = currentOption.previousElementSibling;
+
+        if (nextOption.hasAttribute('disabled')) {
+          nextOption = nextOption.previousElementSibling;
+        }
+
         break;
       case 'Home':
         nextOption = els[0];
