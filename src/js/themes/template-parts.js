@@ -1,3 +1,5 @@
+import { Window as window } from '../utils/server-safe-globals.js';
+
 /* Adapted from https://github.com/dy/template-parts - ISC - Dmitry Iv. */
 
 // Template Instance API
@@ -33,7 +35,7 @@ export const defaultProcessor = {
   },
 };
 
-export class TemplateInstance extends DocumentFragment {
+export class TemplateInstance extends window.DocumentFragment {
   #parts;
   #processor;
   constructor(template, state, processor = defaultProcessor) {

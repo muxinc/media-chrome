@@ -7,42 +7,186 @@
     <!-- using a community fork since the original went into maintenance mode -->
     <script src="https://cdn.jsdelivr.net/npm/shadow-container-query-polyfill@1/dist/shadow-container-query-polyfill.modern.js"></script>
     <script type="module" src="../../dist/index.js"></script>
-    <script type="module" src="../../src/js/themes/media-theme-responsive.js"></script>
+    <script type="module" src="../../src/js/themes/media-theme.js"></script>
   </head>
   <body>
     <style>
-      body {
-        margin: 0px;
+      html {
+        height: 100%;
       }
-
-      media-theme-responsive {
-        width: 100vw;
-        height: 100vh;
+      body {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
+      media-theme {
+        display: block;
+        width: 100%;
+        max-height: 100%;
+        height: calc(9 / 16 * 100vw);
+        max-width: calc(16 / 9 * 100vh);
       }
     </style>
 
-    <main aria-label="Media Chrome Responsive Theme Example">
-      <media-theme-responsive>
-        <video
-          slot="media"
-          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-          crossorigin="anonymous"
-          muted
-          playsinline
-        >
-          <track
-            label="thumbnails"
-            default
-            kind="metadata"
-            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
-          />
-        </video>
-        <media-poster-image
-          slot="poster"
-          src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
-          placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
-        ></media-poster-image>
-      </media-theme-responsive>
-    </main>
+    <template id="responsive">
+      <style>
+        :host {
+          display: inline-block;
+        }
+        media-controller:not([audio]) {
+          display: block;
+          aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        }
+        video {
+          width: 100%;      /* prevents video to expand beyond its container */
+        }
+
+        media-controller {
+          container: media-chrome / inline-size;
+        }
+
+        .centered-controls-overlay {
+          display: flex;
+          flex-flow: row nowrap;
+          align-items: center;
+          justify-content: space-evenly;
+        }
+
+        @container (max-width: 590px) {
+          .centered-controls-overlay {
+            display: flex;
+          }
+          media-control-bar {
+            display: flex;
+          }
+          media-control-bar media-play-button,
+          media-control-bar media-seek-backward-button,
+          media-control-bar media-seek-forward-button {
+            display: none;
+          }
+        }
+        @container (max-width: 420px) {
+          .centered-controls-overlay {
+            display: flex;
+          }
+          media-control-bar {
+            display: none;
+          }
+        }
+        @container (min-width: 590px) {
+          .centered-controls-overlay {
+            display: none;
+          }
+          media-control-bar {
+            display: flex;
+          }
+        }
+
+        media-controller .centered-controls-overlay {
+          align-self: stretch;
+        }
+        [slot='centered-chrome'] {
+          margin: 0 15%;
+          --media-control-hover-background: none;
+          --media-control-background: none;
+        }
+        [slot='centered-chrome']:is(media-play-button, media-seek-backward-button, media-seek-forward-button) {
+          padding: 0px;
+        }
+        [slot='centered-chrome']media-play-button {
+          width: 20%;
+        }
+        [slot='centered-chrome']:is(media-seek-backward-button, media-seek-forward-button) {
+          width: 15%;
+        }
+
+        media-loading-indicator {
+          position: absolute;
+          inset: 0;
+        }
+
+        media-airplay-button[media-airplay-unavailable],
+        media-fullscreen-button[media-fullscreen-unavailable],
+        media-volume-range[media-volume-unavailable],
+        media-pip-button[media-pip-unavailable] {
+          display: none;
+        }
+      </style>
+
+      <template directive="partial" expression="TitleDisplay">
+        <media-text-display part="top title display" class="title-display">
+          {{title}}
+        </media-text-display>
+      </template>
+
+      <template directive="partial" expression="PlayButton">
+        <media-play-button
+          part="{{section ?? 'bottom'}} play button"
+          disabled="{{disabled}}" aria-disabled="{{disabled}}"
+        ></media-play-button>
+      </template>
+
+      <media-controller
+        gestures-disabled="{{disabled}}"
+        hotkeys="{{hotkeys}}"
+        nohotkeys="{{nohotkeys}}"
+        audio="{{audio}}"
+      >
+        <slot name="media" slot="media"></slot>
+        <slot name="poster" slot="poster"></slot>
+        <media-loading-indicator media-loading slot="centered-chrome" no-auto-hide></media-loading-indicator>
+
+        <template directive="if" expression="title">
+          <media-control-bar slot="top-chrome">{{TitleDisplay}}</media-control-bar>
+        </template>
+
+        <div slot="centered-chrome" class="centered-controls-overlay">
+          <media-seek-backward-button seek-offset="15" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-seek-backward-button>
+          {{PlayButton section="center"}}
+          <media-seek-forward-button seek-offset="15" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-seek-forward-button>
+        </div>
+
+        <media-control-bar class="bottom">
+          {{PlayButton}}
+          <media-seek-backward-button seek-offset="15" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-seek-backward-button>
+          <media-seek-forward-button seek-offset="15" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-seek-forward-button>
+          <media-mute-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-mute-button>
+          <media-volume-range disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-volume-range>
+          <media-time-display disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-time-display>
+          <media-time-range disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-time-range>
+          <media-duration-display disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-duration-display>
+          <media-playback-rate-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-playback-rate-button>
+          <media-fullscreen-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-fullscreen-button>
+        </media-control-bar>
+
+        <slot></slot>
+      </media-controller>
+    </template>
+
+    <media-theme
+      template="responsive"
+      title="Responsive Theme"
+    >
+      <video
+        slot="media"
+        src="https://stream.mux.com/VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA/high.mp4"
+        crossorigin
+        muted
+        playsinline
+      >
+        <track
+          label="thumbnails"
+          default
+          kind="metadata"
+          src="https://image.mux.com/VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA/storyboard.vtt"
+        />
+      </video>
+      <media-poster-image
+        slot="poster"
+        src="https://image.mux.com/VcmKA6aqzIzlg3MayLJDnbF55kX00mds028Z65QxvBYaA/thumbnail.jpg"
+      ></media-poster-image>
+    </media-theme>
   </body>
 </html>
