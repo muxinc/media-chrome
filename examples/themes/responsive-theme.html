@@ -138,7 +138,7 @@
         <slot name="poster" slot="poster"></slot>
         <media-loading-indicator media-loading slot="centered-chrome" no-auto-hide></media-loading-indicator>
 
-        <template directive="if" expression="title">
+        <template if="title">
           <media-control-bar slot="top-chrome">{{>TitleDisplay}}</media-control-bar>
         </template>
 
