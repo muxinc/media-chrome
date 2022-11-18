@@ -46,8 +46,6 @@ export const MediaStateChangeEvents = {
   MEDIA_SEEKABLE: 'mediaseekablechange',
   MEDIA_PREVIEW_IMAGE: 'mediapreviewimagechange',
   MEDIA_PREVIEW_COORDS: 'mediapreviewcoordschange',
-  // MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
-  // MEDIA_CONTROLLER: 'media-controller',
   MEDIA_LOADING: 'medialoadingchange',
   USER_INACTIVE: 'userinactivechange',
 };
