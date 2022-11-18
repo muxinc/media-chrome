@@ -3,7 +3,7 @@
 
   Auto position contorls in a line and set some base colors
 */
-import { UIControllerAttributes } from './constants.js';
+import { MediaStateReceiverAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
   Window as window,
@@ -35,7 +35,7 @@ template.innerHTML = `
 
 class MediaControlBar extends window.HTMLElement {
   static get observedAttributes() {
-    return [UIControllerAttributes.MEDIA_CONTROLLER];
+    return [MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
   constructor() {
@@ -46,7 +46,7 @@ class MediaControlBar extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === UIControllerAttributes.MEDIA_CONTROLLER) {
+    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
@@ -60,7 +60,7 @@ class MediaControlBar extends window.HTMLElement {
 
   connectedCallback() {
     const mediaControllerId = this.getAttribute(
-      UIControllerAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
@@ -70,7 +70,7 @@ class MediaControlBar extends window.HTMLElement {
 
   disconnectedCallback() {
     const mediaControllerId = this.getAttribute(
-      UIControllerAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);

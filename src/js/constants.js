@@ -50,7 +50,7 @@ export const MediaStateChangeEvents = {
   USER_INACTIVE: 'userinactivechange',
 };
 
-export const UIControllerAttributes = {
+export const MediaStateReceiverAttributes = {
   MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
   MEDIA_CONTROLLER: 'media-controller',
 };
