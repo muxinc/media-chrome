@@ -1,4 +1,4 @@
-import { MediaUIAttributes } from './constants.js';
+import { UIControllerAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
   Window as window,
@@ -68,7 +68,7 @@ template.innerHTML = `
 
 class MediaChromeButton extends window.HTMLElement {
   static get observedAttributes() {
-    return ['disabled', MediaUIAttributes.MEDIA_CONTROLLER];
+    return ['disabled', UIControllerAttributes.MEDIA_CONTROLLER];
   }
 
   constructor(options = {}) {
@@ -130,7 +130,7 @@ class MediaChromeButton extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+    if (attrName === UIControllerAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
@@ -156,7 +156,7 @@ class MediaChromeButton extends window.HTMLElement {
     this.setAttribute('role', 'button');
 
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      UIControllerAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
@@ -168,7 +168,7 @@ class MediaChromeButton extends window.HTMLElement {
     this.disable();
 
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      UIControllerAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);

@@ -1,4 +1,4 @@
-import { MediaUIAttributes } from './constants.js';
+import { UIControllerAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
   Window as window,
@@ -197,7 +197,7 @@ class MediaChromeRange extends window.HTMLElement {
     return [
       'disabled',
       'aria-disabled',
-      MediaUIAttributes.MEDIA_CONTROLLER];
+      UIControllerAttributes.MEDIA_CONTROLLER];
   }
 
   constructor() {
@@ -212,7 +212,7 @@ class MediaChromeRange extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+    if (attrName === UIControllerAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
@@ -236,7 +236,7 @@ class MediaChromeRange extends window.HTMLElement {
 
   connectedCallback() {
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      UIControllerAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
@@ -247,7 +247,7 @@ class MediaChromeRange extends window.HTMLElement {
 
   disconnectedCallback() {
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      UIControllerAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);

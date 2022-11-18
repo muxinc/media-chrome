@@ -1,4 +1,4 @@
-import { MediaUIAttributes } from './constants.js';
+import { MediaUIAttributes, UIControllerAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
@@ -70,7 +70,7 @@ const DEFAULT_LOADING_DELAY = 500;
 class MediaLoadingIndicator extends window.HTMLElement {
   static get observedAttributes() {
     return [
-      MediaUIAttributes.MEDIA_CONTROLLER,
+      UIControllerAttributes.MEDIA_CONTROLLER,
       MediaUIAttributes.MEDIA_PAUSED,
       MediaUIAttributes.MEDIA_LOADING,
       'loading-delay',
@@ -110,7 +110,7 @@ class MediaLoadingIndicator extends window.HTMLElement {
           this.loadingDelayHandle = undefined;
         }, loadingDelay);
       }
-    } else if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+    } else if (attrName === UIControllerAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
@@ -124,7 +124,7 @@ class MediaLoadingIndicator extends window.HTMLElement {
 
   connectedCallback() {
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      UIControllerAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
@@ -138,7 +138,7 @@ class MediaLoadingIndicator extends window.HTMLElement {
       this.loadingDelayHandle = undefined;
     }
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      UIControllerAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);

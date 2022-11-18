@@ -50,6 +50,11 @@ export const MediaStateChangeEvents = {
   USER_INACTIVE: 'userinactivechange',
 };
 
+export const UIControllerAttributes = {
+  MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
+  MEDIA_CONTROLLER: 'media-controller',
+};
+
 export const MediaUIAttributes = {
   MEDIA_AIRPLAY_UNAVAILABLE: 'media-airplay-unavailable',
   MEDIA_FULLSCREEN_UNAVAILABLE: 'media-fullscreen-unavailable',
@@ -75,8 +80,6 @@ export const MediaUIAttributes = {
   MEDIA_PREVIEW_TIME: 'media-preview-time',
   MEDIA_PREVIEW_IMAGE: 'media-preview-image',
   MEDIA_PREVIEW_COORDS: 'media-preview-coords',
-  MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
-  MEDIA_CONTROLLER: 'media-controller',
   MEDIA_LOADING: 'media-loading',
   MEDIA_BUFFERED: 'media-buffered',
 };
