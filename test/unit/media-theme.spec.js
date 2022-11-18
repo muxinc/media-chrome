@@ -1,15 +1,20 @@
-import { spy } from 'sinon';
 import { fixture, assert, waitUntil } from '@open-wc/testing';
-import { MediaUIAttributes, MediaUIEvents } from '../../src/js/constants';
 import '../../src/js/index.js';
-import '../../src/js/themes/media-theme-netflix.js';
+import '../../src/js/themes/media-theme.js';
 
 describe('<media-theme/>', () => {
   it('can change media between media themes and media controllers', async () => {
+    await fixture(`
+      <template id="netflix">
+        <media-controller>
+          <slot name="media" slot="media"></slot>
+        </media-controller>
+      </template>
+    `);
     const theme1 = await fixture(`
-      <media-theme-netflix>
+      <media-theme template="netflix">
         <video slot="media" muted src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/low.mp4"></video>
-      </media-theme-netflix>
+      </media-theme>
     `);
 
     const media = theme1.querySelector('[slot="media"]');
@@ -22,7 +27,7 @@ describe('<media-theme/>', () => {
     );
 
     const theme2 = await fixture(`
-      <media-theme-netflix></media-theme-netflix>
+      <media-theme template="netflix"></media-theme>
     `);
 
     theme2.append(media);

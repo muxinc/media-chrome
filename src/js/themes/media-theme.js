@@ -21,8 +21,8 @@ class MediaTheme extends HTMLElement {
     return this.shadowRoot.querySelector('media-controller');
   }
 
-  attributeChangedCallback(attrName) {
-    if (attrName === 'template') {
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === 'template' && oldValue != newValue) {
       this.template = this.getRootNode().querySelector(
         `#${this.getAttribute('template')}`
       );
@@ -196,9 +196,9 @@ function getValue(raw, state) {
   else return state[raw]; // variable name
 }
 
-const camelCase = (name) => {
+function camelCase(name) {
   return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
-};
+}
 
 function isNumeric(str) {
   if (typeof str != 'string') return false; // we only process strings!
