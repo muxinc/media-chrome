@@ -115,13 +115,13 @@
         }
       </style>
 
-      <template directive="partial" expression="TitleDisplay">
+      <template partial="TitleDisplay">
         <media-text-display part="top title display" class="title-display">
           {{title}}
         </media-text-display>
       </template>
 
-      <template directive="partial" expression="PlayButton">
+      <template partial="PlayButton">
         <media-play-button
           part="{{section ?? 'bottom'}} play button"
           disabled="{{disabled}}" aria-disabled="{{disabled}}"
