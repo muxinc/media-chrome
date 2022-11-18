@@ -103,7 +103,7 @@ const mediaThemeProcessor = {
         continue;
       }
 
-      const [, name, rest] = expression.match(/(\w+)\s*(.*)/) ?? [];
+      const [, partial, name, rest] = expression.match(/(>)?\s*(\w+)\s*(.*)/) ?? [];
       let value = state[name];
 
       // Adds support for:
@@ -121,6 +121,9 @@ const mediaThemeProcessor = {
 
       if (name in state) {
         if (value instanceof PartialDirective) {
+          // Require the partial indicator `>` or ignore this expression.
+          if (partial !== '>') continue;
+
           const localState = { ...state };
           // Adds support for params e.g. {{PlayButton section="center"}}
           const matches = expression.matchAll(/(\w+)\s*=\s*(['"\w]*)/g);

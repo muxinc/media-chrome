@@ -139,17 +139,17 @@
         <media-loading-indicator media-loading slot="centered-chrome" no-auto-hide></media-loading-indicator>
 
         <template directive="if" expression="title">
-          <media-control-bar slot="top-chrome">{{TitleDisplay}}</media-control-bar>
+          <media-control-bar slot="top-chrome">{{>TitleDisplay}}</media-control-bar>
         </template>
 
         <div slot="centered-chrome" class="centered-controls-overlay">
           <media-seek-backward-button seek-offset="15" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-seek-backward-button>
-          {{PlayButton section="center"}}
+          {{ > PlayButton section="center"}}
           <media-seek-forward-button seek-offset="15" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-seek-forward-button>
         </div>
 
-        <media-control-bar class="bottom">
-          {{PlayButton}}
+        <media-control-bar>
+          {{> PlayButton}}
           <media-seek-backward-button seek-offset="15" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-seek-backward-button>
           <media-seek-forward-button seek-offset="15" disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-seek-forward-button>
           <media-mute-button disabled="{{disabled}}" aria-disabled="{{disabled}}"></media-mute-button>
