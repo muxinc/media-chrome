@@ -2,12 +2,37 @@
 title: <media-seek-backward-button>
 description: Media Seek Backward Button
 layout: ../../layouts/MainLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-seek-backward-button.js
 ---
 
 Button to jump back 30 seconds in the media.
 
-- [Source](https://github.com/muxinc/media-chrome/tree/main/src/js/media-seek-backward-button.js)
-- [Example](https://media-chrome.mux.dev/examples/control-elements/media-seek-backward-button.html) ([Example Source](../examples/control-elements/media-seek-backward-button.html))
+<h3>Default</h3>
+
+<media-seek-backward-button></media-seek-backward-button>
+
+```html
+<media-seek-backward-button></media-seek-backward-button>
+```
+
+<h3>Adjust seek offset (10 seconds)</h3>
+
+<media-seek-backward-button seek-offset="10"></media-seek-backward-button>
+
+```html
+<media-seek-backward-button seek-offset="10"></media-seek-backward-button>
+```
+
+<h3>Alternate content</h3>
+<media-seek-backward-button>
+  <span slot="backward">Back</span>
+</media-seek-backward-button>
+
+```html
+<media-seek-backward-button>
+  <span slot="backward">Back</span>
+</media-seek-backward-button>
+```
 
 ## Attributes
 
@@ -21,13 +46,6 @@ Button to jump back 30 seconds in the media.
 | ---------- | ------------ | -------------------------------------------------------- |
 | `backward` | `svg`        | The element shown for the seek backward button's display |
 
-### Example
-
-```html
-<media-seek-backward-button>
-  <svg slot="backward"><!-- your SVG --></svg>
-</media-seek-backward-button>
-```
 
 ## Styling
 

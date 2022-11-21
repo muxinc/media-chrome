@@ -324,14 +324,17 @@ table {
 tr:nth-of-type(even) {
   background: var(--theme-bg-offset);
 }
+
 td,
 th {
   padding: 6px;
   text-align: left;
 }
+
 td:first-child {
   white-space: nowrap;
 }
+
 th {
   background: var(--theme-bg-offset);
   font-weight: bold;
@@ -466,4 +469,25 @@ h2.heading {
 
 :target {
   scroll-margin: calc(var(--theme-sidebar-offset, 5rem) + 2rem) 0 2rem;
+}
+
+media-cast-button,
+media-airplay-button,
+media-play-button,
+media-captions-button,
+media-pip-button,
+media-playback-rate-button,
+media-seek-backward-button,
+media-seek-forward-button,
+media-fullscreen-button,
+media-mute-button,
+media-volume-range,
+media-time-range,
+media-time-display,
+media-current-time-display,
+media-duration-display {
+  display: inline-flex;
+  box-sizing: border-box;
+  height: 44px;
+  vertical-align: middle;
 }
