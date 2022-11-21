@@ -247,19 +247,30 @@ class MediaChromeListbox extends window.HTMLElement {
 
     const els = this.#items;
     const activeIndex = els.findIndex(el => el.getAttribute('tabindex') === '0');
-    const repeatedKey = this.#keysSoFar === key || this.#keysSoFar.length === 0;
 
-    // don't accumulate keys if it's a repeated key
-    // unless we haven't started accumulating a key yet
-    if (!repeatedKey || this.#keysSoFar.length === 0) {
-      this.#keysSoFar += key;
-    }
+    // always accumulate the key
+    this.#keysSoFar += key;
+
+    // if the same key is pressed, assume it's a repeated key
+    // to skip to the same item that begings with that key
+    // until the user presses another key and a better choice is available
+    const repeatedKey = this.#keysSoFar.split('').every(k => k === key);
 
     // if it's a repeat key, skip the current item
     const after = els.slice(activeIndex + (repeatedKey ? 1 : 0)).filter(el => el.textContent.startsWith(this.#keysSoFar));
-    const before = els.slice(0, activeIndex - 1).filter(el => el.textContent.startsWith(this.#keysSoFar));
+    const before = els.slice(0, activeIndex - (repeatedKey ? 1 : 0)).filter(el => el.textContent.startsWith(this.#keysSoFar));
 
-    return [...after, ...before][0];
+    let afterRepeated = [];
+    let beforeRepeated = [];
+
+    if (repeatedKey) {
+      afterRepeated = els.slice(activeIndex + (repeatedKey ? 1 : 0)).filter(el => el.textContent.startsWith(key));
+      beforeRepeated = els.slice(0, activeIndex - (repeatedKey ? 1 : 0)).filter(el => el.textContent.startsWith(key));
+    }
+
+    const returns = [...after, ...before, ...afterRepeated, ...beforeRepeated];
+
+    return returns[0];
   }
 
   #clearKeysOnDelay() {
