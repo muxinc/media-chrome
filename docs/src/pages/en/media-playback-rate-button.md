@@ -2,12 +2,25 @@
 title: <media-playback-rate-button>
 description: Media Playback Rate Button
 layout: ../../layouts/MainLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-playback-rate-button.js
 ---
 
 Button to change the speed of playback.
 
-- [Source](https://github.com/muxinc/media-chrome/tree/main/src/js/media-playback-rate-button.js)
-- [Example](https://media-chrome.mux.dev/examples/control-elements/media-playback-rate-button.html) ([Example Source](../examples/control-elements/media-playback-rate-button.html))
+<media-playback-rate-button></media-playback-rate-button>
+
+```html
+<media-playback-rate-button></media-playback-rate-button>
+```
+
+<h3>Setting rates</h3>
+
+<media-playback-rate-button rates="1 2 3"></media-playback-rate-button>
+
+```html
+<media-playback-rate-button rates="1 2 3"></media-playback-rate-button>
+```
+
 
 ## Attributes
 

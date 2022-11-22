@@ -9,7 +9,7 @@ import {
   Document as document,
 } from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
-import { MediaUIAttributes } from './constants.js';
+import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
 
 const template = document.createElement('template');
@@ -32,7 +32,7 @@ template.innerHTML = `
 class MediaPreviewThumbnail extends window.HTMLElement {
   static get observedAttributes() {
     return [
-      MediaUIAttributes.MEDIA_CONTROLLER,
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
       'time',
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
       MediaUIAttributes.MEDIA_PREVIEW_COORDS,
@@ -48,7 +48,7 @@ class MediaPreviewThumbnail extends window.HTMLElement {
 
   connectedCallback() {
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
@@ -58,7 +58,7 @@ class MediaPreviewThumbnail extends window.HTMLElement {
 
   disconnectedCallback() {
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
@@ -76,7 +76,7 @@ class MediaPreviewThumbnail extends window.HTMLElement {
     ) {
       this.update();
     }
-    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);

@@ -2,12 +2,30 @@
 title: <media-airplay-button>
 description: Media Airplay Button
 layout: ../../layouts/MainLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-airplay-button.js
 ---
 
 Button to bring up the AirPlay menu and select AirPlay playback.
 
-- [Source](https://github.com/muxinc/media-chrome/tree/main/src/js/media-airplay-button.js)
-- [Example](https://media-chrome.mux.dev/examples/control-elements/media-airplay-button.html) ([Example Source](../examples/control-elements/media-airplay-button.html))
+<h3>Default</h3>
+
+<media-airplay-button></media-airplay-button>
+
+```html
+<media-airplay-button></media-airplay-button>
+```
+
+<h3>Alternate content</h3>
+
+<media-airplay-button>
+  <span slot="airplay">Airplay</span>
+</media-airplay-button>
+
+```html
+<media-airplay-button>
+  <span slot="airplay">Airplay</span>
+</media-airplay-button>
+```
 
 ## Attributes
 
@@ -18,14 +36,6 @@ _None_
 | Name      | Default Type | Description                                        |
 | --------- | ------------ | -------------------------------------------------- |
 | `airplay` | `svg`        | The element shown for the AirPlay button's display |
-
-### Example
-
-```html
-<media-airplay-button>
-  <svg slot="airplay"><!-- your SVG --></svg>
-</media-airplay-button>
-```
 
 ## Styling
 

@@ -22,6 +22,7 @@ import { toggleSubsCaps } from './utils/captions.js';
 import {
   MediaUIEvents,
   MediaUIAttributes,
+  MediaStateReceiverAttributes,
   TextTrackKinds,
   TextTrackModes,
   AvailabilityStates,
@@ -1046,7 +1047,7 @@ const getMediaUIAttributesFrom = (child) => {
   }
 
   const mediaChromeAttributesList = child
-    ?.getAttribute?.(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES)
+    ?.getAttribute?.(MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES)
     ?.split?.(/\s+/);
   if (!Array.isArray(observedAttributes || mediaChromeAttributesList))
     return [];
@@ -1209,7 +1210,7 @@ const monitorForMediaStateReceivers = (
         );
       } else if (
         type === 'attributes' &&
-        attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES
+        attributeName === MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES
       ) {
         if (isMediaStateReceiver(target)) {
           // Changed from a "non-Media State Receiver" to a Media State Receiver: register it.

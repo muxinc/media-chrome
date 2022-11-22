@@ -4,7 +4,7 @@ description: Media Controller
 layout: ../../layouts/MainLayout.astro
 ---
 
-The `<media-controller/>` manages communication of state and state change requests between a `media` element and control elements. It also provides some built in sizing and layout to make styling your player as easy as possible.
+The `<media-controller>` manages communication of state and state change requests between a `media` element and control elements. It also provides some built in sizing and layout to make styling your player as easy as possible.
 
 ## Attributes
 
