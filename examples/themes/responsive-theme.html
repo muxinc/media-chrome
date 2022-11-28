@@ -14,6 +14,7 @@
       html {
         height: 100%;
       }
+
       body {
         margin: 0;
         display: flex;
@@ -21,12 +22,17 @@
         justify-content: center;
         height: 100%;
       }
+
       media-theme {
         display: block;
         width: 100%;
         max-height: 100%;
         height: calc(9 / 16 * 100vw);
         max-width: calc(16 / 9 * 100vh);
+      }
+
+      video {
+        width: 100%;      /* prevents video to expand beyond its container */
       }
     </style>
 
