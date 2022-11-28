@@ -123,6 +123,7 @@ const conditions = {
 //   title
 export function evaluateCondition(expr, state) {
   const tokens = tokenize(expr, {
+    boolean: /true|false/,
     number: /-?\d+\.?\d*/,
     string: /(["'])((?:\\.|[^\\])*?)\1/,
     operator: /[!=]=/,
@@ -135,8 +136,12 @@ export function evaluateCondition(expr, state) {
     return false;
   }
 
-  if (tokens.length === 1 && tokens[0].type === 'param') {
-    return state[tokens[0].token];
+  if (tokens.length === 1) {
+    if (!isValidParam(tokens[0])) {
+      console.warn(`Warning: invalid expression \`${expr}\``);
+      return false;
+    }
+    return getParamValue(tokens[0].token, state);
   }
 
   const args = tokens.filter(({ type }) => type !== 'ws');
@@ -157,7 +162,7 @@ export function evaluateCondition(expr, state) {
 }
 
 function isValidParam({ type }) {
-  return type === 'number' || type === 'string' || type === 'param';
+  return ['number', 'boolean', 'string', 'param'].includes(type);
 }
 
 // Eval params of something like `{{PlayButton param='center'}}
@@ -165,13 +170,23 @@ export function getParamValue(raw, state) {
   const firstChar = raw[0];
   const lastChar = raw.slice(-1);
 
+  if (raw === 'true' || raw === 'false') {
+    // boolean
+    return raw === 'true';
+  }
+
   if (firstChar === lastChar && [`'`, `"`].includes(firstChar)) {
     // string
     return raw.slice(1, -1);
   }
 
-  if (isNumeric(raw)) return raw; // number value
-  else return state[raw]; // variable name
+  if (isNumeric(raw)) {
+    // number
+    return parseFloat(raw);
+  }
+
+  // state property
+  return state[raw];
 }
 
 export function isNumeric(str) {
