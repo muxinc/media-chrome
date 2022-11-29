@@ -180,7 +180,7 @@ export function getParamValue(raw, state) {
     return raw.slice(1, -1);
   }
 
-  if (isNumeric(raw)) {
+  if (isNumericString(raw)) {
     // number
     return parseFloat(raw);
   }
@@ -189,7 +189,7 @@ export function getParamValue(raw, state) {
   return state[raw];
 }
 
-export function isNumeric(str) {
+export function isNumericString(str) {
   if (typeof str != 'string') return false; // we only process strings!
   return !isNaN(str) && !isNaN(parseFloat(str));
 }
