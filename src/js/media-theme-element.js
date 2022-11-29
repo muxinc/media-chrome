@@ -7,12 +7,15 @@ export * from './utils/template-parts.js';
 
 export class MediaThemeElement extends HTMLElement {
   static observedAttributes = ['template'];
+  static processor = processor;
 
+  renderRoot;
+  renderer;
   #template;
 
   constructor() {
     super();
-    this.attachShadow({ mode: 'open' });
+    this.renderRoot = this.attachShadow({ mode: 'open' });
 
     const observer = new MutationObserver(() => this.render());
     observer.observe(this, { attributes: true });
@@ -20,7 +23,7 @@ export class MediaThemeElement extends HTMLElement {
 
   get mediaController() {
     // Expose the media controller if API access is needed
-    return this.shadowRoot.querySelector('media-controller');
+    return this.renderRoot.querySelector('media-controller');
   }
 
   get template() {
@@ -55,14 +58,7 @@ export class MediaThemeElement extends HTMLElement {
             }
           });
 
-        this.templateInstance = new TemplateInstance(
-          this.template,
-          this.props,
-          processor
-        );
-
-        this.shadowRoot.textContent = '';
-        this.shadowRoot.append(this.templateInstance);
+        this.createRenderer();
       }
     }
   }
@@ -79,8 +75,19 @@ export class MediaThemeElement extends HTMLElement {
     return props;
   }
 
+  createRenderer() {
+    this.renderer = new TemplateInstance(
+      this.template,
+      this.props,
+      this.constructor.processor
+    );
+
+    this.renderRoot.textContent = '';
+    this.renderRoot.append(this.renderer);
+  }
+
   render() {
-    this.templateInstance?.update(this.props);
+    this.renderer?.update(this.props);
   }
 }
 
