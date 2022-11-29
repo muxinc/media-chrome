@@ -212,7 +212,7 @@ class MediaChromeRange extends window.HTMLElement {
     this.range = this.shadowRoot.querySelector('#range');
     this.range.addEventListener('input', this.updateBar.bind(this));
 
-    this.#thumbWidth = parseInt(getComputedStyle(this).getPropertyValue('--media-range-thumb-width') || 10);
+    this.#thumbWidth = parseInt(getComputedStyle(this).getPropertyValue('--media-range-thumb-width') || 10, 10);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
