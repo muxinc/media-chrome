@@ -8,6 +8,8 @@ export * from './utils/template-parts.js';
 export class MediaThemeElement extends HTMLElement {
   static observedAttributes = ['template'];
 
+  #template;
+
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -21,12 +23,21 @@ export class MediaThemeElement extends HTMLElement {
     return this.shadowRoot.querySelector('media-controller');
   }
 
+  get template() {
+    const templateId = this.getAttribute('template');
+    if (templateId) {
+      const template = this.getRootNode().getElementById(templateId);
+      if (template) return template;
+    }
+    return this.#template;
+  }
+
+  set template(element) {
+    this.#template = element;
+  }
+
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'template' && oldValue != newValue) {
-      this.template = this.getRootNode().querySelector(
-        `#${this.getAttribute('template')}`
-      );
-
       if (this.template) {
         // Transform short-hand if/partial templates to directive & expression.
         this.template.content
