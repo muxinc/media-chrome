@@ -94,10 +94,6 @@ class MediaChromeListitem extends window.HTMLElement {
     }
   }
 
-  get keysUsed() {
-    return ['Enter', ' '];
-  }
-
   handleClick() {}
 }
 
