@@ -1,6 +1,6 @@
 import { fixture, assert, waitUntil } from '@open-wc/testing';
-import '../../src/js/index.js';
 import '../../src/js/media-theme-element.js';
+import '../../src/js/index.js';
 
 describe('<media-theme/>', () => {
   it('can change media between media themes and media controllers', async () => {

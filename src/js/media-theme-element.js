@@ -1,3 +1,4 @@
+import { Window as window } from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { TemplateInstance } from './utils/template-parts.js';
 import { processor } from './utils/template-processor.js';
@@ -5,7 +6,7 @@ import { processor } from './utils/template-processor.js';
 // Export Template parts for players.
 export * from './utils/template-parts.js';
 
-export class MediaThemeElement extends HTMLElement {
+export class MediaThemeElement extends window.HTMLElement {
   static observedAttributes = ['template'];
   static processor = processor;
 
@@ -29,7 +30,7 @@ export class MediaThemeElement extends HTMLElement {
   get template() {
     const templateId = this.getAttribute('template');
     if (templateId) {
-      const template = this.getRootNode().getElementById(templateId);
+      const template = this.getRootNode()?.getElementById(templateId);
       if (template) return template;
     }
     return this.#template;
