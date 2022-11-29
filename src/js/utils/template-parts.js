@@ -5,9 +5,9 @@ import { Window as window } from '../utils/server-safe-globals.js';
 // Template Instance API
 // https://github.com/WICG/webcomponents/blob/gh-pages/proposals/Template-Instantiation.md
 
-const ELEMENT = 1,
-  STRING = 0,
-  PART = 1;
+const ELEMENT = 1;
+const STRING = 0;
+const PART = 1;
 
 export const defaultProcessor = {
   processCallback(instance, parts, state) {
