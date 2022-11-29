@@ -1,5 +1,5 @@
 import { assert } from '@open-wc/testing';
-import { evaluateCondition } from '../../src/js/theme/template-processor.js';
+import { evaluateCondition } from '../../src/js/utils/template-processor.js';
 
 describe('template processor', () => {
   it('can evaluate a simple boolean condition', () => {

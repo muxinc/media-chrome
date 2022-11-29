@@ -1,8 +1,11 @@
-import { defineCustomElement } from '../utils/defineCustomElement.js';
-import { TemplateInstance } from './template-parts.js';
-import { processor } from './template-processor.js';
+import { defineCustomElement } from './utils/defineCustomElement.js';
+import { TemplateInstance } from './utils/template-parts.js';
+import { processor } from './utils/template-processor.js';
 
-class MediaTheme extends HTMLElement {
+// Export Template parts for players.
+export * from './utils/template-parts.js';
+
+export class MediaThemeElement extends HTMLElement {
   static observedAttributes = ['template'];
 
   constructor() {
@@ -74,6 +77,4 @@ function camelCase(name) {
   return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
 }
 
-defineCustomElement('media-theme', MediaTheme);
-
-export default MediaTheme;
+defineCustomElement('media-theme', MediaThemeElement);
