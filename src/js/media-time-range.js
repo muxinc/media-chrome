@@ -149,6 +149,9 @@ class MediaTimeRange extends MediaChromeRange {
 
   #boxes;
   #previewBox;
+  #currentBox;
+  #boxPaddingLeft;
+  #boxPaddingRight;
 
   constructor() {
     super();
@@ -187,6 +190,15 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
+    this.#currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
+
+    const computedStyle = getComputedStyle(this);
+    this.#boxPaddingLeft = parseInt(
+      computedStyle.getPropertyValue('--media-box-padding-left')
+    );
+    this.#boxPaddingRight = parseInt(
+      computedStyle.getPropertyValue('--media-box-padding-right')
+    );
 
     this.#enableBoxes();
   }
@@ -328,14 +340,40 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   updateCurrentBox() {
-    const currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
+    // If there are no elements in the current box no need for expensive style updates.
+    if (!this.#currentBox.assignedElements().length) return;
+
     const boxRatio = this.range.value / (this.range.max - this.range.min);
-    const boxPos = getBoxPosition(this, currentBox, boxRatio);
+    const boxPos = this.#getBoxPosition(this.#currentBox, boxRatio);
     const { style } = getOrInsertCSSRule(
       this.shadowRoot,
       '#current-rail'
     );
     style.transform = `translateX(${boxPos})`;
+  }
+
+  #getBoxPosition(box, ratio) {
+    let position = `${ratio * 100 * 100}%`;
+
+    // Use offset dimensions to include borders.
+    const boxWidth = box.offsetWidth;
+    if (!boxWidth) return position;
+
+    // Get the element that enforces the bounds for the time range boxes.
+    const bounds =
+      (this.getAttribute('bounds')
+        ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
+        : this.parentElement) ?? this;
+
+    const rangeRect = this.range.getBoundingClientRect();
+    const mediaBoundsRect = bounds.getBoundingClientRect();
+    const boxMin = (this.#boxPaddingLeft - (rangeRect.left - mediaBoundsRect.left - boxWidth / 2)) / rangeRect.width * 100;
+    const boxMax = (mediaBoundsRect.right - rangeRect.left - boxWidth / 2 - this.#boxPaddingRight) / rangeRect.width * 100;
+
+    if (!Number.isNaN(boxMin)) position = `max(${boxMin * 100}%, ${position})`;
+    if (!Number.isNaN(boxMax)) position = `min(${position}, ${boxMax * 100}%)`;
+
+    return position;
   }
 
   #pointermoveHandler = (evt) => {
@@ -353,7 +391,7 @@ class MediaTimeRange extends MediaChromeRange {
     // Lock between 0 and 1
     mouseRatio = Math.max(0, Math.min(1, mouseRatio));
 
-    const boxPos = getBoxPosition(this, this.#previewBox, mouseRatio);
+    const boxPos = this.#getBoxPosition(this.#previewBox, mouseRatio);
     const { style } = getOrInsertCSSRule(
       this.shadowRoot,
       '#preview-rail'
@@ -417,37 +455,6 @@ class MediaTimeRange extends MediaChromeRange {
     this.#rangeEntered = false;
     this.#stopTrackingMouse();
   }
-}
-
-function getBoxPosition(el, box, ratio) {
-  let position = `${ratio * 100 * 100}%`;
-
-  // Use offset dimensions to include borders.
-  const boxWidth = box.offsetWidth;
-  if (!boxWidth) return position;
-
-  // Get the element that enforces the bounds for the time range boxes.
-  const bounds =
-    (el.getAttribute('bounds')
-      ? closestComposedNode(el, `#${el.getAttribute('bounds')}`)
-      : el.parentElement) ?? el;
-
-  const leftPadding = parseInt(
-    getComputedStyle(el).getPropertyValue('--media-box-padding-left')
-  );
-  const rightPadding = parseInt(
-    getComputedStyle(el).getPropertyValue('--media-box-padding-right')
-  );
-
-  const rangeRect = el.range.getBoundingClientRect();
-  const mediaBoundsRect = bounds.getBoundingClientRect();
-  const boxMin = (leftPadding - (rangeRect.left - mediaBoundsRect.left - boxWidth / 2)) / rangeRect.width * 100;
-  const boxMax = (mediaBoundsRect.right - rangeRect.left - boxWidth / 2 - rightPadding) / rangeRect.width * 100;
-
-  if (!Number.isNaN(boxMin)) position = `max(${boxMin * 100}%, ${position})`;
-  if (!Number.isNaN(boxMax)) position = `min(${position}, ${boxMax * 100}%)`;
-
-  return position;
 }
 
 defineCustomElement('media-time-range', MediaTimeRange);

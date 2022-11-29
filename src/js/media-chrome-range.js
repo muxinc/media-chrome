@@ -193,6 +193,8 @@ template.innerHTML = `
 `;
 
 class MediaChromeRange extends window.HTMLElement {
+  #thumbWidth;
+
   static get observedAttributes() {
     return [
       'disabled',
@@ -209,6 +211,8 @@ class MediaChromeRange extends window.HTMLElement {
     this.container = this.shadowRoot.querySelector('#container');
     this.range = this.shadowRoot.querySelector('#range');
     this.range.addEventListener('input', this.updateBar.bind(this));
+
+    this.#thumbWidth = parseInt(getComputedStyle(this).getPropertyValue('--media-range-thumb-width') || 10, 10);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -285,7 +289,7 @@ class MediaChromeRange extends window.HTMLElement {
     });
     gradientStr = gradientStr.slice(0, gradientStr.length - 1) + ')';
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, '#range');
     style.setProperty('--media-range-track-progress-internal', gradientStr);
   }
 
@@ -304,10 +308,7 @@ class MediaChromeRange extends window.HTMLElement {
     // Ideally the thumb center would go all the way to min and max values
     // but input[type=range] doesn't play like that.
     if (range.value > range.min && range.value < range.max) {
-      const thumbWidth =
-        getComputedStyle(this).getPropertyValue('--media-range-thumb-width') ||
-        '10px';
-      const thumbOffset = parseInt(thumbWidth) * (0.5 - rangePercent / 100);
+      const thumbOffset = this.#thumbWidth * (0.5 - rangePercent / 100);
       thumbPercent = (thumbOffset / range.offsetWidth) * 100;
     }
 
