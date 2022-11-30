@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width">
+  <title>Media Chrome Captions Usage Examples</title>
+  <script type="module" src="../../dist/index.js"></script>
+  <script type="module" src="../../../dist/media-chrome-listbox.js"></script>
+  <script type="module" src="../../../dist/media-chrome-listitem.js"></script>
+  <script type="module" src="../../../dist/media-captions-listbox.js"></script>
+  <style>
+    media-captions-listbox {
+      display: block;
+      height: fit-content;
+    }
+
+    media-chrome-listitem {
+      position: relative;
+      line-height: 1.5em;
+    }
+    media-chrome-listitem[aria-selected="true"]::before {
+      content: '✅';
+      position: absolute;
+      margin-left: -1.5em;
+    }
+
+    .examples {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Media Chrome Standard Video Usage Example</h1>
+    <media-captions-listbox title="Captions & Subtitles List" media-controller="mc" ></media-captions-listbox>
+    <media-controller id="mc">
+      <video
+        slot="media"
+        src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/ed_hd.mp4"
+        preload="metadata"
+        muted
+        crossorigin
+      >
+        <track label="English" kind="captions" srclang="en" src="./vtt/elephantsdream/captions.en.vtt" default></track>
+        <track label="Japanese" kind="captions" srclang="ja" src="./vtt/elephantsdream/captions.ja.vtt"></track>
+        <track label="Swedish" kind="captions" srclang="sv" src="./vtt/elephantsdream/captions.sv.vtt"></track>
+        <track label="Russian" kind="captions" srclang="ru" src="./vtt/elephantsdream/captions.ru.vtt"></track>
+        <track label="Arabic" kind="captions" srclang="ar" src="./vtt/elephantsdream/captions.ar.vtt"></track>
+        <track label="Subs English" kind="subtitles" srclang="en" src="./vtt/elephantsdream/captions.en.vtt" default></track>
+        <track label="Subs Japanese" kind="subtitles" srclang="ja" src="./vtt/elephantsdream/captions.ja.vtt"></track>
+        <track label="Subs Swedish" kind="subtitles" srclang="sv" src="./vtt/elephantsdream/captions.sv.vtt"></track>
+        <track label="Subs Russian" kind="subtitles" srclang="ru" src="./vtt/elephantsdream/captions.ru.vtt"></track>
+        <track label="Subs Arabic" kind="subtitles" srclang="ar" src="./vtt/elephantsdream/captions.ar.vtt"></track>
+      </video>
+      <media-control-bar>
+        <media-play-button></media-play-button>
+        <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+        <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+        <media-mute-button></media-mute-button>
+        <media-volume-range></media-volume-range>
+        <media-time-range></media-time-range>
+        <media-time-display show-duration remaining></media-time-display>
+        <media-captions-button></media-captions-button>
+        <media-playback-rate-button></media-playback-rate-button>
+        <media-pip-button></media-pip-button>
+        <media-fullscreen-button></media-fullscreen-button>
+        <media-airplay-button></media-airplay-button>
+      </media-control-bar>
+    </media-controller>
+  </main>
+</body>
+</html>
