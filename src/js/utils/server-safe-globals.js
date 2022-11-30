@@ -1,9 +1,14 @@
+class EventTarget {
+  addEventListener() {}
+  removeEventListener() {}
+  dispatchEvent() {
+    return true;
+  }
+}
+
 const windowShim = {
-  HTMLElement: function HTMLElement() {
-    this.addEventListener = () => {};
-    this.removeEventListener = () => {};
-    this.dispatchEvent = () => {};
-  },
+  HTMLElement: class HTMLElement extends EventTarget {},
+  DocumentFragment: class DocumentFragment extends EventTarget {},
   customElements: {
     get: function () {},
     define: function () {},

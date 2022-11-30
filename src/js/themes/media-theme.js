@@ -32,6 +32,6 @@ class MediaTheme extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-theme', MediaTheme);
+defineCustomElement('media-theme-base', MediaTheme);
 
 export default MediaTheme;
