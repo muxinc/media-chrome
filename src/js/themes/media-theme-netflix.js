@@ -8,9 +8,10 @@
 */
 
 import { defineCustomElement } from '../utils/defineCustomElement.js';
-import MediaTheme from './media-theme.js';
+import { MediaThemeElement } from '../media-theme-element.js';
 
-const template = `
+const template = document.createElement('template');
+template.innerHTML = `
 <style>
   :host {
     display: inline-block;
@@ -133,7 +134,7 @@ const template = `
 </media-controller>
 `;
 
-class MediaThemeNetflix extends MediaTheme {
+class MediaThemeNetflix extends MediaThemeElement {
   static template = template;
 }
 

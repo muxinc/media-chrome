@@ -7,12 +7,14 @@ import { processor } from './utils/template-processor.js';
 export * from './utils/template-parts.js';
 
 export class MediaThemeElement extends window.HTMLElement {
+  static template;
   static observedAttributes = ['template'];
   static processor = processor;
 
   renderRoot;
   renderer;
   #template;
+  #prevTemplateHTML;
 
   constructor() {
     super();
@@ -20,6 +22,8 @@ export class MediaThemeElement extends window.HTMLElement {
 
     const observer = new MutationObserver(() => this.render());
     observer.observe(this, { attributes: true });
+
+    this.#initTemplate();
   }
 
   get mediaController() {
@@ -33,7 +37,7 @@ export class MediaThemeElement extends window.HTMLElement {
       const template = this.getRootNode()?.getElementById(templateId);
       if (template) return template;
     }
-    return this.#template;
+    return this.#template ?? this.constructor.template;
   }
 
   set template(element) {
@@ -42,25 +46,30 @@ export class MediaThemeElement extends window.HTMLElement {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'template' && oldValue != newValue) {
-      if (this.template) {
-        // Transform short-hand if/partial templates to directive & expression.
-        this.template.content
-          .querySelectorAll('template[if],template[partial]')
-          .forEach((t) => {
-            let directive;
+      this.#initTemplate();
+    }
+  }
 
-            if (t.hasAttribute('if')) directive = 'if';
+  #initTemplate() {
+    if (this.template && this.template.innerHTML !== this.#prevTemplateHTML) {
+      // Transform short-hand if/partial templates to directive & expression.
+      this.template.content
+        .querySelectorAll('template[if],template[partial]')
+        .forEach((t) => {
+          let directive;
 
-            if (t.hasAttribute('partial')) directive = 'partial';
+          if (t.hasAttribute('if')) directive = 'if';
 
-            if (directive) {
-              t.setAttribute('directive', directive);
-              t.setAttribute('expression', t.getAttribute(directive));
-            }
-          });
+          if (t.hasAttribute('partial')) directive = 'partial';
 
-        this.createRenderer();
-      }
+          if (directive) {
+            t.setAttribute('directive', directive);
+            t.setAttribute('expression', t.getAttribute(directive));
+          }
+        });
+
+      this.createRenderer();
+      this.#prevTemplateHTML = this.template.innerHTML;
     }
   }
 
