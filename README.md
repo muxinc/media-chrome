@@ -1,4 +1,4 @@
-# [`<media-chrome>`](https://media-chrome.org)
+# [`<media-chrome>`](https://media-chrome.org) [![npm version](https://img.shields.io/npm/v/media-chrome)](http://npmjs.org/media-chrome) [![size](https://img.shields.io/bundlephobia/minzip/media-chrome?label=size)](https://bundlephobia.com/result?p=media-chrome)
 
 Your media player's dancing suit. :man_dancing:
 
