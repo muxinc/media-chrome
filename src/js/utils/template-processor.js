@@ -3,6 +3,7 @@ import {
   TemplateInstance,
   AttrPart,
 } from './template-parts.js';
+import { isNumericString } from './utils.js';
 
 // e.g.  myVar | string
 //       > myVar
@@ -187,11 +188,6 @@ export function getParamValue(raw, state) {
 
   // state property
   return state[raw];
-}
-
-export function isNumericString(str) {
-  if (typeof str != 'string') return false; // we only process strings!
-  return !isNaN(str) && !isNaN(parseFloat(str));
 }
 
 /*

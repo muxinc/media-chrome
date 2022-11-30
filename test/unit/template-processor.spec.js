@@ -1,5 +1,5 @@
 import { assert } from '@open-wc/testing';
-import { evaluateCondition, isNumericString } from '../../src/js/utils/template-processor.js';
+import { evaluateCondition } from '../../src/js/utils/template-processor.js';
 
 describe('template processor', () => {
   it('can evaluate a simple boolean condition', () => {
@@ -20,31 +20,5 @@ describe('template processor', () => {
     assert(evaluateCondition('"thruthy"'));
     assert(evaluateCondition('myVar == "a string"', { myVar: 'a string' }));
     assert(evaluateCondition('myVar != "a string"', { myVar: 'lalala' }));
-  });
-});
-
-describe('isNumericString', () => {
-  it('returns false on non strings', () => {
-    assert(!isNumericString(1));
-    assert(!isNumericString({}));
-    assert(!isNumericString([1]));
-    assert(!isNumericString(true));
-    assert(!isNumericString(NaN));
-    assert(!isNumericString(() => {}));
-  });
-
-  it('returns false on non numeric strings', () => {
-    assert(!isNumericString(''));
-    assert(!isNumericString(' '));
-    assert(!isNumericString('two'));
-    assert(!isNumericString('..12'));
-    assert(!isNumericString('12px'), '12px is not numeric');
-  });
-
-  it('returns true on numeric strings', () => {
-    assert(isNumericString('1'));
-    assert(isNumericString('1.5'));
-    assert(isNumericString('1e10'));
-    assert(isNumericString('0x10'));
   });
 });
