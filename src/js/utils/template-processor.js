@@ -23,10 +23,38 @@ const operators = {
   '??': (value, defaults) => value ?? defaults,
 };
 
-class PartialDirective {
+class PartialTemplate {
   constructor(template) {
     this.template = template;
   }
+}
+
+const Directives = {
+  partial: (expression, part, state) => {
+    state[expression] = new PartialTemplate(part.template);
+  },
+  if: (expression, part, state) => {
+    if (evaluateCondition(part.expression, state)) {
+      part.replace(new TemplateInstance(part.template, state, processor));
+    } else {
+      part.replace('');
+    }
+  },
+};
+
+const DirectiveNames = Object.keys(Directives);
+
+export function transformDirectiveAliases(template) {
+  // Transform short-hand if/partial templates to directive & expression.
+  const query = DirectiveNames.map((name) => `template[${name}]`).join(',');
+  template.content.querySelectorAll(query).forEach((templateEl) => {
+    const directive = DirectiveNames.find((n) => templateEl.hasAttribute(n));
+    if (directive) {
+      templateEl.setAttribute('directive', directive);
+      templateEl.setAttribute('expression', templateEl.getAttribute(directive));
+    }
+  });
+  return template;
 }
 
 export const processor = {
@@ -34,22 +62,8 @@ export const processor = {
     if (!state) return;
 
     for (const [expression, part] of parts) {
-      if (part instanceof InnerTemplatePart) {
-        switch (part.directive) {
-          case 'partial': {
-            state[expression] = new PartialDirective(part.template);
-            break;
-          }
-          case 'if':
-            if (evaluateCondition(part.expression, state)) {
-              part.replace(
-                new TemplateInstance(part.template, state, processor)
-              );
-            } else {
-              part.replace('');
-            }
-            break;
-        }
+      if (part.directive && part instanceof InnerTemplatePart) {
+        Directives[part.directive](expression, part, state);
         continue;
       }
 
@@ -72,7 +86,7 @@ export const processor = {
       }
 
       if (value) {
-        if (value instanceof PartialDirective) {
+        if (value instanceof PartialTemplate) {
           // Require the partial indicator `>` or ignore this expression.
           if (prefix !== '>') continue;
 
@@ -83,7 +97,11 @@ export const processor = {
             localState[paramName] = getParamValue(paramValue, state);
           }
 
-          value = new TemplateInstance(value.template, localState, processor);
+          value = new TemplateInstance(
+            transformDirectiveAliases(value.template),
+            localState,
+            processor
+          );
         }
 
         if (part instanceof AttrPart) {
@@ -142,7 +160,8 @@ export function evaluateCondition(expr, state) {
       console.warn(`Warning: invalid expression \`${expr}\``);
       return false;
     }
-    return getParamValue(tokens[0].token, state);
+    const val = getParamValue(tokens[0].token, state);
+    return val;
   }
 
   const args = tokens.filter(({ type }) => type !== 'ws');
