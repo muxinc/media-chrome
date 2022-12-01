@@ -2,6 +2,7 @@ import { Window as window } from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { TemplateInstance } from './utils/template-parts.js';
 import { processor } from './utils/template-processor.js';
+import { camelCase } from './utils/utils.js';
 
 // Export Template parts for players.
 export * from './utils/template-parts.js';
@@ -99,10 +100,6 @@ export class MediaThemeElement extends window.HTMLElement {
   render() {
     this.renderer?.update(this.props);
   }
-}
-
-function camelCase(name) {
-  return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
 }
 
 defineCustomElement('media-theme', MediaThemeElement);

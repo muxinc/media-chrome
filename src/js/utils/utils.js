@@ -20,3 +20,16 @@ export function constToCamel(word, upperFirst = false) {
     })
     .join('');
 }
+
+export function camelCase(name) {
+  return name.replace(/[-_]([a-z])/g, ($0, $1) => $1.toUpperCase());
+}
+
+export function isValidNumber(x) {
+  return typeof x === 'number' && !Number.isNaN(x) && Number.isFinite(x);
+}
+
+export function isNumericString(str) {
+  if (typeof str != 'string') return false; // we only process strings!
+  return !isNaN(str) && !isNaN(parseFloat(str));
+}

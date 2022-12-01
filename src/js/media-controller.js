@@ -15,7 +15,7 @@ import {
 } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
-import { constToCamel } from './utils/stringUtils.js';
+import { constToCamel } from './utils/utils.js';
 import { containsComposedNode } from './utils/element-utils.js';
 import { toggleSubsCaps } from './utils/captions.js';
 
