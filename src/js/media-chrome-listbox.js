@@ -69,6 +69,10 @@ class MediaChromeListbox extends window.HTMLElement {
     return this.#assignedElements.filter(el => !el.hasAttribute('disabled'));
   }
 
+  get selectedOptions() {
+    return this.#items.filter(el => el.getAttribute('aria-selected') === 'true');
+  }
+
   #clickListener = (e) => {
     this.handleClick(e);
   }
