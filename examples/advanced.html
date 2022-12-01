@@ -9,7 +9,7 @@
       media-controller:not([audio]) {
         display: block;         /* expands the container if preload=none */
         max-width: 720px;       /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        aspect-ratio: 2.39;   /* set container aspect ratio if preload=none */
       }
 
       video {
@@ -34,7 +34,7 @@
       <media-controller>
         <video
           slot="media"
-          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
           muted
           crossorigin
           playsinline
@@ -43,7 +43,7 @@
             label="thumbnails"
             default
             kind="metadata"
-            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+            src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"
           />
           <track
             label="English"
@@ -54,8 +54,8 @@
         </video>
         <media-poster-image
           slot="poster"
-          src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
-          placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
+          src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg"
+          placeholder-src="data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAOACADASIAAhEBAxEB/8QAGAAAAgMAAAAAAAAAAAAAAAAAAQQAAwX/xAAaEAADAQEBAQAAAAAAAAAAAAAAAQIDURJB/8QAFgEBAQEAAAAAAAAAAAAAAAAAAQME/8QAGBEBAAMBAAAAAAAAAAAAAAAAAAETFGH/2gAMAwEAAhEDEQA/AG2D0l9Fa3ZU9KZl0QtU0VpPQPVCCqukdV0NHDU//9k="
         ></media-poster-image>
         <media-loading-indicator media-loading slot="centered-chrome" no-auto-hide></media-loading-indicator>
         <media-control-bar>
