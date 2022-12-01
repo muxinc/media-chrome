@@ -18,7 +18,7 @@ Visit the [official documentation for Media Chrome](https://www.media-chrome.org
 ## Video Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/+esm"></script>
 
 <media-controller>
   <video
@@ -55,7 +55,7 @@ Visit the [official documentation for Media Chrome](https://www.media-chrome.org
 ## Audio Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/+esm"></script>
 
 <media-controller audio>
   <audio
@@ -100,7 +100,7 @@ Load the module in the `<head>` of your HTML page. Note the `type="module"`, tha
 > Modules are always loaded asynchronously by the browser, so it's ok to load them in the head :thumbsup:, and best for registering web components quickly.
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/+esm"></script>
 ```
 
 ### Option 2: Bundled via npm
@@ -199,7 +199,7 @@ import 'media-chrome/dist/extras/media-clip-selector';
 ```html
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/media-chrome@0.5/dist/extras/media-clip-selector/index.js/+esm"
+  src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/dist/extras/media-clip-selector/index.js/+esm"
 ></script>
 ```
 
