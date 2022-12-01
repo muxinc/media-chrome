@@ -1,4 +1,4 @@
-import { MediaUIAttributes } from './constants.js';
+import { MediaStateReceiverAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
   Window as window,
@@ -25,7 +25,7 @@ class MediaChromeListbox extends window.HTMLElement {
   #assignedElements;
 
   static get observedAttributes() {
-    return ['disabled', MediaUIAttributes.MEDIA_CONTROLLER];
+    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
   constructor(options = {}) {
@@ -60,7 +60,7 @@ class MediaChromeListbox extends window.HTMLElement {
       if (!elToSelect) {
         elToSelect = els[0];
       }
-      
+
       elToSelect.setAttribute('tabindex', 0);
     });
   }
@@ -114,7 +114,7 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
@@ -138,7 +138,7 @@ class MediaChromeListbox extends window.HTMLElement {
     }
 
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
@@ -150,7 +150,7 @@ class MediaChromeListbox extends window.HTMLElement {
     this.disable();
 
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);

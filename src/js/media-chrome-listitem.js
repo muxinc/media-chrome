@@ -1,4 +1,4 @@
-import { MediaUIAttributes } from './constants.js';
+import { MediaStateReceiverAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
   Window as window,
@@ -24,7 +24,7 @@ class MediaChromeListitem extends window.HTMLElement {
       'disabled',
       'aria-selected',
       'value',
-      MediaUIAttributes.MEDIA_CONTROLLER,
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
   ];
   }
 
@@ -61,7 +61,7 @@ class MediaChromeListitem extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
@@ -87,7 +87,7 @@ class MediaChromeListitem extends window.HTMLElement {
     this.setAttribute('role', 'option');
 
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
@@ -99,7 +99,7 @@ class MediaChromeListitem extends window.HTMLElement {
     this.disable();
 
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
