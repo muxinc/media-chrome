@@ -63,7 +63,7 @@ export const processor = {
 
     for (const [expression, part] of parts) {
       if (part.directive && part instanceof InnerTemplatePart) {
-        Directives[part.directive](expression, part, state);
+        Directives[part.directive]?.(expression, part, state);
         continue;
       }
 
@@ -160,8 +160,7 @@ export function evaluateCondition(expr, state) {
       console.warn(`Warning: invalid expression \`${expr}\``);
       return false;
     }
-    const val = getParamValue(tokens[0].token, state);
-    return val;
+    return getParamValue(tokens[0].token, state);
   }
 
   const args = tokens.filter(({ type }) => type !== 'ws');
