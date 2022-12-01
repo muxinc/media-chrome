@@ -183,6 +183,9 @@ class MediaChromeListbox extends window.HTMLElement {
     } else {
       item.setAttribute('aria-selected', 'true');
     }
+
+    const event = new Event('change');
+    this.dispatchEvent(new Event('change'));
   }
 
   handleMovement(e) {
@@ -195,7 +198,7 @@ class MediaChromeListbox extends window.HTMLElement {
     }
 
     let nextOption;
-    
+
     switch (key) {
       case 'ArrowDown':
         nextOption = currentOption.nextElementSibling;
