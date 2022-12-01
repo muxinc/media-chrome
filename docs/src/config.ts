@@ -76,5 +76,8 @@ export const SIDEBAR: Sidebar = {
       { text: 'Loading indicator', link: 'en/media-loading-indicator' },
       { text: 'Poster image', link: 'en/media-poster-image' },
     ],
+    'Media States': [
+      { text: 'Stream Type', link: 'en/stream-type' },
+    ],
   },
 };

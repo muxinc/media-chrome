@@ -29,6 +29,9 @@ import {
   AttributeToStateChangeEventMap,
   StreamTypes,
 } from './constants.js';
+
+const StreamTypeValues = Object.values(StreamTypes);
+
 import {
   stringifyTextTrackList,
   getTextTracksList,
@@ -959,16 +962,19 @@ const Delegates = {
 
   [MediaUIAttributes.MEDIA_STREAM_TYPE](el) {
     const media = el.media;
+
+    if (!media) return;
+
     const duration = media.duration;
 
     if (duration === Infinity) {
       return StreamTypes.LIVE;
-    } else if (!isNaN(duration)) {
+    } else if (Number.isFinite(duration)) {
       return StreamTypes.ON_DEMAND;
     } else {
       const defaultType = el.getAttribute('default-stream-type');
 
-      if (Object.values(StreamTypes).includes(defaultType)) {
+      if (StreamTypeValues.includes(defaultType)) {
         return defaultType;
       }
     }
