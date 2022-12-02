@@ -20,7 +20,12 @@ template.innerHTML = `
 
 class MediaChromeListitem extends window.HTMLElement {
   static get observedAttributes() {
-    return ['disabled', 'aria-selected', MediaUIAttributes.MEDIA_CONTROLLER];
+    return [
+      'disabled',
+      'aria-selected',
+      'value',
+      MediaUIAttributes.MEDIA_CONTROLLER,
+  ];
   }
 
   constructor(options = {}) {
@@ -32,6 +37,14 @@ class MediaChromeListitem extends window.HTMLElement {
     this.nativeEl = listitemHTML;
 
     shadow.appendChild(listitemHTML);
+  }
+
+  set value(value) {
+    this.setAttribute('value', value);
+  }
+
+  get value() {
+    return this.getAttribute('value');
   }
 
   enable() {
