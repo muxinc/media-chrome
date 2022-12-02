@@ -47,7 +47,7 @@ Visit the [official documentation for Media Chrome](https://www.media-chrome.org
 #### Results (<a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank">Try the CodePen example</a>)
 
 <a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank">
-  <img width="100%" alt="Media Chrome Demo" src="./docs/public/assets/media-chrome-player-screenshot.jpeg">
+  <img width="890" alt="Media Chrome Video Player Demo" src="./docs/public/assets/media-chrome-video-player.jpeg">
 </a>
 
 #### <a href="https://media-chrome.mux.dev/examples/" target="_blank">See all of the repo examples in action.</a>
@@ -75,7 +75,9 @@ Visit the [official documentation for Media Chrome](https://www.media-chrome.org
 
 #### Results (<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank">Try the CodePen example</a>)
 
-<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank"><img width="719" alt="Media Chrome Demo" src="https://user-images.githubusercontent.com/166/127259205-b36e237c-a37b-4bd1-9eff-852868e458a6.png"></a>
+<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank">
+  <img width="410" alt="Media Chrome Audio Player Demo" src="./docs/public/assets/media-chrome-audio-player.png">
+</a>
 
 ## Advanced Usage
 
