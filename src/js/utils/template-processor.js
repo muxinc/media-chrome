@@ -62,7 +62,7 @@ export const processor = {
     if (!state) return;
 
     for (const [expression, part] of parts) {
-      if (part.directive && part instanceof InnerTemplatePart) {
+      if (part instanceof InnerTemplatePart) {
         Directives[part.directive]?.(expression, part, state);
         continue;
       }
