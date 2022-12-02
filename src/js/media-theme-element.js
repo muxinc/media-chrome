@@ -1,7 +1,7 @@
 import { Window as window } from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { TemplateInstance } from './utils/template-parts.js';
-import { processor } from './utils/template-processor.js';
+import { processor, transformDirectiveAliases } from './utils/template-processor.js';
 import { camelCase } from './utils/utils.js';
 
 // Export Template parts for players.
@@ -15,7 +15,7 @@ export class MediaThemeElement extends window.HTMLElement {
   renderRoot;
   renderer;
   #template;
-  #prevTemplateHTML;
+  #prevTemplate;
 
   constructor() {
     super();
@@ -24,7 +24,7 @@ export class MediaThemeElement extends window.HTMLElement {
     const observer = new MutationObserver(() => this.render());
     observer.observe(this, { attributes: true });
 
-    this.#initTemplate();
+    this.createRenderer();
   }
 
   get mediaController() {
@@ -43,35 +43,7 @@ export class MediaThemeElement extends window.HTMLElement {
 
   set template(element) {
     this.#template = element;
-  }
-
-  attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === 'template' && oldValue != newValue) {
-      this.#initTemplate();
-    }
-  }
-
-  #initTemplate() {
-    if (this.template && this.template.innerHTML !== this.#prevTemplateHTML) {
-      // Transform short-hand if/partial templates to directive & expression.
-      this.template.content
-        .querySelectorAll('template[if],template[partial]')
-        .forEach((t) => {
-          let directive;
-
-          if (t.hasAttribute('if')) directive = 'if';
-
-          if (t.hasAttribute('partial')) directive = 'partial';
-
-          if (directive) {
-            t.setAttribute('directive', directive);
-            t.setAttribute('expression', t.getAttribute(directive));
-          }
-        });
-
-      this.createRenderer();
-      this.#prevTemplateHTML = this.template.innerHTML;
-    }
+    this.createRenderer();
   }
 
   get props() {
@@ -86,15 +58,27 @@ export class MediaThemeElement extends window.HTMLElement {
     return props;
   }
 
-  createRenderer() {
-    this.renderer = new TemplateInstance(
-      this.template,
-      this.props,
-      this.constructor.processor
-    );
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === 'template' && oldValue != newValue) {
+      this.createRenderer();
+    }
+  }
 
-    this.renderRoot.textContent = '';
-    this.renderRoot.append(this.renderer);
+  createRenderer() {
+    // Compare template element references here because
+    // transformDirectiveAliases changes the innerHTML.
+    if (this.template && this.template !== this.#prevTemplate) {
+      this.#prevTemplate = this.template;
+
+      this.renderer = new TemplateInstance(
+        transformDirectiveAliases(this.template),
+        this.props,
+        this.constructor.processor
+      );
+
+      this.renderRoot.textContent = '';
+      this.renderRoot.append(this.renderer);
+    }
   }
 
   render() {
