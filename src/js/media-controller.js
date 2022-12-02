@@ -27,7 +27,11 @@ import {
   TextTrackModes,
   AvailabilityStates,
   AttributeToStateChangeEventMap,
+  StreamTypes,
 } from './constants.js';
+
+const StreamTypeValues = Object.values(StreamTypes);
+
 import {
   stringifyTextTrackList,
   getTextTracksList,
@@ -44,7 +48,7 @@ const DEFAULT_TIME = 0;
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {
-    return super.observedAttributes.concat('nohotkeys', 'hotkeys');
+    return super.observedAttributes.concat('nohotkeys', 'hotkeys', 'default-stream-type');
   }
 
   #hotKeys = new AttributeTokenList(this, 'hotkeys');
@@ -444,6 +448,7 @@ class MediaController extends MediaContainer {
           MediaUIAttributes.MEDIA_DURATION,
           getDuration(this)
         );
+        this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
       },
       'loadedmetadata,emptied,progress': () => {
         this.propagateMediaState(
@@ -559,6 +564,8 @@ class MediaController extends MediaContainer {
       }
     } else if (attrName === 'hotkeys') {
         this.#hotKeys.value = newValue;
+    } else if (attrName === 'default-stream-type') {
+      this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -641,6 +648,10 @@ class MediaController extends MediaContainer {
   }
 
   propagateMediaState(stateName, state) {
+    if (arguments.length === 1) {
+      state = Delegates[stateName](this);
+    }
+
     propagateMediaState(this.mediaStateReceivers, stateName, state);
     const evt = new window.CustomEvent(
       AttributeToStateChangeEventMap[stateName],
@@ -947,7 +958,29 @@ const Delegates = {
 
   [MediaUIAttributes.MEDIA_PLAYBACK_RATE](el) {
     return getPlaybackRate(el);
-  }
+  },
+
+  [MediaUIAttributes.MEDIA_STREAM_TYPE](el) {
+    const media = el.media;
+
+    if (!media) return;
+
+    const duration = media.duration;
+
+    if (duration === Infinity) {
+      return StreamTypes.LIVE;
+    } else if (Number.isFinite(duration)) {
+      return StreamTypes.ON_DEMAND;
+    } else {
+      const defaultType = el.getAttribute('default-stream-type');
+
+      if (StreamTypeValues.includes(defaultType)) {
+        return defaultType;
+      }
+    }
+
+    return null;
+  },
 };
 
 const getPaused = (controller) => {

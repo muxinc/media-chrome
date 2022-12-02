@@ -82,6 +82,7 @@ export const MediaUIAttributes = {
   MEDIA_PREVIEW_COORDS: 'media-preview-coords',
   MEDIA_LOADING: 'media-loading',
   MEDIA_BUFFERED: 'media-buffered',
+  MEDIA_STREAM_TYPE: 'media-stream-type',
 };
 
 // Maps from state change event type -> attribute name
@@ -143,4 +144,9 @@ export const PointerTypes = {
 export const AvailabilityStates = {
   UNAVAILABLE: 'unavailable',
   UNSUPPORTED: 'unsupported',
+};
+
+export const StreamTypes = {
+  LIVE: 'live',
+  ON_DEMAND: 'on-demand',
 };

@@ -80,5 +80,8 @@ export const SIDEBAR: Sidebar = {
       { text: 'Time range', link: 'en/media-time-range' },
       { text: 'Volume range', link: 'en/media-volume-range' },
     ],
+    'Media States': [
+      { text: 'Stream Type', link: 'en/stream-type' },
+    ],
   },
 };
