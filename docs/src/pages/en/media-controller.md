@@ -78,7 +78,9 @@ Example (disallow seeking shortcuts):
 
 `default-stream-type` (values: `live`, `on-demand`)
 
-Media controller can't know the stream type of the media until the media is loaded. Setting `default-stream-type` can prevent UI changes happening between when the player is loaded and when the media is loaded. This may happen when a player is built to support both stream types, and then is used to play a stream type that is different from the player's default.
+Media controller can't know the stream is live or on-demand until the media is loaded. Setting `default-stream-type` can prevent UI changes happening between when the player is loaded and when the media is loaded. This may happen when a player is built to support both stream types, and then is used to play a stream type that is different from the player's default.
+
+[See also media-stream-type.](./stream-type)
 
 ```html
 <media-controller default-stream-type="live">

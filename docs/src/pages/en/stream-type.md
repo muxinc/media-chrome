@@ -29,3 +29,4 @@ For example, you can hide the media time range (progress bar) during a live stre
 </media-controller>
 ```
 
+[See also default-stream-type.](./media-controller#default-stream-type)
