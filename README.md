@@ -18,7 +18,7 @@ Visit the [official documentation for Media Chrome](https://www.media-chrome.org
 ## Video Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/+esm"></script>
 
 <media-controller>
   <video
@@ -46,14 +46,16 @@ Visit the [official documentation for Media Chrome](https://www.media-chrome.org
 
 #### Results (<a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank">Try the CodePen example</a>)
 
-<a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank"><img width="719" alt="Media Chrome Demo" src="https://user-images.githubusercontent.com/166/78526967-834bcb80-7790-11ea-98a3-a5b355e7a55a.png"></a>
+<a href="https://codepen.io/heff/pen/ZEGdBzN?editors=1000" target="_blank">
+  <img width="890" alt="Media Chrome Video Player Demo" src="./docs/public/assets/media-chrome-video-player.jpeg">
+</a>
 
 #### <a href="https://media-chrome.mux.dev/examples/" target="_blank">See all of the repo examples in action.</a>
 
 ## Audio Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/+esm"></script>
 
 <media-controller audio>
   <audio
@@ -73,7 +75,9 @@ Visit the [official documentation for Media Chrome](https://www.media-chrome.org
 
 #### Results (<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank">Try the CodePen example</a>)
 
-<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank"><img width="719" alt="Media Chrome Demo" src="https://user-images.githubusercontent.com/166/127259205-b36e237c-a37b-4bd1-9eff-852868e458a6.png"></a>
+<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank">
+  <img width="410" alt="Media Chrome Audio Player Demo" src="./docs/public/assets/media-chrome-audio-player.png">
+</a>
 
 ## Advanced Usage
 
@@ -98,7 +102,7 @@ Load the module in the `<head>` of your HTML page. Note the `type="module"`, tha
 > Modules are always loaded asynchronously by the browser, so it's ok to load them in the head :thumbsup:, and best for registering web components quickly.
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/+esm"></script>
 ```
 
 ### Option 2: Bundled via npm
@@ -197,7 +201,7 @@ import 'media-chrome/dist/extras/media-clip-selector';
 ```html
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/media-chrome@0.5/dist/extras/media-clip-selector/index.js/+esm"
+  src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/dist/extras/media-clip-selector/index.js/+esm"
 ></script>
 ```
 
