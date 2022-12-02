@@ -361,6 +361,19 @@ class MediaController extends MediaContainer {
         }
         media.webkitShowPlaybackTargetPicker();
       },
+      MEDIA_SEEK_TO_LIVE_REQUEST: (e, media) => {
+        if (!media.seekable) {
+          console.warn('MediaController: Media element does not support seeking to live.');
+          return;
+        }
+
+        if (!media.seekable.length) {
+          console.warn('MediaController: Media is unable to seek to live.');
+          return;
+        }
+
+        media.currentTime = media.seekable.end(media.seekable.length - 1);
+      }
     };
 
     // Apply ui event listeners
