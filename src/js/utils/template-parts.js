@@ -1,9 +1,13 @@
-import { Window as window } from '../utils/server-safe-globals.js';
-
-/* Adapted from https://github.com/dy/template-parts - ISC - Dmitry Iv. */
+/**
+ * Adapted from https://github.com/dy/template-parts
+ * ISC License (ISC)
+ * Copyright 2021 Dmitry Iv.
+ */
 
 // Template Instance API
 // https://github.com/WICG/webcomponents/blob/gh-pages/proposals/Template-Instantiation.md
+
+import { Window as window } from '../utils/server-safe-globals.js';
 
 const ELEMENT = 1;
 const STRING = 0;
