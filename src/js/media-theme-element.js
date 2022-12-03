@@ -1,7 +1,7 @@
 import { Window as window } from './utils/server-safe-globals.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { TemplateInstance } from './utils/template-parts.js';
-import { processor, transformDirectiveAliases } from './utils/template-processor.js';
+import { processor } from './utils/template-processor.js';
 import { camelCase } from './utils/utils.js';
 
 // Export Template parts for players.
@@ -65,13 +65,11 @@ export class MediaThemeElement extends window.HTMLElement {
   }
 
   createRenderer() {
-    // Compare template element references here because
-    // transformDirectiveAliases changes the innerHTML.
     if (this.template && this.template !== this.#prevTemplate) {
       this.#prevTemplate = this.template;
 
       this.renderer = new TemplateInstance(
-        transformDirectiveAliases(this.template),
+        this.template,
         this.props,
         this.constructor.processor
       );

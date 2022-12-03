@@ -30,10 +30,10 @@ class PartialTemplate {
 }
 
 const Directives = {
-  partial: (expression, part, state) => {
-    state[expression] = new PartialTemplate(part.template);
+  partial: (part, state) => {
+    state[part.expression] = new PartialTemplate(part.template);
   },
-  if: (expression, part, state) => {
+  if: (part, state) => {
     if (evaluateCondition(part.expression, state)) {
       part.replace(new TemplateInstance(part.template, state, processor));
     } else {
@@ -44,26 +44,21 @@ const Directives = {
 
 const DirectiveNames = Object.keys(Directives);
 
-export function transformDirectiveAliases(template) {
-  // Transform short-hand if/partial templates to directive & expression.
-  const query = DirectiveNames.map((name) => `template[${name}]`).join(',');
-  template.content.querySelectorAll(query).forEach((templateEl) => {
-    const directive = DirectiveNames.find((n) => templateEl.hasAttribute(n));
-    if (directive) {
-      templateEl.setAttribute('directive', directive);
-      templateEl.setAttribute('expression', templateEl.getAttribute(directive));
-    }
-  });
-  return template;
-}
-
 export const processor = {
   processCallback(instance, parts, state) {
     if (!state) return;
 
     for (const [expression, part] of parts) {
-      if (part.directive && part instanceof InnerTemplatePart) {
-        Directives[part.directive]?.(expression, part, state);
+      if (part instanceof InnerTemplatePart) {
+        if (!part.directive) {
+          // Transform short-hand if/partial attributes to directive & expression.
+          const directive = DirectiveNames.find((n) => part.template.hasAttribute(n));
+          if (directive) {
+            part.directive = directive;
+            part.expression = part.template.getAttribute(directive);
+          }
+        }
+        Directives[part.directive]?.(part, state);
         continue;
       }
 
@@ -98,7 +93,7 @@ export const processor = {
           }
 
           value = new TemplateInstance(
-            transformDirectiveAliases(value.template),
+            value.template,
             localState,
             processor
           );

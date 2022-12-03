@@ -84,7 +84,7 @@ export const parse = (element, parts = []) => {
               items.push(part);
               parts.push([value, part]);
             }
-        } else {
+        } else if (node instanceof HTMLTemplateElement) {
           const part = new InnerTemplatePart(element, node);
           items.push(part);
           parts.push([part.expression, part]);
