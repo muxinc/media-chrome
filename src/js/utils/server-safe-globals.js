@@ -30,6 +30,7 @@ export const isServer =
 /**
   * @type { window & { WebKitPlaybackTargetAvailabilityEvent?,
   *   chrome?,
+  *   DocumentFragment?,
   * } |
   * {HTMLElement,
   * customElements,
@@ -42,6 +43,7 @@ export const isServer =
   * WebKitPlaybackTargetAvailabilityEvent?,
   * document?,
   * chrome?,
+  * DocumentFragment?,
   * } }
   * */
 export const Window = isServer ? windowShim : window;
