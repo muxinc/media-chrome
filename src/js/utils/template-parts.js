@@ -38,14 +38,18 @@ export const defaultProcessor = {
 export class TemplateInstance extends window.DocumentFragment {
   #parts;
   #processor;
+
   constructor(template, state, processor = defaultProcessor) {
     super();
+
     this.append(template.content.cloneNode(true));
     this.#parts = parse(this);
+
     this.#processor = processor;
     processor.createCallback?.(this, this.#parts, state);
     processor.processCallback(this, this.#parts, state);
   }
+
   update(state) {
     this.#processor.processCallback(this, this.#parts, state);
   }
@@ -167,15 +171,19 @@ const attrPartToList = new WeakMap();
 
 export class AttrPartList {
   #items = [];
+
   [Symbol.iterator]() {
     return this.#items.values();
   }
+
   get length() {
     return this.#items.length;
   }
+
   item(index) {
     return this.#items[index];
   }
+
   append(...items) {
     for (const item of items) {
       if (item instanceof AttrPart) {
@@ -184,6 +192,7 @@ export class AttrPartList {
       this.#items.push(item);
     }
   }
+
   toString() {
     return this.#items.join('');
   }
@@ -194,27 +203,34 @@ export class AttrPart extends Part {
   #element;
   #attributeName;
   #namespaceURI;
+
   constructor(element, attributeName, namespaceURI) {
     super();
     this.#element = element;
     this.#attributeName = attributeName;
     this.#namespaceURI = namespaceURI;
   }
+
   get #list() {
     return attrPartToList.get(this);
   }
+
   get attributeName() {
     return this.#attributeName;
   }
+
   get attributeNamespace() {
     return this.#namespaceURI;
   }
+
   get element() {
     return this.#element;
   }
+
   get value() {
     return this.#value;
   }
+
   set value(newValue) {
     if (this.#value === newValue) return; // save unnecessary call
     this.#value = newValue;
@@ -240,12 +256,14 @@ export class AttrPart extends Part {
       );
     }
   }
+
   get booleanValue() {
     return this.#element.hasAttributeNS(
       this.#namespaceURI,
       this.#attributeName
     );
   }
+
   set booleanValue(value) {
     if (!this.#list || this.#list.length === 1) this.value = value ? '' : null;
     else throw new DOMException('Value is not fully templatized');
@@ -255,30 +273,38 @@ export class AttrPart extends Part {
 export class ChildNodePart extends Part {
   #parentNode;
   #nodes;
+
   constructor(parentNode, nodes) {
     super();
     this.#parentNode = parentNode;
     this.#nodes = nodes ? [...nodes] : [new Text()];
   }
+
   get replacementNodes() {
     return this.#nodes;
   }
+
   get parentNode() {
     return this.#parentNode;
   }
+
   get nextSibling() {
     return this.#nodes[this.#nodes.length - 1].nextSibling;
   }
+
   get previousSibling() {
     return this.#nodes[0].previousSibling;
   }
+
   // FIXME: not sure why do we need string serialization here? Just because parent class has type DOMString?
   get value() {
     return this.#nodes.map((node) => node.textContent).join('');
   }
+
   set value(newValue) {
     this.replace(newValue);
   }
+
   replace(...nodes) {
     // replace current nodes with new nodes.
     const normalisedNodes = nodes
@@ -301,6 +327,7 @@ export class ChildNodePart extends Part {
     }
     this.#nodes = normalisedNodes;
   }
+
   replaceHTML(html) {
     const fragment = this.parentNode.cloneNode();
     fragment.innerHTML = html;
@@ -310,6 +337,7 @@ export class ChildNodePart extends Part {
 
 export class InnerTemplatePart extends ChildNodePart {
   directive;
+
   constructor(parentNode, template) {
     let directive =
       template.getAttribute('directive') || template.getAttribute('type');
