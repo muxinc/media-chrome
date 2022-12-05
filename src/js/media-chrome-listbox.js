@@ -207,7 +207,7 @@ class MediaChromeListbox extends window.HTMLElement {
       case 'ArrowDown':
         nextOption = currentOption.nextElementSibling;
 
-        if (nextOption.hasAttribute('disabled')) {
+        if (nextOption?.hasAttribute('disabled')) {
           nextOption = nextOption.nextElementSibling;
         }
 
@@ -215,7 +215,7 @@ class MediaChromeListbox extends window.HTMLElement {
       case 'ArrowUp':
         nextOption = currentOption.previousElementSibling;
 
-        if (nextOption.hasAttribute('disabled')) {
+        if (nextOption?.hasAttribute('disabled')) {
           nextOption = nextOption.previousElementSibling;
         }
 
