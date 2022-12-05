@@ -378,6 +378,7 @@ class MediaContainer extends window.HTMLElement {
         } else {
           scheduleInactive();
         }
+      // @ts-ignore
       } else if (e.composedPath().some(el => ['media-play-button', 'media-fullscreen-button'].includes(el?.nodeName?.toLowerCase()))) {
         scheduleInactive();
       }
