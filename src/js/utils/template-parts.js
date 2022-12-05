@@ -91,6 +91,7 @@ export const parse = (element, parts = []) => {
         }
 
         node.replaceWith(
+          // @ts-ignore
           ...items.flatMap((part) => part.replacementNodes || [part])
         );
       }
@@ -157,6 +158,7 @@ const FRAGMENT = 11;
 
 export class Part {
   toString() {
+    // @ts-ignore
     return this.value;
   }
 }
