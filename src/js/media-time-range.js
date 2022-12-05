@@ -341,6 +341,7 @@ class MediaTimeRange extends MediaChromeRange {
 
   updateCurrentBox() {
     // If there are no elements in the current box no need for expensive style updates.
+    // @ts-ignore
     if (!this.#currentBox.assignedElements().length) return;
 
     const boxRatio = this.range.value / (this.range.max - this.range.min);
