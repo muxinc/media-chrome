@@ -10,7 +10,11 @@ const STRING = 0;
 const PART = 1;
 
 export const defaultProcessor = {
-  processCallback(instance, parts, state) {
+  processCallback(
+    /** @type TemplateInstance */ instance,
+    /** @type [string, Part][] */ parts,
+    /** @type Record<string, any> */ state
+  ) {
     if (!state) return;
     for (const [expression, part] of parts) {
       if (expression in state) {
@@ -22,10 +26,7 @@ export const defaultProcessor = {
           typeof part.element[part.attributeName] === 'boolean'
         ) {
           part.booleanValue = value;
-        } else if (
-          typeof value === 'function' &&
-          part instanceof AttrPart
-        ) {
+        } else if (typeof value === 'function' && part instanceof AttrPart) {
           part.element[part.attributeName] = value;
         } else {
           part.value = value;
@@ -35,11 +36,18 @@ export const defaultProcessor = {
   },
 };
 
+/**
+ * @extends {DocumentFragment}
+ */
 export class TemplateInstance extends window.DocumentFragment {
   #parts;
   #processor;
 
-  constructor(template, state, processor = defaultProcessor) {
+  constructor(
+    /** @type HTMLTemplateElement */ template,
+    /** @type Record<string, any> */ state,
+    processor = defaultProcessor
+  ) {
     super();
 
     this.append(template.content.cloneNode(true));
@@ -50,13 +58,13 @@ export class TemplateInstance extends window.DocumentFragment {
     processor.processCallback(this, this.#parts, state);
   }
 
-  update(state) {
+  update(/** @type Record<string, any> */ state) {
     this.#processor.processCallback(this, this.#parts, state);
   }
 }
 
 // collect element parts
-export const parse = (element, parts = []) => {
+export const parse = (element, /** @type [string, Part][] */ parts = []) => {
   let type, value;
 
   for (let attr of element.attributes || []) {
@@ -106,8 +114,9 @@ export const parse = (element, parts = []) => {
 };
 
 // parse string with template fields
+/** @type Record<string, [number, string][]> */
 const mem = {};
-export const tokenize = (text) => {
+export const tokenize = (/** @type string */ text) => {
   let value = '',
     open = 0,
     tokens = mem[text],
@@ -161,8 +170,13 @@ export const tokenize = (text) => {
 const FRAGMENT = 11;
 
 export class Part {
+  get value() {
+    return '';
+  }
+
+  set value(val) {}
+
   toString() {
-    // @ts-ignore
     return this.value;
   }
 }
@@ -170,6 +184,7 @@ export class Part {
 const attrPartToList = new WeakMap();
 
 export class AttrPartList {
+  /** @type Array<AttrPart | string> */
   #items = [];
 
   [Symbol.iterator]() {
@@ -180,11 +195,11 @@ export class AttrPartList {
     return this.#items.length;
   }
 
-  item(index) {
+  item(/** @type number */ index) {
     return this.#items[index];
   }
 
-  append(...items) {
+  append(/** @type Array<AttrPart | string> */ ...items) {
     for (const item of items) {
       if (item instanceof AttrPart) {
         attrPartToList.set(item, this);
@@ -204,7 +219,11 @@ export class AttrPart extends Part {
   #attributeName;
   #namespaceURI;
 
-  constructor(element, attributeName, namespaceURI) {
+  constructor(
+    /** @type Element */ element,
+    /** @type string */ attributeName,
+    /** @type string */ namespaceURI
+  ) {
     super();
     this.#element = element;
     this.#attributeName = attributeName;
@@ -257,6 +276,7 @@ export class AttrPart extends Part {
     }
   }
 
+  /** @type boolean */
   get booleanValue() {
     return this.#element.hasAttributeNS(
       this.#namespaceURI,
@@ -274,7 +294,7 @@ export class ChildNodePart extends Part {
   #parentNode;
   #nodes;
 
-  constructor(parentNode, nodes) {
+  constructor(/** @type Element */ parentNode, /** @type ChildNode[] */ nodes) {
     super();
     this.#parentNode = parentNode;
     this.#nodes = nodes ? [...nodes] : [new Text()];
@@ -320,31 +340,34 @@ export class ChildNodePart extends Part {
           ? [node]
           : [new Text(node)]
       );
+
     if (!normalisedNodes.length) normalisedNodes.push(new Text(''));
+
     this.#nodes[0].before(...normalisedNodes);
+
     for (const oldNode of this.#nodes) {
       if (!normalisedNodes.includes(oldNode)) oldNode.remove();
     }
-    this.#nodes = normalisedNodes;
-  }
 
-  replaceHTML(html) {
-    const fragment = this.parentNode.cloneNode();
-    fragment.innerHTML = html;
-    this.replace(fragment.childNodes);
+    this.#nodes = normalisedNodes;
   }
 }
 
 export class InnerTemplatePart extends ChildNodePart {
   directive;
 
-  constructor(parentNode, template) {
+  constructor(
+    /** @type Element */ parentNode,
+    /** @type HTMLTemplateElement */ template
+  ) {
     let directive =
       template.getAttribute('directive') || template.getAttribute('type');
+
     let expression =
       template.getAttribute('expression') ||
       template.getAttribute(directive) ||
       '';
+
     if (expression.startsWith('{{'))
       expression = expression.trim().slice(2, -2).trim();
 
