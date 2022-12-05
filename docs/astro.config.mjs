@@ -1,11 +1,10 @@
 import { defineConfig } from 'astro/config';
 import preact from '@astrojs/preact';
 import react from '@astrojs/react';
-
 import { toString } from 'hast-util-to-string';
 import { h } from 'hastscript';
 import { escape } from 'html-escaper';
-
+import tailwind from '@astrojs/tailwind';
 const AnchorLinkIcon = h(
   'svg',
   {
@@ -30,22 +29,26 @@ const createSROnlyLabel = (text) => {
 
 // https://astro.build/config
 export default defineConfig({
-  site: `https://media-chrome-docs.vercel.app/`,
+  site: `https://www.media-chrome.org/`,
   integrations: [
     // Enable Preact to support Preact JSX components.
-    preact(),
-    // Enable React for the Algolia search component.
+    preact(), // Enable React for the Algolia search component.
     react(),
+    tailwind(),
   ],
   markdown: {
     remarkPlugins: [
       // These are here because setting custom plugins disables the default plugins
       'remark-gfm',
-      ['remark-smartypants', { dashes: false }]
+      [
+        'remark-smartypants',
+        {
+          dashes: false,
+        },
+      ],
     ],
     rehypePlugins: [
-      'rehype-slug',
-      // This adds links to headings
+      'rehype-slug', // This adds links to headings
       [
         'rehype-autolink-headings',
         {

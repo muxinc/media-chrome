@@ -6,7 +6,7 @@ layout: ../../layouts/MainLayout.astro
 
 ## Slots for layout
 
-Slots are used to tell `<media-controller/>` where you want your controls positioned. Even if you aren't explicitly naming a slot, you're still using one (the "default slot"). Most commonly, you'll put media control elements like `<media-play-button/>` or `<media-fullscreen-button/>` inside slots. But any arbitrary markup can be placed inside a slot.
+Slots are used to tell `<media-controller>` where you want your controls positioned. Even if you aren't explicitly naming a slot, you're still using one (the "default slot"). Most commonly, you'll put media control elements like `<media-play-button>` or `<media-fullscreen-button>` inside slots. But any arbitrary markup can be placed inside a slot.
 
 This gives you a lot of flexibility when customizing your player. For example, here is a player that has an h3 title in the top slot and a play button in the centered slot.
 
@@ -22,7 +22,7 @@ This gives you a lot of flexibility when customizing your player. For example, h
 </media-controller>
 ```
 
-You also may want to show different slots on mobile vs. desktop. For example, here's a player that uses `slot="centered-chrome"` on mobile and uses a `<media-control-bar/>` in the default slot (aka "`bottom-chrome`") on desktop:
+You also may want to show different slots on mobile vs. desktop. For example, here's a player that uses `slot="centered-chrome"` on mobile and uses a `<media-control-bar>` in the default slot (aka "`bottom-chrome`") on desktop:
 
 ```html
 <style>
@@ -56,7 +56,7 @@ You also may want to show different slots on mobile vs. desktop. For example, he
 
 Below is a more in-depth discussion of available slots and how they work.
 
-(**NOTE**: slots are actually [part of the Web Components / Custom Elements specification](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots), but you shouldn't need to understand these technical details to work with them in `<media-chrome/>`)
+(**NOTE**: slots are actually [part of the Web Components / Custom Elements specification](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_templates_and_slots), but you shouldn't need to understand these technical details to work with them in `<media-chrome>`)
 
 ### Working with slots (video)
 
@@ -71,9 +71,9 @@ For an interactive example of how each of the slots render for `video`, check ou
 <br>
 <br>
 
-- Render Location: Each child that doesn't specify a slot will render at the bottom of the `<media-controller/>`. If you have more than one element like this they will be stacked vertically.
+- Render Location: Each child that doesn't specify a slot will render at the bottom of the `<media-controller>`. If you have more than one element like this they will be stacked vertically.
 
-- Common/Example use cases: showing one or more rows of controls at the bottom of the `<media-controller/>`. For many use cases, you can simply add a `<media-control-bar/>` for each row of controls you'd like, which will provide you with additional automatic sizing and layout behavior.
+- Common/Example use cases: showing one or more rows of controls at the bottom of the `<media-controller>`. For many use cases, you can simply add a `<media-control-bar>` for each row of controls you'd like, which will provide you with additional automatic sizing and layout behavior.
   - [Basic example](https://media-chrome.mux.dev/examples/basic.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/basic.html))
   - [Mobile example](https://media-chrome.mux.dev/examples/mobile.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/mobile.html))
   - [Youtube theme](https://media-chrome.mux.dev/examples/themes/youtube-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/youtube-theme.html))
@@ -86,9 +86,9 @@ For an interactive example of how each of the slots render for `video`, check ou
 <br>
 <br>
 
-- Render Location: Each child that specifies `slot="top-chrome"` will render at the top of the `<media-controller/>`. If you have more than one element like this they will be stacked vertically.
+- Render Location: Each child that specifies `slot="top-chrome"` will render at the top of the `<media-controller>`. If you have more than one element like this they will be stacked vertically.
 
-- Common/Example use cases: showing one or more rows of controls at the top of the `<media-controller/>`. For many use cases, you can simply add a `<media-control-bar/>` for each row of controls you'd like.
+- Common/Example use cases: showing one or more rows of controls at the top of the `<media-controller>`. For many use cases, you can simply add a `<media-control-bar>` for each row of controls you'd like.
   - [Demuxed 2021 theme](https://media-chrome.mux.dev/examples/themes/demuxed-2021-theme.html) (mobile screen sizes only) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/demuxed-2021-theme.html))
 
 #### `middle-chrome`
@@ -110,7 +110,7 @@ For an interactive example of how each of the slots render for `video`, check ou
 <br>
 <br>
 
-- Render Location: The child that specifies `slot="centered-chrome"` will show up in the center of the `<media-controller/>` and will be "above" anything in the default slot, `top-chrome`, or `middle-chrome`.
+- Render Location: The child that specifies `slot="centered-chrome"` will show up in the center of the `<media-controller>` and will be "above" anything in the default slot, `top-chrome`, or `middle-chrome`.
 
 - Common/Example use cases: "big button" controls that are centered and horizontally layed out "on top of" the media. While you **_can_** have multiple children that are "slotted to" `centered-chrome`, most likely, you'll want to use only one, making styling and layout easier and more predictable.
   - [Mobile example](https://media-chrome.mux.dev/examples/mobile.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/mobile.html))
@@ -132,9 +132,9 @@ For an interactive example of how each of the slots render for `video`, check ou
 
 ### Working with slots (audio)
 
-Since `audio` chromes vary much more than `video`, it's recommended that you only use the default slot and only add a single element (e.g. a single `<media-control-bar/>`) and style it however you'd like.
+Since `audio` chromes vary much more than `video`, it's recommended that you only use the default slot and only add a single element (e.g. a single `<media-control-bar>`) and style it however you'd like.
 
-As we work through other common use cases, both internally and with the community, we may start adding additional "built-in" styling and layout for `<media-control-bar/>` slots used with `audio`.
+As we work through other common use cases, both internally and with the community, we may start adding additional "built-in" styling and layout for `<media-control-bar>` slots used with `audio`.
 
 - Example use cases:
   - [Basic example](https://media-chrome.mux.dev/examples/basic.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/basic.html))

@@ -1,4 +1,4 @@
-import { MediaUIAttributes } from './constants.js';
+import { MediaStateReceiverAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
   Window as window,
@@ -52,7 +52,7 @@ template.innerHTML = `
 
 class MediaTextDisplay extends window.HTMLElement {
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CONTROLLER];
+    return [MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
   constructor() {
@@ -64,7 +64,7 @@ class MediaTextDisplay extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
@@ -78,7 +78,7 @@ class MediaTextDisplay extends window.HTMLElement {
 
   connectedCallback() {
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
@@ -88,7 +88,7 @@ class MediaTextDisplay extends window.HTMLElement {
 
   disconnectedCallback() {
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);

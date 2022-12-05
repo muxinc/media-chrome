@@ -1,3 +1,62 @@
+# [0.16.0](https://github.com/muxinc/media-chrome/compare/v0.15.1...v0.16.0) (2022-10-28)
+
+
+### Features
+
+* box percentage positioning & time range border glitch ([#345](https://github.com/muxinc/media-chrome/issues/345)) ([57f1023](https://github.com/muxinc/media-chrome/commit/57f1023fa2e7d3b20b76b07b1ae45218e99360d7))
+
+
+
+## [0.15.1](https://github.com/muxinc/media-chrome/compare/v0.15.0...v0.15.1) (2022-10-25)
+
+
+### Bug Fixes
+
+* use composedPath for checking target in schedule inactive event handler ([#355](https://github.com/muxinc/media-chrome/issues/355)) ([c44711d](https://github.com/muxinc/media-chrome/commit/c44711d131dec5ad6981c838a17f9738f74a00d9))
+
+
+
+# [0.15.0](https://github.com/muxinc/media-chrome/compare/v0.14.1...v0.15.0) (2022-10-25)
+
+
+### Bug Fixes
+
+* clicking in play/fullscreen buttons should schedule inactive ([#338](https://github.com/muxinc/media-chrome/issues/338)) ([0b640d0](https://github.com/muxinc/media-chrome/commit/0b640d03a665a113017a3bf8f050c787e2829434)), closes [#188](https://github.com/muxinc/media-chrome/issues/188)
+* preview bounds in shadow dom ([#342](https://github.com/muxinc/media-chrome/issues/342)) ([e0b5fa9](https://github.com/muxinc/media-chrome/commit/e0b5fa98378a297042cc957acbc47e67f8acb582))
+
+
+### Features
+
+* remove esm-module ([#352](https://github.com/muxinc/media-chrome/issues/352)) ([921eda8](https://github.com/muxinc/media-chrome/commit/921eda86043b2fdd76e8bb2974b815103f05bf99))
+
+
+
+## [0.14.1](https://github.com/muxinc/media-chrome/compare/v0.14.0...v0.14.1) (2022-10-14)
+
+
+### Bug Fixes
+
+* call disable on disconnectedCallback ([35f1242](https://github.com/muxinc/media-chrome/commit/35f1242f7affc4e3534e656a82ce6d143200f879))
+* don't set attributes in a constructor ([433560e](https://github.com/muxinc/media-chrome/commit/433560e2327f6a136b38cbf8cc64bba9451097c8)), closes [#335](https://github.com/muxinc/media-chrome/issues/335)
+
+
+
+# [0.14.0](https://github.com/muxinc/media-chrome/compare/v0.12.0...v0.14.0) (2022-10-10)
+
+
+### Bug Fixes
+
+* a couple of fixes ([#331](https://github.com/muxinc/media-chrome/issues/331)) ([f4df42f](https://github.com/muxinc/media-chrome/commit/f4df42fb66ff33f40cc1937905f5933bec75aa38))
+* properly check iphones for fullscreen unavailability ([#332](https://github.com/muxinc/media-chrome/issues/332)) ([c32c74e](https://github.com/muxinc/media-chrome/commit/c32c74ebf73219919bd96a15796ea008884cd600))
+* properly unset poster image sources when they're removed ([#328](https://github.com/muxinc/media-chrome/issues/328)) ([87daae5](https://github.com/muxinc/media-chrome/commit/87daae56b9816818918b7d980e41b780caefbe8c))
+
+
+### Features
+
+* add poster object fit and position css vars ([#327](https://github.com/muxinc/media-chrome/issues/327)) ([a02bf20](https://github.com/muxinc/media-chrome/commit/a02bf20070a9462d0e085bec90f8c97a295ba4df))
+
+
+
 # [0.13.0](https://github.com/muxinc/media-chrome/compare/v0.12.0...v0.13.0) (2022-10-06)
 
 

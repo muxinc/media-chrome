@@ -46,10 +46,13 @@ export const MediaStateChangeEvents = {
   MEDIA_SEEKABLE: 'mediaseekablechange',
   MEDIA_PREVIEW_IMAGE: 'mediapreviewimagechange',
   MEDIA_PREVIEW_COORDS: 'mediapreviewcoordschange',
-  // MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
-  // MEDIA_CONTROLLER: 'media-controller',
   MEDIA_LOADING: 'medialoadingchange',
   USER_INACTIVE: 'userinactivechange',
+};
+
+export const MediaStateReceiverAttributes = {
+  MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
+  MEDIA_CONTROLLER: 'media-controller',
 };
 
 export const MediaUIAttributes = {
@@ -77,10 +80,9 @@ export const MediaUIAttributes = {
   MEDIA_PREVIEW_TIME: 'media-preview-time',
   MEDIA_PREVIEW_IMAGE: 'media-preview-image',
   MEDIA_PREVIEW_COORDS: 'media-preview-coords',
-  MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
-  MEDIA_CONTROLLER: 'media-controller',
   MEDIA_LOADING: 'media-loading',
   MEDIA_BUFFERED: 'media-buffered',
+  MEDIA_STREAM_TYPE: 'media-stream-type',
 };
 
 // Maps from state change event type -> attribute name
@@ -142,4 +144,9 @@ export const PointerTypes = {
 export const AvailabilityStates = {
   UNAVAILABLE: 'unavailable',
   UNSUPPORTED: 'unsupported',
+};
+
+export const StreamTypes = {
+  LIVE: 'live',
+  ON_DEMAND: 'on-demand',
 };

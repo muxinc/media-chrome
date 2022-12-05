@@ -1,4 +1,6 @@
 ---
+import '../styles/theme.css';
+import '../styles/index.css';
 import HeadCommon from '../components/HeadCommon.astro';
 import HeadSEO from '../components/HeadSEO.astro';
 import Header from '../components/Header/Header.astro';
@@ -58,7 +60,7 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
       .grid-sidebar {
         height: 100vh;
         position: sticky;
-        top: 0;
+        top: 5rem;
         padding: 0;
       }
 

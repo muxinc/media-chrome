@@ -44,7 +44,12 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
   let style;
   // @ts-ignore
   for (style of styleParent.querySelectorAll('style')) {
-    for (let rule of style.sheet?.cssRules ?? [])
+    // Catch this error. e.g. browser extension adds style tags.
+    //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
+    //   Not allowed to access cross-origin stylesheet
+    let cssRules;
+    try { cssRules = style.sheet?.cssRules; } catch { continue; }
+    for (let rule of cssRules ?? [])
       if (rule.selectorText === selectorText) return rule;
   }
   // If there is no style sheet return an empty style rule.

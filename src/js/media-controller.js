@@ -15,18 +15,23 @@ import {
 } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
-import { constToCamel } from './utils/stringUtils.js';
+import { constToCamel } from './utils/utils.js';
 import { containsComposedNode } from './utils/element-utils.js';
 import { toggleSubsCaps } from './utils/captions.js';
 
 import {
   MediaUIEvents,
   MediaUIAttributes,
+  MediaStateReceiverAttributes,
   TextTrackKinds,
   TextTrackModes,
   AvailabilityStates,
   AttributeToStateChangeEventMap,
+  StreamTypes,
 } from './constants.js';
+
+const StreamTypeValues = Object.values(StreamTypes);
+
 import {
   stringifyTextTrackList,
   getTextTracksList,
@@ -43,7 +48,7 @@ const DEFAULT_TIME = 0;
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {
-    return super.observedAttributes.concat('nohotkeys', 'hotkeys');
+    return super.observedAttributes.concat('nohotkeys', 'hotkeys', 'default-stream-type');
   }
 
   #hotKeys = new AttributeTokenList(this, 'hotkeys');
@@ -445,6 +450,7 @@ class MediaController extends MediaContainer {
           MediaUIAttributes.MEDIA_DURATION,
           getDuration(this)
         );
+        this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
       },
       'loadedmetadata,emptied,progress': () => {
         this.propagateMediaState(
@@ -560,6 +566,8 @@ class MediaController extends MediaContainer {
       }
     } else if (attrName === 'hotkeys') {
         this.#hotKeys.value = newValue;
+    } else if (attrName === 'default-stream-type') {
+      this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -642,6 +650,10 @@ class MediaController extends MediaContainer {
   }
 
   propagateMediaState(stateName, state) {
+    if (arguments.length === 1) {
+      state = Delegates[stateName](this);
+    }
+
     propagateMediaState(this.mediaStateReceivers, stateName, state);
     const evt = new window.CustomEvent(
       AttributeToStateChangeEventMap[stateName],
@@ -948,7 +960,29 @@ const Delegates = {
 
   [MediaUIAttributes.MEDIA_PLAYBACK_RATE](el) {
     return getPlaybackRate(el);
-  }
+  },
+
+  [MediaUIAttributes.MEDIA_STREAM_TYPE](el) {
+    const media = el.media;
+
+    if (!media) return;
+
+    const duration = media.duration;
+
+    if (duration === Infinity) {
+      return StreamTypes.LIVE;
+    } else if (Number.isFinite(duration)) {
+      return StreamTypes.ON_DEMAND;
+    } else {
+      const defaultType = el.getAttribute('default-stream-type');
+
+      if (StreamTypeValues.includes(defaultType)) {
+        return defaultType;
+      }
+    }
+
+    return null;
+  },
 };
 
 const getPaused = (controller) => {
@@ -1048,7 +1082,7 @@ const getMediaUIAttributesFrom = (child) => {
   }
 
   const mediaChromeAttributesList = child
-    ?.getAttribute?.(MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES)
+    ?.getAttribute?.(MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES)
     ?.split?.(/\s+/);
   if (!Array.isArray(observedAttributes || mediaChromeAttributesList))
     return [];
@@ -1211,7 +1245,7 @@ const monitorForMediaStateReceivers = (
         );
       } else if (
         type === 'attributes' &&
-        attributeName === MediaUIAttributes.MEDIA_CHROME_ATTRIBUTES
+        attributeName === MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES
       ) {
         if (isMediaStateReceiver(target)) {
           // Changed from a "non-Media State Receiver" to a Media State Receiver: register it.
@@ -1285,7 +1319,18 @@ const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
 
 const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
 const castSupported = !!window.chrome;
-const fullscreenEnabled = document[fullscreenApi.enabled];
+
+export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {
+  let fullscreenEnabled = document[fullscreenApi.enabled];
+
+  if (!fullscreenEnabled && mediaEl) {
+    fullscreenEnabled = 'webkitSupportsFullscreen' in mediaEl;
+  }
+
+  return fullscreenEnabled;
+};
+const fullscreenEnabled = hasFullscreenSupport();
+
 
 /** @type {TimeRanges} */
 const emptyTimeRanges = Object.freeze({

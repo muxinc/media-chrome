@@ -22,11 +22,14 @@ const lang = getLanguageFromURL(currentPage);
     <div class="menu-toggle">
       <SidebarToggle client:idle />
     </div>
-    <div class="logo flex">
+    <div class="logo">
       <a href="/">
         <AstroLogo size={38} />
-        <h1><span>Media</span><span>Chrome</span><strong>Docs</strong></h1>
+        <h1>&lt;media-chrome&gt;</h1>
       </a>
+    </div>
+    <div class="menu">
+      <a href="/en/get-started">Docs</a>
     </div>
     <ThemeToggleButton client:visible />
     {
@@ -46,6 +49,8 @@ const lang = getLanguageFromURL(currentPage);
     height: var(--theme-navbar-height);
     width: 100%;
     background-color: var(--theme-navbar-bg);
+    backdrop-filter: saturate(180%) blur(5px);
+    border-bottom: 1px solid var(--theme-divider);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -55,12 +60,9 @@ const lang = getLanguageFromURL(currentPage);
   }
 
   .logo {
-    flex: 1;
-    display: flex;
     overflow: hidden;
-    width: 30px;
-    font-size: 2rem;
-    flex-shrink: 0;
+    width: 40px;
+    font-size: 1.8rem;
     font-weight: 600;
     line-height: 1;
     color: hsla(var(--color-base-white), 100%, 1);
@@ -69,19 +71,18 @@ const lang = getLanguageFromURL(currentPage);
   }
 
   .logo a {
-    display: flex;
+    display: block;
     padding: 0.5em 0.25em;
     margin: -0.5em -0.25em;
     text-decoration: none;
   }
 
-  .logo a {
+  :is(.logo, .menu) a {
     transition: color 100ms ease-out;
     color: var(--theme-text);
   }
 
-  .logo a:hover,
-  .logo a:focus {
+  :is(.logo, .menu) :is(a:hover, a:focus) {
     color: var(--theme-text-accent);
   }
 
@@ -93,14 +94,32 @@ const lang = getLanguageFromURL(currentPage);
     font-family: var(--font-mono);
   }
 
-  .logo h1 span {
-    margin-right: 0.1em;
+  .menu {
+    flex: 1;
+    font-family: var(--font-mono);
+  }
+
+  .menu a {
+    font-size: 0.9em;
+    line-height: 1.4;
+    text-decoration: none;
+    padding: 0.4em 0.7em;
+    margin-left: -.8em;
+    border-radius: 5px;
+    transition: background-color 100ms ease-out;
+    text-transform: uppercase;
+    vertical-align: middle;
+    font-weight: 700;
+  }
+
+  .menu :is(a:hover, a:focus) {
+    background-color: var(--theme-bg-accent);
   }
 
   .nav-wrapper {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: space-between;
     gap: 1em;
     width: 100%;
     max-width: 90em;
@@ -109,7 +128,6 @@ const lang = getLanguageFromURL(currentPage);
 
   @media (min-width: 50em) {
     header {
-      position: static;
       padding: 2rem 0rem;
     }
 

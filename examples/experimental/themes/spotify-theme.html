@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Media Chrome Spotify Theme Example</title>
+    <script type="module" src="../../../../src/js/media-theme-element.js"></script>
+    <script type="module" src="../../../../dist/index.js"></script>
+  </head>
+  <body>
+    <style>
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+    <main>
+      <h1>The Spotify player theme</h1>
+      <p>The Spotify player built with media-chrome.</p>
+
+      <template id="spotify">
+        <style>
+          :host {
+            display: inline-block;
+            min-width: 250px;
+            max-width: 640px;
+            color: #fff;
+            font-family: sans-serif;
+
+            --media-icon-color: #fff;
+            --media-button-icon-height: 28px;
+            --media-range-track-height: 4px;
+            --media-range-track-background: rgba(255, 255, 255, 0.3);
+            --media-range-thumb-box-shadow: rgba(0, 0, 0, 0.5) 0px 2px 4px 0px;
+            --media-preview-time-background: rgba(20,20,30, 1);
+            --media-preview-time-margin: 0 0 -9px;
+          }
+
+          :host .custom-chrome {
+            display: flex;
+            flex-flow: row nowrap;
+          }
+
+          :host :not(media-play-button) {
+            --media-control-background: none;
+            --media-control-hover-background: none;
+          }
+
+          :host media-time-range {
+            --media-box-padding-left: 7px;
+            --media-box-padding-right: 7px;
+          }
+
+          :host media-time-range:not(:hover) {
+            --media-range-thumb-opacity: 0;
+          }
+
+          :host media-text-display {
+            font-size: 14px;
+            line-height: 19px;
+            padding: 0 8px;
+          }
+
+          :host media-time-display,
+          :host media-preview-time-display {
+            font-size: 10px;
+          }
+
+          :host .media-poster {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background-image: url('https://i.scdn.co/image/ab67616d0000b2735618ee6467c0becf0dd23d68');
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-size: contain;
+          }
+
+          :host media-play-button {
+            border: 1px solid #ffffff;
+            border-radius: 50%;
+            padding: 6px;
+
+            transition: all 0.1s;
+          }
+
+          :host .media-poster:hover media-play-button {
+            transform: scale(1.1);
+          }
+
+          :host .content-area {
+            flex-grow: 1;
+
+            display: flex;
+            flex-flow: column nowrap;
+            align-items: flex-start;
+
+            padding-top: 8px;
+            background-color: rgb(232, 24, 48);
+            background-image: linear-gradient(
+              rgba(0, 0, 0, 0.2),
+              rgba(0, 0, 0, 0.8)
+            );
+          }
+
+          :host .content-area media-control-bar {
+            align-self: stretch;
+          }
+
+          :host .content-area media-control-bar > * {
+            height: 36px;
+          }
+        </style>
+
+        <media-controller audio>
+          <slot name="media" slot="media"></slot>
+          <span class="custom-chrome">
+            <span class="media-poster">
+              <media-play-button></media-play-button>
+            </span>
+            <span class="content-area">
+              <media-text-display><b>Emotion (Deluxe)</b></media-text-display>
+              <media-text-display>Carly Rae Jepsen</media-text-display>
+              <media-control-bar>
+                <media-time-range>
+                  <media-preview-time-display slot="preview"></media-preview-time-display>
+                </media-time-range>
+                <media-time-display remaining></media-time-display>
+              </media-control-bar>
+            </span>
+          </span>
+        </media-controller>
+      </template>
+
+      <media-theme template="spotify">
+        <audio
+          slot="media"
+          src="https://stream.mux.com/O4h5z00885HEucNNa1rV02wZapcGp01FXXoJd35AHmGX7g/audio.m4a"
+        ></audio>
+      </media-theme>
+
+      <div class="examples">
+        <a href="../">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>

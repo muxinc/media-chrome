@@ -1,4 +1,4 @@
-import { MediaUIAttributes } from './constants.js';
+import { MediaStateReceiverAttributes } from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
   Window as window,
@@ -71,7 +71,7 @@ template.innerHTML = `
  */
 class MediaChromeButton extends window.HTMLElement {
   static get observedAttributes() {
-    return ['disabled', MediaUIAttributes.MEDIA_CONTROLLER];
+    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
   constructor(options = {}) {
@@ -93,8 +93,6 @@ class MediaChromeButton extends window.HTMLElement {
     this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
     shadow.appendChild(buttonHTML);
-
-    this.enable();
   }
 
   #clickListener = (e) => {
@@ -135,7 +133,7 @@ class MediaChromeButton extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
@@ -154,10 +152,14 @@ class MediaChromeButton extends window.HTMLElement {
   }
 
   connectedCallback() {
+    if (!this.hasAttribute('disabled')) {
+      this.enable();
+    }
+
     this.setAttribute('role', 'button');
 
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);
@@ -166,8 +168,10 @@ class MediaChromeButton extends window.HTMLElement {
   }
 
   disconnectedCallback() {
+    this.disable();
+
     const mediaControllerId = this.getAttribute(
-      MediaUIAttributes.MEDIA_CONTROLLER
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       const mediaControllerEl = document.getElementById(mediaControllerId);

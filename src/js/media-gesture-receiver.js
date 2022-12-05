@@ -1,4 +1,9 @@
-import { MediaUIAttributes, MediaUIEvents, PointerTypes } from './constants.js';
+import {
+  MediaUIAttributes,
+  MediaUIEvents,
+  MediaStateReceiverAttributes,
+  PointerTypes
+} from './constants.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { closestComposedNode } from './utils/element-utils.js';
 import {
@@ -21,7 +26,7 @@ class MediaGestureReceiver extends window.HTMLElement {
   // NOTE: Currently "baking in" actions + attrs until we come up with
   // a more robust architecture (CJP)
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_CONTROLLER, MediaUIAttributes.MEDIA_PAUSED];
+    return [MediaStateReceiverAttributes.MEDIA_CONTROLLER, MediaUIAttributes.MEDIA_PAUSED];
   }
 
   constructor(options = {}) {
@@ -45,7 +50,7 @@ class MediaGestureReceiver extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaUIAttributes.MEDIA_CONTROLLER) {
+    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
@@ -62,7 +67,7 @@ class MediaGestureReceiver extends window.HTMLElement {
     this.setAttribute('aria-hidden', true);
 
     const mediaControllerEl = getMediaControllerEl(this);
-    if (this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER)) {
+    if (this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER)) {
       mediaControllerEl?.associateElement?.(this);
     }
 
@@ -72,7 +77,7 @@ class MediaGestureReceiver extends window.HTMLElement {
 
   disconnectedCallback() {
     const mediaControllerEl = getMediaControllerEl(this);
-    if (this.getAttribute(MediaUIAttributes.MEDIA_CONTROLLER)) {
+    if (this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER)) {
       mediaControllerEl?.unassociateElement?.(this);
     }
 
@@ -146,7 +151,7 @@ class MediaGestureReceiver extends window.HTMLElement {
 
 function getMediaControllerEl(controlEl) {
   const mediaControllerId = controlEl.getAttribute(
-    MediaUIAttributes.MEDIA_CONTROLLER
+    MediaStateReceiverAttributes.MEDIA_CONTROLLER
   );
   if (mediaControllerId) {
     return document.getElementById(mediaControllerId);

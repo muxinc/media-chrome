@@ -1,6 +1,4 @@
-// Consider moving this to a more generic utils module
-const isValidNumber = (x) =>
-  typeof x === 'number' && !Number.isNaN(x) && Number.isFinite(x);
+import { isValidNumber } from './utils.js';
 
 const UnitLabels = [
   {

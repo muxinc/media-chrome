@@ -34,7 +34,7 @@ Load the module in the `<head>` of your HTML page. Note the `type="module"`, tha
 > Modules are always loaded asynchronously by the browser, so it's ok to load them in the head 👍
 
 ```html
-<script type="module" src="https://unpkg.com/media-chrome"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0/+esm"></script>
 ```
 
 ### Option 2: Bundled via npm

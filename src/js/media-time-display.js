@@ -61,13 +61,20 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   constructor() {
     super();
-    this.enable();
   }
 
   connectedCallback() {
+    if (!this.hasAttribute('disabled')) {
+      this.enable();
+    }
+
     this.setAttribute('role', 'progressbar');
     this.setAttribute('aria-label', nouns.PLAYBACK_TIME());
     super.connectedCallback();
+  }
+
+  disconnectedCallback() {
+    this.disable();
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
