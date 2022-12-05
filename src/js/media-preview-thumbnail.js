@@ -29,6 +29,9 @@ template.innerHTML = `
   <img crossorigin loading="eager" decoding="async" />
 `;
 
+/**
+ * @extends {HTMLElement}
+ */
 class MediaPreviewThumbnail extends window.HTMLElement {
   static get observedAttributes() {
     return [

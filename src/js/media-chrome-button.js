@@ -66,6 +66,9 @@ template.innerHTML = `
 </style>
 `;
 
+/**
+ * @extends {HTMLElement}
+ */
 class MediaChromeButton extends window.HTMLElement {
   static get observedAttributes() {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
@@ -120,7 +123,7 @@ class MediaChromeButton extends window.HTMLElement {
   enable() {
     this.addEventListener('click', this.#clickListener);
     this.addEventListener('keydown', this.#keydownListener);
-    this.setAttribute('tabindex', 0);
+    this.setAttribute('tabindex', '0');
   }
 
   disable() {
@@ -180,7 +183,11 @@ class MediaChromeButton extends window.HTMLElement {
     return ['Enter', ' '];
   }
 
-  handleClick() {}
+  /**
+   * @abstract
+   * @argument {Event} e
+   */
+  handleClick(e) {}
 }
 
 defineCustomElement('media-chrome-button', MediaChromeButton);

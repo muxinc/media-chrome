@@ -22,6 +22,7 @@ export class MediaThemeElement extends window.HTMLElement {
     this.renderRoot = this.attachShadow({ mode: 'open' });
 
     const observer = new MutationObserver(() => this.render());
+    // @ts-ignore
     observer.observe(this, { attributes: true });
 
     this.createRenderer();
@@ -38,6 +39,7 @@ export class MediaThemeElement extends window.HTMLElement {
       const template = this.getRootNode()?.getElementById(templateId);
       if (template) return template;
     }
+    // @ts-ignore
     return this.#template ?? this.constructor.template;
   }
 
@@ -71,6 +73,7 @@ export class MediaThemeElement extends window.HTMLElement {
       this.renderer = new TemplateInstance(
         this.template,
         this.props,
+        // @ts-ignore
         this.constructor.processor
       );
 

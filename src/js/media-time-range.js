@@ -341,6 +341,7 @@ class MediaTimeRange extends MediaChromeRange {
 
   updateCurrentBox() {
     // If there are no elements in the current box no need for expensive style updates.
+    // @ts-ignore
     if (!this.#currentBox.assignedElements().length) return;
 
     const boxRatio = this.range.value / (this.range.max - this.range.min);
@@ -377,6 +378,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   #pointermoveHandler = (evt) => {
+    // @ts-ignore
     if ([...this.#boxes].some((b) => evt.composedPath().includes(b))) return;
 
     this.updatePointerBar(evt);
@@ -412,6 +414,7 @@ class MediaTimeRange extends MediaChromeRange {
   #offRangeHandler = (evt) => {
     if (
       !evt.composedPath().includes(this) ||
+      // @ts-ignore
       [...this.#boxes].some((b) => evt.composedPath().includes(b))
     ) {
       window.removeEventListener('pointermove', this.#offRangeHandler);

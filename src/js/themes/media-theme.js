@@ -20,6 +20,7 @@ class MediaTheme extends window.HTMLElement {
     this.shadowRoot.textContent = '';
 
     const template = document.createElement('template');
+    // @ts-ignore
     template.innerHTML = this.constructor.template;
 
     // Clone the template in the shadow dom

@@ -1,0 +1,20 @@
+{
+  "include": ["./src/js/**/*"],
+
+  "compilerOptions": {
+    "preserveWatchOutput": true,
+    "incremental": true,
+    "target": "es2020",
+    "lib": ["es2020", "DOM"],
+    "module": "es2020",
+    "allowJs": true,
+    "checkJs": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "sourceMap": true,
+    "outDir": "./dist/",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true
+  }
+}

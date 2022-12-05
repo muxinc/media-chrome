@@ -145,6 +145,9 @@ template.innerHTML = `
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
+/**
+ * @extends {HTMLElement}
+ */
 class MediaContainer extends window.HTMLElement {
   constructor() {
     super();
@@ -210,6 +213,7 @@ class MediaContainer extends window.HTMLElement {
     // Handles the case when the slotted media element is a slot element itself.
     // e.g. chaining media slots for media themes.
     let currentMedia = this.media;
+    /** @type {HTMLSlotElement} */
     let chainedSlot = this.querySelector(':scope > slot[slot=media]');
     if (chainedSlot) {
       chainedSlot.addEventListener('slotchange', () => {
@@ -240,11 +244,22 @@ class MediaContainer extends window.HTMLElement {
   }
 
   // First direct child with slot=media, or null
+  /**
+   * @returns {HTMLVideoElement &
+   * {buffered,
+   * webkitEnterFullscreen?,
+   * webkitExitFullscreen?,
+   * requestCast?,
+   * webkitShowPlaybackTargetPicker?,
+   * }}
+   */
   get media() {
+    /** @type {HTMLVideoElement} */
     let media = this.querySelector(':scope > [slot=media]');
 
     // Chaining media slots for media templates
     if (media?.nodeName == 'SLOT')
+      // @ts-ignore
       media = media.assignedElements({ flatten: true })[0];
 
     return media;
@@ -294,7 +309,10 @@ class MediaContainer extends window.HTMLElement {
     return resolveMediaPromise(media);
   }
 
-  mediaUnsetCallback() {
+  /**
+   * @abstract
+   */
+  mediaUnsetCallback(node) {
     // media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 
@@ -354,11 +372,13 @@ class MediaContainer extends window.HTMLElement {
     // when we get a tap, we want to unhide
     this.addEventListener('pointerup', (e) => {
       if (e.pointerType === 'touch') {
+        // @ts-ignore
         if ([this, this.media].includes(e.target) && !this.hasAttribute('user-inactive')) {
           setInactive();
         } else {
           scheduleInactive();
         }
+      // @ts-ignore
       } else if (e.composedPath().some(el => ['media-play-button', 'media-fullscreen-button'].includes(el?.nodeName?.toLowerCase()))) {
         scheduleInactive();
       }
@@ -376,6 +396,7 @@ class MediaContainer extends window.HTMLElement {
       window.clearTimeout(this._inactiveTimeout);
 
       // If hovering over something other than controls, we're free to make inactive
+      // @ts-ignore
       if ([this, this.media].includes(e.target)) {
         scheduleInactive();
       }

@@ -30,12 +30,19 @@ export const closestComposedNode = (childNode, selector) => {
 
 /**
  * Get or insert a CSS rule with a selector in an element containing <style> tags.
- * @param  {Element} styleParent
+ * @param  {Element|ShadowRoot} styleParent
  * @param  {string} selectorText
- * @return {CSSStyleRule|{ style: { setProperty: () => {} } }}
+ * @return {CSSStyleRule |
+ * { style: { setProperty: () => void,
+ * width?: string,
+ * height?: string,
+ * display?: string,
+ * transform?: string,
+ * }}}
  */
 export function getOrInsertCSSRule(styleParent, selectorText) {
   let style;
+  // @ts-ignore
   for (style of styleParent.querySelectorAll('style')) {
     // Catch this error. e.g. browser extension adds style tags.
     //   Uncaught DOMException: CSSStyleSheet.cssRules getter:

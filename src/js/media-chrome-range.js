@@ -192,6 +192,9 @@ template.innerHTML = `
   </div>
 `;
 
+/**
+ * @extends {HTMLElement}
+ */
 class MediaChromeRange extends window.HTMLElement {
   #thumbWidth;
 
@@ -209,10 +212,12 @@ class MediaChromeRange extends window.HTMLElement {
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
     this.container = this.shadowRoot.querySelector('#container');
+    /** @type {Omit<HTMLInputElement, "value" | "min" | "max"> &
+      * {value: number, min: number, max: number}} */
     this.range = this.shadowRoot.querySelector('#range');
     this.range.addEventListener('input', this.updateBar.bind(this));
 
-    this.#thumbWidth = parseInt(getComputedStyle(this).getPropertyValue('--media-range-thumb-width') || 10, 10);
+    this.#thumbWidth = parseInt(getComputedStyle(this).getPropertyValue('--media-range-thumb-width') || '10', 10);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -280,6 +285,7 @@ class MediaChromeRange extends window.HTMLElement {
     const colorArray = this.getBarColors();
 
     let gradientStr = 'linear-gradient(to right, ';
+    /** @type {number|string} */
     let prevPercent = 0;
     colorArray.forEach((color) => {
       if (color[1] < prevPercent) return;

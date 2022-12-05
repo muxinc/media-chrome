@@ -90,7 +90,7 @@ export const parseTracks = (trackOrTracks) => {
  * Translates a TextTrack-like object into a well-defined string representation for the TextTrack
  * @param {Object} obj - A TextTrack or TextTrack-like object
  * @param {string} [obj.label] - An optional label for the track.
- * @param {string} obj.language - The BCP-47 compliant string representing the language code of the track
+ * @param {string} [obj.language] - The BCP-47 compliant string representing the language code of the track
  * @returns {string} A string representing a TextTrack with the format: "language[:label]"
  */
 export const formatTextTrackObj = ({ label, language } = {}) => {
@@ -101,7 +101,7 @@ export const formatTextTrackObj = ({ label, language } = {}) => {
 /**
  * Translates a set of TextTracks into a well-defined, whitespace-separated string representation of the set
  * @see https://developer.mozilla.org/en-US/docs/Web/API/TextTrackList
- * @param {Array<TextTrack|object>|TextTracks} textTracks - A TextTracks object or an Array of TextTracks or TextTrack-like objects.
+ * @param {Array<TextTrack|object>|TextTrackList} textTracks - A TextTracks object or an Array of TextTracks or TextTrack-like objects.
  * @returns A string representing a set of TextTracks, separated by whitespace.
  */
 export const stringifyTextTrackList = (textTracks = []) => {
@@ -161,7 +161,7 @@ export const textTrackObjAsPred = (filterObj) => {
  * @see https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/mode
  * @see {@link parseTracks}
  * @param {string} mode - The desired mode for any matching TextTracks. Should be one of "disabled"|"hidden"|"showing"
- * @param {TextTracks|Array<TextTrack|Object>} tracks - A TextTracks object or array of TextTracks that should contain any matching TextTracks to update
+ * @param {TextTrackList|Array<TextTrack|Object>} tracks - A TextTracks object or array of TextTracks that should contain any matching TextTracks to update
  * @param {Array<string|Object>|string|Object} tracksToUpdate - A value representing a set of TextTracks
  */
 export const updateTracksModeTo = (mode, tracks = [], tracksToUpdate = []) => {
