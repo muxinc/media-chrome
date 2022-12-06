@@ -1,3 +1,29 @@
+## [0.16.1](https://github.com/muxinc/media-chrome/compare/v0.16.0...v0.16.1) (2022-12-06)
+
+
+### Bug Fixes
+
+* add a way to package media themes as web comp ([#375](https://github.com/muxinc/media-chrome/issues/375)) ([6857ee6](https://github.com/muxinc/media-chrome/commit/6857ee6f2b1604321b82a19688bbcafa840cf5cb))
+* improve CPU usage while playback ([#364](https://github.com/muxinc/media-chrome/issues/364)) ([fae329f](https://github.com/muxinc/media-chrome/commit/fae329f8290b0216584a4e0f3c7fdb114835c560))
+* inner template bug ([#381](https://github.com/muxinc/media-chrome/issues/381)) ([e20953a](https://github.com/muxinc/media-chrome/commit/e20953a4d8cdbaca5e04dcc6fbd6d6a0b5f6dbff))
+* utils clean up w/ added tests ([#373](https://github.com/muxinc/media-chrome/issues/373)) ([a7db995](https://github.com/muxinc/media-chrome/commit/a7db995b2c720bb401ac877fc95c6c323f889f62))
+
+
+### Features
+
+* Add HTML based Theme w/ minimal template language ([#362](https://github.com/muxinc/media-chrome/issues/362)) ([a4a4e2c](https://github.com/muxinc/media-chrome/commit/a4a4e2c20782926c0eaaaf16788f35e3af833b69))
+* add simple responsive theme ([684ddef](https://github.com/muxinc/media-chrome/commit/684ddefb3aaec463c2041e0e6bb2650538896dc7))
+* expose types ([#330](https://github.com/muxinc/media-chrome/issues/330)) ([5ae159f](https://github.com/muxinc/media-chrome/commit/5ae159f30e4c814cb910b64b12df30dd47254655))
+* listbox and listitem components ([#365](https://github.com/muxinc/media-chrome/issues/365)) ([15d0934](https://github.com/muxinc/media-chrome/commit/15d0934fcd112de39b2d830eb78f7cfc0518c686))
+* use Construcable CSSStyleSheets when available ([eb32514](https://github.com/muxinc/media-chrome/commit/eb32514f99d477d3bfc2260da65a8c0f101d38ed))
+
+
+### Reverts
+
+* undo changes to media-theme.js ([c565bc9](https://github.com/muxinc/media-chrome/commit/c565bc9b3a476542ddf49fe1df0a8209e4e43935))
+
+
+
 # [0.16.0](https://github.com/muxinc/media-chrome/compare/v0.15.1...v0.16.0) (2022-10-28)
 
 
