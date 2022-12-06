@@ -6,8 +6,7 @@
   "type": "module",
   "files": [
     "dist/*",
-    "README.md",
-    "examples/*"
+    "README.md"
   ],
   "scripts": {
     "format": "prettier --write .",
