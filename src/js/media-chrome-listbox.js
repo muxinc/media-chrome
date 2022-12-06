@@ -137,6 +137,13 @@ class MediaChromeListbox extends window.HTMLElement {
       this.enable();
     }
 
+    if (!this.hasAttribute('role')) {
+      // set listbox role on the media-chrome-listbox element itself
+      // this is to make sure that SRs announce listitems as being part
+      // of a listbox when focused
+      this.setAttribute('role', 'listbox');
+    }
+
     const mediaControllerId = this.getAttribute(
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
