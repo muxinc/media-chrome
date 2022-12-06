@@ -10,7 +10,11 @@ const STRING = 0;
 const PART = 1;
 
 export const defaultProcessor = {
-  processCallback(instance, parts, state) {
+  processCallback(
+    /** @type TemplateInstance */ instance,
+    /** @type [string, Part][] */ parts,
+    /** @type Record<string, any> */ state
+  ) {
     if (!state) return;
     for (const [expression, part] of parts) {
       if (expression in state) {
@@ -22,10 +26,7 @@ export const defaultProcessor = {
           typeof part.element[part.attributeName] === 'boolean'
         ) {
           part.booleanValue = value;
-        } else if (
-          typeof value === 'function' &&
-          part instanceof AttrPart
-        ) {
+        } else if (typeof value === 'function' && part instanceof AttrPart) {
           part.element[part.attributeName] = value;
         } else {
           part.value = value;
@@ -35,24 +36,35 @@ export const defaultProcessor = {
   },
 };
 
+/**
+ * @extends {DocumentFragment}
+ */
 export class TemplateInstance extends window.DocumentFragment {
   #parts;
   #processor;
-  constructor(template, state, processor = defaultProcessor) {
+
+  constructor(
+    /** @type HTMLTemplateElement */ template,
+    /** @type Record<string, any> */ state,
+    processor = defaultProcessor
+  ) {
     super();
+
     this.append(template.content.cloneNode(true));
     this.#parts = parse(this);
+
     this.#processor = processor;
     processor.createCallback?.(this, this.#parts, state);
     processor.processCallback(this, this.#parts, state);
   }
-  update(state) {
+
+  update(/** @type Record<string, any> */ state) {
     this.#processor.processCallback(this, this.#parts, state);
   }
 }
 
 // collect element parts
-export const parse = (element, parts = []) => {
+export const parse = (element, /** @type [string, Part][] */ parts = []) => {
   let type, value;
 
   for (let attr of element.attributes || []) {
@@ -102,8 +114,9 @@ export const parse = (element, parts = []) => {
 };
 
 // parse string with template fields
+/** @type Record<string, [number, string][]> */
 const mem = {};
-export const tokenize = (text) => {
+export const tokenize = (/** @type string */ text) => {
   let value = '',
     open = 0,
     tokens = mem[text],
@@ -157,8 +170,13 @@ export const tokenize = (text) => {
 const FRAGMENT = 11;
 
 export class Part {
+  get value() {
+    return '';
+  }
+
+  set value(val) {}
+
   toString() {
-    // @ts-ignore
     return this.value;
   }
 }
@@ -166,17 +184,22 @@ export class Part {
 const attrPartToList = new WeakMap();
 
 export class AttrPartList {
+  /** @type Array<AttrPart | string> */
   #items = [];
+
   [Symbol.iterator]() {
     return this.#items.values();
   }
+
   get length() {
     return this.#items.length;
   }
-  item(index) {
+
+  item(/** @type number */ index) {
     return this.#items[index];
   }
-  append(...items) {
+
+  append(/** @type Array<AttrPart | string> */ ...items) {
     for (const item of items) {
       if (item instanceof AttrPart) {
         attrPartToList.set(item, this);
@@ -184,6 +207,7 @@ export class AttrPartList {
       this.#items.push(item);
     }
   }
+
   toString() {
     return this.#items.join('');
   }
@@ -194,27 +218,38 @@ export class AttrPart extends Part {
   #element;
   #attributeName;
   #namespaceURI;
-  constructor(element, attributeName, namespaceURI) {
+
+  constructor(
+    /** @type Element */ element,
+    /** @type string */ attributeName,
+    /** @type string */ namespaceURI
+  ) {
     super();
     this.#element = element;
     this.#attributeName = attributeName;
     this.#namespaceURI = namespaceURI;
   }
+
   get #list() {
     return attrPartToList.get(this);
   }
+
   get attributeName() {
     return this.#attributeName;
   }
+
   get attributeNamespace() {
     return this.#namespaceURI;
   }
+
   get element() {
     return this.#element;
   }
+
   get value() {
     return this.#value;
   }
+
   set value(newValue) {
     if (this.#value === newValue) return; // save unnecessary call
     this.#value = newValue;
@@ -240,12 +275,15 @@ export class AttrPart extends Part {
       );
     }
   }
+
+  /** @type boolean */
   get booleanValue() {
     return this.#element.hasAttributeNS(
       this.#namespaceURI,
       this.#attributeName
     );
   }
+
   set booleanValue(value) {
     if (!this.#list || this.#list.length === 1) this.value = value ? '' : null;
     else throw new DOMException('Value is not fully templatized');
@@ -255,30 +293,38 @@ export class AttrPart extends Part {
 export class ChildNodePart extends Part {
   #parentNode;
   #nodes;
-  constructor(parentNode, nodes) {
+
+  constructor(/** @type Element */ parentNode, /** @type ChildNode[] */ nodes) {
     super();
     this.#parentNode = parentNode;
     this.#nodes = nodes ? [...nodes] : [new Text()];
   }
+
   get replacementNodes() {
     return this.#nodes;
   }
+
   get parentNode() {
     return this.#parentNode;
   }
+
   get nextSibling() {
     return this.#nodes[this.#nodes.length - 1].nextSibling;
   }
+
   get previousSibling() {
     return this.#nodes[0].previousSibling;
   }
+
   // FIXME: not sure why do we need string serialization here? Just because parent class has type DOMString?
   get value() {
     return this.#nodes.map((node) => node.textContent).join('');
   }
+
   set value(newValue) {
     this.replace(newValue);
   }
+
   replace(...nodes) {
     // replace current nodes with new nodes.
     const normalisedNodes = nodes
@@ -294,29 +340,34 @@ export class ChildNodePart extends Part {
           ? [node]
           : [new Text(node)]
       );
+
     if (!normalisedNodes.length) normalisedNodes.push(new Text(''));
+
     this.#nodes[0].before(...normalisedNodes);
+
     for (const oldNode of this.#nodes) {
       if (!normalisedNodes.includes(oldNode)) oldNode.remove();
     }
+
     this.#nodes = normalisedNodes;
-  }
-  replaceHTML(html) {
-    const fragment = this.parentNode.cloneNode();
-    fragment.innerHTML = html;
-    this.replace(fragment.childNodes);
   }
 }
 
 export class InnerTemplatePart extends ChildNodePart {
   directive;
-  constructor(parentNode, template) {
+
+  constructor(
+    /** @type Element */ parentNode,
+    /** @type HTMLTemplateElement */ template
+  ) {
     let directive =
       template.getAttribute('directive') || template.getAttribute('type');
+
     let expression =
       template.getAttribute('expression') ||
       template.getAttribute(directive) ||
       '';
+
     if (expression.startsWith('{{'))
       expression = expression.trim().slice(2, -2).trim();
 
