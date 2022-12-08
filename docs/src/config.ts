@@ -48,6 +48,7 @@ export const SIDEBAR: Sidebar = {
     Basics: [
       { text: 'Get started', link: 'en/get-started' },
       { text: 'Styling', link: 'en/styling' },
+      { text: 'Media slot', link: 'en/media-slot' },
     ],
     Guides: [
       { text: 'React usage', link: 'en/react' },
@@ -55,6 +56,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Position controls', link: 'en/position-controls' },
       { text: 'Responsive controls', link: 'en/responsive-controls' },
       { text: 'Keyboard shortcuts', link: 'en/keyboard-shortcuts' },
+      { text: 'Audio player', link: 'en/audio-player' },
     ],
     'Core Concepts': [
       { text: 'Media controller', link: 'en/media-controller' },
@@ -79,6 +81,10 @@ export const SIDEBAR: Sidebar = {
       { text: 'Time display', link: 'en/media-time-display' },
       { text: 'Time range', link: 'en/media-time-range' },
       { text: 'Volume range', link: 'en/media-volume-range' },
+      { text: 'Clip selector (extra)', link: 'en/media-clip-selector' },
+    ],
+    "Learn More": [
+      { text: 'In the wild', link: 'en/in-the-wild' },
     ],
     'Media States': [
       { text: 'Stream Type', link: 'en/stream-type' },

@@ -1,0 +1,34 @@
+---
+title: Media Chrome in the wild
+description: Links to other resources for all things Media Chrome and the ideas behind Media Chrome
+layout: ../../layouts/MainLayout.astro
+---
+
+<h2>Using Media Chrome</h2>
+
+Here are some projects and web applications that currently use Media Chrome:
+
+[Mux Player](https://mux.com/player)
+
+Player by Caffeine.tv on [brobible.com](https://brobible.com/sports/article/mike-tyson-made-30-million-biting-evander-holyfield/)
+
+
+
+<h2>Talks, blog posts and other resources</h2>
+
+Here are some resources that relate to the evolving ideas, development, & history of Media Chrome.
+
+[Designing a player for the context and UX you want](https://tmi.mux.com/sessions/designing-a-player-for-the-context-and-ux-you-want) -- Christian Pillsbury, TMI, 2022
+
+[Building the next generation of video players with Media Chrome](https://www.mux.com/blog/building-the-next-generation-of-video-players-with-media-chrome) -- Dylan Jhaveri, Mux blog, 2022
+
+[HTML, the Hero of the Web](https://www.mux.com/blog/building-the-next-generation-of-video-players-with-media-chrome) -- Wesley Luyten, Mux blog, 2022
+
+[Rip your player's face off](https://www.youtube.com/watch?v=N6Mh84SRoDg) -- Steve Heffernan, Demuxed, 2021
+
+[Accessibility & Media Players](https://www.youtube.com/watch?v=ckJm22pCP8g&t=2s) -- Christian Pillsbury, Demuxed, 2021
+
+[It's time to rebuild your player with web components](https://www.youtube.com/watch?v=qMcNDWyRw20) -- Steve Heffernan, Demuxed, 2020
+
+[Other browser APIs that are going to change video on the web](https://www.youtube.com/watch?v=TwnygSWmToc&t=860s) -- Steve Heffernan, Demuxed, 2015
+

@@ -124,26 +124,4 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 
 ## Compatible players
 
-Media Chrome will work with any HTML element that exposes the same API as HTML Media Elements (`<video>` and `<audio>`).
-
-Some "players" add on to existing video and audio elements, so nothing more is needed to work with Media Chrome. Other players need an additional custom element to translate the player's API to match the HTMLMediaElement's API.
-
-| Player                                                  | Notes                                                                                                                                                                                                  |
-| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [HLS.js](http://hlsjs.com/)                               | Nothing else needed. Can also use the [`<hls-video>` element](https://github.com/muxinc/hls-video-element). ([example](https://media-chrome.mux.dev/examples/media-elements/hls.html))                 |
-| [dash.js](https://github.com/Dash-Industry-Forum/dash.js) | Nothing else needed. Can also use the [`<dash-video>` element](https://github.com/Dash-Industry-Forum/dash-video-element). ([example](https://media-chrome.mux.dev/examples/media-elements/dash.html)) |
-| [Shaka Player](https://github.com/google/shaka-player)    | Nothing else needed.                                                                                                                                                                                   |
-| [video.js](https://github.com/videojs/video.js/)          | Requires the [`<videojs-video>` element](https://github.com/luwes/videojs-video-element). ([example](https://media-chrome.mux.dev/examples/media-elements/videojs.html))                               |
-| YouTube                                                   | Requires the [`<youtube-video>` element](https://github.com/muxinc/youtube-video-element). ([example](https://media-chrome.mux.dev/examples/media-elements/youtube.html))                              |
-| Vimeo                                                     | Requires the [`<vimeo-video>` element](https://github.com/luwes/vimeo-video-element). ([example](https://media-chrome.mux.dev/examples/media-elements/vimeo.html))                                     |
-| Wistia                                                    | Requires the [`<wistia-video>` element](https://github.com/luwes/wistia-video-element). ([example](https://media-chrome.mux.dev/examples/media-elements/wistia.html))                                  |
-| JW Player                                                 | Requires the [`<jwplayer-video>` element](https://github.com/luwes/jwplayer-video-element). ([example](https://media-chrome.mux.dev/examples/media-elements/jwplayer.html))                            |
-
-Be sure to include the `slot="media"` attribute in the player's tag.
-
-```html
-<media-controller>
-  <youtube-video slot="media" src="https://www.youtube.com/watch?v=rubNgGj3pYo">
-  </youtube-video>
-</media-controller>
-```
+Media Chrome will work with any HTML element that exposes the same API as HTML media elements (`<video>` and `<audio>`). See the guide for the [media slot](/en/media-slot) to learn more about how media elements work with the media slot
