@@ -54,7 +54,7 @@ Visit the [official documentation for Media Chrome](https://www.media-chrome.org
 
 ## Use with React
 
-While you technically can use Media Chrome elements directly with React, it can sometimes be a bit clunky to work with Web Components in React, and some things just don't feel idiomatic to the framework. To help with this, we've published some React wrapper components for all of our core Elements. You can read up on using them [here](https://www.media-chrome.org/en/react).
+While you technically can use Media Chrome elements directly with React, it can sometimes be a bit clunky to work with Web Components in React, and some things just don't feel idiomatic to the framework (for example: having to use `class=` instead of `className=`, see [React's official docs regarding web components](https://reactjs.org/docs/web-components.html) for more details). To help with this, we've published some React wrapper components for all of our core Elements. You can read up on using them [here](https://www.media-chrome.org/en/react).
 
 ## Why?
 
