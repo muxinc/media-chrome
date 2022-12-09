@@ -84,7 +84,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Clip selector (extra)', link: 'en/media-clip-selector' },
     ],
     "Learn More": [
-      { text: 'In the wild', link: 'en/in-the-wild' },
+      { text: 'Showcase', link: 'en/showcase' },
     ],
     'Media States': [
       { text: 'Stream Type', link: 'en/stream-type' },

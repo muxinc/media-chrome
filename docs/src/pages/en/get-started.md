@@ -124,4 +124,4 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 
 ## Compatible players
 
-Media Chrome will work with any HTML element that exposes the same API as HTML media elements (`<video>` and `<audio>`). See the guide for the [media slot](/en/media-slot) to learn more about how media elements work with the media slot
+Media Chrome will work with any HTML element that exposes the same API as HTML media elements (`<video>` and `<audio>`). See the guide for the [media slot](/en/media-slot) to learn more about how media elements work with the media slot.

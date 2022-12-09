@@ -1,20 +1,22 @@
 ---
-title: Media Chrome in the wild
+title: Media Chrome Showcase
 description: Links to other resources for all things Media Chrome and the ideas behind Media Chrome
 layout: ../../layouts/MainLayout.astro
 ---
 
-<h2>Using Media Chrome</h2>
+## Who's using Media Chrome
 
 Here are some projects and web applications that currently use Media Chrome:
 
-[Mux Player](https://mux.com/player)
+[Mux Player](https://mux.com/player). Mux's in-house video player uses Media Chrome under the hood. In addition to the linked product page, Mux Player is also [open source under Mux Elements](https://github.com/muxinc/elements/tree/main/packages/mux-player).
+
+<img src="/public/mux-player-media-chrome.png" width="500" alt="Mux Player built with Media Chrome" />
 
 Player by Caffeine.tv on [brobible.com](https://brobible.com/sports/article/mike-tyson-made-30-million-biting-evander-holyfield/)
 
+<img src="/public/caffeine-tv-media-chrome.png" width="500" alt="Caffeine TV player built with Media Chrome" />
 
-
-<h2>Talks, blog posts and other resources</h2>
+## Talks and writing
 
 Here are some resources that relate to the evolving ideas, development, & history of Media Chrome.
 
