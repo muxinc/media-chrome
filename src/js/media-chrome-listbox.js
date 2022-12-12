@@ -42,6 +42,11 @@ class MediaChromeListbox extends window.HTMLElement {
 
     this.#slot.addEventListener('slotchange', () => {
       this.#assignedElements = this.#slot.assignedElements();
+
+      if (this.#assignedElements.length === 1 && this.#assignedElements[0].nodeName.toLowerCase() === 'slot') {
+        this.#assignedElements = this.#assignedElements[0].assignedElements();
+      }
+
       const els = this.#items;
       const activeEls = els.some(el => el.getAttribute('tabindex') === '0');
 
