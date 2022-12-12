@@ -66,7 +66,9 @@ class MediaChromeListbox extends window.HTMLElement {
         elToSelect = els[0];
       }
 
-      elToSelect.setAttribute('tabindex', 0);
+      if (elToSelect) {
+        elToSelect.setAttribute('tabindex', 0);
+      }
     });
   }
 
