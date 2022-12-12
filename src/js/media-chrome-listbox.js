@@ -13,7 +13,7 @@ template.innerHTML = `
     list-style: none;
   }
 </style>
-<ul tabindex="0" role="listbox">
+<ul tabindex="0">
   <slot></slot>
 </ul>
 `;
@@ -79,6 +79,10 @@ class MediaChromeListbox extends window.HTMLElement {
 
   get selectedOptions() {
     return this.#items.filter(el => el.getAttribute('aria-selected') === 'true');
+  }
+
+  focus() {
+    this.selectedOptions[0]?.focus();
   }
 
   #clickListener = (e) => {
