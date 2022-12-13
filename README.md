@@ -5,7 +5,7 @@ Your media player's dancing suit. :man_dancing:
 Fully customizable media player controls using web components (native custom elements).
 
 - [x] Compatible with any javascript framework (React, Angular, Svelte, etc.)
-- [x] Compatible with the `<video>` and `<audio>` elements and [a lot of players](https://www.media-chrome.org/en/media-slot) (YouTube, HLS.js, and more)
+- [x] Compatible with the `<video>` and `<audio>` elements and [a lot of players](https://media-chrome.org/en/media-slot) (YouTube, HLS.js, and more)
 - [x] Simple HTML to add/remove controls
 - [x] Simple CSS to style the controls
 
@@ -13,7 +13,7 @@ _From [Mux](https://mux.com?utm_source=github&utm_medium=social&utm_campaign=med
 
 ## Documentation
 
-Visit the [official documentation for Media Chrome](https://www.media-chrome.org/en/get-started) for the latest up-to-date usage instructions.
+Visit the [official documentation for Media Chrome](https://media-chrome.org/en/get-started) for the latest up-to-date usage instructions.
 
 ## Video Example
 
@@ -52,9 +52,36 @@ Visit the [official documentation for Media Chrome](https://www.media-chrome.org
 
 #### <a href="https://media-chrome.mux.dev/examples/" target="_blank">See all of the repo examples in action.</a>
 
+## Audio Example
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/+esm"></script>
+
+<media-controller audio>
+  <audio
+    slot="media"
+    src="https://stream.mux.com/O4h5z00885HEucNNa1rV02wZapcGp01FXXoJd35AHmGX7g/audio.m4a"
+  ></audio>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display show-duration></media-time-display>
+    <media-time-range></media-time-range>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+  </media-control-bar>
+</media-controller>
+```
+
+#### Results (<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank">Try the CodePen example</a>)
+
+<a href="https://codepen.io/heff/pen/wvdyNWd?editors=1000" target="_blank">
+  <img width="410" alt="Media Chrome Audio Player Demo" src="./docs/public/assets/media-chrome-audio-player.png">
+</a>
+
 ## Use with React
 
-While you technically can use Media Chrome elements directly with React, it can sometimes be a bit clunky to work with Web Components in React, and some things just don't feel idiomatic to the framework (for example: having to use `class=` instead of `className=`, see [React's official docs regarding web components](https://reactjs.org/docs/web-components.html) for more details). To help with this, we've published some React wrapper components for all of our core Elements. You can read up on using them [here](https://www.media-chrome.org/en/react).
+While you technically can use Media Chrome elements directly with React, it can sometimes be a bit clunky to work with Web Components in React, and some things just don't feel idiomatic to the framework (for example: having to use `class=` instead of `className=`, see [React's official docs regarding web components](https://reactjs.org/docs/web-components.html) for more details). To help with this, we've published some React wrapper components for all of our core Elements. You can read up on using them [here](https://media-chrome.org/en/react).
 
 ## Why?
 
@@ -77,4 +104,4 @@ Web components. @heff spoke about [the potential of web components for video](ht
 ## Architecture
 
 - [Architecture Notes](./ARCHITECTURE.md)
-- [Architecture Diagrams](https://www.media-chrome.org/en/architecture-diagrams)
+- [Architecture Diagrams](https://media-chrome.org/en/architecture-diagrams)
