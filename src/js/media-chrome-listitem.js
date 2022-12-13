@@ -28,7 +28,7 @@ class MediaChromeListitem extends window.HTMLElement {
   ];
   }
 
-  constructor(options = {}) {
+  constructor() {
     super();
 
     const shadow = this.attachShadow({ mode: 'open' });

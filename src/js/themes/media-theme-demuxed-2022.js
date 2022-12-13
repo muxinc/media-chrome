@@ -8,9 +8,10 @@
 */
 
 import { defineCustomElement } from '../utils/defineCustomElement.js';
-import MediaTheme from './media-theme.js';
+import { MediaThemeElement } from '../media-theme-element.js';
 
-const template = `
+const template = document.createElement('template');
+template.innerHTML = `
 <style>
   :host {
     --primary-color: black;
@@ -361,7 +362,7 @@ const template = `
 </media-controller>
 `;
 
-class MediaThemeDemuxed extends MediaTheme {
+class MediaThemeDemuxed extends MediaThemeElement {
   static template = template;
   static get observedAttributes() {
     return ["stream-type"];

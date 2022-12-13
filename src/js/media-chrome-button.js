@@ -187,7 +187,7 @@ class MediaChromeButton extends window.HTMLElement {
    * @abstract
    * @argument {Event} e
    */
-  handleClick(e) {}
+  handleClick(e) {} // eslint-disable-line
 }
 
 defineCustomElement('media-chrome-button', MediaChromeButton);
