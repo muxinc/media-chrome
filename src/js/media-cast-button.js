@@ -64,7 +64,7 @@ class MediaCastButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_IS_CASTING) != null
         ? MediaUIEvents.MEDIA_EXIT_CAST_REQUEST

@@ -60,7 +60,7 @@ class MediaPlayButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
         ? MediaUIEvents.MEDIA_PLAY_REQUEST

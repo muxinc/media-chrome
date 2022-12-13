@@ -1,8 +1,7 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
 import { defineCustomElement } from './utils/defineCustomElement.js';
 import { Window as window, Document as document } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaStateReceiverAttributes, MediaUIEvents } from './constants.js';
-import { nouns } from './labels/labels.js';
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { parseTextTracksStr, parseTextTrackStr, formatTextTrackObj } from './utils/captions.js';
 
 
@@ -101,7 +100,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     this.#perTypeRender(this.#caps, 'cc');
   }
 
-  #onChange(e) {
+  #onChange() {
     const [newType, selectedOption] = this.selectedOptions[0]?.value?.split('!') ?? [];
     let currentlySelectedTrack = this.#caps.find(track => track.selected);
     let oldType = 'cc';

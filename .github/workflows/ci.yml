@@ -15,6 +15,7 @@ jobs:
           # this line is required for the setup-node action to be able to run the npm publish below.
           registry-url: 'https://registry.npmjs.org'
       - run: yarn install --frozen-lockfile
+      - run: yarn lint
       - run: yarn test
       - run: yarn build
       - run: npm run publish-release -- canary

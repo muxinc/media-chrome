@@ -312,7 +312,7 @@ class MediaContainer extends window.HTMLElement {
   /**
    * @abstract
    */
-  mediaUnsetCallback(node) {
+  mediaUnsetCallback() {
     // media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 

@@ -28,7 +28,7 @@ class MediaChromeListbox extends window.HTMLElement {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
-  constructor(options = {}) {
+  constructor() {
     super();
 
     const shadow = this.attachShadow({ mode: 'open' });
@@ -95,7 +95,7 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   #keydownListener = (e) => {
-    const { metaKey, altKey, key } = e;
+    const { metaKey, altKey } = e;
     if (metaKey || altKey) {
       this.removeEventListener('keyup', this.#keyupListener);
       return;
@@ -195,7 +195,6 @@ class MediaChromeListbox extends window.HTMLElement {
       item.setAttribute('aria-selected', 'true');
     }
 
-    const event = new Event('change');
     this.dispatchEvent(new Event('change'));
   }
 

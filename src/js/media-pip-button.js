@@ -57,7 +57,7 @@ class MediaPipButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_IS_PIP) != null
         ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST

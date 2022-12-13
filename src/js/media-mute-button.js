@@ -79,7 +79,7 @@ class MediaMuteButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off'
         ? MediaUIEvents.MEDIA_UNMUTE_REQUEST

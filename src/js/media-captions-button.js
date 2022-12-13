@@ -112,7 +112,7 @@ class MediaCaptionsButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     toggleSubsCaps(this);
   }
 }

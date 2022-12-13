@@ -34,7 +34,7 @@ class MediaAirplayButton extends MediaChromeButton {
     super.connectedCallback();
   }
 
-  handleClick(_e) {
+  handleClick() {
     const evt = new window.CustomEvent(MediaUIEvents.MEDIA_AIRPLAY_REQUEST, {
       composed: true,
       bubbles: true,

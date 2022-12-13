@@ -76,7 +76,7 @@ class MediaFullscreenButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null
         ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
