@@ -55,7 +55,8 @@ class MediaLiveButton extends MediaChromeButton {
     return [
       ...super.observedAttributes,
       MEDIA_PAUSED,
-      MEDIA_TIME_IS_LIVE
+      MEDIA_TIME_IS_LIVE,
+      MEDIA_STREAM_TYPE
     ];
   }
 

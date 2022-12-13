@@ -362,17 +362,19 @@ class MediaController extends MediaContainer {
         media.webkitShowPlaybackTargetPicker();
       },
       MEDIA_SEEK_TO_LIVE_REQUEST: (e, media) => {
-        if (!media.seekable) {
+        const seekable = media.seekable;
+
+        if (!seekable) {
           console.warn('MediaController: Media element does not support seeking to live.');
           return;
         }
 
-        if (!media.seekable.length) {
+        if (!seekable.length) {
           console.warn('MediaController: Media is unable to seek to live.');
           return;
         }
 
-        media.currentTime = media.seekable.end(media.seekable.length - 1);
+        media.currentTime = seekable.end(seekable.length - 1);
       }
     };
 
@@ -1005,20 +1007,21 @@ const Delegates = {
     if (!media) return false;
 
     const streamIsLive = controller.getAttribute(MediaUIAttributes.MEDIA_STREAM_TYPE) === 'live';
+    const seekable = media.seekable;
 
     // If there's no way to seek, assume the media element is keeping it "live"
-    if (streamIsLive && !media.seekable) {
+    if (streamIsLive && !seekable) {
       return true;
     }
 
-    if (media.seekable.length === 0) {
+    if (seekable.length === 0) {
       return false;
     }
 
     // Default to 10 seconds
     // Assuming seekable range already accounts for appropriate buffer room
-    const liveTimeMargin = 10;
-    const liveTimeMarginAttr = controller.getAttribute('livetimemargin');
+    let liveTimeMargin = 10;
+    let liveTimeMarginAttr = controller.getAttribute('livetimemargin');
 
     if (liveTimeMarginAttr !== null) {
       liveTimeMarginAttr = Number(liveTimeMarginAttr);
@@ -1029,7 +1032,7 @@ const Delegates = {
     }
 
     const currentTime = media.currentTime;
-    const seekableEnd = media.seekable.end(media.seekable.length - 1);
+    const seekableEnd = seekable.end(seekable.length - 1);
 
     if (currentTime > seekableEnd - liveTimeMargin) {
       return true;
