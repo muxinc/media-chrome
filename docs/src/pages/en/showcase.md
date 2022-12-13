@@ -10,11 +10,11 @@ Here are some projects and web applications that currently use Media Chrome:
 
 [Mux Player](https://mux.com/player). Mux's in-house video player uses Media Chrome under the hood. In addition to the linked product page, Mux Player is also [open source under Mux Elements](https://github.com/muxinc/elements/tree/main/packages/mux-player).
 
-<img src="/public/mux-player-media-chrome.png" width="500" alt="Mux Player built with Media Chrome" />
+<img src="/mux-player-media-chrome.png" width="500" alt="Mux Player built with Media Chrome" />
 
 Player by Caffeine.tv on [brobible.com](https://brobible.com/sports/article/mike-tyson-made-30-million-biting-evander-holyfield/)
 
-<img src="/public/caffeine-tv-media-chrome.png" width="500" alt="Caffeine TV player built with Media Chrome" />
+<img src="/caffeine-tv-media-chrome.png" width="500" alt="Caffeine TV player built with Media Chrome" />
 
 ## Talks and writing
 

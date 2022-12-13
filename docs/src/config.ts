@@ -81,7 +81,6 @@ export const SIDEBAR: Sidebar = {
       { text: 'Time display', link: 'en/media-time-display' },
       { text: 'Time range', link: 'en/media-time-range' },
       { text: 'Volume range', link: 'en/media-volume-range' },
-      { text: 'Clip selector (extra)', link: 'en/media-clip-selector' },
     ],
     "Learn More": [
       { text: 'Showcase', link: 'en/showcase' },
