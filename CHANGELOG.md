@@ -1,3 +1,26 @@
+## [0.16.2](https://github.com/muxinc/media-chrome/compare/v0.16.1...v0.16.2) (2022-12-13)
+
+
+### Bug Fixes
+
+* add listbox role on listbox element itself ([92e702f](https://github.com/muxinc/media-chrome/commit/92e702f56235d60af9898543eccafd7db3f19c06))
+* lint errors and add to CI/CD ([c571239](https://github.com/muxinc/media-chrome/commit/c571239d9ec8a52324269a24017c12e13e48dabc))
+* listbox may not have a nextOption ([50d92a3](https://github.com/muxinc/media-chrome/commit/50d92a3f713ddc62da80f988e250b6af5a4576c9))
+* MEDIA_CONTROLLER moved to MediaStateReceiverAttributes ([9eb52c3](https://github.com/muxinc/media-chrome/commit/9eb52c3f70407cd51da7887e9e5f9a48a0f804d6))
+* remove Demuxed theme 2022 from MC bundle ([33d697c](https://github.com/muxinc/media-chrome/commit/33d697cdde818193dcb40a37fc0f31e010a7ffed))
+* typescript errors ([983ed78](https://github.com/muxinc/media-chrome/commit/983ed78b7ffc411382b8411f110d9da1046cc2d6))
+* use new MediaThemeElement for Demuxed theme ([4a9327b](https://github.com/muxinc/media-chrome/commit/4a9327bbaf9c54f80d5bdc25dfefbd4fd95f469c))
+
+
+### Features
+
+* add a selectedOptions getter to listbox ([3629c87](https://github.com/muxinc/media-chrome/commit/3629c87e19aa284fddf036354ad9e701847fc6f3))
+* add change event to listbox ([4ddb26e](https://github.com/muxinc/media-chrome/commit/4ddb26e6f35255f4c1bf912c985a89d08d68b417))
+* add value prop/attr to listitem ([542ae92](https://github.com/muxinc/media-chrome/commit/542ae92de2cf13ef7bb76b2e2b8c8625dfe759bd))
+* Captions/Subtitles List ([d12f6fb](https://github.com/muxinc/media-chrome/commit/d12f6fb7d226b4a47a5d29703b6e7a2c3fd9cc2c))
+
+
+
 ## [0.16.1](https://github.com/muxinc/media-chrome/compare/v0.16.0...v0.16.1) (2022-12-06)
 
 
