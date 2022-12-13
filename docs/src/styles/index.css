@@ -234,6 +234,14 @@ article > section iframe {
   aspect-ratio: 16 / 9;
 }
 
+article > section ul {
+  list-style: disc;
+}
+
+article > section ol {
+  list-style: decimal;
+}
+
 a > code {
   position: relative;
   color: var(--theme-text-accent);
