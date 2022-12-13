@@ -24,7 +24,7 @@ In this example, Media controller will:
 * Understand the current state of the `<video>` element by using the known props
 * Call methods on the `<video>` element like `play()`, `pause()`, etc.
 
-The superpower of Media Chrome is that the media slot does not have to be a `<video>` element. It can be any HTML element that [implements the HTML5 Video Element API](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video).
+The superpower of Media Chrome is that the media slot does not have to be a `<video>` element. It can be any HTML element that [implements the HTML5 Video Element API](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/video). See the list of Media Elements below for examples of compatible elements that can be used with `slot="media"`.
 
 
 <h2>Media Elements</h2>
