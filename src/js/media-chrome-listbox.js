@@ -68,6 +68,7 @@ class MediaChromeListbox extends window.HTMLElement {
 
       if (elToSelect) {
         elToSelect.setAttribute('tabindex', 0);
+        elToSelect.setAttribute('aria-selected', 'true');
       }
     });
   }
