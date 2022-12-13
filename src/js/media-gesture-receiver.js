@@ -136,9 +136,9 @@ class MediaGestureReceiver extends window.HTMLElement {
    * @abstract
    * @argument {Event} e
    */
-  handleTap() {}
+  handleTap(e) {} // eslint-disable-line
 
-  handleMouseClick() {
+  handleMouseClick(e) { // eslint-disable-line
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
         ? MediaUIEvents.MEDIA_PLAY_REQUEST

@@ -312,7 +312,7 @@ class MediaContainer extends window.HTMLElement {
   /**
    * @abstract
    */
-  mediaUnsetCallback() {
+  mediaUnsetCallback(node) { // eslint-disable-line
     // media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 
