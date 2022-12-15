@@ -231,20 +231,14 @@ class MediaTimeRange extends MediaChromeRange {
       }
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
-      // Since our range's step is 1, floor the max value to ensure reasonable rendering
-      this.range.max = Math.floor(
-        this.mediaSeekableEnd ?? this.mediaDuration ?? 1000
-      );
+      this.range.max = this.mediaSeekableEnd ?? this.mediaDuration ?? 1000;
       updateAriaValueText(this);
       this.updateBar();
       this.updateCurrentBox();
     }
     if (attrName === MediaUIAttributes.MEDIA_SEEKABLE) {
       this.range.min = this.mediaSeekableStart ?? 0;
-      // Since our range's step is 1, floor the max value to ensure reasonable rendering
-      this.range.max = Math.floor(
-        this.mediaSeekableEnd ?? this.mediaDuration ?? 1000
-      );
+      this.range.max = this.mediaSeekableEnd ?? this.mediaDuration ?? 1000;
       updateAriaValueText(this);
       this.updateBar();
     }
