@@ -31,6 +31,7 @@
 <body>
   <main>
     <h1>Media Chrome Standard Video Usage Example</h1>
+    <button type="button" class="remove">Remove First Track</button>
     <media-captions-listbox title="Captions & Subtitles List" media-controller="mc" ></media-captions-listbox>
     <media-controller id="mc">
       <video
@@ -66,6 +67,11 @@
         <media-airplay-button></media-airplay-button>
       </media-control-bar>
     </media-controller>
+    <script>
+      document.querySelector('.remove').addEventListener('click', () => {
+        document.querySelector('video').firstElementChild?.remove();
+      });
+    </script>
     <div class="examples">
       <a href="../">View more examples</a>
     </div>
