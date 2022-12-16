@@ -3,6 +3,9 @@ import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { parseTextTracksStr, parseTextTrackStr, formatTextTrackObj } from './utils/captions.js';
 
+const compareTracks = (a, b) => {
+  return a.label === b.label && a.language === b.language;
+}
 
 class MediaCaptionsListbox extends MediaChromeListbox {
   #subs = [];
@@ -21,15 +24,19 @@ class MediaCaptionsListbox extends MediaChromeListbox {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_LIST && oldValue !== newValue) {
-      this.#subs = parseTextTracksStr(this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST) ?? '');
+
+      this.#subs = this.#perTypeUpdate(newValue, this.#subs);
+
       this.#render();
 
     } else if (attrName === MediaUIAttributes.MEDIA_CAPTIONS_LIST && oldValue !== newValue) {
-      this.#caps = parseTextTracksStr(this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST) ?? '');
+
+      this.#caps = this.#perTypeUpdate(newValue, this.#caps);
+
       this.#render();
 
     } else if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING && oldValue !== newValue) {
-      const selectedTrack = parseTextTrackStr(this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) ?? '');
+      const selectedTrack = parseTextTrackStr(newValue ?? '');
 
       this.#subs.forEach(track => {
         track.selected = track.language === selectedTrack.language && track.label === selectedTrack.label;
@@ -37,7 +44,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       this.#render();
 
     } else if (attrName === MediaUIAttributes.MEDIA_CAPTIONS_SHOWING && oldValue !== newValue) {
-      const selectedTrack = parseTextTrackStr(this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING) ?? '');
+      const selectedTrack = parseTextTrackStr(newValue ?? '');
 
       this.#caps.forEach(track => {
         track.selected = track.language === selectedTrack.language && track.label === selectedTrack.label;
@@ -65,6 +72,32 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     this.removeEventListener('change', this.#onChange);
 
     super.disconnectedCallback();
+  }
+
+  #perTypeUpdate(newValue, oldItems) {
+    const newItems = newValue ? parseTextTracksStr(newValue ?? '') : [];
+
+    const removedTracks = [];
+    const newTracks = [];
+
+    // find all the items that are no longer available
+    oldItems.forEach(track => {
+      if (!newItems.some(newTrack => compareTracks(newTrack, track))) {
+        removedTracks.push(track);
+      }
+    });
+    // find all the new items
+    newItems.forEach(track => {
+      if (!oldItems.some(newTrack => compareTracks(newTrack, track))) {
+        newTracks.push(track);
+      }
+    });
+
+    // remove the removed tracks from the DOM
+    removedTracks.forEach(track => track.el.remove());
+
+    // filter out the removed tracks and include the new ones
+    return oldItems.filter(track => !removedTracks.includes(track)).concat(newTracks);
   }
 
   #perTypeRender(tracks, type) {
@@ -95,8 +128,8 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 
   #render() {
-    this.#perTypeRender(this.#subs, 'subs');
     this.#perTypeRender(this.#caps, 'cc');
+    this.#perTypeRender(this.#subs, 'subs');
   }
 
   #onChange() {
