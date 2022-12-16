@@ -141,14 +141,16 @@ template.innerHTML = `
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
-const defaultBreakpoints = 's:0 sm:396 m:576 ml:960 l:1280 xl:1600 2xl:1920';
+const defaultBreakpoints = 's:0 sm:384 m:576 ml:960 l:1280 xl:1600 fhd:1920 qhd:2560 uhd:3840';
+
 const resizeCallback = (entries) => {
   for (const entry of entries) {
     const container = entry.target;
 
     if (!container.isConnected) continue;
 
-    const [size] = getBreakpoint(createBreakpointRanges(defaultBreakpoints), entry.contentRect);
+    const ranges = createBreakpointRanges(defaultBreakpoints);
+    const [size] = getBreakpoint(ranges, entry.contentRect);
     if (size !== container.getAttribute(MediaUIAttributes.MEDIA_CONTAINER_SIZE)) {
       if (size) {
         container.setAttribute(MediaUIAttributes.MEDIA_CONTAINER_SIZE, size);
