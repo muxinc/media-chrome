@@ -148,6 +148,14 @@
           <slot name="media" slot="media"></slot>
           <slot name="poster" slot="poster"></slot>
 
+          <div slot="top-chrome">
+            <media-control-bar>
+              <media-text-display>
+                {{streamType}}
+              </media-text-display>
+            </media-control-bar>
+          </div>
+
           <div class="ytp-gradient-bottom"></div>
           <media-time-range>
             <media-preview-thumbnail slot="preview"></media-preview-thumbnail>
