@@ -117,6 +117,12 @@ let err = (
   throw SyntaxError(`${msg} \`${frag}\` at ${prev.length}:${last.length}`);
 };
 
+/**
+ * @param  {number|Function} is
+ * @param  {number} [from]
+ * @param  {number} [l]
+ * @return {string}
+ */
 let skip = (is = 1, from = idx, l) => {
   if (typeof is == 'number') idx += is;
   else while ((l = is(cur.charCodeAt(idx)))) idx += l;
@@ -180,7 +186,7 @@ let token = (
     ((idx = from), prev?.(a, curPrec)));
 
 // right assoc is indicated by negative precedence (meaning go from right to left)
-let binary = (op, prec, right) =>
+let binary = (op, prec, right) => // @ts-ignore
   token(op, prec, (a, b) => a && (b = expr(prec - !!right)) && [op, a, b]);
 
 let unary = (op, prec, post) =>
