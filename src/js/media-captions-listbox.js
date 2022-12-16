@@ -10,6 +10,7 @@ const compareTracks = (a, b) => {
 class MediaCaptionsListbox extends MediaChromeListbox {
   #subs = [];
   #caps = [];
+  #offOption;
 
   static get observedAttributes() {
     return [
@@ -20,6 +21,16 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
     ];
+  }
+
+  constructor() {
+    super();
+
+    const offOption = document.createElement('media-chrome-listitem');
+
+    offOption.value = 'off';
+    offOption.textContent = 'Off';
+    this.#offOption = offOption;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -110,7 +121,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
         alreadyInDom = false;
 
         option.value = type + '!' + formatTextTrackObj(track);
-        option.innerHTML = track.label + (track.kind === 'captions' ? ' (cc)' : '');
+        option.textContent = track.label + (track.kind === 'captions' ? ' (cc)' : '');
       }
 
 
@@ -128,6 +139,10 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 
   #render() {
+    if (!this.contains(this.#offOption)) {
+      this.append(this.#offOption);
+    }
+
     this.#perTypeRender(this.#caps, 'cc');
     this.#perTypeRender(this.#subs, 'subs');
   }
