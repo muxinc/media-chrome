@@ -7,7 +7,8 @@ import { camelCase } from './utils/utils.js';
 export * from './utils/template-parts.js';
 
 const observedMediaAttributes = {
-  'media-stream-type': 'streamType'
+  'media-stream-type': 'streamType',
+  'media-container-size': 'containerSize'
 };
 
 /**
@@ -65,6 +66,7 @@ export class MediaThemeElement extends window.HTMLElement {
       ...Array.from(this.mediaController?.attributes ?? [])
         .filter(({ name }) => observedMediaAttributes[name])
     ];
+
     const props = {};
     for (let attr of observedAttributes) {
       const name = observedMediaAttributes[attr.name] ?? camelCase(attr.name);
@@ -74,6 +76,7 @@ export class MediaThemeElement extends window.HTMLElement {
         props[name] = false;
       }
     }
+
     return props;
   }
 
