@@ -143,6 +143,14 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       this.append(this.#offOption);
     }
 
+    if (!this.hasAttribute(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING) && !this.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING)) {
+      this.#offOption.setAttribute('aria-selected', 'true');
+      this.#offOption.setAttribute('tabindex', '0');
+    } else {
+      this.#offOption.setAttribute('aria-selected', 'false');
+      this.#offOption.setAttribute('tabindex', '-1');
+    }
+
     this.#perTypeRender(this.#caps, 'cc');
     this.#perTypeRender(this.#subs, 'subs');
   }
