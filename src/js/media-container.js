@@ -149,7 +149,8 @@ const resizeCallback = (entries) => {
 
     if (!container.isConnected) continue;
 
-    const ranges = createBreakpointRanges(defaultBreakpoints);
+    const breakpoints = container.getAttribute('containerbreakpoints') ?? defaultBreakpoints;
+    const ranges = createBreakpointRanges(breakpoints);
     const [size] = getBreakpoint(ranges, entry.contentRect);
     if (size !== container.getAttribute(MediaUIAttributes.MEDIA_CONTAINER_SIZE)) {
       if (size) {
