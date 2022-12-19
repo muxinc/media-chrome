@@ -1,7 +1,8 @@
 import { defineCustomElement } from '../utils/defineCustomElement.js';
-import MediaTheme from './media-theme.js';
+import { MediaThemeElement } from '../media-theme-element.js';
 
-const template = `
+const template = document.createElement('template');
+template.innerHTML = `
 <style>
   :host {
     --media-range-background: transparent;
@@ -408,7 +409,7 @@ const template = `
 </div>
 `;
 
-class MediaThemeWinamp extends MediaTheme {
+class MediaThemeWinamp extends MediaThemeElement {
   static template = template;
 }
 
