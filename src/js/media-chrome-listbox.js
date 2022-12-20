@@ -7,6 +7,28 @@ template.innerHTML = `
 <style>
   :host ul {
     list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    margin: 0;
+    padding: 0.5em;
+    /* background-color: var(--media-control-background, rgba(20,20,30, 0.7)); */
+    background-color: black;
+    color: #ffffff;
+  }
+
+  :host {
+    height: fit-content;
+  }
+
+  ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+    outline: 0;
+  }
+
+  ::slotted(media-chrome-listitem[aria-selected="true"]) {
+    /* background-color: var(--media-control-hover-background, rgba(50,50,70, 0.7)); */
+    background-color: rgba(255, 255, 255, 0.2);
   }
 </style>
 <ul tabindex="0">
