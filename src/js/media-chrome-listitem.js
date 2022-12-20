@@ -7,6 +7,13 @@ template.innerHTML = `
 <style>
   :host {
     display: list-item;
+    line-height: 1em;
+    padding: 0.5em;
+    margin: 0em;
+  }
+
+  ::slotted:not(:focus-visible) {
+    outline: none;
   }
 </style>
 <li>
