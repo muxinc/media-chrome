@@ -278,8 +278,8 @@ class MediaChromeListbox extends window.HTMLElement {
     const repeatedKey = this.#keysSoFar.split('').every(k => k === key);
 
     // if it's a repeat key, skip the current item
-    const after = els.slice(activeIndex + (repeatedKey ? 1 : 0)).filter(el => el.textContent.startsWith(this.#keysSoFar));
-    const before = els.slice(0, activeIndex - (repeatedKey ? 1 : 0)).filter(el => el.textContent.startsWith(this.#keysSoFar));
+    const after = els.slice(activeIndex + (repeatedKey ? 1 : 0)).filter(el => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
+    const before = els.slice(0, activeIndex - (repeatedKey ? 1 : 0)).filter(el => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
 
     let afterRepeated = [];
     let beforeRepeated = [];
