@@ -35,8 +35,8 @@ slotTemplate.innerHTML = `
     line-height: var(--media-live-indicator-icon-height);
   }
 
-  :host([${MEDIA_TIME_IS_LIVE}]) slot[name=indicator] > *,
-  :host([${MEDIA_TIME_IS_LIVE}]) ::slotted([slot=indicator]) {
+  :host(:not([${MEDIA_PAUSED}])[${MEDIA_TIME_IS_LIVE}]) slot[name=indicator] > *,
+  :host(:not([${MEDIA_PAUSED}])[${MEDIA_TIME_IS_LIVE}]) ::slotted([slot=indicator]) {
     fill: var(--media-live-indicator-icon-color, rgb(255, 0, 0));
     color: rgb(255, 0, 0);
   }
