@@ -7,7 +7,7 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
   :host {
-    display: block;
+    display: inline-block;
   }
 
   media-chrome-button:not(:focus-visible) {

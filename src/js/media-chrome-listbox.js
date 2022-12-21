@@ -12,9 +12,8 @@ template.innerHTML = `
     gap: 0.5em;
     margin: 0;
     padding: 0.5em;
-    /* background-color: var(--media-control-background, rgba(20,20,30, 0.7)); */
-    background-color: black;
-    color: #ffffff;
+    background-color: var(--media-control-background, rgba(20,20,30, .7));
+    color: var(--media-listbox-color, #ffffff);
   }
 
   :host {
@@ -27,8 +26,7 @@ template.innerHTML = `
   }
 
   ::slotted(media-chrome-listitem[aria-selected="true"]) {
-    /* background-color: var(--media-control-hover-background, rgba(50,50,70, 0.7)); */
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--media-listbox-selected-background, rgba(95,95,134, .7));
   }
 </style>
 <ul tabindex="0">
