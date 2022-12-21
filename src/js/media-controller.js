@@ -1020,21 +1020,21 @@ const Delegates = {
 
     // Default to 10 seconds
     // Assuming seekable range already accounts for appropriate buffer room
-    let liveTimeMargin = 10;
-    let liveTimeMarginAttr = controller.getAttribute('livetimemargin');
+    let liveThreshold = 10;
+    let liveThresholdAttr = controller.getAttribute('livethreshold');
 
-    if (liveTimeMarginAttr !== null) {
-      liveTimeMarginAttr = Number(liveTimeMarginAttr);
+    if (liveThresholdAttr !== null) {
+      liveThresholdAttr = Number(liveThresholdAttr);
 
-      if (!Number.isNaN(liveTimeMarginAttr)) {
-        liveTimeMargin = liveTimeMarginAttr;
+      if (!Number.isNaN(liveThresholdAttr)) {
+        liveThreshold = liveThresholdAttr;
       }
     }
 
     const currentTime = media.currentTime;
     const seekableEnd = seekable.end(seekable.length - 1);
 
-    if (currentTime > seekableEnd - liveTimeMargin) {
+    if (currentTime > seekableEnd - liveThreshold) {
       return true;
     }
 

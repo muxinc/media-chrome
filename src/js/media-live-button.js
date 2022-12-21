@@ -10,7 +10,7 @@ import { verbs } from './labels/labels.js';
 const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED, MEDIA_STREAM_TYPE } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
 
-const indicatorSVG = '<svg viewBox="0 0 4 4"><circle cx="2" cy="2" r="2"></circle></svg>';
+const indicatorSVG = '<svg viewBox="0 0 8 16"><circle cx="2" cy="8" r="2"></circle></svg>';
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
@@ -22,20 +22,17 @@ slotTemplate.innerHTML = `
 
   slot[name=indicator] > *,
   :host ::slotted([slot=indicator]) {
-    padding: var(--media-live-indicator-icon-padding, 0 5px 0 0);
-
     /* Override styles for icon-only buttons */
     min-width: auto;
 
     /* svgs */
     fill: var(--media-live-indicator-icon-color-off, rgb(118, 118, 118));
-    height: var(--media-live-indicator-icon-height, 5px);
-    width: var(--media-live-indicator-icon-width, 5px);
+    height: var(--media-live-indicator-icon-height, var(--media-button-icon-height, 24px));
     
     /* font icons */
     color: var(--media-live-indicator-icon-color-off, rgb(118, 118, 118));
-    font-size: 5px;
-    line-height: 5px;
+    font-size: var(--media-live-indicator-icon-height);
+    line-height: var(--media-live-indicator-icon-height);
   }
 
   :host([${MEDIA_TIME_IS_LIVE}]) slot[name=indicator] > *,
@@ -43,11 +40,11 @@ slotTemplate.innerHTML = `
     fill: var(--media-live-indicator-icon-color, rgb(255, 0, 0));
     color: rgb(255, 0, 0);
   }
-  
+
   </style>
 
   <slot name="indicator">${indicatorSVG}</slot>
-  <slot name="text">Live</slot>
+  <slot>Live</slot>
 `;
 
 class MediaLiveButton extends MediaChromeButton {
