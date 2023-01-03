@@ -1,3 +1,27 @@
+## [0.16.3](https://github.com/muxinc/media-chrome/compare/v0.16.2...v0.16.3) (2023-01-03)
+
+
+### Bug Fixes
+
+* **example:** captions listbox example should point at the correct vtt files ([5be0fc3](https://github.com/muxinc/media-chrome/commit/5be0fc3c2ccb76fda12c27e910766ab1c28392cc))
+* listbox should aria-selected the default selection ([9052072](https://github.com/muxinc/media-chrome/commit/9052072d1c31f55ad2b8fe097bd32ce1cab55c71))
+* **listbox:** do a null check for default selected element ([c4d4f6d](https://github.com/muxinc/media-chrome/commit/c4d4f6d39465f521a830d8155a71442d7c4ce8cf))
+* no need for rounding anymore, step=any ([011940c](https://github.com/muxinc/media-chrome/commit/011940c61c2bde67160b7750cca65251e7ead598)), closes [#394](https://github.com/muxinc/media-chrome/issues/394)
+
+
+### Features
+
+* listbox should support slotting a slot el ([563a453](https://github.com/muxinc/media-chrome/commit/563a453c8072dac503bb3f7718b76b8f8afa54f1))
+* media-chrome-menu-button ([0b4d625](https://github.com/muxinc/media-chrome/commit/0b4d6259eaef3ff4c2720cdeba29c8a052105023))
+
+
+### Reverts
+
+* Revert "Winamp theme checks (#403)" ([9605f02](https://github.com/muxinc/media-chrome/commit/9605f02184efd79b62a9f317dddb1be824f0f916)), closes [#403](https://github.com/muxinc/media-chrome/issues/403)
+* Revert "example: add Winamp theme (#401)" ([7836b25](https://github.com/muxinc/media-chrome/commit/7836b252fd2b30ab7e6a8166b89ecc7f283ec25d)), closes [#401](https://github.com/muxinc/media-chrome/issues/401)
+
+
+
 ## [0.16.2](https://github.com/muxinc/media-chrome/compare/v0.16.1...v0.16.2) (2022-12-13)
 
 
