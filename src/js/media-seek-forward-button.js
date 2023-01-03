@@ -1,9 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 import { getSlotted, updateIconText } from './utils/element-utils.js';
@@ -87,6 +83,8 @@ class MediaSeekForwardButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-seek-forward-button', MediaSeekForwardButton);
+if (!window.customElements.get('media-seek-forward-button')) {
+  window.customElements.define('media-seek-forward-button', MediaSeekForwardButton);
+}
 
 export default MediaSeekForwardButton;

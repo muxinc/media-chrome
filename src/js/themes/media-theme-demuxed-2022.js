@@ -7,7 +7,7 @@
 </media-theme-demuxed-2022>
 */
 
-import { defineCustomElement } from '../utils/defineCustomElement.js';
+import { window } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
@@ -396,6 +396,8 @@ class MediaThemeDemuxed extends MediaThemeElement {
   }
 }
 
-defineCustomElement('media-theme-demuxed-2022', MediaThemeDemuxed);
+if (!window.customElements.get('media-theme-demuxed-2022')) {
+  window.customElements.define('media-theme-demuxed-2022', MediaThemeDemuxed);
+}
 
 export default MediaThemeDemuxed;

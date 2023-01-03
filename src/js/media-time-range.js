@@ -1,9 +1,5 @@
 import MediaChromeRange from './media-chrome-range.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
@@ -454,6 +450,8 @@ class MediaTimeRange extends MediaChromeRange {
   }
 }
 
-defineCustomElement('media-time-range', MediaTimeRange);
+if (!window.customElements.get('media-time-range')) {
+  window.customElements.define('media-time-range', MediaTimeRange);
+}
 
 export default MediaTimeRange;

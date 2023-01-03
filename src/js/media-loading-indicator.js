@@ -1,10 +1,6 @@
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 const template = document.createElement('template');
@@ -147,6 +143,8 @@ class MediaLoadingIndicator extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-loading-indicator', MediaLoadingIndicator);
+if (!window.customElements.get('media-loading-indicator')) {
+  window.customElements.define('media-loading-indicator', MediaLoadingIndicator);
+}
 
 export default MediaLoadingIndicator;

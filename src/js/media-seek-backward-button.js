@@ -1,9 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 import { getSlotted, updateIconText } from './utils/element-utils.js';
@@ -83,6 +79,8 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-seek-backward-button', MediaSeekBackwardButton);
+if (!window.customElements.get('media-seek-backward-button')) {
+  window.customElements.define('media-seek-backward-button', MediaSeekBackwardButton);
+}
 
 export default MediaSeekBackwardButton;

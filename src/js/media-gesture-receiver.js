@@ -4,12 +4,8 @@ import {
   MediaStateReceiverAttributes,
   PointerTypes
 } from './constants.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
 import { closestComposedNode } from './utils/element-utils.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -159,6 +155,8 @@ function getMediaControllerEl(controlEl) {
   return closestComposedNode(controlEl, 'media-controller');
 }
 
-defineCustomElement('media-gesture-receiver', MediaGestureReceiver);
+if (!window.customElements.get('media-gesture-receiver')) {
+  window.customElements.define('media-gesture-receiver', MediaGestureReceiver);
+}
 
 export default MediaGestureReceiver;

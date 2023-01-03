@@ -8,11 +8,7 @@
   * Auto-hide controls on inactivity while playing
 */
 import MediaContainer from './media-container.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/utils.js';
@@ -1370,6 +1366,8 @@ function serializeTimeRanges(timeRanges = emptyTimeRanges) {
     .join(' ');
 }
 
-defineCustomElement('media-controller', MediaController);
+if (!window.customElements.get('media-controller')) {
+  window.customElements.define('media-controller', MediaController);
+}
 
 export default MediaController;

@@ -1,9 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -309,6 +305,8 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-chrome-listbox', MediaChromeListbox);
+if (!window.customElements.get('media-chrome-listbox')) {
+  window.customElements.define('media-chrome-listbox', MediaChromeListbox);
+}
 
 export default MediaChromeListbox;

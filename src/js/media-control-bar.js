@@ -4,11 +4,7 @@
   Auto position contorls in a line and set some base colors
 */
 import { MediaStateReceiverAttributes } from './constants.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -79,6 +75,8 @@ class MediaControlBar extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-control-bar', MediaControlBar);
+if (!window.customElements.get('media-control-bar')) {
+  window.customElements.define('media-control-bar', MediaControlBar);
+}
 
 export default MediaControlBar;

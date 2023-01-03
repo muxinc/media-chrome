@@ -1,7 +1,6 @@
 import './media-chrome-button.js';
 import './media-chrome-listbox.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaStateReceiverAttributes } from './constants.js';
 
 const template = document.createElement('template');
@@ -151,6 +150,8 @@ class MediaChromeMenuButton extends window.HTMLElement {
 
 }
 
-defineCustomElement('media-chrome-menu-button', MediaChromeMenuButton);
+if (!window.customElements.get('media-chrome-menu-button')) {
+  window.customElements.define('media-chrome-menu-button', MediaChromeMenuButton);
+}
 
 export default MediaChromeMenuButton;

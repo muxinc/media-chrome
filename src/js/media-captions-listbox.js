@@ -1,6 +1,5 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Window as window, Document as document } from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { parseTextTracksStr, parseTextTrackStr, formatTextTrackObj } from './utils/captions.js';
 
@@ -136,7 +135,8 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 }
 
-
-defineCustomElement('media-captions-listbox', MediaCaptionsListbox);
+if (!window.customElements.get('media-captions-listbox')) {
+  window.customElements.define('media-captions-listbox', MediaCaptionsListbox);
+}
 
 export default MediaCaptionsListbox;
