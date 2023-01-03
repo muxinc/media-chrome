@@ -1,6 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import { Document as document } from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { isCCOn, toggleSubsCaps } from './utils/captions.js';
@@ -117,6 +116,8 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-captions-button', MediaCaptionsButton);
+if (!window.customElements.get('media-captions-button')) {
+  window.customElements.define('media-captions-button', MediaCaptionsButton);
+}
 
 export default MediaCaptionsButton;

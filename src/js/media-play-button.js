@@ -1,9 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
@@ -71,6 +67,8 @@ class MediaPlayButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-play-button', MediaPlayButton);
+if (!window.customElements.get('media-play-button')) {
+  window.customElements.define('media-play-button', MediaPlayButton);
+}
 
 export default MediaPlayButton;

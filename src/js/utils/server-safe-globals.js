@@ -6,7 +6,12 @@ class EventTarget {
   }
 }
 
+class ResizeObserver {
+  observe() {}
+}
+
 const windowShim = {
+  ResizeObserver,
   HTMLElement: class HTMLElement extends EventTarget {},
   DocumentFragment: class DocumentFragment extends EventTarget {},
   customElements: {
@@ -44,6 +49,7 @@ export const isServer =
   * document?,
   * chrome?,
   * DocumentFragment?,
+  * ResizeObserver?
   * } }
   * */
 export const Window = isServer ? windowShim : window;
@@ -60,3 +66,5 @@ export const Window = isServer ? windowShim : window;
   * } }
   */
 export const Document = isServer ? documentShim : window.document;
+
+export { Window as window, Document as document };

@@ -1,5 +1,5 @@
 import MediaTextDisplay from './media-text-display.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { window } from './utils/server-safe-globals.js';
 import { formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
@@ -17,6 +17,8 @@ class MediaDurationDisplay extends MediaTextDisplay {
   }
 }
 
-defineCustomElement('media-duration-display', MediaDurationDisplay);
+if (!window.customElements.get('media-duration-display')) {
+  window.customElements.define('media-duration-display', MediaDurationDisplay);
+}
 
 export default MediaDurationDisplay;

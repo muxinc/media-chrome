@@ -1,5 +1,4 @@
-import { Window as window } from './utils/server-safe-globals.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { window } from './utils/server-safe-globals.js';
 import { TemplateInstance } from './utils/template-parts.js';
 import { processor } from './utils/template-processor.js';
 import { camelCase } from './utils/utils.js';
@@ -87,4 +86,6 @@ export class MediaThemeElement extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-theme', MediaThemeElement);
+if (!window.customElements.get('media-theme')) {
+  window.customElements.define('media-theme', MediaThemeElement);
+}

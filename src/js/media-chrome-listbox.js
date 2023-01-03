@@ -1,9 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -13,7 +9,7 @@ template.innerHTML = `
     list-style: none;
   }
 </style>
-<ul tabindex="0" role="listbox">
+<ul tabindex="0">
   <slot></slot>
 </ul>
 `;
@@ -42,6 +38,11 @@ class MediaChromeListbox extends window.HTMLElement {
 
     this.#slot.addEventListener('slotchange', () => {
       this.#assignedElements = this.#slot.assignedElements();
+
+      if (this.#assignedElements.length === 1 && this.#assignedElements[0].nodeName.toLowerCase() === 'slot') {
+        this.#assignedElements = this.#assignedElements[0].assignedElements();
+      }
+
       const els = this.#items;
       const activeEls = els.some(el => el.getAttribute('tabindex') === '0');
 
@@ -61,7 +62,10 @@ class MediaChromeListbox extends window.HTMLElement {
         elToSelect = els[0];
       }
 
-      elToSelect.setAttribute('tabindex', 0);
+      if (elToSelect) {
+        elToSelect.setAttribute('tabindex', 0);
+        elToSelect.setAttribute('aria-selected', 'true');
+      }
     });
   }
 
@@ -71,6 +75,10 @@ class MediaChromeListbox extends window.HTMLElement {
 
   get selectedOptions() {
     return this.#items.filter(el => el.getAttribute('aria-selected') === 'true');
+  }
+
+  focus() {
+    this.selectedOptions[0]?.focus();
   }
 
   #clickListener = (e) => {
@@ -297,6 +305,8 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-chrome-listbox', MediaChromeListbox);
+if (!window.customElements.get('media-chrome-listbox')) {
+  window.customElements.define('media-chrome-listbox', MediaChromeListbox);
+}
 
 export default MediaChromeListbox;

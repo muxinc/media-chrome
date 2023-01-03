@@ -1,9 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 const template = document.createElement('template');
@@ -97,6 +93,8 @@ class MediaTextDisplay extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-text-display', MediaTextDisplay);
+if (!window.customElements.get('media-text-display')) {
+  window.customElements.define('media-text-display', MediaTextDisplay);
+}
 
 export default MediaTextDisplay;

@@ -4,11 +4,7 @@
   Uses the "thumbnails" track of a video element to show an image relative to
   the video time given in the `time` attribute.
 */
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
 
@@ -146,6 +142,8 @@ class MediaPreviewThumbnail extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-preview-thumbnail', MediaPreviewThumbnail);
+if (!window.customElements.get('media-preview-thumbnail')) {
+  window.customElements.define('media-preview-thumbnail', MediaPreviewThumbnail);
+}
 
 export default MediaPreviewThumbnail;
