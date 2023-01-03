@@ -1,8 +1,4 @@
-import { defineCustomElement } from '../../utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from '../../utils/server-safe-globals.js';
+import { window, document } from '../../utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from '../../constants.js';
 
 const template = document.createElement('template');
@@ -495,6 +491,8 @@ class MediaClipSelector extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-clip-selector', MediaClipSelector);
+if (!window.customElements.get('media-clip-selector')) {
+  window.customElements.define('media-clip-selector', MediaClipSelector);
+}
 
 export default MediaClipSelector;

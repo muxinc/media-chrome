@@ -1,8 +1,4 @@
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -23,6 +19,8 @@ class MediaTitleBar extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-title-bar', MediaTitleBar);
+if (!window.customElements.get('media-title-bar')) {
+  window.customElements.define('media-title-bar', MediaTitleBar);
+}
 
 export default MediaTitleBar;

@@ -1,8 +1,4 @@
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
 
 const template = document.createElement('template');
@@ -75,6 +71,8 @@ class MediaPosterImage extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-poster-image', MediaPosterImage);
+if (!window.customElements.get('media-poster-image')) {
+  window.customElements.define('media-poster-image', MediaPosterImage);
+}
 
 export default MediaPosterImage;

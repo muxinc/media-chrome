@@ -1,5 +1,5 @@
 import MediaTextDisplay from './media-text-display.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { window } from './utils/server-safe-globals.js';
 import { formatAsTimePhrase, formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
@@ -137,6 +137,8 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 }
 
-defineCustomElement('media-time-display', MediaTimeDisplay);
+if (!window.customElements.get('media-time-display')) {
+  window.customElements.define('media-time-display', MediaTimeDisplay);
+}
 
 export default MediaTimeDisplay;

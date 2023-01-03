@@ -1,9 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
 
 const template = document.createElement('template');
@@ -331,6 +327,8 @@ class MediaChromeRange extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-chrome-range', MediaChromeRange);
+if (!window.customElements.get('media-chrome-range')) {
+  window.customElements.define('media-chrome-range', MediaChromeRange);
+}
 
 export default MediaChromeRange;

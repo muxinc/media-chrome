@@ -1,6 +1,5 @@
-import { Window as window } from './utils/server-safe-globals.js';
+import { window } from './utils/server-safe-globals.js';
 import MediaChromeRange from './media-chrome-range.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
 
@@ -66,6 +65,8 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 }
 
-defineCustomElement('media-volume-range', MediaVolumeRange);
+if (!window.customElements.get('media-volume-range')) {
+  window.customElements.define('media-volume-range', MediaVolumeRange);
+}
 
 export default MediaVolumeRange;
