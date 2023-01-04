@@ -84,7 +84,6 @@ class MediaController extends MediaContainer {
     // Track externally associated control elements
     this.mediaStateReceivers = [];
     this.associatedElementSubscriptions = new Map();
-    this.associatedElements = [];
     this.associateElement(this);
 
     // Capture request events from internal controls
