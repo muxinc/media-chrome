@@ -52,10 +52,18 @@ export const processor = {
       if (part instanceof InnerTemplatePart) {
         if (!part.directive) {
           // Transform short-hand if/partial attributes to directive & expression.
-          const directive = DirectiveNames.find((n) => part.template.hasAttribute(n));
+          let directive = DirectiveNames.find((n) => part.template.hasAttribute(n));
+          let expression = directive && part.template.getAttribute(directive);
+
+          // Transform block attributes to directive & expression.
+          const block = part.template.getAttribute('block');
+          if (block) {
+            [directive, expression] = block.split(/\s+(.*)/);
+          }
+
           if (directive) {
             part.directive = directive;
-            part.expression = part.template.getAttribute(directive);
+            part.expression = expression;
           }
         }
         Directives[part.directive]?.(part, state);

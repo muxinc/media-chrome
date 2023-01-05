@@ -1,5 +1,6 @@
 import { assert } from '@open-wc/testing';
-import { evaluateCondition, getParamValue } from '../../src/js/utils/template-processor.js';
+import { evaluateCondition, getParamValue, processor } from '../../src/js/utils/template-processor.js';
+import { TemplateInstance } from '../../src/js/utils/template-parts.js';
 
 describe('evaluateCondition', () => {
   it('can evaluate a simple boolean condition', () => {
@@ -38,4 +39,31 @@ describe('getParamValue', () => {
     assert.equal(getParamValue('360'), 360);
     assert.equal(getParamValue('myVar', { myVar: 'val' }), 'val');
   });
+});
+
+describe('processor', () => {
+
+  it('InnerTemplatePart: simple truthy if condition', async () => {
+    const template = document.createElement('template');
+    template.innerHTML = `<div>hello<template block="if x"> world</template>!</div>`;
+    const instance = new TemplateInstance(template, { x: false }, processor);
+    assert.equal(instance.childNodes[0].innerHTML, 'hello!');
+
+    instance.update({ x: true });
+    assert.equal(instance.childNodes[0].innerHTML, 'hello world!');
+  });
+
+  it('InnerTemplatePart: simple value if condition', async () => {
+    const template = document.createElement('template');
+    template.innerHTML = `<div>hello<template block="if x == 'hello'"> world</template>!</div>`;
+    const instance = new TemplateInstance(template, { x: false }, processor);
+    assert.equal(instance.childNodes[0].innerHTML, 'hello!');
+
+    instance.update({ x: 'hell' });
+    assert.equal(instance.childNodes[0].innerHTML, 'hello!');
+
+    instance.update({ x: 'hello' });
+    assert.equal(instance.childNodes[0].innerHTML, 'hello world!');
+  });
+
 });
