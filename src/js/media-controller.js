@@ -93,7 +93,16 @@ class MediaController extends MediaContainer {
 
     // Capture request events from internal controls
     const mediaUIEventHandlers = {
-      MEDIA_PLAY_REQUEST: () => this.media.play(),
+      MEDIA_PLAY_REQUEST: (e, media) => {
+        const streamType = Delegates[MediaUIAttributes.MEDIA_STREAM_TYPE](this);
+        const autoSeekToLive = this.getAttribute('autoseektolive');
+
+        if (streamType == StreamTypes.LIVE && autoSeekToLive !== 'off') {
+          mediaUIEventHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](e, media);
+        }
+
+        this.media.play();
+      },
       MEDIA_PAUSE_REQUEST: () => this.media.pause(),
       MEDIA_MUTE_REQUEST: () => (this.media.muted = true),
       MEDIA_UNMUTE_REQUEST: () => {
