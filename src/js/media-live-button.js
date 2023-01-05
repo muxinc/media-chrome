@@ -7,10 +7,10 @@ import {
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
-const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED, MEDIA_STREAM_TYPE } = MediaUIAttributes;
+const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
 
-const indicatorSVG = '<svg viewBox="0 0 8 16"><circle cx="2" cy="8" r="2"></circle></svg>';
+const indicatorSVG = '<svg viewBox="0 0 4 16"><circle cx="2" cy="8" r="2"></circle></svg>';
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
@@ -23,12 +23,9 @@ slotTemplate.innerHTML = `
 
     /* svgs */
     fill: var(--media-live-indicator-off-icon-color, rgb(118, 118, 118));
-    height: var(--media-live-indicator-icon-height, var(--media-button-icon-height, 24px));
     
     /* font icons */
     color: var(--media-live-indicator-off-icon-color, rgb(118, 118, 118));
-    font-size: var(--media-live-indicator-icon-height);
-    line-height: var(--media-live-indicator-icon-height);
   }
 
   :host(:not([${MEDIA_PAUSED}])[${MEDIA_TIME_IS_LIVE}]) slot[name=indicator] > *,
@@ -40,7 +37,8 @@ slotTemplate.innerHTML = `
   </style>
 
   <slot name="indicator">${indicatorSVG}</slot>
-  <slot>LIVE</slot>
+  <slot name="spacer">&nbsp;</slot>
+  <slot name="text">LIVE</slot>
 `;
 
 class MediaLiveButton extends MediaChromeButton {
@@ -48,8 +46,7 @@ class MediaLiveButton extends MediaChromeButton {
     return [
       ...super.observedAttributes,
       MEDIA_PAUSED,
-      MEDIA_TIME_IS_LIVE,
-      MEDIA_STREAM_TYPE
+      MEDIA_TIME_IS_LIVE
     ];
   }
 

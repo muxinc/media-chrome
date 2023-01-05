@@ -5,11 +5,9 @@ layout: ../../layouts/MainLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-live-button.js
 ---
 
-The Media Live Button does two things:
-1. Shows when the stream is live via an indicator (red dot, by default)
-2. Allows the viewer to seek back to the most current part of the stream by clicking on the button.
+The Media Live Button shows when the stream is live via an indicator (red dot, by default). It also allows the viewer to seek to the most current part of the stream by clicking on the button ("seek to live").
 
-<h3>Media is not live (default)</h3>
+<h3>Default: Media is not live</h3>
 
 <media-live-button></media-live-button>
 
@@ -25,31 +23,93 @@ The Media Live Button does two things:
 <media-live-button media-time-is-live></media-live-button>
 ```
 
-<h3>Alternate content</h3>
+<h3>Alternate text</h3>
 
 <media-live-button media-time-is-live>
-  <span slot="indicator">Indicator!</span>
-  <span>Hello</span>
+  <span slot="text">Hello!</span>
 </media-live-button>
 
 ```html
 <media-live-button>
-  <span slot="indicator">Indicator!</span>
-  <span>Hello</span>
+  <span slot="text">Hello</span>
 </media-pip-button>
+```
+
+<h3>Alternate indicator SVG</h3>
+
+<media-live-button media-time-is-live>
+  <svg slot="indicator" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
+</media-live-button>
+
+```html
+<media-live-button media-time-is-live>
+  <svg slot="indicator" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
+</media-live-button>
+```
+
+<h3>Alternate indicator text or font icon</h3>
+
+<media-live-button media-time-is-live>
+  <span slot="indicator">Hello!</span>
+</media-live-button>
+
+```html
+<media-live-button media-time-is-live>
+  <span slot="indicator">Hello!</span>
+</media-live-button>
+```
+
+<h3>Common Use: Text is also the indicator</h3>
+
+<style>
+  #textlive {
+    --media-live-indicator-off-icon-color: white;
+  }
+</style>
+<media-live-button id="textlive">
+  <span slot="indicator">LIVE</span>
+  <span slot="spacer"></span>
+  <span slot="text"></span>
+</media-live-button>
+<media-live-button id="textlive" media-time-is-live>
+  <span slot="indicator">LIVE</span>
+  <span slot="spacer"></span>
+  <span slot="text"></span>
+</media-live-button>
+
+```html
+<style>
+  #textlive {
+    --media-live-indicator-off-icon-color: white;
+  }
+</style>
+<media-live-button id="textlive">
+  <span slot="indicator">LIVE</span>
+  <span slot="spacer"></span>
+  <span slot="text"></span>
+</media-live-button>
 ```
 
 ## Attributes
 
-_None_
+| Name            | Type      | Default Value | Description |
+| --------------- | --------- | ------------- | ----------- |
+| `media-time-is-live` | `boolean` | `false`| Include when the media time is at or close to the most current time or _live edge_. Clicking the button will not seek to live when true. [_Set automatically by media-controller._] |
+| `media-paused` | `boolean` | `false`| Include when the media is paused. The button will unpause the video if paused when seeking to live. [_Set automatically by media-controller._] |
 
 ## Slots
 
-| Name    | Default Type | Description                                                                                               |
-| ------- | ------------ | --------------------------------------------------------------------------------------------------------- |
-| `enter` | `svg`        | An element shown when the media is not in PIP mode and pressing the button will trigger entering PIP mode |
-| `exit`  | `svg`        | An element shown when the media is in PIP and pressing the button will trigger exiting PIP mode           |
+| Name    | Default Type | Description |
+| ------- | ------------ | ----------- |
+| `text` | `text` | The text content of the button, with a default of "LIVE". |
+| `indicator`  | `svg` | The default is an SVG of a circle that changes to red when the video or audio is live. Can be replaced wiht your own SVG or font icon. |
+| `spacer`  | `text` | A simple text space (`&nbsp;`) between the indicator and the text. |
 
-## Styling
+## CSS Vars
 
 See our [styling docs](./styling#Buttons)
+
+| Var    | Description |
+| ------ | ----------- |
+| `--media-live-indicator-icon-color` | The color of the indicator icon when the audio or video is live  |
+| `--media-live-indicator-off-icon-color` | The color of the indicator icon when the audio or video is *not* live  |
