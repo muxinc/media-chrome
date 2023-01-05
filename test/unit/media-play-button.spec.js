@@ -4,7 +4,7 @@ import { MediaUIAttributes, MediaUIEvents } from '../../src/js/constants';
 import { verbs } from '../../src/js/labels/labels';
 import '../../src/js/media-play-button';
 
-describe('<media-play-button/>', () => {
+describe('<media-play-button>', () => {
   it('passes the a11y audit', async () => {
     const el = await fixture(`<media-play-button></media-play-button>`);
     await expect(el).shadowDom.to.be.accessible();
