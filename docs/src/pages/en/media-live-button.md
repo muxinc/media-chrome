@@ -37,13 +37,16 @@ The Media Live Button shows when the stream is live via an indicator (red dot, b
 
 <h3>Alternate indicator SVG</h3>
 
+<media-live-button>
+  <svg slot="indicator" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
+</media-live-button>
 <media-live-button media-time-is-live>
-  <svg slot="indicator" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
+  <svg slot="indicator" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
 </media-live-button>
 
 ```html
 <media-live-button media-time-is-live>
-  <svg slot="indicator" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
+  <svg slot="indicator" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
 </media-live-button>
 ```
 
@@ -111,5 +114,5 @@ See our [styling docs](./styling#Buttons)
 
 | Var    | Description |
 | ------ | ----------- |
-| `--media-live-indicator-icon-color` | The color of the indicator icon when the audio or video is live  |
-| `--media-live-indicator-off-icon-color` | The color of the indicator icon when the audio or video is *not* live  |
+| `--media-live-indicator-color` | The color of the indicator icon when the audio or video is live  |
+| `--media-live-button-icon-color` | The color of the indicator icon when the audio or video is *not* live  |

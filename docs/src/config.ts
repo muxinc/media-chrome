@@ -79,6 +79,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Time display', link: 'en/media-time-display' },
       { text: 'Time range', link: 'en/media-time-range' },
       { text: 'Volume range', link: 'en/media-volume-range' },
+      { text: 'Live Indicator/Button', link: 'en/media-live-button' },
     ],
     'Media States': [
       { text: 'Stream Type', link: 'en/stream-type' },

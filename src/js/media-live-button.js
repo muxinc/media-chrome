@@ -5,12 +5,11 @@ import {
   Document as document,
 } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
 
 const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
 
-const indicatorSVG = '<svg viewBox="0 0 4 16"><circle cx="2" cy="8" r="2"></circle></svg>';
+const indicatorSVG = '<svg viewBox="0 0 8 16"><circle cx="4" cy="8" r="2"></circle></svg>';
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
@@ -20,25 +19,24 @@ slotTemplate.innerHTML = `
   :host ::slotted([slot=indicator]) {
     /* Override styles for icon-only buttons */
     min-width: auto;
-
-    /* svgs */
-    fill: var(--media-live-indicator-off-icon-color, rgb(118, 118, 118));
-    
-    /* font icons */
-    color: var(--media-live-indicator-off-icon-color, rgb(118, 118, 118));
+    fill: var(--media-live-button-icon-color, rgb(140, 140, 140));
+    color: var(--media-live-button-icon-color, rgb(140, 140, 140));
   }
 
   :host(:not([${MEDIA_PAUSED}])[${MEDIA_TIME_IS_LIVE}]) slot[name=indicator] > *,
   :host(:not([${MEDIA_PAUSED}])[${MEDIA_TIME_IS_LIVE}]) ::slotted([slot=indicator]) {
-    fill: var(--media-live-indicator-icon-color, rgb(255, 0, 0));
-    color: rgb(255, 0, 0);
+    fill: var(--media-live-indicator-color, rgb(255, 0, 0));
+    color: var(--media-live-indicator-color, rgb(255, 0, 0));
   }
 
   </style>
 
   <slot name="indicator">${indicatorSVG}</slot>
-  <slot name="spacer">&nbsp;</slot>
-  <slot name="text">LIVE</slot>
+  <!-- 
+    A new line between spacer and text creates inconsistent spacing
+    between slotted items and default slots.
+  -->
+  <slot name="spacer">&nbsp;</slot><slot name="text">LIVE</slot>
 `;
 
 class MediaLiveButton extends MediaChromeButton {
@@ -59,7 +57,7 @@ class MediaLiveButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(e) {
+  handleClick() {
     // Don't seek if already live
     if (this.getAttribute(MEDIA_TIME_IS_LIVE) !== null) return;
 
