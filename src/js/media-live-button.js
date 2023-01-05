@@ -16,21 +16,17 @@ const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
   <style>
 
-  :host {
-    text-transform: uppercase;
-  }
-
   slot[name=indicator] > *,
   :host ::slotted([slot=indicator]) {
     /* Override styles for icon-only buttons */
     min-width: auto;
 
     /* svgs */
-    fill: var(--media-live-indicator-icon-color-off, rgb(118, 118, 118));
+    fill: var(--media-live-indicator-off-icon-color, rgb(118, 118, 118));
     height: var(--media-live-indicator-icon-height, var(--media-button-icon-height, 24px));
     
     /* font icons */
-    color: var(--media-live-indicator-icon-color-off, rgb(118, 118, 118));
+    color: var(--media-live-indicator-off-icon-color, rgb(118, 118, 118));
     font-size: var(--media-live-indicator-icon-height);
     line-height: var(--media-live-indicator-icon-height);
   }
@@ -44,7 +40,7 @@ slotTemplate.innerHTML = `
   </style>
 
   <slot name="indicator">${indicatorSVG}</slot>
-  <slot>Live</slot>
+  <slot>LIVE</slot>
 `;
 
 class MediaLiveButton extends MediaChromeButton {
