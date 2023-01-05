@@ -67,6 +67,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Current time display', link: 'en/media-current-time-display' },
       { text: 'Duration display', link: 'en/media-duration-display' },
       { text: 'Fullscreen button', link: 'en/media-fullscreen-button' },
+      { text: 'Live Indicator/Button', link: 'en/media-live-button' },
       { text: 'Loading indicator', link: 'en/media-loading-indicator' },
       { text: 'Mute button', link: 'en/media-mute-button' },
       { text: 'PiP button', link: 'en/media-pip-button' },
@@ -79,7 +80,6 @@ export const SIDEBAR: Sidebar = {
       { text: 'Time display', link: 'en/media-time-display' },
       { text: 'Time range', link: 'en/media-time-range' },
       { text: 'Volume range', link: 'en/media-volume-range' },
-      { text: 'Live Indicator/Button', link: 'en/media-live-button' },
     ],
     'Media States': [
       { text: 'Stream Type', link: 'en/stream-type' },
