@@ -48,6 +48,7 @@ class MediaController extends MediaContainer {
   }
 
   #hotKeys = new AttributeTokenList(this, 'hotkeys');
+  #fullscreenElement;
 
   constructor() {
     super();
@@ -161,7 +162,7 @@ class MediaController extends MediaContainer {
 
         if (super[fullscreenApi.enter]) {
           // Media chrome container fullscreen
-          super[fullscreenApi.enter]();
+          this.fullscreenElement[fullscreenApi.enter]();
         } else if (media.webkitEnterFullscreen) {
           // Media element fullscreen using iOS API
           media.webkitEnterFullscreen();
@@ -426,7 +427,7 @@ class MediaController extends MediaContainer {
         // could be several ancestors up the tree. Use event.target instead.
         const isSomeElementFullscreen = !!document[fullscreenApi.element];
         const fullscreenEl = isSomeElementFullscreen && e?.target;
-        const isFullScreen = containsComposedNode(this, fullscreenEl);
+        const isFullScreen = containsComposedNode(this.fullscreenElement, fullscreenEl);
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_IS_FULLSCREEN,
           isFullScreen
@@ -576,6 +577,17 @@ class MediaController extends MediaContainer {
     };
 
     this.enableHotkeys();
+  }
+
+  get fullscreenElement() {
+    if (this.hasAttribute('fullscreen-element')) {
+      return document.getElementById(this.getAttribute('fullscreen-element'));
+    }
+    return this.#fullscreenElement ?? this;
+  }
+
+  set fullscreenElement(element) {
+    this.#fullscreenElement = element;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
