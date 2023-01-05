@@ -95,9 +95,9 @@ class MediaController extends MediaContainer {
     const mediaUIEventHandlers = {
       MEDIA_PLAY_REQUEST: (e, media) => {
         const streamType = Delegates[MediaUIAttributes.MEDIA_STREAM_TYPE](this);
-        const autoSeekToLive = this.getAttribute('autoseektolive');
+        const autoSeekToLive = this.getAttribute('noautoseektolive') === null;
 
-        if (streamType == StreamTypes.LIVE && autoSeekToLive !== 'off') {
+        if (streamType == StreamTypes.LIVE && autoSeekToLive) {
           mediaUIEventHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](e, media);
         }
 
