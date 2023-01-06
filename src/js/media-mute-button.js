@@ -1,9 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
@@ -79,7 +75,7 @@ class MediaMuteButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off'
         ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
@@ -90,6 +86,8 @@ class MediaMuteButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-mute-button', MediaMuteButton);
+if (!window.customElements.get('media-mute-button')) {
+  window.customElements.define('media-mute-button', MediaMuteButton);
+}
 
 export default MediaMuteButton;

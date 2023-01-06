@@ -29,8 +29,7 @@ import MediaLoadingIndicator from './media-loading-indicator.js';
 import MediaTitleElement from './media-title-element.js';
 import MediaVolumeRange from './media-volume-range.js';
 import MediaTheme from './themes/media-theme.js';
-import MediaThemeDemuxed from './themes/media-theme-demuxed-2022.js';
-import { Window as window } from './utils/server-safe-globals.js';
+import { window } from './utils/server-safe-globals.js';
 
 // Alias <media-controller> as <media-chrome>
 // Might move MediaChrome to include default controls

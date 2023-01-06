@@ -88,6 +88,18 @@ Media controller can't know the stream is live or on-demand until the media is l
 </media-controller>
 ```
 
+### audio
+
+`audio` (boolean)
+
+Use this to enable audio chrome UI, which will not have any of the slots described in the [Position controls guide]("/en/position-controls"), but instead have a single default slot for adding markup.
+
+```html
+<media-controller audio>
+  ...
+</media-controller>
+```
+
 ### noautoseektolive
 
 `noautoseektolive` (boolean)

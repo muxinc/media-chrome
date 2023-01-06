@@ -1,9 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -28,7 +24,7 @@ class MediaChromeListitem extends window.HTMLElement {
   ];
   }
 
-  constructor(options = {}) {
+  constructor() {
     super();
 
     const shadow = this.attachShadow({ mode: 'open' });
@@ -110,6 +106,8 @@ class MediaChromeListitem extends window.HTMLElement {
   handleClick() {}
 }
 
-defineCustomElement('media-chrome-listitem', MediaChromeListitem);
+if (!window.customElements.get('media-chrome-listitem')) {
+  window.customElements.define('media-chrome-listitem', MediaChromeListitem);
+}
 
 export default MediaChromeListitem;

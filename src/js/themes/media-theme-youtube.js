@@ -7,7 +7,7 @@
 </media-theme-youtube>
 */
 
-import { defineCustomElement } from '../utils/defineCustomElement.js';
+import { window } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
@@ -154,6 +154,8 @@ class MediaThemeYoutube extends MediaThemeElement {
   static template = template;
 }
 
-defineCustomElement('media-theme-youtube', MediaThemeYoutube);
+if (!window.customElements.get('media-theme-youtube')) {
+  window.customElements.define('media-theme-youtube', MediaThemeYoutube);
+}
 
 export default MediaThemeYoutube;

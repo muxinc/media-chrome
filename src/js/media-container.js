@@ -7,11 +7,7 @@
   * Position controls at the bottom
   * Auto-hide controls on inactivity while playing
 */
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
@@ -312,7 +308,7 @@ class MediaContainer extends window.HTMLElement {
   /**
    * @abstract
    */
-  mediaUnsetCallback(node) {
+  mediaUnsetCallback(node) { // eslint-disable-line
     // media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 
@@ -428,6 +424,8 @@ class MediaContainer extends window.HTMLElement {
 
 // Aliasing media-controller to media-container in main index until we know
 // we're not breaking people with the change.
-defineCustomElement('media-container-temp', MediaContainer);
+if (!window.customElements.get('media-container-temp')) {
+  window.customElements.define('media-container-temp', MediaContainer);
+}
 
 export default MediaContainer;

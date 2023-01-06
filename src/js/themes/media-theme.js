@@ -1,8 +1,4 @@
-import { defineCustomElement } from '../utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from '../utils/server-safe-globals.js';
+import { window, document } from '../utils/server-safe-globals.js';
 
 class MediaTheme extends window.HTMLElement {
   static template = '';
@@ -33,6 +29,8 @@ class MediaTheme extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-theme-base', MediaTheme);
+if (!window.customElements.get('media-theme-base')) {
+  window.customElements.define('media-theme-base', MediaTheme);
+}
 
 export default MediaTheme;

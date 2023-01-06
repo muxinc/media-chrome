@@ -1,9 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
@@ -57,7 +53,7 @@ class MediaPipButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_IS_PIP) != null
         ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
@@ -68,6 +64,8 @@ class MediaPipButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-pip-button', MediaPipButton);
+if (!window.customElements.get('media-pip-button')) {
+  window.customElements.define('media-pip-button', MediaPipButton);
+}
 
 export default MediaPipButton;

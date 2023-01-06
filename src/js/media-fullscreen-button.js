@@ -7,11 +7,7 @@
   If none, the button will make the media fullscreen.
 */
 import MediaChromeButton from './media-chrome-button.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
@@ -76,7 +72,7 @@ class MediaFullscreenButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null
         ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
@@ -87,6 +83,8 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-fullscreen-button', MediaFullscreenButton);
+if (!window.customElements.get('media-fullscreen-button')) {
+  window.customElements.define('media-fullscreen-button', MediaFullscreenButton);
+}
 
 export default MediaFullscreenButton;

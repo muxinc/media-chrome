@@ -1,9 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 
@@ -64,7 +60,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     const currentRate =
       +this.getAttribute(MediaUIAttributes.MEDIA_PLAYBACK_RATE) || DEFAULT_RATE;
     const detail =
@@ -79,6 +75,8 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-playback-rate-button', MediaPlaybackRateButton);
+if (!window.customElements.get('media-playback-rate-button')) {
+  window.customElements.define('media-playback-rate-button', MediaPlaybackRateButton);
+}
 
 export default MediaPlaybackRateButton;

@@ -1,9 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
@@ -34,7 +30,7 @@ class MediaAirplayButton extends MediaChromeButton {
     super.connectedCallback();
   }
 
-  handleClick(_e) {
+  handleClick() {
     const evt = new window.CustomEvent(MediaUIEvents.MEDIA_AIRPLAY_REQUEST, {
       composed: true,
       bubbles: true,
@@ -43,6 +39,8 @@ class MediaAirplayButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-airplay-button', MediaAirplayButton);
+if (!window.customElements.get('media-airplay-button')) {
+  window.customElements.define('media-airplay-button', MediaAirplayButton);
+}
 
 export default MediaAirplayButton;

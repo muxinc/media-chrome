@@ -8,11 +8,7 @@
   * Auto-hide controls on inactivity while playing
 */
 import MediaContainer from './media-container.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/utils.js';
@@ -88,7 +84,6 @@ class MediaController extends MediaContainer {
     // Track externally associated control elements
     this.mediaStateReceivers = [];
     this.associatedElementSubscriptions = new Map();
-    this.associatedElements = [];
     this.associateElement(this);
 
     // Capture request events from internal controls
@@ -132,7 +127,9 @@ class MediaController extends MediaContainer {
             'media-chrome-pref-volume',
             volume.toString()
           );
-        } catch (err) {}
+        } catch (err) {
+          // ignore
+        }
       },
 
       // This current assumes that the media controller is the fullscreen element
@@ -186,7 +183,7 @@ class MediaController extends MediaContainer {
           console.warn('MediaChrome: Picture-in-picture is not enabled');
           // Placeholder for emitting a user-facing warning
           return;
-        };
+        }
 
         if (!media.requestPictureInPicture) {
           console.warn('MediaChrome: The current media does not support picture-in-picture');
@@ -199,7 +196,7 @@ class MediaController extends MediaContainer {
           document[fullscreenApi.exit]();
         }
 
-        const warnNotReady = (err) => {
+        const warnNotReady = () => {
           console.warn('MediaChrome: The media is not ready for picture-in-picture. It must have a readyState > 0.');
         };
 
@@ -212,15 +209,15 @@ class MediaController extends MediaContainer {
             // in an event listener. Also requires readyState == 4.
             // Firefox doesn't have the PiP API yet.
             if (media.readyState === 0 && media.preload === 'none') {
-              function cleanup() {
+              const cleanup = () => {
                 media.removeEventListener('loadedmetadata', tryPip);
                 media.preload = 'none';
-              }
+              };
 
-              function tryPip() {
+              const tryPip = () => {
                 media.requestPictureInPicture().catch(warnNotReady);
                 cleanup();
-              }
+              };
 
               media.addEventListener('loadedmetadata', tryPip);
               media.preload = 'metadata';
@@ -1434,6 +1431,8 @@ function serializeTimeRanges(timeRanges = emptyTimeRanges) {
     .join(' ');
 }
 
-defineCustomElement('media-controller', MediaController);
+if (!window.customElements.get('media-controller')) {
+  window.customElements.define('media-controller', MediaController);
+}
 
 export default MediaController;

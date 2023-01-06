@@ -1,9 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -187,9 +183,11 @@ class MediaChromeButton extends window.HTMLElement {
    * @abstract
    * @argument {Event} e
    */
-  handleClick(e) {}
+  handleClick(e) {} // eslint-disable-line
 }
 
-defineCustomElement('media-chrome-button', MediaChromeButton);
+if (!window.customElements.get('media-chrome-button')) {
+  window.customElements.define('media-chrome-button', MediaChromeButton);
+}
 
 export default MediaChromeButton;

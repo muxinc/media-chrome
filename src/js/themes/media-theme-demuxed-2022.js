@@ -7,10 +7,11 @@
 </media-theme-demuxed-2022>
 */
 
-import { defineCustomElement } from '../utils/defineCustomElement.js';
-import MediaTheme from './media-theme.js';
+import { window } from '../utils/server-safe-globals.js';
+import { MediaThemeElement } from '../media-theme-element.js';
 
-const template = `
+const template = document.createElement('template');
+template.innerHTML = `
 <style>
   :host {
     --primary-color: black;
@@ -361,7 +362,7 @@ const template = `
 </media-controller>
 `;
 
-class MediaThemeDemuxed extends MediaTheme {
+class MediaThemeDemuxed extends MediaThemeElement {
   static template = template;
   static get observedAttributes() {
     return ["stream-type"];
@@ -395,6 +396,8 @@ class MediaThemeDemuxed extends MediaTheme {
   }
 }
 
-defineCustomElement('media-theme-demuxed-2022', MediaThemeDemuxed);
+if (!window.customElements.get('media-theme-demuxed-2022')) {
+  window.customElements.define('media-theme-demuxed-2022', MediaThemeDemuxed);
+}
 
 export default MediaThemeDemuxed;

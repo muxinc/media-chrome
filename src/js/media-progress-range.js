@@ -3,7 +3,7 @@
 */
 
 import MediaTimeRange from './media-time-range.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
+import { window } from './utils/server-safe-globals.js';
 
 class MediaProgressRange extends MediaTimeRange {
   constructor() {
@@ -15,6 +15,8 @@ class MediaProgressRange extends MediaTimeRange {
   }
 }
 
-defineCustomElement('media-progress-range', MediaProgressRange);
+if (!window.customElements.get('media-progress-range')) {
+  window.customElements.define('media-progress-range', MediaProgressRange);
+}
 
 export default MediaProgressRange;

@@ -1,10 +1,6 @@
 // Work in progress
 
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Document as document,
-  Window as window,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -51,6 +47,8 @@ class MediaSettingsPopup extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-settings-popup', MediaSettingsPopup);
+if (!window.customElements.get('media-settings-popup')) {
+  window.customElements.define('media-settings-popup', MediaSettingsPopup);
+}
 
 export default MediaSettingsPopup;

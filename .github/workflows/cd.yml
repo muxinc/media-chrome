@@ -37,6 +37,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - uses: fregante/setup-git-user@v1
       - run: yarn install --frozen-lockfile
+      - run: yarn lint
       - run: yarn test
       - run: yarn build
       - run: npm run publish-release -- ${{ inputs.version_type }}

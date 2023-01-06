@@ -1,8 +1,4 @@
-import { defineCustomElement } from '../../utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from '../../utils/server-safe-globals.js';
+import { window, document } from '../../utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from '../../constants.js';
 
 const template = document.createElement('template');
@@ -154,7 +150,7 @@ class MediaClipSelector extends window.HTMLElement {
   constructor() {
     super();
 
-    const shadow = this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' });
     // @ts-ignore
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
@@ -245,7 +241,7 @@ class MediaClipSelector extends window.HTMLElement {
     this.initialX = this.getXPositionFromMouse(evt);
   }
 
-  dragEnd(evt) {
+  dragEnd() {
     this.initialX = null;
     this.draggingEl = null;
   }
@@ -366,12 +362,12 @@ class MediaClipSelector extends window.HTMLElement {
     }
   }
 
-  mediaCurrentTimeSet(time) {
+  mediaCurrentTimeSet() {
     const percentComplete = lockBetweenZeroAndOne(
       this.mediaCurrentTime / this.mediaDuration
     );
-    const fullW = this.wrapper.getBoundingClientRect().width;
-    const progressW = percentComplete * fullW;
+    // const fullW = this.wrapper.getBoundingClientRect().width;
+    // const progressW = percentComplete * fullW;
 
     this.playhead.style.left = `${percentComplete * 100}%`;
     this.playhead.style.display = 'block';
@@ -461,7 +457,7 @@ class MediaClipSelector extends window.HTMLElement {
 
     // Trigger when the mouse moves over the range
     let rangeEntered = false;
-    let rangeMouseMoveHander = (evt) => {
+    let rangeMouseMoveHander = () => {
       if (!rangeEntered && this.mediaDuration) {
         rangeEntered = true;
         this.thumbnailPreview.style.display = 'block';
@@ -495,6 +491,8 @@ class MediaClipSelector extends window.HTMLElement {
   }
 }
 
-defineCustomElement('media-clip-selector', MediaClipSelector);
+if (!window.customElements.get('media-clip-selector')) {
+  window.customElements.define('media-clip-selector', MediaClipSelector);
+}
 
 export default MediaClipSelector;

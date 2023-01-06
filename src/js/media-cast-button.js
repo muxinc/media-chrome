@@ -1,9 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 
@@ -64,7 +60,7 @@ class MediaCastButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  handleClick(_e) {
+  handleClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_IS_CASTING) != null
         ? MediaUIEvents.MEDIA_EXIT_CAST_REQUEST
@@ -75,6 +71,8 @@ class MediaCastButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-cast-button', MediaCastButton);
+if (!window.customElements.get('media-cast-button')) {
+  window.customElements.define('media-cast-button', MediaCastButton);
+}
 
 export default MediaCastButton;

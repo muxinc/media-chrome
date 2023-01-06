@@ -1,9 +1,5 @@
 import MediaChromeRange from './media-chrome-range.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
@@ -231,20 +227,14 @@ class MediaTimeRange extends MediaChromeRange {
       }
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
-      // Since our range's step is 1, floor the max value to ensure reasonable rendering
-      this.range.max = Math.floor(
-        this.mediaSeekableEnd ?? this.mediaDuration ?? 1000
-      );
+      this.range.max = this.mediaSeekableEnd ?? this.mediaDuration ?? 1000;
       updateAriaValueText(this);
       this.updateBar();
       this.updateCurrentBox();
     }
     if (attrName === MediaUIAttributes.MEDIA_SEEKABLE) {
       this.range.min = this.mediaSeekableStart ?? 0;
-      // Since our range's step is 1, floor the max value to ensure reasonable rendering
-      this.range.max = Math.floor(
-        this.mediaSeekableEnd ?? this.mediaDuration ?? 1000
-      );
+      this.range.max = this.mediaSeekableEnd ?? this.mediaDuration ?? 1000;
       updateAriaValueText(this);
       this.updateBar();
     }
@@ -460,6 +450,8 @@ class MediaTimeRange extends MediaChromeRange {
   }
 }
 
-defineCustomElement('media-time-range', MediaTimeRange);
+if (!window.customElements.get('media-time-range')) {
+  window.customElements.define('media-time-range', MediaTimeRange);
+}
 
 export default MediaTimeRange;
