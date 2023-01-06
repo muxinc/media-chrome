@@ -45,7 +45,7 @@ describe('processor', () => {
 
   it('InnerTemplatePart: simple truthy if condition', async () => {
     const template = document.createElement('template');
-    template.innerHTML = `<div>hello<template block="if x"> world</template>!</div>`;
+    template.innerHTML = `<div>hello<template if="x"> world</template>!</div>`;
     const instance = new TemplateInstance(template, { x: false }, processor);
     assert.equal(instance.children[0].innerHTML, 'hello!');
 
@@ -55,7 +55,7 @@ describe('processor', () => {
 
   it('InnerTemplatePart: simple value if condition', async () => {
     const template = document.createElement('template');
-    template.innerHTML = `<div>hello<template block="if x == 'hello'"> world</template>!</div>`;
+    template.innerHTML = `<div>hello<template if="x == 'hello'"> world</template>!</div>`;
     const instance = new TemplateInstance(template, { x: false }, processor);
     assert.equal(instance.childNodes[0].innerHTML, 'hello!');
 
@@ -70,7 +70,7 @@ describe('processor', () => {
     const template = document.createElement('template');
     template.innerHTML = `
       <div>
-        hello<template block="if x >= 1"> world<template block="if loud">!</template></template>
+        hello<template if="x >= 1"> world<template if="loud">!</template></template>
       </div>`;
     const instance = new TemplateInstance(template, { x: 0 }, processor);
     assert.equal(instance.children[0].textContent.trim(), 'hello');
