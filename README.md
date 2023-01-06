@@ -18,7 +18,7 @@ Visit the [official documentation for Media Chrome](https://media-chrome.org/en/
 ## Video Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.17/+esm"></script>
 
 <media-controller>
   <video
@@ -55,7 +55,7 @@ Visit the [official documentation for Media Chrome](https://media-chrome.org/en/
 ## Audio Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.16/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.17/+esm"></script>
 
 <media-controller audio>
   <audio
