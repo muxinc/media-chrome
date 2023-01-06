@@ -141,7 +141,7 @@ template.innerHTML = `
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
-const defaultBreakpoints = 's:0 sm:384 m:576 ml:960 l:1280 xl:1600 fhd:1920 qhd:2560 uhd:3840';
+const defaultBreakpoints = 'xs:0 sm:384 md:576 lg:768 xl:960';
 
 const resizeCallback = (entries) => {
   for (const entry of entries) {
@@ -150,11 +150,11 @@ const resizeCallback = (entries) => {
     if (!container.isConnected) continue;
 
     const breakpoints = container.getAttribute('containerbreakpoints') ?? defaultBreakpoints;
-    const ranges = createBreakpointRanges(breakpoints);
-    const [size] = getBreakpoint(ranges, entry.contentRect);
-    if (size !== container.getAttribute('media-container-size')) {
-      if (size) {
-        container.setAttribute('media-container-size', size);
+    const ranges = createBreakpointMap(breakpoints);
+    const activeBreakpoints = getBreakpoints(ranges, entry.contentRect);
+    if (activeBreakpoints !== container.getAttribute('media-container-size')) {
+      if (activeBreakpoints) {
+        container.setAttribute('media-container-size', activeBreakpoints);
       } else {
         container.removeAttribute('media-container-size');
       }
@@ -162,20 +162,15 @@ const resizeCallback = (entries) => {
   }
 };
 
-function createBreakpointRanges(breakpoints) {
+function createBreakpointMap(breakpoints) {
   const pairs = breakpoints.split(/\s+/);
-  let ranges = pairs.map((pair, i) => {
-    let [name, min] = pair.split(':');
-    let [, max = Infinity] = pairs[i + 1]?.split(':') ?? [];
-    return [name, +min, +max];
-  });
-  return ranges;
+  return Object.fromEntries(pairs.map((pair) => pair.split(':')));
 }
 
-function getBreakpoint(breakpointRanges, rect) {
-  return breakpointRanges.find(([, min, max]) => {
-    return rect.width >= min && rect.width < max;
-  });
+function getBreakpoints(breakpoints, rect) {
+  return Object.keys(breakpoints).filter((key) => {
+    return rect.width >= breakpoints[key];
+  }).join(' ');
 }
 
 /**

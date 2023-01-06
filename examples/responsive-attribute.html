@@ -11,7 +11,7 @@
 
       <p>This is an example of making Media Chrome responsive using the <code>media-container-size</code> attribute.</p>
 
-      <media-controller containerbreakpoints="s:0 sm:384 m:576 ml:960 l:1280 xl:1600">
+      <media-controller containerbreakpoints="xs:0 sm:384 md:576 lg:768 xl:960">
         <video
           slot="media"
           src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -87,12 +87,11 @@ video {
  * It only shows the center controls and hides the bottom control bar.
  *
  */
-
-media-controller[media-container-size=s] .centered-controls-overlay {
+[media-container-size="xs"] .centered-controls-overlay {
   display: flex;
 }
 
-media-controller[media-container-size=s] media-control-bar {
+[media-container-size="xs"] media-control-bar {
   display: none;
 }
 
@@ -104,15 +103,15 @@ media-controller[media-container-size=s] media-control-bar {
  * room for the other buttons in the control bar.
  *
  */
-media-controller[media-container-size$=m] .centered-controls-overlay {
+[media-container-size="xs sm"] .centered-controls-overlay {
   display: flex;
 }
 
-media-controller[media-container-size$=m] media-control-bar {
+[media-container-size="xs sm"] media-control-bar {
   display: flex;
 }
 
-media-controller[media-container-size$=m] media-control-bar :is(
+[media-container-size="xs sm"] media-control-bar :is(
   media-play-button,
   media-seek-backward-button,
   media-seek-forward-button
@@ -122,18 +121,18 @@ media-controller[media-container-size$=m] media-control-bar :is(
 }
 
 /*
- * The default and large container size,
+ * The default and larger container size,
  * which will be selected when the container is greater than 576px wide.
  *
  * Since we have a default to hide the .centered-controls-overlay,
  * this query isn't strictly necessary but is included for the sake of completeness.
  *
  */
-media-controller[media-container-size*=l] .centered-controls-overlay {
+[media-container-size="xs sm md"] .centered-controls-overlay {
   display: none;
 }
 
-media-controller[media-container-size*=l] media-control-bar {
+[media-container-size="xs sm md"] media-control-bar {
   display: flex;
 }
 
@@ -194,6 +193,7 @@ style {
   white-space: pre;
   font-family: monospace;
   margin-left: 1em;
+  overflow-x: auto;
 }
       </style>
       <div class="examples">
