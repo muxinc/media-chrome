@@ -85,7 +85,6 @@ export const MediaUIAttributes = {
   MEDIA_BUFFERED: 'media-buffered',
   MEDIA_STREAM_TYPE: 'media-stream-type',
   MEDIA_TIME_IS_LIVE: 'media-time-is-live',
-  MEDIA_CONTAINER_SIZE: 'media-container-size',
 };
 
 // Maps from state change event type -> attribute name

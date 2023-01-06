@@ -152,11 +152,11 @@ const resizeCallback = (entries) => {
     const breakpoints = container.getAttribute('containerbreakpoints') ?? defaultBreakpoints;
     const ranges = createBreakpointRanges(breakpoints);
     const [size] = getBreakpoint(ranges, entry.contentRect);
-    if (size !== container.getAttribute(MediaUIAttributes.MEDIA_CONTAINER_SIZE)) {
+    if (size !== container.getAttribute('media-container-size')) {
       if (size) {
-        container.setAttribute(MediaUIAttributes.MEDIA_CONTAINER_SIZE, size);
+        container.setAttribute('media-container-size', size);
       } else {
-        container.removeAttribute(MediaUIAttributes.MEDIA_CONTAINER_SIZE);
+        container.removeAttribute('media-container-size');
       }
     }
   }
