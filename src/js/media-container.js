@@ -141,7 +141,7 @@ template.innerHTML = `
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
-const defaultBreakpoints = 'xs:0 sm:384 md:576 lg:768 xl:960';
+const defaultBreakpoints = 'sm:384 md:576 lg:768 xl:960';
 
 const resizeCallback = (entries) => {
   for (const entry of entries) {
@@ -149,16 +149,20 @@ const resizeCallback = (entries) => {
 
     if (!container.isConnected) continue;
 
-    const breakpoints = container.getAttribute('containerbreakpoints') ?? defaultBreakpoints;
+    const breakpoints = container.getAttribute('breakpoints') ?? defaultBreakpoints;
     const ranges = createBreakpointMap(breakpoints);
     const activeBreakpoints = getBreakpoints(ranges, entry.contentRect);
-    if (activeBreakpoints !== container.getAttribute('media-container-size')) {
-      if (activeBreakpoints) {
-        container.setAttribute('media-container-size', activeBreakpoints);
-      } else {
-        container.removeAttribute('media-container-size');
+
+    Object.keys(ranges).forEach((name) => {
+      if (activeBreakpoints.includes(name)) {
+        if (!container.hasAttribute(`breakpoint-${name}`)) {
+          container.setAttribute(`breakpoint-${name}`, '');
+        }
+        return;
       }
-    }
+
+      container.removeAttribute(`breakpoint-${name}`);
+    });
   }
 };
 
@@ -168,9 +172,9 @@ function createBreakpointMap(breakpoints) {
 }
 
 function getBreakpoints(breakpoints, rect) {
-  return Object.keys(breakpoints).filter((key) => {
-    return rect.width >= breakpoints[key];
-  }).join(' ');
+  return Object.keys(breakpoints).filter((name) => {
+    return rect.width >= breakpoints[name];
+  });
 }
 
 /**

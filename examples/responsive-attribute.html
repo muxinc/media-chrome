@@ -11,7 +11,7 @@
 
       <p>This is an example of making Media Chrome responsive using the <code>media-container-size</code> attribute.</p>
 
-      <media-controller containerbreakpoints="xs:0 sm:384 md:576 lg:768 xl:960">
+      <media-controller breakpoints="sm:384 md:576 lg:768 xl:960">
         <video
           slot="media"
           src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -87,11 +87,11 @@ video {
  * It only shows the center controls and hides the bottom control bar.
  *
  */
-[media-container-size="xs"] .centered-controls-overlay {
+.centered-controls-overlay {
   display: flex;
 }
 
-[media-container-size="xs"] media-control-bar {
+media-control-bar {
   display: none;
 }
 
@@ -103,21 +103,20 @@ video {
  * room for the other buttons in the control bar.
  *
  */
-[media-container-size="xs sm"] .centered-controls-overlay {
+[breakpoint-sm] .centered-controls-overlay {
   display: flex;
 }
 
-[media-container-size="xs sm"] media-control-bar {
+[breakpoint-sm] media-control-bar {
   display: flex;
 }
 
-[media-container-size="xs sm"] media-control-bar :is(
+[breakpoint-sm] media-control-bar :is(
   media-play-button,
   media-seek-backward-button,
   media-seek-forward-button
 ) {
-    display: none;
-  }
+  display: none;
 }
 
 /*
@@ -128,11 +127,11 @@ video {
  * this query isn't strictly necessary but is included for the sake of completeness.
  *
  */
-[media-container-size="xs sm md"] .centered-controls-overlay {
+[breakpoint-md] .centered-controls-overlay {
   display: none;
 }
 
-[media-container-size="xs sm md"] media-control-bar {
+[breakpoint-md] media-control-bar {
   display: flex;
 }
 
