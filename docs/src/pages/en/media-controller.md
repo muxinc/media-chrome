@@ -111,3 +111,26 @@ By default, when a user unpauses a live stream, media-controller will also autom
   ...
 </media-controller>
 ```
+
+### fullscreen-element
+
+`fullscreen-element` (`id` string)
+
+By default, the media-controller will be the target element when entering fullscreen. However, you may specify a different element by setting `fullscreen-element` to that
+element's `id` attribute.
+
+```html
+<div id="wrapper">
+  <media-controller fullscreen-element="wrapper">
+    ...
+  </media-controller>
+  <div>This will show up when in fullscreen.</div>
+  ...
+</div>
+```
+
+NOTE: For more advanced use cases, there is also the `fullscreenElement` property, which allows you to set the target fullscreen element by reference instead.
+
+```js
+mediaControllerEl.fullscreenElement = myWrapperEl;
+```
