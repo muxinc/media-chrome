@@ -1,5 +1,4 @@
 import MediaChromeButton from './media-chrome-button.js';
-import { defineCustomElement } from './utils/defineCustomElement.js';
 import {
   Window as window,
   Document as document,
@@ -73,6 +72,8 @@ class MediaLiveButton extends MediaChromeButton {
   }
 }
 
-defineCustomElement('media-live-button', MediaLiveButton);
+if (!window.customElements.get('media-live-button')) {
+  window.customElements.define('media-live-button', MediaLiveButton);
+}
 
 export default MediaLiveButton;
