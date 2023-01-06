@@ -8,7 +8,6 @@ export * from './utils/template-parts.js';
 
 const observedMediaAttributes = {
   'media-stream-type': 'streamType',
-  'media-container-size': 'containerSize'
 };
 
 /**
