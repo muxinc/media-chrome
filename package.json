@@ -50,7 +50,7 @@
   },
   "homepage": "https://github.com/muxinc/media-chrome#readme",
   "devDependencies": {
-    "@custom-elements-manifest/analyzer": "^0.5.7",
+    "@custom-elements-manifest/analyzer": "^0.6.6",
     "@open-wc/testing": "^3.1.6",
     "@web/test-runner": "^0.15.0",
     "esbuild": "^0.15.12",
