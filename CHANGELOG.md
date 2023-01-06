@@ -1,3 +1,23 @@
+# [0.17.0](https://github.com/muxinc/media-chrome/compare/v0.16.3...v0.17.0) (2023-01-06)
+
+
+### Bug Fixes
+
+* **configurable-fullscreen-element:** Ignore misleading typescript error. ([71ad4e3](https://github.com/muxinc/media-chrome/commit/71ad4e3854715d6555aaa4750b9ff428f7399394))
+* remove unused property ([#413](https://github.com/muxinc/media-chrome/issues/413)) ([2beac41](https://github.com/muxinc/media-chrome/commit/2beac41071147bf191626275fb095d6e96305469))
+* remove web component class globals ([5c7acfb](https://github.com/muxinc/media-chrome/commit/5c7acfbdd0998f6b18e8dc2c01006abfa8ce7b58)), closes [#252](https://github.com/muxinc/media-chrome/issues/252)
+* use npx if needed for docs build ([a28b60a](https://github.com/muxinc/media-chrome/commit/a28b60a98761a64c53ac8dea7a40de06276eef05))
+
+
+### Features
+
+* **configurable-full-screen:** Add an example taking advantage of configurable fullscreen target. ([8c2e3d5](https://github.com/muxinc/media-chrome/commit/8c2e3d51ed5fcf7971f3c40d40bd2a57ef8ebb03))
+* **configurable-fullscreen-element:** Allow Media Controller to target a fullscreenElement other than itself. ([817408e](https://github.com/muxinc/media-chrome/commit/817408e3cee538f9c0bad6721aaec21904392a1b))
+* **configurable-fullscreen-element:** Handle shadow DOM + fullscreen-element id cases better ([d0cb339](https://github.com/muxinc/media-chrome/commit/d0cb3397c71fb24d685370394f68e0bc000b4a6c))
+* **configurable-fullscreen-element:** Keep parity between attribute and prop for fullscreen element, per PR feedback/discussion. ([fb4f38b](https://github.com/muxinc/media-chrome/commit/fb4f38b3f6ff1573bd93f6a572ba03d9279b16ce))
+
+
+
 ## [0.16.3](https://github.com/muxinc/media-chrome/compare/v0.16.2...v0.16.3) (2023-01-03)
 
 
