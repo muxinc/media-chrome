@@ -580,13 +580,13 @@ class MediaController extends MediaContainer {
   }
 
   get fullscreenElement() {
-    if (this.hasAttribute('fullscreen-element')) {
-      return document.getElementById(this.getAttribute('fullscreen-element'));
-    }
     return this.#fullscreenElement ?? this;
   }
 
   set fullscreenElement(element) {
+    if (this.hasAttribute('fullscreen-element')) {
+      this.removeAttribute('fullscreen-element');
+    }
     this.#fullscreenElement = element;
   }
 
@@ -604,6 +604,13 @@ class MediaController extends MediaContainer {
         this.#hotKeys.value = newValue;
     } else if (attrName === 'default-stream-type') {
       this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
+    } else if (attrName === 'fullscreen-element') {
+      const el = newValue 
+        ? document.getElementById('fullscreen-element') 
+        : undefined;
+      // NOTE: Setting the internal private prop here to not
+      // clear the attribute that was just set (CJP).
+      this.#fullscreenElement = el;
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
