@@ -20,6 +20,7 @@ export const MediaUIEvents = {
   MEDIA_DISABLE_CAPTIONS_REQUEST: 'mediadisablecaptionsrequest',
   MEDIA_DISABLE_SUBTITLES_REQUEST: 'mediadisablesubtitlesrequest',
   MEDIA_PLAYBACK_RATE_REQUEST: 'mediaplaybackraterequest',
+  MEDIA_SEEK_TO_LIVE_REQUEST: 'mediaseektoliverequest',
   REGISTER_MEDIA_STATE_RECEIVER: 'registermediastatereceiver',
   UNREGISTER_MEDIA_STATE_RECEIVER: 'unregistermediastatereceiver',
 };
@@ -83,6 +84,7 @@ export const MediaUIAttributes = {
   MEDIA_LOADING: 'media-loading',
   MEDIA_BUFFERED: 'media-buffered',
   MEDIA_STREAM_TYPE: 'media-stream-type',
+  MEDIA_TIME_IS_LIVE: 'media-time-is-live',
 };
 
 // Maps from state change event type -> attribute name

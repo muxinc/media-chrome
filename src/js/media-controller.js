@@ -88,7 +88,16 @@ class MediaController extends MediaContainer {
 
     // Capture request events from internal controls
     const mediaUIEventHandlers = {
-      MEDIA_PLAY_REQUEST: () => this.media.play(),
+      MEDIA_PLAY_REQUEST: (e, media) => {
+        const streamType = Delegates[MediaUIAttributes.MEDIA_STREAM_TYPE](this);
+        const autoSeekToLive = this.getAttribute('noautoseektolive') === null;
+
+        if (streamType == StreamTypes.LIVE && autoSeekToLive) {
+          mediaUIEventHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](e, media);
+        }
+
+        this.media.play();
+      },
       MEDIA_PAUSE_REQUEST: () => this.media.pause(),
       MEDIA_MUTE_REQUEST: () => (this.media.muted = true),
       MEDIA_UNMUTE_REQUEST: () => {
@@ -358,6 +367,21 @@ class MediaController extends MediaContainer {
         }
         media.webkitShowPlaybackTargetPicker();
       },
+      MEDIA_SEEK_TO_LIVE_REQUEST: (e, media) => {
+        const seekable = media.seekable;
+
+        if (!seekable) {
+          console.warn('MediaController: Media element does not support seeking to live.');
+          return;
+        }
+
+        if (!seekable.length) {
+          console.warn('MediaController: Media is unable to seek to live.');
+          return;
+        }
+
+        media.currentTime = seekable.end(seekable.length - 1);
+      }
     };
 
     // Apply ui event listeners
@@ -470,6 +494,9 @@ class MediaController extends MediaContainer {
       'waiting,playing,emptied': () => {
         const isLoading = this.media?.readyState < 3;
         this.propagateMediaState(MediaUIAttributes.MEDIA_LOADING, isLoading);
+      },
+      'playing,timeupdate,progress,waiting,emptied': () => {
+        this.propagateMediaState(MediaUIAttributes.MEDIA_TIME_IS_LIVE);
       },
     };
 
@@ -962,7 +989,7 @@ const Delegates = {
   [MediaUIAttributes.MEDIA_STREAM_TYPE](el) {
     const media = el.media;
 
-    if (!media) return;
+    if (!media) return null;
 
     const duration = media.duration;
 
@@ -979,6 +1006,45 @@ const Delegates = {
     }
 
     return null;
+  },
+  [MediaUIAttributes.MEDIA_TIME_IS_LIVE](controller) {
+    const media = controller.media;
+    
+    if (!media) return false;
+
+    const streamIsLive = controller.getAttribute(MediaUIAttributes.MEDIA_STREAM_TYPE) === 'live';
+    const seekable = media.seekable;
+
+    // If there's no way to seek, assume the media element is keeping it "live"
+    if (streamIsLive && !seekable) {
+      return true;
+    }
+
+    if (seekable.length === 0) {
+      return false;
+    }
+
+    // Default to 10 seconds
+    // Assuming seekable range already accounts for appropriate buffer room
+    let liveThreshold = 10;
+    let liveThresholdAttr = controller.getAttribute('livethreshold');
+
+    if (liveThresholdAttr !== null) {
+      liveThresholdAttr = Number(liveThresholdAttr);
+
+      if (!Number.isNaN(liveThresholdAttr)) {
+        liveThreshold = liveThresholdAttr;
+      }
+    }
+
+    const currentTime = media.currentTime;
+    const seekableEnd = seekable.end(seekable.length - 1);
+
+    if (currentTime > seekableEnd - liveThreshold) {
+      return true;
+    }
+
+    return false;
   },
 };
 

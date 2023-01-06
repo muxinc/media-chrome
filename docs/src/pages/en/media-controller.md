@@ -100,3 +100,14 @@ Use this to enable audio chrome UI, which will not have any of the slots describ
 </media-controller>
 ```
 
+### noautoseektolive
+
+`noautoseektolive` (boolean)
+
+By default, when a user unpauses a live stream, media-controller will also automatically seek to the most current time (or live edge) in the live stream. If you don't want media-controller to do this you can include the `noautoseektolive` attribute. 
+
+```html
+<media-controller noautoseektolive>
+  ...
+</media-controller>
+```
