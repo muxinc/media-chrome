@@ -606,7 +606,7 @@ class MediaController extends MediaContainer {
       this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
     } else if (attrName === 'fullscreen-element') {
       const el = newValue 
-        ? document.getElementById('fullscreen-element') 
+        ? this.getRootNode()?.getElementById(newValue) 
         : undefined;
       // NOTE: Setting the internal private prop here to not
       // clear the attribute that was just set (CJP).
