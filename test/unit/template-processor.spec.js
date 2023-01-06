@@ -47,10 +47,10 @@ describe('processor', () => {
     const template = document.createElement('template');
     template.innerHTML = `<div>hello<template block="if x"> world</template>!</div>`;
     const instance = new TemplateInstance(template, { x: false }, processor);
-    assert.equal(instance.childNodes[0].innerHTML, 'hello!');
+    assert.equal(instance.children[0].innerHTML, 'hello!');
 
     instance.update({ x: true });
-    assert.equal(instance.childNodes[0].innerHTML, 'hello world!');
+    assert.equal(instance.children[0].innerHTML, 'hello world!');
   });
 
   it('InnerTemplatePart: simple value if condition', async () => {
@@ -60,10 +60,26 @@ describe('processor', () => {
     assert.equal(instance.childNodes[0].innerHTML, 'hello!');
 
     instance.update({ x: 'hell' });
-    assert.equal(instance.childNodes[0].innerHTML, 'hello!');
+    assert.equal(instance.children[0].innerHTML, 'hello!');
 
     instance.update({ x: 'hello' });
-    assert.equal(instance.childNodes[0].innerHTML, 'hello world!');
+    assert.equal(instance.children[0].innerHTML, 'hello world!');
+  });
+
+  it('InnerTemplatePart: nested if blocks (logical AND)', async () => {
+    const template = document.createElement('template');
+    template.innerHTML = `
+      <div>
+        hello<template block="if x >= 1"> world<template block="if loud">!</template></template>
+      </div>`;
+    const instance = new TemplateInstance(template, { x: 0 }, processor);
+    assert.equal(instance.children[0].textContent.trim(), 'hello');
+
+    instance.update({ x: 1 });
+    assert.equal(instance.children[0].textContent.trim(), 'hello world');
+
+    instance.update({ x: 1, loud: true });
+    assert.equal(instance.children[0].textContent.trim(), 'hello world!');
   });
 
 });
