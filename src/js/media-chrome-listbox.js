@@ -44,13 +44,22 @@ class MediaChromeListbox extends window.HTMLElement {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
-  constructor() {
+  constructor(options = {}) {
     super();
 
     const shadow = this.attachShadow({ mode: 'open' });
 
     const listboxHTML = template.content.cloneNode(true);
     this.nativeEl = listboxHTML;
+
+    let slotTemplate = options.slotTemplate;
+
+    if (!slotTemplate) {
+      slotTemplate = document.createElement('template');
+      slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
+    }
+
+    this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
     shadow.appendChild(listboxHTML);
 
