@@ -1040,7 +1040,9 @@ const Delegates = {
       return true;
     }
 
-    if (seekable.length === 0) {
+    // If the slotted media does not provide a `seekable` property or its length is falsey,
+    // assume the media is not live.
+    if (!seekable?.length) {
       return false;
     }
 
