@@ -111,7 +111,7 @@ media-control-bar {
   display: flex;
 }
 
-[breakpoint-sm] media-control-bar :is(
+[breakpoint-sm]:not([breakpoint-md]) media-control-bar :is(
   media-play-button,
   media-seek-backward-button,
   media-seek-forward-button
