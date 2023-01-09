@@ -5,6 +5,7 @@
 - [Documentation Updates](#documentation)
 - [Feature Requests](#features)
 - [Submitting a Pull Request](#pull-requests)
+- [Releasing](#releasing)
 
 ## <a name="questions">Questions</a>
 
@@ -54,3 +55,23 @@ Before submitting a pull request, make sure you've reviewed and filled out an ap
    ```
 
    (See the [git docs](https://git-scm.com/docs/git-rebase) for more details on `git rebase --onto`)
+
+## <a name="releasing">Releasing (maintainers only)</a>
+
+This repo uses [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
+and Github Actions for continuous deployment (CD).
+
+1. Go to the [Github Actions tab](https://github.com/muxinc/media-chrome/actions), 
+select the "CD" action in the left sidebar.
+1. Click the "Run workflow" dropdown and choose the correct "Version" on the `main` branch.  
+If you wrote the commit messages with correct conventional commit style select `conventional`.  
+If not, choose the correct semver version `patch`, `minor`, `major`.  
+After click the "Run workflow" button to start the release.
+1. After a few minutes a new release will be made and the most important things will have been
+published. The NPM package, the version tags and the Github release. The only thing left is
+merging the release commits to the `main` branch.
+1. Check the [Releases](https://github.com/muxinc/media-chrome/releases) page and in the left sidebar click the link of the newly created version tag.
+1. Now open the "Switch branches/tags" dropdown and create a new branch 
+by entering a new branch name and pressing return.
+1. Next create a new [Pull Request](#pull-requests) from the branch, get approval and merge the PR.
+That's it!
