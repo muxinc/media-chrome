@@ -6,7 +6,7 @@ describe('<media-container>', () => {
 
   it('calls media callbacks', async () => {
     const mediaController = await fixture(`
-      <media-controller></media-controller>
+      <media-container></media-container>
     `);
 
     spy(mediaController, 'handleMediaUpdated');
@@ -36,7 +36,7 @@ describe('<media-container>', () => {
 
   it('has a media getter to the slotted media element', async () => {
     const mediaController = await fixture(`
-      <media-controller></media-controller>
+      <media-container></media-container>
     `);
     const video = await fixture(`
       <video slot="media"></video>
