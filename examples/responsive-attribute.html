@@ -9,9 +9,9 @@
     <main>
       <h1>Responsive Media Chrome Example</h1>
 
-      <p>This is an example of making Media Chrome responsinve using Container Queries (CQ).</p>
+      <p>This is an example of making Media Chrome responsive using the <code>breakpoint-</code> attributes.</p>
 
-      <media-controller>
+      <media-controller breakpoints="sm:384 md:576 lg:768 xl:960">
         <video
           slot="media"
           src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -59,16 +59,6 @@
         </media-control-bar>
       </media-controller>
 
-      <p>This uses the latest and greatest syntax, specifically using the range operators</p>
-      <pre style="margin-left: 1em"><code>@container (420px < inline-size <= 590px)</code></pre>
-      <p>
-        This allows the example to be a bit more concise.
-        However, this is not supported in the CQ polyfill
-        and if you want to support browsers that do not currently have CQ support
-        you may want to take a look at the
-        <a href="./responsive-polyfill.html">Responsive Polyfill</a> example.
-        Though, alternatives will be provided in the comments.
-      </p>
       <p>
         Below is the style tag for this page.
         Take a look at the code comments that explain the usage.
@@ -78,14 +68,6 @@ media-controller:not([audio]) {
   display: block;
   max-width: 1280px;
   aspect-ratio: 16 / 9;
-
-  /*
-   * set media-controller as a container for Container Queries (CQ)
-   *
-   * This names the container as "media-chrome"
-   * and says that we only care about inline-size (aka width)
-   */
-  container: media-chrome / inline-size;
 }
 video {
   width: 100%;
@@ -100,63 +82,57 @@ video {
 
 /*
  * Starting with the smallest container, this query will be selected
- * if the inline-size of the contrainer is smaller than 420px.
+ * if the inline-size of the container is smaller than 384px.
  *
  * It only shows the center controls and hides the bottom control bar.
  *
- * Alternatively, you can use
- *   @container (max-width: 420px);
  */
-@container (inline-size < 420px) {
-  .centered-controls-overlay {
-    display: flex;
-  }
-  media-control-bar {
-    display: none;
-  }
+.centered-controls-overlay {
+  display: flex;
+}
+
+media-control-bar {
+  display: none;
 }
 
 /*
- * The middle container size will be selected if the width is between 420px and 590px.
+ * The middle container size will be selected if the width is between 384px and 576px.
  *
  * Here, move the player toggle and the seek buttons from the bottom
  * control bar to the center controls section to give more breathing
  * room for the other buttons in the control bar.
  *
- * Alternatively, you can use
- *   @container (min-width: 420px) and (max-width: 590px)
  */
-@container (420px <= inline-size <= 590px) {
-  .centered-controls-overlay {
-    display: flex;
-  }
-  media-control-bar {
-    display: flex;
-  }
-  media-control-bar media-play-button,
-  media-control-bar media-seek-backward-button,
-  media-control-bar media-seek-forward-button {
-    display: none;
-  }
+[breakpoint-sm] .centered-controls-overlay {
+  display: flex;
+}
+
+[breakpoint-sm] media-control-bar {
+  display: flex;
+}
+
+[breakpoint-sm]:not([breakpoint-md]) media-control-bar :is(
+  media-play-button,
+  media-seek-backward-button,
+  media-seek-forward-button
+) {
+  display: none;
 }
 
 /*
- * The default and large container size,
- * which will be selected when the container is greater than 590px wide.
+ * The default and larger container size,
+ * which will be selected when the container is greater than 576px wide.
  *
  * Since we have a default to hide the .centered-controls-overlay,
  * this query isn't strictly necessary but is included for the sake of completeness.
  *
- * Alternatively, you can use
- *   @container (min-width: 590px);
  */
-@container (inline-size > 590px) {
-  .centered-controls-overlay {
-    display: none;
-  }
-  media-control-bar {
-    display: flex;
-  }
+[breakpoint-md] .centered-controls-overlay {
+  display: none;
+}
+
+[breakpoint-md] media-control-bar {
+  display: flex;
 }
 
 /*

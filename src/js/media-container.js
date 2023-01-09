@@ -141,6 +141,42 @@ template.innerHTML = `
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
+const defaultBreakpoints = 'sm:384 md:576 lg:768 xl:960';
+
+const resizeCallback = (entries) => {
+  for (const entry of entries) {
+    const container = entry.target;
+
+    if (!container.isConnected) continue;
+
+    const breakpoints = container.getAttribute('breakpoints') ?? defaultBreakpoints;
+    const ranges = createBreakpointMap(breakpoints);
+    const activeBreakpoints = getBreakpoints(ranges, entry.contentRect);
+
+    Object.keys(ranges).forEach((name) => {
+      if (activeBreakpoints.includes(name)) {
+        if (!container.hasAttribute(`breakpoint-${name}`)) {
+          container.setAttribute(`breakpoint-${name}`, '');
+        }
+        return;
+      }
+
+      container.removeAttribute(`breakpoint-${name}`);
+    });
+  }
+};
+
+function createBreakpointMap(breakpoints) {
+  const pairs = breakpoints.split(/\s+/);
+  return Object.fromEntries(pairs.map((pair) => pair.split(':')));
+}
+
+function getBreakpoints(breakpoints, rect) {
+  return Object.keys(breakpoints).filter((name) => {
+    return rect.width >= breakpoints[name];
+  });
+}
+
 /**
  * @extends {HTMLElement}
  */
@@ -203,8 +239,11 @@ class MediaContainer extends window.HTMLElement {
       }
     };
 
-    const observer = new MutationObserver(mutationCallback);
-    observer.observe(this, { childList: true, subtree: true });
+    const mutationObserver = new MutationObserver(mutationCallback);
+    mutationObserver.observe(this, { childList: true, subtree: true });
+
+    const resizeObserver = new ResizeObserver(resizeCallback);
+    resizeObserver.observe(this);
 
     // Handles the case when the slotted media element is a slot element itself.
     // e.g. chaining media slots for media themes.
