@@ -6,6 +6,13 @@ import { camelCase } from './utils/utils.js';
 // Export Template parts for players.
 export * from './utils/template-parts.js';
 
+const observedMediaAttributes = {
+  'media-stream-type': 'streamType',
+};
+
+/**
+ * @extends {HTMLElement}
+ */
 export class MediaThemeElement extends window.HTMLElement {
   static template;
   static observedAttributes = ['template'];
@@ -21,8 +28,12 @@ export class MediaThemeElement extends window.HTMLElement {
     this.renderRoot = this.attachShadow({ mode: 'open' });
 
     const observer = new MutationObserver(() => this.render());
-    // @ts-ignore
     observer.observe(this, { attributes: true });
+    observer.observe(this.renderRoot, {
+      attributeFilter: Object.keys(observedMediaAttributes),
+      attributeOldValue: true,
+      subtree: true,
+    })
 
     this.createRenderer();
   }
@@ -35,6 +46,7 @@ export class MediaThemeElement extends window.HTMLElement {
   get template() {
     const templateId = this.getAttribute('template');
     if (templateId) {
+      // @ts-ignore
       const template = this.getRootNode()?.getElementById(templateId);
       if (template) return template;
     }
@@ -48,14 +60,22 @@ export class MediaThemeElement extends window.HTMLElement {
   }
 
   get props() {
+    const observedAttributes = [
+      ...Array.from(this.attributes),
+      ...Array.from(this.mediaController?.attributes ?? [])
+        .filter(({ name }) => observedMediaAttributes[name])
+    ];
+
     const props = {};
-    for (let attr of this.attributes) {
+    for (let attr of observedAttributes) {
+      const name = observedMediaAttributes[attr.name] ?? camelCase(attr.name);
       if (attr.value != null) {
-        props[camelCase(attr.name)] = attr.value === '' ? true : attr.value;
+        props[name] = attr.value === '' ? true : attr.value;
       } else {
-        props[camelCase(attr.name)] = false;
+        props[name] = false;
       }
     }
+
     return props;
   }
 

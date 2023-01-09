@@ -129,6 +129,10 @@ export const processor = {
 const conditions = {
   '==': (a, b) => a == b,
   '!=': (a, b) => a != b,
+  '>': (a, b) => a > b,
+  '>=': (a, b) => a >= b,
+  '<': (a, b) => a < b,
+  '<=': (a, b) => a <= b,
 };
 
 // Support minimal conditional expressions e.g.
@@ -140,7 +144,7 @@ export function evaluateCondition(expr, state) {
     boolean: /true|false/,
     number: /-?\d+\.?\d*/,
     string: /(["'])((?:\\.|[^\\])*?)\1/,
-    operator: /[!=]=/,
+    operator: /[!=><]=|[><]/,
     ws: /\s+/,
     param: /[$a-z_][$\w]*/i,
   });
