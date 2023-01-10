@@ -7,17 +7,13 @@ template.innerHTML = `
 <style>
   :host ul {
     list-style: none;
-    display: flex;
+    display: inline-flex;
     flex-direction: column;
     gap: 0.5em;
     margin: 0;
     padding: 0.5em;
     background-color: var(--media-control-background, rgba(20,20,30, .7));
-    color: var(--media-listbox-color, #ffffff);
-  }
-
-  :host {
-    height: fit-content;
+    color: var(--media-text-color, white);
   }
 
   ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible) {
