@@ -26,7 +26,6 @@ template.innerHTML = `
   media-captions-listbox {
     position: absolute;
     bottom: 44px;
-    width: var(--media-captions-listbox-width, 150px);
     max-height: 300px;
     overflow: auto;
   }
