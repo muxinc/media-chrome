@@ -120,6 +120,8 @@ export const processor = {
       } else {
         if (part instanceof AttrPart) {
           part.booleanValue = false;
+        } else {
+          part.value = undefined;
         }
       }
     }
