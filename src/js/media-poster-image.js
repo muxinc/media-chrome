@@ -1,5 +1,5 @@
 import { window, document } from './utils/server-safe-globals.js';
-import { MediaUIAttributes } from './constants.js';
+import { MediaStateReceiverAttributes, MediaUIAttributes } from './constants.js';
 
 const template = document.createElement('template');
 
@@ -40,7 +40,12 @@ const setBackgroundImage = (el, image) => {
 
 class MediaPosterImage extends window.HTMLElement {
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_HAS_PLAYED, 'placeholder-src', 'src'];
+    return [
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+      MediaUIAttributes.MEDIA_HAS_PLAYED,
+      'placeholder-src',
+      'src',
+    ];
   }
 
   constructor() {
