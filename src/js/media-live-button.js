@@ -38,13 +38,37 @@ slotTemplate.innerHTML = `
   <slot name="spacer">&nbsp;</slot><slot name="text">LIVE</slot>
 `;
 
+function smushify(str){
+  return str.replaceAll('-', '').toLowerCase();
+}
+
+function addSmushifiedVersions(observedAttrs) {
+  // Need a mapping of smushed to dashed
+  // or need to manually handle each smushed attr
+  // in attributeChangedCallback
+  let smushedAttrs = {};
+
+  observedAttrs.forEach((item)=>{
+    const newItem = smushify(item);
+
+    if (!observedAttrs.includes(newItem)) { 
+      observedAttrs.push(newItem);
+      smushedAttrs[newItem] = item;
+    }
+  });
+
+  return [ observedAttrs, smushedAttrs ];
+}
+
+let [ observedAttrs, smushedAttrs ] = addSmushifiedVersions([
+  ...MediaChromeButton.observedAttributes,
+  MEDIA_PAUSED,
+  MEDIA_TIME_IS_LIVE
+]);
+
 class MediaLiveButton extends MediaChromeButton {
   static get observedAttributes() {
-    return [
-      ...super.observedAttributes,
-      MEDIA_PAUSED,
-      MEDIA_TIME_IS_LIVE
-    ];
+    return observedAttrs;
   }
 
   constructor(options = {}) {
@@ -53,7 +77,13 @@ class MediaLiveButton extends MediaChromeButton {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    super.attributeChangedCallback(attrName, oldValue, newValue);
+    if (smushedAttrs[attrName]) {
+      this.setAttribute(smushedAttrs[attrName], newValue);
+    } else {
+      // Assuming super classes may also convert smushed versions
+      // we don't want to pass through the smushed version
+      super.attributeChangedCallback(attrName, oldValue, newValue);
+    }
   }
 
   handleClick() {
