@@ -67,11 +67,5 @@ select the "CD" action in the left sidebar.
 If you wrote the commit messages with correct conventional commit style select `conventional`.  
 If not, choose the correct semver version `patch`, `minor`, `major`.  
 After click the "Run workflow" button to start the release.
-1. After a few minutes a new release will be made and the most important things will have been
-published. The NPM package, the version tags and the Github release. The only thing left is
-merging the release commits to the `main` branch.
-1. Check the [Releases](https://github.com/muxinc/media-chrome/releases) page and in the left sidebar click the link of the newly created version tag.
-1. Now open the "Switch branches/tags" dropdown and create a new branch 
-by entering a new branch name and pressing return.
-1. Next create a new [Pull Request](#pull-requests) from the branch, get approval and merge the PR.
-That's it!
+1. After a few minutes a new release will be published including a NPM package, 
+the version tags and a Github release. That's it!
