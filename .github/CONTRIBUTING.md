@@ -14,7 +14,7 @@ Have a question? Want to start a discussion? For now, you can simply [Open a New
 
 ## <a name="issues">Bugs and Issues</a>
 
-If you think you've found a bug, make sure you review and fill out a [Bug Report](https://github.com/muxinc/media-chrome/issues/new/choose) before starting any work. This will ensure for both yourself and the maintainers that the issue in question can be properly confirmed, reproduced, smoke tested, etc. Once done, go ahead and follow our [Submitting a Pull Request](#pull-requests) guide.
+If you think you've found a bug, make sure you review and fill out a [Bug Report](https://github.com/muxinc/media-chrome/issues/new/choose) before starting any work. This will ensure for both yourself and the maintainers that the issue in question can be properly confirmed, reproduced, smoke tested, etc. Once done, if you want to try to fix the issue yourself, go ahead and follow our [Submitting a Pull Request](#pull-requests) guide. Contributions are welcome and encouraged!
 
 ## <a name="documentation">Documentation Updates</a>
 
@@ -28,7 +28,7 @@ For feature requests, you can start by reviewing and filling out a [Feature Requ
 
 Before submitting a pull request, make sure you've reviewed and filled out an appropriate [Issue](https://github.com/muxinc/media-chrome/issues/new/choose). We recommend doing this before starting any work, just in case an issue already exists, or it's unlikely the maintainers will be able to review the PR because it e.g. lacks sufficient reproduction steps. In addition, we recommend the following:
 
-1. We use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/), please try to prefix your commits according to the type of changes you're making, and try to be as descriptive as possible in your commit messages. For example:
+1. We use [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/). Please try to prefix your commits according to the type of changes you're making, and try to be as descriptive as possible in your commit messages. For example:
 
 - For Bug Fixes: `fix: foo by bar`
 - For Features: `feat: add video feat`
