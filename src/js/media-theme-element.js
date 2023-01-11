@@ -7,6 +7,7 @@ import { camelCase } from './utils/utils.js';
 export * from './utils/template-parts.js';
 
 const observedMediaAttributes = {
+  'media-target-live-window': 'targetLiveWindow',
   'media-stream-type': 'streamType',
   'audio': 'audio',
 };
