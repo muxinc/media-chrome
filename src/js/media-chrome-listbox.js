@@ -21,8 +21,12 @@ template.innerHTML = `
     outline: 0;
   }
 
-  ::slotted(media-chrome-listitem[aria-selected="true"]) {
+  ::slotted(media-chrome-listitem[aria-selected="true"]:not(:hover)) {
     background-color: var(--media-listbox-selected-background, rgba(122,122,184, .8));
+  }
+
+  ::slotted(media-chrome-listitem:hover) {
+    background-color: var(--media-listbox-hover-background, rgba(82,82,122, .8));
   }
 </style>
 <ul tabindex="0">
