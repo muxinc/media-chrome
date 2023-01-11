@@ -5,6 +5,7 @@
 - [Documentation Updates](#documentation)
 - [Feature Requests](#features)
 - [Submitting a Pull Request](#pull-requests)
+- [Merging a Pull Request](#merging)
 - [Releasing](#releasing)
 
 ## <a name="questions">Questions</a>
@@ -55,6 +56,12 @@ Before submitting a pull request, make sure you've reviewed and filled out an ap
    ```
 
    (See the [git docs](https://git-scm.com/docs/git-rebase) for more details on `git rebase --onto`)
+
+## <a name="merging">Merging a Pull Request (maintainers only)</a>
+
+When you choose to squash and merge be sure to prefix the commit message
+with `fix:`, `feat:` or similar according to 
+[conventional commits](https://www.conventionalcommits.org/en/v1.0.0/).
 
 ## <a name="releasing">Releasing (maintainers only)</a>
 
