@@ -8,6 +8,7 @@ export * from './utils/template-parts.js';
 
 const observedMediaAttributes = {
   'media-stream-type': 'streamType',
+  'audio': 'audio',
 };
 
 /**
