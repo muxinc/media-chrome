@@ -2,6 +2,7 @@ import './media-chrome-menu-button.js';
 import './media-captions-listbox.js';
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { window, document, } from './utils/server-safe-globals.js';
+import { closestComposedNode } from './utils/element-utils.js';
 
 const ccEnabledIcon = `
 <svg aria-hidden="true" viewBox="0 0 26 24">
@@ -130,6 +131,9 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
   }
 
   #updateMenuPosition() {
+    // if the menu is hidden, skip updating the menu position
+    if (this.#listbox.offsetWidth === 0) return;
+
     const svgs = this.shadowRoot.querySelectorAll('svg');
     const onSvgRect = svgs[0].getBoundingClientRect();
     const offSvgRect = svgs[1].getBoundingClientRect();
@@ -149,9 +153,19 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
       const xOn = onSvgRect.x;
       const xOff = offSvgRect.x;
       const leftOffset = xOn > 0 ? xOn : xOff > 0 ? xOff : 0;
-      const parentOffset = (this.parentElement ?? this).getBoundingClientRect().x;
 
-      this.#listbox.style.marginLeft = `calc(${leftOffset}px - ${parentOffset}px - 10px)`;
+      // Get the element that enforces the bounds for the time range boxes.
+      const bounds =
+        (this.getAttribute('bounds')
+          ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
+          : this.parentElement) ?? this;
+      const parentOffset = bounds.getBoundingClientRect().x;
+
+      if (this.#listbox.offsetWidth + leftOffset > bounds.offsetWidth) {
+        this.#listbox.style.translate = (bounds.offsetWidth - this.#listbox.offsetWidth) + 'px';
+      } else {
+        this.#listbox.style.translate = `calc(${leftOffset}px - ${parentOffset}px - 10px)`;
+      }
     }
   }
 
