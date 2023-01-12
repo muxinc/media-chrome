@@ -61,6 +61,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   constructor() {
     super();
+    this.container.innerHTML = formatTimesLabel(this);
   }
 
   connectedCallback() {
