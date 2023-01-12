@@ -123,6 +123,10 @@ template.innerHTML = `
     ::slotted(media-control-bar)  {
       align-self: stretch;
     }
+
+    :host([${MediaUIAttributes.MEDIA_HAS_PLAYED}]) ::slotted([slot=poster]) {
+      display: none;
+    }
   </style>
 
   <slot name="media" part="layer media-layer"></slot>

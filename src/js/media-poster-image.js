@@ -1,5 +1,4 @@
 import { window, document } from './utils/server-safe-globals.js';
-import { MediaUIAttributes } from './constants.js';
 
 const template = document.createElement('template');
 
@@ -22,10 +21,6 @@ template.innerHTML = `
       object-fit: var(--media-object-fit, contain);
       object-position: var(--media-object-position, center);
     }
-
-    :host([${MediaUIAttributes.MEDIA_HAS_PLAYED}]) img {
-      display: none;
-    }
   </style>
 
   <img aria-hidden="true" id="image"/>
@@ -40,7 +35,7 @@ const setBackgroundImage = (el, image) => {
 
 class MediaPosterImage extends window.HTMLElement {
   static get observedAttributes() {
-    return [MediaUIAttributes.MEDIA_HAS_PLAYED, 'placeholder-src', 'src'];
+    return ['placeholder-src', 'src'];
   }
 
   constructor() {
