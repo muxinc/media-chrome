@@ -31,10 +31,13 @@ export class MediaThemeElement extends window.HTMLElement {
 
     const observer = new MutationObserver((mutationList) => {
       if (mutationList.some((mutation) => {
-        if (mutation.type !== 'attributes') return false;
+        const target = /** @type HTMLElement */ (mutation.target);
 
-        // Render on each attribute change of the `<media-theme>` element.
+        // Render on each attribute change of the `<media-theme(-x)>` element.
         if (this.hasAttribute(mutation.attributeName)) return true;
+
+        // Only check `<media-controller>`'s attributes below.
+        if (target.localName !== 'media-controller') return false;
 
         // Render if this attribute is directly observed.
         if (observedMediaAttributes[mutation.attributeName]) return true;
@@ -42,6 +45,7 @@ export class MediaThemeElement extends window.HTMLElement {
         // Render if `breakpoint-x` attributes change.
         if (mutation.attributeName.startsWith('breakpoint-')) return true;
 
+        return false;
       })) {
         this.render();
       }
