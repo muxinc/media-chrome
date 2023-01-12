@@ -20,8 +20,9 @@ slotTemplate.innerHTML = `
     display: none !important;
   }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([aria-checked="true"])) slot:not([name=off]) > *, 
+  ${/* Double negative, but safer if display doesn't equal 'block' */
+  '' }
+  :host(:not([aria-checked="true"])) slot:not([name=off]) > *,
   :host(:not([aria-checked="true"])) ::slotted(:not([slot=off])) {
     display: none !important;
   }
@@ -45,6 +46,8 @@ class MediaCaptionsButton extends MediaChromeButton {
       MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
+      MediaUIAttributes.MEDIA_CAPTIONS_PREV,
+      MediaUIAttributes.MEDIA_SUBTITLES_PREV,
     ];
   }
 

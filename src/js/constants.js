@@ -73,6 +73,8 @@ export const MediaUIAttributes = {
   MEDIA_SUBTITLES_LIST: 'media-subtitles-list',
   MEDIA_CAPTIONS_SHOWING: 'media-captions-showing',
   MEDIA_SUBTITLES_SHOWING: 'media-subtitles-showing',
+  MEDIA_CAPTIONS_PREV: 'media-captions-prev',
+  MEDIA_SUBTITLES_PREV: 'media-subtitles-prev',
   MEDIA_IS_FULLSCREEN: 'media-is-fullscreen',
   MEDIA_PLAYBACK_RATE: 'media-playback-rate',
   MEDIA_CURRENT_TIME: 'media-current-time',
