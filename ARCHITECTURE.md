@@ -2,7 +2,7 @@
 
 ## Components should feel like native HTML
 
-Web components allow us to "extend the browser", and in this project we take that seriously, to the degree of aligning the design of the components to the design of native HTML elements. In some cases this can seem less ideal/progressive, but it creates an intutive and predictable interface for anyone familiar with HTML concepts.
+Web components allow us to "extend the browser", and in this project we take that seriously, to the degree of aligning the design of the components to the [design of native HTML elements](https://www.w3.org/TR/design-principles/). In some cases this can seem less ideal/progressive, but it creates an intutive and predictable interface for anyone familiar with HTML concepts.
 
 ## Connecting elements to the media
 
