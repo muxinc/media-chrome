@@ -73,4 +73,4 @@ export const MyComponent = () => {
 };
 ```
 
-For a full demo, check out our [NextJS Demo App](../demos/nextjs-with-typescript/)
+For a full demo, check out our [NextJS Demo App](https://github.com/muxinc/media-chrome/tree/main/demos/nextjs-with-typescript)
