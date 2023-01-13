@@ -10,6 +10,7 @@ template.innerHTML = `
     line-height: 1em;
     padding: 0.5em;
     margin: 0em;
+    cursor: pointer;
   }
 
   ::slotted:not(:focus-visible) {
