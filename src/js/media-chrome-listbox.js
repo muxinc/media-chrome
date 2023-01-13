@@ -14,6 +14,7 @@ template.innerHTML = `
     padding: 0.5em;
     background-color: var(--media-control-background, rgba(10,10,15, .8));
     color: var(--media-text-color, white);
+    font-family: Arial, sans-serif;
   }
 
   ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible) {
