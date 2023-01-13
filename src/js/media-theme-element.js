@@ -7,7 +7,9 @@ import { camelCase } from './utils/utils.js';
 export * from './utils/template-parts.js';
 
 const observedMediaAttributes = {
+  'media-target-live-window': 'targetLiveWindow',
   'media-stream-type': 'streamType',
+  'audio': 'audio',
 };
 
 /**
@@ -27,11 +29,34 @@ export class MediaThemeElement extends window.HTMLElement {
     super();
     this.renderRoot = this.attachShadow({ mode: 'open' });
 
-    const observer = new MutationObserver(() => this.render());
+    const observer = new MutationObserver((mutationList) => {
+      if (mutationList.some((mutation) => {
+        const target = /** @type HTMLElement */ (mutation.target);
+
+        // Render on each attribute change of the `<media-theme(-x)>` element.
+        if (this.hasAttribute(mutation.attributeName)) return true;
+
+        // Only check `<media-controller>`'s attributes below.
+        if (target.localName !== 'media-controller') return false;
+
+        // Render if this attribute is directly observed.
+        if (observedMediaAttributes[mutation.attributeName]) return true;
+
+        // Render if `breakpoint-x` attributes change.
+        if (mutation.attributeName.startsWith('breakpoint-')) return true;
+
+        return false;
+      })) {
+        this.render();
+      }
+    });
+
+    // Observe the `<media-theme>` element for attribute changes.
     observer.observe(this, { attributes: true });
+
+    // Observe the subtree of the render root, by default the elements in the shadow dom.
     observer.observe(this.renderRoot, {
-      attributeFilter: Object.keys(observedMediaAttributes),
-      attributeOldValue: true,
+      attributes: true,
       subtree: true,
     })
 
@@ -63,7 +88,9 @@ export class MediaThemeElement extends window.HTMLElement {
     const observedAttributes = [
       ...Array.from(this.attributes),
       ...Array.from(this.mediaController?.attributes ?? [])
-        .filter(({ name }) => observedMediaAttributes[name])
+        .filter(({ name }) => {
+          return observedMediaAttributes[name] || name.startsWith('breakpoint-')
+        })
     ];
 
     const props = {};
