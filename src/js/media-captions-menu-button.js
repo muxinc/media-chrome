@@ -62,6 +62,7 @@ template.innerHTML = `
  * @extends {HTMLElement}
  */
 class MediaCaptionsMenuButton extends window.HTMLElement {
+  #menuButton;
   /** @type {HTMLElement} */
   #enabledSlot;
   /** @type {HTMLElement} */
@@ -88,10 +89,10 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
 
     shadow.append(mediaCaptionsMenuButton);
 
-    const menuButton = this.shadowRoot.querySelector('media-chrome-menu-button');
-    this.#enabledSlot = menuButton.querySelector('.enabled');
-    this.#disabledSlot = menuButton.querySelector('.disabled');
-    this.#listbox = menuButton.querySelector('media-captions-listbox');
+    this.#menuButton = this.shadowRoot.querySelector('media-chrome-menu-button');
+    this.#enabledSlot = this.#menuButton.querySelector('.enabled');
+    this.#disabledSlot = this.#menuButton.querySelector('.disabled');
+    this.#listbox = this.#menuButton.querySelector('media-captions-listbox');
 
     this.#handleClick = this.#handleClick_.bind(this);
   }
@@ -180,9 +181,11 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
 
   enable() {
     this.addEventListener('click', this.#handleClick);
+    this.#menuButton.removeAttribute('disabled');
   }
   disable() {
     this.removeEventListener('click', this.#handleClick);
+    this.#menuButton.setAttribute('disabled', '');
   }
 
   connectedCallback() {

@@ -89,12 +89,14 @@ class MediaChromeMenuButton extends window.HTMLElement {
   }
 
   enable() {
+    this.#button.removeAttribute('disabled');
     this.#button.handleClick = this.#handleClick;
     this.#toggleExpanded()
     this.#listbox.addEventListener('change', this.#handleChange);
   }
 
   disable() {
+    this.#button.setAttribute('disabled', '');
     this.#button.handleClick = () => {};
     this.#listbox.addEventListener('change', this.#handleChange);
   }
