@@ -12,6 +12,11 @@ import MediaCurrentTimeDisplay from './media-current-time-display.js';
 import MediaDurationDisplay from './media-duration-display.js';
 import MediaTimeDisplay from './media-time-display.js';
 import MediaCaptionsButton from './media-captions-button.js';
+import MediaChromeListbox from './media-chrome-listbox.js';
+import MediaChromeListitem from './media-chrome-listitem.js';
+import MediaCaptionsListbox from './media-captions-listbox.js';
+import MediaChromeMenuButton from './media-chrome-menu-button.js';
+import MediaCaptionsMenuButton from './media-captions-menu-button.js';
 import MediaSeekForwardButton from './media-seek-forward-button.js';
 import MediaFullscreenButton from './media-fullscreen-button.js';
 import MediaLiveButton from './media-live-button.js';
@@ -66,6 +71,11 @@ export {
   MediaDurationDisplay,
   MediaTimeDisplay,
   MediaCaptionsButton,
+  MediaChromeListbox,
+  MediaChromeListitem,
+  MediaCaptionsListbox,
+  MediaChromeMenuButton,
+  MediaCaptionsMenuButton,
   MediaSeekForwardButton,
   MediaFullscreenButton,
   MediaLiveButton,
