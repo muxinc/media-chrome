@@ -22,10 +22,14 @@ slotTemplate.innerHTML = `
     color: var(--media-live-button-icon-color, rgb(140, 140, 140));
   }
 
-  :host(:not([${MEDIA_PAUSED}])[${MEDIA_TIME_IS_LIVE}]) slot[name=indicator] > *,
-  :host(:not([${MEDIA_PAUSED}])[${MEDIA_TIME_IS_LIVE}]) ::slotted([slot=indicator]) {
+  :host([${MEDIA_TIME_IS_LIVE}]) slot[name=indicator] > *,
+  :host([${MEDIA_TIME_IS_LIVE}]) ::slotted([slot=indicator]) {
     fill: var(--media-live-indicator-color, rgb(255, 0, 0));
     color: var(--media-live-indicator-color, rgb(255, 0, 0));
+  }
+
+  :host([${MEDIA_TIME_IS_LIVE}]) {
+    cursor: not-allowed;
   }
 
   </style>
