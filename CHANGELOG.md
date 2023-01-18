@@ -1,3 +1,50 @@
+## [0.17.1](https://github.com/muxinc/media-chrome/compare/v0.17.0...v0.17.1) (2023-01-18)
+
+
+### Bug Fixes
+
+* add `audio` as template param ([8ca0ff6](https://github.com/muxinc/media-chrome/commit/8ca0ff64841d0a146b645df532880c3028be2f7d))
+* add `block` attr, joined directive/expression ([fd4ac00](https://github.com/muxinc/media-chrome/commit/fd4ac0028bff38dc7ecc9d6b7c7c77f66937d417))
+* add breakpoints config attribute ([2410329](https://github.com/muxinc/media-chrome/commit/2410329dfd9705afd64ac4d06faa03747215efb4))
+* add containerSize to template ([008d8d5](https://github.com/muxinc/media-chrome/commit/008d8d5499f1708e95ff8d35cb86519081e1c1f1))
+* add easier very large size names ([35bf0c7](https://github.com/muxinc/media-chrome/commit/35bf0c7a6e492386ce04a65b57bf030eaef2a320))
+* add greater than, less than operators ([67b389e](https://github.com/muxinc/media-chrome/commit/67b389eaed575e5a20e2f0fb113af9c691297ea7))
+* add stream-type to the Media Chrome theme ([4673f3c](https://github.com/muxinc/media-chrome/commit/4673f3ceab7338a1531911f8c8bc6189a6cc44e7))
+* adds a 0:00 default time, fixes [#88](https://github.com/muxinc/media-chrome/issues/88) ([#430](https://github.com/muxinc/media-chrome/issues/430)) ([7d49afa](https://github.com/muxinc/media-chrome/commit/7d49afa166b95a148b1591f43819c544c65d9a44))
+* allow slotting icons for the captions menu button and captions listbox indicator ([e62ee71](https://github.com/muxinc/media-chrome/commit/e62ee71085d6aa73d689c6cdb0ae257bd20166db))
+* blurhash dimensions ([#432](https://github.com/muxinc/media-chrome/issues/432)) ([c88fb04](https://github.com/muxinc/media-chrome/commit/c88fb049bbb170ec81633e5114229c9aee03d752))
+* **captions-listbox:** properly handle removing tracks ([9e8dff4](https://github.com/muxinc/media-chrome/commit/9e8dff40b65eb83b44c55846456006d9af84951b))
+* **captions-menu-button:** keep menu within the player bounds ([72c7273](https://github.com/muxinc/media-chrome/commit/72c7273f518c3ca027bee6191b3592abee0afb77))
+* change to inclusive breakpoints ([d0802b3](https://github.com/muxinc/media-chrome/commit/d0802b3c84274ea6d149f2953db651121a393d76))
+* limit checking media-controller attrs ([b06dc9f](https://github.com/muxinc/media-chrome/commit/b06dc9f0bb5c45ae72a7085301406e6eab69589e))
+* **listbox:** add hover styles ([d91c88c](https://github.com/muxinc/media-chrome/commit/d91c88c9c260d6360f4ecadd75209528e808ec29))
+* **listbox:** improve contrast ratios of listbox colors ([0fd50fd](https://github.com/muxinc/media-chrome/commit/0fd50fd56a8988f688e1b7405624e1c85caca1f5))
+* **listbox:** switch to display inline-flex ([2f1d0b8](https://github.com/muxinc/media-chrome/commit/2f1d0b87be63506258a3a9a87e64f5463f08a0b5))
+* listitem should get pointer cursor ([8e9301c](https://github.com/muxinc/media-chrome/commit/8e9301cd81ffc996c4e82f5769296e235b0ba163))
+* Media Live Button style changes during live window ([#440](https://github.com/muxinc/media-chrome/issues/440)) ([e709e7f](https://github.com/muxinc/media-chrome/commit/e709e7f57fd791295031cc0cc5ecc2935b685038))
+* **minimal-slotted-media:** Do not assume media.seekable will be defined on the slotted media. ([65895e9](https://github.com/muxinc/media-chrome/commit/65895e94f46457ebeae71d5b5410ca1d2ea5f855))
+* preliminary `media-target-live-window` attr ([c4b2286](https://github.com/muxinc/media-chrome/commit/c4b228632dab7aeb1ef4634a93c5f2641baa5ac9))
+* properly select Off item if captions turned off elsewhere ([8a0b139](https://github.com/muxinc/media-chrome/commit/8a0b139419000acea4df9ebeaea1ca9773997f76))
+* remove media-container-size from MediaUIAttr ([4027a8d](https://github.com/muxinc/media-chrome/commit/4027a8d105137fbdaecc8bbbdaa3e43fb7b06e83))
+* remove unused containerSize ([caa6eeb](https://github.com/muxinc/media-chrome/commit/caa6eeb3cb4381ad75280e6a4820bf6c6f4841b7))
+* render undefined param ([69a92fe](https://github.com/muxinc/media-chrome/commit/69a92fe8542fcea23ded95bbd8d697a2dc81156c))
+* set font-family on listbox ([80ae206](https://github.com/muxinc/media-chrome/commit/80ae20690ca5b368f60a32871edef1314dba90cd))
+* slotted poster is not hidden ([#431](https://github.com/muxinc/media-chrome/issues/431)) ([4a3720e](https://github.com/muxinc/media-chrome/commit/4a3720efec9e3d90afffc2da3162fc0640dce117))
+* use `breakpoint-x` and `breakpoints` attrs ([176db3c](https://github.com/muxinc/media-chrome/commit/176db3cde1516dade394c91c4bc98575ab9f32d4))
+* use shorthand if/foreach/partial attrs ([6dc3145](https://github.com/muxinc/media-chrome/commit/6dc3145c0f4b20216fd36a6d561c341815a7c98d))
+* use textContent.toLowerCase() in listbox for more lenient search ([7d225dd](https://github.com/muxinc/media-chrome/commit/7d225ddc0440d19df06bb8701086a904fe2b27bf))
+
+
+### Features
+
+* add an Off item to captions-listbox ([f73d784](https://github.com/muxinc/media-chrome/commit/f73d7848de2c75c4e515a7b5ac9a77380f4ab9dd))
+* add breakpoint params ([c17bb17](https://github.com/muxinc/media-chrome/commit/c17bb1790d9a440edebd8fa2bcabd8f51bf5d52f))
+* add default styles to listbox and listitem ([9eace4a](https://github.com/muxinc/media-chrome/commit/9eace4a10b3dfd4ac73730992205def13255ce92))
+* container-size attr w/ premeditated naming ([cfc43d6](https://github.com/muxinc/media-chrome/commit/cfc43d630ba51d4ba444bbabd0019bd8a15a830d))
+* media-captions-menu-button ([178b655](https://github.com/muxinc/media-chrome/commit/178b65514be95e22d92be31253e304b2b8845ee4))
+
+
+
 # [0.17.0](https://github.com/muxinc/media-chrome/compare/v0.16.3...v0.17.0) (2023-01-06)
 
 
