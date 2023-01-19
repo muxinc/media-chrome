@@ -330,8 +330,6 @@ class MediaController extends MediaContainer {
         );
       },
       MEDIA_SHOW_CAPTIONS_REQUEST: (e) => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_PREV, undefined);
-
         const tracks = getCaptionTracks(this);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
@@ -340,22 +338,16 @@ class MediaController extends MediaContainer {
       // we don't want them shown (rather than "hiding" them).
       // For a discussion why, see: https://github.com/muxinc/media-chrome/issues/60
       MEDIA_DISABLE_CAPTIONS_REQUEST: (e) => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_CAPTIONS_PREV, this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING));
-
         const tracks = getCaptionTracks(this);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
       },
       MEDIA_SHOW_SUBTITLES_REQUEST: (e) => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_PREV, undefined);
-
         const tracks = getSubtitleTracks(this);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
       },
       MEDIA_DISABLE_SUBTITLES_REQUEST: (e) => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_SUBTITLES_PREV, this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING));
-
         const tracks = getSubtitleTracks(this);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);

@@ -281,8 +281,6 @@ export const toggleSubsCaps = (el) => {
   } else {
     // Closed Captions is off. Clicking should show the first relevant captions track or subtitles track if we're using subtitle fallback (true/"on" by default)
     const [ccTrackStr] =
-      el.hasAttribute(MediaUIAttributes.MEDIA_CAPTIONS_PREV) ?
-      [el.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_PREV)] :
       splitTextTracksStr(
         el.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST) ?? ''
       ) ?? [];
@@ -296,8 +294,6 @@ export const toggleSubsCaps = (el) => {
     } else if (!el.hasAttribute('no-subtitles-fallback')) {
       // If we don't have a captions track and we're using subtitles fallback (true/"on" by default), check if we have any subtitles available.
       const [subTrackStr] =
-        el.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_PREV) ?
-        [el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_PREV)] :
         splitTextTracksStr(
           el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST) ?? ''
         ) ?? [];
