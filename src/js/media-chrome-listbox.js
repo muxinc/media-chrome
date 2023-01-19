@@ -12,7 +12,7 @@ template.innerHTML = `
     gap: 0.5em;
     margin: 0;
     padding: 0.5em;
-    background-color: var(--media-control-background, rgba(10,10,15, .8));
+    background-color: var(--media-listbox-background, var(--media-control-background, rgba(10,10,15, .8)));
     color: var(--media-text-color, white);
     font-family: Arial, sans-serif;
   }
@@ -22,12 +22,13 @@ template.innerHTML = `
     outline: 0;
   }
 
-  ::slotted(media-chrome-listitem[aria-selected="true"]:not(:hover)) {
+  ::slotted(media-chrome-listitem[aria-selected="true"]) {
     background-color: var(--media-listbox-selected-background, rgba(122,122,184, .8));
   }
 
   ::slotted(media-chrome-listitem:hover) {
     background-color: var(--media-listbox-hover-background, rgba(82,82,122, .8));
+    outline: var(--media-listbox-hover-outline, none);
   }
 </style>
 <ul tabindex="0">
