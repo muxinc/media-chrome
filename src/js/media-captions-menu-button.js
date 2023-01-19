@@ -63,9 +63,9 @@ template.innerHTML = `
  */
 class MediaCaptionsMenuButton extends window.HTMLElement {
   #menuButton;
-  /** @type {HTMLElement} */
+  /** @type {HTMLSlotElement} */
   #enabledSlot;
-  /** @type {HTMLElement} */
+  /** @type {HTMLSlotElement} */
   #disabledSlot;
   /** @type {HTMLElement} */
   #listbox;
@@ -136,8 +136,8 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
     if (this.#listbox.offsetWidth === 0) return;
 
     const svgs = this.shadowRoot.querySelectorAll('svg');
-    const onSvgRect = svgs[0].getBoundingClientRect();
-    const offSvgRect = svgs[1].getBoundingClientRect();
+    const onSvgRect = (this.#enabledSlot.assignedElements()[0] ?? svgs[0]).getBoundingClientRect();
+    const offSvgRect = (this.#disabledSlot.assignedElements()[0] ?? svgs[1]).getBoundingClientRect();
 
     if (this.hasAttribute('media-controller')) {
       const widthOn = onSvgRect.width;
@@ -160,9 +160,9 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
         (this.getAttribute('bounds')
           ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
           : this.parentElement) ?? this;
-      const parentOffset = bounds.getBoundingClientRect().x;
+      let parentOffset = bounds.getBoundingClientRect().x;
 
-      if (this.#listbox.offsetWidth + leftOffset > bounds.offsetWidth) {
+      if (this.#listbox.offsetWidth + leftOffset - parentOffset > bounds.offsetWidth) {
         this.#listbox.style.translate = (bounds.offsetWidth - this.#listbox.offsetWidth) + 'px';
       } else {
         this.#listbox.style.translate = `calc(${leftOffset}px - ${parentOffset}px - 10px)`;
