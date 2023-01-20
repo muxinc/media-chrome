@@ -105,6 +105,17 @@ describe('AttributeTokenList', () => {
     assert.deepEqual(list, [], 'Assert that "token-1" and "token-2" was removed.');
   });
 
+  it('Remove non-existent token', function () {
+    let list = new AttributeTokenList();
+
+    list.add('token-1');
+
+    list.remove('token-3');
+    list = [...list];
+
+    assert.deepEqual(list, ['token-1'], 'Assert that token list did not change by removing non-existent token.');
+  });
+
   it('Toggle addition of token', function () {
     let list = new AttributeTokenList();
 

@@ -1,7 +1,7 @@
 export class AttributeTokenList {
   #el;
   #attr;
-  #tokens = [];
+  #tokens = new Set();
 
   constructor(el, attr) {
     this.#el = el;
@@ -13,16 +13,16 @@ export class AttributeTokenList {
   }
 
   get length() {
-    return this.#tokens.length;
+    return this.#tokens.size;
   }
 
   get value() {
-    return this.#tokens.join(' ') ?? '';
+    return [...this.#tokens].join(' ') ?? '';
   }
 
   set value(val) {
     if (val === this.value) return;
-    this.#tokens = [];
+    this.#tokens = new Set();
     this.add(...(val?.split(' ') ?? []));
   }
 
@@ -31,7 +31,7 @@ export class AttributeTokenList {
   }
 
   item(index) {
-    return this.#tokens[index];
+    return [...this.#tokens][index];
   }
 
   values() {
@@ -47,9 +47,7 @@ export class AttributeTokenList {
   }
 
   add(...tokens) {
-    tokens.forEach((t) => {
-      if (!this.contains(t)) this.#tokens.push(t);
-    });
+    tokens.forEach((t) => this.#tokens.add(t));
     // if the attribute was removed don't try to add it again.
     if (this.value === '' && !this.#el?.hasAttribute(`${this.#attr}`)) {
       return;
@@ -58,14 +56,12 @@ export class AttributeTokenList {
   }
 
   remove(...tokens) {
-    tokens.forEach((t) => {
-      this.#tokens.splice(this.#tokens.indexOf(t), 1);
-    });
+    tokens.forEach((t) => this.#tokens.delete(t));
     this.#el?.setAttribute(`${this.#attr}`, `${this.value}`);
   }
 
   contains(token) {
-    return this.#tokens.includes(token);
+    return this.#tokens.has(token);
   }
 
   toggle(token, force) {
