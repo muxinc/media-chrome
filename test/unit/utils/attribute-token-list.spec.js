@@ -30,16 +30,6 @@ describe('AttributeTokenList', () => {
     assert.deepEqual(list, ['token-1'], 'Assert that token was only added once.');
   });
 
-  it('Just add token once', function () {
-    let list = new AttributeTokenList();
-
-    list.add('token-1');
-    list.add('token-1');
-    list = [...list];
-
-    assert.deepEqual(list, ['token-1'], 'Assert that token was only added once.');
-  });
-
   it('Check contains with a single token', function () {
     let list = new AttributeTokenList();
 
