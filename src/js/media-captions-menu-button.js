@@ -3,6 +3,7 @@ import './media-captions-listbox.js';
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { window, document, } from './utils/server-safe-globals.js';
 import { closestComposedNode } from './utils/element-utils.js';
+import { isCCOn, toggleSubsCaps } from './utils/captions.js';
 
 const ccEnabledIcon = `
 <svg aria-hidden="true" viewBox="0 0 26 24">
@@ -75,7 +76,11 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
     return [
       'disabled',
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+      'no-subtitles-fallback',
+      'default-showing',
+      MediaUIAttributes.MEDIA_CAPTIONS_LIST,
       MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
+      MediaUIAttributes.MEDIA_SUBTITLES_LIST,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
     ];
   }
@@ -95,6 +100,8 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
     this.#listbox = this.#menuButton.querySelector('media-captions-listbox');
 
     this.#handleClick = this.#handleClick_.bind(this);
+
+    this._captionsReady = false;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -124,8 +131,45 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
         this.disable();
       }
     }
-  }
 
+    if (
+      this.hasAttribute('default-showing') && // we want to show captions by default
+    this.#enabledSlot.hidden // and we aren't currently showing them
+    ) {
+      // Make sure we're only checking against the relevant attributes based on whether or not we are using subtitles fallback
+      const subtitlesIncluded = !this.hasAttribute('no-subtitles-fallback');
+      const relevantAttributes = subtitlesIncluded
+        ? [
+            MediaUIAttributes.MEDIA_CAPTIONS_LIST,
+            MediaUIAttributes.MEDIA_SUBTITLES_LIST,
+          ]
+        : [MediaUIAttributes.MEDIA_CAPTIONS_LIST];
+      // If one of the relevant attributes changed...
+      if (relevantAttributes.includes(attrName)) {
+        // check if we went
+        // a) from captions (/subs) not ready to captions (/subs) ready
+        // b) from captions (/subs) ready to captions (/subs) not ready.
+        // by using a simple truthy (empty or non-empty) string check on the relevant values
+        // NOTE: We're using `getAttribute` here instead of `newValue` because we may care about
+        // multiple attributes.
+        const nextCaptionsReady =
+          !!this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST) ||
+          !!(
+            subtitlesIncluded &&
+            this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST)
+          );
+        // If the value changed, (re)set the internal prop
+        if (this._captionsReady !== nextCaptionsReady) {
+          this._captionsReady = nextCaptionsReady;
+          // If captions are currently ready, that means we went from unready to ready, so
+          // use the click handler to dispatch a request to turn captions on
+          if (this._captionsReady) {
+            toggleSubsCaps(this);
+          }
+        }
+      }
+    }
+  }
 
   #handleClick_() {
     this.#updateMenuPosition();
@@ -191,6 +235,10 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
   connectedCallback() {
     if (!this.hasAttribute('disabled')) {
       this.enable();
+    }
+
+    if (!isCCOn(this)) {
+      this.#captionsDisabled();
     }
 
     const mediaControllerId = this.getAttribute(
