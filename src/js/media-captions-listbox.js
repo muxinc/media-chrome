@@ -2,6 +2,7 @@ import MediaChromeListbox from './media-chrome-listbox.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { parseTextTracksStr, parseTextTrackStr, formatTextTrackObj } from './utils/captions.js';
+import { toggleSubsCaps } from './utils/captions.js';
 
 const captionsIndicatorInlineStyle = `
   fill: var(--media-icon-color, #eee);
@@ -206,25 +207,9 @@ class MediaCaptionsListbox extends MediaChromeListbox {
 
   #onChange() {
     const [newType, selectedOption] = this.selectedOptions[0]?.value?.split('!') ?? [];
-    let currentlySelectedTrack = this.#caps.find(track => track.selected);
-    let oldType = 'cc';
 
-    if (!currentlySelectedTrack) {
-      currentlySelectedTrack = this.#subs.find(track => track.selected);
-      oldType = 'subs';
-    }
-
-    if (currentlySelectedTrack) {
-      const disableEvent = new window.CustomEvent(
-        oldType === 'cc' ? MediaUIEvents.MEDIA_DISABLE_CAPTIONS_REQUEST : MediaUIEvents.MEDIA_DISABLE_SUBTITLES_REQUEST,
-        {
-          composed: true,
-          bubbles: true,
-          detail: formatTextTrackObj(currentlySelectedTrack)
-        }
-      );
-      this.dispatchEvent(disableEvent);
-    }
+    // turn off currently selected tracks
+    toggleSubsCaps(this);
 
     if (!selectedOption) return;
 
