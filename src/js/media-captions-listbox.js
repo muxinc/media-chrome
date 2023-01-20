@@ -1,7 +1,7 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { parseTextTracksStr, parseTextTrackStr, formatTextTrackObj } from './utils/captions.js';
+import { parseTextTracksStr, formatTextTrackObj } from './utils/captions.js';
 import { toggleSubsCaps } from './utils/captions.js';
 
 const captionsIndicatorInlineStyle = `
@@ -94,7 +94,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       this.#render();
 
     } else if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING && oldValue !== newValue) {
-      const selectedTrack = parseTextTrackStr(newValue ?? '');
+      const selectedTrack = parseTextTracksStr(newValue ?? '')[0];
 
       this.#subs.forEach(track => {
         track.selected = track.language === selectedTrack.language && track.label === selectedTrack.label;
@@ -102,7 +102,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       this.#render();
 
     } else if (attrName === MediaUIAttributes.MEDIA_CAPTIONS_SHOWING && oldValue !== newValue) {
-      const selectedTrack = parseTextTrackStr(newValue ?? '');
+      const selectedTrack = parseTextTracksStr(newValue ?? '')[0];
 
       this.#caps.forEach(track => {
         track.selected = track.language === selectedTrack.language && track.label === selectedTrack.label;
