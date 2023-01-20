@@ -102,6 +102,7 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
     this.#handleClick = this.#handleClick_.bind(this);
 
     this._captionsReady = false;
+    this.#captionsDisabled();
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -237,8 +238,8 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
       this.enable();
     }
 
-    if (!isCCOn(this)) {
-      this.#captionsDisabled();
+    if (isCCOn(this)) {
+      this.#captionsEnabled();
     }
 
     const mediaControllerId = this.getAttribute(
