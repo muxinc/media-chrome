@@ -29,6 +29,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   #subs = [];
   #caps = [];
   #offOption;
+  /** @type {Element} */
   #captionsIndicator;
 
   static get observedAttributes() {
@@ -51,6 +52,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     offOption.textContent = 'Off';
     this.#offOption = offOption;
 
+    /** @type {HTMLSlotElement} */
     const captionsIndicatorSlot = this.shadowRoot.querySelector('[name="captions-indicator"]')
 
     this.#captionsIndicator = captionsIndicatorSlot.firstElementChild;
@@ -59,10 +61,10 @@ class MediaCaptionsListbox extends MediaChromeListbox {
 
       // slotted svg from outside of media-captions-menu-button
       if (els.length === 1 && els[0].nodeName.toLowerCase() === 'slot') {
-        const assignedElements = els[0].assignedElements();
+        const assignedElements = /** @type {HTMLSlotElement} */(els[0]).assignedElements();
 
         if (assignedElements.length === 0) {
-          this.#captionsIndicator = els[0].firstElementChild;
+          this.#captionsIndicator = /** @type {HTMLSlotElement} */(els[0]).firstElementChild;
         } else if (assignedElements.length === 1) {
           this.#captionsIndicator = assignedElements[0]
         }
@@ -72,7 +74,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
         this.#captionsIndicator = captionsIndicatorSlot.firstElementChild;
       }
 
-      this.#captionsIndicator = this.#captionsIndicator.cloneNode(true);
+      this.#captionsIndicator = /** @type {Element} */(this.#captionsIndicator.cloneNode(true));
       this.#captionsIndicator.removeAttribute('slot');
       this.#captionsIndicator.setAttribute('style', captionsIndicatorInlineStyle);
     });

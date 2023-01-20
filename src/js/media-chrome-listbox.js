@@ -36,6 +36,9 @@ template.innerHTML = `
 </ul>
 `;
 
+/**
+ * @extends {HTMLElement}
+ */
 class MediaChromeListbox extends window.HTMLElement {
   #keysSoFar = '';
   #clearKeysTimeout = null;
