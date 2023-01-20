@@ -57,6 +57,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Responsive controls', link: 'en/responsive-controls' },
       { text: 'Keyboard shortcuts', link: 'en/keyboard-shortcuts' },
       { text: 'Audio player', link: 'en/audio-player' },
+      { text: 'Themes', link: 'en/themes' },
     ],
     'Core Concepts': [
       { text: 'Media controller', link: 'en/media-controller' },
