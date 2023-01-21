@@ -103,5 +103,5 @@ Web components. @heff spoke about [the potential of web components for video](ht
 
 ## Architecture
 
-- [Architecture Notes](./ARCHITECTURE.md)
-- [Architecture Diagrams](https://media-chrome.org/en/architecture-diagrams)
+- [Architecture Notes](https://media-chrome.org/en/architecture#notes)
+- [Architecture Diagrams](https://media-chrome.org/en/architecture#inner-workings)
