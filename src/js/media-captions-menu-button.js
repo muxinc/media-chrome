@@ -135,7 +135,7 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
 
     if (
       this.hasAttribute('default-showing') && // we want to show captions by default
-    this.#enabledSlot.hidden // and we aren't currently showing them
+      this.#enabledSlot.hidden // and we aren't currently showing them
     ) {
       // Make sure we're only checking against the relevant attributes based on whether or not we are using subtitles fallback
       const subtitlesIncluded = !this.hasAttribute('no-subtitles-fallback');
