@@ -86,11 +86,11 @@ export class MediaThemeElement extends window.HTMLElement {
 
   get props() {
     const observedAttributes = [
-      ...Array.from(this.attributes),
       ...Array.from(this.mediaController?.attributes ?? [])
         .filter(({ name }) => {
           return observedMediaAttributes[name] || name.startsWith('breakpoint-')
-        })
+        }),
+      ...Array.from(this.attributes),
     ];
 
     const props = {};
