@@ -1,7 +1,9 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
+import './media-chrome-listitem.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { parseTextTracksStr, parseTextTrackStr, formatTextTrackObj } from './utils/captions.js';
+import { parseTextTracksStr, formatTextTrackObj } from './utils/captions.js';
+import { toggleSubsCaps } from './utils/captions.js';
 
 const captionsIndicatorInlineStyle = `
   fill: var(--media-icon-color, #eee);
@@ -28,6 +30,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   #subs = [];
   #caps = [];
   #offOption;
+  /** @type {Element} */
   #captionsIndicator;
 
   static get observedAttributes() {
@@ -50,6 +53,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     offOption.textContent = 'Off';
     this.#offOption = offOption;
 
+    /** @type {HTMLSlotElement} */
     const captionsIndicatorSlot = this.shadowRoot.querySelector('[name="captions-indicator"]')
 
     this.#captionsIndicator = captionsIndicatorSlot.firstElementChild;
@@ -58,10 +62,10 @@ class MediaCaptionsListbox extends MediaChromeListbox {
 
       // slotted svg from outside of media-captions-menu-button
       if (els.length === 1 && els[0].nodeName.toLowerCase() === 'slot') {
-        const assignedElements = els[0].assignedElements();
+        const assignedElements = /** @type {HTMLSlotElement} */(els[0]).assignedElements();
 
         if (assignedElements.length === 0) {
-          this.#captionsIndicator = els[0].firstElementChild;
+          this.#captionsIndicator = /** @type {HTMLSlotElement} */(els[0]).firstElementChild;
         } else if (assignedElements.length === 1) {
           this.#captionsIndicator = assignedElements[0]
         }
@@ -71,7 +75,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
         this.#captionsIndicator = captionsIndicatorSlot.firstElementChild;
       }
 
-      this.#captionsIndicator = this.#captionsIndicator.cloneNode(true);
+      this.#captionsIndicator = /** @type {Element} */(this.#captionsIndicator.cloneNode(true));
       this.#captionsIndicator.removeAttribute('slot');
       this.#captionsIndicator.setAttribute('style', captionsIndicatorInlineStyle);
     });
@@ -91,7 +95,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       this.#render();
 
     } else if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING && oldValue !== newValue) {
-      const selectedTrack = parseTextTrackStr(newValue ?? '');
+      const selectedTrack = parseTextTracksStr(newValue ?? '')[0];
 
       this.#subs.forEach(track => {
         track.selected = track.language === selectedTrack.language && track.label === selectedTrack.label;
@@ -99,7 +103,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       this.#render();
 
     } else if (attrName === MediaUIAttributes.MEDIA_CAPTIONS_SHOWING && oldValue !== newValue) {
-      const selectedTrack = parseTextTrackStr(newValue ?? '');
+      const selectedTrack = parseTextTracksStr(newValue ?? '')[0];
 
       this.#caps.forEach(track => {
         track.selected = track.language === selectedTrack.language && track.label === selectedTrack.label;
@@ -206,25 +210,9 @@ class MediaCaptionsListbox extends MediaChromeListbox {
 
   #onChange() {
     const [newType, selectedOption] = this.selectedOptions[0]?.value?.split('!') ?? [];
-    let currentlySelectedTrack = this.#caps.find(track => track.selected);
-    let oldType = 'cc';
 
-    if (!currentlySelectedTrack) {
-      currentlySelectedTrack = this.#subs.find(track => track.selected);
-      oldType = 'subs';
-    }
-
-    if (currentlySelectedTrack) {
-      const disableEvent = new window.CustomEvent(
-        oldType === 'cc' ? MediaUIEvents.MEDIA_DISABLE_CAPTIONS_REQUEST : MediaUIEvents.MEDIA_DISABLE_SUBTITLES_REQUEST,
-        {
-          composed: true,
-          bubbles: true,
-          detail: formatTextTrackObj(currentlySelectedTrack)
-        }
-      );
-      this.dispatchEvent(disableEvent);
-    }
+    // turn off currently selected tracks
+    toggleSubsCaps(this);
 
     if (!selectedOption) return;
 

@@ -14,16 +14,15 @@
       margin-top: 2em;
     }
 
-    media-controller media-captions-listbox {
-      position: absolute;
-      bottom: 44px;
-      margin-left: -34px;
-      max-height: 300px;
-      overflow: auto;
-    }
     .examples {
       margin-top: 20px;
     }
+
+    main {
+      margin-inline: auto;
+      max-width: 640px;
+    }
+
   </style>
 </head>
 <body>
@@ -39,7 +38,7 @@
     <br>
 
     <media-chrome-menu-button aria-label="captions menu button">
-      <svg slot="button-content" aria-hidden="true" viewBox="0 0 26 24">
+      <svg style="max-width: 50px;" slot="button-content" aria-hidden="true" viewBox="0 0 26 24">
         <path d="M22.83 5.68a2.58 2.58 0 0 0-2.3-2.5c-3.62-.24-11.44-.24-15.06 0a2.58 2.58 0 0 0-2.3 2.5c-.23 4.21-.23 8.43 0 12.64a2.58 2.58 0 0 0 2.3 2.5c3.62.24 11.44.24 15.06 0a2.58 2.58 0 0 0 2.3-2.5c.23-4.21.23-8.43 0-12.64Zm-11.39 9.45a3.07 3.07 0 0 1-1.91.57 3.06 3.06 0 0 1-2.34-1 3.75 3.75 0 0 1-.92-2.67 3.92 3.92 0 0 1 .92-2.77 3.18 3.18 0 0 1 2.43-1 2.94 2.94 0 0 1 2.13.78c.364.359.62.813.74 1.31l-1.43.35a1.49 1.49 0 0 0-1.51-1.17 1.61 1.61 0 0 0-1.29.58 2.79 2.79 0 0 0-.5 1.89 3 3 0 0 0 .49 1.93 1.61 1.61 0 0 0 1.27.58 1.48 1.48 0 0 0 1-.37 2.1 2.1 0 0 0 .59-1.14l1.4.44a3.23 3.23 0 0 1-1.07 1.69Zm7.22 0a3.07 3.07 0 0 1-1.91.57 3.06 3.06 0 0 1-2.34-1 3.75 3.75 0 0 1-.92-2.67 3.88 3.88 0 0 1 .93-2.77 3.14 3.14 0 0 1 2.42-1 3 3 0 0 1 2.16.82 2.8 2.8 0 0 1 .73 1.31l-1.43.35a1.49 1.49 0 0 0-1.51-1.21 1.61 1.61 0 0 0-1.29.58A2.79 2.79 0 0 0 15 12a3 3 0 0 0 .49 1.93 1.61 1.61 0 0 0 1.27.58 1.44 1.44 0 0 0 1-.37 2.1 2.1 0 0 0 .6-1.15l1.4.44a3.17 3.17 0 0 1-1.1 1.7Z"/>
       </svg>
       <media-captions-listbox slot="listbox" media-controller="mc"></media-captions-listbox>
@@ -56,13 +55,13 @@
         muted
         crossorigin
       >
-        <track label="English" kind="captions" srclang="en" src="../vtt/elephantsdream/captions.en.vtt" default></track>
+        <track label="English" kind="captions" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
         <track label="Japanese" kind="captions" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
         <track label="Swedish" kind="captions" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
         <track label="Russian" kind="captions" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
         <track label="Arabic" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
         <track label="Scandinavian" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
-        <track label="Subs English" kind="subtitles" srclang="en" src="../vtt/elephantsdream/captions.en.vtt" default></track>
+        <track label="Subs English" kind="subtitles" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
         <track label="Subs Japanese" kind="subtitles" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
         <track label="Subs Swedish" kind="subtitles" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
         <track label="Subs Russian" kind="subtitles" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
