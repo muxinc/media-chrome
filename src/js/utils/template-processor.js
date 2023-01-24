@@ -29,15 +29,28 @@ class PartialTemplate {
   }
 }
 
+const templates = new WeakMap();
+const templateInstances = new WeakMap();
+
 const Directives = {
   partial: (part, state) => {
     state[part.expression] = new PartialTemplate(part.template);
   },
   if: (part, state) => {
     if (evaluateCondition(part.expression, state)) {
-      part.replace(new TemplateInstance(part.template, state, processor));
+      if (templates.get(part) !== part.template) {
+        templates.set(part, part.template);
+
+        const tpl = new TemplateInstance(part.template, state, processor);
+        part.replace(tpl);
+        templateInstances.set(part, tpl);
+      } else {
+        templateInstances.get(part)?.update(state);
+      }
     } else {
       part.replace('');
+      templates.delete(part);
+      templateInstances.delete(part);
     }
   },
 };
