@@ -5,19 +5,64 @@ layout: ../../layouts/MainLayout.astro
 ---
 
 Media Chrome provides us with [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) 
-that are easy to [style via CSS](./styling.md). This is great for media players 
-which are embedded in your own webpage or require less portability.
+that are easy to [style via CSS](./styling.md) which is great for media players 
+that are embedded in your own webpage or require less portability. However it's 
+often the case that a media player will be used by 3rd parties or 
+maybe the player needs to support different layouts and styles depending on
+the context.
 
-However it's often the case that a media player will be used by 3rd parties or 
-maybe the player needs to support different permutations in look and feel.
 Themes provide a great solution for changing the look and feel of your player,
-and wrapping your media controls up in nice and portable package.
+and wrap your media controls up in nice and portable package.
 
 ## Basics
 
-Themes are created primarily with HTML + CSS and are defined in a [`<template>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template) 
-element. This can then be rendered by the `<media-theme>` web component. 
-The below example will make this more clear.
+Themes are created primarily with HTML + CSS and its contents are defined in a 
+[`<template>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)
+element. 
+A shiny new web component called `<media-theme>` can then take the contents of
+the template and render this in its 
+[shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM).
+If you're unfamiliar with shadow DOM, you can think of it as a separate
+document attached to a web component that prevents leaking styles and DOM behaviors
+to the main document.
+
+### Creating a theme
+
+First we define the `<template>` with a unique `id` attribute and add the HTML
+and CSS as contents for the theme of our dreams. Any valid HTML is allowed.
+
+Next up declare a `<media-theme>` element where you would like to show the theme,
+set a `template` attribute to your chosen unique template `id` to link them up
+and voila your theme will appear!
+
+
+```html
+<template id="hello-theme">Hello world</template>
+<media-theme template="hello-theme"></media-theme>
+```
+
+<template id="hello-theme">Hello world</template>
+<blockquote>
+  <media-theme template="hello-theme"></media-theme>
+</blockquote>
+
+You could say `<media-theme>` is a simple template renderer and that's true for now
+but it does a bit more behind the scenes as you will find out later in this article.
+
+
+### Creating a Tiny theme
+
+Outputting `Hello world` probably ain't gonna impress your boss who wants to see
+a slick new media player so lets up the game by adding some Media Chrome
+components.
+
+Internally the `<template>` contents is rendered to the shadow DOM of 
+the `<media-theme>` element so you can make use of 
+[`<slot>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot)'s
+to project HTML elements from the light DOM to the shadow DOM.
+
+In the example below we make use of a forwarding slot for the media, the video
+element will end up in the layout defined by the media controller.
 
 ```html
 <template id="tiny-theme">
@@ -67,14 +112,6 @@ The below example will make this more clear.
   ></video>
 </media-theme>
 
-<br>
-
-Internally the `<template>` contents is cloned and appended to the shadow DOM of 
-the `<media-theme>` element so you can make use of 
-[`<slot>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot)'s
-to project HTML elements from the light DOM in the shadow DOM, like we did for
-the video element in the example. This also means that the styles you define in 
-the template don't bleed out in the main document.
 
 ## Template Syntax
 
