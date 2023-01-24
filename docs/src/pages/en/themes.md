@@ -66,12 +66,6 @@ element will end up in the layout defined by the media controller.
 
 ```html
 <template id="tiny-theme">
-  <style>
-    :host {
-      display: inline-block;
-      line-height: 0;
-    }
-  </style>
   <media-controller>
     <slot name="media" slot="media"></slot>
     <media-control-bar>
@@ -83,7 +77,7 @@ element will end up in the layout defined by the media controller.
 <media-theme template="tiny-theme">
   <video
     slot="media"
-    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
   ></video>
 </media-theme>
 ```
@@ -108,7 +102,7 @@ element will end up in the layout defined by the media controller.
 <media-theme template="tiny-theme">
   <video
     slot="media"
-    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
   ></video>
 </media-theme>
 
