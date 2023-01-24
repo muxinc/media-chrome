@@ -142,6 +142,7 @@ class MediaChromeListbox extends window.HTMLElement {
       this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
+    e.preventDefault();
     this.addEventListener('keyup', this.#keyupListener, {once: true});
   }
 

@@ -264,7 +264,7 @@ class MediaCaptionsMenuButton extends window.HTMLElement {
   }
 
   get keysUsed() {
-    return ['Enter', ' ', 'ArrowUp', 'ArrowDown'];
+    return ['Enter', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
   }
 }
 
