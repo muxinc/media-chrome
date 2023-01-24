@@ -38,6 +38,8 @@ const Directives = {
   },
   if: (part, state) => {
     if (evaluateCondition(part.expression, state)) {
+      // If the template did not change for this part we can skip creating
+      // a new template instance / parsing and update the inner parts directly.
       if (templates.get(part) !== part.template) {
         templates.set(part, part.template);
 
@@ -49,6 +51,7 @@ const Directives = {
       }
     } else {
       part.replace('');
+      // Clean up template caches if this part's contents is cleared.
       templates.delete(part);
       templateInstances.delete(part);
     }
@@ -105,11 +108,21 @@ export const processor = {
             localState[paramName] = getParamValue(paramValue, state);
           }
 
-          value = new TemplateInstance(
-            value.template,
-            localState,
-            processor
-          );
+          if (templates.get(part) !== value.template) {
+            templates.set(part, value.template);
+
+            value = new TemplateInstance(
+              value.template,
+              localState,
+              processor
+            );
+            part.value = value;
+            templateInstances.set(part, value);
+          } else {
+            templateInstances.get(part)?.update(localState);
+          }
+
+          continue;
         }
 
         if (part instanceof AttrPart) {
@@ -129,12 +142,20 @@ export const processor = {
           }
         } else {
           part.value = value;
+
+          // Clean up template caches if this part's contents is not a partial.
+          templates.delete(part);
+          templateInstances.delete(part);
         }
       } else {
         if (part instanceof AttrPart) {
           part.booleanValue = false;
         } else {
           part.value = undefined;
+
+          // Clean up template caches if this part's contents is cleared.
+          templates.delete(part);
+          templateInstances.delete(part);
         }
       }
     }
