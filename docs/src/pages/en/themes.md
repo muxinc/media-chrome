@@ -85,12 +85,6 @@ element will end up in the layout defined by the media controller.
 <br>
 
 <template id="tiny-theme">
-  <style>
-    :host {
-      display: inline-block;
-      line-height: 0;
-    }
-  </style>
   <media-controller>
     <slot name="media" slot="media"></slot>
     <media-control-bar>
