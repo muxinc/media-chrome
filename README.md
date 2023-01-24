@@ -101,7 +101,7 @@ Web components. @heff spoke about [the potential of web components for video](ht
 - Are compatible by default with Javascript frameworks (React, Angular, Svelte)
 - Can be used across players when using multiple in the same site, e.g Youtube & `<video>`. (Could even be used by players as their own built-in controls)
 
-## Architecture
+## Core Concepts
 
-- [Architecture Notes](https://media-chrome.org/en/architecture#notes)
-- [Architecture Diagrams](https://media-chrome.org/en/architecture#inner-workings)
+- [Design Principles](https://media-chrome.org/en/design-principles)
+- [Architecture](https://media-chrome.org/en/architecture)
