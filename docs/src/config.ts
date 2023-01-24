@@ -60,6 +60,7 @@ export const SIDEBAR: Sidebar = {
     ],
     'Core Concepts': [
       { text: 'Media controller', link: 'en/media-controller' },
+      { text: 'Design Principles', link: 'en/design-principles' },
       { text: 'Architecture', link: 'en/architecture' },
     ],
     Components: [
