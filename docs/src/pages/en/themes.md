@@ -100,6 +100,7 @@ element will end up in the layout defined by the media controller.
   ></video>
 </media-theme>
 
+[![Edit Media Chrome Tiny Theme](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/trusting-rhodes-7d6y0v?fontsize=14&hidenavigation=1&theme=dark)
 
 ## Template Syntax
 
