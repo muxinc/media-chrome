@@ -123,7 +123,7 @@ If you like to provide a fallback for a variable that might be empty,
 this can be done like so `{{name ?? 'Frank'}}`.
 
 ```html
-<template id="tiny-theme">
+<template id="vars-theme">
   <media-controller>
     <slot name="media" slot="media"></slot>
     <media-text-display slot="top-chrome">
@@ -132,7 +132,7 @@ this can be done like so `{{name ?? 'Frank'}}`.
   </media-controller>
 </template>
 
-<media-theme template="tiny-theme" videotitle="My video title">
+<media-theme template="vars-theme" videotitle="My video title">
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -140,8 +140,14 @@ this can be done like so `{{name ?? 'Frank'}}`.
 </media-theme>
 ```
 
-In the example above the `videotitle` attribute is provided to
-`<media-theme>` element and this is then rendered in the template.
+In the example above the `videotitle` attribute is provided to the `<media-theme>` 
+element and this is then rendered in the template.
+
+> It's recommended not to use the native `title` attribute because this will add
+add a tooltip on mouse hover.
+
+If you add an attribute with a dash like `song-title` make sure to access the
+variable in the template with a camelCase name like `songTitle`.
 
 #### Special variables
 
