@@ -1,6 +1,6 @@
 ---
 title: Architecture
-description: Architecture Diagrams
+description: Architecture
 layout: ../../layouts/MainLayout.astro
 ---
 

@@ -1,8 +1,27 @@
-# Architecture Notes
+---
+title: Design Principles
+description: Design Principles
+layout: ../../layouts/MainLayout.astro
+---
 
 ## Components should feel like native HTML
 
 Web components allow us to "extend the browser", and in this project we take that seriously, to the degree of aligning the design of the components to the [design of native HTML elements](https://www.w3.org/TR/design-principles/). In some cases this can seem less ideal/progressive, but it creates an intutive and predictable interface for anyone familiar with HTML concepts.
+
+## Element Naming
+
+- Prefix with `media-` for scoping.
+- The suffix should make it clear what the primary user interaction is with the element, mapping to the matching native HTML element when possible. e.g. `-button`, `-range`, `-image`.
+  - Use `-container` for elements that are purely for laying out other elements. More specific layout names like `-bar` are acceptible when the name is clear and intentional.
+  - Use `-display` when the primary use is displaying a state or data detail. e.g. `media-duration-display`.
+
+## Element Independence
+
+A goal of this project is that each UI element could be used independently of the project, in the same way an HTML Button can be used independently of an HTML Form. This will make it possible for other players to share these base elements.
+
+## Support Unidirectional Data Flow
+
+Many js application frameworks today like React follow a "unidirectional data flow" pattern. We want to make sure media chrome elements are not blocked or complicated to use in these contexts.
 
 ## Connecting elements to the media
 
@@ -18,18 +37,3 @@ UI elements that are not children of a media-controller can be associated with a
 > 2. A parent media-container injects a reference to a media element into all child UI elements
 >
 > Moving to a single centralized _controller_ handling all operations against the media element has made debugging, monitoring user interactions, and refactoring much easier.
-
-## Element Independence
-
-A goal of this project is that each UI element could be used independently of the project, in the same way an HTML Button can be used independently of an HTML Form. This will make it possible for other players to share these base elements.
-
-## Support Unidirectional Data Flow
-
-Many js application frameworks today like React follow a "unidirectional data flow" pattern. We want to make sure media chrome elements are not blocked or complicated to use in these contexts.
-
-## Element Naming
-
-- Prefix with `media-` for scoping.
-- The suffix should make it clear what the primary user interaction is with the element, mapping to the matching native HTML element when possible. e.g. `-button`, `-range`, `-image`.
-  - Use `-container` for elements that are purely for laying out other elements. More specific layout names like `-bar` are acceptible when the name is clear and intentional.
-  - Use `-display` when the primary use is displaying a state or data detail. e.g. `media-duration-display`.

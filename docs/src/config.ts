@@ -61,7 +61,8 @@ export const SIDEBAR: Sidebar = {
     ],
     'Core Concepts': [
       { text: 'Media controller', link: 'en/media-controller' },
-      { text: 'Architecture', link: 'en/architecture-diagrams' },
+      { text: 'Design Principles', link: 'en/design-principles' },
+      { text: 'Architecture', link: 'en/architecture' },
     ],
     Components: [
       { text: 'Airplay button', link: 'en/media-airplay-button' },
