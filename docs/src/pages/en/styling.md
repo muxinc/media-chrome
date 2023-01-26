@@ -72,6 +72,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 | Name                                      | CSS Property          | Default Value    | Description                            | Notes                                                                                      |
 | ----------------------------------------- | --------------------- | ---------------- | -------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `--media-range-bar-color`.                | `<linear-color-start>` | `#fff`           | background color of the progressed range | This is a `<linear-color-start>` part of the `linear-gradient()` CSS function.
 | `--media-time-buffered-color`             | `<linear-color-stop>` | `#777`           | background color of the buffered range | This is a `<linear-color-stop>` part of the `linear-gradient()` CSS function.              |
 | `--media-preview-thumbnail-border`        | `border`              | `2px solid #fff` | border of the thumbnail preview        |                                                                                            |
 | `--media-preview-thumbnail-border-radius` | `border-radius`       | `2px`            | border radius of the thumbnail preview |                                                                                            |
