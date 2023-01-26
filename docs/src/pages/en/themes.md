@@ -102,6 +102,7 @@ element will end up in the layout defined by the media controller.
 
 [![Edit Media Chrome Tiny Theme](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/trusting-rhodes-7d6y0v?fontsize=14&hidenavigation=1&theme=dark)
 
+
 ## Template Syntax
 
 In addition to all the features plain HTML and CSS give you we implemented
@@ -135,10 +136,30 @@ this can be done like so `{{name ?? 'Frank'}}`.
 <media-theme template="vars-theme" videotitle="My video title">
   <video
     slot="media"
-    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
   ></video>
 </media-theme>
 ```
+
+<br>
+
+<template id="vars-theme">
+  <media-controller>
+    <slot name="media" slot="media"></slot>
+    <media-text-display slot="top-chrome">
+      {{videotitle ?? 'Unknown title'}}
+    </media-text-display>
+  </media-controller>
+</template>
+
+<media-theme template="vars-theme" videotitle="My video title">
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+  ></video>
+</media-theme>
+
+[![Edit Media Chrome Vars Theme](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/media-chrome-vars-theme-nejd49?fontsize=14&hidenavigation=1&theme=dark)
 
 In the example above the `videotitle` attribute is provided to the `<media-theme>` 
 element and this is then rendered in the template.
@@ -190,3 +211,206 @@ The value of this `if` attribute can be a simple equality check or just a empty 
 </template>
 ```
 
+### Creating a multi-layout theme
+
+There's a few ways to implement layouts that change based on context, one is
+explained in [Responsive controls](./responsive-controls). This is based on
+showing / hiding elements via pure CSS. 
+[Container queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries) 
+and [attribute selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors)
+are a powerful way to change the layout and style of your theme.
+
+The template syntax offers an alternative to implement a multi-layout theme by only
+rendering certain DOM fragments based on a condition you specify as seen in the
+Conditionals section above. This can be beneficial as your theme grows larger or
+if you prefer to not render DOM that is hidden to the user.
+
+Let's take a look at how a theme might look like with these conditions in place.
+
+```html
+<template id="multi-theme">
+  <style>
+    :host {
+      display: block;
+      line-height: 0;
+    }
+    :host([audio]) {
+      min-height: 44px;
+    }
+    media-controller {
+      width: 100%;
+      height: 100%;
+    }
+    .spacer {
+      flex-grow: 1;
+      background-color: var(
+        --media-control-background,
+        rgba(20, 20, 30, 0.7)
+      );
+    }
+  </style>
+  <media-controller>
+    <slot name="media" slot="media"></slot>
+    <template if="audio">
+      <template if="streamType == 'on-demand'">
+        <template if="title">
+          <media-control-bar>{{mediatitle}}</media-control-bar>
+        </template>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-time-display show-duration></media-time-display>
+          <media-time-range></media-time-range>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-mute-button></media-mute-button>
+          <media-volume-range></media-volume-range>
+        </media-control-bar>
+      </template>
+    </template>
+    <template if="audio == null">
+      <template if="streamType == 'on-demand'">
+        <template if="breakpointSm == null">
+          <media-control-bar>
+            <media-play-button></media-play-button>
+            <media-mute-button></media-mute-button>
+            <div class="spacer"></div>
+            <media-time-display></media-time-display>
+            <media-playback-rate-button></media-playback-rate-button>
+            <media-fullscreen-button></media-fullscreen-button>
+          </media-control-bar>
+        </template>
+        <template if="breakpointSm">
+          <template if="breakpointMd == null">
+            <div slot="centered-chrome">
+              <media-play-button></media-play-button>
+            </div>
+            <media-control-bar>
+              <media-mute-button></media-mute-button>
+              <media-time-display></media-time-display>
+              <media-time-range></media-time-range>
+              <media-duration-display></media-duration-display>
+              <media-playback-rate-button></media-playback-rate-button>
+              <media-fullscreen-button></media-fullscreen-button>
+            </media-control-bar>
+          </template>
+        </template>
+        <template if="breakpointMd">
+          <media-control-bar>
+            <media-play-button></media-play-button>
+            <media-mute-button></media-mute-button>
+            <media-volume-range></media-volume-range>
+            <media-time-display></media-time-display>
+            <media-time-range></media-time-range>
+            <media-duration-display></media-duration-display>
+            <media-playback-rate-button></media-playback-rate-button>
+            <media-fullscreen-button></media-fullscreen-button>
+          </media-control-bar>
+        </template>
+      </template>
+    </template>
+  </media-controller>
+</template>
+```
+
+<template id="multi-theme">
+  <style>
+    :host {
+      display: block;
+      line-height: 0;
+    }
+    :host([audio]) {
+      min-height: 44px;
+    }
+    media-controller {
+      width: 100%;
+      height: 100%;
+    }
+    .spacer {
+      flex-grow: 1;
+      background-color: var(
+        --media-control-background,
+        rgba(20, 20, 30, 0.7)
+      );
+    }
+  </style>
+  <media-controller>
+    <slot name="media" slot="media"></slot>
+    <template if="audio">
+      <template if="streamType == 'on-demand'">
+        <template if="title">
+          <media-control-bar>{{mediatitle}}</media-control-bar>
+        </template>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-time-display show-duration></media-time-display>
+          <media-time-range></media-time-range>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-mute-button></media-mute-button>
+          <media-volume-range></media-volume-range>
+        </media-control-bar>
+      </template>
+    </template>
+    <template if="audio == null">
+      <template if="streamType == 'on-demand'">
+        <template if="breakpointSm == null">
+          <media-control-bar>
+            <media-play-button></media-play-button>
+            <media-mute-button></media-mute-button>
+            <div class="spacer"></div>
+            <media-time-display></media-time-display>
+            <media-playback-rate-button></media-playback-rate-button>
+            <media-fullscreen-button></media-fullscreen-button>
+          </media-control-bar>
+        </template>
+        <template if="breakpointSm">
+          <template if="breakpointMd == null">
+            <div slot="centered-chrome">
+              <media-play-button></media-play-button>
+            </div>
+            <media-control-bar>
+              <media-mute-button></media-mute-button>
+              <media-time-display></media-time-display>
+              <media-time-range></media-time-range>
+              <media-duration-display></media-duration-display>
+              <media-playback-rate-button></media-playback-rate-button>
+              <media-fullscreen-button></media-fullscreen-button>
+            </media-control-bar>
+          </template>
+        </template>
+        <template if="breakpointMd">
+          <media-control-bar>
+            <media-play-button></media-play-button>
+            <media-mute-button></media-mute-button>
+            <media-volume-range></media-volume-range>
+            <media-time-display></media-time-display>
+            <media-time-range></media-time-range>
+            <media-duration-display></media-duration-display>
+            <media-playback-rate-button></media-playback-rate-button>
+            <media-fullscreen-button></media-fullscreen-button>
+          </media-control-bar>
+        </template>
+      </template>
+    </template>
+  </media-controller>
+</template>
+
+#### On-demand Audio Layout
+
+<media-theme template="multi-theme" audio mediatitle="My audio title">
+  <audio
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+  ></audio>
+</media-theme>
+
+#### On-demand Video Layout
+
+<media-theme template="multi-theme" mediatitle="My video title">
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+  ></video>
+</media-theme>
+
+<br>
+
+[![Edit Media Chrome Multi-layout Theme](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/media-chrome-multi-layout-theme-gwlon8?fontsize=14&hidenavigation=1&theme=dark)
