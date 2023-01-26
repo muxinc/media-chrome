@@ -12,7 +12,7 @@ maybe the player needs to support different layouts and styles depending on
 the context.
 
 Themes provide a great solution for changing the look and feel of your player,
-and wrap your media controls up in nice and portable package.
+and wrap your media controls up in a nice and portable package.
 
 ## Basics
 
@@ -120,7 +120,7 @@ The most basic tag type is the variable. A `{{name}}` tag in a basic template
 will try to find the name key in the current state that is derived from 
 the `<media-theme>` attributes. Variables are escaped by default.
 
-If you like to provide a fallback for a variable that might be empty,  
+If you would like to provide a fallback for a variable that might be empty,  
 this can be done like so `{{name ?? 'Frank'}}`.
 
 ```html
@@ -165,7 +165,7 @@ In the example above the `videotitle` attribute is provided to the `<media-theme
 element and this is then rendered in the template.
 
 > It's recommended not to use the native `title` attribute because this will add
-add a tooltip on mouse hover.
+a tooltip on mouse hover.
 
 If you add an attribute with a dash like `song-title` make sure to access the
 variable in the template with a camelCase name like `songTitle`.
@@ -195,15 +195,15 @@ Partials are defined by using an inner `<template>` element with a
 ```
 
 These can then be used in other places in the theme with a partial variable 
-like so `{{>PlayButton}}`. They can also accept params by adding them after 
+like so `{{>PlayButton}}`. They can also accept parameters by adding them after 
 the var name `{{>PlayButton section="center"}}`.
 
 ### Conditionals
 
-When a single element or a multiple elements need to be left out from 
+When elements need to be left out from 
 the theme when certain conditions are met it's possible to use a conditional. 
 A conditional is also defined by an inner template with an `if` attribute. 
-The value of this `if` attribute can be a simple equality check or just a empty check.
+The value of this `if` attribute can be a simple equality check or just an empty check.
 
 ```html
 <template if="streamType == 'on-demand'">
