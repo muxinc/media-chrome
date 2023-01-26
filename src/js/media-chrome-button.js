@@ -158,7 +158,7 @@ class MediaChromeButton extends window.HTMLElement {
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
-      const mediaControllerEl = document.getElementById(mediaControllerId);
+      const mediaControllerEl = this.getRootNode().getElementById(mediaControllerId);
       mediaControllerEl?.associateElement?.(this);
     }
   }
