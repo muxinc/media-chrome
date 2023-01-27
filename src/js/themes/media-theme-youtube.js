@@ -69,7 +69,6 @@ template.innerHTML = `
     --media-time-buffered-color: rgba(255,255,255,.4);
 
     --media-range-bar-color: rgb(229, 9, 20);
-    --media-progress-buffered-color: #999;
 
     --media-range-thumb-border-radius: 13px;
     --media-range-thumb-background: #f00;
