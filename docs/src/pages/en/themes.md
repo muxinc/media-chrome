@@ -5,7 +5,7 @@ layout: ../../layouts/MainLayout.astro
 ---
 
 Media Chrome provides us with [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) 
-that are easy to [style via CSS](./styling.md) which is great for media players 
+that are easy to [style via CSS](./styling) which is great for media players 
 that are embedded in your own webpage or require less portability. However it's 
 often the case that a media player will be used by 3rd parties or 
 maybe the player needs to support different layouts and styles depending on
