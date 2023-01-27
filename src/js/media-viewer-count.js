@@ -29,21 +29,20 @@ class MediaViewerCount extends window.HTMLElement {
     } catch (exception) {
       success = 0;
       console.warn("Error retrieving media-viewer-count data: "+exception)
-    } finally {
-      if (success) {
-        let responseObj = JSON.parse(xmlHttp.responseText);
-        const hasError = Object.prototype.hasOwnProperty.call(responseObj,'error');
-        const hasData = Object.prototype.hasOwnProperty.call(responseObj,'data');
-        if (hasError) {
-          console.warn("Error retrieving media-viewer-count data: "+responseObj.error);
-          return false;
-        } else if (hasData) {
-          let data = responseObj.data[0];
-          this.textContent = data.views;
-        } else {
-          console.warn("Error retrieving media-viewer-count data: no data in response");
-	  return false;
-        }
+    }
+    if (success) {
+      let responseObj = JSON.parse(xmlHttp.responseText);
+      const hasError = Object.prototype.hasOwnProperty.call(responseObj,'error');
+      const hasData = Object.prototype.hasOwnProperty.call(responseObj,'data');
+      if (hasError) {
+        console.warn("Error retrieving media-viewer-count data: "+responseObj.error);
+        return false;
+      } else if (hasData) {
+        let data = responseObj.data[0];
+        this.textContent = data.views;
+      } else {
+        console.warn("Error retrieving media-viewer-count data: no data in response");
+        return false;
       }
     }
   }
