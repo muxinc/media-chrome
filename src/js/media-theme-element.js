@@ -33,7 +33,7 @@ export class MediaThemeElement extends window.HTMLElement {
         const target = /** @type HTMLElement */ (mutation.target);
 
         // Render on each attribute change of the `<media-theme(-x)>` element.
-        if (this.hasAttribute(mutation.attributeName)) return true;
+        if (target === this) return true;
 
         // Only check `<media-controller>`'s attributes below.
         if (target.localName !== 'media-controller') return false;
