@@ -1,9 +1,9 @@
-import './media-chrome-menu-button.js';
+import '../media-chrome-menu-button.js';
 import './media-captions-listbox.js';
-import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
-import { window, document, } from './utils/server-safe-globals.js';
-import { closestComposedNode } from './utils/element-utils.js';
-import { isCCOn, toggleSubsCaps } from './utils/captions.js';
+import { MediaUIAttributes, MediaStateReceiverAttributes } from '../constants.js';
+import { window, document, } from '../utils/server-safe-globals.js';
+import { closestComposedNode } from '../utils/element-utils.js';
+import { isCCOn, toggleSubsCaps } from '../utils/captions.js';
 
 const ccEnabledIcon = `
 <svg aria-hidden="true" viewBox="0 0 26 24">
