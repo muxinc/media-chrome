@@ -19,7 +19,7 @@ template.innerHTML = `
     <slot name="button-content"></slot>
   </media-chrome-button>
   <slot name="listbox" hidden>
-    <media-chrome-listbox id="listbox">
+    <media-chrome-listbox id="listbox" part="listbox">
       <slot></slot>
     </media-chrome-listbox>
   </slot>
