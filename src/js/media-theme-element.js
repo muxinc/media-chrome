@@ -9,7 +9,6 @@ export * from './utils/template-parts.js';
 const observedMediaAttributes = {
   'media-target-live-window': 'targetLiveWindow',
   'media-stream-type': 'streamType',
-  'audio': 'audio',
 };
 
 /**
@@ -86,11 +85,11 @@ export class MediaThemeElement extends window.HTMLElement {
 
   get props() {
     const observedAttributes = [
-      ...Array.from(this.attributes),
       ...Array.from(this.mediaController?.attributes ?? [])
         .filter(({ name }) => {
           return observedMediaAttributes[name] || name.startsWith('breakpoint-')
-        })
+        }),
+      ...Array.from(this.attributes),
     ];
 
     const props = {};

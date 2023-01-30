@@ -58,4 +58,37 @@ describe('<media-theme>', () => {
       'should have a media-current-time attribute on mediaSetCallback'
     );
   });
+
+  it('DOM fragments are cached in `if` directives if condition stays the same', async () => {
+    await fixture(`
+      <template id="mytheme">
+        <template if="hasText">
+          <h1>{{text}}</h1>
+        </template>
+        <template if="text == 'Hello world'">
+          <hello-world></hello-world>
+        </template>
+      </template>
+    `);
+
+    const theme1 = await fixture(`
+      <media-theme template="mytheme" has-text="yes" text="Hello"></media-theme>
+    `);
+
+    const h1 = theme1.shadowRoot.querySelector('h1');
+    assert.equal(h1.textContent, 'Hello');
+
+    theme1.setAttribute('has-text', 'true');
+    theme1.setAttribute('text', 'Hello world');
+
+    // MutationObserver is async, wait 1 tick.
+    await Promise.resolve();
+
+    assert.equal(h1.textContent, 'Hello world');
+    assert.equal(h1, theme1.shadowRoot.querySelector('h1'), 'h1 is the same element');
+    assert(
+      theme1.shadowRoot.querySelector('hello-world'),
+      'caused a re-render and <hello-world> is available'
+    );
+  });
 });

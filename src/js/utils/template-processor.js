@@ -29,15 +29,31 @@ class PartialTemplate {
   }
 }
 
+const templates = new WeakMap();
+const templateInstances = new WeakMap();
+
 const Directives = {
   partial: (part, state) => {
     state[part.expression] = new PartialTemplate(part.template);
   },
   if: (part, state) => {
     if (evaluateCondition(part.expression, state)) {
-      part.replace(new TemplateInstance(part.template, state, processor));
+      // If the template did not change for this part we can skip creating
+      // a new template instance / parsing and update the inner parts directly.
+      if (templates.get(part) !== part.template) {
+        templates.set(part, part.template);
+
+        const tpl = new TemplateInstance(part.template, state, processor);
+        part.replace(tpl);
+        templateInstances.set(part, tpl);
+      } else {
+        templateInstances.get(part)?.update(state);
+      }
     } else {
       part.replace('');
+      // Clean up template caches if this part's contents is cleared.
+      templates.delete(part);
+      templateInstances.delete(part);
     }
   },
 };
@@ -92,11 +108,21 @@ export const processor = {
             localState[paramName] = getParamValue(paramValue, state);
           }
 
-          value = new TemplateInstance(
-            value.template,
-            localState,
-            processor
-          );
+          if (templates.get(part) !== value.template) {
+            templates.set(part, value.template);
+
+            value = new TemplateInstance(
+              value.template,
+              localState,
+              processor
+            );
+            part.value = value;
+            templateInstances.set(part, value);
+          } else {
+            templateInstances.get(part)?.update(localState);
+          }
+
+          continue;
         }
 
         if (part instanceof AttrPart) {
@@ -116,12 +142,20 @@ export const processor = {
           }
         } else {
           part.value = value;
+
+          // Clean up template caches if this part's contents is not a partial.
+          templates.delete(part);
+          templateInstances.delete(part);
         }
       } else {
         if (part instanceof AttrPart) {
           part.booleanValue = false;
         } else {
           part.value = undefined;
+
+          // Clean up template caches if this part's contents is cleared.
+          templates.delete(part);
+          templateInstances.delete(part);
         }
       }
     }
