@@ -53,7 +53,7 @@ template.innerHTML = `
 <media-chrome-menu-button aria-label="captions menu button">
   <slot slot="button-content" class="enabled" name="on">${ccEnabledIcon}</slot>
   <slot slot="button-content" class="disabled" name="off" hidden>${ccDisabledIcon}</slot>
-  <media-captions-listbox slot="listbox">
+  <media-captions-listbox slot="listbox" part="listbox">
     <slot slot="captions-indicator" name="captions-indicator">${ccEnabledIcon}</slot>
   </media-captions-listbox>
 </media-chrome-menu-button>
