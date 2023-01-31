@@ -1,3 +1,12 @@
+## [0.18.1](https://github.com/muxinc/media-chrome/compare/v0.18.0...v0.18.1) (2023-01-31)
+
+
+### Bug Fixes
+
+* render on all attr changes, also removal ([#461](https://github.com/muxinc/media-chrome/issues/461)) ([f36b8ce](https://github.com/muxinc/media-chrome/commit/f36b8ce45b72fc226c87cce45235eef408b84461))
+
+
+
 # [0.18.0](https://github.com/muxinc/media-chrome/compare/v0.17.1...v0.18.0) (2023-01-30)
 
 
