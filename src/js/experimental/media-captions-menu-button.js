@@ -1,4 +1,4 @@
-import '../media-chrome-menu-button.js';
+import './media-chrome-menu-button.js';
 import './media-captions-listbox.js';
 import { MediaUIAttributes, MediaStateReceiverAttributes } from '../constants.js';
 import { window, document, } from '../utils/server-safe-globals.js';

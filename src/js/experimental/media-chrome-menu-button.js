@@ -1,4 +1,4 @@
-import './media-chrome-button.js';
+import '../media-chrome-button.js';
 import './media-chrome-listbox.js';
 import { window, document } from '../utils/server-safe-globals.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
