@@ -39,8 +39,7 @@ template.innerHTML = `
     :host {
       --thumb-height: var(--media-range-thumb-height, 10px);
       --track-height: var(--media-range-track-height, 4px);
-      --media-range-padding: var(--media-control-padding, 10px);
-      --_media-range-padding: var(--media-range-padding, 10px);
+      --_media-range-padding: var(--media-range-padding, var(--media-control-padding, 10px));
 
       vertical-align: middle;
       box-sizing: border-box;
