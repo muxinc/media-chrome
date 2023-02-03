@@ -51,6 +51,7 @@ template.innerHTML = html`
   media-control-bar {
     --media-control-padding: 4px 3px;
     place-self: var(--micro-control-bar-place-self, end center);
+    flex-direction: var(--micro-control-bar-direction, row);
     background: var(--_secondary-color);
     border-radius: 5px;
     margin: 10px;
