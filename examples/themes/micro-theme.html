@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Micro Theme Example</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+
+    <script type="module" src="../../dist/index.js"></script>
+    <script type="module" src="../../src/js/themes/media-theme-micro.js"></script>
+  </head>
+  <body>
+    <style>
+      media-theme-micro {
+        display: block;         /* expands the container if preload=none */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        width: 100%;
+        line-height: 0;
+      }
+    </style>
+
+    <media-theme-micro>
+      <video
+        slot="media"
+        src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+        poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
+        crossorigin="anonymous"
+        muted
+        playsinline
+      >
+        <track
+          label="thumbnails"
+          default
+          kind="metadata"
+          src="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.vtt"
+        />
+        <track
+          label="English"
+          kind="captions"
+          srclang="en"
+          src="../vtt/en-cc.vtt"
+        />
+      </video>
+    </media-theme-micro>
+  </body>
+</html>
