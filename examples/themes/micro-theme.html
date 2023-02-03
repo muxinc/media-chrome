@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Media Chrome Micro Theme Example</title>
+    <title>Media Chrome - Micro Theme</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
 
@@ -11,16 +11,31 @@
   </head>
   <body>
     <style>
+      html {
+        height: 100%;
+      }
+      body {
+        min-height: 80%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+      }
       media-theme-micro {
         display: block;         /* expands the container if preload=none */
         max-width: 800px;
         line-height: 0;
       }
+      label {
+        display: block;
+      }
     </style>
     <main>
-      <h1>Media Chrome Micro Theme Example</h1>
+      <h1>Media Chrome - Micro Theme</h1>
+      <br>
+      <br>
 
-      <media-theme-micro>
+      <media-theme-micro id="theme">
         <video
           slot="media"
           src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
@@ -43,6 +58,51 @@
           />
         </video>
       </media-theme-micro>
+
+      <h3>Choose <code>--micro-control-bar-place-self</code>:</h3>
+      <label>
+        <input type="radio" name="--micro-control-bar-place-self" value="start start">
+        start start
+      </label>
+      <label>
+        <input type="radio" name="--micro-control-bar-place-self" value="start center">
+        start center
+      </label>
+      <label>
+        <input type="radio" name="--micro-control-bar-place-self" value="start end">
+        start end
+      </label>
+      <label>
+        <input type="radio" name="--micro-control-bar-place-self" value="center start">
+        center start
+      </label>
+      <label>
+        <input type="radio" name="--micro-control-bar-place-self" value="center center">
+        center center
+      </label>
+      <label>
+        <input type="radio" name="--micro-control-bar-place-self" value="center end">
+        center end
+      </label>
+      <label>
+        <input type="radio" name="--micro-control-bar-place-self" value="end start">
+        end start
+      </label>
+      <label>
+        <input type="radio" name="--micro-control-bar-place-self" value="end center" checked>
+        end center
+      </label>
+      <label>
+        <input type="radio" name="--micro-control-bar-place-self" value="end end">
+        end end
+      </label>
+
+      <script>
+        document.addEventListener('change', (e) => {
+          theme.style.setProperty(e.target.name, e.target.value);
+        })
+      </script>
+
     </main>
   </body>
 </html>

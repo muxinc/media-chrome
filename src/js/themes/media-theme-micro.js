@@ -26,27 +26,34 @@ template.innerHTML = html`
   media-controller {
     --media-control-background: transparent;
     --media-control-hover-background: transparent;
-    --media-range-track-height: 5px;
+    --media-range-track-height: 6px;
     --media-range-track-transition: height .1s linear;
     --media-range-track-background: rgba(20, 20, 30, .25);
-    --media-time-buffered-color: rgba(20, 20, 30, .5);
+    --media-time-buffered-color: rgba(20, 20, 30, .3);
     --media-range-bar-color: rgba(255, 255, 255, .9);
-    --media-range-track-box-shadow: 0 -1px 0 rgba(20, 20, 30, .2);
+    --media-range-track-box-shadow: 0 -1px 0 rgba(20, 20, 30, .07);
     --media-range-thumb-opacity: 0;
     --media-range-padding-left: 0;
     --media-range-padding-right: 0;
     --media-preview-time-background: var(--_secondary-color);
+    --media-preview-time-margin: 0 0 8px;
 
     width: 100%;
     height: 100%;
   }
 
+  media-controller::part(centered-layer) {
+    display: grid;
+    justify-content: unset;
+    padding-bottom: 6px;
+  }
+
   media-control-bar {
     --media-control-padding: 4px 3px;
+    place-self: var(--micro-control-bar-place-self, end center);
     background: var(--_secondary-color);
     border-radius: 5px;
     margin: 10px;
-    align-self: center;
   }
 
   [breakpoint-sm] media-control-bar {
@@ -64,7 +71,7 @@ template.innerHTML = html`
   media-time-range {
     width: 100%;
     height: 10px;
-    bottom: -3px;
+    bottom: -2px;
   }
 </style>
 
@@ -161,7 +168,7 @@ template.innerHTML = html`
   <slot name="media" slot="media"></slot>
 
   <template if="breakpointSm == null">
-    <media-control-bar>
+    <media-control-bar slot="centered-chrome">
       {{>PlayButton}}
       {{>MuteButton}}
       {{>CaptionsButton}}
@@ -172,7 +179,7 @@ template.innerHTML = html`
 
   <template if="breakpointSm">
     <template if="breakpointMd == null">
-      <media-control-bar>
+      <media-control-bar slot="centered-chrome">
         {{>PlayButton}}
         {{>MuteButton}}
         {{>CaptionsButton}}
@@ -183,7 +190,7 @@ template.innerHTML = html`
   </template>
 
   <template if="breakpointMd">
-    <media-control-bar>
+    <media-control-bar slot="centered-chrome">
       {{>PlayButton}}
       {{>MuteButton}}
       {{>CaptionsButton}}
