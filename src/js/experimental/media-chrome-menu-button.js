@@ -225,6 +225,10 @@ class MediaChromeMenuButton extends window.HTMLElement {
     }
   }
 
+  get keysUsed() {
+    return ['Enter', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
+  }
+
 }
 
 if (!window.customElements.get('media-chrome-menu-button')) {
