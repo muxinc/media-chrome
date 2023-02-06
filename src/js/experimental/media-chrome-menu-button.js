@@ -30,6 +30,7 @@ template.innerHTML = `
 class MediaChromeMenuButton extends window.HTMLElement {
   #handleClick;
   #handleChange;
+  #enabledState = false;
   #button;
   #buttonSlot;
   #listbox;
@@ -60,10 +61,18 @@ class MediaChromeMenuButton extends window.HTMLElement {
 
     this.#buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     this.#buttonSlot.addEventListener('slotchange', () => {
+      // disconnect previous button
       this.disable();
+
       // update button reference if necessary
       this.#button = this.#buttonSlot.assignedElements()[0] || this.#button;
-      this.enable();
+
+      // reconnect new button
+      if (this.#enabledState) {
+        this.enable();
+      } else {
+        this.disable();
+      }
     });
 
     this.#listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
@@ -89,6 +98,7 @@ class MediaChromeMenuButton extends window.HTMLElement {
 
     if (!this.#listboxSlot.hidden) {
       this.#listbox.focus();
+      this.#updateMenuPosition();
     } else {
       this.#button.focus();
     }
@@ -100,6 +110,7 @@ class MediaChromeMenuButton extends window.HTMLElement {
   }
 
   enable() {
+    this.#enabledState = true;
     this.#button.removeAttribute('disabled');
     this.#button.handleClick = this.#handleClick;
     this.#toggleExpanded()
@@ -107,6 +118,7 @@ class MediaChromeMenuButton extends window.HTMLElement {
   }
 
   disable() {
+    this.#enabledState = false;
     this.#button.setAttribute('disabled', '');
     this.#button.handleClick = () => {};
     this.#listbox.addEventListener('change', this.#handleChange);
