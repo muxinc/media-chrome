@@ -1,3 +1,13 @@
+## [0.18.2](https://github.com/muxinc/media-chrome/compare/v0.18.1...v0.18.2) (2023-02-06)
+
+
+### Bug Fixes
+
+* **experimental:** media-captions-menu-button relative file locations ([#466](https://github.com/muxinc/media-chrome/issues/466)) ([53c17b1](https://github.com/muxinc/media-chrome/commit/53c17b198a7ec55389d9295253a8673e8bd4ec0a))
+* **experimental:** move media-captions-menu-button to experimental folder ([#464](https://github.com/muxinc/media-chrome/issues/464)) ([3ddf3a9](https://github.com/muxinc/media-chrome/commit/3ddf3a904ea6a0fb250253b6c035323e280713fc))
+
+
+
 ## [0.18.1](https://github.com/muxinc/media-chrome/compare/v0.18.0...v0.18.1) (2023-01-31)
 
 
