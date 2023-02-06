@@ -1,6 +1,7 @@
 import '../media-chrome-button.js';
 import './media-chrome-listbox.js';
 import { window, document } from '../utils/server-safe-globals.js';
+import { closestComposedNode } from '../utils/element-utils.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
 
 const template = document.createElement('template');
