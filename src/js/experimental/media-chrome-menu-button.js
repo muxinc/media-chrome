@@ -7,7 +7,20 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
   :host {
-    display: inline-block;
+    display: contents;
+  }
+
+  [name="listbox"]::slotted(*),
+  media-chrome-listbox {
+    position: absolute;
+    bottom: 44px;
+    max-height: 300px;
+    overflow: auto;
+  }
+
+  :host([media-controller]) [name="listbox"]::slotted(*) {
+    z-index: 1;
+    bottom: unset;
   }
 
   media-chrome-button:not(:focus-visible) {
