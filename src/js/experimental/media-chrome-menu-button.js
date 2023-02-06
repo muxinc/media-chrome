@@ -15,9 +15,11 @@ template.innerHTML = `
   }
   </style>
 
-  <media-chrome-button aria-haspopup="listbox">
-    <slot name="button-content"></slot>
-  </media-chrome-button>
+  <slot name="button">
+    <media-chrome-button aria-haspopup="listbox">
+      <slot name="button-content"></slot>
+    </media-chrome-button>
+  </slot>
   <slot name="listbox" hidden>
     <media-chrome-listbox id="listbox" part="listbox">
       <slot></slot>
@@ -29,6 +31,7 @@ class MediaChromeMenuButton extends window.HTMLElement {
   #handleClick;
   #handleChange;
   #button;
+  #buttonSlot;
   #listbox;
   #listboxSlot;
   #expanded = false;
@@ -54,6 +57,14 @@ class MediaChromeMenuButton extends window.HTMLElement {
 
     this.#button = this.shadowRoot.querySelector('media-chrome-button');
     this.#listbox = this.shadowRoot.querySelector('media-chrome-listbox');
+
+    this.#buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
+    this.#buttonSlot.addEventListener('slotchange', () => {
+      this.disable();
+      // update button reference if necessary
+      this.#button = this.#buttonSlot.assignedElements()[0] || this.#button;
+      this.enable();
+    });
 
     this.#listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
     this.#listboxSlot.addEventListener('slotchange', () => {

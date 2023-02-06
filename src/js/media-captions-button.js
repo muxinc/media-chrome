@@ -1,4 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
+import MediaChromeMenuButton from './experimental/media-chrome-menu-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
@@ -20,7 +21,8 @@ slotTemplate.innerHTML = `
     display: none !important;
   }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+  ${/* Double negative, but safer if display doesn't equal 'block' */ ''
+  }
   :host(:not([aria-checked="true"])) slot:not([name=off]) > *, 
   :host(:not([aria-checked="true"])) ::slotted(:not([slot=off])) {
     display: none !important;
@@ -103,7 +105,7 @@ class MediaCaptionsButton extends MediaChromeButton {
           // If captions are currently ready, that means we went from unready to ready, so
           // use the click handler to dispatch a request to turn captions on
           if (this._captionsReady) {
-            this.handleClick();
+            toggleSubsCaps(this);
           }
         }
       }
@@ -112,6 +114,9 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   handleClick() {
+    // do nothing if parent is an instance of MediaChromeMenuButton
+    if (this.parentElement instanceof MediaChromeMenuButton) return;
+
     toggleSubsCaps(this);
   }
 }
