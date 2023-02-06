@@ -117,6 +117,45 @@ class MediaChromeMenuButton extends window.HTMLElement {
     }
   }
 
+  #updateMenuPosition() {
+    // if the menu is hidden, skip updating the menu position
+    if (this.#listbox.offsetWidth === 0) return;
+
+    const svgs = this.shadowRoot.querySelectorAll('svg');
+    const onSvgRect = this.#button.getBoundingClientRect(); // (this.#enabledSlot.assignedElements()[0] ?? svgs[0]).getBoundingClientRect();
+    const offSvgRect = this.#button.getBoundingClientRect(); // (this.#disabledSlot.assignedElements()[0] ?? svgs[1]).getBoundingClientRect();
+
+    if (this.hasAttribute('media-controller')) {
+      const widthOn = onSvgRect.width;
+      const widthOff = offSvgRect.width;
+      const width = widthOn > 0 ? widthOn : widthOff > 0 ? widthOff : 0;
+      const heightOn = onSvgRect.height;
+      const heightOff = offSvgRect.height;
+      const height = heightOn > 0 ? heightOn : heightOff > 0 ? heightOff : 0;
+
+      this.#listbox.style.marginLeft = `calc(-${width}px - 10px * 2)`;
+      this.#listbox.style.marginTop = `calc(${height}px + 10px * 2)`;
+
+    } else {
+      const xOn = onSvgRect.x;
+      const xOff = offSvgRect.x;
+      const leftOffset = xOn > 0 ? xOn : xOff > 0 ? xOff : 0;
+
+      // Get the element that enforces the bounds for the time range boxes.
+      const bounds =
+        (this.getAttribute('bounds')
+          ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
+          : this.parentElement) ?? this;
+      let parentOffset = bounds.getBoundingClientRect().x;
+
+      if (this.#listbox.offsetWidth + leftOffset - parentOffset > bounds.offsetWidth) {
+        this.#listbox.style.translate = (bounds.offsetWidth - this.#listbox.offsetWidth) + 'px';
+      } else {
+        this.#listbox.style.translate = `calc(${leftOffset}px - ${parentOffset}px)`;
+      }
+    }
+  }
+
   #toggleExpanded() {
     this.#button.setAttribute('aria-expanded', this.#expanded);
     this.#expanded = !this.#expanded;
