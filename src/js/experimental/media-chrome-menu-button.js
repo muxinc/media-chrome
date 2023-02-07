@@ -19,10 +19,15 @@ template.innerHTML = `
     overflow: auto;
   }
 
-  :host([media-controller]) [name="listbox"]::slotted(*) {
-    z-index: 1;
-    bottom: unset;
-  }
+  /*
+   * apply these properties to the listbox when using outside of control-bar/media-controller.
+   * Currently, there isn't a good way of styling these interally due to platform limitations.
+   * [name="listbox"]::slotted(*),
+   * media-chrome-listbox {
+   *   z-index: 1;
+   *   bottom: unset;
+   * }
+  */
 
   media-chrome-button:not(:focus-visible) {
     outline: none;
