@@ -59,6 +59,16 @@
         </video>
       </media-theme-micro>
 
+      <h3>Choose <code>stream-type</code>:</h3>
+      <label>
+        <input type="radio" name="stream-type" value="on-demand" checked>
+        on-demand
+      </label>
+      <label>
+        <input type="radio" name="stream-type" value="live">
+        live
+      </label>
+
       <h3>Choose <code>--micro-control-bar-direction</code>:</h3>
       <label>
         <input type="radio" name="--micro-control-bar-direction" value="row" checked>
@@ -109,7 +119,12 @@
 
       <script>
         document.addEventListener('change', (e) => {
-          theme.style.setProperty(e.target.name, e.target.value);
+          if (e.target.name.startsWith('--')) {
+            theme.style.setProperty(e.target.name, e.target.value);
+            return;
+          }
+
+          theme.setAttribute(e.target.name, e.target.value);
         })
       </script>
 

@@ -48,13 +48,16 @@ template.innerHTML = html`
     padding-bottom: 6px;
   }
 
+  :host([stream-type=live]) media-controller::part(centered-layer) {
+    padding-bottom: 0;
+  }
+
   media-control-bar {
     --media-control-padding: 4px 3px;
     place-self: var(--micro-control-bar-place-self, end center);
     flex-direction: var(--micro-control-bar-direction, row);
-    background: var(--_secondary-color);
-    border-radius: 5px;
     margin: 10px;
+    gap: 4px;
   }
 
   [breakpoint-sm] media-control-bar {
@@ -63,6 +66,31 @@ template.innerHTML = html`
 
   [breakpoint-md] media-control-bar {
     --media-control-padding: 9px 7px;
+  }
+
+  .control-group {
+    min-width: 42px;
+    display: inline-flex;
+    align-self: start;
+    flex-direction: var(--micro-control-bar-direction, row);
+    background: var(--_secondary-color);
+    border-radius: 5px;
+  }
+
+  media-live-button {
+    --media-control-background: var(--_secondary-color);
+    --media-control-hover-background: var(--_secondary-color);
+    border-radius: 5px;
+  }
+
+  media-live-button::before {
+    content: '';
+    width: 5px;
+  }
+
+  media-live-button::after {
+    content: '';
+    width: 7px;
   }
 
   media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
@@ -225,6 +253,16 @@ template.innerHTML = html`
   </media-fullscreen-button>
 </template>
 
+<template partial="LiveButton">
+  <media-live-button
+    part="{{section ?? 'top'}} live seek-live button"
+    disabled="{{disabled}}"
+    aria-disabled="{{disabled}}"
+  >
+    <span slot="text">Live</span>
+  </media-live-button>
+</template>
+
 <template partial="TimeRange">
   <media-time-range
     part="bottom time range"
@@ -236,46 +274,163 @@ template.innerHTML = html`
 <media-controller>
   <slot name="media" slot="media"></slot>
 
-  <template if="breakpointSm == null">
-    <media-control-bar slot="centered-chrome">
-      {{>PlayButton}}
-      {{>MuteButton}}
-      {{>CaptionsButton}}
-      {{>AirplayButton}}
-      {{>CastButton}}
-      {{>PipButton}}
-      {{>FullscreenButton}}
-    </media-control-bar>
-    {{>TimeRange}}
-  </template>
+  <template if="streamType == 'on-demand'">
 
-  <template if="breakpointSm">
-    <template if="breakpointMd == null">
+    <template if="breakpointSm == null">
       <media-control-bar slot="centered-chrome">
-        {{>PlayButton}}
-        {{>MuteButton}}
-        {{>CaptionsButton}}
-        {{>AirplayButton}}
-        {{>CastButton}}
-        {{>PipButton}}
-        {{>FullscreenButton}}
+        <div class="control-group">
+          {{>PlayButton}}
+          {{>MuteButton}}
+          {{>CaptionsButton}}
+          {{>AirplayButton}}
+          {{>CastButton}}
+          {{>PipButton}}
+          {{>FullscreenButton}}
+        </div>
       </media-control-bar>
       {{>TimeRange}}
     </template>
+
+    <template if="breakpointSm">
+      <template if="breakpointMd == null">
+        <media-control-bar slot="centered-chrome">
+          <div class="control-group">
+            {{>PlayButton}}
+            {{>MuteButton}}
+            {{>CaptionsButton}}
+            {{>AirplayButton}}
+            {{>CastButton}}
+            {{>PipButton}}
+            {{>FullscreenButton}}
+          </div>
+        </media-control-bar>
+        {{>TimeRange}}
+      </template>
+    </template>
+
+    <template if="breakpointMd">
+      <media-control-bar slot="centered-chrome">
+        <div class="control-group">
+          {{>PlayButton}}
+          {{>MuteButton}}
+          {{>CaptionsButton}}
+          {{>AirplayButton}}
+          {{>CastButton}}
+          {{>PipButton}}
+          {{>FullscreenButton}}
+        </div>
+      </media-control-bar>
+      {{>TimeRange}}
+    </template>
+
   </template>
 
-  <template if="breakpointMd">
-    <media-control-bar slot="centered-chrome">
-      {{>PlayButton}}
-      {{>MuteButton}}
-      {{>CaptionsButton}}
-      {{>AirplayButton}}
-      {{>CastButton}}
-      {{>PipButton}}
-      {{>FullscreenButton}}
-    </media-control-bar>
-    {{>TimeRange}}
+  <template if="streamType == 'live'">
+
+    <template if="targetLiveWindow == null">
+
+      <template if="breakpointSm == null">
+        <media-control-bar slot="centered-chrome">
+          {{>LiveButton}}
+          <div class="control-group">
+            {{>MuteButton}}
+            {{>CaptionsButton}}
+            {{>AirplayButton}}
+            {{>CastButton}}
+            {{>PipButton}}
+            {{>FullscreenButton}}
+          </div>
+        </media-control-bar>
+      </template>
+
+      <template if="breakpointSm">
+        <template if="breakpointMd == null">
+          <media-control-bar slot="centered-chrome">
+            {{>LiveButton}}
+            <div class="control-group">
+              {{>MuteButton}}
+              {{>CaptionsButton}}
+              {{>AirplayButton}}
+              {{>CastButton}}
+              {{>PipButton}}
+              {{>FullscreenButton}}
+            </div>
+          </media-control-bar>
+        </template>
+      </template>
+
+      <template if="breakpointMd">
+        <media-control-bar slot="centered-chrome">
+          {{>LiveButton}}
+          <div class="control-group">
+            {{>MuteButton}}
+            {{>CaptionsButton}}
+            {{>AirplayButton}}
+            {{>CastButton}}
+            {{>PipButton}}
+            {{>FullscreenButton}}
+          </div>
+        </media-control-bar>
+      </template>
+
+    </template>
+
+    <template if="targetLiveWindow > 0">
+
+      <template if="breakpointSm == null">
+        <media-control-bar slot="centered-chrome">
+          {{>LiveButton}}
+          <div class="control-group">
+            {{>PlayButton}}
+            {{>MuteButton}}
+            {{>CaptionsButton}}
+            {{>AirplayButton}}
+            {{>CastButton}}
+            {{>PipButton}}
+            {{>FullscreenButton}}
+          </div>
+        </media-control-bar>
+        {{>TimeRange}}
+      </template>
+
+      <template if="breakpointSm">
+        <template if="breakpointMd == null">
+          <media-control-bar slot="centered-chrome">
+            {{>LiveButton}}
+            <div class="control-group">
+              {{>PlayButton}}
+              {{>MuteButton}}
+              {{>CaptionsButton}}
+              {{>AirplayButton}}
+              {{>CastButton}}
+              {{>PipButton}}
+              {{>FullscreenButton}}
+            </div>
+          </media-control-bar>
+          {{>TimeRange}}
+        </template>
+      </template>
+
+      <template if="breakpointMd">
+        <media-control-bar slot="centered-chrome">
+          {{>LiveButton}}
+          <div class="control-group">
+            {{>PlayButton}}
+            {{>MuteButton}}
+            {{>CaptionsButton}}
+            {{>AirplayButton}}
+            {{>CastButton}}
+            {{>PipButton}}
+            {{>FullscreenButton}}
+          </div>
+        </media-control-bar>
+        {{>TimeRange}}
+      </template>
+
+    </template>
+
   </template>
+
 </media-controller>
 `;
 
