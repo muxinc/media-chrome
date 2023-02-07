@@ -66,7 +66,7 @@ The Media Live Button shows when the stream is live via an indicator (red dot, b
 
 <style>
   #textlive {
-    --media-live-indicator-off-icon-color: white;
+    --media-live-button-icon-color: white;
   }
 </style>
 <media-live-button id="textlive">
@@ -83,7 +83,7 @@ The Media Live Button shows when the stream is live via an indicator (red dot, b
 ```html
 <style>
   #textlive {
-    --media-live-indicator-off-icon-color: white;
+    --media-live-button-icon-color: white;
   }
 </style>
 <media-live-button id="textlive">
