@@ -20,6 +20,11 @@
       height: 5000px;
     }
 
+    [disabled] {
+      opacity: 60%;
+      cursor: not-allowed;
+    }
+
   </style>
 </head>
 <body>
@@ -37,9 +42,9 @@
     <br>
 
 
-    <media-chrome-menu-button aria-label="captions menu button">
-      <media-captions-button default-showing slot="button" media-controller="mc"></media-captions-button>
-      <media-captions-listbox slot="listbox" media-controller="mc"></media-captions-listbox>
+    <media-chrome-menu-button media-controller="mc" aria-label="captions menu button">
+      <media-captions-button slot="button"></media-captions-button>
+      <media-captions-listbox slot="listbox" ></media-captions-listbox>
     </media-chrome-menu-button>
     <!-- <media-captions-menu-button media-controller="mc"></media-captions-menu-button> -->
 
@@ -67,22 +72,27 @@
       </video>
       <media-poster-image slot="poster" src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/poster.png"></media-poster-image>
       <media-control-bar>
-        <media-captions-menu-button></media-captions-menu-button>
         <media-play-button></media-play-button>
         <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
         <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
         <media-mute-button></media-mute-button>
         <media-volume-range></media-volume-range>
-        <media-captions-menu-button></media-captions-menu-button>
         <media-time-range></media-time-range>
         <media-time-display show-duration remaining></media-time-display>
         <media-captions-button></media-captions-button>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button" media-controller="mc"></media-captions-button>
+          <media-captions-listbox slot="listbox" media-controller="mc"></media-captions-listbox>
+        </media-chrome-menu-button>
         <media-playback-rate-button></media-playback-rate-button>
         <media-pip-button></media-pip-button>
         <media-fullscreen-button></media-fullscreen-button>
         <media-captions-menu-button></media-captions-menu-button>
         <media-airplay-button></media-airplay-button>
-        <media-captions-menu-button></media-captions-menu-button>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button" media-controller="mc"></media-captions-button>
+          <media-captions-listbox slot="listbox" media-controller="mc"></media-captions-listbox>
+        </media-chrome-menu-button>
       </media-control-bar>
     </media-controller>
     <div class="examples">
