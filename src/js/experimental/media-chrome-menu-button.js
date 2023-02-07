@@ -44,7 +44,7 @@ template.innerHTML = `
 class MediaChromeMenuButton extends window.HTMLElement {
   #handleClick;
   #handleChange;
-  #enabledState = false;
+  #enabledState = true;
   #button;
   #buttonSlot;
   #listbox;
@@ -163,7 +163,6 @@ class MediaChromeMenuButton extends window.HTMLElement {
   }
 
   enable() {
-    this.#enabledState = true;
     this.#button.removeAttribute('disabled');
     this.#button.handleClick = this.#handleClick;
     this.#toggleExpanded()
@@ -171,7 +170,6 @@ class MediaChromeMenuButton extends window.HTMLElement {
   }
 
   disable() {
-    this.#enabledState = false;
     this.#button.setAttribute('disabled', '');
     this.#button.handleClick = () => {};
     this.#listbox.addEventListener('change', this.#handleChange);
@@ -191,8 +189,10 @@ class MediaChromeMenuButton extends window.HTMLElement {
       }
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
+        this.#enabledState = true;
         this.enable();
       } else {
+        this.#enabledState = false;
         this.disable();
       }
     }
