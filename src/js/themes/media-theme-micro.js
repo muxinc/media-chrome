@@ -48,7 +48,8 @@ template.innerHTML = html`
     padding-bottom: 6px;
   }
 
-  :host([stream-type=live]) media-controller::part(centered-layer) {
+  :host([stream-type=live]:not([target-live-window])) media-controller::part(centered-layer),
+  :host([media-stream-type=live]:not([media-target-live-window])) media-controller::part(centered-layer) {
     padding-bottom: 0;
   }
 

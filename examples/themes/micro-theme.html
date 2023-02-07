@@ -69,6 +69,16 @@
         live
       </label>
 
+      <h3>Choose <code>target-live-window</code>:</h3>
+      <label>
+        <input type="radio" name="target-live-window" value="" checked>
+        0
+      </label>
+      <label>
+        <input type="radio" name="target-live-window" value="1">
+        1
+      </label>
+
       <h3>Choose <code>--micro-control-bar-direction</code>:</h3>
       <label>
         <input type="radio" name="--micro-control-bar-direction" value="row" checked>
@@ -123,8 +133,11 @@
             theme.style.setProperty(e.target.name, e.target.value);
             return;
           }
-
-          theme.setAttribute(e.target.name, e.target.value);
+          if (e.target.value) {
+            theme.setAttribute(e.target.name, e.target.value);
+            return;
+          }
+          theme.removeAttribute(e.target.name);
         })
       </script>
 
