@@ -142,6 +142,38 @@ template.innerHTML = html`
   </media-play-button>
 </template>
 
+<template partial="SeekBackwardButton">
+  <media-seek-backward-button
+    seek-offset="{{backwardSeekOffset ?? 10}}"
+    part="{{section ?? 'bottom'}} seek-backward button"
+    disabled="{{disabled}}"
+    aria-disabled="{{disabled}}"
+  >
+    <svg aria-hidden="true" viewBox="0 0 22 24" slot="backward">
+      <path d="M11 6V3L5.37 7 11 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 11 6Z" />
+      <text class="value" transform="translate(2.5 21)" style="font-size: 8px; font-family: 'ArialMT', 'Arial'">
+        {{backwardSeekOffset ?? 10}}
+      </text>
+    </svg>
+  </media-seek-backward-button>
+</template>
+
+<template partial="SeekForwardButton">
+  <media-seek-forward-button
+    seek-offset="{{forwardSeekOffset ?? 10}}"
+    part="{{section ?? 'bottom'}} seek-forward button"
+    disabled="{{disabled}}"
+    aria-disabled="{{disabled}}"
+  >
+    <svg aria-hidden="true" viewBox="0 0 22 24" slot="forward">
+      <path d="M11 6V3l5.61 4L11 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 11 6Z" />
+      <text class="value" transform="translate(10 21)" style="font-size: 8px; font-family: 'ArialMT', 'Arial'">
+        {{forwardSeekOffset ?? 10}}
+      </text>
+    </svg>
+  </media-seek-forward-button>
+</template>
+
 <template partial="MuteButton">
   <media-mute-button part="bottom mute button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
     <svg aria-hidden="true" viewBox="0 0 24 24" slot="high">
@@ -281,6 +313,8 @@ template.innerHTML = html`
       <media-control-bar slot="centered-chrome">
         <div class="control-group">
           {{>PlayButton}}
+          {{>SeekBackwardButton}}
+          {{>SeekForwardButton}}
           {{>MuteButton}}
           {{>CaptionsButton}}
           {{>AirplayButton}}
@@ -297,6 +331,8 @@ template.innerHTML = html`
         <media-control-bar slot="centered-chrome">
           <div class="control-group">
             {{>PlayButton}}
+            {{>SeekBackwardButton}}
+            {{>SeekForwardButton}}
             {{>MuteButton}}
             {{>CaptionsButton}}
             {{>AirplayButton}}
@@ -313,6 +349,8 @@ template.innerHTML = html`
       <media-control-bar slot="centered-chrome">
         <div class="control-group">
           {{>PlayButton}}
+          {{>SeekBackwardButton}}
+          {{>SeekForwardButton}}
           {{>MuteButton}}
           {{>CaptionsButton}}
           {{>AirplayButton}}
@@ -383,6 +421,8 @@ template.innerHTML = html`
           {{>LiveButton}}
           <div class="control-group">
             {{>PlayButton}}
+            {{>SeekBackwardButton}}
+            {{>SeekForwardButton}}
             {{>MuteButton}}
             {{>CaptionsButton}}
             {{>AirplayButton}}
@@ -400,6 +440,8 @@ template.innerHTML = html`
             {{>LiveButton}}
             <div class="control-group">
               {{>PlayButton}}
+              {{>SeekBackwardButton}}
+              {{>SeekForwardButton}}
               {{>MuteButton}}
               {{>CaptionsButton}}
               {{>AirplayButton}}
@@ -417,6 +459,8 @@ template.innerHTML = html`
           {{>LiveButton}}
           <div class="control-group">
             {{>PlayButton}}
+            {{>SeekBackwardButton}}
+            {{>SeekForwardButton}}
             {{>MuteButton}}
             {{>CaptionsButton}}
             {{>AirplayButton}}
