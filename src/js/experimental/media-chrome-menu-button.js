@@ -81,6 +81,10 @@ class MediaChromeMenuButton extends window.HTMLElement {
       // update button reference if necessary
       this.#button = this.#buttonSlot.assignedElements()[0] || this.#button;
 
+      if (this.#button.hasAttribute('disabled')) {
+        this.#enabledState = false;
+      }
+
       // reconnect new button
       if (this.#enabledState) {
         this.enable();
