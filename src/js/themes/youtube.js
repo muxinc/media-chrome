@@ -14,17 +14,14 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
   :host {
-    --primary-color: #eee;
-    --secondary-color: transparent;
+    --media-secondary-color: transparent;
   }
 
   media-controller {
     font-size: 13px;
     font-family: Roboto, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
-    color: var(--primary-color);
 
-    --media-control-background: var(--secondary-color);
     --media-control-hover-background: var(--secondary-color);
     --media-range-track-height: 3px;
     --media-range-thumb-height: 13px;
@@ -34,12 +31,10 @@ template.innerHTML = `
     --media-preview-thumbnail-border-radius: 2px;
     --media-preview-time-margin: 10px 0;
 
-    --media-icon-color: var(--primary-color);
   }
 
   *:hover {
-    color: #fff;
-    --media-icon-color: #fff;
+    --primary-color: #fff
   }
 
   media-control-bar {
