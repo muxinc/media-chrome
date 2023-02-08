@@ -11,23 +11,17 @@ template.innerHTML = `
     display: contents;
   }
 
+  .wrapper {
+    position: relative;
+  }
+
   [name="listbox"]::slotted(*),
   media-chrome-listbox {
     position: absolute;
     bottom: 44px;
     max-height: 300px;
-    overflow: auto;
+    overflow: hidden auto;
   }
-
-  /*
-   * apply these properties to the listbox when using outside of control-bar/media-controller.
-   * Currently, there isn't a good way of styling these interally due to platform limitations.
-   * [name="listbox"]::slotted(*),
-   * media-chrome-listbox {
-   *   z-index: 1;
-   *   bottom: unset;
-   * }
-  */
 
   media-chrome-button:not(:focus-visible) {
     outline: none;
@@ -39,11 +33,13 @@ template.innerHTML = `
       <slot name="button-content"></slot>
     </media-chrome-button>
   </slot>
-  <slot name="listbox" hidden>
-    <media-chrome-listbox id="listbox" part="listbox">
-      <slot></slot>
-    </media-chrome-listbox>
-  </slot>
+  <div class="wrapper">
+    <slot name="listbox" hidden>
+      <media-chrome-listbox id="listbox" part="listbox">
+        <slot></slot>
+      </media-chrome-listbox>
+    </slot>
+  </div>
 `;
 
 class MediaChromeMenuButton extends window.HTMLElement {
@@ -131,30 +127,34 @@ class MediaChromeMenuButton extends window.HTMLElement {
     // if the menu is hidden, skip updating the menu position
     if (this.#listbox.offsetWidth === 0) return;
 
+    // if we're outside of the controller,
+    // one of the components should have a media-controller attribute
+    if (
+      this.hasAttribute('media-controller') ||
+      this.#button.hasAttribute('media-controller') ||
+      this.#listbox.hasAttribute('media-controller')) {
+      this.#listbox.style.zIndex = '1';
+      this.#listbox.style.bottom = 'unset';
+      return;
+    }
+
     const buttonRect = this.#button.getBoundingClientRect();
 
-    if (this.hasAttribute('media-controller')) {
-      const width = buttonRect.width;
-      const height = buttonRect.height;
+    const leftOffset = buttonRect.x;
 
-      this.#listbox.style.marginLeft = `calc(-${width}px - 10px * 2)`;
-      this.#listbox.style.marginTop = `calc(${height}px + 10px * 2)`;
+    // Get the element that enforces the bounds for the time range boxes.
+    const bounds =
+      (this.getAttribute('bounds')
+        ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
+        : this.parentElement) ?? this;
+    let parentOffset = bounds.getBoundingClientRect().x;
 
+    if (this.#listbox.offsetWidth + leftOffset - parentOffset > bounds.offsetWidth) {
+      const offset = this.#listbox.offsetWidth + leftOffset + buttonRect.width;
+      const overflow = bounds.offsetWidth + parentOffset - offset;
+      this.#listbox.style.translate = overflow + 'px';
     } else {
-      const leftOffset = buttonRect.x;
-
-      // Get the element that enforces the bounds for the time range boxes.
-      const bounds =
-        (this.getAttribute('bounds')
-          ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
-          : this.parentElement) ?? this;
-      let parentOffset = bounds.getBoundingClientRect().x;
-
-      if (this.#listbox.offsetWidth + leftOffset - parentOffset > bounds.offsetWidth) {
-        this.#listbox.style.translate = (bounds.offsetWidth - this.#listbox.offsetWidth) + 'px';
-      } else {
-        this.#listbox.style.translate = `calc(${leftOffset}px - ${parentOffset}px)`;
-      }
+      this.#listbox.style.translate = `-${buttonRect.width}px`;
     }
   }
 
