@@ -37,6 +37,10 @@
       <media-chrome-listitem>dolor</media-chrome-listitem>
       <media-chrome-listitem>sit</media-chrome-listitem>
     </media-chrome-menu-button>
+    <media-chrome-menu-button>
+      <span slot="button-content">Menu Button</span>
+      <media-captions-listbox slot="listbox" media-controller="mc"></media-captions-listbox>
+    </media-chrome-menu-button>
 
     <br>
     <br>
@@ -86,7 +90,7 @@
         </media-chrome-menu-button>
         <media-playback-rate-button></media-playback-rate-button>
         <media-pip-button></media-pip-button>
-        <media-chrome-menu-button aria-label="captions menu button">
+        <media-chrome-menu-button disabled aria-label="captions menu button">
           <media-captions-button default-showing slot="button"></media-captions-button>
           <media-captions-listbox slot="listbox" ></media-captions-listbox>
         </media-chrome-menu-button>
