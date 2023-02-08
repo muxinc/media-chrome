@@ -21,13 +21,12 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     :host {
-      --media-preview-background-color: rgba(20,20,30, .5);
-      --media-preview-background: var(--media-control-background,
-        var(--media-preview-background-color));
+
+
+
       --media-preview-border-radius: 3px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;
-      color: #fff;
     }
 
     #preview-rail,
@@ -72,7 +71,7 @@ template.innerHTML = `
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: visibility 0s .25s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-time-background, var(--media-preview-background));
+      background: var(--media-preview-time-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7)))));
       box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 4px rgba(0,0,0, .2));
       max-width: var(--media-preview-thumbnail-max-width, 180px);
       max-height: var(--media-preview-thumbnail-max-height, 160px);
@@ -91,12 +90,11 @@ template.innerHTML = `
 
     media-preview-time-display,
     ::slotted(media-preview-time-display) {
-      color: unset;
       min-width: 0;
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: min-width 0s, border-radius 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-time-background, var(--media-preview-background));
+      background: var(--media-preview-time-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7)))));
       border-radius: var(--media-preview-time-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));

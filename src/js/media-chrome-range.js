@@ -11,7 +11,7 @@ const thumbStyles = `
   width: var(--media-range-thumb-width, 10px);
   border: var(--media-range-thumb-border, none);
   border-radius: var(--media-range-thumb-border-radius, 10px);
-  background: var(--media-range-thumb-background, #fff);
+  background: var(--media-range-thumb-background, var(--media-primary-color, rgb(238 238 238)));
   box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
   cursor: pointer;
   transition: var(--media-range-thumb-transition, none);
@@ -36,6 +36,9 @@ const trackStyles = `
 template.innerHTML = `
   <style>
     :host {
+
+
+
       --thumb-height: var(--media-range-thumb-height, 10px);
       --track-height: var(--media-range-track-height, 4px);
       --_focus-box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgba(27, 127, 204, 0.9));
@@ -45,7 +48,7 @@ template.innerHTML = `
       box-sizing: border-box;
       display: inline-block;
       position: relative;
-      background: var(--media-control-background, rgba(20,20,30, 0.7));
+      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7)));
       transition: background 0.15s linear;
       width: 100px;
       height: calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
@@ -326,7 +329,7 @@ class MediaChromeRange extends window.HTMLElement {
     }
 
     let colorArray = [
-      ['var(--media-range-bar-color, #fff)', rangePercent + thumbPercent],
+      ['var(--media-range-bar-color, var(--media-primary-color, rgb(238 238 238)))', rangePercent + thumbPercent],
       ['var(--media-range-track-color, transparent)', 100],
     ];
 

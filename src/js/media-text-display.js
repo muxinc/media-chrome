@@ -8,12 +8,15 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     :host {
+      
+      
+
       display: inline-flex;
       justify-content: center;
       align-items: center;
       vertical-align: middle;
       box-sizing: border-box;
-      background: var(--media-control-background, rgba(20,20,30, 0.7));
+      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7)));
   
       padding: var(--media-control-padding, 10px);
 
@@ -21,7 +24,7 @@ template.innerHTML = `
       line-height: var(--media-text-content-height, var(--media-control-height, 24px));
       font-family: helvetica neue, segoe ui, roboto, arial, sans-serif;
       text-align: center;
-      color: #ffffff;
+      color: var(--media-control-font-color, var(--media-primary-color, rgb(238 238 238)));
       pointer-events: auto;
     }
 
