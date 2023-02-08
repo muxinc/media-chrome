@@ -14,9 +14,13 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
   :host {
-    --primary-color: black;
-    --secondary-color: transparent;
-    --tertiary-color: #7596CC;
+    --media-primary-color: black;
+    --media-secondary-color: transparent;
+    --media-tertiary-color: #7596CC;
+  }
+
+  media-time-display {
+    --media-primary-color: initial;
   }
 
   :host([stream-type="live"]) media-time-range, :host([stream-type="live"]) media-time-display {
@@ -27,16 +31,13 @@ template.innerHTML = `
     width: 100%;
     aspect-ratio: 16 / 9;
 
-    --media-control-background: var(--secondary-color);
-    --media-control-hover-background: transparent;
+    --media-control-hover-background: var(--media-secondary-color);
     
-    --media-icon-color: var(--primary-color);
-
     --media-range-track-height: 6px;
     --media-range-track-background: rgba(0,0,0,0.4);
     --media-range-track-border-radius: 9999px;
 
-    --media-range-thumb-background: var(--tertiary-color);
+    --media-range-thumb-background: var(--media-tertiary-color);
     --media-range-thumb-width: 14px;
     --media-range-thumb-height: 14px;
   }
@@ -84,7 +85,7 @@ template.innerHTML = `
   }
 
   .small-button:hover {
-    box-shadow: 0 0 0 calc(2px) var(--tertiary-color);
+    box-shadow: 0 0 0 calc(2px) var(--media-tertiary-color);
   }
 
   media-cinema-button.small-button {
@@ -101,12 +102,12 @@ template.innerHTML = `
     justify-items: center;
     height: 96px;
     width: 96px;
-    background: rgba(0,0,0,0.8);
+    background: rgb(0 0 0 / 0.8);
     border-radius: 9999px;
   }
 
   div[slot="centered-chrome"] media-play-button:hover {
-    box-shadow: 0 0 0 calc(2px) var(--tertiary-color);
+    box-shadow: 0 0 0 calc(2px) var(--media-tertiary-color);
   }
 
   div[slot="centered-chrome"] media-play-button svg {
