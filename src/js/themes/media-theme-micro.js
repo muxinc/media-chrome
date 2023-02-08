@@ -7,7 +7,7 @@
 </media-theme-micro>
 */
 
-import { window } from '../utils/server-safe-globals.js';
+import { window, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const html = (raw, ...keys) => String.raw({ raw }, ...keys);
@@ -123,11 +123,59 @@ template.innerHTML = html`
     height: 10px;
     bottom: -2px;
   }
+
+  media-play-button {
+    display: var(--controls, var(--play-button));
+  }
+
+  media-seek-backward-button {
+    display: var(--controls, var(--seek-backward-button, none));
+  }
+
+  media-seek-forward-button {
+    display: var(--controls, var(--seek-forward-button, none));
+  }
+
+  media-mute-button {
+    display: var(--controls, var(--mute-button));
+  }
+
+  media-captions-button {
+    display: var(--controls, var(--captions-button));
+  }
+
+  media-pip-button {
+    display: var(--controls, var(--pip-button, none));
+  }
+
+  media-airplay-button {
+    display: var(--controls, var(--airplay-button));
+  }
+
+  media-cast-button {
+    display: var(--controls, var(--cast-button));
+  }
+
+  media-fullscreen-button {
+    display: var(--controls, var(--fullscreen-button));
+  }
+
+  media-live-button {
+    display: var(--controls, var(--live-button));
+  }
+
+  media-time-range {
+    display: var(--controls, var(--time-range));
+  }
+
+  media-volume-range {
+    display: var(--controls, var(--volume-range));
+  }
 </style>
 
 <template partial="PlayButton">
   <media-play-button
-    part="{{section ?? 'bottom'}} play button"
+    part="play button"
     disabled="{{disabled}}"
     aria-disabled="{{disabled}}"
   >
@@ -145,7 +193,7 @@ template.innerHTML = html`
 <template partial="SeekBackwardButton">
   <media-seek-backward-button
     seek-offset="{{backwardSeekOffset ?? 10}}"
-    part="{{section ?? 'bottom'}} seek-backward button"
+    part="seek-backward button"
     disabled="{{disabled}}"
     aria-disabled="{{disabled}}"
   >
@@ -161,7 +209,7 @@ template.innerHTML = html`
 <template partial="SeekForwardButton">
   <media-seek-forward-button
     seek-offset="{{forwardSeekOffset ?? 10}}"
-    part="{{section ?? 'bottom'}} seek-forward button"
+    part="seek-forward button"
     disabled="{{disabled}}"
     aria-disabled="{{disabled}}"
   >
@@ -175,7 +223,7 @@ template.innerHTML = html`
 </template>
 
 <template partial="MuteButton">
-  <media-mute-button part="bottom mute button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+  <media-mute-button part="mute button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
     <svg aria-hidden="true" viewBox="0 0 24 24" slot="high">
       <path
         d="m11.14 4.86-4 4a.49.49 0 0 1-.35.14H3.25a.25.25 0 0 0-.25.25v5.5a.25.25 0 0 0 .25.25h3.54a.49.49 0 0 1 .36.15l4 4a.5.5 0 0 0 .85-.36V5.21a.5.5 0 0 0-.86-.35Zm2.74-1.56v1.52A7.52 7.52 0 0 1 19.47 12a7.52 7.52 0 0 1-5.59 7.18v1.52A9 9 0 0 0 21 12a9 9 0 0 0-7.12-8.7Zm3.56 8.7a5.49 5.49 0 0 0-3.56-5.1v1.66a3.93 3.93 0 0 1 0 6.88v1.66a5.49 5.49 0 0 0 3.56-5.1Z"
@@ -202,7 +250,7 @@ template.innerHTML = html`
 <template partial="CaptionsButton">
   <media-captions-button
     default-showing="{{defaultShowingCaptions}}"
-    part="bottom captions button"
+    part="captions button"
     disabled="{{disabled}}"
     aria-disabled="{{disabled}}"
   >
@@ -220,7 +268,7 @@ template.innerHTML = html`
 </template>
 
 <template partial="PipButton">
-  <media-pip-button part="bottom pip button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+  <media-pip-button part="pip button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
     <svg aria-hidden="true" viewBox="0 0 26 24" slot="enter">
       <path
         d="M22 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h6.75v-1.25h-6.5V4.25h17.5v6.5H23V4a1 1 0 0 0-1-1Zm0 10h-8a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1Zm-.5 6.5h-7v-5h7v5Z"
@@ -235,7 +283,7 @@ template.innerHTML = html`
 </template>
 
 <template partial="AirplayButton">
-  <media-airplay-button part="bottom airplay button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+  <media-airplay-button part="airplay button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
     <svg aria-hidden="true" viewBox="0 0 26 24" slot="airplay">
       <path
         d="M13.19 14.22a.25.25 0 0 0-.38 0l-5.46 6.37a.25.25 0 0 0 .19.41h10.92a.25.25 0 0 0 .19-.41l-5.46-6.37Z"
@@ -248,7 +296,7 @@ template.innerHTML = html`
 </template>
 
 <template partial="CastButton">
-  <media-cast-button part="bottom cast button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
+  <media-cast-button part="cast button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
     <svg aria-hidden="true" viewBox="0 0 26 24" slot="enter">
       <path d="M3 15.5V17c2.206 0 4 1.794 4 4h1.5A5.5 5.5 0 0 0 3 15.5Zm0 3V21h2.5A2.5 2.5 0 0 0 3 18.5Z" />
       <path d="M3 12.5V14c3.86 0 7 3.14 7 7h1.5A8.5 8.5 0 0 0 3 12.5Z" />
@@ -269,7 +317,7 @@ template.innerHTML = html`
 
 <template partial="FullscreenButton">
   <media-fullscreen-button
-    part="bottom fullscreen button"
+    part="fullscreen button"
     disabled="{{disabled}}"
     aria-disabled="{{disabled}}"
   >
@@ -288,7 +336,7 @@ template.innerHTML = html`
 
 <template partial="LiveButton">
   <media-live-button
-    part="{{section ?? 'top'}} live seek-live button"
+    part="live seek-live button"
     disabled="{{disabled}}"
     aria-disabled="{{disabled}}"
   >
@@ -298,7 +346,7 @@ template.innerHTML = html`
 
 <template partial="TimeRange">
   <media-time-range
-    part="bottom time range"
+    part="time range"
     disabled="{{disabled}}"
     aria-disabled="{{disabled}}"
   ></media-time-range>
