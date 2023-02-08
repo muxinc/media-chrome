@@ -1,9 +1,7 @@
 import MediaChromeMenuButton from './media-chrome-menu-button.js';
+import '../media-captions-button.js';
 import './media-captions-listbox.js';
-import { MediaUIAttributes, MediaStateReceiverAttributes } from '../constants.js';
 import { window, document, } from '../utils/server-safe-globals.js';
-import { closestComposedNode } from '../utils/element-utils.js';
-import { isCCOn, toggleSubsCaps } from '../utils/captions.js';
 
 class MediaCaptionsMenuButton extends MediaChromeMenuButton {
   constructor() {
