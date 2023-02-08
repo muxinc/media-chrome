@@ -48,6 +48,7 @@ class MediaChromeMenuButton extends window.HTMLElement {
   #enabledState = true;
   #button;
   #buttonSlot;
+  #buttonSlotted = false;
   #listbox;
   #listboxSlot;
   #expanded = false;
@@ -76,11 +77,18 @@ class MediaChromeMenuButton extends window.HTMLElement {
 
     this.#buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     this.#buttonSlot.addEventListener('slotchange', () => {
+      const newButton = this.#buttonSlot.assignedElements()[0];
+
+      // if the slotted button is the built-in, nothing to do
+      if (!newButton) return;
+
+      this.#buttonSlotted = true;
+
       // disconnect previous button
       this.disable();
 
       // update button reference if necessary
-      this.#button = this.#buttonSlot.assignedElements()[0] || this.#button;
+      this.#button = newButton;
 
       if (this.#button.hasAttribute('disabled')) {
         this.#enabledState = false;
@@ -129,10 +137,12 @@ class MediaChromeMenuButton extends window.HTMLElement {
 
     // if we're outside of the controller,
     // one of the components should have a media-controller attribute
+    // or the button wasn't slotted
     if (
       this.hasAttribute('media-controller') ||
       this.#button.hasAttribute('media-controller') ||
-      this.#listbox.hasAttribute('media-controller')) {
+      this.#listbox.hasAttribute('media-controller') ||
+      !this.#buttonSlotted) {
       this.#listbox.style.zIndex = '1';
       this.#listbox.style.bottom = 'unset';
       return;
