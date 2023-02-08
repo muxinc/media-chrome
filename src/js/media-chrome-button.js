@@ -6,12 +6,15 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
   :host {
+    
+    
+
     display: inline-flex;
     align-items: center;
     justify-content: center;
     vertical-align: middle;
     box-sizing: border-box;
-    background: var(--media-control-background, rgba(20,20,30, 0.7));
+    background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7)));
 
     padding: var(--media-control-padding, 10px);
 
@@ -19,7 +22,7 @@ template.innerHTML = `
     font-size: 14px;
     line-height: var(--media-text-content-height, var(--media-control-height, 24px));
     font-weight: bold;
-    color: #fff;
+    color: var(--media-control-font-color, var(--media-primary-color, rgb(238 238 238)));
 
     transition: background 0.15s linear;
 
@@ -53,7 +56,7 @@ template.innerHTML = `
     height: var(--media-button-icon-height, var(--media-control-height, 24px));
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);
-    fill: var(--media-icon-color, #eee);
+    fill: var(--media-control-icon-color, var(--media-primary-color, rgb(238 238 238)));
     vertical-align: middle;
     max-width: 100%;
     max-height: 100%;
