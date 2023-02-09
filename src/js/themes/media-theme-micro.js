@@ -26,20 +26,19 @@ template.innerHTML = html`
   media-controller {
     --media-control-background: transparent;
     --media-control-hover-background: transparent;
-    --media-range-track-height: 6px;
-    --media-range-track-transition: height .1s linear;
-    --media-range-track-background: rgba(20, 20, 30, .25);
-    --media-time-buffered-color: rgba(20, 20, 30, .3);
-    --media-range-bar-color: rgba(255, 255, 255, .9);
-    --media-range-track-box-shadow: 0 -1px 0 rgba(20, 20, 30, .07);
-    --media-range-thumb-opacity: 0;
-    --media-range-padding-left: 0;
-    --media-range-padding-right: 0;
-    --media-preview-time-background: var(--_secondary-color);
-    --media-preview-time-margin: 0 0 8px;
+    --media-control-padding: 5px 5px;
 
     width: 100%;
     height: 100%;
+  }
+
+  [breakpoint-sm] {
+    --media-control-padding: 9px 5px;
+  }
+
+  [breakpoint-md] {
+    --media-control-padding: 9px 7px;
+    --_volume-range-expand-width: 78px;
   }
 
   media-controller::part(centered-layer) {
@@ -54,22 +53,14 @@ template.innerHTML = html`
   }
 
   media-control-bar {
-    --media-control-padding: 5px 5px;
     place-self: var(--micro-control-bar-place-self, end center);
     flex-direction: var(--micro-control-bar-direction, row);
     margin: 10px;
     gap: 4px;
   }
 
-  [breakpoint-sm] media-control-bar {
-    --media-control-padding: 9px 5px;
-  }
-
-  [breakpoint-md] media-control-bar {
-    --media-control-padding: 9px 7px;
-  }
-
   .control-group {
+    position: relative;
     min-width: 42px;
     display: inline-flex;
     align-self: start;
@@ -118,7 +109,57 @@ template.innerHTML = html`
     display: none;
   }
 
+  .volume-range-span {
+    position: relative;
+    width: 0;
+  }
+
+  media-volume-range {
+    --media-control-background: var(--_secondary-color);
+    --media-control-hover-background: var(--_secondary-color);
+    --media-range-thumb-opacity: 0;
+    --media-range-track-border-radius: 2px;
+    --media-range-track-background: rgba(255, 255, 255, .2);
+    --media-range-bar-color: rgba(255, 255, 255, .9);
+    --media-range-track-width: 80%;
+    --media-range-track-translate-x: 6px;
+
+    display: var(--controls, var(--volume-range, inline-block));
+    border-radius: 5px;
+  }
+
+  media-mute-button + .volume-range-span media-volume-range {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    transition: width .2s, opacity .2s;
+  }
+
+  media-mute-button:hover + .volume-range-span media-volume-range,
+  media-mute-button:focus + .volume-range-span media-volume-range,
+  .volume-range-span:hover media-volume-range,
+  .volume-range-span media-volume-range:focus {
+    width: var(--_volume-range-expand-width, 70px);
+    opacity: 1;
+  }
+
   media-time-range {
+    --media-range-track-height: 6px;
+    --media-range-track-transition: height .1s linear;
+    --media-range-track-background: rgba(20, 20, 30, .25);
+    --media-time-buffered-color: rgba(20, 20, 30, .3);
+    --media-range-bar-color: rgba(255, 255, 255, .9);
+    --media-range-track-box-shadow: 0 -1px 0 rgba(20, 20, 30, .07);
+    --media-range-thumb-opacity: 0;
+    --media-range-padding-left: 0;
+    --media-range-padding-right: 0;
+    --media-preview-time-background: var(--_secondary-color);
+    --media-preview-time-margin: 0 0 8px;
+
+    display: var(--controls, var(--time-range, inline-block));
     width: 100%;
     height: 10px;
     bottom: -2px;
@@ -162,14 +203,6 @@ template.innerHTML = html`
 
   media-live-button {
     display: var(--controls, var(--live-button, inline-flex));
-  }
-
-  media-time-range {
-    display: var(--controls, var(--time-range, inline-block));
-  }
-
-  media-volume-range {
-    display: var(--controls, var(--volume-range, inline-block));
   }
 </style>
 
@@ -352,6 +385,16 @@ template.innerHTML = html`
   ></media-time-range>
 </template>
 
+<template partial="VolumeRange">
+  <span class="volume-range-span">
+    <media-volume-range
+      part="volume range"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+    ></media-volume-range>
+  </span>
+</template>
+
 <media-controller>
   <slot name="media" slot="media"></slot>
 
@@ -364,6 +407,7 @@ template.innerHTML = html`
           {{>SeekBackwardButton}}
           {{>SeekForwardButton}}
           {{>MuteButton}}
+          {{>VolumeRange}}
           {{>CaptionsButton}}
           {{>AirplayButton}}
           {{>CastButton}}
@@ -382,6 +426,7 @@ template.innerHTML = html`
             {{>SeekBackwardButton}}
             {{>SeekForwardButton}}
             {{>MuteButton}}
+            {{>VolumeRange}}
             {{>CaptionsButton}}
             {{>AirplayButton}}
             {{>CastButton}}
@@ -400,6 +445,7 @@ template.innerHTML = html`
           {{>SeekBackwardButton}}
           {{>SeekForwardButton}}
           {{>MuteButton}}
+          {{>VolumeRange}}
           {{>CaptionsButton}}
           {{>AirplayButton}}
           {{>CastButton}}
@@ -421,6 +467,7 @@ template.innerHTML = html`
           {{>LiveButton}}
           <div class="control-group">
             {{>MuteButton}}
+            {{>VolumeRange}}
             {{>CaptionsButton}}
             {{>AirplayButton}}
             {{>CastButton}}
@@ -436,6 +483,7 @@ template.innerHTML = html`
             {{>LiveButton}}
             <div class="control-group">
               {{>MuteButton}}
+              {{>VolumeRange}}
               {{>CaptionsButton}}
               {{>AirplayButton}}
               {{>CastButton}}
@@ -451,6 +499,7 @@ template.innerHTML = html`
           {{>LiveButton}}
           <div class="control-group">
             {{>MuteButton}}
+            {{>VolumeRange}}
             {{>CaptionsButton}}
             {{>AirplayButton}}
             {{>CastButton}}
@@ -472,6 +521,7 @@ template.innerHTML = html`
             {{>SeekBackwardButton}}
             {{>SeekForwardButton}}
             {{>MuteButton}}
+            {{>VolumeRange}}
             {{>CaptionsButton}}
             {{>AirplayButton}}
             {{>CastButton}}
@@ -491,6 +541,7 @@ template.innerHTML = html`
               {{>SeekBackwardButton}}
               {{>SeekForwardButton}}
               {{>MuteButton}}
+              {{>VolumeRange}}
               {{>CaptionsButton}}
               {{>AirplayButton}}
               {{>CastButton}}
@@ -510,6 +561,7 @@ template.innerHTML = html`
             {{>SeekBackwardButton}}
             {{>SeekForwardButton}}
             {{>MuteButton}}
+            {{>VolumeRange}}
             {{>CaptionsButton}}
             {{>AirplayButton}}
             {{>CastButton}}
