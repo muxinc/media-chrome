@@ -8,11 +8,21 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
   :host {
-    display: contents;
+    display: inline-flex;
+    position: relative;
+    padding: var(--media-control-padding, 10px);
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
   }
 
   .wrapper {
     position: relative;
+  }
+
+  media-chrome-button,
+  ::slotted(media-chrome-button),
+  ::slotted(media-captions-button) {
+    padding: 0;
+    background: transparent;
   }
 
   [name="listbox"]::slotted(*),
@@ -33,13 +43,11 @@ template.innerHTML = `
       <slot name="button-content"></slot>
     </media-chrome-button>
   </slot>
-  <div class="wrapper">
-    <slot name="listbox" hidden>
-      <media-chrome-listbox id="listbox" part="listbox">
-        <slot></slot>
-      </media-chrome-listbox>
-    </slot>
-  </div>
+  <slot name="listbox" hidden>
+    <media-chrome-listbox id="listbox" part="listbox">
+      <slot></slot>
+    </media-chrome-listbox>
+  </slot>
 `;
 
 class MediaChromeMenuButton extends window.HTMLElement {
@@ -135,6 +143,11 @@ class MediaChromeMenuButton extends window.HTMLElement {
     // if the menu is hidden, skip updating the menu position
     if (this.#listbox.offsetWidth === 0) return;
 
+    const padding = window.getComputedStyle(this).getPropertyValue('--media-control-padding') || 10;
+
+    const buttonRect = this.#button.getBoundingClientRect();
+
+
     // if we're outside of the controller,
     // one of the components should have a media-controller attribute
     // or the button wasn't slotted
@@ -145,10 +158,10 @@ class MediaChromeMenuButton extends window.HTMLElement {
       !this.#buttonSlotted) {
       this.#listbox.style.zIndex = '1';
       this.#listbox.style.bottom = 'unset';
+      this.#listbox.style.top = (padding * 2 + buttonRect.height) + 'px'
+      this.#listbox.style.translate = `-${padding}px`;
       return;
     }
-
-    const buttonRect = this.#button.getBoundingClientRect();
 
     const leftOffset = buttonRect.x;
 
@@ -161,7 +174,7 @@ class MediaChromeMenuButton extends window.HTMLElement {
 
     if (this.#listbox.offsetWidth + leftOffset - parentOffset > bounds.offsetWidth) {
       const offset = this.#listbox.offsetWidth + leftOffset + buttonRect.width;
-      const overflow = bounds.offsetWidth + parentOffset - offset;
+      const overflow = bounds.offsetWidth + parentOffset + (padding * 2) - offset;
       this.#listbox.style.translate = overflow + 'px';
     } else {
       this.#listbox.style.translate = `-${buttonRect.width}px`;

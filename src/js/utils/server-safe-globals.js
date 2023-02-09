@@ -20,6 +20,7 @@ const windowShim = {
     whenDefined: function () {},
   },
   CustomEvent: function CustomEvent() {},
+  getComputedStyle: function () {},
 };
 
 const documentShim = {
@@ -36,10 +37,12 @@ export const isServer =
   * @type { window & { WebKitPlaybackTargetAvailabilityEvent?,
   *   chrome?,
   *   DocumentFragment?,
+  *   getComputedStyle,
   * } |
   * {HTMLElement,
   * customElements,
   * CustomEvent,
+  * getComputedStyle,
   * addEventListener?,
   * removeEventListener?,
   * setTimeout?,
