@@ -20,7 +20,6 @@ const thumbStyles = `
 `;
 
 const trackStyles = `
-  width: var(--media-range-track-width, 100%);
   min-width: 40px;
   height: var(--track-height);
   border: var(--media-range-track-border, none);
