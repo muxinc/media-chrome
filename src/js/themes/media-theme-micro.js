@@ -54,7 +54,7 @@ template.innerHTML = html`
   }
 
   media-control-bar {
-    --media-control-padding: 4px 3px;
+    --media-control-padding: 5px 5px;
     place-self: var(--micro-control-bar-place-self, end center);
     flex-direction: var(--micro-control-bar-direction, row);
     margin: 10px;
@@ -125,7 +125,7 @@ template.innerHTML = html`
   }
 
   media-play-button {
-    display: var(--controls, var(--play-button));
+    display: var(--controls, var(--play-button, inline-flex));
   }
 
   media-seek-backward-button {
@@ -137,11 +137,11 @@ template.innerHTML = html`
   }
 
   media-mute-button {
-    display: var(--controls, var(--mute-button));
+    display: var(--controls, var(--mute-button, inline-flex));
   }
 
   media-captions-button {
-    display: var(--controls, var(--captions-button));
+    display: var(--controls, var(--captions-button, inline-flex));
   }
 
   media-pip-button {
@@ -149,27 +149,27 @@ template.innerHTML = html`
   }
 
   media-airplay-button {
-    display: var(--controls, var(--airplay-button));
+    display: var(--controls, var(--airplay-button, inline-flex));
   }
 
   media-cast-button {
-    display: var(--controls, var(--cast-button));
+    display: var(--controls, var(--cast-button, inline-flex));
   }
 
   media-fullscreen-button {
-    display: var(--controls, var(--fullscreen-button));
+    display: var(--controls, var(--fullscreen-button, inline-flex));
   }
 
   media-live-button {
-    display: var(--controls, var(--live-button));
+    display: var(--controls, var(--live-button, inline-flex));
   }
 
   media-time-range {
-    display: var(--controls, var(--time-range));
+    display: var(--controls, var(--time-range, inline-block));
   }
 
   media-volume-range {
-    display: var(--controls, var(--volume-range));
+    display: var(--controls, var(--volume-range, inline-block));
   }
 </style>
 
