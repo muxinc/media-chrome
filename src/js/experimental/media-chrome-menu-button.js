@@ -13,6 +13,24 @@ template.innerHTML = `
     padding: var(--media-control-padding, 10px);
     background: var(--media-control-background, rgba(20,20,30, 0.7));
   }
+  ${/*
+    Only show outline when keyboard focusing.
+    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+  */''}
+  :host(:focus-within) {
+    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+    outline: 0;
+  }
+
+  ${/*
+   * hide default focus ring, particularly when using mouse
+   */''}
+  ::slotted(*),
+  media-chrome-button,
+  :host(:where(:focus)) {
+    box-shadow: none;
+    outline: 0;
+  }
 
   :host(:hover:not([disabled])) {
     background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
