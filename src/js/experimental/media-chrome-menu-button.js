@@ -14,6 +14,10 @@ template.innerHTML = `
     background: var(--media-control-background, rgba(20,20,30, 0.7));
   }
 
+  :host(:hover:not([disabled])) {
+    background: var(--media-control-hover-background, rgba(50,50,70, 0.7));
+  }
+
   .wrapper {
     position: relative;
   }
