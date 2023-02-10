@@ -400,61 +400,21 @@ template.innerHTML = html`
 
   <template if="streamType == 'on-demand'">
 
-    <template if="breakpointSm == null">
-      <media-control-bar slot="centered-chrome">
-        <div class="control-group">
-          {{>PlayButton}}
-          {{>SeekBackwardButton}}
-          {{>SeekForwardButton}}
-          {{>MuteButton}}
-          {{>VolumeRange}}
-          {{>CaptionsButton}}
-          {{>AirplayButton}}
-          {{>CastButton}}
-          {{>PipButton}}
-          {{>FullscreenButton}}
-        </div>
-      </media-control-bar>
-      {{>TimeRange}}
-    </template>
-
-    <template if="breakpointSm">
-      <template if="breakpointMd == null">
-        <media-control-bar slot="centered-chrome">
-          <div class="control-group">
-            {{>PlayButton}}
-            {{>SeekBackwardButton}}
-            {{>SeekForwardButton}}
-            {{>MuteButton}}
-            {{>VolumeRange}}
-            {{>CaptionsButton}}
-            {{>AirplayButton}}
-            {{>CastButton}}
-            {{>PipButton}}
-            {{>FullscreenButton}}
-          </div>
-        </media-control-bar>
-        {{>TimeRange}}
-      </template>
-    </template>
-
-    <template if="breakpointMd">
-      <media-control-bar slot="centered-chrome">
-        <div class="control-group">
-          {{>PlayButton}}
-          {{>SeekBackwardButton}}
-          {{>SeekForwardButton}}
-          {{>MuteButton}}
-          {{>VolumeRange}}
-          {{>CaptionsButton}}
-          {{>AirplayButton}}
-          {{>CastButton}}
-          {{>PipButton}}
-          {{>FullscreenButton}}
-        </div>
-      </media-control-bar>
-      {{>TimeRange}}
-    </template>
+    <media-control-bar slot="centered-chrome">
+      <div class="control-group">
+        {{>PlayButton}}
+        {{>SeekBackwardButton}}
+        {{>SeekForwardButton}}
+        {{>MuteButton}}
+        {{>VolumeRange}}
+        {{>CaptionsButton}}
+        {{>AirplayButton}}
+        {{>CastButton}}
+        {{>PipButton}}
+        {{>FullscreenButton}}
+      </div>
+    </media-control-bar>
+    {{>TimeRange}}
 
   </template>
 
@@ -462,115 +422,39 @@ template.innerHTML = html`
 
     <template if="targetLiveWindow == null">
 
-      <template if="breakpointSm == null">
-        <media-control-bar slot="centered-chrome">
-          {{>LiveButton}}
-          <div class="control-group">
-            {{>MuteButton}}
-            {{>VolumeRange}}
-            {{>CaptionsButton}}
-            {{>AirplayButton}}
-            {{>CastButton}}
-            {{>PipButton}}
-            {{>FullscreenButton}}
-          </div>
-        </media-control-bar>
-      </template>
-
-      <template if="breakpointSm">
-        <template if="breakpointMd == null">
-          <media-control-bar slot="centered-chrome">
-            {{>LiveButton}}
-            <div class="control-group">
-              {{>MuteButton}}
-              {{>VolumeRange}}
-              {{>CaptionsButton}}
-              {{>AirplayButton}}
-              {{>CastButton}}
-              {{>PipButton}}
-              {{>FullscreenButton}}
-            </div>
-          </media-control-bar>
-        </template>
-      </template>
-
-      <template if="breakpointMd">
-        <media-control-bar slot="centered-chrome">
-          {{>LiveButton}}
-          <div class="control-group">
-            {{>MuteButton}}
-            {{>VolumeRange}}
-            {{>CaptionsButton}}
-            {{>AirplayButton}}
-            {{>CastButton}}
-            {{>PipButton}}
-            {{>FullscreenButton}}
-          </div>
-        </media-control-bar>
-      </template>
+      <media-control-bar slot="centered-chrome">
+        {{>LiveButton}}
+        <div class="control-group">
+          {{>MuteButton}}
+          {{>VolumeRange}}
+          {{>CaptionsButton}}
+          {{>AirplayButton}}
+          {{>CastButton}}
+          {{>PipButton}}
+          {{>FullscreenButton}}
+        </div>
+      </media-control-bar>
 
     </template>
 
     <template if="targetLiveWindow > 0">
 
-      <template if="breakpointSm == null">
-        <media-control-bar slot="centered-chrome">
-          {{>LiveButton}}
-          <div class="control-group">
-            {{>PlayButton}}
-            {{>SeekBackwardButton}}
-            {{>SeekForwardButton}}
-            {{>MuteButton}}
-            {{>VolumeRange}}
-            {{>CaptionsButton}}
-            {{>AirplayButton}}
-            {{>CastButton}}
-            {{>PipButton}}
-            {{>FullscreenButton}}
-          </div>
-        </media-control-bar>
-        {{>TimeRange}}
-      </template>
-
-      <template if="breakpointSm">
-        <template if="breakpointMd == null">
-          <media-control-bar slot="centered-chrome">
-            {{>LiveButton}}
-            <div class="control-group">
-              {{>PlayButton}}
-              {{>SeekBackwardButton}}
-              {{>SeekForwardButton}}
-              {{>MuteButton}}
-              {{>VolumeRange}}
-              {{>CaptionsButton}}
-              {{>AirplayButton}}
-              {{>CastButton}}
-              {{>PipButton}}
-              {{>FullscreenButton}}
-            </div>
-          </media-control-bar>
-          {{>TimeRange}}
-        </template>
-      </template>
-
-      <template if="breakpointMd">
-        <media-control-bar slot="centered-chrome">
-          {{>LiveButton}}
-          <div class="control-group">
-            {{>PlayButton}}
-            {{>SeekBackwardButton}}
-            {{>SeekForwardButton}}
-            {{>MuteButton}}
-            {{>VolumeRange}}
-            {{>CaptionsButton}}
-            {{>AirplayButton}}
-            {{>CastButton}}
-            {{>PipButton}}
-            {{>FullscreenButton}}
-          </div>
-        </media-control-bar>
-        {{>TimeRange}}
-      </template>
+      <media-control-bar slot="centered-chrome">
+        {{>LiveButton}}
+        <div class="control-group">
+          {{>PlayButton}}
+          {{>SeekBackwardButton}}
+          {{>SeekForwardButton}}
+          {{>MuteButton}}
+          {{>VolumeRange}}
+          {{>CaptionsButton}}
+          {{>AirplayButton}}
+          {{>CastButton}}
+          {{>PipButton}}
+          {{>FullscreenButton}}
+        </div>
+      </media-control-bar>
+      {{>TimeRange}}
 
     </template>
 
