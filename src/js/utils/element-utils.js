@@ -33,7 +33,9 @@ export const closestComposedNode = (childNode, selector) => {
  * @param  {Element|ShadowRoot} styleParent
  * @param  {string} selectorText
  * @return {CSSStyleRule |
- * { style: { setProperty: () => void,
+ * { style: {
+ * setProperty: () => void,
+ * removeProperty: () => void,
  * width?: string,
  * height?: string,
  * display?: string,
@@ -53,7 +55,14 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
       if (rule.selectorText === selectorText) return rule;
   }
   // If there is no style sheet return an empty style rule.
-  if (!style?.sheet) return { style: { setProperty: () => {} } };
+  if (!style?.sheet) {
+    return {
+      style: {
+        setProperty: () => {},
+        removeProperty: () => {}
+      }
+    };
+  }
 
   style.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
   return style.sheet.cssRules[style.sheet.cssRules.length - 1];

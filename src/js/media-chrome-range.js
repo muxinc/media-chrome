@@ -38,6 +38,7 @@ template.innerHTML = `
     :host {
       --thumb-height: var(--media-range-thumb-height, 10px);
       --track-height: var(--media-range-track-height, 4px);
+      --_focus-box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgba(27, 127, 204, 0.9));
       --_media-range-padding: var(--media-range-padding, var(--media-control-padding, 10px));
 
       vertical-align: middle;
@@ -53,6 +54,15 @@ template.innerHTML = `
       pointer-events: auto;
       ${/* needed for vertical align issue 1px off */''}
       font-size: 0;
+      box-shadow: var(--_focus-visible-box-shadow, none);
+    }
+
+    ${/* Reset before `outline` on track could be set by a CSS var */''}
+    input[type=range]:focus {
+      outline: 0;
+    }
+    input[type=range]:focus::-webkit-slider-runnable-track {
+      outline: 0;
     }
 
     :host(:hover) {
@@ -149,27 +159,6 @@ template.innerHTML = `
       height: var(--media-range-track-height, 4px);
     }
 
-    ${/*
-     * set input to focus-visible, unless host-context is available (in chrome)
-     * in which case we can have the focus ring be on the host itself
-     */''}
-    :host-context([media-keyboard-control]):host(:focus),
-    :host-context([media-keyboard-control]):host(:focus-within) {
-      box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
-    }
-    :host-context([media-keyboard-control]) input[type=range]:focus-visible {
-      box-shadow: none;
-    }
-    input[type=range]:focus-visible {
-      box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
-    }
-    input[type=range]:focus {
-      outline: 0;
-    }
-    input[type=range]:focus::-webkit-slider-runnable-track {
-      outline: 0;
-    }
-
     input[type=range]:disabled::-webkit-slider-thumb {
       background-color: #777;
     }
@@ -214,6 +203,18 @@ class MediaChromeRange extends window.HTMLElement {
     this.#thumbWidth = parseInt(getComputedStyle(this).getPropertyValue('--media-range-thumb-width') || '10', 10);
   }
 
+  #onFocusIn = () => {
+    if (this.range.matches(':focus-visible')) {
+      const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+      style.setProperty('--_focus-visible-box-shadow', 'var(--_focus-box-shadow)');
+    }
+  }
+
+  #onFocusOut = () => {
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.removeProperty('--_focus-visible-box-shadow');
+  }
+
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
@@ -245,7 +246,11 @@ class MediaChromeRange extends window.HTMLElement {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.associateElement?.(this);
     }
+
     this.updateBar();
+
+    this.shadowRoot.addEventListener('focusin', this.#onFocusIn);
+    this.shadowRoot.addEventListener('focusout', this.#onFocusOut);
   }
 
   disconnectedCallback() {
@@ -256,6 +261,9 @@ class MediaChromeRange extends window.HTMLElement {
       const mediaControllerEl = document.getElementById(mediaControllerId);
       mediaControllerEl?.unassociateElement?.(this);
     }
+
+    this.shadowRoot.removeEventListener('focusin', this.#onFocusIn);
+    this.shadowRoot.removeEventListener('focusout', this.#onFocusOut);
   }
 
   updatePointerBar(evt) {
