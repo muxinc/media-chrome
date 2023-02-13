@@ -65,6 +65,20 @@ with `fix:`, `feat:` or similar according to
 
 ## <a name="releasing">Releasing (maintainers only)</a>
 
+### Short version (I've done this before!)
+1. Visit the [GitHub Actions tab](https://github.com/muxinc/media-chrome/actions) and 
+select the "CD" action in the left sidebar.
+2. Click the "Run workflow" dropdown and choose the correct `Version` on the `main` branch.
+   - In the **Use workflow from** select box, make sure **Branch: main** is selected.
+   - In the **Version** select box, choose the appropriate value:
+      - If the commit messages in this release were written using the correct conventional commit style, select `conventional`.  
+      - If the commit messages aren't accurate, manually choose the correct semver version `patch`, `minor`, `major`.
+3. When you're confident with your choices, click the green **Run workflow** button to start the release process.
+4. After a few minutes, a new release will be published. This includes an NPM package, new version tags, and a GitHub release.
+
+---
+### Long version (I need more context!)
+
 This repo uses [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
 and GitHub Actions for continuous deployment (CD).
 
@@ -77,7 +91,7 @@ Here's a quick summary of how we use conventional commits in this repository:
 - Major releases must always be designated manually during the Release process.
 - All other conventional commits have no impact on the versioning.
 
-## Review commit messages since last release
+### Review commit messages since last release
 To proceed with a release, you should be confident that the commits in your upcoming release accurately reflect the type of version that you intend to release.
 
 Here's how you can review the commits you're about to release:
@@ -90,7 +104,7 @@ Here's how you can review the commits you're about to release:
 
 > Note: if you're uncertain about particular commits, you may want to reach out to the author of said commit(s) for clarity
 
-## Steps to release a new version
+### Steps to release a new version
 
 <img src="assets/1-cd-tab.png" alt="A screenshot showing the available actions to run on GitHub" width="400">
 
