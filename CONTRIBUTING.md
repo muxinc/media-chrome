@@ -66,13 +66,44 @@ with `fix:`, `feat:` or similar according to
 ## <a name="releasing">Releasing (maintainers only)</a>
 
 This repo uses [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/)
-and Github Actions for continuous deployment (CD).
+and GitHub Actions for continuous deployment (CD).
 
-1. Go to the [Github Actions tab](https://github.com/muxinc/media-chrome/actions), 
+> If you're unfamiliar with conventional commits, it's a good idea to review the link above before continuing.
+
+Here's a quick summary of how we use conventional commits in this repository:
+
+- Commit messages prefixed with `fix:` will notify CD that the release is minimally a `patch` release.
+- Commit messages prefixed with `feat:` will notify CD that the release is minimally a `minor` release.
+- Major releases must always be designated manually during the Release process.
+- All other conventional commits have no impact on the versioning.
+
+## Review commit messages since last release
+To proceed with a release, you should be confident that the commits in your upcoming release accurately reflect the type of version that you intend to release.
+
+Here's how you can review the commits you're about to release:
+
+<img src="assets/3-compare-tags.png" alt="A screenshot showing how to compare tags on GitHub" width="400">
+
+1. Visit https://github.com/muxinc/media-chrome/compare
+2. In the **base** select box, choose the tag applied to the previous release. Keep `main` for the **compare** select box value.
+3. Review the list of commits to see if they are appropriately using conventional commits.
+
+> Note: if you're uncertain about particular commits, you may want to reach out to the author of said commit(s) for clarity
+
+## Steps to release a new version
+
+<img src="assets/1-cd-tab.png" alt="A screenshot showing the available actions to run on GitHub" width="400">
+
+1. Visit the [GitHub Actions tab](https://github.com/muxinc/media-chrome/actions) and 
 select the "CD" action in the left sidebar.
-1. Click the "Run workflow" dropdown and choose the correct "Version" on the `main` branch.  
-If you wrote the commit messages with correct conventional commit style select `conventional`.  
-If not, choose the correct semver version `patch`, `minor`, `major`.  
-After click the "Run workflow" button to start the release.
-1. After a few minutes a new release will be published including a NPM package, 
-the version tags and a Github release. That's it!
+
+<img src="assets/2-run-workflow.png" alt="A screenshot showing the form used to initiate the CD workflow." width="400">
+
+2. Click the "Run workflow" dropdown and choose the correct `Version` on the `main` branch.
+   - In the **Use workflow from** select box, make sure **Branch: main** is selected.
+   - In the **Version** select box, choose the appropriate value:
+      - If the commit messages in this release were written using the correct conventional commit style, select `conventional`.  
+      - If the commit messages aren't accurate, manually choose the correct semver version `patch`, `minor`, `major`.
+3. When you're confident with your choices, click the green **Run workflow** button to start the release process.
+4. After a few minutes, a new release will be published. This includes an NPM package, new version tags, and a GitHub release.
+5. That's it! Nice work.
