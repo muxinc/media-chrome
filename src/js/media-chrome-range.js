@@ -37,9 +37,6 @@ const trackStyles = `
 template.innerHTML = `
   <style>
     :host {
-      
-      
-
       --thumb-height: var(--media-range-thumb-height, 10px);
       --track-height: var(--media-range-track-height, 4px);
       --media-range-padding: var(--media-control-padding, 10px);
