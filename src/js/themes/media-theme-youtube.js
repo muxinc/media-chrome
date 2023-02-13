@@ -16,6 +16,7 @@ template.innerHTML = `
   :host {
     display: inline-block;
     --media-secondary-color: transparent;
+    --media-primary-color: #fff;
   }
 
   media-controller {
@@ -26,7 +27,7 @@ template.innerHTML = `
     font-family: Roboto, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
 
-    --media-control-hover-background: var(--secondary-color);
+    --media-control-hover-background: var(--media-secondary-color);
     --media-range-track-height: 3px;
     --media-range-thumb-height: 13px;
     --media-range-thumb-width: 13px;
@@ -35,10 +36,6 @@ template.innerHTML = `
     --media-preview-thumbnail-border-radius: 2px;
     --media-preview-time-margin: 10px 0;
 
-  }
-
-  *:hover {
-    --primary-color: #fff
   }
 
   media-control-bar {
@@ -81,8 +78,6 @@ template.innerHTML = `
     padding-left: 0px;
 
     --media-range-track-background: rgba(255,255,255,.2);
-    --media-range-bar-color: #fff;
-    --media-range-thumb-background: #fff;
   }
 
   .control-spacer {
