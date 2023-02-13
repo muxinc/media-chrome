@@ -22,7 +22,7 @@ template.innerHTML = `
   :host,
   media-chrome-menu-button {
     display: contents;
-    fill: var(--media-icon-color, #eee);
+    fill: var(--media-control-icon-color, var(--media-primary-color, rgb(238 238 238)));;
   }
 
   media-captions-listbox {
@@ -42,7 +42,7 @@ template.innerHTML = `
     height: var(--media-button-icon-height, var(--media-control-height, 24px));
     transform: var(--media-button-icon-transform);
     transition: var(--media-button-icon-transition);
-    fill: var(--media-icon-color, #eee);
+    fill: var(--media-control-icon-color, var(--media-primary-color, rgb(238 238 238)));;
     vertical-align: middle;
     max-width: 100%;
     max-height: 100%;
