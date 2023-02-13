@@ -61,9 +61,9 @@ template.innerHTML = html`
 
   .control-group {
     position: relative;
-    min-width: 42px;
     display: inline-flex;
     align-self: start;
+    align-items: var(--micro-control-bar-align-items);
     flex-direction: var(--micro-control-bar-direction, row);
     background: var(--_secondary-color);
     border-radius: 5px;
@@ -109,9 +109,10 @@ template.innerHTML = html`
     display: none;
   }
 
-  .volume-range-span {
+  .volume-group {
     position: relative;
-    width: 0;
+    display: inline-flex;
+    flex-direction: var(--micro-volume-group-direction, row);
   }
 
   media-volume-range {
@@ -128,20 +129,17 @@ template.innerHTML = html`
     border-radius: 5px;
   }
 
-  media-mute-button + .volume-range-span media-volume-range {
+  media-mute-button + media-volume-range {
     width: 0;
     opacity: 0;
     overflow: hidden;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    transition: width .2s, opacity .2s;
+    transition: opacity .2s;
   }
 
-  media-mute-button:hover + .volume-range-span media-volume-range,
-  media-mute-button:focus + .volume-range-span media-volume-range,
-  .volume-range-span:hover media-volume-range,
-  .volume-range-span media-volume-range:focus {
+  media-mute-button:hover + media-volume-range,
+  media-mute-button:focus + media-volume-range,
+  .volume-group:hover media-volume-range,
+  .volume-group media-volume-range:focus {
     width: var(--_volume-range-expand-width, 70px);
     opacity: 1;
   }
@@ -386,13 +384,11 @@ template.innerHTML = html`
 </template>
 
 <template partial="VolumeRange">
-  <span class="volume-range-span">
-    <media-volume-range
-      part="volume range"
-      disabled="{{disabled}}"
-      aria-disabled="{{disabled}}"
-    ></media-volume-range>
-  </span>
+  <media-volume-range
+    part="volume range"
+    disabled="{{disabled}}"
+    aria-disabled="{{disabled}}"
+  ></media-volume-range>
 </template>
 
 <media-controller>
@@ -405,8 +401,10 @@ template.innerHTML = html`
         {{>PlayButton}}
         {{>SeekBackwardButton}}
         {{>SeekForwardButton}}
-        {{>MuteButton}}
-        {{>VolumeRange}}
+        <span class="volume-group">
+          {{>MuteButton}}
+          {{>VolumeRange}}
+        </span>
         {{>CaptionsButton}}
         {{>AirplayButton}}
         {{>CastButton}}
@@ -425,8 +423,10 @@ template.innerHTML = html`
       <media-control-bar slot="centered-chrome">
         {{>LiveButton}}
         <div class="control-group">
-          {{>MuteButton}}
-          {{>VolumeRange}}
+          <span class="volume-group">
+            {{>MuteButton}}
+            {{>VolumeRange}}
+          </span>
           {{>CaptionsButton}}
           {{>AirplayButton}}
           {{>CastButton}}
@@ -445,8 +445,10 @@ template.innerHTML = html`
           {{>PlayButton}}
           {{>SeekBackwardButton}}
           {{>SeekForwardButton}}
-          {{>MuteButton}}
-          {{>VolumeRange}}
+          <span class="volume-group">
+            {{>MuteButton}}
+            {{>VolumeRange}}
+          </span>
           {{>CaptionsButton}}
           {{>AirplayButton}}
           {{>CastButton}}
