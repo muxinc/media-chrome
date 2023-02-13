@@ -33,7 +33,7 @@ Load the module in the `<head>` of your HTML page. Note the `type="module"`, tha
 
 > Modules are always loaded asynchronously by the browser, so it's ok to load them in the head 👍
 
-```html
+```html https://stackoverflow.com/questions/4042434/converting-arrayliststring-to-string-in-java
 <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0/+esm"></script>
 ```
 

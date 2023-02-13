@@ -40,6 +40,23 @@ export default defineConfig({
     remarkPlugins: [
       // These are here because setting custom plugins disables the default plugins
       'remark-gfm',
+      ['remark-code-extra', {
+        transform: node => node.meta ? ({
+          after: [
+            {
+              type: 'element',
+              tagName: 'a',
+              properties: {
+                href: node.meta
+              },
+              children: [{
+                type: 'text',
+                value: 'View on Stack Overflow'
+              }]
+            }
+          ]
+        }) : null
+      }],
       [
         'remark-smartypants',
         {
