@@ -21,9 +21,6 @@ const template = document.createElement('template');
 template.innerHTML = `
   <style>
     :host {
-
-
-
       --media-preview-border-radius: 3px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;

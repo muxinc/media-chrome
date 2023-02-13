@@ -36,9 +36,6 @@ const trackStyles = `
 template.innerHTML = `
   <style>
     :host {
-
-
-
       --thumb-height: var(--media-range-thumb-height, 10px);
       --track-height: var(--media-range-track-height, 4px);
       --_focus-box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgba(27, 127, 204, 0.9));

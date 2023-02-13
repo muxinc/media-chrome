@@ -5,11 +5,6 @@ const template = document.createElement('template');
 
 template.innerHTML = `
 <style>
-  :host {
-
-
-  }
-
   :host ul {
     list-style: none;
     display: inline-flex;
@@ -17,7 +12,7 @@ template.innerHTML = `
     gap: 0.5em;
     margin: 0;
     padding: 0.5em;
-    background-color: var(--media-listbox-background, var(--media-control-background, rgba(10,10,15, .8)));
+    background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7)));
     color: var(--media-control-font-color, var(--media-primary-color, rgb(238 238 238)));
     font-family: helvetica neue, segoe ui, roboto, arial, sans-serif;
   }
