@@ -23,11 +23,11 @@ template.innerHTML = `
   }
 
   ::slotted(media-chrome-listitem[aria-selected="true"]) {
-    background-color: var(--media-listbox-selected-background, rgba(122,122,184, .8));
+    background: var(--media-listbox-selected-background, rgb(122 122 184 / 0.7));
   }
 
   ::slotted(media-chrome-listitem:hover) {
-    background-color: var(--media-listbox-hover-background, rgba(82,82,122, .8));
+    background: var(--media-listbox-hover-background, rgb(82 82 122 / 0.8));
     outline: var(--media-listbox-hover-outline, none);
   }
 </style>
