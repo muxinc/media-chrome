@@ -19,6 +19,12 @@ const ccIcon = `
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
+  <style>
+    ::slotted(*) {
+      white-space: var(--media-captions-listbox-white-space, nowrap);
+    }
+
+  </style>
   <slot hidden name="captions-indicator">${ccIcon}</slot>
 `;
 
@@ -169,7 +175,11 @@ class MediaCaptionsListbox extends MediaChromeListbox {
         alreadyInDom = false;
 
         option.value = type + '!' + formatTextTrackObj(track);
-        option.textContent = track.label;
+
+        const label = document.createElement('span');
+
+        label.textContent = track.label;
+        option.append(label);
 
         // add CC icon for captions
         if (type === 'cc') {
