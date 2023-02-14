@@ -15,76 +15,6 @@ const html = (raw, ...keys) => String.raw({ raw }, ...keys);
 const template = document.createElement('template');
 template.innerHTML = html`
 <style>
-  :host {
-    --_primary-color: var(--primary-color, #fff);
-    --_secondary-color: var(--secondary-color, rgb(0 0 0 / .75));
-
-    display: inline-block;
-    line-height: 0;
-  }
-
-  media-controller {
-    --media-control-background: transparent;
-    --media-control-hover-background: transparent;
-    --media-control-padding: 5px 5px;
-
-    width: 100%;
-    height: 100%;
-  }
-
-  [breakpoint-sm] {
-    --media-control-padding: 9px 5px;
-  }
-
-  [breakpoint-md] {
-    --media-control-padding: 9px 7px;
-    --_volume-range-expand-width: 78px;
-  }
-
-  media-controller::part(centered-layer) {
-    display: grid;
-    justify-content: unset;
-    padding-bottom: 6px;
-  }
-
-  :host([stream-type=live]:not([target-live-window])) media-controller::part(centered-layer),
-  :host([media-stream-type=live]:not([media-target-live-window])) media-controller::part(centered-layer) {
-    padding-bottom: 0;
-  }
-
-  media-control-bar {
-    place-self: var(--micro-control-bar-place-self, end center);
-    flex-direction: var(--micro-control-bar-direction, row);
-    margin: 10px;
-    gap: 4px;
-  }
-
-  .control-group {
-    position: relative;
-    display: inline-flex;
-    align-self: start;
-    align-items: var(--micro-control-bar-align-items);
-    flex-direction: var(--micro-control-bar-direction, row);
-    background: var(--_secondary-color);
-    border-radius: 5px;
-  }
-
-  media-live-button {
-    --media-control-background: var(--_secondary-color);
-    --media-control-hover-background: var(--_secondary-color);
-    border-radius: 5px;
-  }
-
-  media-live-button::before {
-    content: '';
-    width: 5px;
-  }
-
-  media-live-button::after {
-    content: '';
-    width: 7px;
-  }
-
   media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
     display: none;
   }
@@ -109,39 +39,156 @@ template.innerHTML = html`
     display: none;
   }
 
+  :host {
+    --_primary-color: var(--primary-color, #fff);
+    --_secondary-color: var(--secondary-color, rgb(0 0 0 / .75));
+    --_volume-range-expand-width: 70px;
+    --_volume-range-expand-height: 42px;
+
+    --media-control-background: transparent;
+    --media-control-hover-background: transparent;
+    --media-control-padding: 5px 5px;
+
+    display: inline-block;
+    line-height: 0;
+  }
+
+  media-controller {
+    width: 100%;
+    height: 100%;
+  }
+
+  [breakpoint-sm] {
+    --media-control-padding: 9px 5px;
+  }
+
+  [breakpoint-md] {
+    --media-control-padding: 9px 7px;
+  }
+
+  media-controller::part(centered-layer) {
+    display: grid;
+    justify-content: unset;
+    padding-bottom: 6px;
+  }
+
+  :host([stream-type=live]:not([target-live-window])) media-controller::part(centered-layer),
+  :host([media-stream-type=live]:not([media-target-live-window])) media-controller::part(centered-layer) {
+    padding-bottom: 0;
+  }
+
+  media-control-bar {
+    place-self: var(--_control-bar-place-self, end center);
+    position: relative;
+    margin: 10px;
+    gap: 4px;
+    align-items: start;
+  }
+
+  :host([control-bar-place$="end"]) media-control-bar {
+    align-items: end;
+  }
+
+  .control-group {
+    position: relative;
+    display: inline-flex;
+    background: var(--_secondary-color);
+    border-radius: 5px;
+  }
+
+  :host([control-bar-vertical]) :is(media-control-bar, .control-group) {
+    flex-direction: column;
+  }
+
   .volume-group {
     position: relative;
     display: inline-flex;
-    flex-direction: var(--micro-volume-group-direction, row);
+    flex-direction: row;
+  }
+
+  :host([control-bar-place$="end"]) .volume-group {
+    flex-direction: row-reverse;
+  }
+
+  :host([control-bar-place$="end"]) .volume-group:first-child .volume-range-span {
+    --_volume-range-padding-left: 10px;
+  }
+
+  :host([control-bar-vertical]) .volume-group {
+    flex-direction: column;
+  }
+
+  :host([control-bar-vertical][control-bar-place^="end"]) .volume-group {
+    flex-direction: column-reverse;
+  }
+
+  :host([control-bar-vertical][control-bar-place^="end"]) .volume-group:first-child .volume-range-span {
+    --_volume-range-padding-top: 10px;
+  }
+
+  .volume-range-span {
+    display: inline-flex;
+    position: relative;
+    overflow: hidden;
+    width: 0;
+    visibility: hidden;
+  }
+
+  .volume-group:hover .volume-range-span {
+    width: var(--_volume-range-expand-width, 70px);
+    padding-left: var(--_volume-range-padding-left);
+    padding-top: var(--_volume-range-padding-top);
+    visibility: visible;
+  }
+
+  :host([control-bar-vertical]) .volume-range-span {
+    display: inline-flex;
+    height: 0;
+    --_volume-range-padding-left: 0 !important;
+  }
+
+  :host([control-bar-vertical]) .volume-group:hover .volume-range-span {
+    width: auto;
+    max-width: 40px;
+    height: var(--_volume-range-expand-height);
   }
 
   media-volume-range {
-    --media-control-background: var(--_secondary-color);
-    --media-control-hover-background: var(--_secondary-color);
     --media-range-thumb-opacity: 0;
     --media-range-track-border-radius: 2px;
     --media-range-track-background: rgba(255, 255, 255, .2);
     --media-range-bar-color: rgba(255, 255, 255, .9);
-    --media-range-track-width: 80%;
-    --media-range-track-translate-x: 6px;
 
+    width: var(--_volume-range-expand-width);
     display: var(--controls, var(--volume-range, inline-block));
     border-radius: 5px;
   }
 
-  media-mute-button + media-volume-range {
-    width: 0;
-    opacity: 0;
-    overflow: hidden;
-    transition: opacity .2s;
+  :host([control-bar-vertical]) media-volume-range {
+    width: var(--_volume-range-expand-height);
+    transform: rotate(-90deg);
   }
 
-  media-mute-button:hover + media-volume-range,
-  media-mute-button:focus + media-volume-range,
-  .volume-group:hover media-volume-range,
-  .volume-group media-volume-range:focus {
-    width: var(--_volume-range-expand-width, 70px);
-    opacity: 1;
+  media-control-bar:has(
+    media-mute-button:focus,
+    .volume-group:hover,
+    .volume-group media-volume-range:focus
+  ) {
+    top: var(--_control-bar-offset-top, 0);
+    left: var(--_control-bar-offset-left, calc(var(--_volume-range-expand-width) / 2));
+  }
+
+  :host([control-bar-place$="start"]),
+  :host([control-bar-place$="end"]) {
+    --_control-bar-offset-left: 0;
+  }
+
+  :host([control-bar-vertical]) {
+    --_control-bar-offset-left: 0;
+  }
+
+  :host([control-bar-vertical][control-bar-place^="center"]) {
+    --_control-bar-offset-top: calc(var(--_volume-range-expand-height) / 2);
   }
 
   media-time-range {
@@ -161,6 +208,22 @@ template.innerHTML = html`
     width: 100%;
     height: 10px;
     bottom: -2px;
+  }
+
+  media-live-button {
+    --media-control-background: var(--_secondary-color);
+    --media-control-hover-background: var(--_secondary-color);
+    border-radius: 5px;
+  }
+
+  media-live-button::before {
+    content: '';
+    width: 5px;
+  }
+
+  media-live-button::after {
+    content: '';
+    width: 7px;
   }
 
   media-play-button {
@@ -384,14 +447,16 @@ template.innerHTML = html`
 </template>
 
 <template partial="VolumeRange">
-  <media-volume-range
-    part="volume range"
-    disabled="{{disabled}}"
-    aria-disabled="{{disabled}}"
-  ></media-volume-range>
+  <span class="volume-range-span">
+    <media-volume-range
+      part="volume range"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+    ></media-volume-range>
+  </span>
 </template>
 
-<media-controller>
+<media-controller style="--_control-bar-place-self:{{controlBarPlace ?? 'unset'}}">
   <slot name="media" slot="media"></slot>
 
   <template if="streamType == 'on-demand'">
