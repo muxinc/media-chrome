@@ -88,9 +88,8 @@ Here's a quick summary of how we use conventional commits in this repository:
 
 - Commit messages prefixed with `fix:` will notify CD that the release is minimally a `patch` release.
 - Commit messages prefixed with `feat:` will notify CD that the release is minimally a `minor` release.
-- Major releases must always be designated manually during the Release process.
+- Commit messages containing `BREAKING CHANGE` in the footer will notify CD that the release is minimally a `major` release.
 - All other conventional commits have no impact on the versioning.
-
 ### Review commit messages since last release
 To proceed with a release, you should be confident that the commits in your upcoming release accurately reflect the type of version that you intend to release.
 
