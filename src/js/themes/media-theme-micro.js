@@ -170,9 +170,7 @@ template.innerHTML = html`
   }
 
   media-control-bar:has(
-    media-mute-button:focus,
-    .volume-group:hover,
-    .volume-group media-volume-range:focus
+    .volume-group:hover
   ) {
     top: var(--_control-bar-offset-top, 0);
     left: var(--_control-bar-offset-left, calc(var(--_volume-range-expand-width) / 2));
