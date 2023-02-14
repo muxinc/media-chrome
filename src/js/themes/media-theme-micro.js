@@ -131,14 +131,12 @@ template.innerHTML = html`
     position: relative;
     overflow: hidden;
     width: 0;
-    visibility: hidden;
   }
 
-  .volume-group:hover .volume-range-span {
-    width: var(--_volume-range-expand-width, 70px);
+  :is(.volume-group:hover, .volume-group:focus-within) .volume-range-span {
+    width: var(--_volume-range-expand-width);
     padding-left: var(--_volume-range-padding-left);
     padding-top: var(--_volume-range-padding-top);
-    visibility: visible;
   }
 
   :host([control-bar-vertical]) .volume-range-span {
@@ -147,7 +145,9 @@ template.innerHTML = html`
     --_volume-range-padding-left: 0 !important;
   }
 
-  :host([control-bar-vertical]) .volume-group:hover .volume-range-span {
+  :host([control-bar-vertical])
+    :is(.volume-group:hover, .volume-group:focus-within) .volume-range-span
+  {
     width: auto;
     max-width: 40px;
     height: var(--_volume-range-expand-height);
@@ -170,7 +170,8 @@ template.innerHTML = html`
   }
 
   media-control-bar:has(
-    .volume-group:hover
+    .volume-group:hover,
+    .volume-group:focus-within
   ) {
     top: var(--_control-bar-offset-top, 0);
     left: var(--_control-bar-offset-left, calc(var(--_volume-range-expand-width) / 2));
