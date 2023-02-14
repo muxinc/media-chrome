@@ -12,7 +12,7 @@ export const reExpr = /([>&])?\s*(\w+)\s*(.*)/;
 
 // e.g.  | string
 //       ?? 'fallback'
-export const reExprOperation = /^(\?\?|\|)?\s*(['"\w]*)/;
+export const reExprOperation = /^(\?\?|\|)?\s*(['"\w ]*)/;
 
 const operators = {
   // Filters concept like Nunjucks or Liquid.
@@ -149,7 +149,11 @@ export const processor = {
         }
       } else {
         if (part instanceof AttrPart) {
-          part.booleanValue = false;
+          try {
+            part.booleanValue = false;
+          } catch {
+            // attribute can't be turned off, consists of multiple parts.
+          }
         } else {
           part.value = undefined;
 
