@@ -1,3 +1,43 @@
+## [0.18.2](https://github.com/muxinc/media-chrome/compare/v0.18.1...v0.18.2) (2023-02-06)
+
+
+### Bug Fixes
+
+* **experimental:** media-captions-menu-button relative file locations ([#466](https://github.com/muxinc/media-chrome/issues/466)) ([53c17b1](https://github.com/muxinc/media-chrome/commit/53c17b198a7ec55389d9295253a8673e8bd4ec0a))
+* **experimental:** move media-captions-menu-button to experimental folder ([#464](https://github.com/muxinc/media-chrome/issues/464)) ([3ddf3a9](https://github.com/muxinc/media-chrome/commit/3ddf3a904ea6a0fb250253b6c035323e280713fc))
+
+
+
+## [0.18.1](https://github.com/muxinc/media-chrome/compare/v0.18.0...v0.18.1) (2023-01-31)
+
+
+### Bug Fixes
+
+* render on all attr changes, also removal ([#461](https://github.com/muxinc/media-chrome/issues/461)) ([f36b8ce](https://github.com/muxinc/media-chrome/commit/f36b8ce45b72fc226c87cce45235eef408b84461))
+
+
+
+# [0.18.0](https://github.com/muxinc/media-chrome/compare/v0.17.1...v0.18.0) (2023-01-30)
+
+
+### Bug Fixes
+
+* add template caches for partial templates ([bf075c7](https://github.com/muxinc/media-chrome/commit/bf075c77934a1aeb3d216c1c6009880fb28f1a6b))
+* add template instance caching in if directive ([2896118](https://github.com/muxinc/media-chrome/commit/289611899aeb07c460a6c7261cf128f62fad7ffd))
+* keyDown in listbox should preventDefault, add f,c,k,m to keysUsed of captions-menu-button ([#449](https://github.com/muxinc/media-chrome/issues/449)) ([a6dcbb7](https://github.com/muxinc/media-chrome/commit/a6dcbb71709eba40a066b18018ff38e9ed63fdd0))
+* overwrite priority template vars ([0e1be99](https://github.com/muxinc/media-chrome/commit/0e1be996d22e7377652689e696f1cfba3f9cbbee))
+* remove `audio` template var ([ee596c4](https://github.com/muxinc/media-chrome/commit/ee596c4b034ea86c22a177189c42161a8fe5cc1d))
+* remove old MediaTheme element ([#457](https://github.com/muxinc/media-chrome/issues/457)) ([57277b7](https://github.com/muxinc/media-chrome/commit/57277b769148b0d2ef1af16034ad58afc609debd))
+* removing non existing token ([22bc6f5](https://github.com/muxinc/media-chrome/commit/22bc6f5eeb9109a1ab360b104a8a50a2722bbb54))
+
+
+### Features
+
+* experimental captions menu button fixes ([#442](https://github.com/muxinc/media-chrome/issues/442)) ([bb924c1](https://github.com/muxinc/media-chrome/commit/bb924c1550fc24f4bd060d0f3275637d7187052a))
+* **experimental:** expose listbox in menu-button as a part ([#460](https://github.com/muxinc/media-chrome/issues/460)) ([d4bd8da](https://github.com/muxinc/media-chrome/commit/d4bd8da6ab7634ad3626f25d3deb7def0fff4165))
+
+
+
 ## [0.17.1](https://github.com/muxinc/media-chrome/compare/v0.17.0...v0.17.1) (2023-01-18)
 
 

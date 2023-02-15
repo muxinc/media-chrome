@@ -9,7 +9,6 @@ export * from './utils/template-parts.js';
 const observedMediaAttributes = {
   'media-target-live-window': 'targetLiveWindow',
   'media-stream-type': 'streamType',
-  'audio': 'audio',
 };
 
 /**
@@ -34,7 +33,7 @@ export class MediaThemeElement extends window.HTMLElement {
         const target = /** @type HTMLElement */ (mutation.target);
 
         // Render on each attribute change of the `<media-theme(-x)>` element.
-        if (this.hasAttribute(mutation.attributeName)) return true;
+        if (target === this) return true;
 
         // Only check `<media-controller>`'s attributes below.
         if (target.localName !== 'media-controller') return false;
@@ -86,11 +85,11 @@ export class MediaThemeElement extends window.HTMLElement {
 
   get props() {
     const observedAttributes = [
-      ...Array.from(this.attributes),
       ...Array.from(this.mediaController?.attributes ?? [])
         .filter(({ name }) => {
           return observedMediaAttributes[name] || name.startsWith('breakpoint-')
-        })
+        }),
+      ...Array.from(this.attributes),
     ];
 
     const props = {};

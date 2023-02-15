@@ -1,9 +1,9 @@
 import './media-chrome-menu-button.js';
 import './media-captions-listbox.js';
-import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
-import { window, document, } from './utils/server-safe-globals.js';
-import { closestComposedNode } from './utils/element-utils.js';
-import { isCCOn, toggleSubsCaps } from './utils/captions.js';
+import { MediaUIAttributes, MediaStateReceiverAttributes } from '../constants.js';
+import { window, document, } from '../utils/server-safe-globals.js';
+import { closestComposedNode } from '../utils/element-utils.js';
+import { isCCOn, toggleSubsCaps } from '../utils/captions.js';
 
 const ccEnabledIcon = `
 <svg aria-hidden="true" viewBox="0 0 26 24">
@@ -53,7 +53,7 @@ template.innerHTML = `
 <media-chrome-menu-button aria-label="captions menu button">
   <slot slot="button-content" class="enabled" name="on">${ccEnabledIcon}</slot>
   <slot slot="button-content" class="disabled" name="off" hidden>${ccDisabledIcon}</slot>
-  <media-captions-listbox slot="listbox">
+  <media-captions-listbox slot="listbox" part="listbox">
     <slot slot="captions-indicator" name="captions-indicator">${ccEnabledIcon}</slot>
   </media-captions-listbox>
 </media-chrome-menu-button>

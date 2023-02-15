@@ -1,7 +1,7 @@
-import './media-chrome-button.js';
+import '../media-chrome-button.js';
 import './media-chrome-listbox.js';
-import { window, document } from './utils/server-safe-globals.js';
-import { MediaStateReceiverAttributes } from './constants.js';
+import { window, document } from '../utils/server-safe-globals.js';
+import { MediaStateReceiverAttributes } from '../constants.js';
 
 const template = document.createElement('template');
 template.innerHTML = `
@@ -19,7 +19,7 @@ template.innerHTML = `
     <slot name="button-content"></slot>
   </media-chrome-button>
   <slot name="listbox" hidden>
-    <media-chrome-listbox id="listbox">
+    <media-chrome-listbox id="listbox" part="listbox">
       <slot></slot>
     </media-chrome-listbox>
   </slot>
