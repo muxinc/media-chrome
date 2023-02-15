@@ -472,7 +472,11 @@ class MediaController extends MediaContainer {
           MediaUIAttributes.MEDIA_DURATION,
           getDuration(this)
         );
-        this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
+      },
+      'emptied,durationchange,loadedmetadata,streamtypechange': () => {
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_STREAM_TYPE
+        );
       },
       'loadedmetadata,emptied,progress': () => {
         this.propagateMediaState(
@@ -1007,25 +1011,7 @@ const Delegates = {
   },
 
   [MediaUIAttributes.MEDIA_STREAM_TYPE](el) {
-    const media = el.media;
-
-    if (!media) return null;
-
-    const duration = media.duration;
-
-    if (duration === Infinity) {
-      return StreamTypes.LIVE;
-    } else if (Number.isFinite(duration)) {
-      return StreamTypes.ON_DEMAND;
-    } else {
-      const defaultType = el.getAttribute('default-stream-type');
-
-      if (StreamTypeValues.includes(defaultType)) {
-        return defaultType;
-      }
-    }
-
-    return null;
+    return getStreamType(el);
   },
   [MediaUIAttributes.MEDIA_TIME_IS_LIVE](controller) {
     const media = controller.media;
@@ -1152,6 +1138,29 @@ const getShowingCaptionTracks = (controller) => {
     kind: TextTrackKinds.CAPTIONS,
     mode: TextTrackModes.SHOWING,
   });
+};
+
+const getStreamType = (controller) => {
+  const { media } = controller;
+  
+  if (!media) return undefined;
+  
+  if (media.streamType) return media.streamType;
+  const duration = media.duration;
+
+  if (duration === Infinity) {
+    return StreamTypes.LIVE;
+  } else if (Number.isFinite(duration)) {
+    return StreamTypes.ON_DEMAND;
+  } else {
+    const defaultType = controller.getAttribute('default-stream-type');
+
+    if (StreamTypeValues.includes(defaultType)) {
+      return defaultType;
+    }
+  }
+
+  return null;
 };
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
