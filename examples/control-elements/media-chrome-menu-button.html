@@ -18,6 +18,7 @@
       margin-inline: auto;
       max-width: 640px;
       height: 5000px;
+      --media-control-padding: 5px;
     }
 
     [disabled] {
@@ -76,12 +77,26 @@
       </video>
       <media-poster-image slot="poster" src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/poster.png"></media-poster-image>
       <media-control-bar>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-menu-button>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-menu-button>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-menu-button>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-menu-button>
         <media-play-button></media-play-button>
         <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
         <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
         <media-mute-button></media-mute-button>
-        <media-volume-range></media-volume-range>
-        <media-time-range></media-time-range>
         <media-time-display show-duration remaining></media-time-display>
         <media-captions-button></media-captions-button>
         <media-chrome-menu-button aria-label="captions menu button">
@@ -100,6 +115,26 @@
         <media-chrome-menu-button aria-label="captions menu button">
           <media-captions-button default-showing slot="button"></media-captions-button>
           <media-captions-listbox slot="listbox" ></media-captions-listbox>
+        </media-chrome-menu-button>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-menu-button>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-menu-button>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-menu-button>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-menu-button>
+        <media-chrome-menu-button aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
         </media-chrome-menu-button>
       </media-control-bar>
     </media-controller>
