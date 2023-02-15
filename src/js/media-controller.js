@@ -478,6 +478,11 @@ class MediaController extends MediaContainer {
           MediaUIAttributes.MEDIA_STREAM_TYPE
         );
       },
+      'emptied,durationchange,loadedmetadata,targetlivewindowchange': () => {
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_TARGET_LIVE_WINDOW
+        );
+      },
       'loadedmetadata,emptied,progress': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_SEEKABLE,
@@ -1013,6 +1018,9 @@ const Delegates = {
   [MediaUIAttributes.MEDIA_STREAM_TYPE](el) {
     return getStreamType(el);
   },
+  [MediaUIAttributes.MEDIA_TARGET_LIVE_WINDOW](el) {
+    return getTargetLiveWindow(el);
+  },
   [MediaUIAttributes.MEDIA_TIME_IS_LIVE](controller) {
     const media = controller.media;
     
@@ -1160,7 +1168,11 @@ const getStreamType = (controller) => {
     }
   }
 
-  return null;
+  return undefined;
+};
+
+const getTargetLiveWindow = (controller) => {
+  return controller?.media?.targetLiveWindow;
 };
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);

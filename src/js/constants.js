@@ -84,6 +84,7 @@ export const MediaUIAttributes = {
   MEDIA_LOADING: 'media-loading',
   MEDIA_BUFFERED: 'media-buffered',
   MEDIA_STREAM_TYPE: 'media-stream-type',
+  MEDIA_TARGET_LIVE_WINDOW: 'media-target-live-window',
   MEDIA_TIME_IS_LIVE: 'media-time-is-live',
 };
 
