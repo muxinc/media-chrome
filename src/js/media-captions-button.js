@@ -1,5 +1,5 @@
 import MediaChromeButton from './media-chrome-button.js';
-import MediaChromeMenuButton from './experimental/media-chrome-menu-button.js';
+import MediaChromeSelectMenu from './experimental/media-chrome-select-menu.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
@@ -114,8 +114,8 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   handleClick() {
-    // do nothing if parent is an instance of MediaChromeMenuButton
-    if (this.parentElement instanceof MediaChromeMenuButton) return;
+    // do nothing if parent is an instance of MediaChromeSelectMenu
+    if (this.parentElement instanceof MediaChromeSelectMenu) return;
 
     toggleSubsCaps(this);
   }

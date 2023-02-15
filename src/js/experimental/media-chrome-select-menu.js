@@ -35,7 +35,7 @@ template.innerHTML = `
   </slot>
 `;
 
-class MediaChromeMenuButton extends window.HTMLElement {
+class MediaChromeSelectMenu extends window.HTMLElement {
   #handleClick;
   #handleChange;
   #enabledState = true;
@@ -234,8 +234,8 @@ class MediaChromeMenuButton extends window.HTMLElement {
 
 }
 
-if (!window.customElements.get('media-chrome-menu-button')) {
-  window.customElements.define('media-chrome-menu-button', MediaChromeMenuButton);
+if (!window.customElements.get('media-chrome-select-menu')) {
+  window.customElements.define('media-chrome-select-menu', MediaChromeSelectMenu);
 }
 
-export default MediaChromeMenuButton;
+export default MediaChromeSelectMenu;
