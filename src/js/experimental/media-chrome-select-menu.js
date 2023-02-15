@@ -160,8 +160,8 @@ class MediaChromeSelectMenu extends window.HTMLElement {
   }
 
   #toggleExpanded() {
-    this.#button.setAttribute('aria-expanded', this.#expanded);
     this.#expanded = !this.#expanded;
+    this.#button.setAttribute('aria-expanded', this.#expanded);
   }
 
   enable() {
