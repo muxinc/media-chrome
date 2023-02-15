@@ -57,9 +57,7 @@ export class MediaThemeElement extends window.HTMLElement {
     observer.observe(this.renderRoot, {
       attributes: true,
       subtree: true,
-    })
-
-    this.createRenderer();
+    });
   }
 
   get mediaController() {
@@ -108,6 +106,24 @@ export class MediaThemeElement extends window.HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'template' && oldValue != newValue) {
       this.createRenderer();
+    }
+  }
+
+  connectedCallback() {
+    this.createRenderer();
+
+    // In case the template prop was set before custom element upgrade.
+    // https://web.dev/custom-elements-best-practices/#make-properties-lazy
+    this.#upgradeProperty('template');
+  }
+
+  #upgradeProperty(prop) {
+    if (Object.prototype.hasOwnProperty.call(this, prop)) {
+      const value = this[prop];
+      // Delete the set property from this instance.
+      delete this[prop];
+      // Set the value again via the (prototype) setter on this class.
+      this[prop] = value;
     }
   }
 
