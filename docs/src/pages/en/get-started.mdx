@@ -4,6 +4,8 @@ description: Docs intro
 layout: ../../layouts/MainLayout.astro
 ---
 
+import CopyToClipboard from "../../components/PageContent/CopyToClipboard.astro"
+
 <h2>What is Media Chrome?</h2>
 
 Media Chrome provides **fully customizable media player controls** using **web components**.
@@ -33,19 +35,25 @@ Load the module in the `<head>` of your HTML page. Note the `type="module"`, tha
 
 > Modules are always loaded asynchronously by the browser, so it's ok to load them in the head 👍
 
-```html https://stackoverflow.com/questions/4042434/converting-arrayliststring-to-string-in-java
+<CopyToClipboard>
+```html
 <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0/+esm"></script>
 ```
+</CopyToClipboard>
 
 ### Option 2: Bundled via npm
 
+<CopyToClipboard>
 ```bash
 npm install media-chrome --save
 ```
+</CopyToClipboard>
 
+<CopyToClipboard>
 ```js
 import 'media-chrome';
 ```
+</CopyToClipboard>
 
 Include in your app javascript (e.g. src/App.js)  
 This will register the custom elements with the browser so they can be used as HTML.
@@ -54,6 +62,7 @@ This will register the custom elements with the browser so they can be used as H
 
 The `<media-controller>` is the star of the show. It handles the communication between control elements and the media. Start by wrapping your media element with a `<media-controller>`, and adding `slot="media"` to your video or audio tag, or other [compatible player](#compatible-players).
 
+<CopyToClipboard>
 ```html
 <media-controller>
   <video
@@ -62,9 +71,11 @@ The `<media-controller>` is the star of the show. It handles the communication b
   ></video>
 </media-controller>
 ```
+</CopyToClipboard>
 
 After that, each control element can be used independently. When using outside of a `<media-controller>` element, a control needs to be told which media controller it's associated with via the `media-controller` attribute or property.
 
+<CopyToClipboard>
 ```html
 <media-controller id="myController">
   <video
@@ -76,11 +87,13 @@ After that, each control element can be used independently. When using outside o
 
 <media-play-button media-controller="myController"></media-play-button>
 ```
+</CopyToClipboard>
 
 ## Customizing the controls
 
 Use HTML to add or remove any of the controls. Then you can use CSS to style the controls as you would other HTML elements.
 
+<CopyToClipboard>
 ```html
 <media-controller>
   <video
@@ -97,6 +110,7 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
   </media-control-bar>
 </media-controller>
 ```
+</CopyToClipboard>
 
 ### Included elements
 
@@ -108,7 +122,7 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 | `<media-mute-button>`          | Toggle the sound. The icon responds to volume changes and acts as part of the typical volume control. ([docs](./media-mute-button))                                                                                                                                    |
 | `<media-volume-range>`         | Change the volume of the sound. ([docs](./media-volume-range))                                                                                                                                                                                                         |
 | `<media-time-range>`           | See how far the playhead is through the media duration, and seek to new times. ([docs](./media-time-range))                                                                                                                                                            |
-| `<media-time-display>`         | Show the time of the playhead.<br><br>Options: <br>`<media-time-display remaining>` Show as remaining time <br>`<media-time-display show-duration>` Also show the duration after a slash. Ex: `1:00 / 2:00`. ([docs](./media-time-display))                            |
+| `<media-time-display>`         | Show the time of the playhead.<br/><br/>Options: <br/>`<media-time-display remaining>` Show as remaining time <br/>`<media-time-display show-duration>` Also show the duration after a slash. Ex: `1:00 / 2:00`. ([docs](./media-time-display))                            |
 | `<media-duration-display>`     | Show the duration of the media                                                                                                                                                                                                                                                 |
 | `<media-fullscreen-button>`    | Toggle fullscreen viewing. ([docs](./media-fullscreen-button))                                                                                                                                                                                                         |
 | `<media-pip-button>`           | Toggle picture-in-picture mode of the video. ([docs](./media-pip-button))                                                                                                                                                                                              |

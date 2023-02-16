@@ -305,7 +305,7 @@ pre {
   padding-right: calc(var(--padding-inline) * 2);
   margin-left: calc(var(--padding-inline) * -1);
   margin-right: calc(var(--padding-inline) * -1);
-  margin-top: 2.5rem !important;
+  margin-top: 2.5rem;
   font-family: var(--font-mono);
 
   line-height: 1.5;
