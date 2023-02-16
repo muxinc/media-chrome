@@ -1,3 +1,12 @@
+## [0.18.4](https://github.com/muxinc/media-chrome/compare/v0.18.3...v0.18.4) (2023-02-16)
+
+
+### Bug Fixes
+
+* create theme template on construction ([#477](https://github.com/muxinc/media-chrome/issues/477)) ([fe1ca19](https://github.com/muxinc/media-chrome/commit/fe1ca19ea29b0a2f1c3a197f609635d36e04c1b9))
+
+
+
 ## [0.18.3](https://github.com/muxinc/media-chrome/compare/v0.18.2...v0.18.3) (2023-02-16)
 
 
