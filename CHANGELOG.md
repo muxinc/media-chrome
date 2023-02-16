@@ -1,3 +1,12 @@
+## [0.18.3](https://github.com/muxinc/media-chrome/compare/v0.18.2...v0.18.3) (2023-02-16)
+
+
+### Bug Fixes
+
+* add lazy template prop to theme el ([#474](https://github.com/muxinc/media-chrome/issues/474)) ([9e904ef](https://github.com/muxinc/media-chrome/commit/9e904ef93ac5179047f87264bd4a58d999b32e22))
+
+
+
 ## [0.18.2](https://github.com/muxinc/media-chrome/compare/v0.18.1...v0.18.2) (2023-02-06)
 
 
