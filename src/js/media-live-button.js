@@ -22,13 +22,13 @@ slotTemplate.innerHTML = `
     color: var(--media-live-button-icon-color, rgb(140, 140, 140));
   }
 
-  :host([${MEDIA_TIME_IS_LIVE}]) slot[name=indicator] > *,
-  :host([${MEDIA_TIME_IS_LIVE}]) ::slotted([slot=indicator]) {
+  :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) slot[name=indicator] > *,
+  :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) ::slotted([slot=indicator]) {
     fill: var(--media-live-indicator-color, rgb(255, 0, 0));
     color: var(--media-live-indicator-color, rgb(255, 0, 0));
   }
 
-  :host([${MEDIA_TIME_IS_LIVE}]) {
+  :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) {
     cursor: not-allowed;
   }
 
@@ -61,14 +61,15 @@ class MediaLiveButton extends MediaChromeButton {
   }
 
   handleClick() {
-    // Don't seek if already live
-    if (this.getAttribute(MEDIA_TIME_IS_LIVE) !== null) return;
+    // If we're live and not paused, don't allow seek to live
+    if (!this.hasAttribute(MEDIA_PAUSED) && this.hasAttribute(MEDIA_TIME_IS_LIVE)) return;
 
     this.dispatchEvent(
       new window.CustomEvent(MEDIA_SEEK_TO_LIVE_REQUEST, { composed: true, bubbles: true })
     );
 
-    if (this.getAttribute(MEDIA_PAUSED) !== null) {
+    // If we're paused, also automatically play
+    if (this.hasAttribute(MEDIA_PAUSED)) {
       this.dispatchEvent(
         new window.CustomEvent(MEDIA_PLAY_REQUEST, { composed: true, bubbles: true })
       );
