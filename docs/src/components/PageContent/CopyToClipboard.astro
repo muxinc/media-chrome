@@ -1,4 +1,4 @@
-<div class="container">
+<div class="contain">
   <slot />
   <div class="btn-container">
     <button class="copy-to-clipboard">
@@ -39,29 +39,25 @@
 </div>
 
 <style>
-  .container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  .contain {
+    position: relative;
     margin-top: 2.5rem;
   }
 
-  .container :global(pre) {
+  .contain :global(pre) {
     margin-top: 0;
-    flex: 1;
   }
 
   .btn-container {
-    display: flex;
-    order: -1;
-    justify-content: flex-end;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    display: none;
   }
 
   @media (min-width: 37.75em) {
-    .container {
-      flex-direction: row;
-      align-items: flex-start;
-      gap: 0.5rem;
+    .btn-container {
+      display: block;
     }
   }
 
@@ -74,13 +70,6 @@
     filter: drop-shadow(0 1px 2px rgb(0 0 0 / 0.1))
       drop-shadow(0 1px 1px rgb(0 0 0 / 0.06));
     background: white;
-  }
-
-  @media (min-width: 37.75em) {
-    .btn-container {
-      order: 1;
-      margin-top: 0;
-    }
   }
 
   button:hover {
