@@ -1025,6 +1025,10 @@ const Delegates = {
     const media = controller.media;
     
     if (!media) return false;
+    if (typeof media.liveEdgeStart === 'number') {
+      if (Number.isNaN(media.liveEdgeStart)) return false;
+      return media.currentTime >= media.liveEdgeStart;
+    }
 
     const streamIsLive = controller.getAttribute(MediaUIAttributes.MEDIA_STREAM_TYPE) === 'live';
     const seekable = media.seekable;
