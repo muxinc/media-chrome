@@ -1,3 +1,21 @@
+## [0.18.4](https://github.com/muxinc/media-chrome/compare/v0.18.3...v0.18.4) (2023-02-16)
+
+
+### Bug Fixes
+
+* create theme template on construction ([#477](https://github.com/muxinc/media-chrome/issues/477)) ([fe1ca19](https://github.com/muxinc/media-chrome/commit/fe1ca19ea29b0a2f1c3a197f609635d36e04c1b9))
+
+
+
+## [0.18.3](https://github.com/muxinc/media-chrome/compare/v0.18.2...v0.18.3) (2023-02-16)
+
+
+### Bug Fixes
+
+* add lazy template prop to theme el ([#474](https://github.com/muxinc/media-chrome/issues/474)) ([9e904ef](https://github.com/muxinc/media-chrome/commit/9e904ef93ac5179047f87264bd4a58d999b32e22))
+
+
+
 ## [0.18.2](https://github.com/muxinc/media-chrome/compare/v0.18.1...v0.18.2) (2023-02-06)
 
 

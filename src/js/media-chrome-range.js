@@ -316,7 +316,7 @@ class MediaChromeRange extends window.HTMLElement {
 
     let colorArray = [
       ['var(--media-range-bar-color, #fff)', rangePercent + thumbPercent],
-      ['transparent', 100],
+      ['var(--media-range-track-color, transparent)', 100],
     ];
 
     return colorArray;
