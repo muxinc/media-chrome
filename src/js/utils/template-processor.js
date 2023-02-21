@@ -149,11 +149,7 @@ export const processor = {
         }
       } else {
         if (part instanceof AttrPart) {
-          try {
-            part.booleanValue = false;
-          } catch {
-            // attribute can't be turned off, consists of multiple parts.
-          }
+          part.value = undefined;
         } else {
           part.value = undefined;
 
