@@ -51,15 +51,27 @@ template.innerHTML = `
     }
 
     [part~="preview-box"] {
-      transition: visibility .25s, opacity .25s;
+      transition-property: var(--media-preview-transition-property, visibility, opacity);
+      transition-duration: var(--media-preview-transition-duration-out, .25s);
+      transition-delay: var(--media-preview-transition-delay-out, 0s);
       visibility: hidden;
       opacity: 0;
+    }
+
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~="preview-box"],
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) [part~="preview-box"] {
+      transition-duration: var(--media-preview-transition-duration-in, .5s);
+      transition-delay: var(--media-preview-transition-delay-in, .25s);
+      visibility: visible;
+      opacity: 1;
     }
 
     media-preview-thumbnail,
     ::slotted(media-preview-thumbnail) {
       visibility: hidden;
+      ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: visibility 0s .25s;
+      transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-time-background, var(--media-preview-background));
       box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 4px rgba(0,0,0, .2));
       max-width: var(--media-preview-thumbnail-max-width, 180px);
@@ -73,7 +85,7 @@ template.innerHTML = `
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) media-preview-thumbnail,
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) ::slotted(media-preview-thumbnail) {
-      transition-delay: 0s;
+      transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
     }
 
@@ -82,7 +94,8 @@ template.innerHTML = `
       color: unset;
       min-width: 0;
       ${/* delay changing these CSS props until the preview box transition is ended */''}
-      transition: min-width 0s .25s, border-radius 0s .25s;
+      transition: min-width 0s, border-radius 0s;
+      transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-time-background, var(--media-preview-background));
       border-radius: var(--media-preview-time-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
@@ -94,17 +107,10 @@ template.innerHTML = `
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-time-display,
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) ::slotted(media-preview-time-display) {
-      transition-delay: 0s;
+      transition-delay: var(--media-preview-transition-delay-in, .25s);
       min-width: 100%;
       border-radius: var(--media-preview-time-border-radius,
         0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
-    }
-
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~="preview-box"],
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) [part~="preview-box"] {
-      transition: visibility .5s, opacity .5s;
-      visibility: visible;
-      opacity: 1;
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
