@@ -524,6 +524,8 @@ template.innerHTML = html`
 
   </template>
 
+  <slot></slot>
+
 </media-controller>
 `;
 
