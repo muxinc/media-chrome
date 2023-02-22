@@ -3,7 +3,7 @@ import '../media-captions-button.js';
 import './media-captions-listbox.js';
 import { window, document, } from '../utils/server-safe-globals.js';
 
-class MediaCaptionsMenuButton extends MediaChromeSelectmenu {
+class MediaCaptionsSelectmenu extends MediaChromeSelectmenu {
   constructor() {
     super();
 
@@ -23,8 +23,8 @@ class MediaCaptionsMenuButton extends MediaChromeSelectmenu {
 
 }
 
-if (!window.customElements.get('media-captions-menu-button')) {
-  window.customElements.define('media-captions-menu-button', MediaCaptionsMenuButton);
+if (!window.customElements.get('media-captions-selectmenu')) {
+  window.customElements.define('media-captions-selectmenu', MediaCaptionsSelectmenu);
 }
 
-export default MediaCaptionsMenuButton;
+export default MediaCaptionsSelectmenu;

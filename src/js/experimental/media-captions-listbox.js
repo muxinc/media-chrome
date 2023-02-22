@@ -66,7 +66,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     captionsIndicatorSlot.addEventListener('slotchange', () => {
       let els = captionsIndicatorSlot.assignedElements();
 
-      // slotted svg from outside of media-captions-menu-button
+      // slotted svg from outside of media-captions-selectmenu
       if (els.length === 1 && els[0].nodeName.toLowerCase() === 'slot') {
         const assignedElements = /** @type {HTMLSlotElement} */(els[0]).assignedElements();
 
