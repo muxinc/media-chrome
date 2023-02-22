@@ -113,10 +113,6 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const MediaChromeSelectmenu = window.customElements.get('media-chrome-selectmenu');
-    // do nothing if parent is an instance of MediaChromeSelectmenu
-    if (this.parentElement instanceof MediaChromeSelectmenu) return;
-
     toggleSubsCaps(this);
   }
 }

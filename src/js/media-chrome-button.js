@@ -66,6 +66,9 @@ template.innerHTML = `
  * @extends {HTMLElement}
  */
 class MediaChromeButton extends window.HTMLElement {
+  preventClick = false;
+
+
   static get observedAttributes() {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
@@ -92,7 +95,9 @@ class MediaChromeButton extends window.HTMLElement {
   }
 
   #clickListener = (e) => {
-    this.handleClick(e);
+    if (!this.preventClick) {
+      this.handleClick(e);
+    }
   }
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
