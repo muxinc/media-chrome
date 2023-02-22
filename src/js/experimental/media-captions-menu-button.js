@@ -1,9 +1,9 @@
-import MediaChromeSelectMenu from './media-chrome-select-menu.js';
+import MediaChromeSelectmenu from './media-chrome-selectmenu.js';
 import '../media-captions-button.js';
 import './media-captions-listbox.js';
 import { window, document, } from '../utils/server-safe-globals.js';
 
-class MediaCaptionsMenuButton extends MediaChromeSelectMenu {
+class MediaCaptionsMenuButton extends MediaChromeSelectmenu {
   constructor() {
     super();
 

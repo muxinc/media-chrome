@@ -247,6 +247,7 @@ class MediaContainer extends window.HTMLElement {
     mutationObserver.observe(this, { childList: true, subtree: true });
 
     const resizeObserver = new ResizeObserver(resizeCallback);
+    this.resizeObserver = resizeObserver;
     resizeObserver.observe(this);
 
     // Handles the case when the slotted media element is a slot element itself.
