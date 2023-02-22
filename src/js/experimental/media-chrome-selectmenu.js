@@ -90,6 +90,7 @@ class MediaChromeSelectmenu extends window.HTMLElement {
       // reconnect new button
       if (this.#enabledState) {
         this.enable();
+        this.#button.setAttribute('aria-haspopup', 'listbox');
       } else {
         this.disable();
       }
