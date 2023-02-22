@@ -1033,6 +1033,7 @@ const Delegates = {
     const live = getStreamType(controller) === 'live';
     // Can't be playing live if it's not a live stream
     if (!live) return false;
+    
     const seekable = media.seekable;
     // If the slotted media element is live but does not expose a 'seekable' `TimeRanges` object,
     // always assume playing live
@@ -1042,8 +1043,8 @@ const Delegates = {
 
     // Default to 10 seconds
     // Assuming seekable range already accounts for appropriate buffer room
-    const liveEdgeStartOffset = controller.hasAttribute('livethreshold') 
-      ? Number(controller.getAttribute('livethreshold'))
+    const liveEdgeStartOffset = controller.hasAttribute('liveedgeoffset') 
+      ? Number(controller.getAttribute('liveedgeoffset'))
       : 10;
     const liveEdgeStart = seekable.end(seekable.length - 1) - liveEdgeStartOffset
     return media.currentTime >= liveEdgeStart;
