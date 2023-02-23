@@ -97,7 +97,7 @@ class MediaController extends MediaContainer {
           mediaUIEventHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](e, media);
         }
 
-        this.media.play();
+        this.media.play().catch(() => {});
       },
       MEDIA_PAUSE_REQUEST: () => this.media.pause(),
       MEDIA_MUTE_REQUEST: () => (this.media.muted = true),
