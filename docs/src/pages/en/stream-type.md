@@ -6,7 +6,7 @@ layout: ../../layouts/MainLayout.astro
 
 One of the states the media-controller can provide is `media-stream-type`, with potential values of `live`, `on-demand`, or empty (unknown).
 
-Media streams come in two major _types_, live and on-demand (often called VOD for video). The core difference between the two is that with a live stream the duration of the media is unknown, because it hasn't finished yet or may never finish in the case of 24/7 live streams. This has implications for the progress bar (media-time-range) and often comes with other UI differences like a red light icon to signal the content is live, or features allowing the viewer/listener to interact with the live streamer. An on-demand UI may also include unique features like chapters and episodes menus.
+Media streams come in two major _types_, live and on-demand (often called VOD or "Video On-Demand" for video). The core difference between the two is that with a live stream the duration of the media is unknown, because it hasn't finished yet or may never finish in the case of 24/7 live streams. This has implications for the progress bar (media-time-range) and often comes with other UI differences like a red light icon to signal the content is live, or features allowing the viewer/listener to interact with the live streamer. An on-demand UI may also include unique features like chapters and episodes menus.
 
 The `media-stream-type` state makes it possible to build a player UI that adapts to the current stream type.
 

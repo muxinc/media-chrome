@@ -134,3 +134,20 @@ NOTE: For more advanced use cases, there is also the `fullscreenElement` propert
 ```js
 mediaControllerEl.fullscreenElement = myWrapperEl;
 ```
+
+### liveedgeoffset
+
+`liveedgeoffset` (positive number, seconds)
+
+For live media streams, you may want to know a range of times that, when playing, count as playing "the live edge". The `liveedgeoffset` defines the delta, in seconds, from the latest playable/seekable time that should count as the live edge. By default this value is 10 (seconds). The `<media-live-button>` element uses this to indicate when playback is or is not live.
+
+See also:
+- [default-stream-type attribute](#default-stream-type)
+- [media-stream-type description](./stream-type)
+- [```<media-live-button>``` element](./media-live-button)
+
+```html
+<media-controller liveedgeoffset="5">
+  ...
+</media-controller>
+```
