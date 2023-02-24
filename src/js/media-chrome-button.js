@@ -66,6 +66,8 @@ template.innerHTML = `
  * @extends {HTMLElement}
  */
 class MediaChromeButton extends window.HTMLElement {
+  #mediaController;
+
   static get observedAttributes() {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
@@ -131,13 +133,13 @@ class MediaChromeButton extends window.HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
-        this.mediaController?.unassociateElement?.(this);
-        this.mediaController = null;
+        this.#mediaController?.unassociateElement?.(this);
+        this.#mediaController = null;
       }
       if (newValue) {
         // @ts-ignore
-        this.mediaController = this.getRootNode()?.getElementById(newValue);
-        this.mediaController?.associateElement?.(this);
+        this.#mediaController = this.getRootNode()?.getElementById(newValue);
+        this.#mediaController?.associateElement?.(this);
       }
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
@@ -160,15 +162,16 @@ class MediaChromeButton extends window.HTMLElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.mediaController = this.getRootNode()?.getElementById(mediaControllerId);
-      this.mediaController?.associateElement?.(this);
+      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController?.associateElement?.(this);
     }
   }
 
   disconnectedCallback() {
     this.disable();
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
-    this.mediaController?.unassociateElement?.(this);
+    this.#mediaController?.unassociateElement?.(this);
+    this.#mediaController = null;
   }
 
   get keysUsed() {

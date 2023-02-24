@@ -30,6 +30,8 @@ template.innerHTML = `
 `;
 
 class MediaControlBar extends window.HTMLElement {
+  #mediaController;
+
   static get observedAttributes() {
     return [MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
@@ -44,12 +46,13 @@ class MediaControlBar extends window.HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
-        const mediaControllerEl = document.getElementById(oldValue);
-        mediaControllerEl?.unassociateElement?.(this);
+        this.#mediaController?.unassociateElement?.(this);
+        this.#mediaController = null;
       }
       if (newValue) {
-        const mediaControllerEl = document.getElementById(newValue);
-        mediaControllerEl?.associateElement?.(this);
+        // @ts-ignore
+        this.#mediaController = this.getRootNode()?.getElementById(newValue);
+        this.#mediaController?.associateElement?.(this);
       }
     }
   }
@@ -59,19 +62,16 @@ class MediaControlBar extends window.HTMLElement {
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
-      const mediaControllerEl = document.getElementById(mediaControllerId);
-      mediaControllerEl?.associateElement?.(this);
+      // @ts-ignore
+      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController?.associateElement?.(this);
     }
   }
 
   disconnectedCallback() {
-    const mediaControllerId = this.getAttribute(
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER
-    );
-    if (mediaControllerId) {
-      const mediaControllerEl = document.getElementById(mediaControllerId);
-      mediaControllerEl?.unassociateElement?.(this);
-    }
+    // Use cached mediaController, getRootNode() doesn't work if disconnected.
+    this.#mediaController?.unassociateElement?.(this);
+    this.#mediaController = null;
   }
 }
 
