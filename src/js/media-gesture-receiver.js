@@ -75,7 +75,7 @@ class MediaGestureReceiver extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    this.#mediaController = getMediaControllerEl(this);
+    // Use cached mediaController, getRootNode() doesn't work if disconnected.
     if (this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER)) {
       this.#mediaController?.unassociateElement?.(this);
     }
@@ -154,7 +154,7 @@ function getMediaControllerEl(controlEl) {
     MediaStateReceiverAttributes.MEDIA_CONTROLLER
   );
   if (mediaControllerId) {
-    return this.getRootNode()?.getElementById(mediaControllerId);
+    return controlEl.getRootNode()?.getElementById(mediaControllerId);
   }
   return closestComposedNode(controlEl, 'media-controller');
 }
