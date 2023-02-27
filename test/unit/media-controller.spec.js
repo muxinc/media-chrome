@@ -38,18 +38,118 @@ describe('<media-controller>', () => {
     assert(mediaController.mediaStateReceivers.indexOf(playButton) >= 0, 'registers play button');
   });
 
-  it('registers itself and non-child controls state receivers', async () => {
+  it('registers itself and non-child button state receivers', async () => {
     const mediaController = await fixture(`
       <media-controller id="ctrl"></media-controller>
     `);
-    const playButton = await fixture(`
+    const ui = await fixture(`
       <media-play-button media-controller="ctrl"></media-play-button>
     `);
 
     // Also includes the media-gesture-receiver by default
     assert.equal(mediaController.mediaStateReceivers.length, 3);
     assert(mediaController.mediaStateReceivers.indexOf(mediaController) >= 0, 'registers itself');
-    assert(mediaController.mediaStateReceivers.indexOf(playButton) >= 0, 'registers play button');
+    assert(mediaController.mediaStateReceivers.indexOf(ui) >= 0, 'registers button');
+
+    ui.remove();
+
+    assert.equal(mediaController.mediaStateReceivers.length, 2);
+    assert(!mediaController.mediaStateReceivers.includes(ui), 'unregisters control');
+  });
+
+  it('registers itself and non-child range state receivers', async () => {
+    const mediaController = await fixture(`
+      <media-controller id="ctrl"></media-controller>
+    `);
+    const ui = await fixture(`
+      <media-time-range media-controller="ctrl"></media-time-range>
+    `);
+
+    // Also includes media-gesture-receiver, media-preview-thumbnail, media-preview-time-display
+    assert.equal(mediaController.mediaStateReceivers.length, 5);
+    assert(mediaController.mediaStateReceivers.indexOf(mediaController) >= 0, 'registers itself');
+    assert(mediaController.mediaStateReceivers.indexOf(ui) >= 0, 'registers range');
+
+    ui.remove();
+
+    assert.equal(mediaController.mediaStateReceivers.length, 2);
+    assert(!mediaController.mediaStateReceivers.includes(ui), 'unregisters control');
+  });
+
+  it('registers itself and non-child gesture-receiver state receivers', async () => {
+    const mediaController = await fixture(`
+      <media-controller id="ctrl"></media-controller>
+    `);
+    const ui = await fixture(`
+      <media-gesture-receiver media-controller="ctrl"></media-gesture-receiver>
+    `);
+
+    // Also includes the media-gesture-receiver by default
+    assert.equal(mediaController.mediaStateReceivers.length, 3);
+    assert(mediaController.mediaStateReceivers.indexOf(mediaController) >= 0, 'registers itself');
+    assert(mediaController.mediaStateReceivers.indexOf(ui) >= 0, 'registers gesture-receiver');
+
+    ui.remove();
+
+    assert.equal(mediaController.mediaStateReceivers.length, 2);
+    assert(!mediaController.mediaStateReceivers.includes(ui), 'unregisters control');
+  });
+
+  it('registers itself and non-child loading-indicator state receivers', async () => {
+    const mediaController = await fixture(`
+      <media-controller id="ctrl"></media-controller>
+    `);
+    const ui = await fixture(`
+      <media-loading-indicator media-controller="ctrl"></media-loading-indicator>
+    `);
+
+    // Also includes the media-gesture-receiver by default
+    assert.equal(mediaController.mediaStateReceivers.length, 3);
+    assert(mediaController.mediaStateReceivers.indexOf(mediaController) >= 0, 'registers itself');
+    assert(mediaController.mediaStateReceivers.indexOf(ui) >= 0, 'registers loading-indicator');
+
+    ui.remove();
+
+    assert.equal(mediaController.mediaStateReceivers.length, 2);
+    assert(!mediaController.mediaStateReceivers.includes(ui), 'unregisters control');
+  });
+
+  it('registers itself and non-child preview-thumbnail state receivers', async () => {
+    const mediaController = await fixture(`
+      <media-controller id="ctrl"></media-controller>
+    `);
+    const ui = await fixture(`
+      <media-preview-thumbnail media-controller="ctrl"></media-preview-thumbnail>
+    `);
+
+    // Also includes the media-gesture-receiver by default
+    assert.equal(mediaController.mediaStateReceivers.length, 3);
+    assert(mediaController.mediaStateReceivers.indexOf(mediaController) >= 0, 'registers itself');
+    assert(mediaController.mediaStateReceivers.indexOf(ui) >= 0, 'registers preview-thumbnail');
+
+    ui.remove();
+
+    assert.equal(mediaController.mediaStateReceivers.length, 2);
+    assert(!mediaController.mediaStateReceivers.includes(ui), 'unregisters control');
+  });
+
+  it('registers itself and non-child time-display state receivers', async () => {
+    const mediaController = await fixture(`
+      <media-controller id="ctrl"></media-controller>
+    `);
+    const ui = await fixture(`
+      <media-time-display media-controller="ctrl"></media-time-display>
+    `);
+
+    // Also includes the media-gesture-receiver by default
+    assert.equal(mediaController.mediaStateReceivers.length, 3);
+    assert(mediaController.mediaStateReceivers.indexOf(mediaController) >= 0, 'registers itself');
+    assert(mediaController.mediaStateReceivers.indexOf(ui) >= 0, 'registers time-display');
+
+    ui.remove();
+
+    assert.equal(mediaController.mediaStateReceivers.length, 2);
+    assert(!mediaController.mediaStateReceivers.includes(ui), 'unregisters control');
   });
 
   it('registers itself and child simple element state receivers', async () => {

@@ -19,6 +19,8 @@ template.innerHTML = `
 `;
 
 class MediaGestureReceiver extends window.HTMLElement {
+  #mediaController;
+
   // NOTE: Currently "baking in" actions + attrs until we come up with
   // a more robust architecture (CJP)
   static get observedAttributes() {
@@ -48,12 +50,13 @@ class MediaGestureReceiver extends window.HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
-        const mediaControllerEl = document.getElementById(oldValue);
-        mediaControllerEl?.unassociateElement?.(this);
+        this.#mediaController?.unassociateElement?.(this);
+        this.#mediaController = null;
       }
       if (newValue) {
-        const mediaControllerEl = document.getElementById(newValue);
-        mediaControllerEl?.associateElement?.(this);
+        // @ts-ignore
+        this.#mediaController = this.getRootNode()?.getElementById(newValue);
+        this.#mediaController?.associateElement?.(this);
       }
     }
   }
@@ -62,23 +65,24 @@ class MediaGestureReceiver extends window.HTMLElement {
     this.setAttribute('tabindex', -1);
     this.setAttribute('aria-hidden', true);
 
-    const mediaControllerEl = getMediaControllerEl(this);
+    this.#mediaController = getMediaControllerEl(this);
     if (this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER)) {
-      mediaControllerEl?.associateElement?.(this);
+      this.#mediaController?.associateElement?.(this);
     }
 
-    mediaControllerEl?.addEventListener('pointerdown', this);
-    mediaControllerEl?.addEventListener('click', this);
+    this.#mediaController?.addEventListener('pointerdown', this);
+    this.#mediaController?.addEventListener('click', this);
   }
 
   disconnectedCallback() {
-    const mediaControllerEl = getMediaControllerEl(this);
+    // Use cached mediaController, getRootNode() doesn't work if disconnected.
     if (this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER)) {
-      mediaControllerEl?.unassociateElement?.(this);
+      this.#mediaController?.unassociateElement?.(this);
     }
 
-    mediaControllerEl?.removeEventListener('pointerdown', this);
-    mediaControllerEl?.removeEventListener('click', this);
+    this.#mediaController?.removeEventListener('pointerdown', this);
+    this.#mediaController?.removeEventListener('click', this);
+    this.#mediaController = null;
   }
 
   handleEvent(event) {
@@ -150,7 +154,7 @@ function getMediaControllerEl(controlEl) {
     MediaStateReceiverAttributes.MEDIA_CONTROLLER
   );
   if (mediaControllerId) {
-    return document.getElementById(mediaControllerId);
+    return controlEl.getRootNode()?.getElementById(mediaControllerId);
   }
   return closestComposedNode(controlEl, 'media-controller');
 }

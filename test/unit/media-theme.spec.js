@@ -91,4 +91,33 @@ describe('<media-theme>', () => {
       'caused a re-render and <hello-world> is available'
     );
   });
+
+  it('registers media-controller and non-child controls state receivers', async () => {
+    await fixture(`
+      <template id="decoupled-controller">
+        <media-controller id="ctrl">
+          <slot name="media" slot="media"></slot>
+        </media-controller>
+        <media-play-button media-controller="ctrl"></media-play-button>
+      </template>
+    `);
+
+    const theme = await fixture(`
+      <media-theme template="decoupled-controller">
+        <video slot="media" muted src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/low.mp4"></video>
+      </media-theme>
+    `);
+    const mediaController = theme.mediaController;
+    const playButton = theme.shadowRoot.querySelector('media-play-button');
+
+    // Also includes the media-gesture-receiver by default
+    assert.equal(mediaController.mediaStateReceivers.length, 3);
+    assert(mediaController.mediaStateReceivers.includes(mediaController), 'registers itself');
+    assert(mediaController.mediaStateReceivers.includes(playButton), 'registers play button');
+
+    playButton.remove();
+
+    assert.equal(mediaController.mediaStateReceivers.length, 2);
+    assert(!mediaController.mediaStateReceivers.includes(playButton), 'unregisters play button');
+  });
 });
