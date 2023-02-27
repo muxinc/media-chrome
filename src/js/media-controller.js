@@ -1140,7 +1140,19 @@ const getStreamType = (controller) => {
   
   if (!media) return undefined;
   
-  if (media.streamType) return media.streamType;
+  if (media.streamType) {
+    // If the slotted media supports `streamType` but
+    // `streamType` is "unknown", prefer `default-stream-type`
+    // if set (CJP)
+    if (media.streamType === 'unknown' && controller.hasAttribute('default-stream-type')) {
+      const defaultType = controller.getAttribute('default-stream-type');
+
+      if (StreamTypeValues.includes(defaultType)) {
+        return defaultType;
+      }
+    }
+    return media.streamType;
+  }
   const duration = media.duration;
 
   if (duration === Infinity) {
