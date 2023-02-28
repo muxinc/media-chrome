@@ -1,9 +1,9 @@
-import MediaChromeSelectmenu from './media-chrome-selectmenu.js';
+import MediaChromeSelectMenu from './media-chrome-selectmenu.js';
 import '../media-captions-button.js';
 import './media-captions-listbox.js';
 import { window, document, } from '../utils/server-safe-globals.js';
 
-class MediaCaptionsSelectmenu extends MediaChromeSelectmenu {
+class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
   constructor() {
     super();
 
@@ -24,7 +24,7 @@ class MediaCaptionsSelectmenu extends MediaChromeSelectmenu {
 }
 
 if (!window.customElements.get('media-captions-selectmenu')) {
-  window.customElements.define('media-captions-selectmenu', MediaCaptionsSelectmenu);
+  window.customElements.define('media-captions-selectmenu', MediaCaptionsSelectMenu);
 }
 
-export default MediaCaptionsSelectmenu;
+export default MediaCaptionsSelectMenu;
