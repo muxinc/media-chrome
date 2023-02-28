@@ -451,7 +451,7 @@ class MediaContainer extends window.HTMLElement {
     this.addEventListener('keyup', () => {
       this.setAttribute('media-keyboard-control', '');
     });
-    this.addEventListener('mouseup', () => {
+    window.addEventListener('mouseup', () => {
       this.removeAttribute('media-keyboard-control');
     });
   }

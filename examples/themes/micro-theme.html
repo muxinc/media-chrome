@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome - Micro Theme</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+
+    <script type="module" src="../../dist/index.js"></script>
+    <script type="module" src="../../src/js/themes/micro.js"></script>
+  </head>
+  <body>
+    <style>
+      html {
+        height: 100%;
+      }
+      body {
+        min-height: 80%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding-bottom: 3rem;
+      }
+      media-theme-micro {
+        display: block;         /* expands the container if preload=none */
+        max-width: 800px;
+        line-height: 0;
+      }
+      label {
+        display: block;
+      }
+      .auto-grid {
+        --auto-grid-min-size: 20rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(var(--auto-grid-min-size), 1fr));
+        grid-gap: 1rem;
+      }
+    </style>
+    <main>
+      <h1>Media Chrome - Micro Theme</h1>
+      <br>
+
+      <media-theme-micro id="theme">
+        <video
+          slot="media"
+          src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+          poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
+          crossorigin="anonymous"
+          playsinline
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.vtt"
+          />
+          <track
+            label="English"
+            kind="captions"
+            srclang="en"
+            src="../vtt/en-cc.vtt"
+          />
+        </video>
+      </media-theme-micro>
+
+      <div class="auto-grid">
+        <div>
+          <h3>Choose <code>stream-type</code>:</h3>
+          <label>
+            <input type="radio" name="stream-type" value="on-demand" checked>
+            on-demand
+          </label>
+          <label>
+            <input type="radio" name="stream-type" value="live">
+            live
+          </label>
+        </div>
+
+        <div>
+          <h3>Choose <code>target-live-window</code>:</h3>
+          <label>
+            <input type="radio" name="target-live-window" value="" checked>
+            0
+          </label>
+          <label>
+            <input type="radio" name="target-live-window" value="1">
+            1
+          </label>
+        </div>
+
+        <div>
+          <h3>Choose <code>control-bar-vertical</code>:</h3>
+          <label>
+            <input type="radio" name="control-bar-vertical" value="" checked>
+            false
+          </label>
+          <label>
+            <input type="radio" name="control-bar-vertical" value="1">
+            true
+          </label>
+        </div>
+
+        <div>
+          <h3>Choose <code>control-bar-place</code>:</h3>
+          <label>
+            <input type="radio" name="control-bar-place" value="start start">
+            start start
+          </label>
+          <label>
+            <input type="radio" name="control-bar-place" value="start center">
+            start center
+          </label>
+          <label>
+            <input type="radio" name="control-bar-place" value="start end">
+            start end
+          </label>
+          <label>
+            <input type="radio" name="control-bar-place" value="center start">
+            center start
+          </label>
+          <label>
+            <input type="radio" name="control-bar-place" value="center center">
+            center center
+          </label>
+          <label>
+            <input type="radio" name="control-bar-place" value="center end">
+            center end
+          </label>
+          <label>
+            <input type="radio" name="control-bar-place" value="end start">
+            end start
+          </label>
+          <label>
+            <input type="radio" name="control-bar-place" value="end center" checked>
+            end center
+          </label>
+          <label>
+            <input type="radio" name="control-bar-place" value="end end">
+            end end
+          </label>
+        </div>
+      </div>
+
+      <script>
+        const search = new URLSearchParams(location.search);
+        search.forEach((value, key) => {
+          if (key.startsWith('--')) {
+            theme.style.setProperty(key, value);
+          } else if (value) {
+            theme.setAttribute(key, value);
+          } else {
+            theme.removeAttribute(key);
+          }
+          document.querySelector(`[name="${key}"][value="${value}"]`).checked = !!value;
+        });
+
+        document.addEventListener('change', (e) => {
+          const search = new URLSearchParams(location.search);
+
+          if (e.target.name.startsWith('--')) {
+            theme.style.setProperty(e.target.name, e.target.value);
+            search.set(e.target.name, e.target.value);
+
+          } else if (e.target.value) {
+            theme.setAttribute(e.target.name, e.target.value);
+            search.set(e.target.name, e.target.value);
+
+          } else {
+            theme.removeAttribute(e.target.name);
+            search.delete(e.target.name);
+          }
+
+          const url = new URL(window.location.href);
+          url.search = search;
+          history.pushState({}, '', url);
+        });
+      </script>
+
+    </main>
+  </body>
+</html>
