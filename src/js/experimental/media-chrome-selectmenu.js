@@ -1,23 +1,33 @@
 import '../media-chrome-button.js';
 import './media-chrome-listbox.js';
 import { window, document } from '../utils/server-safe-globals.js';
+import { closestComposedNode } from '../utils/element-utils.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
 
 const template = document.createElement('template');
 template.innerHTML = `
   <style>
   :host {
-    display: inline-block;
+    display: inline-flex;
+    position: relative;
+    flex-shrink: .5;
   }
 
-  media-chrome-button:not(:focus-visible) {
-    outline: none;
+  [name="listbox"]::slotted(*),
+  media-chrome-listbox {
+    position: absolute;
+    left: 0;
+    bottom: 100%;
+    max-height: 300px;
+    overflow: hidden auto;
   }
   </style>
 
-  <media-chrome-button aria-haspopup="listbox">
-    <slot name="button-content"></slot>
-  </media-chrome-button>
+  <slot name="button">
+    <media-chrome-button aria-haspopup="listbox">
+      <slot name="button-content"></slot>
+    </media-chrome-button>
+  </slot>
   <slot name="listbox" hidden>
     <media-chrome-listbox id="listbox" part="listbox">
       <slot></slot>
@@ -25,10 +35,13 @@ template.innerHTML = `
   </slot>
 `;
 
-class MediaChromeMenuButton extends window.HTMLElement {
+class MediaChromeSelectMenu extends window.HTMLElement {
   #handleClick;
   #handleChange;
+  #enabledState = true;
   #button;
+  #buttonSlot;
+  #buttonSlotted = false;
   #listbox;
   #listboxSlot;
   #expanded = false;
@@ -55,6 +68,36 @@ class MediaChromeMenuButton extends window.HTMLElement {
     this.#button = this.shadowRoot.querySelector('media-chrome-button');
     this.#listbox = this.shadowRoot.querySelector('media-chrome-listbox');
 
+    this.#buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
+    this.#buttonSlot.addEventListener('slotchange', () => {
+      const newButton = this.#buttonSlot.assignedElements()[0];
+
+      // if the slotted button is the built-in, nothing to do
+      if (!newButton) return;
+
+      this.#buttonSlotted = true;
+
+      // disconnect previous button
+      this.disable();
+
+      // update button reference if necessary
+      this.#button = newButton;
+
+      if (this.#button.hasAttribute('disabled')) {
+        this.#enabledState = false;
+      }
+
+      // reconnect new button
+      if (this.#enabledState) {
+        this.enable();
+        this.#button.setAttribute('aria-haspopup', 'listbox');
+        // if it's a media-chrome-button, ask it to not handle the click event
+        this.#button.preventClick = true;
+      } else {
+        this.disable();
+      }
+    });
+
     this.#listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
     this.#listboxSlot.addEventListener('slotchange', () => {
       this.#listbox.removeEventListener('change', this.#handleChange);
@@ -78,26 +121,62 @@ class MediaChromeMenuButton extends window.HTMLElement {
 
     if (!this.#listboxSlot.hidden) {
       this.#listbox.focus();
+      this.#updateMenuPosition();
     } else {
       this.#button.focus();
     }
   }
 
+  #updateMenuPosition() {
+    // if the menu is hidden, skip updating the menu position
+    if (this.#listbox.offsetWidth === 0) return;
+
+    const buttonRect = this.#button.getBoundingClientRect();
+
+    // if we're outside of the controller,
+    // one of the components should have a media-controller attribute
+    // or the button wasn't slotted
+    if (
+      this.hasAttribute('media-controller') ||
+      this.#button.hasAttribute('media-controller') ||
+      this.#listbox.hasAttribute('media-controller') ||
+      !this.#buttonSlotted
+    ) {
+      this.#listbox.style.zIndex = '1';
+      this.#listbox.style.bottom = 'unset';
+      this.#listbox.style.top = buttonRect.height + 'px'
+      return;
+    }
+
+    // Get the element that enforces the bounds for the list boxes.
+    const bounds =
+      (this.getAttribute('bounds')
+        ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
+        : this.parentElement) ?? this;
+
+    const boundsRect = bounds.getBoundingClientRect();
+    const listboxRect = this.#listbox.getBoundingClientRect();
+    let position = -Math.max(buttonRect.x + listboxRect.width - boundsRect.right, 0);
+
+
+    this.#listbox.style.transform = `translateX(${position}px)`;
+  }
+
   #toggleExpanded() {
-    this.#button.setAttribute('aria-expanded', this.#expanded);
     this.#expanded = !this.#expanded;
+    this.#button.setAttribute('aria-expanded', this.#expanded);
   }
 
   enable() {
     this.#button.removeAttribute('disabled');
-    this.#button.handleClick = this.#handleClick;
-    this.#toggleExpanded()
+    this.#button.addEventListener('click', this.#handleClick);
+    this.#toggleExpanded();
     this.#listbox.addEventListener('change', this.#handleChange);
   }
 
   disable() {
     this.#button.setAttribute('disabled', '');
-    this.#button.handleClick = () => {};
+    this.#button.removeEventListener('click', this.#handleClick);
     this.#listbox.addEventListener('change', this.#handleChange);
   }
 
@@ -115,8 +194,10 @@ class MediaChromeMenuButton extends window.HTMLElement {
       }
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
+        this.#enabledState = true;
         this.enable();
       } else {
+        this.#enabledState = false;
         this.disable();
       }
     }
@@ -150,10 +231,14 @@ class MediaChromeMenuButton extends window.HTMLElement {
     }
   }
 
+  get keysUsed() {
+    return ['Enter', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
+  }
+
 }
 
-if (!window.customElements.get('media-chrome-menu-button')) {
-  window.customElements.define('media-chrome-menu-button', MediaChromeMenuButton);
+if (!window.customElements.get('media-chrome-selectmenu')) {
+  window.customElements.define('media-chrome-selectmenu', MediaChromeSelectMenu);
 }
 
-export default MediaChromeMenuButton;
+export default MediaChromeSelectMenu;

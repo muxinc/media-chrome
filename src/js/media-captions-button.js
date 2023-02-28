@@ -20,7 +20,8 @@ slotTemplate.innerHTML = `
     display: none !important;
   }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+  ${/* Double negative, but safer if display doesn't equal 'block' */ ''
+  }
   :host(:not([aria-checked="true"])) slot:not([name=off]) > *, 
   :host(:not([aria-checked="true"])) ::slotted(:not([slot=off])) {
     display: none !important;
@@ -103,7 +104,7 @@ class MediaCaptionsButton extends MediaChromeButton {
           // If captions are currently ready, that means we went from unready to ready, so
           // use the click handler to dispatch a request to turn captions on
           if (this._captionsReady) {
-            this.handleClick();
+            toggleSubsCaps(this);
           }
         }
       }
