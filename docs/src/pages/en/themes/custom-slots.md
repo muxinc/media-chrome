@@ -17,7 +17,7 @@ action button, you can create a slot called `"cta"`.
 <template id="my-slots-theme">
   <media-controller>
     <slot name="media" slot="media"></slot>
-    <slot name="cta"></slot>
+    <slot name="cta" slot="centered-chrome"></slot>
   </media-controller>
 </template>
 
@@ -26,7 +26,7 @@ action button, you can create a slot called `"cta"`.
     slot="media"
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
   ></video>
-  <a href="/buy" class="btn btn-primary">Buy my course!</a>
+  <a slot="cta" href="/buy" class="button">Buy my course!</a>
 </media-theme>
 ```
 
@@ -35,9 +35,7 @@ action button, you can create a slot called `"cta"`.
 <template id="my-slots-theme">
   <media-controller>
     <slot name="media" slot="media"></slot>
-    <div slot="top-chrome" slot="top-chrome">
-      <slot name="cta"></slot>
-    </div>
+    <slot name="cta" slot="centered-chrome"></slot>
   </media-controller>
 </template>
 
@@ -46,11 +44,11 @@ action button, you can create a slot called `"cta"`.
     slot="media"
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
   ></video>
-  <a slot="cta" href="/buy" class="btn btn-primary">Buy my course!</a>
+  <a slot="cta" href="/buy" class="button">Buy my course!</a>
 </media-theme>
 
 ## Slots exist in the light DOM
 
 Slots exist in the light DOM (as opposed to the Shadow DOM). This has the advantage of being able
-to use styles from the parent page. In the example above the classes `btn btn-primary` are styles
+to use styles from the parent page. In the example above the class `button` are styles
 coming from the user's application, not the theme itself.

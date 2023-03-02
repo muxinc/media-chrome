@@ -378,7 +378,8 @@ img {
   align-items: center;
 }
 
-button {
+button,
+.button {
   display: flex;
   align-items: center;
   justify-items: center;
@@ -388,6 +389,7 @@ button {
   background: var(--theme-bg);
   display: flex;
   font-size: 1rem;
+  line-height: 1.6;
   align-items: center;
   gap: 0.25em;
   border-radius: 99em;
