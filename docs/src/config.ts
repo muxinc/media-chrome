@@ -85,10 +85,11 @@ export const SIDEBAR: Sidebar = {
       { text: 'Volume range', link: 'en/media-volume-range' },
     ],
     Themes: [
-      { text: 'Introduction to Themes', link: 'en/themes' },
+      { text: 'Introduction to themes', link: 'en/themes' },
       { text: 'Handling variables', link: 'en/themes/handling-variables' },
       { text: 'Multi-layout themes', link: 'en/themes/multi-layout-themes' },
       { text: 'Custom slots', link: 'en/themes/custom-slots' },
+      { text: 'Share themes', link: 'en/themes/share' },
     ],
     "Learn More": [
       { text: 'Showcase', link: 'en/showcase' },
