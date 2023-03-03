@@ -11,6 +11,22 @@ const observedMediaAttributes = {
   'media-stream-type': 'streamType',
 };
 
+const prependTemplate = document.createElement('template');
+
+prependTemplate.innerHTML = `
+  <style>
+    :host {
+      display: block;
+      line-height: 0;
+    }
+
+    media-controller {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+`;
+
 /**
  * @extends {HTMLElement}
  */
@@ -137,7 +153,10 @@ export class MediaThemeElement extends window.HTMLElement {
       );
 
       this.renderRoot.textContent = '';
-      this.renderRoot.append(this.renderer);
+      this.renderRoot.append(
+        prependTemplate.content.cloneNode(true),
+        this.renderer
+      );
     }
   }
 
