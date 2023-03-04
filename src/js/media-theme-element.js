@@ -173,10 +173,7 @@ function isValidUrl(url) {
 }
 
 async function request(resource) {
-
-  const response = await fetch(resource, {
-    credentials: 'same-origin'
-  });
+  const response = await fetch(resource);
 
   if (response.status !== 200) {
     throw new Error(`Failed to load resource: the server responded with a status of ${response.status}`);
