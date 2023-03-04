@@ -82,12 +82,6 @@ export class MediaThemeElement extends window.HTMLElement {
   }
 
   get template() {
-    const templateId = this.getAttribute('template');
-    if (templateId) {
-      // @ts-ignore
-      const template = this.getRootNode()?.getElementById(templateId);
-      if (template) return template;
-    }
     // @ts-ignore
     return this.#template ?? this.constructor.template;
   }
@@ -121,6 +115,16 @@ export class MediaThemeElement extends window.HTMLElement {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'template' && oldValue != newValue) {
+
+      if (newValue) {
+        // First try to get a template element by id
+        // @ts-ignore
+        const template = this.getRootNode()?.getElementById(newValue);
+        if (template) {
+          this.#template = template;
+        }
+      }
+
       this.createRenderer();
     }
   }
