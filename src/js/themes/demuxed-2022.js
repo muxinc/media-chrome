@@ -387,7 +387,7 @@ class MediaThemeDemuxed extends MediaThemeElement {
     resizeObserver.observe(this.shadowRoot.querySelector('media-controller'));
   }
 
-  attributeChangedCallback(name, _oldValue, newValue) {
+  async attributeChangedCallback(name, _oldValue, newValue) {
     if(name === "stream-type" && newValue === "live") {
       /** @type {HTMLMediaElement} */
       const media = this.querySelector('[slot="media"]');
