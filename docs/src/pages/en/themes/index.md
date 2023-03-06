@@ -150,8 +150,8 @@ supporting a custom variable `username`
 In the example above the `username` attribute is provided to the `<media-theme>` 
 element and this is then rendered in the template.
 
-Learn more about [Handling variables in Themes here](/en/themes/handling-variables), including special variables
-that are already available in your theme.
+Learn more about [Handling variables in Themes here](/en/themes/handling-variables), 
+including special variables that are already available in your theme.
 
 ## Partials
 

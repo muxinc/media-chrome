@@ -87,7 +87,7 @@ export const SIDEBAR: Sidebar = {
     Themes: [
       { text: 'Introduction to themes', link: 'en/themes' },
       { text: 'Handling variables', link: 'en/themes/handling-variables' },
-      { text: 'Multi-layout themes', link: 'en/themes/multi-layout-themes' },
+      { text: 'Responsive themes', link: 'en/themes/responsive-themes' },
       { text: 'Custom slots', link: 'en/themes/custom-slots' },
       { text: 'Share themes', link: 'en/themes/share' },
     ],

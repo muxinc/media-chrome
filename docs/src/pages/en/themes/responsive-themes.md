@@ -1,20 +1,20 @@
 ---
-title: Create a multi-layout theme
-description: Learn how to create a multi-layout theme
+title: Create a responsive theme
+description: Learn how to create a responsive theme
 layout: ../../../layouts/MainLayout.astro
 ---
 
 There's a few ways to implement layouts that change based on context, one is
-explained in [Responsive controls](../responsive-controls). This is based on
+explained in [Responsive controls](../responsive-controls) which is based on
 showing / hiding elements via pure CSS. 
 [Container queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries) 
 and [attribute selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors)
 are a powerful way to change the layout and style of your theme.
 
-The template syntax offers an alternative to implement a multi-layout theme by only
+The template syntax offers an alternative to implement a responsive theme by only
 rendering certain DOM fragments based on a condition you specify as seen in the
-Conditionals section above. This can be beneficial as your theme grows larger or
-if you prefer to not render DOM that is hidden to the user.
+[Conditionals section](../themes#conditionals). This can be beneficial as your 
+theme grows larger or if you prefer to not render DOM that is hidden to the user.
 
 Let's take a look at how a theme might look like with these conditions in place.
 
@@ -40,7 +40,7 @@ Let's take a look at how a theme might look like with these conditions in place.
       );
     }
   </style>
-  <media-controller>
+  <media-controller breakpoints="sm:384 md:576">
     <slot name="media" slot="media"></slot>
     <template if="audio">
       <template if="streamType == 'on-demand'">

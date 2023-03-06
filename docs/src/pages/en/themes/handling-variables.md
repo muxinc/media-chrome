@@ -69,13 +69,16 @@ These are derived from the media state that the [media controller](./media-contr
 collects.
 
 - `streamType` - The media type that is loaded, either `on-demand` or `live`.
+- `targetLiveWindow` - The duration of the live window that can be seeked.  
+  For regular live this value is `0`, for DVR this is greater than `0`.
 - `breakpointSm` - The value is `true` when the small breakpoint is activated.
 - `breakpointMd` - The value is `true` when the medium breakpoint is activated.
 - `breakpointLg` - The value is `true` when the large breakpoint is activated.
 - `breakpointXl` - The value is `true` when the extra-large breakpoint is activated.
 
-Breakpoint variables stack so that each size will include the current size plus all the 
-smaller sizes below it. Learn more about building [Responsive themes with breakpoints](./en/themes/build-responsive-themes-with-breakpoints).
+Breakpoint variables stack so that each size will include the current size plus 
+all the smaller sizes below it. Learn more about building 
+[Responsive themes with breakpoints](./responsive-themes).
 
 ## Variables with dashes
 
