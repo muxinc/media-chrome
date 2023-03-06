@@ -151,3 +151,18 @@ See also:
   ...
 </media-controller>
 ```
+
+### breakpoints
+
+`breakpoints` (string of multiple values, default: `sm:384 md:576 lg:768 xl:960`)
+
+Change the default breakpoints that will get activated once the player width
+equals or is greater than the breakpoint value. The breakpoints are propagated
+as `breakpoint-x` attributes on media-controller and as `breakpointX` 
+[theme variables](./themes/handling-variables).
+
+```html
+<media-controller breakpoints="sm:300 md:700">
+  ...
+</media-controller>
+```
