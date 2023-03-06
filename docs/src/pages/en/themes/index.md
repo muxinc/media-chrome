@@ -168,7 +168,8 @@ These can then be used in other places in the theme with a partial variable
 like so `{{>PlayButton}}`. They can also accept parameters by adding them after 
 the var name `{{>PlayButton section="center"}}`.
 
-Learn more about partials and how you can use them to create a [Multi-layout Theme](/en/themes/multi-layout-themes).
+Learn more about partials and how you can use them to create 
+a [Responsive Theme](/en/themes/responsive-themes).
 
 ## Conditionals
 
@@ -185,5 +186,6 @@ The value of this `if` attribute can be a simple equality check or just an empty
 
 [![Edit Media Chrome Multi-layout Theme](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/media-chrome-multi-layout-theme-gwlon8?fontsize=14&hidenavigation=1&theme=dark)
 
-Learn more about conditionals and how you can use them to create a [Multi-layout Theme](/en/themes/multi-layout-themes).
+Learn more about conditionals and how you can use them to create 
+a [Responsive Theme](/en/themes/responsive-themes).
 
