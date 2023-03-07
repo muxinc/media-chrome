@@ -6,21 +6,30 @@ import { window, document, } from '../utils/server-safe-globals.js';
 class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
   constructor() {
     super();
+  }
 
-    const captionsButton = document.createElement('media-captions-button');
-    const captionsListbox = document.createElement('media-captions-listbox');
+  init() {
+   const captionsButton = document.createElement('media-captions-button');
+    captionsButton.setAttribute('part', 'button');
 
-    captionsButton.setAttribute('slot', 'button');
-    captionsListbox.setAttribute('slot', 'listbox');
+    captionsButton.preventClick = true;
 
     if (this.hasAttribute('default-showing')) {
       captionsButton.setAttribute('default-showing', '');
     }
 
-    this.append(captionsButton);
-    this.append(captionsListbox);
-  }
+    const captionsListbox = document.createElement('media-captions-listbox');
+    captionsListbox.setAttribute('part', 'listbox');
 
+    const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
+    const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
+
+    buttonSlot.textContent = '';
+    listboxSlot.textContent = '';
+
+    buttonSlot.append(captionsButton);
+    listboxSlot.append(captionsListbox);
+  }
 }
 
 if (!window.customElements.get('media-captions-selectmenu')) {

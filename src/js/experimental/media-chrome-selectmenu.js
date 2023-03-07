@@ -14,7 +14,7 @@ template.innerHTML = `
   }
 
   [name="listbox"]::slotted(*),
-  media-chrome-listbox {
+  [part=listbox] {
     position: absolute;
     left: 0;
     bottom: 100%;
@@ -24,7 +24,7 @@ template.innerHTML = `
   </style>
 
   <slot name="button">
-    <media-chrome-button aria-haspopup="listbox">
+    <media-chrome-button aria-haspopup="listbox" part="button">
       <slot name="button-content"></slot>
     </media-chrome-button>
   </slot>
@@ -65,8 +65,10 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     this.#handleClick = this.#handleClick_.bind(this);
     this.#handleChange = this.#handleChange_.bind(this);
 
-    this.#button = this.shadowRoot.querySelector('media-chrome-button');
-    this.#listbox = this.shadowRoot.querySelector('media-chrome-listbox');
+    this.init?.();
+
+    this.#button = this.shadowRoot.querySelector('[part=button]');
+    this.#listbox = this.shadowRoot.querySelector('[part=listbox]');
 
     this.#buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     this.#buttonSlot.addEventListener('slotchange', () => {
@@ -139,8 +141,7 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     if (
       this.hasAttribute('media-controller') ||
       this.#button.hasAttribute('media-controller') ||
-      this.#listbox.hasAttribute('media-controller') ||
-      !this.#buttonSlotted
+      this.#listbox.hasAttribute('media-controller')
     ) {
       this.#listbox.style.zIndex = '1';
       this.#listbox.style.bottom = 'unset';
