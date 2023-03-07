@@ -1,3 +1,14 @@
+## [0.18.6](https://github.com/muxinc/media-chrome/compare/v0.18.5...v0.18.6) (2023-03-07)
+
+
+### Bug Fixes
+
+* add default much used styles to theme ([#490](https://github.com/muxinc/media-chrome/issues/490)) ([bd778fa](https://github.com/muxinc/media-chrome/commit/bd778fac5852f6073de7d3d9da7fd04918e9cb9e))
+* **experimental:** media-chrome-selectmenu and media-captions-selectmenu ([#471](https://github.com/muxinc/media-chrome/issues/471)) ([6d6ddc3](https://github.com/muxinc/media-chrome/commit/6d6ddc3ffeff1775751ed9a5ef9b6c13b89754d0))
+* nullish coalesce operator, improve process ([#484](https://github.com/muxinc/media-chrome/issues/484)) ([84c3c12](https://github.com/muxinc/media-chrome/commit/84c3c12d446f62a5b275fee24ada8bb6633ca631))
+
+
+
 ## [0.18.5](https://github.com/muxinc/media-chrome/compare/v0.18.4...v0.18.5) (2023-02-27)
 
 
