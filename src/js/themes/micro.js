@@ -48,14 +48,6 @@ template.innerHTML = html`
     --media-control-background: transparent;
     --media-control-hover-background: transparent;
     --media-control-padding: 5px 5px;
-
-    display: inline-block;
-    line-height: 0;
-  }
-
-  media-controller {
-    width: 100%;
-    height: 100%;
   }
 
   [breakpoint-sm] {
