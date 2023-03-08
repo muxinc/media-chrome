@@ -1,3 +1,12 @@
+## [0.18.7](https://github.com/muxinc/media-chrome/compare/v0.18.6...v0.18.7) (2023-03-08)
+
+
+### Bug Fixes
+
+* improve inferred media-ui-extension values ([#494](https://github.com/muxinc/media-chrome/issues/494)) ([9028129](https://github.com/muxinc/media-chrome/commit/90281290051c00acc95013ed82c712c77f4229e9))
+
+
+
 ## [0.18.6](https://github.com/muxinc/media-chrome/compare/v0.18.5...v0.18.6) (2023-03-07)
 
 
