@@ -83,6 +83,9 @@ class MediaChromeSelectMenu extends window.HTMLElement {
       // update button reference if necessary
       this.#button = newButton;
 
+      // if it's a media-chrome-button, ask it to not handle the click event
+      this.#button.preventClick = true;
+
       if (this.#button.hasAttribute('disabled')) {
         this.#enabledState = false;
       }
@@ -91,8 +94,6 @@ class MediaChromeSelectMenu extends window.HTMLElement {
       if (this.#enabledState) {
         this.enable();
         this.#button.setAttribute('aria-haspopup', 'listbox');
-        // if it's a media-chrome-button, ask it to not handle the click event
-        this.#button.preventClick = true;
       } else {
         this.disable();
       }
