@@ -1,4 +1,4 @@
-import { window } from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.js';
 import { TemplateInstance } from './utils/template-parts.js';
 import { processor } from './utils/template-processor.js';
 import { camelCase } from './utils/utils.js';
