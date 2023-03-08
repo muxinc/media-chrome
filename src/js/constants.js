@@ -152,4 +152,5 @@ export const AvailabilityStates = {
 export const StreamTypes = {
   LIVE: 'live',
   ON_DEMAND: 'on-demand',
+  UNKNOWN: 'unknown',
 };

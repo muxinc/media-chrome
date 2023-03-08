@@ -478,7 +478,7 @@ class MediaController extends MediaContainer {
           MediaUIAttributes.MEDIA_STREAM_TYPE
         );
       },
-      'emptied,durationchange,loadedmetadata,targetlivewindowchange': () => {
+      'emptied,durationchange,loadedmetadata,streamtypechange,targetlivewindowchange': () => {
         this.propagateMediaState(
           MediaUIAttributes.MEDIA_TARGET_LIVE_WINDOW
         );
@@ -1137,21 +1137,22 @@ const getShowingCaptionTracks = (controller) => {
 
 const getStreamType = (controller) => {
   const { media } = controller;
-  
+
   if (!media) return undefined;
-  
-  if (media.streamType) {
+
+  const { streamType } = media;
+  if (StreamTypeValues.includes(streamType)) {
     // If the slotted media supports `streamType` but
     // `streamType` is "unknown", prefer `default-stream-type`
     // if set (CJP)
-    if (media.streamType === 'unknown' && controller.hasAttribute('default-stream-type')) {
+    if (streamType === StreamTypes.UNKNOWN) {
       const defaultType = controller.getAttribute('default-stream-type');
-
-      if (StreamTypeValues.includes(defaultType)) {
+      if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
         return defaultType;
       }
+      return undefined;
     }
-    return media.streamType;
+    return streamType;
   }
   const duration = media.duration;
 
@@ -1162,7 +1163,7 @@ const getStreamType = (controller) => {
   } else {
     const defaultType = controller.getAttribute('default-stream-type');
 
-    if (StreamTypeValues.includes(defaultType)) {
+    if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
       return defaultType;
     }
   }
@@ -1171,7 +1172,19 @@ const getStreamType = (controller) => {
 };
 
 const getTargetLiveWindow = (controller) => {
-  return controller?.media?.targetLiveWindow;
+  const { media } = controller;
+
+  if (!media) return Number.NaN;
+  const { targetLiveWindow } = media;
+  // Since `NaN` represents either "unknown" or "inapplicable", need to check if `streamType`
+  // is `"live"`. If so, assume it's "standard live" (aka `targetLiveWindow === 0`) (CJP)
+  if (
+    (targetLiveWindow == null || Number.isNaN(targetLiveWindow)) &&
+    getStreamType(controller) === StreamTypes.LIVE
+  ) {
+    return 0;
+  }
+  return targetLiveWindow;
 };
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
