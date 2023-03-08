@@ -13,14 +13,7 @@ import { MediaThemeElement } from '../media-theme-element.js';
 const template = document.createElement('template');
 template.innerHTML = `
 <style>
-  :host {
-    display: inline-block;
-  }
-
   media-controller {
-    width: 100%;
-    height: 100%;
-
     --media-range-thumb-background: rgba(255, 0, 0, 1);
     --media-range-track-height: 4px;
     --media-range-track-transition: height 0.2s ease;

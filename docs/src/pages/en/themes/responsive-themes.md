@@ -21,16 +21,8 @@ Let's take a look at how a theme might look like with these conditions in place.
 ```html
 <template id="multi-theme">
   <style>
-    :host {
-      display: block;
-      line-height: 0;
-    }
     :host([audio]) {
       min-height: 44px;
-    }
-    media-controller {
-      width: 100%;
-      height: 100%;
     }
     .spacer {
       flex-grow: 1;
@@ -104,16 +96,8 @@ Let's take a look at how a theme might look like with these conditions in place.
 
 <template id="multi-theme">
   <style>
-    :host {
-      display: block;
-      line-height: 0;
-    }
     :host([audio]) {
       min-height: 44px;
-    }
-    media-controller {
-      width: 100%;
-      height: 100%;
     }
     .spacer {
       flex-grow: 1;
