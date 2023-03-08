@@ -1138,23 +1138,21 @@ const getShowingCaptionTracks = (controller) => {
 const getStreamType = (controller) => {
   const { media } = controller;
 
-  if (!media) return StreamTypes.UNKNOWN;
+  if (!media) return undefined;
 
-  if (media.streamType) {
+  const { streamType } = media;
+  if (StreamTypeValues.includes(streamType)) {
     // If the slotted media supports `streamType` but
     // `streamType` is "unknown", prefer `default-stream-type`
     // if set (CJP)
-    if (
-      media.streamType === 'unknown' &&
-      controller.hasAttribute('default-stream-type')
-    ) {
+    if (streamType === StreamTypes.UNKNOWN) {
       const defaultType = controller.getAttribute('default-stream-type');
-
-      if (StreamTypeValues.includes(defaultType)) {
+      if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
         return defaultType;
       }
+      return undefined;
     }
-    return media.streamType;
+    return streamType;
   }
   const duration = media.duration;
 
@@ -1165,12 +1163,12 @@ const getStreamType = (controller) => {
   } else {
     const defaultType = controller.getAttribute('default-stream-type');
 
-    if (StreamTypeValues.includes(defaultType)) {
+    if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
       return defaultType;
     }
   }
 
-  return StreamTypes.UNKNOWN;
+  return undefined;
 };
 
 const getTargetLiveWindow = (controller) => {
