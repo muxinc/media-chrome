@@ -5,6 +5,13 @@ import { toString } from 'hast-util-to-string';
 import { h } from 'hastscript';
 import { escape } from 'html-escaper';
 import tailwind from '@astrojs/tailwind';
+
+import mdx from '@astrojs/mdx';
+import remarkGfm from 'remark-gfm';
+import remarkSmartypants from 'remark-smartypants';
+import rehypeAutolinkHeadings from 'rehype-autolink-headings';
+import rehypeSlug from 'rehype-slug';
+
 const AnchorLinkIcon = h(
   'svg',
   {
@@ -35,22 +42,23 @@ export default defineConfig({
     preact(), // Enable React for the Algolia search component.
     react(),
     tailwind(),
+    mdx(),
   ],
   markdown: {
     remarkPlugins: [
       // These are here because setting custom plugins disables the default plugins
-      'remark-gfm',
+      remarkGfm,
       [
-        'remark-smartypants',
+        remarkSmartypants,
         {
           dashes: false,
         },
       ],
     ],
     rehypePlugins: [
-      'rehype-slug', // This adds links to headings
+      rehypeSlug, // This adds links to headings
       [
-        'rehype-autolink-headings',
+        rehypeAutolinkHeadings,
         {
           properties: {
             class: 'anchor-link',
