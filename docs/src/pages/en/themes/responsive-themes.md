@@ -21,9 +21,6 @@ Let's take a look at how a theme might look like with these conditions in place.
 ```html
 <template id="multi-theme">
   <style>
-    :host([audio]) {
-      min-height: 44px;
-    }
     .spacer {
       flex-grow: 1;
       background-color: var(
@@ -32,11 +29,11 @@ Let's take a look at how a theme might look like with these conditions in place.
       );
     }
   </style>
-  <media-controller breakpoints="sm:384 md:576">
+  <media-controller breakpoints="sm:384 md:576" audio="{{audio}}">
     <slot name="media" slot="media"></slot>
     <template if="audio">
       <template if="streamType == 'on-demand'">
-        <template if="title">
+        <template if="mediatitle">
           <media-control-bar>{{mediatitle}}</media-control-bar>
         </template>
         <media-control-bar>
@@ -96,9 +93,6 @@ Let's take a look at how a theme might look like with these conditions in place.
 
 <template id="multi-theme">
   <style>
-    :host([audio]) {
-      min-height: 44px;
-    }
     .spacer {
       flex-grow: 1;
       background-color: var(
@@ -107,11 +101,11 @@ Let's take a look at how a theme might look like with these conditions in place.
       );
     }
   </style>
-  <media-controller>
+  <media-controller breakpoints="sm:384 md:576" audio="{{audio}}">
     <slot name="media" slot="media"></slot>
     <template if="audio">
       <template if="streamType == 'on-demand'">
-        <template if="title">
+        <template if="mediatitle">
           <media-control-bar>{{mediatitle}}</media-control-bar>
         </template>
         <media-control-bar>
