@@ -1,3 +1,12 @@
+## [0.18.8](https://github.com/muxinc/media-chrome/compare/v0.18.7...v0.18.8) (2023-03-08)
+
+
+### Bug Fixes
+
+* preventClick on the button given to selectmenu unconditionally ([#495](https://github.com/muxinc/media-chrome/issues/495)) ([05ed8fb](https://github.com/muxinc/media-chrome/commit/05ed8fb4b3c917807f9e25b87ace5128188d58c7))
+
+
+
 ## [0.18.7](https://github.com/muxinc/media-chrome/compare/v0.18.6...v0.18.7) (2023-03-08)
 
 
