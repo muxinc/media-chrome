@@ -5,27 +5,15 @@ import {
 } from './template-parts.js';
 import { isNumericString } from './utils.js';
 
-// e.g.  myVar | string
-//       > myVar
-//       nilVar ?? 'fallback'
-export const reExpr = /([>&])?\s*(\w+)\s*(.*)/;
-
-// e.g.  | string
-//       ?? 'fallback'
-export const reExprOperation = /^(\?\?|\|)?\s*(['"\w]*)/;
-
-const operators = {
-  // Filters concept like Nunjucks or Liquid.
-  '|': {
-    string: (value) => String(value),
-  },
-  // Same as nullish coalesce operator in JS.
-  '??': (value, defaults) => value ?? defaults,
+// Filters concept like Nunjucks or Liquid.
+const pipeModifiers = {
+  string: (value) => String(value),
 };
 
 class PartialTemplate {
   constructor(template) {
     this.template = template;
+    this.state = undefined;
   }
 }
 
@@ -37,7 +25,7 @@ const Directives = {
     state[part.expression] = new PartialTemplate(part.template);
   },
   if: (part, state) => {
-    if (evaluateCondition(part.expression, state)) {
+    if (evaluateExpression(part.expression, state)) {
       // If the template did not change for this part we can skip creating
       // a new template instance / parsing and update the inner parts directly.
       if (templates.get(part) !== part.template) {
@@ -65,6 +53,7 @@ export const processor = {
     if (!state) return;
 
     for (const [expression, part] of parts) {
+
       if (part instanceof InnerTemplatePart) {
         if (!part.directive) {
           // Transform short-hand if/partial attributes to directive & expression.
@@ -74,56 +63,33 @@ export const processor = {
             part.expression = part.template.getAttribute(directive);
           }
         }
+
         Directives[part.directive]?.(part, state);
         continue;
       }
 
-      const [, prefix, name, rest] = expression.match(reExpr) ?? [];
-      let value = state[name];
+      let value = evaluateExpression(expression, state);
 
-      // Adds support for:
-      //   - filters (pipe char followed by function) e.g. {{ myVar | string }}
-      //   - nullish coalesce operator e.g. {{ nilVar ?? 'fallback' }}
-      const [, operator, modifier] = rest.match(reExprOperation) ?? [];
-      const op = operators[operator];
+      if (value instanceof PartialTemplate) {
 
-      if (typeof op === 'function') {
-        // Handle `??` operator.
-        value = op(value, getParamValue(modifier, state));
-      } else if (op && value != null) {
-        // Handle `|` operator.
-        const modify = op[modifier];
-        if (modify) value = modify(value);
+        if (templates.get(part) !== value.template) {
+          templates.set(part, value.template);
+
+          value = new TemplateInstance(
+            value.template,
+            value.state,
+            processor
+          );
+          part.value = value;
+          templateInstances.set(part, value);
+        } else {
+          templateInstances.get(part)?.update(value.state);
+        }
+
+        continue;
       }
 
       if (value) {
-        if (value instanceof PartialTemplate) {
-          // Require the partial indicator `>` or ignore this expression.
-          if (prefix !== '>') continue;
-
-          const localState = { ...state };
-          // Adds support for params e.g. {{PlayButton section="center"}}
-          const matches = expression.matchAll(/(\w+)\s*=\s*(['"\w]*)/g);
-          for (let [, paramName, paramValue] of matches) {
-            localState[paramName] = getParamValue(paramValue, state);
-          }
-
-          if (templates.get(part) !== value.template) {
-            templates.set(part, value.template);
-
-            value = new TemplateInstance(
-              value.template,
-              localState,
-              processor
-            );
-            part.value = value;
-            templateInstances.set(part, value);
-          } else {
-            templateInstances.get(part)?.update(localState);
-          }
-
-          continue;
-        }
 
         if (part instanceof AttrPart) {
           if (part.attributeName.startsWith('aria-')) {
@@ -149,7 +115,7 @@ export const processor = {
         }
       } else {
         if (part instanceof AttrPart) {
-          part.booleanValue = false;
+          part.value = undefined;
         } else {
           part.value = undefined;
 
@@ -162,57 +128,97 @@ export const processor = {
   },
 };
 
-const conditions = {
+const operators = {
   '==': (a, b) => a == b,
   '!=': (a, b) => a != b,
   '>': (a, b) => a > b,
   '>=': (a, b) => a >= b,
   '<': (a, b) => a < b,
   '<=': (a, b) => a <= b,
+  '??': (a, b) => a ?? b,
+  '|': (a, b) => pipeModifiers[b]?.(a),
 };
 
-// Support minimal conditional expressions e.g.
-//   layout == 'on-demand'
-//   layout != 'live'
-//   title
-export function evaluateCondition(expr, state) {
-  const tokens = tokenize(expr, {
+export function tokenizeExpression(expr) {
+  return tokenize(expr, {
     boolean: /true|false/,
     number: /-?\d+\.?\d*/,
     string: /(["'])((?:\\.|[^\\])*?)\1/,
-    operator: /[!=><]=|[><]/,
+    operator: /[!=><]=|>|<|=|\?\?|\|/,
     ws: /\s+/,
     param: /[$a-z_][$\w]*/i,
-  });
+  }).filter(({ type }) => type !== 'ws');
+}
+
+// Support minimal expressions e.g.
+//   >PlayButton section="center"
+//   section ?? 'bottom'
+//   value | string
+//   streamType == 'on-demand'
+//   streamType != 'live'
+//   breakpointMd
+export function evaluateExpression(expr, state = {}) {
+  const tokens = tokenizeExpression(expr);
 
   if (tokens.length === 0 || tokens.some(({ type }) => !type)) {
-    console.warn(`Warning: invalid expression \`${expr}\``);
-    return false;
+    return invalidExpression(expr);
   }
 
+  // e.g. {{>PlayButton section="center"}}
+  if (tokens[0]?.token === '>') {
+    const partial = state[tokens[1]?.token];
+    if (!partial) {
+      return invalidExpression(expr);
+    }
+
+    const partialState = { ...state };
+    partial.state = partialState;
+
+    // Adds support for arguments e.g. {{>PlayButton section="center"}}
+    const args = tokens.slice(2);
+    for (let i = 0; i < args.length; i += 3) {
+      const name = args[i]?.token;
+      const operator = args[i + 1]?.token;
+      const value = args[i + 2]?.token;
+
+      if (name && operator === '=') {
+        partialState[name] = getParamValue(value, state);
+      }
+    }
+    return partial;
+  }
+
+  // e.g. {{'hello world'}} or {{breakpointMd}}
   if (tokens.length === 1) {
     if (!isValidParam(tokens[0])) {
-      console.warn(`Warning: invalid expression \`${expr}\``);
-      return false;
+      return invalidExpression(expr);
     }
     return getParamValue(tokens[0].token, state);
   }
 
-  const args = tokens.filter(({ type }) => type !== 'ws');
+  // e.g. {{streamType == 'on-demand'}}, {{val | string}}, {{section ?? 'bottom'}}
+  if (tokens.length === 3) {
+    const operator = tokens[1]?.token;
+    const run = operators[operator];
 
-  if (args.length === 3) {
-    let condition = conditions[args[1]?.token];
-
-    if (!condition || !isValidParam(args[0]) || !isValidParam(args[2])) {
-      console.warn(`Warning: invalid expression \`${expr}\``);
-      return false;
+    if (!run || !isValidParam(tokens[0]) || !isValidParam(tokens[2])) {
+      return invalidExpression(expr);
     }
 
-    return condition(
-      getParamValue(args[0].token, state),
-      getParamValue(args[2].token, state)
-    );
+    const a = getParamValue(tokens[0].token, state);
+
+    if (operator === '|') {
+      return run(a, tokens[2].token);
+    }
+
+    const b = getParamValue(tokens[2].token, state);
+    return run(a, b);
   }
+}
+
+function invalidExpression(expr) {
+  console.warn(`Warning: invalid expression \`${expr}\``);
+  return false;
 }
 
 function isValidParam({ type }) {

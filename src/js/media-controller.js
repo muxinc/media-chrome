@@ -97,7 +97,7 @@ class MediaController extends MediaContainer {
           mediaUIEventHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](e, media);
         }
 
-        this.media.play();
+        this.media.play().catch(() => {});
       },
       MEDIA_PAUSE_REQUEST: () => this.media.pause(),
       MEDIA_MUTE_REQUEST: () => (this.media.muted = true),
@@ -472,7 +472,16 @@ class MediaController extends MediaContainer {
           MediaUIAttributes.MEDIA_DURATION,
           getDuration(this)
         );
-        this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
+      },
+      'emptied,durationchange,loadedmetadata,streamtypechange': () => {
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_STREAM_TYPE
+        );
+      },
+      'emptied,durationchange,loadedmetadata,targetlivewindowchange': () => {
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_TARGET_LIVE_WINDOW
+        );
       },
       'loadedmetadata,emptied,progress': () => {
         this.propagateMediaState(
@@ -1007,66 +1016,38 @@ const Delegates = {
   },
 
   [MediaUIAttributes.MEDIA_STREAM_TYPE](el) {
-    const media = el.media;
-
-    if (!media) return null;
-
-    const duration = media.duration;
-
-    if (duration === Infinity) {
-      return StreamTypes.LIVE;
-    } else if (Number.isFinite(duration)) {
-      return StreamTypes.ON_DEMAND;
-    } else {
-      const defaultType = el.getAttribute('default-stream-type');
-
-      if (StreamTypeValues.includes(defaultType)) {
-        return defaultType;
-      }
-    }
-
-    return null;
+    return getStreamType(el);
+  },
+  [MediaUIAttributes.MEDIA_TARGET_LIVE_WINDOW](el) {
+    return getTargetLiveWindow(el);
   },
   [MediaUIAttributes.MEDIA_TIME_IS_LIVE](controller) {
     const media = controller.media;
     
     if (!media) return false;
+    if (typeof media.liveEdgeStart === 'number') {
+      if (Number.isNaN(media.liveEdgeStart)) return false;
+      return media.currentTime >= media.liveEdgeStart;
+    }
 
-    const streamIsLive = controller.getAttribute(MediaUIAttributes.MEDIA_STREAM_TYPE) === 'live';
+    const live = getStreamType(controller) === 'live';
+    // Can't be playing live if it's not a live stream
+    if (!live) return false;
+    
     const seekable = media.seekable;
-
-    // If there's no way to seek, assume the media element is keeping it "live"
-    if (streamIsLive && !seekable) {
-      return true;
-    }
-
-    // If the slotted media does not provide a `seekable` property or its length is falsey,
-    // assume the media is not live.
-    if (!seekable?.length) {
-      return false;
-    }
+    // If the slotted media element is live but does not expose a 'seekable' `TimeRanges` object,
+    // always assume playing live
+    if (!seekable) return true;
+    // If there is an empty `seekable`, assume we are not playing live
+    if (!seekable.length) return false;
 
     // Default to 10 seconds
     // Assuming seekable range already accounts for appropriate buffer room
-    let liveThreshold = 10;
-    let liveThresholdAttr = controller.getAttribute('livethreshold');
-
-    if (liveThresholdAttr !== null) {
-      liveThresholdAttr = Number(liveThresholdAttr);
-
-      if (!Number.isNaN(liveThresholdAttr)) {
-        liveThreshold = liveThresholdAttr;
-      }
-    }
-
-    const currentTime = media.currentTime;
-    const seekableEnd = seekable.end(seekable.length - 1);
-
-    if (currentTime > seekableEnd - liveThreshold) {
-      return true;
-    }
-
-    return false;
+    const liveEdgeStartOffset = controller.hasAttribute('liveedgeoffset') 
+      ? Number(controller.getAttribute('liveedgeoffset'))
+      : 10;
+    const liveEdgeStart = seekable.end(seekable.length - 1) - liveEdgeStartOffset
+    return media.currentTime >= liveEdgeStart;
   },
 };
 
@@ -1152,6 +1133,45 @@ const getShowingCaptionTracks = (controller) => {
     kind: TextTrackKinds.CAPTIONS,
     mode: TextTrackModes.SHOWING,
   });
+};
+
+const getStreamType = (controller) => {
+  const { media } = controller;
+  
+  if (!media) return undefined;
+  
+  if (media.streamType) {
+    // If the slotted media supports `streamType` but
+    // `streamType` is "unknown", prefer `default-stream-type`
+    // if set (CJP)
+    if (media.streamType === 'unknown' && controller.hasAttribute('default-stream-type')) {
+      const defaultType = controller.getAttribute('default-stream-type');
+
+      if (StreamTypeValues.includes(defaultType)) {
+        return defaultType;
+      }
+    }
+    return media.streamType;
+  }
+  const duration = media.duration;
+
+  if (duration === Infinity) {
+    return StreamTypes.LIVE;
+  } else if (Number.isFinite(duration)) {
+    return StreamTypes.ON_DEMAND;
+  } else {
+    const defaultType = controller.getAttribute('default-stream-type');
+
+    if (StreamTypeValues.includes(defaultType)) {
+      return defaultType;
+    }
+  }
+
+  return undefined;
+};
+
+const getTargetLiveWindow = (controller) => {
+  return controller?.media?.targetLiveWindow;
 };
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);

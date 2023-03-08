@@ -247,6 +247,7 @@ class MediaContainer extends window.HTMLElement {
     mutationObserver.observe(this, { childList: true, subtree: true });
 
     const resizeObserver = new ResizeObserver(resizeCallback);
+    this.resizeObserver = resizeObserver;
     resizeObserver.observe(this);
 
     // Handles the case when the slotted media element is a slot element itself.
@@ -450,7 +451,7 @@ class MediaContainer extends window.HTMLElement {
     this.addEventListener('keyup', () => {
       this.setAttribute('media-keyboard-control', '');
     });
-    this.addEventListener('mouseup', () => {
+    window.addEventListener('mouseup', () => {
       this.removeAttribute('media-keyboard-control');
     });
   }

@@ -71,7 +71,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Current time display', link: 'en/media-current-time-display' },
       { text: 'Duration display', link: 'en/media-duration-display' },
       { text: 'Fullscreen button', link: 'en/media-fullscreen-button' },
-      { text: 'Live Indicator/Button', link: 'en/media-live-button' },
+      { text: 'Live indicator / button', link: 'en/media-live-button' },
       { text: 'Loading indicator', link: 'en/media-loading-indicator' },
       { text: 'Mute button', link: 'en/media-mute-button' },
       { text: 'PiP button', link: 'en/media-pip-button' },

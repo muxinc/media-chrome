@@ -19,6 +19,12 @@ const ccIcon = `
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
+  <style>
+    ::slotted(*) {
+      white-space: var(--media-captions-listbox-white-space, nowrap);
+    }
+
+  </style>
   <slot hidden name="captions-indicator">${ccIcon}</slot>
 `;
 
@@ -60,7 +66,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     captionsIndicatorSlot.addEventListener('slotchange', () => {
       let els = captionsIndicatorSlot.assignedElements();
 
-      // slotted svg from outside of media-captions-menu-button
+      // slotted svg from outside of media-captions-selectmenu
       if (els.length === 1 && els[0].nodeName.toLowerCase() === 'slot') {
         const assignedElements = /** @type {HTMLSlotElement} */(els[0]).assignedElements();
 
@@ -169,7 +175,11 @@ class MediaCaptionsListbox extends MediaChromeListbox {
         alreadyInDom = false;
 
         option.value = type + '!' + formatTextTrackObj(track);
-        option.textContent = track.label;
+
+        const label = document.createElement('span');
+
+        label.textContent = track.label;
+        option.append(label);
 
         // add CC icon for captions
         if (type === 'cc') {

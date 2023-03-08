@@ -1,3 +1,36 @@
+## [0.18.6](https://github.com/muxinc/media-chrome/compare/v0.18.5...v0.18.6) (2023-03-07)
+
+
+### Bug Fixes
+
+* add default much used styles to theme ([#490](https://github.com/muxinc/media-chrome/issues/490)) ([bd778fa](https://github.com/muxinc/media-chrome/commit/bd778fac5852f6073de7d3d9da7fd04918e9cb9e))
+* **experimental:** media-chrome-selectmenu and media-captions-selectmenu ([#471](https://github.com/muxinc/media-chrome/issues/471)) ([6d6ddc3](https://github.com/muxinc/media-chrome/commit/6d6ddc3ffeff1775751ed9a5ef9b6c13b89754d0))
+* nullish coalesce operator, improve process ([#484](https://github.com/muxinc/media-chrome/issues/484)) ([84c3c12](https://github.com/muxinc/media-chrome/commit/84c3c12d446f62a5b275fee24ada8bb6633ca631))
+
+
+
+## [0.18.5](https://github.com/muxinc/media-chrome/compare/v0.18.4...v0.18.5) (2023-02-27)
+
+
+### Bug Fixes
+
+* add --media-range-track-color for track ([862898b](https://github.com/muxinc/media-chrome/commit/862898bdf5516618d1135963df6ca4a8bbfdee7f))
+* catch play promise internally ([#479](https://github.com/muxinc/media-chrome/issues/479)) ([c77cd43](https://github.com/muxinc/media-chrome/commit/c77cd431763062520bdfb8db7217f18083ea560d))
+* decoupled controller in media-theme ([#459](https://github.com/muxinc/media-chrome/issues/459)) ([3852292](https://github.com/muxinc/media-chrome/commit/385229288fc48f129079641df7423cc156bd4fe9))
+* rename live edge override attribute to liveedgeoffset. Code cleanup per PR feedback. ([0edad38](https://github.com/muxinc/media-chrome/commit/0edad38449b816b27d0b960890cc5098df72cc38))
+* Use default-stream-type when slotted media streamType is unknown. ([#480](https://github.com/muxinc/media-chrome/issues/480)) ([284443d](https://github.com/muxinc/media-chrome/commit/284443d12c4040365da83d0bf95b52e8c5436331))
+
+
+### Features
+
+* add Micro theme ([#469](https://github.com/muxinc/media-chrome/issues/469)) ([4181c36](https://github.com/muxinc/media-chrome/commit/4181c36b6a0ed31a26e88e073a99b8d6f54608bd))
+* **live-edge-window:** Add basic support for m-ui-e liveEdgeStart proposal. ([1214369](https://github.com/muxinc/media-chrome/commit/12143695f32a6dce894ef2f1f9054e676c2ad01b))
+* **media-live-button:** Implement paused behaviors and presentation for component. ([20838e1](https://github.com/muxinc/media-chrome/commit/20838e104d30b56377d3cb97ebf81254a6146099))
+* **stream-type:** Add support for m-ui-e streamType proposal. ([50f4a2f](https://github.com/muxinc/media-chrome/commit/50f4a2fbfaf600ca556c997f0140789a27cc3e6a))
+* **target-live-window:** Add basic support for m-ui-e targetLiveWindow proposal. ([c450348](https://github.com/muxinc/media-chrome/commit/c450348fe4cd53138c1e255990a03fb4020dd51a))
+
+
+
 ## [0.18.4](https://github.com/muxinc/media-chrome/compare/v0.18.3...v0.18.4) (2023-02-16)
 
 
