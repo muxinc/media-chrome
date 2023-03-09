@@ -110,7 +110,7 @@ template.innerHTML = `
   </template>
 
   <template if="audio == null">
-    <media-loading-indicator media-loading slot="centered-chrome" no-auto-hide></media-loading-indicator>
+    <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
 
     <div slot="centered-chrome" class="centered-controls-overlay">
       <media-seek-backward-button></media-seek-backward-button>
