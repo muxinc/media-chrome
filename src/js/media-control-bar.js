@@ -13,7 +13,7 @@ template.innerHTML = `
     :host {
       ${/* Need position to display above video for some reason */''}
       box-sizing: border-box;
-      display: inline-flex;
+      display: var(--media-control-bar-display, inline-flex);
       color: var(--media-icon-color, #eee);
       --media-loading-icon-width: 44px;
     }

@@ -23,7 +23,7 @@ const loadingIndicatorIcon = `
 template.innerHTML = `
 <style>
 :host {
-  display: inline-block;
+  display: var(--media-loading-indicator-display, inline-block);
   vertical-align: middle;
   box-sizing: border-box;
 }

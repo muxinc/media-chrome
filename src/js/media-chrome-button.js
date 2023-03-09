@@ -1,4 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
 import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
@@ -76,7 +77,7 @@ class MediaChromeButton extends window.HTMLElement {
   constructor(options = {}) {
     super();
 
-    const shadow = this.attachShadow({ mode: 'open' });
+    this.attachShadow({ mode: 'open' });
 
     const buttonHTML = template.content.cloneNode(true);
     this.nativeEl = buttonHTML;
@@ -91,7 +92,10 @@ class MediaChromeButton extends window.HTMLElement {
 
     this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
-    shadow.appendChild(buttonHTML);
+    this.shadowRoot.appendChild(buttonHTML);
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty('display', `var(--${this.localName}-display, inline-flex)`);
   }
 
   #clickListener = (e) => {
