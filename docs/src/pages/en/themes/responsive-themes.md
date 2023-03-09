@@ -33,9 +33,6 @@ Let's take a look at how a theme might look like with these conditions in place.
     <slot name="media" slot="media"></slot>
     <template if="audio">
       <template if="streamType == 'on-demand'">
-        <template if="mediatitle">
-          <media-control-bar>{{mediatitle}}</media-control-bar>
-        </template>
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-time-display show-duration></media-time-display>
@@ -105,9 +102,6 @@ Let's take a look at how a theme might look like with these conditions in place.
     <slot name="media" slot="media"></slot>
     <template if="audio">
       <template if="streamType == 'on-demand'">
-        <template if="mediatitle">
-          <media-control-bar>{{mediatitle}}</media-control-bar>
-        </template>
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-time-display show-duration></media-time-display>
