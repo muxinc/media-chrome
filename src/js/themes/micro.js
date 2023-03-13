@@ -50,6 +50,12 @@ template.innerHTML = html`
     --media-control-padding: 5px 5px;
   }
 
+  [disabled],
+  [aria-disabled=true] {
+    opacity: 60%;
+    cursor: not-allowed;
+  }
+
   [breakpoint-sm] {
     --media-control-padding: 9px 5px;
   }
