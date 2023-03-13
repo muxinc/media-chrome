@@ -16,7 +16,7 @@ const prependTemplate = document.createElement('template');
 prependTemplate.innerHTML = `
   <style>
     :host {
-      display: block;
+      display: inline-block;
       line-height: 0;
     }
 
