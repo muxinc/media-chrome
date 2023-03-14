@@ -4,8 +4,8 @@ description: Understand how Media Chrome themes work and when you would want to 
 layout: ../../../layouts/MainLayout.astro
 ---
 
-Media Chrome provides us with [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) 
-that are easy to [style via CSS](./styling) which is great for media players 
+Media Chrome provides you with [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components) 
+that are easy to [style via CSS](./styling). This is great for media players 
 that are embedded in your own webpage or require less portability. However it's 
 often the case that a media player will be used by 3rd parties or 
 maybe the player needs to support different layouts and styles depending on
@@ -19,8 +19,7 @@ and wrap your media controls up in a nice and portable package.
 Themes are created primarily with HTML + CSS and its contents are defined in a 
 [`<template>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template)
 element. 
-A shiny new web component called `<media-theme>` can then take the contents of
-the template and render this in its 
+The web component `<media-theme>` takes the contents of the template and renders this in its 
 [shadow DOM](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_shadow_DOM).
 If you're unfamiliar with shadow DOM, you can think of it as a separate
 document attached to a web component that prevents leaking styles and DOM behaviors
@@ -28,12 +27,12 @@ to the main document.
 
 ### Creating a theme
 
-First we define the `<template>` with a unique `id` attribute and add the HTML
-and CSS as contents for the theme of our dreams. Any valid HTML is allowed.
+First define the `<template>` with a unique `id` attribute and add the HTML
+and CSS as contents for the theme you're creating. Any valid HTML is allowed.
 
 Next up declare a `<media-theme>` element where you would like to show the theme,
-set a `template` attribute to your chosen unique template `id` to link them up
-and voila your theme will appear!
+set a `template` attribute to your chosen unique template `id` to link them up. 
+This is all you need for your theme to appear.
 
 
 ```html
