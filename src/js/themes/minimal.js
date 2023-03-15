@@ -139,7 +139,17 @@ template.innerHTML = html`
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
     >
-      <span slot="text">Live</span>
+      <span slot="text" style="font-weight: normal;">Live</span>
+      <svg
+        slot="indicator"
+        width="8"
+        height="8"
+        viewBox="0 0 8 8"
+        xmlns="http://www.w3.org/2000/svg"
+        style="width: 8px; height: 8px; margin-right: 2px;"
+      >
+        <rect width="8" height="8" rx="2" />
+      </svg>
     </media-live-button>
   </template>
 
