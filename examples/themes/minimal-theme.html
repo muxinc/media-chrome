@@ -7,6 +7,7 @@
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
     />
+    <script src="https://cdn.jsdelivr.net/npm/@mux/mux-video@0"></script>
     <script type="module" src="../../dist/index.js"></script>
     <script type="module" src="../../src/js/themes/minimal.js"></script>
   </head>
@@ -16,11 +17,6 @@
         height: 100%;
       }
       body {
-        min-height: 80%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
         padding-bottom: 3rem;
       }
       media-theme-minimal {
@@ -45,7 +41,7 @@
       <h1>Media Chrome - Minimal Theme</h1>
       <br />
 
-      <media-theme-minimal id="theme">
+      <media-theme-minimal id="theme1">
         <video
           slot="media"
           src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
@@ -70,27 +66,13 @@
 
       <br /><br />
 
-      <media-theme-minimal id="theme" stream-type="live">
-        <video
+      <media-theme-minimal id="theme2">
+        <mux-video
+          playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
+          metadata-video-title="Big Buck Bunny"
+          stream-type="live"
           slot="media"
-          src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
-          poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
-          crossorigin="anonymous"
-          playsinline
-        >
-          <track
-            label="thumbnails"
-            default
-            kind="metadata"
-            src="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.vtt"
-          />
-          <track
-            label="English"
-            kind="captions"
-            srclang="en"
-            src="../vtt/en-cc.vtt"
-          />
-        </video>
+        ></mux-video>
       </media-theme-minimal>
     </main>
   </body>
