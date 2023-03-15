@@ -190,10 +190,15 @@ template.innerHTML = html`
       <media-control-bar>
         <div class="live-controls-left">
           {{>LiveButton}}
-          <template if="breakpointSm">
-            <media-time-display></media-time-display>
+          <template if="targetLiveWindow == null">
+            <template if="breakpointSm">
+              <media-time-display></media-time-display>
+            </template>
           </template>
         </div>
+        <template if="targetLiveWindow > 0">
+          <template if="breakpointSm">{{>TimeRange}}</template>
+        </template>
         <div class="live-controls-right">
           {{>MuteButton}}{{>VolumeRange}}{{>CaptionsButton}}{{>FullscreenButton}}
         </div>
