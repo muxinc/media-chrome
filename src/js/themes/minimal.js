@@ -38,6 +38,12 @@ template.innerHTML = html`
     .live-controls-left {
       margin-right: auto;
     }
+
+    [disabled],
+    [aria-disabled='true'] {
+      opacity: 60%;
+      cursor: not-allowed;
+    }
   </style>
 
   <template partial="PlayButton">
