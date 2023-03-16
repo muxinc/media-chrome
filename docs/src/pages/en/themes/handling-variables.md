@@ -6,7 +6,7 @@ layout: ../../../layouts/MainLayout.astro
 
 Custom variables that the theme author defines can be provided by users of your
 theme through attributes and then used inside your theme with double curly brackets,
-for example `{{username}}`
+for example `{{username}}`.
 
 If you would like to provide a fallback for a variable that might be empty,  
 this can be done like so `{{username ?? 'Unknown username'}}`.
@@ -63,11 +63,13 @@ to the value defined after the double question-mark operator in the theme.
 
 Avoid using native HTML attributes for variables. This includes things like:
 
-- `title`. The native `title` attribute will add a tooltip on mouse hover. You can 
-use something like `videotitle` instead.
-- `style`. The native `style` attribute is used for CSS
+- `title` - The native `title` attribute will add a tooltip on mouse hover.  
+  You can use something like `videotitle` instead.
+- `style` - The native `style` attribute is used for CSS.
 
-Also avoid attribute names that conflict with the [**Special variables**](#special-variables) listed below.
+Also avoid attribute names that conflict with 
+the [**Special variables**](#special-variables) listed below.  
+Attributes set on `<media-theme>` will override the [**Special variables**](#special-variables).
 
 ## Special variables
 
