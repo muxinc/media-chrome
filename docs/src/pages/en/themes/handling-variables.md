@@ -6,7 +6,7 @@ layout: ../../../layouts/MainLayout.astro
 
 Custom variables that the theme author defines can be provided by users of your
 theme through attributes and then used inside your theme with double curly brackets,
-for example `{{ username }}`
+for example `{{username}}`
 
 If you would like to provide a fallback for a variable that might be empty,  
 this can be done like so `{{username ?? 'Unknown username'}}`.
@@ -15,6 +15,9 @@ this can be done like so `{{username ?? 'Unknown username'}}`.
 <template id="vars-theme">
   <media-controller>
     <slot name="media" slot="media"></slot>
+    <media-text-display slot="top-chrome">
+      {{videotitle ?? 'Unknown video title'}}
+    </media-text-display>
     <media-text-display slot="top-chrome">
       {{username ?? 'Unknown user'}}
     </media-text-display>
@@ -35,6 +38,9 @@ this can be done like so `{{username ?? 'Unknown username'}}`.
   <media-controller>
     <slot name="media" slot="media"></slot>
     <media-text-display slot="top-chrome">
+      {{videotitle ?? 'Unknown video title'}}
+    </media-text-display>
+    <media-text-display slot="top-chrome">
       {{username ?? 'Unknown username'}}
     </media-text-display>
   </media-controller>
@@ -50,7 +56,8 @@ this can be done like so `{{username ?? 'Unknown username'}}`.
 [![Edit Media Chrome Vars Theme](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/media-chrome-vars-theme-nejd49?fontsize=14&hidenavigation=1&theme=dark)
 
 In the example above the `username` attribute is provided to the `<media-theme>` 
-element and this is then rendered in the template.
+element and this is then rendered in the template. The `videotitle` defaults
+to the value defined after the double question-mark operator in the theme.
 
 ## Avoid native attribute names
 
