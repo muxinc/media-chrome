@@ -60,7 +60,7 @@ Avoid using native HTML attributes for variables. This includes things like:
 use something like `videotitle` instead.
 - `style`. The native `style` attribute is used for CSS
 
-Also avoid attribute names that conflict with the **Special variables** listed below.
+Also avoid attribute names that conflict with the [**Special variables**](#special-variables) listed below.
 
 ## Special variables
 
