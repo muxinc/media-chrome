@@ -47,8 +47,9 @@ action button, you can create a slot called `"cta"`.
   <a slot="cta" href="/buy" class="button">Buy my course!</a>
 </media-theme>
 
-## Slots exist in the light DOM
+## Slotted nodes exist in the light DOM
 
-Slots exist in the light DOM (as opposed to the Shadow DOM). This has the advantage of being able
-to use styles from the parent page. In the example above the class `button` are styles
-coming from the user's application, not the theme itself.
+Slotted nodes exist in the light DOM (as opposed to the Shadow DOM). 
+This has the advantage of being able to use styles from the parent page. 
+In the example above the class `button` are styles coming from the user's application, 
+not the theme itself.
