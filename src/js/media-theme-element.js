@@ -98,12 +98,6 @@ export class MediaThemeElement extends window.HTMLElement {
   }
 
   get template() {
-    const templateId = this.getAttribute('template');
-    if (templateId) {
-      // @ts-ignore
-      const template = this.getRootNode()?.getElementById(templateId);
-      if (template) return template;
-    }
     // @ts-ignore
     return this.#template ?? this.constructor.template;
   }
@@ -135,8 +129,29 @@ export class MediaThemeElement extends window.HTMLElement {
     return props;
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  async attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'template' && oldValue != newValue) {
+
+      if (newValue) {
+        // First try to get a template element by id
+        // @ts-ignore
+        const template = this.getRootNode()?.getElementById(newValue);
+        if (template) {
+          this.#template = template;
+
+        } else if (isValidUrl(newValue)) {
+          // Next try to fetch a HTML file if it looks like a valid URL.
+          try {
+            const data = await request(newValue);
+            const template = document.createElement('template');
+            template.innerHTML = data;
+            this.#template = template;
+          } catch {
+            console.warn(`"${newValue}" is not a valid template element ID or a valid URL to a template file.`);
+          }
+        }
+      }
+
       this.createRenderer();
     }
   }
@@ -163,6 +178,27 @@ export class MediaThemeElement extends window.HTMLElement {
   render() {
     this.renderer?.update(this.props);
   }
+}
+
+function isValidUrl(url) {
+  // Add base if url doesn't start with http:// or https://
+  const base = /^https?:\/\//.test(url) ? undefined : location.origin;
+  try {
+    new URL(url, base);
+  } catch (e) {
+    return false;
+  }
+  return true;
+}
+
+async function request(resource) {
+  const response = await fetch(resource);
+
+  if (response.status !== 200) {
+    throw new Error(`Failed to load resource: the server responded with a status of ${response.status}`);
+  }
+
+  return response.text();
 }
 
 if (!window.customElements.get('media-theme')) {
