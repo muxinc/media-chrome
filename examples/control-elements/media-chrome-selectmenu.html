@@ -32,11 +32,27 @@
 <body>
   <main>
     <h1>Media Chrome Standard Video Usage Example</h1>
+    <media-chrome-selectmenu>
+      <span slot="button-content">Menu Button</span>
+      <media-chrome-listitem>lorem</media-chrome-listitem>
+      <media-chrome-listitem>ipsum</media-chrome-listitem>
+      <media-chrome-listitem>dolor</media-chrome-listitem>
+      <media-chrome-listitem>sit</media-chrome-listitem>
+    </media-chrome-selectmenu>
+    <media-chrome-selectmenu>
+      <span slot="button-content">Menu Button</span>
+      <media-captions-listbox slot="listbox" media-controller="mc"></media-captions-listbox>
+    </media-chrome-selectmenu>
 
     <br>
     <br>
 
-    <media-captions-selectmenu media-controller="mc"></media-captions-selectmenu>
+
+    <media-chrome-selectmenu media-controller="mc" aria-label="captions menu button">
+      <media-captions-button slot="button"></media-captions-button>
+      <media-captions-listbox slot="listbox" ></media-captions-listbox>
+    </media-chrome-selectmenu>
+    <media-captions-selectmenu media-controller="mc" disabled></media-captions-selectmenu>
 
     <br>
 
@@ -62,19 +78,34 @@
       </video>
       <media-poster-image slot="poster" src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/poster.png"></media-poster-image>
       <media-control-bar>
-        <media-captions-selectmenu></media-captions-selectmenu>
+        <media-chrome-selectmenu aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-selectmenu>
         <media-play-button></media-play-button>
         <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
         <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
         <media-mute-button></media-mute-button>
         <media-time-display show-duration remaining></media-time-display>
         <media-captions-button></media-captions-button>
+        <media-chrome-selectmenu aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-selectmenu>
         <media-playback-rate-button></media-playback-rate-button>
         <media-pip-button></media-pip-button>
+        <media-chrome-selectmenu disabled aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox" ></media-captions-listbox>
+        </media-chrome-selectmenu>
         <media-captions-selectmenu></media-captions-selectmenu>
         <media-fullscreen-button></media-fullscreen-button>
         <media-airplay-button></media-airplay-button>
         <media-captions-selectmenu></media-captions-selectmenu>
+        <media-chrome-selectmenu aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-selectmenu>
       </media-control-bar>
     </media-controller>
     <div class="examples">
