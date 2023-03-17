@@ -1,7 +1,7 @@
 import '../media-chrome-button.js';
 import './media-chrome-listbox.js';
 import { window, document } from '../utils/server-safe-globals.js';
-import { closestComposedNode } from '../utils/element-utils.js';
+import { closestComposedNode, getOrInsertCSSRule } from '../utils/element-utils.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
 
 const template = document.createElement('template');
@@ -61,6 +61,9 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     this.nativeEl = buttonHTML;
 
     shadow.appendChild(buttonHTML);
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
 
     this.#handleClick = this.#handleClick_.bind(this);
     this.#handleChange = this.#handleChange_.bind(this);
