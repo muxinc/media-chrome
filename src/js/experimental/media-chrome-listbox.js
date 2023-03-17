@@ -17,16 +17,19 @@ template.innerHTML = `
     font-family: Arial, sans-serif;
   }
 
-  ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible) {
+  ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible),
+  media-chrome-listitem[tabindex="0"]:focus-visible {
     box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
     outline: 0;
   }
 
-  ::slotted(media-chrome-listitem[aria-selected="true"]) {
+  ::slotted(media-chrome-listitem[aria-selected="true"]),
+  media-chrome-listitem[aria-selected="true"] {
     background-color: var(--media-listbox-selected-background, rgba(122,122,184, .8));
   }
 
-  ::slotted(media-chrome-listitem:hover) {
+  ::slotted(media-chrome-listitem:hover),
+  media-chrome-listitem:hover {
     background-color: var(--media-listbox-hover-background, rgba(82,82,122, .8));
     outline: var(--media-listbox-hover-outline, none);
   }
@@ -104,7 +107,11 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   get #items() {
-    return this.#assignedElements.filter(el => !el.hasAttribute('disabled'));
+    if (this.#assignedElements) {
+      return this.#assignedElements.filter(el => !el.hasAttribute('disabled'));
+    }
+
+    return Array.from(this.shadowRoot.querySelectorAll('media-chrome-listitem:not([disabled]'));
   }
 
   get selectedOptions() {
@@ -213,8 +220,6 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   #getItem(e) {
-    if (e.target === this) return;
-
     const composedPath = e.composedPath();
     const index = composedPath.findIndex(el => el.nodeName === 'MEDIA-CHROME-LISTITEM');
 
@@ -229,7 +234,11 @@ class MediaChromeListbox extends window.HTMLElement {
     const selected = item.getAttribute('aria-selected') === 'true';
 
     if (this.getAttribute('aria-multiselectable') !== 'true') {
-      this.#assignedElements.forEach(el => el.setAttribute('aria-selected', 'false'));
+      if (this.#assignedElements) {
+        this.#assignedElements.forEach(el => el.setAttribute('aria-selected', 'false'));
+      } else {
+        Array.from(this.shadowRoot.querySelectorAll('media-chrome-listitem')).forEach(el => el.setAttribute('aria-selected', 'false'));
+      }
     }
 
     if (selected) {

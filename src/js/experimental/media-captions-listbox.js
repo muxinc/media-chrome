@@ -166,6 +166,8 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 
   #perTypeRender(tracks, type) {
+    const container = this.shadowRoot.querySelector('ul slot');
+
     tracks.forEach(track => {
       let option = track.el;
       let alreadyInDom = true;
@@ -195,15 +197,16 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       }
 
       if (!alreadyInDom) {
-        this.append(option);
+        container.append(option);
         track.el = option;
       }
     });
   }
 
   #render() {
-    if (!this.contains(this.#offOption)) {
-      this.append(this.#offOption);
+    const container = this.shadowRoot.querySelector('ul slot');
+    if (!container.contains(this.#offOption)) {
+      container.append(this.#offOption);
     }
 
     if (!this.hasAttribute(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING) && !this.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING)) {
