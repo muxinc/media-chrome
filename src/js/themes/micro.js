@@ -15,30 +15,6 @@ const html = (raw, ...keys) => String.raw({ raw }, ...keys);
 const template = document.createElement('template');
 template.innerHTML = html`
 <style>
-  media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
-    display: none;
-  }
-
-  media-volume-range[media-volume-unavailable] {
-    display: none;
-  }
-
-  media-airplay-button[media-airplay-unavailable] {
-    display: none;
-  }
-
-  media-fullscreen-button[media-fullscreen-unavailable] {
-    display: none;
-  }
-
-  media-cast-button[media-cast-unavailable] {
-    display: none;
-  }
-
-  media-pip-button[media-pip-unavailable] {
-    display: none;
-  }
-
   :host {
     --_primary-color: var(--primary-color, #fff);
     --_secondary-color: var(--secondary-color, rgb(0 0 0 / .75));
@@ -62,6 +38,30 @@ template.innerHTML = html`
 
   [breakpoint-md] {
     --media-control-padding: 9px 7px;
+  }
+
+  media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
+    display: none;
+  }
+
+  media-volume-range[media-volume-unavailable] {
+    display: none;
+  }
+
+  media-airplay-button[media-airplay-unavailable] {
+    display: none;
+  }
+
+  media-fullscreen-button[media-fullscreen-unavailable] {
+    display: none;
+  }
+
+  media-cast-button[media-cast-unavailable] {
+    display: none;
+  }
+
+  media-pip-button[media-pip-unavailable] {
+    display: none;
   }
 
   media-controller::part(centered-layer) {
