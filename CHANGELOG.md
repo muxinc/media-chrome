@@ -1,3 +1,12 @@
+## [0.19.1](https://github.com/muxinc/media-chrome/compare/v0.19.0...v0.19.1) (2023-03-20)
+
+
+### Bug Fixes
+
+* rename Micro to Microvideo ([#504](https://github.com/muxinc/media-chrome/issues/504)) ([ea96595](https://github.com/muxinc/media-chrome/commit/ea9659529e283945e725f2baec4d7ed6bcf75395))
+
+
+
 # [0.19.0](https://github.com/muxinc/media-chrome/compare/v0.18.8...v0.19.0) (2023-03-20)
 
 
