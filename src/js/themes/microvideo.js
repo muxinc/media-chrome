@@ -75,8 +75,15 @@ template.innerHTML = html`
     padding-bottom: 0;
   }
 
+  media-loading-indicator {
+    place-self: center;
+    ${/* Stack the grid items on top of each other */''}
+    grid-area: 1 / 1;
+  }
+
   media-control-bar {
     place-self: var(--_control-bar-place-self, end center);
+    grid-area: 1 / 1;
     position: relative;
     margin: 10px;
     gap: 4px;
@@ -221,7 +228,7 @@ template.innerHTML = html`
     width: 7px;
   }
 
-  /* Turn some buttons off by default */
+  ${/* Turn some buttons off by default */''}
   media-seek-backward-button {
     display: var(--media-control-display, var(--media-seek-backward-button-display, none));
   }
@@ -424,8 +431,17 @@ template.innerHTML = html`
   </span>
 </template>
 
-<media-controller style="--_control-bar-place-self:{{controlBarPlace ?? 'unset'}}">
+<media-controller
+  style="--_control-bar-place-self:{{controlBarPlace ?? 'unset'}}"
+  gestures-disabled="{{disabled}}"
+  hotkeys="{{hotkeys}}"
+  nohotkeys="{{nohotkeys}}"
+  audio="{{audio}}"
+  exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
+>
   <slot name="media" slot="media"></slot>
+  <slot name="poster" slot="poster"></slot>
+  <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
 
   <template if="streamType == 'on-demand'">
 
