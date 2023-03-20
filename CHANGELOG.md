@@ -1,3 +1,19 @@
+# [0.19.0](https://github.com/muxinc/media-chrome/compare/v0.18.8...v0.19.0) (2023-03-20)
+
+
+### Bug Fixes
+
+* add disabled styles for Micro theme ([#500](https://github.com/muxinc/media-chrome/issues/500)) ([94ccd2b](https://github.com/muxinc/media-chrome/commit/94ccd2ba6c44e6ee279f4dc5d8527456c5c0ac75))
+* add display CSS vars ([#497](https://github.com/muxinc/media-chrome/issues/497)) ([89353e5](https://github.com/muxinc/media-chrome/commit/89353e52c50916de740704dfb7d428727155aca5))
+* theme inline-block, improve responsive theme ([#496](https://github.com/muxinc/media-chrome/issues/496)) ([56b549c](https://github.com/muxinc/media-chrome/commit/56b549c0a12cfbccc63555c92eae818ceef1481b))
+
+
+### Features
+
+* support fetching theme HTML files ([#491](https://github.com/muxinc/media-chrome/issues/491)) ([1457651](https://github.com/muxinc/media-chrome/commit/14576515b5798430c26a58f3046b6efbcd85c2fb))
+
+
+
 ## [0.18.8](https://github.com/muxinc/media-chrome/compare/v0.18.7...v0.18.8) (2023-03-08)
 
 
