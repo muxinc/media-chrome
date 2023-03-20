@@ -1,10 +1,10 @@
 /* 
-<media-theme-micro>
+<media-theme-microvideo>
   <video
     slot="media"
     src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
   ></video>
-</media-theme-micro>
+</media-theme-microvideo>
 */
 
 import { window, document } from '../utils/server-safe-globals.js';
@@ -500,12 +500,12 @@ template.innerHTML = html`
 </media-controller>
 `;
 
-class MediaThemeMicro extends MediaThemeElement {
+class MediaThemeMicrovideo extends MediaThemeElement {
   static template = template;
 }
 
-if (!window.customElements.get('media-theme-micro')) {
-  window.customElements.define('media-theme-micro', MediaThemeMicro);
+if (!window.customElements.get('media-theme-microvideo')) {
+  window.customElements.define('media-theme-microvideo', MediaThemeMicrovideo);
 }
 
-export default MediaThemeMicro;
+export default MediaThemeMicrovideo;
