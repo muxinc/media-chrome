@@ -55,6 +55,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
 
     const offOption = document.createElement('media-chrome-listitem');
 
+    offOption.part.add('listitem');
     offOption.value = 'off';
     offOption.textContent = 'Off';
     this.#offOption = offOption;
@@ -176,6 +177,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
         option = document.createElement('media-chrome-listitem');
         alreadyInDom = false;
 
+        option.part.add('listitem');
         option.value = type + '!' + formatTextTrackObj(track);
 
         const label = document.createElement('span');

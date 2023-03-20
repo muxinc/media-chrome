@@ -9,8 +9,8 @@ class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
   }
 
   init() {
-   const captionsButton = document.createElement('media-captions-button');
-    captionsButton.setAttribute('part', 'button');
+    const captionsButton = document.createElement('media-captions-button');
+    captionsButton.part.add('button');
 
     captionsButton.preventClick = true;
 
@@ -19,7 +19,8 @@ class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
     }
 
     const captionsListbox = document.createElement('media-captions-listbox');
-    captionsListbox.setAttribute('part', 'listbox');
+    captionsListbox.part.add('listbox');
+    captionsListbox.setAttribute('exportparts', 'listitem');
 
     const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
