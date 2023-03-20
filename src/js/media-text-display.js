@@ -62,7 +62,7 @@ class MediaTextDisplay extends window.HTMLElement {
     this.container = this.shadowRoot.querySelector('#container');
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--${this.localName}-display, inline-flex)`);
+    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {

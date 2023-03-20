@@ -95,7 +95,7 @@ class MediaChromeButton extends window.HTMLElement {
     this.shadowRoot.appendChild(buttonHTML);
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--${this.localName}-display, inline-flex)`);
+    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
   }
 
   #clickListener = (e) => {

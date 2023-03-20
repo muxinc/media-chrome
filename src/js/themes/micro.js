@@ -15,30 +15,6 @@ const html = (raw, ...keys) => String.raw({ raw }, ...keys);
 const template = document.createElement('template');
 template.innerHTML = html`
 <style>
-  media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
-    display: none;
-  }
-
-  media-volume-range[media-volume-unavailable] {
-    display: none;
-  }
-
-  media-airplay-button[media-airplay-unavailable] {
-    display: none;
-  }
-
-  media-fullscreen-button[media-fullscreen-unavailable] {
-    display: none;
-  }
-
-  media-cast-button[media-cast-unavailable] {
-    display: none;
-  }
-
-  media-pip-button[media-pip-unavailable] {
-    display: none;
-  }
-
   :host {
     --_primary-color: var(--primary-color, #fff);
     --_secondary-color: var(--secondary-color, rgb(0 0 0 / .75));
@@ -62,6 +38,30 @@ template.innerHTML = html`
 
   [breakpoint-md] {
     --media-control-padding: 9px 7px;
+  }
+
+  media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
+    display: none;
+  }
+
+  media-volume-range[media-volume-unavailable] {
+    display: none;
+  }
+
+  media-airplay-button[media-airplay-unavailable] {
+    display: none;
+  }
+
+  media-fullscreen-button[media-fullscreen-unavailable] {
+    display: none;
+  }
+
+  media-cast-button[media-cast-unavailable] {
+    display: none;
+  }
+
+  media-pip-button[media-pip-unavailable] {
+    display: none;
   }
 
   media-controller::part(centered-layer) {
@@ -221,44 +221,17 @@ template.innerHTML = html`
     width: 7px;
   }
 
-  media-play-button {
-    display: var(--controls, var(--play-button, inline-flex));
-  }
-
+  /* Turn some buttons off by default */
   media-seek-backward-button {
-    display: var(--controls, var(--seek-backward-button, none));
+    display: var(--media-control-display, var(--media-seek-backward-button-display, none));
   }
 
   media-seek-forward-button {
-    display: var(--controls, var(--seek-forward-button, none));
-  }
-
-  media-mute-button {
-    display: var(--controls, var(--mute-button, inline-flex));
-  }
-
-  media-captions-button {
-    display: var(--controls, var(--captions-button, inline-flex));
+    display: var(--media-control-display, var(--media-seek-forward-button-display, none));
   }
 
   media-pip-button {
-    display: var(--controls, var(--pip-button, none));
-  }
-
-  media-airplay-button {
-    display: var(--controls, var(--airplay-button, inline-flex));
-  }
-
-  media-cast-button {
-    display: var(--controls, var(--cast-button, inline-flex));
-  }
-
-  media-fullscreen-button {
-    display: var(--controls, var(--fullscreen-button, inline-flex));
-  }
-
-  media-live-button {
-    display: var(--controls, var(--live-button, inline-flex));
+    display: var(--media-control-display, var(--media-pip-button-display, none));
   }
 </style>
 
