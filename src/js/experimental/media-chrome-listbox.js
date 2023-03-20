@@ -46,7 +46,7 @@ class MediaChromeListbox extends window.HTMLElement {
   #keysSoFar = '';
   #clearKeysTimeout = null;
   #slot;
-  #assignedElements;
+  #_assignedElements;
 
   static get observedAttributes() {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
@@ -74,10 +74,10 @@ class MediaChromeListbox extends window.HTMLElement {
     this.#slot = this.shadowRoot.querySelector('slot');
 
     this.#slot.addEventListener('slotchange', () => {
-      this.#assignedElements = this.#slot.assignedElements();
+      this.#assignedElements = this.#slot.assignedElements({flatten: true});
 
       if (this.#assignedElements.length === 1 && this.#assignedElements[0].nodeName.toLowerCase() === 'slot') {
-        this.#assignedElements = this.#assignedElements[0].assignedElements();
+        this.#assignedElements = this.#assignedElements[0].assignedElements({flatten: true});
       }
 
       const els = this.#items;
@@ -106,12 +106,19 @@ class MediaChromeListbox extends window.HTMLElement {
     });
   }
 
-  get #items() {
-    if (this.#assignedElements) {
-      return this.#assignedElements.filter(el => !el.hasAttribute('disabled'));
+  get #assignedElements() {
+    if (!this.#_assignedElements) {
+      this.#_assignedElements = Array.from(this.shadowRoot.querySelectorAll('media-chrome-listitem'));
     }
 
-    return Array.from(this.shadowRoot.querySelectorAll('media-chrome-listitem:not([disabled]'));
+    return this.#_assignedElements;
+  }
+
+  set #assignedElements(value) {
+  }
+
+  get #items() {
+    return this.#assignedElements.filter(el => !el.hasAttribute('disabled'));
   }
 
   get selectedOptions() {
@@ -234,11 +241,7 @@ class MediaChromeListbox extends window.HTMLElement {
     const selected = item.getAttribute('aria-selected') === 'true';
 
     if (this.getAttribute('aria-multiselectable') !== 'true') {
-      if (this.#assignedElements) {
-        this.#assignedElements.forEach(el => el.setAttribute('aria-selected', 'false'));
-      } else {
-        Array.from(this.shadowRoot.querySelectorAll('media-chrome-listitem')).forEach(el => el.setAttribute('aria-selected', 'false'));
-      }
+      this.#assignedElements.forEach(el => el.setAttribute('aria-selected', 'false'));
     }
 
     if (selected) {
