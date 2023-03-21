@@ -20,7 +20,7 @@ const ccIcon = `
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
   <style>
-    ::slotted(*) {
+    media-chrome-listitem {
       white-space: var(--media-captions-listbox-white-space, nowrap);
     }
 
