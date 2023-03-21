@@ -333,9 +333,12 @@ th {
   text-align: left;
 }
 
-td:first-child {
+td:first-child,
+td code {
   white-space: nowrap;
 }
+
+
 
 th {
   background: var(--theme-bg-offset);
