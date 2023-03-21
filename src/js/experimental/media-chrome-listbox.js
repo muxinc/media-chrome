@@ -115,6 +115,7 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   set #assignedElements(value) {
+    this.#_assignedElements = value;
   }
 
   get #items() {
