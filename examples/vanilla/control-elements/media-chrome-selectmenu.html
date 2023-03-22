@@ -6,6 +6,7 @@
   <script type="module" src="../../../dist/index.js"></script>
   <script type="module" src="../../../dist/experimental/media-chrome-selectmenu.js"></script>
   <script type="module" src="../../../dist/experimental/media-captions-selectmenu.js"></script>
+  <script type="module" src="../../../dist/experimental/media-playback-rate-listbox.js"></script>
   <style>
     media-controller {
       margin-top: 2em;
@@ -48,6 +49,12 @@
 <body>
   <main>
     <h1>Media Chrome Standard Video Usage Example</h1>
+    <media-playback-rate-listbox media-controller="mc">
+      <media-chrome-listitem value="1">1x</media-chrome-listitem>
+      <media-chrome-listitem value="1.5">1.5x</media-chrome-listitem>
+      <media-chrome-listitem value="2">2x</media-chrome-listitem>
+      <media-chrome-listitem value="3">3x</media-chrome-listitem>
+    </media-playback-rate-listbox>
     <media-chrome-selectmenu>
       <span slot="button-content">Menu Button</span>
       <media-chrome-listitem>lorem</media-chrome-listitem>
