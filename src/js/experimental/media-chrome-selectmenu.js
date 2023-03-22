@@ -14,7 +14,7 @@ template.innerHTML = `
   }
 
   [name="listbox"]::slotted(*),
-  media-chrome-listbox {
+  [part=listbox] {
     position: absolute;
     left: 0;
     bottom: 100%;
@@ -24,7 +24,7 @@ template.innerHTML = `
   </style>
 
   <slot name="button">
-    <media-chrome-button aria-haspopup="listbox">
+    <media-chrome-button aria-haspopup="listbox" part="button">
       <slot name="button-content"></slot>
     </media-chrome-button>
   </slot>
@@ -41,7 +41,6 @@ class MediaChromeSelectMenu extends window.HTMLElement {
   #enabledState = true;
   #button;
   #buttonSlot;
-  #buttonSlotted = false;
   #listbox;
   #listboxSlot;
   #expanded = false;
@@ -68,8 +67,10 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     this.#handleClick = this.#handleClick_.bind(this);
     this.#handleChange = this.#handleChange_.bind(this);
 
-    this.#button = this.shadowRoot.querySelector('media-chrome-button');
-    this.#listbox = this.shadowRoot.querySelector('media-chrome-listbox');
+    this.init?.();
+
+    this.#button = this.shadowRoot.querySelector('[part=button]');
+    this.#listbox = this.shadowRoot.querySelector('[part=listbox]');
 
     this.#buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     this.#buttonSlot.addEventListener('slotchange', () => {
@@ -77,8 +78,6 @@ class MediaChromeSelectMenu extends window.HTMLElement {
 
       // if the slotted button is the built-in, nothing to do
       if (!newButton) return;
-
-      this.#buttonSlotted = true;
 
       // disconnect previous button
       this.disable();
@@ -138,13 +137,14 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     const buttonRect = this.#button.getBoundingClientRect();
 
     // if we're outside of the controller,
-    // one of the components should have a media-controller attribute
-    // or the button wasn't slotted
+    // one of the components should have a media-controller attribute.
+    // There isn't a good way now to differentiate between default buttons or
+    // or a slotted button but outside of the media-controller.
+    // So, a regular declarative selectmenu may default to open up rather than down.
     if (
       this.hasAttribute('media-controller') ||
       this.#button.hasAttribute('media-controller') ||
-      this.#listbox.hasAttribute('media-controller') ||
-      !this.#buttonSlotted
+      this.#listbox.hasAttribute('media-controller')
     ) {
       this.#listbox.style.zIndex = '1';
       this.#listbox.style.bottom = 'unset';

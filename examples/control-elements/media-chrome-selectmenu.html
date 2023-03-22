@@ -22,9 +22,25 @@
       /* --media-control-padding: 5px; */
     }
 
-    [disabled] {
+    [disabled]:not(media-captions-selectmenu),
+    [disabled]::part(button) {
       opacity: 60%;
       cursor: not-allowed;
+    }
+
+    media-captions-selectmenu::part(button) {
+      background: purple;
+    }
+
+    media-captions-selectmenu::part(listbox) {
+      background: green;
+    }
+
+    media-captions-selectmenu::part(listitem) {
+      color: yellow;
+    }
+    media-captions-listbox::part(listitem) {
+      color: red;
     }
 
   </style>
