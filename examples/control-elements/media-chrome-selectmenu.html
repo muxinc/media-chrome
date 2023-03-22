@@ -22,7 +22,8 @@
       /* --media-control-padding: 5px; */
     }
 
-    media-captions-selectmenu[disabled]::part(button) {
+    [disabled]:not(media-captions-selectmenu),
+    [disabled]::part(button) {
       opacity: 60%;
       cursor: not-allowed;
     }
