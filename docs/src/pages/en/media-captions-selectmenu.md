@@ -4,7 +4,6 @@ description: Experimental Media Captions Selectmenu
 layout: ../../layouts/MainLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/experimental/media-captions-selectmenu.js
 ---
-<script src="/node_modules/media-chrome/dist/experimental/media-captions-selectmenu.js" type="module"></script>
 
 A menu-button for subtitles and captions.
 
