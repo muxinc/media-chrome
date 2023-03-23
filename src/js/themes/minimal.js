@@ -76,6 +76,46 @@ template.innerHTML = html`
     media-pip-button[media-pip-unavailable] {
       display: none;
     }
+
+    media-play-button {
+      display: var(--controls, var(--play-button, inline-flex));
+    }
+
+    media-seek-backward-button {
+      display: var(--controls, var(--seek-backward-button, none));
+    }
+
+    media-seek-forward-button {
+      display: var(--controls, var(--seek-forward-button, none));
+    }
+
+    media-mute-button {
+      display: var(--controls, var(--mute-button, inline-flex));
+    }
+
+    media-captions-button {
+      display: var(--controls, var(--captions-button, inline-flex));
+    }
+
+    media-pip-button {
+      display: var(--controls, var(--pip-button, none));
+    }
+
+    media-airplay-button {
+      display: var(--controls, var(--airplay-button, inline-flex));
+    }
+
+    media-cast-button {
+      display: var(--controls, var(--cast-button, inline-flex));
+    }
+
+    media-fullscreen-button {
+      display: var(--controls, var(--fullscreen-button, inline-flex));
+    }
+
+    media-live-button {
+      display: var(--controls, var(--live-button, inline-flex));
+    }
   </style>
 
   <template partial="PlayButton">
@@ -183,6 +223,116 @@ template.innerHTML = html`
         <rect width="8" height="8" rx="2" />
       </svg>
     </media-live-button>
+  </template>
+
+  <template partial="PipButton">
+    <media-pip-button
+      part="pip button"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+    >
+      <svg aria-hidden="true" viewBox="0 0 26 24" slot="enter">
+        <path
+          d="M22 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h6.75v-1.25h-6.5V4.25h17.5v6.5H23V4a1 1 0 0 0-1-1Zm0 10h-8a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1Zm-.5 6.5h-7v-5h7v5Z"
+        />
+      </svg>
+      <svg aria-hidden="true" viewBox="0 0 26 24" slot="exit">
+        <path
+          d="M22 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h6.75v-1.25h-6.5V4.25h17.5v6.5H23V4a1 1 0 0 0-1-1Zm0 10h-8a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-6a1 1 0 0 0-1-1Zm-.5 6.5h-7v-5h7v5Z"
+        />
+      </svg>
+    </media-pip-button>
+  </template>
+
+  <template partial="SeekBackwardButton">
+    <media-seek-backward-button
+      seek-offset="{{backwardSeekOffset ?? 10}}"
+      part="seek-backward button"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+    >
+      <svg aria-hidden="true" viewBox="0 0 22 24" slot="backward">
+        <path
+          d="M11 6V3L5.37 7 11 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 11 6Z"
+        />
+        <text
+          class="value"
+          transform="translate(2.5 21)"
+          style="font-size: 8px; font-family: 'ArialMT', 'Arial'"
+        >
+          {{backwardSeekOffset ?? 10}}
+        </text>
+      </svg>
+    </media-seek-backward-button>
+  </template>
+
+  <template partial="SeekForwardButton">
+    <media-seek-forward-button
+      seek-offset="{{forwardSeekOffset ?? 10}}"
+      part="seek-forward button"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+    >
+      <svg aria-hidden="true" viewBox="0 0 22 24" slot="forward">
+        <path
+          d="M11 6V3l5.61 4L11 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 11 6Z"
+        />
+        <text
+          class="value"
+          transform="translate(10 21)"
+          style="font-size: 8px; font-family: 'ArialMT', 'Arial'"
+        >
+          {{forwardSeekOffset ?? 10}}
+        </text>
+      </svg>
+    </media-seek-forward-button>
+  </template>
+
+  <template partial="AirplayButton">
+    <media-airplay-button
+      part="airplay button"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+    >
+      <svg aria-hidden="true" viewBox="0 0 26 24" slot="airplay">
+        <path
+          d="M13.19 14.22a.25.25 0 0 0-.38 0l-5.46 6.37a.25.25 0 0 0 .19.41h10.92a.25.25 0 0 0 .19-.41l-5.46-6.37Z"
+        />
+        <path
+          d="M22 3H4a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h2.94L8 16.75H4.25V4.25h17.5v12.5H18L19.06 18H22a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Z"
+        />
+      </svg>
+    </media-airplay-button>
+  </template>
+
+  <template partial="CastButton">
+    <media-cast-button
+      part="cast button"
+      disabled="{{disabled}}"
+      aria-disabled="{{disabled}}"
+    >
+      <svg aria-hidden="true" viewBox="0 0 26 24" slot="enter">
+        <path
+          d="M3 15.5V17c2.206 0 4 1.794 4 4h1.5A5.5 5.5 0 0 0 3 15.5Zm0 3V21h2.5A2.5 2.5 0 0 0 3 18.5Z"
+        />
+        <path d="M3 12.5V14c3.86 0 7 3.14 7 7h1.5A8.5 8.5 0 0 0 3 12.5Z" />
+        <path
+          d="M22 3H4a1 1 0 0 0-1 1v6.984c.424 0 .84.035 1.25.086V4.25h17.5v15.5h-8.82c.051.41.086.826.086 1.25H22a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Z"
+        />
+      </svg>
+      <svg aria-hidden="true" viewBox="0 0 26 24" slot="exit">
+        <path
+          d="M3 15.5V17c2.206 0 4 1.794 4 4h1.5A5.5 5.5 0 0 0 3 15.5Zm0 3V21h2.5A2.5 2.5 0 0 0 3 18.5Z"
+        />
+        <path d="M3 12.5V14c3.86 0 7 3.14 7 7h1.5A8.5 8.5 0 0 0 3 12.5Z" />
+        <path
+          d="M22 3H4a1 1 0 0 0-1 1v6.984c.424 0 .84.035 1.25.086V4.25h17.5v15.5h-8.82c.051.41.086.826.086 1.25H22a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Z"
+        />
+        <path
+          d="M20.5 5.5h-15v5.811c3.52.906 6.283 3.67 7.189 7.19H20.5V5.5Z"
+        />
+      </svg>
+    </media-cast-button>
   </template>
 
   <template partial="TimeRange">
