@@ -1,4 +1,29 @@
 <style>
+  :host {
+    --_primary-color: var(--primary-color, #fff);
+    --_secondary-color: var(--secondary-color, rgb(0 0 0 / .75));
+    --_volume-range-expand-width: 70px;
+    --_volume-range-expand-height: 42px;
+
+    --media-control-background: transparent;
+    --media-control-hover-background: transparent;
+    --media-control-padding: 5px 5px;
+  }
+
+  [disabled],
+  [aria-disabled=true] {
+    opacity: 60%;
+    cursor: not-allowed;
+  }
+
+  [breakpoint-sm] {
+    --media-control-padding: 9px 5px;
+  }
+
+  [breakpoint-md] {
+    --media-control-padding: 9px 7px;
+  }
+
   media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
     display: none;
   }
@@ -23,33 +48,6 @@
     display: none;
   }
 
-  :host {
-    --_primary-color: var(--primary-color, #fff);
-    --_secondary-color: var(--secondary-color, rgb(0 0 0 / .75));
-    --_volume-range-expand-width: 70px;
-    --_volume-range-expand-height: 42px;
-
-    --media-control-background: transparent;
-    --media-control-hover-background: transparent;
-    --media-control-padding: 5px 5px;
-
-    display: inline-block;
-    line-height: 0;
-  }
-
-  media-controller {
-    width: 100%;
-    height: 100%;
-  }
-
-  [breakpoint-sm] {
-    --media-control-padding: 9px 5px;
-  }
-
-  [breakpoint-md] {
-    --media-control-padding: 9px 7px;
-  }
-
   media-controller::part(centered-layer) {
     display: grid;
     justify-content: unset;
@@ -61,8 +59,15 @@
     padding-bottom: 0;
   }
 
+  media-loading-indicator {
+    place-self: center;
+    ${/* Stack the grid items on top of each other */''}
+    grid-area: 1 / 1;
+  }
+
   media-control-bar {
     place-self: var(--_control-bar-place-self, end center);
+    grid-area: 1 / 1;
     position: relative;
     margin: 10px;
     gap: 4px;
@@ -207,44 +212,17 @@
     width: 7px;
   }
 
-  media-play-button {
-    display: var(--controls, var(--play-button, inline-flex));
-  }
-
+  ${/* Turn some buttons off by default */''}
   media-seek-backward-button {
-    display: var(--controls, var(--seek-backward-button, none));
+    display: var(--media-control-display, var(--media-seek-backward-button-display, none));
   }
 
   media-seek-forward-button {
-    display: var(--controls, var(--seek-forward-button, none));
-  }
-
-  media-mute-button {
-    display: var(--controls, var(--mute-button, inline-flex));
-  }
-
-  media-captions-button {
-    display: var(--controls, var(--captions-button, inline-flex));
+    display: var(--media-control-display, var(--media-seek-forward-button-display, none));
   }
 
   media-pip-button {
-    display: var(--controls, var(--pip-button, none));
-  }
-
-  media-airplay-button {
-    display: var(--controls, var(--airplay-button, inline-flex));
-  }
-
-  media-cast-button {
-    display: var(--controls, var(--cast-button, inline-flex));
-  }
-
-  media-fullscreen-button {
-    display: var(--controls, var(--fullscreen-button, inline-flex));
-  }
-
-  media-live-button {
-    display: var(--controls, var(--live-button, inline-flex));
+    display: var(--media-control-display, var(--media-pip-button-display, none));
   }
 </style>
 
@@ -437,8 +415,17 @@
   </span>
 </template>
 
-<media-controller style="--_control-bar-place-self:{{controlBarPlace ?? 'unset'}}">
+<media-controller
+  style="--_control-bar-place-self:{{controlBarPlace ?? 'unset'}}"
+  gestures-disabled="{{disabled}}"
+  hotkeys="{{hotkeys}}"
+  nohotkeys="{{nohotkeys}}"
+  audio="{{audio}}"
+  exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
+>
   <slot name="media" slot="media"></slot>
+  <slot name="poster" slot="poster"></slot>
+  <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
 
   <template if="streamType == 'on-demand'">
 
