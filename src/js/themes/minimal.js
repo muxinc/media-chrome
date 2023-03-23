@@ -1,10 +1,8 @@
 import { window, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
-const html = (raw, ...keys) => String.raw({ raw }, ...keys);
-
 const template = document.createElement('template');
-template.innerHTML = html`
+template.innerHTML = /*html*/`
   <style>
     media-controller {
       --media-control-background: transparent;
@@ -77,44 +75,17 @@ template.innerHTML = html`
       display: none;
     }
 
-    media-play-button {
-      display: var(--controls, var(--play-button, inline-flex));
-    }
-
+    ${/* Turn some buttons off by default */''}
     media-seek-backward-button {
-      display: var(--controls, var(--seek-backward-button, none));
+      display: var(--media-control-display, var(--media-seek-backward-button-display, none));
     }
 
     media-seek-forward-button {
-      display: var(--controls, var(--seek-forward-button, none));
-    }
-
-    media-mute-button {
-      display: var(--controls, var(--mute-button, inline-flex));
-    }
-
-    media-captions-button {
-      display: var(--controls, var(--captions-button, inline-flex));
+      display: var(--media-control-display, var(--media-seek-forward-button-display, none));
     }
 
     media-pip-button {
-      display: var(--controls, var(--pip-button, none));
-    }
-
-    media-airplay-button {
-      display: var(--controls, var(--airplay-button, inline-flex));
-    }
-
-    media-cast-button {
-      display: var(--controls, var(--cast-button, inline-flex));
-    }
-
-    media-fullscreen-button {
-      display: var(--controls, var(--fullscreen-button, inline-flex));
-    }
-
-    media-live-button {
-      display: var(--controls, var(--live-button, inline-flex));
+      display: var(--media-control-display, var(--media-pip-button-display, none));
     }
   </style>
 
@@ -363,17 +334,30 @@ template.innerHTML = html`
     <template if="streamType == 'on-demand'">
       <template if="breakpointSm == null">
         <media-control-bar>
-          {{>PlayButton}}{{>TimeRange}}{{>MuteButton}}{{>CaptionsButton}}{{>FullscreenButton}}
+          {{>PlayButton}}
+          {{>TimeRange}}
+          {{>MuteButton}}
+          {{>CaptionsButton}}
+          {{>FullscreenButton}}
         </media-control-bar>
       </template>
 
       <template if="breakpointSm">
         <media-control-bar>
-          {{>PlayButton}}{{>TimeRange}}
+          {{>PlayButton}}
+          {{>SeekBackwardButton}}
+          {{>SeekForwardButton}}
+          {{>TimeRange}}
           <template if="breakpointMd">
             <media-time-display></media-time-display>
           </template>
-          {{>MuteButton}}{{>VolumeRange}}{{>CaptionsButton}}{{>FullscreenButton}}
+          {{>MuteButton}}
+          {{>VolumeRange}}
+          {{>CaptionsButton}}
+          {{>AirplayButton}}
+          {{>CastButton}}
+          {{>PipButton}}
+          {{>FullscreenButton}}
         </media-control-bar>
       </template>
     </template>
@@ -392,7 +376,17 @@ template.innerHTML = html`
           <template if="breakpointSm">{{>TimeRange}}</template>
         </template>
         <div class="live-controls-right">
-          {{>MuteButton}}{{>VolumeRange}}{{>CaptionsButton}}{{>FullscreenButton}}
+          <template if="targetLiveWindow > 0">
+            {{>SeekBackwardButton}}
+            {{>SeekForwardButton}}
+          </template>
+          {{>MuteButton}}
+          {{>VolumeRange}}
+          {{>CaptionsButton}}
+          {{>AirplayButton}}
+          {{>CastButton}}
+          {{>PipButton}}
+          {{>FullscreenButton}}
         </div>
       </media-control-bar>
     </template>
