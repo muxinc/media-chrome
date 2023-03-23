@@ -12,6 +12,7 @@ template.innerHTML = /*html*/`
     position: relative;
     flex-shrink: .5;
     background: var(--media-control-background, rgba(20,20,30, 0.7));
+    padding: var(--media-control-padding, 10px);
   }
 
   [name="listbox"]::slotted(*),
@@ -25,6 +26,7 @@ template.innerHTML = /*html*/`
 
   [name="button"]::slotted(*),
   [part="button"] {
+    padding: 0;
     background-color: inherit;
   }
   </style>
