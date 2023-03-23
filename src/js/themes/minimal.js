@@ -12,22 +12,29 @@ template.innerHTML = html`
     }
 
     media-control-bar {
-      height: 42px;
+      height: 30px;
       border-radius: 8px;
-      margin: 0 12px 8px 12px;
+      margin: 0 6px 8px;
       background: rgba(0, 0, 0, 0.75);
       display: flex;
       align-items: center;
-      --media-control-padding: 6px;
+      --media-control-padding: 4px;
     }
 
     media-controller[breakpoint-sm] media-control-bar {
+      height: 42px;
+      --media-control-padding: 6px;
+    }
+
+    media-controller[breakpoint-md] media-control-bar {
       height: 46px;
       --media-control-padding: 7px;
     }
 
-    media-controller[breakpoint-md] media-control-bar {
+    media-controller[breakpoint-lg] media-control-bar,
+    media-controller[breakpoint-xl] media-control-bar {
       height: 50px;
+      margin: 0 8px 8px;
       --media-control-padding: 8px;
     }
 
