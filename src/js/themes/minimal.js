@@ -52,6 +52,30 @@ template.innerHTML = html`
       opacity: 60%;
       cursor: not-allowed;
     }
+
+    media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
+      display: none;
+    }
+
+    media-volume-range[media-volume-unavailable] {
+      display: none;
+    }
+
+    media-airplay-button[media-airplay-unavailable] {
+      display: none;
+    }
+
+    media-fullscreen-button[media-fullscreen-unavailable] {
+      display: none;
+    }
+
+    media-cast-button[media-cast-unavailable] {
+      display: none;
+    }
+
+    media-pip-button[media-pip-unavailable] {
+      display: none;
+    }
   </style>
 
   <template partial="PlayButton">
