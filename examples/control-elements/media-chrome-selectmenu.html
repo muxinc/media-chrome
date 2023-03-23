@@ -28,21 +28,6 @@
       cursor: not-allowed;
     }
 
-    media-captions-selectmenu::part(button) {
-      background: purple;
-    }
-
-    media-captions-selectmenu::part(listbox) {
-      background: green;
-    }
-
-    media-captions-selectmenu::part(listitem) {
-      color: yellow;
-    }
-    media-captions-listbox::part(listitem) {
-      color: red;
-    }
-
   </style>
 </head>
 <body>
@@ -93,28 +78,21 @@
         <track label="Subs Arabic" kind="subtitles" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
       </video>
       <media-poster-image slot="poster" src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/poster.png"></media-poster-image>
-      <media-control-bar>
-        <media-chrome-selectmenu aria-label="captions menu button">
-          <media-captions-button default-showing slot="button"></media-captions-button>
-          <media-captions-listbox slot="listbox"></media-captions-listbox>
-        </media-chrome-selectmenu>
+      <media-control-bar id="cb">
+        <style>
+          #cb > * {
+            background-color: #900;
+            padding: 10px;
+            border: 1px solid #009;
+          }
+        </style>
         <media-play-button></media-play-button>
         <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
         <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
         <media-mute-button></media-mute-button>
         <media-time-display show-duration remaining></media-time-display>
-        <media-captions-button></media-captions-button>
-        <media-chrome-selectmenu aria-label="captions menu button">
-          <media-captions-button default-showing slot="button"></media-captions-button>
-          <media-captions-listbox slot="listbox"></media-captions-listbox>
-        </media-chrome-selectmenu>
         <media-playback-rate-button></media-playback-rate-button>
         <media-pip-button></media-pip-button>
-        <media-chrome-selectmenu disabled aria-label="captions menu button">
-          <media-captions-button default-showing slot="button"></media-captions-button>
-          <media-captions-listbox slot="listbox" ></media-captions-listbox>
-        </media-chrome-selectmenu>
-        <media-captions-selectmenu></media-captions-selectmenu>
         <media-fullscreen-button></media-fullscreen-button>
         <media-airplay-button></media-airplay-button>
         <media-captions-selectmenu></media-captions-selectmenu>

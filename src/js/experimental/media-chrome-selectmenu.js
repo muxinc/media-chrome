@@ -5,21 +5,27 @@ import { closestComposedNode, getOrInsertCSSRule } from '../utils/element-utils.
 import { MediaStateReceiverAttributes } from '../constants.js';
 
 const template = document.createElement('template');
-template.innerHTML = `
+template.innerHTML = /*html*/`
   <style>
   :host {
     display: inline-flex;
     position: relative;
     flex-shrink: .5;
+    background: var(--media-control-background, rgba(20,20,30, 0.7));
   }
 
   [name="listbox"]::slotted(*),
-  [part=listbox] {
+  [part="listbox"] {
     position: absolute;
     left: 0;
     bottom: 100%;
     max-height: 300px;
     overflow: hidden auto;
+  }
+
+  [name="button"]::slotted(*),
+  [part="button"] {
+    background-color: inherit;
   }
   </style>
 
