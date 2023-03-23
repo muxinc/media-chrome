@@ -17,16 +17,19 @@ template.innerHTML = `
     font-family: Arial, sans-serif;
   }
 
-  ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible) {
+  ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible),
+  media-chrome-listitem[tabindex="0"]:focus-visible {
     box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
     outline: 0;
   }
 
-  ::slotted(media-chrome-listitem[aria-selected="true"]) {
+  ::slotted(media-chrome-listitem[aria-selected="true"]),
+  media-chrome-listitem[aria-selected="true"] {
     background-color: var(--media-listbox-selected-background, rgba(122,122,184, .8));
   }
 
-  ::slotted(media-chrome-listitem:hover) {
+  ::slotted(media-chrome-listitem:hover),
+  media-chrome-listitem:hover {
     background-color: var(--media-listbox-hover-background, rgba(82,82,122, .8));
     outline: var(--media-listbox-hover-outline, none);
   }
@@ -43,7 +46,7 @@ class MediaChromeListbox extends window.HTMLElement {
   #keysSoFar = '';
   #clearKeysTimeout = null;
   #slot;
-  #assignedElements;
+  #_assignedElements;
 
   static get observedAttributes() {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
@@ -71,10 +74,10 @@ class MediaChromeListbox extends window.HTMLElement {
     this.#slot = this.shadowRoot.querySelector('slot');
 
     this.#slot.addEventListener('slotchange', () => {
-      this.#assignedElements = this.#slot.assignedElements();
+      this.#assignedElements = this.#slot.assignedElements({flatten: true});
 
       if (this.#assignedElements.length === 1 && this.#assignedElements[0].nodeName.toLowerCase() === 'slot') {
-        this.#assignedElements = this.#assignedElements[0].assignedElements();
+        this.#assignedElements = this.#assignedElements[0].assignedElements({flatten: true});
       }
 
       const els = this.#items;
@@ -101,6 +104,18 @@ class MediaChromeListbox extends window.HTMLElement {
         elToSelect.setAttribute('aria-selected', 'true');
       }
     });
+  }
+
+  get #assignedElements() {
+    if (!this.#_assignedElements) {
+      this.#_assignedElements = Array.from(this.shadowRoot.querySelectorAll('media-chrome-listitem'));
+    }
+
+    return this.#_assignedElements;
+  }
+
+  set #assignedElements(value) {
+    this.#_assignedElements = value;
   }
 
   get #items() {
@@ -213,8 +228,6 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   #getItem(e) {
-    if (e.target === this) return;
-
     const composedPath = e.composedPath();
     const index = composedPath.findIndex(el => el.nodeName === 'MEDIA-CHROME-LISTITEM');
 

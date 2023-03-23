@@ -6,7 +6,7 @@ template.innerHTML = `
   <style>
     :host {
       pointer-events: none;
-      display: inline-block;
+      display: var(--media-poster-image-display, inline-block);
       box-sizing: border-box;
     }
 

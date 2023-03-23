@@ -57,7 +57,6 @@ export const SIDEBAR: Sidebar = {
       { text: 'Responsive controls', link: 'en/responsive-controls' },
       { text: 'Keyboard shortcuts', link: 'en/keyboard-shortcuts' },
       { text: 'Audio player', link: 'en/audio-player' },
-      { text: 'Themes', link: 'en/themes' },
     ],
     'Core Concepts': [
       { text: 'Media controller', link: 'en/media-controller' },
@@ -84,6 +83,13 @@ export const SIDEBAR: Sidebar = {
       { text: 'Time display', link: 'en/media-time-display' },
       { text: 'Time range', link: 'en/media-time-range' },
       { text: 'Volume range', link: 'en/media-volume-range' },
+    ],
+    Themes: [
+      { text: 'Introduction to themes', link: 'en/themes' },
+      { text: 'Handling variables', link: 'en/themes/handling-variables' },
+      { text: 'Responsive themes', link: 'en/themes/responsive-themes' },
+      { text: 'Custom slots', link: 'en/themes/custom-slots' },
+      { text: 'Share themes', link: 'en/themes/share' },
     ],
     "Learn More": [
       { text: 'Showcase', link: 'en/showcase' },

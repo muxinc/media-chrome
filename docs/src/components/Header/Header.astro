@@ -29,7 +29,10 @@ const lang = getLanguageFromURL(currentPage);
       </a>
     </div>
     <div class="menu">
-      <a href="/en/get-started">Docs</a>
+      <a href="/en/get-started" aria-current={currentPage === '/en/get-started'}>Basics</a>
+      <a href="/en/themes" aria-current={currentPage === '/en/themes'}>Themes</a>
+      <a href="/en/showcase" aria-current={currentPage === '/en/showcase'}>Showcase</a>
+      <a href="https://github.com/muxinc/media-chrome" target="_blank">GitHub</a>
     </div>
     <ThemeToggleButton client:visible />
     {
@@ -97,9 +100,11 @@ const lang = getLanguageFromURL(currentPage);
   .menu {
     flex: 1;
     font-family: var(--font-mono);
+    margin-left: 1rem;
   }
 
   .menu a {
+    display: none;
     font-size: 0.9em;
     line-height: 1.4;
     text-decoration: none;
@@ -143,6 +148,10 @@ const lang = getLanguageFromURL(currentPage);
 
     .menu-toggle {
       display: none;
+    }
+
+    .menu a {
+      display: unset;
     }
   }
 

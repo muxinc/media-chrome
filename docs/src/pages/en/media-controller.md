@@ -8,6 +8,18 @@ The `<media-controller>` manages communication of state and state change request
 
 ## Attributes
 
+### audio
+
+`audio` (boolean)
+
+Use this to enable audio chrome UI, which will not have any of the slots described in the [Position controls guide]("/en/position-controls"), but instead have a single default slot for adding markup.
+
+```html
+<media-controller audio>
+  ...
+</media-controller>
+```
+
 ### autohide
 
 `autohide (seconds, default: 2)` (video only)
@@ -30,6 +42,58 @@ Example (`autohide` disabled):
 <media-controller autohide="-1">
   ...
 </media-controller>
+```
+
+### breakpoints
+
+`breakpoints` (string of multiple values, default: `sm:384 md:576 lg:768 xl:960`)
+
+Change the default breakpoints that will get activated once the player width
+equals or is greater than the breakpoint value. The breakpoints are propagated
+as `breakpoint-x` attributes on media-controller and as `breakpointX` 
+[theme variables](./themes/handling-variables).
+
+```html
+<media-controller breakpoints="sm:300 md:700">
+  ...
+</media-controller>
+```
+
+### default-stream-type
+
+`default-stream-type` (values: `live`, `on-demand`)
+
+Media controller can't know the stream is live or on-demand until the media is loaded. Setting `default-stream-type` can prevent UI changes happening between when the player is loaded and when the media is loaded. This may happen when a player is built to support both stream types, and then is used to play a stream type that is different from the player's default.
+
+[See also media-stream-type.](./stream-type)
+
+```html
+<media-controller default-stream-type="live">
+  ...
+</media-controller>
+```
+
+### fullscreen-element
+
+`fullscreen-element` (`id` string)
+
+By default, the media-controller will be the target element when entering fullscreen. However, you may specify a different element by setting `fullscreen-element` to that
+element's `id` attribute.
+
+```html
+<div id="wrapper">
+  <media-controller fullscreen-element="wrapper">
+    ...
+  </media-controller>
+  <div>This will show up when in fullscreen.</div>
+  ...
+</div>
+```
+
+NOTE: For more advanced use cases, there is also the `fullscreenElement` property, which allows you to set the target fullscreen element by reference instead.
+
+```js
+mediaControllerEl.fullscreenElement = myWrapperEl;
 ```
 
 ### gestures-disabled
@@ -74,67 +138,6 @@ Example (disallow seeking shortcuts):
 </media-controller>
 ```
 
-### default-stream-type
-
-`default-stream-type` (values: `live`, `on-demand`)
-
-Media controller can't know the stream is live or on-demand until the media is loaded. Setting `default-stream-type` can prevent UI changes happening between when the player is loaded and when the media is loaded. This may happen when a player is built to support both stream types, and then is used to play a stream type that is different from the player's default.
-
-[See also media-stream-type.](./stream-type)
-
-```html
-<media-controller default-stream-type="live">
-  ...
-</media-controller>
-```
-
-### audio
-
-`audio` (boolean)
-
-Use this to enable audio chrome UI, which will not have any of the slots described in the [Position controls guide]("/en/position-controls"), but instead have a single default slot for adding markup.
-
-```html
-<media-controller audio>
-  ...
-</media-controller>
-```
-
-### noautoseektolive
-
-`noautoseektolive` (boolean)
-
-By default, when a user unpauses a live stream, media-controller will also automatically seek to the most current time (or live edge) in the live stream. If you don't want media-controller to do this you can include the `noautoseektolive` attribute. 
-
-```html
-<media-controller noautoseektolive>
-  ...
-</media-controller>
-```
-
-### fullscreen-element
-
-`fullscreen-element` (`id` string)
-
-By default, the media-controller will be the target element when entering fullscreen. However, you may specify a different element by setting `fullscreen-element` to that
-element's `id` attribute.
-
-```html
-<div id="wrapper">
-  <media-controller fullscreen-element="wrapper">
-    ...
-  </media-controller>
-  <div>This will show up when in fullscreen.</div>
-  ...
-</div>
-```
-
-NOTE: For more advanced use cases, there is also the `fullscreenElement` property, which allows you to set the target fullscreen element by reference instead.
-
-```js
-mediaControllerEl.fullscreenElement = myWrapperEl;
-```
-
 ### liveedgeoffset
 
 `liveedgeoffset` (positive number, seconds)
@@ -148,6 +151,18 @@ See also:
 
 ```html
 <media-controller liveedgeoffset="5">
+  ...
+</media-controller>
+```
+
+### noautoseektolive
+
+`noautoseektolive` (boolean)
+
+By default, when a user unpauses a live stream, media-controller will also automatically seek to the most current time (or live edge) in the live stream. If you don't want media-controller to do this you can include the `noautoseektolive` attribute. 
+
+```html
+<media-controller noautoseektolive>
   ...
 </media-controller>
 ```

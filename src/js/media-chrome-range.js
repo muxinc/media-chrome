@@ -195,6 +195,9 @@ class MediaChromeRange extends window.HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
 
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-block))`);
+
     this.container = this.shadowRoot.querySelector('#container');
     /** @type {Omit<HTMLInputElement, "value" | "min" | "max"> &
       * {value: number, min: number, max: number}} */

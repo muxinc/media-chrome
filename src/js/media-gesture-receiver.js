@@ -12,7 +12,7 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
   :host {
-    display: inline-block;
+    display: var(--media-control-display, var(--media-gesture-receiver-display, inline-block));
     box-sizing: border-box;
   }
 </style>

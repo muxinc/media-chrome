@@ -13,7 +13,7 @@ template.innerHTML = `
   <style>
     :host {
       box-sizing: border-box;
-      display: inline-block;
+      display: var(--media-control-display, var(--media-preview-thumbnail-display, inline-block));
       overflow: hidden;
     }
 

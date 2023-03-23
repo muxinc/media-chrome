@@ -14,15 +14,11 @@ const template = document.createElement('template');
 template.innerHTML = `
 <style>
   :host {
-    display: inline-block;
     --primary-color: #eee;
     --secondary-color: transparent;
   }
 
   media-controller {
-    width: 100%;
-    height: 100%;
-
     font-size: 13px;
     font-family: Roboto, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

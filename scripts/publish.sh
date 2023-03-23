@@ -43,7 +43,7 @@ function release {
   git commit -m "docs(CHANGELOG): $VERSION"
   npm --force --allow-same-version version $VERSION -m "chore(release): %s"
   git push --follow-tags
-  npx conventional-github-releaser -p angular
+  npx --package @gkatsev/conventional-github-releaser conventional-github-releaser -p angular -d Releases
   npm publish
 };
 

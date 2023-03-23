@@ -333,9 +333,12 @@ th {
   text-align: left;
 }
 
-td:first-child {
+td:first-child,
+td code {
   white-space: nowrap;
 }
+
+
 
 th {
   background: var(--theme-bg-offset);
@@ -378,7 +381,8 @@ img {
   align-items: center;
 }
 
-button {
+button,
+.button {
   display: flex;
   align-items: center;
   justify-items: center;
@@ -388,6 +392,7 @@ button {
   background: var(--theme-bg);
   display: flex;
   font-size: 1rem;
+  line-height: 1.6;
   align-items: center;
   gap: 0.25em;
   border-radius: 99em;

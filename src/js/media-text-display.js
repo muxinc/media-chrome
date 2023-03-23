@@ -1,4 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
 import { window, document } from './utils/server-safe-globals.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
@@ -59,6 +60,9 @@ class MediaTextDisplay extends window.HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
     this.container = this.shadowRoot.querySelector('#container');
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
