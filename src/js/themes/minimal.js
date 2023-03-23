@@ -9,6 +9,7 @@ template.innerHTML = html`
     media-controller {
       --media-control-background: transparent;
       --media-control-hover-background: transparent;
+      --media-range-track-border-radius: 3px;
     }
 
     media-control-bar {
