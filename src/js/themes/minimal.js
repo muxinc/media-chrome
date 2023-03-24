@@ -1,48 +1,73 @@
+/*
+<media-theme-minimal>
+  <video
+    slot="media"
+    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+  ></video>
+</media-theme-minimal>
+*/
+
 import { window, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/`
   <style>
-    media-controller {
+    :host {
+      --_primary-color: var(--media-primary-color, #fff);
+      --_secondary-color: var(--media-secondary-color, rgb(0 0 0 / .75));
+
+      --media-icon-color: var(--_primary-color);
+      --media-range-thumb-background: var(--_primary-color);
+      --media-range-bar-color: var(--_primary-color);
       --media-control-background: transparent;
       --media-control-hover-background: transparent;
       --media-range-track-border-radius: 3px;
+      --media-time-buffered-color: rgba(255, 255, 255, 0.4);
+      --media-range-track-background: rgba(255, 255, 255, 0.5);
+      --media-range-thumb-opacity: 0;
+      --media-preview-thumbnail-border-radius: 2px;
+
+      color: var(--_primary-color);
     }
 
     media-control-bar {
-      height: 30px;
-      border-radius: 8px;
-      margin: 0 6px 8px;
-      background: rgba(0, 0, 0, 0.75);
-      display: flex;
+      --media-control-padding: 2px;
+      background: var(--_secondary-color);
       align-items: center;
-      --media-control-padding: 4px;
+      height: 30px;
+      border-radius: 4px;
+      margin: 0 5px 5px;
+      padding-inline: 2px;
     }
 
     media-controller[breakpoint-sm] media-control-bar {
-      height: 42px;
-      --media-control-padding: 6px;
+      --media-control-padding: 4px;
+      height: 38px;
+      border-radius: 8px;
+      padding-inline: 5px;
     }
 
     media-controller[breakpoint-md] media-control-bar {
       height: 46px;
-      --media-control-padding: 7px;
+      margin: 0 8px 8px;
     }
 
     media-controller[breakpoint-lg] media-control-bar,
     media-controller[breakpoint-xl] media-control-bar {
-      height: 50px;
-      margin: 0 8px 8px;
-      --media-control-padding: 8px;
-    }
-
-    media-captions-button:not(:is([media-captions-list], [media-subtitles-list])) {
-      display: none;
+      padding-inline: 7px;
     }
 
     .live-controls-left {
       margin-right: auto;
+    }
+
+    media-time-range,
+    media-live-button,
+    media-time-display,
+    media-text-display,
+    media-playback-rate-button[role='button'] {
+      color: inherit;
     }
 
     [disabled],
