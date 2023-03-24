@@ -347,8 +347,16 @@ template.innerHTML = /*html*/`
     ></media-volume-range>
   </template>
 
-  <media-controller>
+  <media-controller
+    gestures-disabled="{{disabled}}"
+    hotkeys="{{hotkeys}}"
+    nohotkeys="{{nohotkeys}}"
+    audio="{{audio}}"
+    exportparts="layer, media-layer, poster-layer, vertical-layer, centered-layer, gesture-layer"
+  >
     <slot name="media" slot="media"></slot>
+    <slot name="poster" slot="poster"></slot>
+    <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
 
     <template if="title">
       <div slot="top-chrome">
