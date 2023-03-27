@@ -1,3 +1,19 @@
+# [0.20.0](https://github.com/muxinc/media-chrome/compare/v0.19.1...v0.20.0) (2023-03-27)
+
+
+### Bug Fixes
+
+* add non-default buttons to Minimal theme ([#507](https://github.com/muxinc/media-chrome/issues/507)) ([bcb218e](https://github.com/muxinc/media-chrome/commit/bcb218efb2e1897d6431bfc0819dd7402a906445))
+* add poster slot, media loading indicator to Microvideo ([#505](https://github.com/muxinc/media-chrome/issues/505)) ([6ea6079](https://github.com/muxinc/media-chrome/commit/6ea607921bf682269bd963001f35fa5ccca6506e))
+* add style tweaks to Minimal, Microvideo ([#508](https://github.com/muxinc/media-chrome/issues/508)) ([cad6841](https://github.com/muxinc/media-chrome/commit/cad68415b8e8755b5c357984d5baa9385fd3d2d3))
+
+
+### Features
+
+* Minimal theme ([#492](https://github.com/muxinc/media-chrome/issues/492)) ([cfc84f6](https://github.com/muxinc/media-chrome/commit/cfc84f68057b2140ae942aa447358893f6541836))
+
+
+
 ## [0.19.1](https://github.com/muxinc/media-chrome/compare/v0.19.0...v0.19.1) (2023-03-20)
 
 
