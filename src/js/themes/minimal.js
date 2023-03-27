@@ -399,7 +399,7 @@ template.innerHTML = /*html*/`
       <media-control-bar>
         <div class="live-controls-left">
           {{>LiveButton}}
-          <template if="targetLiveWindow == null">
+          <template if="!targetLiveWindow">
             <template if="breakpointSm">
               <media-time-display></media-time-display>
             </template>

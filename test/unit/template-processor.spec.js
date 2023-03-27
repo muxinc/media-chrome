@@ -5,6 +5,8 @@ import { TemplateInstance } from '../../src/js/utils/template-parts.js';
 describe('evaluateExpression', () => {
   it('can evaluate a simple boolean condition', () => {
     assert(evaluateExpression('true'));
+    assert(evaluateExpression('!false'));
+    assert(evaluateExpression('!!true'));
     assert(evaluateExpression('true == myVar', { myVar: true }));
     assert(evaluateExpression('myVar != false', { myVar: true }));
   });
@@ -12,6 +14,8 @@ describe('evaluateExpression', () => {
   it('can evaluate a simple number condition', async () => {
     assert(!evaluateExpression('0'));
     assert(evaluateExpression('1'));
+    assert(evaluateExpression('!0'));
+    assert(!evaluateExpression('!1'));
     assert(evaluateExpression('5 > 3'));
     assert(evaluateExpression('5 >= 3'));
     assert(evaluateExpression('5 >= 5'));
@@ -24,6 +28,7 @@ describe('evaluateExpression', () => {
 
   it('can evaluate a simple string condition', async () => {
     assert(!evaluateExpression('""'));
+    assert(evaluateExpression('!""'));
     assert(evaluateExpression('"thruthy"'));
     assert(evaluateExpression('myVar == "a string"', { myVar: 'a string' }));
     assert(evaluateExpression('myVar != "a string"', { myVar: 'lalala' }));

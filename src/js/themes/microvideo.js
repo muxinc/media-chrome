@@ -476,7 +476,7 @@ template.innerHTML = /*html*/`
 
   <template if="streamType == 'live'">
 
-    <template if="targetLiveWindow == null">
+    <template if="!targetLiveWindow">
 
       <media-control-bar slot="centered-chrome">
         {{>LiveButton}}
