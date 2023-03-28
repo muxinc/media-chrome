@@ -1,3 +1,12 @@
+## [0.20.1](https://github.com/muxinc/media-chrome/compare/v0.20.0...v0.20.1) (2023-03-28)
+
+
+### Bug Fixes
+
+* add support for negations ([#509](https://github.com/muxinc/media-chrome/issues/509)) ([dc1e574](https://github.com/muxinc/media-chrome/commit/dc1e5749e43e9b8fa2220e1c01efe49b8558251b))
+
+
+
 # [0.20.0](https://github.com/muxinc/media-chrome/compare/v0.19.1...v0.20.0) (2023-03-27)
 
 
