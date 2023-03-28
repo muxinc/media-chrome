@@ -129,6 +129,8 @@ export const processor = {
 };
 
 const operators = {
+  '!': (a) => !a,
+  '!!': (a) => !!a,
   '==': (a, b) => a == b,
   '!=': (a, b) => a != b,
   '>': (a, b) => a > b,
@@ -144,7 +146,7 @@ export function tokenizeExpression(expr) {
     boolean: /true|false/,
     number: /-?\d+\.?\d*/,
     string: /(["'])((?:\\.|[^\\])*?)\1/,
-    operator: /[!=><]=|>|<|=|\?\?|\|/,
+    operator: /[!=><][=!]?|\?\?|\|/,
     ws: /\s+/,
     param: /[$a-z_][$\w]*/i,
   }).filter(({ type }) => type !== 'ws');
@@ -157,6 +159,7 @@ export function tokenizeExpression(expr) {
 //   streamType == 'on-demand'
 //   streamType != 'live'
 //   breakpointMd
+//   !targetLiveWindow
 export function evaluateExpression(expr, state = {}) {
   const tokens = tokenizeExpression(expr);
 
@@ -194,6 +197,19 @@ export function evaluateExpression(expr, state = {}) {
       return invalidExpression(expr);
     }
     return getParamValue(tokens[0].token, state);
+  }
+
+  // e.g. {{!targetLiveWindow}} or {{!!lengthInBoolean}}
+  if (tokens.length === 2) {
+    const operator = tokens[0]?.token;
+    const run = operators[operator];
+
+    if (!run || !isValidParam(tokens[1])) {
+      return invalidExpression(expr);
+    }
+
+    const a = getParamValue(tokens[1].token, state);
+    return run(a);
   }
 
   // e.g. {{streamType == 'on-demand'}}, {{val | string}}, {{section ?? 'bottom'}}
