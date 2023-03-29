@@ -64,7 +64,8 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   constructor() {
     super();
-    this.container.innerHTML = formatTimesLabel(this);
+    this.container.style.cursor = 'pointer';
+    this.container.innerHTML = `<span style="cursor: pointer">${formatTimesLabel(this)}</span>`;
   }
 
   connectedCallback() {
