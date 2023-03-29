@@ -4,6 +4,9 @@ import { formatAsTimePhrase, formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
+//
+
+const ButtonPressedKeys = ['Enter', ' '];
 
 const DEFAULT_TIMES_SEP = '&nbsp;/&nbsp;';
 
@@ -61,7 +64,8 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   constructor() {
     super();
-    this.container.innerHTML = formatTimesLabel(this);
+    this.container.style.cursor = 'pointer';
+    this.container.innerHTML = `<span style="cursor: pointer">${formatTimesLabel(this)}</span>`;
   }
 
   connectedCallback() {
@@ -71,7 +75,37 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
     this.setAttribute('role', 'progressbar');
     this.setAttribute('aria-label', nouns.PLAYBACK_TIME());
+
+    const keyUpHandler = (evt) => {
+      const { key } = evt;
+      if (!ButtonPressedKeys.includes(key)) {
+        this.removeEventListener('keyup', keyUpHandler);
+        return;
+      }
+
+      this.toggleTimeDisplay();
+    };
+
+    this.addEventListener('keydown', (evt) => {
+      const { metaKey, altKey, key } = evt;
+      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+        this.removeEventListener('keyup', keyUpHandler);
+        return;
+      }
+      this.addEventListener('keyup', keyUpHandler);
+    });
+
+    this.addEventListener('click', this.toggleTimeDisplay);
+
     super.connectedCallback();
+  }
+
+  toggleTimeDisplay() {
+    if (this.hasAttribute('remaining')) {
+      this.removeAttribute('remaining');
+    } else {
+      this.setAttribute('remaining', '');
+    }
   }
 
   disconnectedCallback() {
