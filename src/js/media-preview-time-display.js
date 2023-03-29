@@ -14,7 +14,7 @@ class MediaPreviewTimeDisplay extends MediaTextDisplay {
   constructor() {
     super();
     this.#slot = this.shadowRoot.querySelector('slot');
-    this.#slot.innerHTML = formatTime(0);
+    this.#slot.textContent = formatTime(0);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {

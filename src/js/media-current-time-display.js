@@ -14,12 +14,12 @@ class MediaCurrentTimeDisplay extends MediaTextDisplay {
   constructor() {
     super();
     this.#slot = this.shadowRoot.querySelector('slot');
-    this.#slot.innerHTML = formatTime(0);
+    this.#slot.textContent = formatTime(0);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
-      this.#slot.innerHTML = formatTime(newValue);
+      this.#slot.textContent = formatTime(newValue);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
