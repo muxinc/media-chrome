@@ -5,18 +5,21 @@ import { MediaUIAttributes } from './constants.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 class MediaCurrentTimeDisplay extends MediaTextDisplay {
+  #slot;
+
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME];
   }
 
   constructor() {
     super();
-    this.container.innerHTML = formatTime(0);
+    this.#slot = this.shadowRoot.querySelector('slot');
+    this.#slot.innerHTML = formatTime(0);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_CURRENT_TIME) {
-      this.container.innerHTML = formatTime(newValue);
+      this.#slot.innerHTML = formatTime(newValue);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }

@@ -1,4 +1,5 @@
 import MediaTextDisplay from './media-text-display.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
 import { window } from './utils/server-safe-globals.js';
 import { formatAsTimePhrase, formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
@@ -50,6 +51,8 @@ const updateAriaValueText = (el) => {
 };
 
 class MediaTimeDisplay extends MediaTextDisplay {
+  #slot;
+
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
@@ -64,8 +67,12 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   constructor() {
     super();
-    this.container.style.cursor = 'pointer';
-    this.container.innerHTML = `<span style="cursor: pointer">${formatTimesLabel(this)}</span>`;
+
+    this.#slot = this.shadowRoot.querySelector('slot');
+    this.#slot.innerHTML = `${formatTimesLabel(this)}`;
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty('cursor', 'pointer');
   }
 
   connectedCallback() {
@@ -125,7 +132,10 @@ class MediaTimeDisplay extends MediaTextDisplay {
     ) {
       const timesLabel = formatTimesLabel(this);
       updateAriaValueText(this);
-      this.container.innerHTML = timesLabel;
+      // Only update if it changed, timeupdate events are called a few times per second.
+      if (timesLabel !== this.#slot.innerHTML) {
+        this.#slot.innerHTML = timesLabel;
+      }
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
