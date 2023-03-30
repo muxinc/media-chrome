@@ -12,10 +12,6 @@ slotTemplate.innerHTML = `
   </style>
 `;
 
-const compareTracks = (a, b) => {
-  return a.label === b.label && a.language === b.language;
-}
-
 class MediaPlaybackrateListbox extends MediaChromeListbox {
   static get observedAttributes() {
     return [
