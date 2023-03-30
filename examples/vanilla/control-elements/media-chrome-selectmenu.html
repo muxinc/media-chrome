@@ -6,7 +6,7 @@
   <script type="module" src="../../../dist/index.js"></script>
   <script type="module" src="../../../dist/experimental/media-chrome-selectmenu.js"></script>
   <script type="module" src="../../../dist/experimental/media-captions-selectmenu.js"></script>
-  <script type="module" src="../../../dist/experimental/media-playback-rate-listbox.js"></script>
+  <script type="module" src="../../../dist/experimental/media-playback-rate-selectmenu.js"></script>
   <style>
     media-controller {
       margin-top: 2em;
@@ -115,7 +115,8 @@
           <media-captions-button default-showing slot="button"></media-captions-button>
           <media-captions-listbox slot="listbox"></media-captions-listbox>
         </media-chrome-selectmenu>
-        <media-playback-rate-button></media-playback-rate-button>
+        <!-- <media-playback-rate-button></media-playback-rate-button> -->
+        <media-playback-rate-selectmenu></media-playback-rate-selectmenu>
         <media-pip-button></media-pip-button>
         <media-chrome-selectmenu disabled aria-label="captions menu button">
           <media-captions-button default-showing slot="button"></media-captions-button>
