@@ -1,3 +1,13 @@
+## [0.20.2](https://github.com/muxinc/media-chrome/compare/v0.20.1...v0.20.2) (2023-03-30)
+
+
+### Bug Fixes
+
+* slot for text display, customizable content ([#511](https://github.com/muxinc/media-chrome/issues/511)) ([bf1fc7e](https://github.com/muxinc/media-chrome/commit/bf1fc7ee75f1b638cfa1ceff9c5efa21852ae97f))
+* toggle time display on click from remaining / not remaining ([#510](https://github.com/muxinc/media-chrome/issues/510)) ([826131c](https://github.com/muxinc/media-chrome/commit/826131c402b46a70fe33eb7cc967e5b27f5a64ab))
+
+
+
 ## [0.20.1](https://github.com/muxinc/media-chrome/compare/v0.20.0...v0.20.1) (2023-03-28)
 
 
