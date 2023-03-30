@@ -15,10 +15,14 @@ _From [Mux](https://mux.com?utm_source=github&utm_medium=social&utm_campaign=med
 
 Visit the [official documentation for Media Chrome](https://media-chrome.org/en/get-started) for the latest up-to-date usage instructions.
 
-## Video Example
+## Examples
+
+<a href="https://media-chrome.mux.dev/examples/" target="_blank">See all of the repo examples in action.</a>
+
+### Video Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.17/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.20/+esm"></script>
 
 <media-controller>
   <video
@@ -50,12 +54,10 @@ Visit the [official documentation for Media Chrome](https://media-chrome.org/en/
   <img width="890" alt="Media Chrome Video Player Demo" src="./docs/public/assets/media-chrome-video-player.jpeg">
 </a>
 
-#### <a href="https://media-chrome.mux.dev/examples/" target="_blank">See all of the repo examples in action.</a>
-
-## Audio Example
+### Audio Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.17/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.20/+esm"></script>
 
 <media-controller audio>
   <audio
