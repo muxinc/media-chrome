@@ -59,7 +59,6 @@ class MediaPlaybackrateSelectMenu extends MediaChromeSelectMenu {
 
       rates.forEach(rate => {
         listbox.append(createItem(rate));
-
       });
     }
 
