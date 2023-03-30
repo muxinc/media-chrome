@@ -14,6 +14,7 @@ import { fullscreenApi } from './utils/fullscreenApi.js';
 import { constToCamel } from './utils/utils.js';
 import { containsComposedNode } from './utils/element-utils.js';
 import { toggleSubsCaps } from './utils/captions.js';
+import { serializeTimeRanges } from './utils/time.js';
 
 import {
   MediaUIEvents,
@@ -1448,43 +1449,6 @@ export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {
   return fullscreenEnabled;
 };
 const fullscreenEnabled = hasFullscreenSupport();
-
-
-/** @type {TimeRanges} */
-const emptyTimeRanges = Object.freeze({
-  length: 0,
-  start(index) {
-    const unsignedIdx = index >>> 0;
-    if (unsignedIdx >= this.length) {
-      throw new DOMException(
-        `Failed to execute 'start' on 'TimeRanges': The index provided (${unsignedIdx}) is greater than or equal to the maximum bound (${this.length}).`
-      );
-    }
-    return 0;
-  },
-  end(index) {
-    const unsignedIdx = index >>> 0;
-    if (unsignedIdx >= this.length) {
-      throw new DOMException(
-        `Failed to execute 'end' on 'TimeRanges': The index provided (${unsignedIdx}) is greater than or equal to the maximum bound (${this.length}).`
-      );
-    }
-    return 0;
-  },
-});
-
-/**
- * @argument {TimeRanges} [timeRanges]
- */
-function serializeTimeRanges(timeRanges = emptyTimeRanges) {
-  // @ts-ignore
-  return Array.from(timeRanges)
-    .map((_, i) => [
-      Number(timeRanges.start(i).toFixed(3)),
-      Number(timeRanges.end(i).toFixed(3)),
-    ].join(':'))
-    .join(' ');
-}
 
 if (!window.customElements.get('media-controller')) {
   window.customElements.define('media-controller', MediaController);

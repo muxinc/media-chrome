@@ -95,3 +95,39 @@ export function formatTime(seconds, guide) {
 
   return (negative ? '-' : '') + h + m + s;
 }
+
+/** @type {TimeRanges} */
+export const emptyTimeRanges = Object.freeze({
+  length: 0,
+  start(index) {
+    const unsignedIdx = index >>> 0;
+    if (unsignedIdx >= this.length) {
+      throw new DOMException(
+        `Failed to execute 'start' on 'TimeRanges': The index provided (${unsignedIdx}) is greater than or equal to the maximum bound (${this.length}).`
+      );
+    }
+    return 0;
+  },
+  end(index) {
+    const unsignedIdx = index >>> 0;
+    if (unsignedIdx >= this.length) {
+      throw new DOMException(
+        `Failed to execute 'end' on 'TimeRanges': The index provided (${unsignedIdx}) is greater than or equal to the maximum bound (${this.length}).`
+      );
+    }
+    return 0;
+  },
+});
+
+/**
+ * @argument {TimeRanges} [timeRanges]
+ */
+export function serializeTimeRanges(timeRanges = emptyTimeRanges) {
+  // @ts-ignore
+  return Array.from(timeRanges)
+    .map((_, i) => [
+      Number(timeRanges.start(i).toFixed(3)),
+      Number(timeRanges.end(i).toFixed(3)),
+    ].join(':'))
+    .join(' ');
+}
