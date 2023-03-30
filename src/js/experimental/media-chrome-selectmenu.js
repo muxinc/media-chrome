@@ -168,7 +168,7 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     if (!this.#listboxSlot.hidden) {
       this.#listbox.focus();
       this.#updateMenuPosition();
-    } else {
+    } else if (this.shadowRoot.activeElement === this.#listbox || this.#listbox.contains(this.shadowRoot.activeElement)) {
       this.#button.focus();
     }
   }

@@ -135,8 +135,9 @@ class MediaChromeListbox extends window.HTMLElement {
 
   set value(newValue) {
     const item = this.#items.filter(el => el.value === newValue || el.textContent === newValue)[0];
-    console.log(item);
+
     if (!item) return;
+
     this.#selectItem(item);
   }
 
