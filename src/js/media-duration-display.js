@@ -5,18 +5,21 @@ import { MediaUIAttributes } from './constants.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 class MediaDurationDisplay extends MediaTextDisplay {
+  #slot;
+
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_DURATION];
   }
 
   constructor() {
     super();
-    this.container.innerHTML = formatTime(0);
+    this.#slot = this.shadowRoot.querySelector('slot');
+    this.#slot.textContent = formatTime(0);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
-      this.container.innerHTML = formatTime(newValue);
+      this.#slot.textContent = formatTime(newValue);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }

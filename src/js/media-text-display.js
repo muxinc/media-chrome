@@ -42,9 +42,7 @@ template.innerHTML = `
       outline: 0;
     }
   </style>
-  <span id="container">
   <slot></slot>
-  </span>
 `;
 
 class MediaTextDisplay extends window.HTMLElement {
@@ -59,7 +57,6 @@ class MediaTextDisplay extends window.HTMLElement {
 
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
-    this.container = this.shadowRoot.querySelector('#container');
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
