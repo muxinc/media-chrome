@@ -159,7 +159,7 @@ class MediaChromeListbox extends window.HTMLElement {
     }
 
     if (key === 'Enter' || key === ' ') {
-      this.handleSelection(e);
+      this.handleSelection(e, true);
     } else {
       this.handleMovement(e);
     }
@@ -248,23 +248,27 @@ class MediaChromeListbox extends window.HTMLElement {
     return composedPath[index];
   }
 
-  handleSelection(e) {
+  handleSelection(e, toggle) {
     const item = this.#getItem(e);
 
     if (!item) return;
 
-    this.#selectItem(item);
+    this.#selectItem(item, toggle);
   }
 
-  #selectItem(item) {
-    const selected = item.getAttribute('aria-selected') === 'true';
-
+  #selectItem(item, toggle) {
     if (this.getAttribute('aria-multiselectable') !== 'true') {
       this.#assignedElements.forEach(el => el.setAttribute('aria-selected', 'false'));
     }
 
-    if (selected) {
-      item.setAttribute('aria-selected', 'false');
+    if (toggle) {
+      const selected = item.getAttribute('aria-selected') === 'true';
+
+      if (selected) {
+        item.setAttribute('aria-selected', 'false');
+      } else {
+        item.setAttribute('aria-selected', 'true');
+      }
     } else {
       item.setAttribute('aria-selected', 'true');
     }
@@ -326,7 +330,7 @@ class MediaChromeListbox extends window.HTMLElement {
     this.#items.forEach(el => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
 
-    this.handleSelection(e);
+    this.handleSelection(e, e.metaKey || e.ctrlKey);
   }
 
   #searchItem(key) {
