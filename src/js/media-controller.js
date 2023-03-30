@@ -15,6 +15,14 @@ import { constToCamel, delay } from './utils/utils.js';
 import { containsComposedNode } from './utils/element-utils.js';
 import { toggleSubsCaps } from './utils/captions.js';
 import { serializeTimeRanges } from './utils/time.js';
+import {
+  hasVolumeSupportAsync,
+  fullscreenSupported,
+  pipSupported,
+  airplaySupported,
+  castSupported
+} from './utils/platform-tests.js';
+
 
 import {
   MediaUIEvents,
@@ -57,7 +65,7 @@ class MediaController extends MediaContainer {
     if (!airplaySupported) {
       this._airplayUnavailable = AvailabilityStates.UNSUPPORTED;
     }
-    if (!fullscreenEnabled) {
+    if (!fullscreenSupported) {
       this._fullscreenUnavailable = AvailabilityStates.UNAVAILABLE;
     }
     if (!castSupported) {
@@ -150,7 +158,7 @@ class MediaController extends MediaContainer {
       //   - Element.requestFullscreen()
       //
       MEDIA_ENTER_FULLSCREEN_REQUEST: () => {
-        if (!fullscreenEnabled) {
+        if (!fullscreenSupported) {
           console.warn('Fullscreen support is unavailable; not entering fullscreen');
           return;
         }
@@ -1403,45 +1411,11 @@ const monitorForMediaStateReceivers = (
   return unsubscribe;
 };
 
-let testMediaEl;
-export const getTestMediaEl = () => {
-  if (testMediaEl) return testMediaEl;
-  testMediaEl = document?.createElement?.('video');
-  return testMediaEl;
-};
-
-export const hasVolumeSupportAsync = async (mediaEl = getTestMediaEl()) => {
-  if (!mediaEl) return false;
-  const prevVolume = mediaEl.volume;
-  mediaEl.volume = prevVolume / 2 + 0.1;
-  await delay(0);
-  return mediaEl.volume !== prevVolume;
-};
-
-export const hasPipSupport = (mediaEl = getTestMediaEl()) =>
-  typeof mediaEl?.requestPictureInPicture === 'function';
-
-const pipSupported = hasPipSupport();
-
 let volumeSupported;
 const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
   volumeSupported = supported;
   return volumeSupported;
 });
-
-const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
-const castSupported = !!window.chrome;
-
-export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {
-  let fullscreenEnabled = document[fullscreenApi.enabled];
-
-  if (!fullscreenEnabled && mediaEl) {
-    fullscreenEnabled = 'webkitSupportsFullscreen' in mediaEl;
-  }
-
-  return fullscreenEnabled;
-};
-const fullscreenEnabled = hasFullscreenSupport();
 
 if (!window.customElements.get('media-controller')) {
   window.customElements.define('media-controller', MediaController);
