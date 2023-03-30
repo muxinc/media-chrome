@@ -110,6 +110,36 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     });
   }
 
+  // NOTE: There are definitely some "false positive" cases with multi-key pressing,
+  // but this should be good enough for most use cases.
+  #keyupListener = (e) => {
+    const { key } = e;
+
+    if (!this.keysUsed.includes(key)) {
+      this.removeEventListener('keyup', this.#keyupListener);
+      return;
+    }
+
+    const isButton = e.composedPath().includes(this.#button);
+
+    // only allow Enter/Space on the button itself and not on the listbox
+    // and allow hiding the menu when pressing Escape when focused on the listbox
+    if (isButton && (key === 'Enter' || key === ' ')) {
+      this.#handleClick();
+    } else if (key === 'Escape' && !this.#listboxSlot.hidden) {
+      this.#toggle();
+    }
+  }
+
+  #keydownListener = (e) => {
+    const { metaKey, altKey, key } = e;
+    if (metaKey || altKey || !this.keysUsed.includes(key)) {
+      this.removeEventListener('keyup', this.#keyupListener);
+      return;
+    }
+    this.addEventListener('keyup', this.#keyupListener, {once: true});
+  }
+
   #handleClick_() {
     this.#toggle();
   }
@@ -174,6 +204,8 @@ class MediaChromeSelectMenu extends window.HTMLElement {
   enable() {
     this.#button.removeAttribute('disabled');
     this.#button.addEventListener('click', this.#handleClick);
+    this.#button.addEventListener('keydown', this.#keydownListener);
+    this.#listbox.addEventListener('keydown', this.#keydownListener);
     this.#toggleExpanded();
     this.#listbox.addEventListener('change', this.#handleChange);
   }
@@ -181,6 +213,10 @@ class MediaChromeSelectMenu extends window.HTMLElement {
   disable() {
     this.#button.setAttribute('disabled', '');
     this.#button.removeEventListener('click', this.#handleClick);
+    this.#button.removeEventListener('keydown', this.#keydownListener);
+    this.#button.removeEventListener('keyup', this.#keyupListener);
+    this.#listbox.removeEventListener('keydown', this.#keydownListener);
+    this.#listbox.removeEventListener('keyup', this.#keyupListener);
     this.#listbox.addEventListener('change', this.#handleChange);
   }
 
@@ -236,7 +272,7 @@ class MediaChromeSelectMenu extends window.HTMLElement {
   }
 
   get keysUsed() {
-    return ['Enter', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
+    return ['Enter', 'Escape', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
   }
 
 }
