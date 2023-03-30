@@ -23,7 +23,8 @@ class MediaPlaybackrateListbox extends MediaChromeListbox {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      'aria-multiselectable'
+      'aria-multiselectable',
+      MediaUIAttributes.MEDIA_PLAYBACK_RATE
     ];
   }
 
@@ -41,7 +42,9 @@ class MediaPlaybackrateListbox extends MediaChromeListbox {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === 'aria-multiselectable') {
+    if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE && oldValue !== newValue) {
+      this.value = newValue;
+    } else if (attrName === 'aria-multiselectable') {
       // diallow aria-multiselectable
       this.removeAttribute('aria-multiselectable');
       console.warn("Captions List doesn't currently support multiple selections. You can enable multiple items via the media.textTrack API.");
