@@ -7,8 +7,8 @@ import { nouns } from './labels/labels.js';
   <media-playback-rate-button rates="1 1.5 2">
 */
 
-const DEFAULT_RATES = [1, 1.25, 1.5, 1.75, 2];
-const DEFAULT_RATE = 1;
+export const DEFAULT_RATES = [1, 1.25, 1.5, 1.75, 2];
+export const DEFAULT_RATE = 1;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
