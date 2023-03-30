@@ -1,5 +1,4 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
-import './media-chrome-listitem.js';
 import { window, document } from '../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
@@ -18,8 +17,6 @@ const compareTracks = (a, b) => {
 }
 
 class MediaPlaybackrateListbox extends MediaChromeListbox {
-  #offOption;
-
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
@@ -30,15 +27,6 @@ class MediaPlaybackrateListbox extends MediaChromeListbox {
 
   constructor() {
     super({slotTemplate});
-
-    const offOption = document.createElement('media-chrome-listitem');
-
-    offOption.part.add('listitem');
-    offOption.value = 'off';
-    offOption.textContent = 'Off';
-    this.#offOption = offOption;
-
-    this.#render();
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -54,8 +42,6 @@ class MediaPlaybackrateListbox extends MediaChromeListbox {
   }
 
   connectedCallback() {
-    this.#render();
-
     this.addEventListener('change', this.#onChange);
 
     super.connectedCallback();
@@ -67,17 +53,8 @@ class MediaPlaybackrateListbox extends MediaChromeListbox {
     super.disconnectedCallback();
   }
 
-  #render() {
-    const container = this.shadowRoot.querySelector('ul slot');
-    if (!container.contains(this.#offOption)) {
-      container.append(this.#offOption);
-    }
-  }
-
   #onChange() {
     const selectedOption = this.selectedOptions[0]?.value;
-
-    console.log(selectedOption);
 
     if (!selectedOption) return;
 
