@@ -129,6 +129,17 @@ class MediaChromeListbox extends window.HTMLElement {
     return this.#items.filter(el => el.getAttribute('aria-selected') === 'true');
   }
 
+  get value() {
+    return this.selectedOptions[0].value || this.selectedOptions[0].textContent;
+  }
+
+  set value(newValue) {
+    const item = this.#items.filter(el => el.value === newValue || el.textContent === newValue)[0];
+    console.log(item);
+    if (!item) return;
+    this.#selectItem(item);
+  }
+
   focus() {
     this.selectedOptions[0]?.focus();
   }
@@ -242,6 +253,10 @@ class MediaChromeListbox extends window.HTMLElement {
 
     if (!item) return;
 
+    this.#selectItem(item);
+  }
+
+  #selectItem(item) {
     const selected = item.getAttribute('aria-selected') === 'true';
 
     if (this.getAttribute('aria-multiselectable') !== 'true') {
