@@ -17,7 +17,7 @@ const compareTracks = (a, b) => {
   return a.label === b.label && a.language === b.language;
 }
 
-class MediaCaptionsListbox extends MediaChromeListbox {
+class MediaPlaybackrateListbox extends MediaChromeListbox {
   #offOption;
 
   static get observedAttributes() {
@@ -91,7 +91,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
 }
 
 if (!window.customElements.get('media-playback-rate-listbox')) {
-  window.customElements.define('media-playback-rate-listbox', MediaCaptionsListbox);
+  window.customElements.define('media-playback-rate-listbox', MediaPlaybackrateListbox);
 }
 
-export default MediaCaptionsListbox;
+export default MediaPlaybackrateListbox;
