@@ -11,7 +11,7 @@ import MediaContainer from './media-container.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
-import { constToCamel } from './utils/utils.js';
+import { constToCamel, delay } from './utils/utils.js';
 import { containsComposedNode } from './utils/element-utils.js';
 import { toggleSubsCaps } from './utils/captions.js';
 import { serializeTimeRanges } from './utils/time.js';
@@ -1417,13 +1417,6 @@ export const hasVolumeSupportAsync = async (mediaEl = getTestMediaEl()) => {
   await delay(0);
   return mediaEl.volume !== prevVolume;
 };
-
-/**
- * Returns a promise that will resolve after passed ms.
- * @param  {number} ms
- * @return {Promise}
- */
-export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const hasPipSupport = (mediaEl = getTestMediaEl()) =>
   typeof mediaEl?.requestPictureInPicture === 'function';
