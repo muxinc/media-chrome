@@ -103,10 +103,10 @@ class MediaChromeSelectMenu extends window.HTMLElement {
 
     this.#listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
     this.#listboxSlot.addEventListener('slotchange', () => {
-      this.#listbox.removeEventListener('change', this.#handleChange);
+      this.disable();
       // update listbox reference if necessary
       this.#listbox = this.#listboxSlot.assignedElements()[0] || this.#listbox;
-      this.#listbox.addEventListener('change', this.#handleChange);
+      this.enable();
     });
   }
 
