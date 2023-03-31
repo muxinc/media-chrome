@@ -27,6 +27,8 @@ const documentShim = {
   createElement: function () {
     return new windowShim.HTMLElement();
   },
+  addEventListener() {},
+  removeEventListener() {},
 };
 
 export const isServer =
@@ -66,6 +68,8 @@ export const Window = isServer ? windowShim : window;
   * exitPictureInPicture?,
   * pictureInPictureEnabled?,
   * requestPictureInPicture?,
+  * addEventListener?,
+  * removeEventListener?,
   * } }
   */
 export const Document = isServer ? documentShim : window.document;
