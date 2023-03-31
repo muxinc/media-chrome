@@ -10,9 +10,8 @@
   "main": "dist/index.js",
   "customElements": "dist/custom-elements.json",
   "files": [
-    "dist/*",
-    "README.md",
-    "examples/*"
+    "src",
+    "dist"
   ],
   "scripts": {
     "format": "prettier --write .",
