@@ -95,7 +95,7 @@ To proceed with a release, you should be confident that the commits in your upco
 
 Here's how you can review the commits you're about to release:
 
-<img src="assets/3-compare-tags.png" alt="A screenshot showing how to compare tags on GitHub" width="400">
+<img src=".github/assets/3-compare-tags.png" alt="A screenshot showing how to compare tags on GitHub" width="400">
 
 1. Visit https://github.com/muxinc/media-chrome/compare
 2. In the **base** select box, choose the tag applied to the previous release. Keep `main` for the **compare** select box value.
@@ -105,12 +105,12 @@ Here's how you can review the commits you're about to release:
 
 ### Steps to release a new version
 
-<img src="assets/1-cd-tab.png" alt="A screenshot showing the available actions to run on GitHub" width="400">
+<img src=".github/assets/1-cd-tab.png" alt="A screenshot showing the available actions to run on GitHub" width="400">
 
 1. Visit the [GitHub Actions tab](https://github.com/muxinc/media-chrome/actions) and 
 select the "CD" action in the left sidebar.
 
-<img src="assets/2-run-workflow.png" alt="A screenshot showing the form used to initiate the CD workflow." width="400">
+<img src=".github/assets/2-run-workflow.png" alt="A screenshot showing the form used to initiate the CD workflow." width="400">
 
 2. Click the "Run workflow" dropdown and choose the correct `Version` on the `main` branch.
    - In the **Use workflow from** select box, make sure **Branch: main** is selected.
