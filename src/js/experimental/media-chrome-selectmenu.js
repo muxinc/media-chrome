@@ -141,6 +141,15 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     this.addEventListener('keyup', this.#keyupListener, {once: true});
   }
 
+  #documentClickHandler = (e) => {
+    // if we clicked inside the selectmenu, don't handle it here
+    if (e.composedPath().includes(this)) return;
+
+    if (!this.#listboxSlot.hidden) {
+      this.#toggle();
+    }
+  }
+
   #handleClick_() {
     this.#toggle();
   }
@@ -209,6 +218,7 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     this.#listbox.addEventListener('keydown', this.#keydownListener);
     this.#toggleExpanded();
     this.#listbox.addEventListener('change', this.#handleChange);
+    document.addEventListener('click', this.#documentClickHandler);
   }
 
   disable() {
@@ -219,6 +229,7 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     this.#listbox.removeEventListener('keydown', this.#keydownListener);
     this.#listbox.removeEventListener('keyup', this.#keyupListener);
     this.#listbox.addEventListener('change', this.#handleChange);
+    document.removeEventListener('click', this.#documentClickHandler);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
