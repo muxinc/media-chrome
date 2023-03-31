@@ -374,7 +374,10 @@ class MediaContainer extends window.HTMLElement {
 
     const setInactive = () => {
       if (this.autohide < 0) return;
-      this.setAttribute('user-inactive', 'user-inactive');
+      if (this.hasAttribute('user-inactive')) return;
+
+      this.setAttribute('user-inactive', '');
+
       const evt = new window.CustomEvent(
         MediaStateChangeEvents.USER_INACTIVE,
         { composed: true, bubbles: true, detail: true }
@@ -383,7 +386,10 @@ class MediaContainer extends window.HTMLElement {
     };
 
     const setActive = () => {
+      if (!this.hasAttribute('user-inactive')) return;
+
       this.removeAttribute('user-inactive');
+
       const evt = new window.CustomEvent(
         MediaStateChangeEvents.USER_INACTIVE,
         { composed: true, bubbles: true, detail: false }

@@ -707,11 +707,15 @@ class MediaController extends MediaContainer {
       state = Delegates[stateName](this);
     }
 
+    const previousState = this.getAttribute(stateName);
     propagateMediaState(this.mediaStateReceivers, stateName, state);
-    const evt = new window.CustomEvent(
-      AttributeToStateChangeEventMap[stateName],
-      { composed: true, bubbles: true, detail: state }
-    );
+
+    if (previousState === this.getAttribute(stateName)) return;
+
+    const eventName = AttributeToStateChangeEventMap[stateName];
+    if (!eventName) return;
+
+    const evt = new window.CustomEvent(eventName, { composed: true, bubbles: true, detail: state });
     this.dispatchEvent(evt);
   }
 
