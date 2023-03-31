@@ -23,7 +23,6 @@ import {
   castSupported
 } from './utils/platform-tests.js';
 
-
 import {
   MediaUIEvents,
   MediaUIAttributes,
@@ -46,6 +45,7 @@ import {
 const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;
 const DEFAULT_TIME = 0;
+
 
 /**
  * Media Controller should not mimic the HTMLMediaElement API.
@@ -106,13 +106,11 @@ class MediaController extends MediaContainer {
           mediaUIEventHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](e, media);
         }
 
-        this.media.play().catch(() => {});
+        media.play().catch(() => {});
       },
-      MEDIA_PAUSE_REQUEST: () => this.media.pause(),
-      MEDIA_MUTE_REQUEST: () => (this.media.muted = true),
-      MEDIA_UNMUTE_REQUEST: () => {
-        const media = this.media;
-
+      MEDIA_PAUSE_REQUEST: (e, media) => media.pause(),
+      MEDIA_MUTE_REQUEST: (e, media) => (media.muted = true),
+      MEDIA_UNMUTE_REQUEST: (e, media) => {
         media.muted = false;
 
         // Avoid confusion by bumping the volume on unmute
@@ -120,8 +118,7 @@ class MediaController extends MediaContainer {
           media.volume = 0.25;
         }
       },
-      MEDIA_VOLUME_REQUEST: (e) => {
-        const media = this.media;
+      MEDIA_VOLUME_REQUEST: (e, media) => {
         const volume = e.detail;
 
         media.volume = volume;
@@ -157,12 +154,11 @@ class MediaController extends MediaContainer {
       //   - Document.fullscreenElement / (ShadowRoot.fullscreenElement)
       //   - Element.requestFullscreen()
       //
-      MEDIA_ENTER_FULLSCREEN_REQUEST: () => {
+      MEDIA_ENTER_FULLSCREEN_REQUEST: (e, media) => {
         if (!fullscreenSupported) {
           console.warn('Fullscreen support is unavailable; not entering fullscreen');
           return;
         }
-        const media = this.media;
 
         if (document.pictureInPictureElement) {
           // Should be async
@@ -186,9 +182,7 @@ class MediaController extends MediaContainer {
       MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
         document[fullscreenApi.exit]();
       },
-      MEDIA_ENTER_PIP_REQUEST: () => {
-        const media = this.media;
-
+      MEDIA_ENTER_PIP_REQUEST: (e, media) => {
         if (!document.pictureInPictureEnabled) {
           console.warn('MediaChrome: Picture-in-picture is not enabled');
           // Placeholder for emitting a user-facing warning
@@ -254,9 +248,7 @@ class MediaController extends MediaContainer {
           document.exitPictureInPicture();
         }
       },
-      MEDIA_ENTER_CAST_REQUEST: () => {
-        const media = this.media;
-
+      MEDIA_ENTER_CAST_REQUEST: (e, media) => {
         if (!globalThis.CastableVideoElement?.castEnabled) return;
 
         // Exit fullscreen if needed
@@ -273,8 +265,7 @@ class MediaController extends MediaContainer {
           globalThis.CastableVideoElement.exitCast();
         }
       },
-      MEDIA_SEEK_REQUEST: (e) => {
-        const media = this.media;
+      MEDIA_SEEK_REQUEST: (e, media) => {
         const time = e.detail;
 
         // Can't set the time before the media is ready
@@ -283,11 +274,10 @@ class MediaController extends MediaContainer {
           media.currentTime = time;
         }
       },
-      MEDIA_PLAYBACK_RATE_REQUEST: (e) => {
-        this.media.playbackRate = e.detail;
+      MEDIA_PLAYBACK_RATE_REQUEST: (e, media) => {
+        media.playbackRate = e.detail;
       },
-      MEDIA_PREVIEW_REQUEST: (e) => {
-        const media = this.media;
+      MEDIA_PREVIEW_REQUEST: (e, media) => {
         // No media (yet), so bail early
         if (!media) return;
 
