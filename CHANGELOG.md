@@ -1,3 +1,13 @@
+## [0.20.3](https://github.com/muxinc/media-chrome/compare/v0.20.2...v0.20.3) (2023-03-31)
+
+
+### Bug Fixes
+
+* over firing user-inactive event, attr name ([#515](https://github.com/muxinc/media-chrome/issues/515)) ([26a05f6](https://github.com/muxinc/media-chrome/commit/26a05f6ac4accc47241e17f8c58d1d9269e77722))
+* toggle selectmenu via keyboard, hide on click outside of selectmenu ([#514](https://github.com/muxinc/media-chrome/issues/514)) ([df9a50d](https://github.com/muxinc/media-chrome/commit/df9a50d62133d02d53ad749a02e4b801f210d2ef))
+
+
+
 ## [0.20.2](https://github.com/muxinc/media-chrome/compare/v0.20.1...v0.20.2) (2023-03-30)
 
 
