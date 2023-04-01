@@ -62,7 +62,7 @@ Below is a more in-depth discussion of available slots and how they work.
 
 ![media controller slots layout](/assets/media-controller-slots.png)
 
-For an interactive example of how each of the slots render for `video`, check out [this demo](https://media-chrome.mux.dev/examples/slots-demo.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/slots-demo.html)).
+For an interactive example of how each of the slots render for `video`, check out [this demo](https://media-chrome.mux.dev/sandbox/slots-demo.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/sandbox/slots-demo.html)).
 
 #### Default Slot (effectively the "`bottom-chrome`")
 
@@ -74,10 +74,10 @@ For an interactive example of how each of the slots render for `video`, check ou
 - Render Location: Each child that doesn't specify a slot will render at the bottom of the `<media-controller>`. If you have more than one element like this they will be stacked vertically.
 
 - Common/Example use cases: showing one or more rows of controls at the bottom of the `<media-controller>`. For many use cases, you can simply add a `<media-control-bar>` for each row of controls you'd like, which will provide you with additional automatic sizing and layout behavior.
-  - [Basic example](https://media-chrome.mux.dev/examples/basic.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/basic.html))
-  - [Mobile example](https://media-chrome.mux.dev/examples/mobile.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/mobile.html))
-  - [Youtube theme](https://media-chrome.mux.dev/examples/themes/youtube-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/youtube-theme.html))
-  - [Netflix theme](https://media-chrome.mux.dev/examples/themes/netflix-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/netflix-theme.html))
+  - [Basic example](https://media-chrome.mux.dev/sandbox/basic.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/sandbox/basic.html))
+  - [Mobile example](https://media-chrome.mux.dev/sandbox/mobile.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/sandbox/mobile.html))
+  - [Youtube theme](https://media-chrome.mux.dev/sandbox/themes/youtube-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/sandbox/themes/youtube-theme.html))
+  - [Netflix theme](https://media-chrome.mux.dev/sandbox/themes/netflix-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/sandbox/themes/netflix-theme.html))
 
 #### `top-chrome`
 
@@ -89,7 +89,7 @@ For an interactive example of how each of the slots render for `video`, check ou
 - Render Location: Each child that specifies `slot="top-chrome"` will render at the top of the `<media-controller>`. If you have more than one element like this they will be stacked vertically.
 
 - Common/Example use cases: showing one or more rows of controls at the top of the `<media-controller>`. For many use cases, you can simply add a `<media-control-bar>` for each row of controls you'd like.
-  - [Demuxed 2021 theme](https://media-chrome.mux.dev/examples/themes/demuxed-2021-theme.html) (mobile screen sizes only) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/demuxed-2021-theme.html))
+  - [Demuxed 2021 theme](https://media-chrome.mux.dev/sandbox/themes/demuxed-2021-theme.html) (mobile screen sizes only) ([view source](https://github.com/muxinc/media-chrome/blob/main/sandbox/themes/demuxed-2021-theme.html))
 
 #### `middle-chrome`
 
@@ -113,8 +113,8 @@ For an interactive example of how each of the slots render for `video`, check ou
 - Render Location: The child that specifies `slot="centered-chrome"` will show up in the center of the `<media-controller>` and will be "above" anything in the default slot, `top-chrome`, or `middle-chrome`.
 
 - Common/Example use cases: "big button" controls that are centered and horizontally layed out "on top of" the media. While you **_can_** have multiple children that are "slotted to" `centered-chrome`, most likely, you'll want to use only one, making styling and layout easier and more predictable.
-  - [Mobile example](https://media-chrome.mux.dev/examples/mobile.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/mobile.html))
-  - [Demuxed 2021 theme](https://media-chrome.mux.dev/examples/themes/demuxed-2021-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/demuxed-2021-theme.html))
+  - [Mobile example](https://media-chrome.mux.dev/sandbox/mobile.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/sandbox/mobile.html))
+  - [Demuxed 2021 theme](https://media-chrome.mux.dev/sandbox/themes/demuxed-2021-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/sandbox/themes/demuxed-2021-theme.html))
 
 #### Other use cases
 
@@ -137,5 +137,5 @@ Since `audio` chromes vary much more than `video`, it's recommended that you onl
 As we work through other common use cases, both internally and with the community, we may start adding additional "built-in" styling and layout for `<media-control-bar>` slots used with `audio`.
 
 - Example use cases:
-  - [Basic example](https://media-chrome.mux.dev/examples/basic.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/basic.html))
-  - [Spotify theme](https://media-chrome.mux.dev/examples/themes/spotify-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/examples/themes/spotify-theme.html))
+  - [Basic example](https://media-chrome.mux.dev/sandbox/basic.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/sandbox/basic.html))
+  - [Spotify theme](https://media-chrome.mux.dev/sandbox/themes/spotify-theme.html) ([view source](https://github.com/muxinc/media-chrome/blob/main/sandbox/themes/spotify-theme.html))

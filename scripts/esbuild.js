@@ -10,8 +10,8 @@ async function serve() {
   const port = await getFreePort(8000);
 
   console.log('');
-  console.log(` > Local:   http://localhost:${port}/examples/`);
-  console.log(` > Network: http://${getNetworkAddress()}:${port}/examples/`);
+  console.log(` > Local:   http://localhost:${port}/sandbox/`);
+  console.log(` > Network: http://${getNetworkAddress()}:${port}/sandbox/`);
 
   // Start esbuild's server on local port 8010
   esbuild
@@ -51,7 +51,7 @@ async function serve() {
             }
 
             if (proxyRes.req.path === '/') {
-              res.writeHead(302, { Location: '/examples' });
+              res.writeHead(302, { Location: '/sandbox' });
               res.end();
               return;
             }
