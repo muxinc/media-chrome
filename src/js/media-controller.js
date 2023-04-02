@@ -46,6 +46,393 @@ const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k
 const DEFAULT_SEEK_OFFSET = 10;
 const DEFAULT_TIME = 0;
 
+const MediaUIStates = {
+  paused: {
+    get: function(controller){
+      const { media } = controller;
+
+      return (media) ? media.paused : true;
+    },
+    mediaEvents: ['play', 'pause', 'emptied']
+  }, 
+  hasPlayed: {
+    // We want to let the user know that the media started playing at any point (`media-has-played`).
+    // Since these propagators are all called when boostrapping state, let's verify this is
+    // a real playing event by checking that 1) there's media and 2) it isn't currently paused.
+    get: function(controller) {
+      const { media } = controller;
+
+      // TODO: Would seem to leave room for issue if this is called
+      // after a video has played but is currently paused.
+      // Could possibly check for a duration and a positive current time.
+      return media ? media.paused : false;
+    },
+    mediaEvents: ['playing', 'emptied']
+  },
+  playbackRate: {
+    get: function(controller) {
+      const { media } = controller;
+
+      if (!media || typeof media.playbackRate == 'undefined') {
+        return 1;
+      }
+
+      return media.playbackRate;
+    },
+    mediaEvents: ['ratechange','loadstart']
+  },
+  muted: {
+    get: function(controller) {
+      const { media } = controller;
+
+      if (!media || typeof media.muted == 'undefined') {
+        return false;
+      }
+
+      return media.muted;
+    },
+    mediaEvents: ['volumechange']
+  },
+  volume: {
+    get: function(controller) {
+      const { media } = controller;
+
+      if (!media || typeof media.volume == 'undefined') {
+        return 1;
+      }
+
+      return Number(media.volume);
+    },
+    mediaEvents: ['volumechange']
+  },
+  volumeLevel: {
+    get: function(controller) {
+      const { media } = controller;
+      let level = 'high';
+
+      if (!media || typeof media.volume == 'undefined') {
+        return level;
+      }
+    
+      const { muted, volume } = media;
+    
+      if (volume === 0 || muted) {
+        level = 'off';
+      } else if (volume < 0.5) {
+        level = 'low';
+      } else if (volume < 0.75) {
+        level = 'medium';
+      }
+    
+      return level;
+    },
+    mediaEvents: ['volumechange']
+  },
+  currentTime: {
+    get: function(controller) {
+      const { media } = controller;
+
+      if (!media || typeof media.currentTime == 'undefined') {
+        return 0;
+      }
+
+      return media.currentTime;
+    },
+    mediaEvents: ['timeupdate', 'loadedmetadata']
+  },
+  duration: {
+    get: function(controller){
+      const { media } = controller;
+
+      // TODO: What if duration is infinity/live? (heff)
+      if (!media || !Number.isFinite(media.duration)) {
+        return NaN;
+      }
+
+      return media.duration;
+    },
+    mediaEvents: ['durationchange','loadedmetadata','emptied']
+  },
+  seekable: {
+    // TODO: Returns undefined and a string, consider a better type
+    // not tied to attribute strings
+    get: function(controller){
+      const { media } = controller;
+
+      if (!media?.seekable?.length) return undefined;
+      const start = media.seekable.start(0);
+      const end = media.seekable.end(media.seekable.length - 1);
+      // Account for cases where metadata from slotted media has an "empty" seekable (CJP)
+      if (!start && !end) return undefined;
+      return [Number(start.toFixed(3)), Number(end.toFixed(3))].join(':');
+    },
+    mediaEvents: ['loadedmetadata','emptied','progress']
+  },
+  loading: {
+    get: function(controller) {
+      return !!(controller.media?.readyState < 3);
+    },
+    mediaEvents: ['waiting','playing','emptied']
+  },
+  buffered: {
+    get: function(controller) {
+      serializeTimeRanges(controller.media?.buffered)
+    },
+    mediaEvents: ['progress','emptied']
+  },
+  streamType: {
+    get: function(controller) {
+      const { media } = controller;
+
+      // TODO: Should return default-stream-type in this case if set
+      // Reconsider undefined as default otherwise. Feels odd to return it.
+      if (!media) return undefined;
+    
+      const { streamType } = media;
+      if (StreamTypeValues.includes(streamType)) {
+        // If the slotted media supports `streamType` but
+        // `streamType` is "unknown", prefer `default-stream-type`
+        // if set (CJP)
+        if (streamType === StreamTypes.UNKNOWN) {
+          // TODO: Move to non attr state
+          const defaultType = controller.getAttribute('default-stream-type');
+          if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
+            return defaultType;
+          }
+          return undefined;
+        }
+        return streamType;
+      }
+      const duration = media.duration;
+    
+      if (duration === Infinity) {
+        return StreamTypes.LIVE;
+      } else if (Number.isFinite(duration)) {
+        return StreamTypes.ON_DEMAND;
+      } else {
+        // TODO: Move to non attr state
+        const defaultType = controller.getAttribute('default-stream-type');
+    
+        if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
+          return defaultType;
+        }
+      }
+    
+      return undefined;
+    },
+    mediaEvents: ['emptied','durationchange','loadedmetadata','streamtypechange']
+  },
+  targetLiveWindow: {
+    get: function(controller){
+      const { media } = controller;
+
+      if (!media) return Number.NaN;
+      const { targetLiveWindow } = media;
+      const streamType = MediaUIStates.streamType.get(controller);
+
+      // Since `NaN` represents either "unknown" or "inapplicable", need to check if `streamType`
+      // is `"live"`. If so, assume it's "standard live" (aka `targetLiveWindow === 0`) (CJP)
+      if (
+        (targetLiveWindow == null || Number.isNaN(targetLiveWindow)) &&
+        streamType === StreamTypes.LIVE
+      ) {
+        return 0;
+      }
+      return targetLiveWindow;
+    },
+    mediaEvents: ['emptied','durationchange','loadedmetadata','streamtypechange','targetlivewindowchange']
+  },
+  timeIsLive: {
+    get: function(controller){
+      const { media } = controller;
+    
+      if (!media) return false;
+
+      if (typeof media.liveEdgeStart === 'number') {
+        if (Number.isNaN(media.liveEdgeStart)) return false;
+        return media.currentTime >= media.liveEdgeStart;
+      }
+  
+      const live = MediaUIStates.streamType.get(controller) === 'live';
+      // Can't be playing live if it's not a live stream
+      if (!live) return false;
+      
+      const seekable = media.seekable;
+      // If the slotted media element is live but does not expose a 'seekable' `TimeRanges` object,
+      // always assume playing live
+      if (!seekable) return true;
+      // If there is an empty `seekable`, assume we are not playing live
+      if (!seekable.length) return false;
+  
+      // Default to 10 seconds
+      // Assuming seekable range already accounts for appropriate buffer room
+      const liveEdgeStartOffset = controller.hasAttribute('liveedgeoffset') 
+        // TODO: Move to no attr value
+        ? Number(controller.getAttribute('liveedgeoffset'))
+        : 10;
+      const liveEdgeStart = seekable.end(seekable.length - 1) - liveEdgeStartOffset
+      return media.currentTime >= liveEdgeStart;
+    },
+    mediaEvents: ['playing','timeupdate','progress','waiting','emptied']
+  },
+  isFullscreen: {
+    get: function(controller, e) {
+      // Safari doesn't support ShadowRoot.fullscreenElement and document.fullscreenElement
+      // could be several ancestors up the tree. Use event.target instead.
+      const isSomeElementFullscreen = !!document[fullscreenApi.element];
+      const fullscreenEl = isSomeElementFullscreen && e?.target;
+      return containsComposedNode(controller.fullscreenElement, fullscreenEl);
+    },
+    // TODO: Don't miss this special event type when implementing
+    rootEvents: [fullscreenApi.event]
+  },
+  isPip: {
+    get: function(controller, e) {
+      const media = controller.media;
+
+      if (!media) return false;
+
+      // Rely on event type for state first
+      // in case this doesn't work well for custom elements using internal <video>
+      if (e) {
+        return e.type == 'enterpictureinpicture';
+      } else {
+        const pipElement =
+          // Might need to use the root of media-container
+          // @ts-ignore
+          controller.getRootNode().pictureInPictureElement ??
+          document.pictureInPictureElement;
+        return containsComposedNode(media, pipElement);
+      }
+    },
+    mediaEvents: ['enterpictureinpicture', 'leavepictureinpicture']
+  },
+  isCasting: {
+    // Note this relies on a customized video[is=castable-video] element.
+    get: function(controller, e) {
+      const { media } = controller;
+
+      if (!media) return false;
+
+      const castElement = globalThis.CastableVideoElement?.castElement;
+      let castState = containsComposedNode(media, castElement);
+
+      // While the cast is connecting set media-is-cast="connecting"
+      if (e?.type === 'castchange' && e?.detail === 'CONNECTING') {
+        castState = 'connecting';
+      }
+
+      return castState;
+    },
+    mediaEvents: ['entercast','leavecast','castchange']
+  },
+  airplayUnavailable: {
+    // NOTE: only adding this if airplay is supported, in part to avoid unnecessary battery consumption per
+    // Apple docs recommendations (See: https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls)
+    // For a more advanced solution, we could monitor for media state receivers that "care" about airplay support and add/remove
+    // whenever these are added/removed. (CJP)
+    // NOTE: I don't think only adding this if supported helps, so making this match others. 
+    // If Airplay's not supported then it it doesn't hurt to add it.
+    // If battery is really an issue we need a different approach.
+    // Also this is a terrible API, Apple. (heff)
+    get: function(controller, e){
+      if (!airplaySupported) return AvailabilityStates.UNSUPPORTED;
+
+      // NOTE: since we invoke all these event handlers without arguments whenever a media is attached,
+      // need to account for the possibility that event is undefined (CJP).
+      // TODO: Is there reall no way to detect this without an event? (heff)
+      if (!e) return undefined;
+      // TODO: Switch to non attr specific value
+
+      if (e.availability === 'available') {
+        return undefined;
+      } else if (e.availability === 'not-available') {
+        return AvailabilityStates.UNAVAILABLE;
+      }
+    },
+    mediaEvents: ['webkitplaybacktargetavailabilitychanged']
+  },
+  castUnavailable: {
+    get: function() {
+      const castState = globalThis.CastableVideoElement?.castState;
+
+      if (!castSupported || !castState) {
+        return AvailabilityStates.UNSUPPORTED;
+      }
+
+      // Cast state: NO_DEVICES_AVAILABLE, NOT_CONNECTED, CONNECTING, CONNECTED
+      if (castState.includes('CONNECT')) {
+        // TODO: Move to non attr specific value
+        return undefined;
+      } else {
+        return AvailabilityStates.UNAVAILABLE;
+      }
+    },
+    mediaEvents: ['castchange']
+  },
+  fullscreenUnavailable: {
+    get: function() {
+      // TODO: Move to non attr specific value
+      return (fullscreenSupported) ? undefined : AvailabilityStates.UNAVAILABLE;
+    }
+  },
+  pipUnavailable: {
+    get: function() {
+      // TODO: Move to non attr specific value
+      return (pipSupported) ? undefined : AvailabilityStates.UNSUPPORTED;
+    }
+  },
+  volumeUnavailable: {
+    get: function(controller) {
+      if (volumeSupported !== undefined && !volumeSupported) {
+        return AvailabilityStates.UNSUPPORTED;
+      }
+
+      const { media } = controller;
+
+      if (media && typeof media.volume == 'undefined') {
+        return AvailabilityStates.UNAVAILABLE;
+      }
+
+      // TODO: move to non attr specific value
+      return undefined;
+    },
+    // Give a little time for the volume support promise to run
+    mediaEvents: ['loadstart']
+  },
+  captionsList: {
+    get: function(controller) {
+      // TODO: Move to non attr specific values
+      return stringifyTextTrackList(getCaptionTracks(controller)) || undefined
+    },
+    mediaEvents: ['loadstart'],
+    trackListEvents: ['addtrack','removetrack']
+  },
+  subtitlesList: {
+    get: function(controller) {
+      // TODO: Move to non attr specific values
+      return stringifyTextTrackList(getSubtitleTracks(controller)) || undefined
+    },
+    mediaEvents: ['loadstart'],
+    trackListEvents: ['addtrack','removetrack']
+  },
+  captionsShowing: {
+    get: function(controller) {
+      // TODO: Move to non attr specific values
+      return stringifyTextTrackList(getShowingCaptionTracks(controller)) || undefined
+    },
+    mediaEvents: ['loadstart'],
+    trackListEvents: ['addtrack','removetrack', 'change']
+  },
+  subtitlesShowing: {
+    get: function(controller) {
+      // TODO: Move to non attr specific values
+      return stringifyTextTrackList(getShowingSubtitleTracks(controller)) || undefined
+    },
+    mediaEvents: ['loadstart'],
+    trackListEvents: ['addtrack', 'removetrack', 'change']
+  },
+};
 
 /**
  * Media Controller should not mimic the HTMLMediaElement API.
@@ -100,6 +487,7 @@ class MediaController extends MediaContainer {
     const mediaUIEventHandlers = {
       MEDIA_PLAY_REQUEST: (e, media) => {
         const streamType = Delegates[MediaUIAttributes.MEDIA_STREAM_TYPE](this);
+        // TODO: Move to not attr value
         const autoSeekToLive = this.getAttribute('noautoseektolive') === null;
 
         if (streamType == StreamTypes.LIVE && autoSeekToLive) {
@@ -628,6 +1016,7 @@ class MediaController extends MediaContainer {
   mediaSetCallback(media) {
     super.mediaSetCallback(media);
 
+    // TODO: What does this do? At least add comment, maybe move to media-container
     if (!media.hasAttribute('tabindex')) {
       media.setAttribute('tabindex', -1);
     }
@@ -771,6 +1160,7 @@ class MediaController extends MediaContainer {
     els.push(el);
 
     // No media depedencies, so push regardless of media availability.
+    // TODO: For future MediaUIStates, none should require media to exist
     propagateMediaState(
       [el],
       MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE,
