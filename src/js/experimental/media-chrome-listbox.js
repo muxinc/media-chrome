@@ -47,6 +47,7 @@ class MediaChromeListbox extends window.HTMLElement {
   #clearKeysTimeout = null;
   #slot;
   #_assignedElements;
+  #metaPressed = false;
 
   static get observedAttributes() {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
@@ -149,6 +150,16 @@ class MediaChromeListbox extends window.HTMLElement {
     this.handleClick(e);
   }
 
+  #handleKeyListener(e) {
+    const { key } = e;
+
+    if (key === 'Enter' || key === ' ') {
+      this.handleSelection(e, this.hasAttribute('aria-multiselectable'));
+    } else {
+      this.handleMovement(e);
+    }
+  }
+
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
   #keyupListener = (e) => {
@@ -159,20 +170,36 @@ class MediaChromeListbox extends window.HTMLElement {
       return;
     }
 
-    if (key === 'Enter' || key === ' ') {
-      this.handleSelection(e, true);
-    } else {
-      this.handleMovement(e);
+    if (key === 'Meta') {
+      this.#metaPressed = false;
+      return;
     }
+
+    this.#handleKeyListener(e);
   }
 
   #keydownListener = (e) => {
-    const { metaKey, altKey } = e;
-    if (metaKey || altKey) {
+    const { key, metaKey, altKey } = e;
+
+    if (altKey) {
       this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
-    e.preventDefault();
+
+    if (key === 'Meta') {
+      this.#metaPressed = true;
+    }
+
+    // only prevent default on used keys
+    if (this.keysUsed.includes(key)) {
+      e.preventDefault();
+    }
+
+    if (this.#metaPressed && this.keysUsed.includes(key)) {
+      this.#handleKeyListener(e);
+      return;
+    }
+
     this.addEventListener('keyup', this.#keyupListener, {once: true});
   }
 
