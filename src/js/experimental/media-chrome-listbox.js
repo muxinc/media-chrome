@@ -179,7 +179,7 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   #keydownListener = (e) => {
-    const { key, metaKey, altKey } = e;
+    const { key, altKey } = e;
 
     if (altKey) {
       this.removeEventListener('keyup', this.#keyupListener);
@@ -188,6 +188,7 @@ class MediaChromeListbox extends window.HTMLElement {
 
     if (key === 'Meta') {
       this.#metaPressed = true;
+      return;
     }
 
     // only prevent default on used keys
