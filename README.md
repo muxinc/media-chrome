@@ -17,7 +17,7 @@ Visit the [official documentation for Media Chrome](https://media-chrome.org/en/
 
 ## Examples
 
-<a href="https://media-chrome.mux.dev/sandbox/vanilla/" target="_blank">See all of the repo examples in action.</a>
+<a href="https://media-chrome.mux.dev/examples/vanilla/" target="_blank">See all of the repo examples in action.</a>
 
 ### Video Example
 
