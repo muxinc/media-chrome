@@ -10,8 +10,8 @@ async function serve() {
   const port = await getFreePort(8000);
 
   console.log('');
-  console.log(` > Local:   http://localhost:${port}/sandbox/`);
-  console.log(` > Network: http://${getNetworkAddress()}:${port}/sandbox/`);
+  console.log(` > Local:   http://localhost:${port}/sandbox/vanilla/`);
+  console.log(` > Network: http://${getNetworkAddress()}:${port}/sandbox/vanilla/`);
 
   // Start esbuild's server on local port 8010
   esbuild

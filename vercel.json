@@ -1,10 +1,10 @@
 {
   "trailingSlash": true,
   "redirects": [{
-    "source": "/", "destination": "/sandbox/"
+    "source": "/", "destination": "/sandbox/vanilla/"
   }, {
-    "source": "/examples/", "destination": "/sandbox/"
+    "source": "/examples/", "destination": "/sandbox/vanilla/"
   }, {
-    "source": "/examples/:path*", "destination": "/sandbox/:path*"
+    "source": "/examples/:path*", "destination": "/sandbox/vanilla/:path*"
   }]
 }

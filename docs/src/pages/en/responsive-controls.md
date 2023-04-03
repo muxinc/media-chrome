@@ -105,7 +105,7 @@ which we will go over, and consider including the
 
 ### Simple Responsive Layout
 
-Let's make a [simple responsive layout](https://media-chrome-mux.vercel.app/sandbox/responsive.html).
+Let's make a [simple responsive layout](https://media-chrome-mux.vercel.app/sandbox/vanilla/responsive.html).
 In addition to the media-control-bar above, we want to add some center controls.
 ```html
 <div class="center" slot="centered-chrome">
