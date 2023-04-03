@@ -209,7 +209,7 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     this.#listbox.style.transform = `translateX(${position}px)`;
   }
 
-  #toggleExpanded(closeOnly) {
+  #toggleExpanded(closeOnly = false) {
     this.#expanded = !this.#expanded || closeOnly;
     this.#button.setAttribute('aria-expanded', this.#expanded);
   }
