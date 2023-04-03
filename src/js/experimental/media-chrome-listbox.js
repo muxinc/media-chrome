@@ -154,7 +154,7 @@ class MediaChromeListbox extends window.HTMLElement {
     const { key } = e;
 
     if (key === 'Enter' || key === ' ') {
-      this.handleSelection(e, this.hasAttribute('aria-multiselectable'));
+      this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
     } else {
       this.handleMovement(e);
     }
@@ -286,7 +286,7 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   #selectItem(item, toggle) {
-    if (this.getAttribute('aria-multiselectable') !== 'true') {
+    if (!this.hasAttribute('aria-multiselectable') || this.getAttribute('aria-multiselectable') !== 'true') {
       this.#assignedElements.forEach(el => el.setAttribute('aria-selected', 'false'));
     }
 
@@ -359,7 +359,7 @@ class MediaChromeListbox extends window.HTMLElement {
     this.#items.forEach(el => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
 
-    this.handleSelection(e, e.metaKey || e.ctrlKey);
+    this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
   }
 
   #searchItem(key) {
