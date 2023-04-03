@@ -250,8 +250,9 @@ export const isCCOn = (el) => {
  * This was originally in media-captions-button.
  *
  * @param {HTMLElement} el - An HTMLElement that has caption related attributes on it.
+ * @param {boolean} [forceOff] - An optional boolean that will force captions to always turn off.
  */
-export const toggleSubsCaps = (el) => {
+export const toggleSubsCaps = (el, forceOff = false) => {
   const ccIsOn = isCCOn(el);
   if (ccIsOn) {
     // Closed Captions is on. Clicking should disable any currently showing captions (and subtitles, if relevant)
@@ -278,7 +279,7 @@ export const toggleSubsCaps = (el) => {
       );
       el.dispatchEvent(evt);
     }
-  } else {
+  } else if (!forceOff) {
     // Closed Captions is off. Clicking should show the first relevant captions track or subtitles track if we're using subtitle fallback (true/"on" by default)
     const [ccTrackStr] =
       splitTextTracksStr(

@@ -227,7 +227,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     const [newType, selectedOption] = this.selectedOptions[0]?.value?.split('!') ?? [];
 
     // turn off currently selected tracks
-    toggleSubsCaps(this);
+    toggleSubsCaps(this, true);
 
     if (!selectedOption) return;
 
