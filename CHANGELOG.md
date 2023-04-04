@@ -1,3 +1,12 @@
+## [0.20.4](https://github.com/muxinc/media-chrome/compare/v0.20.3...v0.20.4) (2023-04-04)
+
+
+### Bug Fixes
+
+* media-theme element lazy doc append ([#519](https://github.com/muxinc/media-chrome/issues/519)) ([7efe0e2](https://github.com/muxinc/media-chrome/commit/7efe0e2e3d52a57722d0f3a61fde016d9f40bbdc))
+
+
+
 ## [0.20.3](https://github.com/muxinc/media-chrome/compare/v0.20.2...v0.20.3) (2023-03-31)
 
 
