@@ -39,6 +39,7 @@ export class MediaThemeElement extends window.HTMLElement {
   renderer;
   #template;
   #prevTemplate;
+  #prevTemplateId;
 
   constructor() {
     super();
@@ -103,6 +104,7 @@ export class MediaThemeElement extends window.HTMLElement {
   }
 
   set template(element) {
+    this.#prevTemplateId = null;
     this.#template = element;
     this.createRenderer();
   }
@@ -140,30 +142,46 @@ export class MediaThemeElement extends window.HTMLElement {
     return props;
   }
 
-  async attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'template' && oldValue != newValue) {
+      this.#updateTemplate();
+    }
+  }
 
-      if (newValue) {
-        // First try to get a template element by id
-        // @ts-ignore
-        const template = this.getRootNode()?.getElementById(newValue);
-        if (template) {
-          this.#template = template;
+  connectedCallback() {
+    this.#updateTemplate();
+  }
 
-        } else if (isValidUrl(newValue)) {
-          // Next try to fetch a HTML file if it looks like a valid URL.
-          try {
-            const data = await request(newValue);
-            const template = document.createElement('template');
-            template.innerHTML = data;
-            this.#template = template;
-          } catch {
-            console.warn(`"${newValue}" is not a valid template element ID or a valid URL to a template file.`);
-          }
-        }
-      }
+  #updateTemplate() {
+    const templateId = this.getAttribute('template');
+    if (!templateId || templateId === this.#prevTemplateId) return;
 
+    // First try to get a template element by id
+    const rootNode = /** @type HTMLDocument | ShadowRoot */ (this.getRootNode());
+    const template = rootNode?.getElementById?.(templateId);
+
+    if (template) {
+      // Only save prevTemplateId if a template was found.
+      this.#prevTemplateId = templateId;
+      this.#template = template;
       this.createRenderer();
+      return;
+    }
+
+    if (isValidUrl(templateId)) {
+      // Save prevTemplateId on valid URL before async fetch to prevent duplicate fetch.
+      this.#prevTemplateId = templateId;
+
+      // Next try to fetch a HTML file if it looks like a valid URL.
+      request(templateId)
+        .then((data) => {
+          const template = document.createElement('template');
+          template.innerHTML = data;
+
+          this.#template = template;
+          this.createRenderer();
+        })
+        .catch(console.error);
     }
   }
 
@@ -192,6 +210,9 @@ export class MediaThemeElement extends window.HTMLElement {
 }
 
 function isValidUrl(url) {
+  // Valid URL e.g. /absolute, ./relative, http://, https://
+  if (!/^(\/|\.\/|https?:\/\/)/.test(url)) return false;
+
   // Add base if url doesn't start with http:// or https://
   const base = /^https?:\/\//.test(url) ? undefined : location.origin;
   try {
