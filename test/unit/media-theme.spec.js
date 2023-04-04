@@ -3,6 +3,27 @@ import '../../src/js/media-theme-element.js';
 import '../../src/js/index.js';
 
 describe('<media-theme>', () => {
+  it(`<media-theme> with template attribute works w/ delayed document append`, async () => {
+
+    const template = document.createElement('template');
+    template.id = 'not-yet';
+    template.innerHTML = /*html*/`
+      <media-controller>
+        <slot name="media" slot="media"></slot>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+        </media-control-bar>
+      </media-controller>
+    `;
+
+    const theme = document.createElement('media-theme');
+    theme.setAttribute('template', 'not-yet');
+
+    document.body.append(template, theme);
+
+    assert(theme.shadowRoot.innerHTML.includes('media-play-button'), 'shadow root contains a play button');
+  });
+
   it('can change media between media themes and media controllers', async () => {
     await fixture(`
       <template id="netflix">

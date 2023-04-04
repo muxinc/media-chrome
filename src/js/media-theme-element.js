@@ -140,30 +140,43 @@ export class MediaThemeElement extends window.HTMLElement {
     return props;
   }
 
-  async attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === 'template' && oldValue != newValue) {
+      this.#updateTemplate();
+    }
+  }
 
-      if (newValue) {
-        // First try to get a template element by id
-        // @ts-ignore
-        const template = this.getRootNode()?.getElementById(newValue);
-        if (template) {
-          this.#template = template;
+  connectedCallback() {
+    this.#updateTemplate();
+  }
 
-        } else if (isValidUrl(newValue)) {
-          // Next try to fetch a HTML file if it looks like a valid URL.
-          try {
-            const data = await request(newValue);
-            const template = document.createElement('template');
-            template.innerHTML = data;
-            this.#template = template;
-          } catch {
-            console.warn(`"${newValue}" is not a valid template element ID or a valid URL to a template file.`);
-          }
-        }
-      }
+  #updateTemplate() {
+    const templateId = this.getAttribute('template');
+    if (!templateId) return;
 
+    // First try to get a template element by id
+    const rootNode = /** @type HTMLDocument | ShadowRoot */ (this.getRootNode());
+    const template = rootNode?.getElementById?.(templateId);
+
+    if (template) {
+      this.#template = template;
       this.createRenderer();
+      return;
+    }
+
+    if (isValidUrl(templateId)) {
+      // Next try to fetch a HTML file if it looks like a valid URL.
+      request(templateId)
+        .then((data) => {
+          const template = document.createElement('template');
+          template.innerHTML = data;
+
+          this.#template = template;
+          this.createRenderer();
+        })
+        .catch(() => {
+          console.warn(`"${templateId}" is not a valid template element ID or a valid URL to a template file.`);
+        });
     }
   }
 
@@ -192,6 +205,9 @@ export class MediaThemeElement extends window.HTMLElement {
 }
 
 function isValidUrl(url) {
+  // Valid URL e.g. /absolute, ./relative, http://, https://
+  if (!/^(\/|\.\/|https?:\/\/)/.test(url)) return false;
+
   // Add base if url doesn't start with http:// or https://
   const base = /^https?:\/\//.test(url) ? undefined : location.origin;
   try {
