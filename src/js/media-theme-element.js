@@ -39,6 +39,7 @@ export class MediaThemeElement extends window.HTMLElement {
   renderer;
   #template;
   #prevTemplate;
+  #prevTemplateId;
 
   constructor() {
     super();
@@ -103,6 +104,7 @@ export class MediaThemeElement extends window.HTMLElement {
   }
 
   set template(element) {
+    this.#prevTemplateId = null;
     this.#template = element;
     this.createRenderer();
   }
@@ -152,19 +154,24 @@ export class MediaThemeElement extends window.HTMLElement {
 
   #updateTemplate() {
     const templateId = this.getAttribute('template');
-    if (!templateId) return;
+    if (!templateId || templateId === this.#prevTemplateId) return;
 
     // First try to get a template element by id
     const rootNode = /** @type HTMLDocument | ShadowRoot */ (this.getRootNode());
     const template = rootNode?.getElementById?.(templateId);
 
     if (template) {
+      // Only save prevTemplateId if a template was found.
+      this.#prevTemplateId = templateId;
       this.#template = template;
       this.createRenderer();
       return;
     }
 
     if (isValidUrl(templateId)) {
+      // Save prevTemplateId on valid URL before async fetch to prevent duplicate fetch.
+      this.#prevTemplateId = templateId;
+
       // Next try to fetch a HTML file if it looks like a valid URL.
       request(templateId)
         .then((data) => {
@@ -175,9 +182,13 @@ export class MediaThemeElement extends window.HTMLElement {
           this.createRenderer();
         })
         .catch(() => {
-          console.warn(`"${templateId}" is not a valid template element ID or a valid URL to a template file.`);
+          console.warn(`"${templateId}" is not a valid URL to a template file.`);
         });
+
+      return;
     }
+
+    console.warn(`"${templateId}" is not a valid template element ID or a valid URL to a template file.`);
   }
 
   createRenderer() {
