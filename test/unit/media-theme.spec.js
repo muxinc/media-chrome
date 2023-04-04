@@ -24,6 +24,24 @@ describe('<media-theme>', () => {
     assert(theme.shadowRoot.innerHTML.includes('media-play-button'), 'shadow root contains a play button');
   });
 
+  it(`<media-theme> w/ template HTML file URL doesn't duplicate fetch/render `, async function() {
+    this.timeout(5000);
+
+    const theme = document.createElement('media-theme');
+    theme.setAttribute('template', 'https://gist.githubusercontent.com/luwes/5812c419830fee000d3463c496d18e19/raw/c295dad03a33ea8ad93870fa55de40a3308c8f45/media-theme-micro.html');
+
+    await waitUntil(() => theme.shadowRoot.querySelector('media-controller'), 5000);
+    const mediaController = theme.shadowRoot.querySelector('media-controller');
+
+    document.body.append(theme);
+
+    assert.equal(
+      mediaController,
+      theme.shadowRoot.querySelector('media-controller'),
+      'should have not re-rendered and media-controller stayed the same'
+    );
+  });
+
   it('can change media between media themes and media controllers', async () => {
     await fixture(`
       <template id="netflix">

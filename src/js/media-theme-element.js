@@ -181,14 +181,8 @@ export class MediaThemeElement extends window.HTMLElement {
           this.#template = template;
           this.createRenderer();
         })
-        .catch(() => {
-          console.warn(`"${templateId}" is not a valid URL to a template file.`);
-        });
-
-      return;
+        .catch(console.error);
     }
-
-    console.warn(`"${templateId}" is not a valid template element ID or a valid URL to a template file.`);
   }
 
   createRenderer() {
