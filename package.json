@@ -2,13 +2,16 @@
   "name": "media-chrome",
   "version": "0.20.4",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
+  "author": "@muxinc",
+  "license": "MIT",
+  "homepage": "https://github.com/muxinc/media-chrome#readme",
+  "bugs": { "url": "https://github.com/muxinc/media-chrome/issues" },
   "type": "module",
   "main": "dist/index.js",
   "customElements": "dist/custom-elements.json",
   "files": [
-    "dist/*",
-    "README.md",
-    "examples/*"
+    "src",
+    "dist"
   ],
   "scripts": {
     "format": "prettier --write .",
@@ -34,21 +37,6 @@
     "type": "git",
     "url": "git+https://github.com/muxinc/media-chrome.git"
   },
-  "keywords": [
-    "webcomponent",
-    "html5",
-    "video",
-    "audio",
-    "media",
-    "player",
-    "controls"
-  ],
-  "author": "@muxinc",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/muxinc/media-chrome/issues"
-  },
-  "homepage": "https://github.com/muxinc/media-chrome#readme",
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.6.6",
     "@open-wc/testing": "^3.1.6",
@@ -61,6 +49,11 @@
     "rimraf": "^3.0.2",
     "sinon": "^14.0.1",
     "typescript": "^4.8.4"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "singleQuote": true
   },
   "eslintConfig": {
     "globals": {
@@ -78,5 +71,14 @@
       "ecmaVersion": 2022,
       "sourceType": "module"
     }
-  }
+  },
+  "keywords": [
+    "webcomponent",
+    "html5",
+    "video",
+    "audio",
+    "media",
+    "player",
+    "controls"
+  ]
 }
