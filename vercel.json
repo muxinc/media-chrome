@@ -5,6 +5,6 @@
   }, {
     "source": "/examples/", "destination": "/examples/vanilla/"
   }, {
-    "source": "/examples/:path*", "destination": "/examples/vanilla/:path*"
+    "source": "/examples/:path((?!vanilla/).*)", "destination": "/examples/vanilla/:path*"
   }]
 }
