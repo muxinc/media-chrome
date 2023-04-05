@@ -8,21 +8,37 @@
   * Auto-hide controls on inactivity while playing
 */
 import { window, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
+import {
+  MediaUIEvents,
+  MediaUIAttributes,
+  MediaStateChangeEvents,
+} from './constants.js';
 import { nouns } from './labels/labels.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
+
+export const Attributes = {
+  AUDIO: 'audio',
+  AUTOHIDE: 'autohide',
+  BREAKPOINTS: 'breakpoints',
+  GESTURES_DISABLED: 'gesturesdisabled',
+  KEYBOARD_CONTROL: 'keyboardcontrol',
+  NO_AUTOHIDE: 'noautohide',
+  USER_INACTIVE: 'userinactive',
+};
 
 const template = document.createElement('template');
 
 template.innerHTML = `
   <style>
-    ${/*
-     * outline on media is turned off because it is allowed to get focus to faciliate hotkeys.
-     * However, on keyboard interactions, the focus outline is shown,
-     * which is particularly noticeable when going fullscreen via hotkeys.
-     */''}
-    :host([media-is-fullscreen])  ::slotted([slot=media]) {
+    ${
+      /*
+       * outline on media is turned off because it is allowed to get focus to faciliate hotkeys.
+       * However, on keyboard interactions, the focus outline is shown,
+       * which is particularly noticeable when going fullscreen via hotkeys.
+       */ ''
+    }
+    :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])  ::slotted([slot=media]) {
       outline: none;
     }
 
@@ -34,7 +50,7 @@ template.innerHTML = `
       background-color: var(--media-background-color, #000);
     }
 
-    :host(:not([audio])) [part~=layer]:not([part~=media-layer]) {
+    :host(:not([${Attributes.AUDIO}])) [part~=layer]:not([part~=media-layer]) {
       position: absolute;
       top: 0;
       left: 0;
@@ -47,37 +63,51 @@ template.innerHTML = `
       background: none;
     }
 
-    ${/*
-     * when in audio mode, hide the gesture-layer which causes media-controller to be taller than the control bar
-     */''}
-    :host([audio]) [part~=layer][part~=gesture-layer] {
+    ${
+      /*
+       * when in audio mode, hide the gesture-layer which causes media-controller to be taller than the control bar
+       */ ''
+    }
+    :host([${Attributes.AUDIO}]) [part~=layer][part~=gesture-layer] {
       height: 0;
       display: block;
     }
 
-    ${/*
-     * if gestures are disabled, don't accept pointer-events
-     */''}
-    :host(:not([audio])[gestures-disabled]) ::slotted([slot=gestures-chrome]),
-    :host(:not([audio])[gestures-disabled]) media-gesture-receiver[slot=gestures-chrome] {
+    ${
+      /*
+       * if gestures are disabled, don't accept pointer-events
+       */ ''
+    }
+    :host(:not([${Attributes.AUDIO}])[${
+  Attributes.GESTURES_DISABLED
+}]) ::slotted([slot=gestures-chrome]),
+    :host(:not([${Attributes.AUDIO}])[${
+  Attributes.GESTURES_DISABLED
+}]) media-gesture-receiver[slot=gestures-chrome] {
       display: none;
     }
 
-    ${/*
-     * any slotted element that isn't a poster or media slot should be pointer-events auto
-     * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
-     */''}
+    ${
+      /*
+       * any slotted element that isn't a poster or media slot should be pointer-events auto
+       * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
+       */ ''
+    }
     ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator)) {
       pointer-events: auto;
     }
 
-    :host(:not([audio])) *[part~=layer][part~=centered-layer] {
+    :host(:not([${Attributes.AUDIO}])) *[part~=layer][part~=centered-layer] {
       align-items: center;
       justify-content: center;
     }
 
-    :host(:not([audio])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
-    :host(:not([audio])) media-gesture-receiver[slot=gestures-chrome] {
+    :host(:not([${
+      Attributes.AUDIO
+    }])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
+    :host(:not([${
+      Attributes.AUDIO
+    }])) media-gesture-receiver[slot=gestures-chrome] {
       align-self: stretch;
       flex-grow: 1;
     }
@@ -89,33 +119,39 @@ template.innerHTML = `
       background: none;
     }
 
-    ${/* Position the media and poster elements to fill the container */''}
+    ${/* Position the media and poster elements to fill the container */ ''}
     ::slotted([slot=media]),
     ::slotted([slot=poster]) {
       width: 100%;
       height: 100%;
     }
 
-    ${/* Video specific styles */''}
-    :host(:not([audio])) .spacer {
+    ${/* Video specific styles */ ''}
+    :host(:not([${Attributes.AUDIO}])) .spacer {
       flex-grow: 1;
     }
 
-    ${/* Safari needs this to actually make the element fill the window */''}
+    ${/* Safari needs this to actually make the element fill the window */ ''}
     :host(:-webkit-full-screen) {
-      ${/* Needs to use !important otherwise easy to break */''}
+      ${/* Needs to use !important otherwise easy to break */ ''}
       width: 100% !important;
       height: 100% !important;
     }
 
-    ${/* Only add these if auto hide is not disabled */''}
-    ::slotted(:not([slot=media]):not([no-auto-hide])) {
+    ${/* Only add these if auto hide is not disabled */ ''}
+    ::slotted(:not([slot=media]):not([${Attributes.NO_AUTOHIDE}])) {
       opacity: 1;
       transition: opacity 0.25s;
     }
 
-    ${/* Hide controls when inactive, not paused, not audio and auto hide not disabled */''}
-    :host([user-inactive]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([audio])) ::slotted(:not([slot=media]):not([no-auto-hide])) {
+    ${
+      /* Hide controls when inactive, not paused, not audio and auto hide not disabled */ ''
+    }
+    :host([${Attributes.USER_INACTIVE}]:not([${
+  MediaUIAttributes.MEDIA_PAUSED
+}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
+  Attributes.AUDIO
+}])) ::slotted(:not([slot=media]):not([${Attributes.NO_AUTOHIDE}])) {
       opacity: 0;
       transition: opacity 1s;
     }
@@ -138,7 +174,7 @@ template.innerHTML = `
     <slot name="top-chrome" part="top chrome"></slot>
     <slot name="middle-chrome" part="middle chrome"></slot>
     <slot name="centered-chrome" part="layer centered-layer center centered chrome"></slot>
-    ${/* default, effectively "bottom-chrome" */''}
+    ${/* default, effectively "bottom-chrome" */ ''}
     <slot part="bottom chrome"></slot>
   </span>
 `;
@@ -153,7 +189,8 @@ const resizeCallback = (entries) => {
 
     if (!container.isConnected) continue;
 
-    const breakpoints = container.getAttribute('breakpoints') ?? defaultBreakpoints;
+    const breakpoints =
+      container.getAttribute(Attributes.BREAKPOINTS) ?? defaultBreakpoints;
     const ranges = createBreakpointMap(breakpoints);
     const activeBreakpoints = getBreakpoints(ranges, entry.contentRect);
 
@@ -265,7 +302,7 @@ class MediaContainer extends window.HTMLElement {
           return;
         }
         if (this.media) {
-          currentMedia = this.media
+          currentMedia = this.media;
           this.handleMediaUpdated(this.media).then((media) =>
             this.mediaSetCallback(media)
           );
@@ -275,12 +312,14 @@ class MediaContainer extends window.HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['autohide', 'gestures-disabled'].concat(MEDIA_UI_ATTRIBUTE_NAMES);
+    return [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED].concat(
+      MEDIA_UI_ATTRIBUTE_NAMES
+    );
   }
 
   // Could share this code with media-chrome-html-element instead
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName.toLowerCase() == 'autohide') {
+    if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
       this.autohide = newValue;
     }
   }
@@ -354,12 +393,13 @@ class MediaContainer extends window.HTMLElement {
   /**
    * @abstract
    */
-  mediaUnsetCallback(node) { // eslint-disable-line
+  // eslint-disable-next-line
+  mediaUnsetCallback(node) {
     // media.removeEventListener('click', this._mediaClickPlayToggle);
   }
 
   connectedCallback() {
-    const isAudioChrome = this.getAttribute('audio') != null;
+    const isAudioChrome = this.getAttribute(Attributes.AUDIO) != null;
     const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
     this.setAttribute('role', 'region');
     this.setAttribute('aria-label', label);
@@ -370,15 +410,15 @@ class MediaContainer extends window.HTMLElement {
       );
     }
 
-    // Assume user is inactive until they're not (aka user-inactive by default is true)
+    // Assume user is inactive until they're not (aka userinactive by default is true)
     // This allows things like autoplay and programmatic playing to also initiate hiding controls (CJP)
-    this.setAttribute('user-inactive', 'user-inactive');
+    this.setAttribute(Attributes.USER_INACTIVE, '');
 
     const setInactive = () => {
       if (this.autohide < 0) return;
-      if (this.hasAttribute('user-inactive')) return;
+      if (this.hasAttribute(Attributes.USER_INACTIVE)) return;
 
-      this.setAttribute('user-inactive', '');
+      this.setAttribute(Attributes.USER_INACTIVE, '');
 
       const evt = new window.CustomEvent(
         MediaStateChangeEvents.USER_INACTIVE,
@@ -388,9 +428,9 @@ class MediaContainer extends window.HTMLElement {
     };
 
     const setActive = () => {
-      if (!this.hasAttribute('user-inactive')) return;
+      if (!this.hasAttribute(Attributes.USER_INACTIVE)) return;
 
-      this.removeAttribute('user-inactive');
+      this.removeAttribute(Attributes.USER_INACTIVE);
 
       const evt = new window.CustomEvent(
         MediaStateChangeEvents.USER_INACTIVE,
@@ -420,14 +460,23 @@ class MediaContainer extends window.HTMLElement {
     // when we get a tap, we want to unhide
     this.addEventListener('pointerup', (e) => {
       if (e.pointerType === 'touch') {
-        // @ts-ignore
-        if ([this, this.media].includes(e.target) && !this.hasAttribute('user-inactive')) {
+        if (
+          // @ts-ignore
+          [this, this.media].includes(e.target) &&
+          !this.hasAttribute(Attributes.USER_INACTIVE)
+        ) {
           setInactive();
         } else {
           scheduleInactive();
         }
-      // @ts-ignore
-      } else if (e.composedPath().some(el => ['media-play-button', 'media-fullscreen-button'].includes(el?.nodeName?.toLowerCase()))) {
+      } else if (
+        e.composedPath().some((el) =>
+          ['media-play-button', 'media-fullscreen-button'].includes(
+            // @ts-ignore
+            el?.nodeName?.toLowerCase()
+          )
+        )
+      ) {
         scheduleInactive();
       }
     });
@@ -457,10 +506,10 @@ class MediaContainer extends window.HTMLElement {
 
     // Allow for focus styles only when using the keyboard to navigate
     this.addEventListener('keyup', () => {
-      this.setAttribute('media-keyboard-control', '');
+      this.setAttribute(Attributes.KEYBOARD_CONTROL, '');
     });
     window.addEventListener('mouseup', () => {
-      this.removeAttribute('media-keyboard-control');
+      this.removeAttribute(Attributes.KEYBOARD_CONTROL);
     });
   }
 

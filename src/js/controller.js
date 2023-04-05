@@ -206,8 +206,8 @@ export const MediaUIStates = {
         // `streamType` is "unknown", prefer `default-stream-type`
         // if set (CJP)
         if (streamType === StreamTypes.UNKNOWN) {
-          // TODO: Move to non attr state
-          const defaultType = controller.getAttribute('default-stream-type');
+          /** @TODO Move to non attr state and consider adding as a part of a separate "default state" model (CJP) */
+          const defaultType = controller.getAttribute('defaultstreamtype');
           if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
             return defaultType;
           }
@@ -222,8 +222,8 @@ export const MediaUIStates = {
       } else if (Number.isFinite(duration)) {
         return StreamTypes.ON_DEMAND;
       } else {
-        // TODO: Move to non attr state
-        const defaultType = controller.getAttribute('default-stream-type');
+          /** @TODO Move to non attr state and consider adding as a part of a separate "default state" model (CJP) */
+        const defaultType = controller.getAttribute('defaultstreamtype');
 
         if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
           return defaultType;

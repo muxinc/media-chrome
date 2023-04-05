@@ -20,15 +20,15 @@
         width: 100%;      /* prevents video to expand beyond its container */
       }
 
-      media-airplay-button[media-airplay-unavailable] {
+      media-airplay-button[mediaairplayunavailable] {
         display: none;
       }
 
-      media-volume-range[media-volume-unavailable] {
+      media-volume-range[mediavolumeunavailable] {
         display: none;
       }
 
-      media-pip-button[media-pip-unavailable] {
+      media-pip-button[mediapipunavailable] {
         display: none;
       }
 
@@ -88,22 +88,22 @@
             src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
             placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
           ></media-poster-image>
-          <div slot="centered-chrome" no-auto-hide>
+          <div slot="centered-chrome" noautohide>
             <media-loading-indicator></media-loading-indicator>
           </div>
           <media-control-bar>
             <media-play-button></media-play-button>
             <media-seek-backward-button
-              seek-offset="15"
+              seekoffset="15"
             ></media-seek-backward-button>
             <media-seek-forward-button
-              seek-offset="15"
+              seekoffset="15"
             ></media-seek-forward-button>
             <media-mute-button></media-mute-button>
             <media-volume-range></media-volume-range>
             <media-time-range></media-time-range>
-            <media-time-display show-duration remaining></media-time-display>
-            <media-captions-button default-showing></media-captions-button>
+            <media-time-display showduration remaining></media-time-display>
+            <media-captions-button defaultshowing></media-captions-button>
             <media-playback-rate-button></media-playback-rate-button>
             <media-pip-button></media-pip-button>
             <media-fullscreen-button></media-fullscreen-button>

@@ -8,6 +8,10 @@ import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
 
+export const Attributes = {
+  TIME: 'time',
+}
+
 const template = document.createElement('template');
 template.innerHTML = `
   <style>
@@ -34,7 +38,7 @@ class MediaPreviewThumbnail extends window.HTMLElement {
   static get observedAttributes() {
     return [
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
-      'time',
+      Attributes.TIME,
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
       MediaUIAttributes.MEDIA_PREVIEW_COORDS,
     ];
@@ -70,7 +74,7 @@ class MediaPreviewThumbnail extends window.HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (
       [
-        'time',
+        Attributes.TIME,
         MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
         MediaUIAttributes.MEDIA_PREVIEW_COORDS,
       ].includes(attrName)

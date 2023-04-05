@@ -1,4 +1,4 @@
-/* 
+/*
 <media-theme-demuxed-2022>
   <video
     slot="media"
@@ -45,7 +45,7 @@ template.innerHTML = /*html*/`
   media-control-bar :first-child {
     margin: 0 5px 0 0;
   }
-  
+
   media-control-bar :last-child {
     margin: 0 0 0 5px;
   }
@@ -131,7 +131,7 @@ template.innerHTML = /*html*/`
     pointer-events: none;
     background-position: bottom;
     background-repeat: repeat-x;
-   
+
     background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAACqCAYAAABsziWkAAAAAXNSR0IArs4c6QAAAQVJREFUOE9lyNdHBQAAhfHb3nvvuu2997jNe29TJJEkkkgSSSSJJJJEEkkiifRH5jsP56Xz8PM5gcC/xfDEmjhKxEOCSaREEiSbFEqkQppJpzJMJiWyINvkUCIX8kw+JQqg0BRRxaaEEqVQZsopUQGVpooS1VBjglStqaNEPTSYRko0QbNpoUQrtJl2qsN0UqILuk0PJXqhz/RTYgAGzRA1bEYoMQpjZpwSExAyk5SYgmkzQ82aOUqEIWKilJiHBbNIiSVYhhVYhTVYhw3YhC3Yhh3YhT3YhwM4hCM4hhM4hTM4hwu4hCu4hhu4hTu4hwd4hCd4hhd4hTd4hw/4hC/4hh/4/QM2/id28uIEJAAAAABJRU5ErkJggg==");
   }
 
@@ -178,15 +178,15 @@ template.innerHTML = /*html*/`
     opacity: 1;
   }
 
-  media-airplay-button[media-airplay-unavailable].small-button {
+  media-airplay-button[mediaairplayunavailable].small-button {
     display: none;
   }
 
-  media-cast-button[media-cast-unavailable].small-button {
+  media-cast-button[mediacastunavailable].small-button {
     display: none;
   }
 
-  media-pip-button[media-pip-unavailable].small-button {
+  media-pip-button[mediapipunavailable].small-button {
     display: none;
   }
 
@@ -194,15 +194,15 @@ template.innerHTML = /*html*/`
     display: none;
   }
 
-  media-captions-button[media-captions-list].small-button {
+  media-captions-button[mediacaptionslist].small-button {
     display: flex;
   }
 
-  media-captions-button[media-subtitles-list].small-button {
+  media-captions-button[mediasubtitleslist].small-button {
     display: flex;
   }
 
-  media-controller[user-inactive]:not(.sm) * {
+  media-controller[userinactive]:not(.sm) * {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -245,11 +245,11 @@ template.innerHTML = /*html*/`
     margin: 22px 7px;
   }
 
-  media-controller:not(.sm) media-airplay-button[media-airplay-unavailable].small-button {
+  media-controller:not(.sm) media-airplay-button[mediaairplayunavailable].small-button {
     display: none;
   }
 
-  media-controller:not(.sm) media-cast-button[media-cast-unavailable].small-button {
+  media-controller:not(.sm) media-cast-button[mediacastunavailable].small-button {
     display: none;
   }
 
@@ -325,7 +325,7 @@ template.innerHTML = /*html*/`
       </div>
     </div>
     <media-seek-forward-button style="display: none;" class="small-button">
-      <svg slot="forward" viewBox="0 0 16 16"><path d="M3.1 13.1c-.1 0-.2 0-.3-.1-.2-.1-.3-.4-.3-.6V3.5c0-.3.1-.5.3-.6.1-.1.4 0 .6.1l6.5 4.4c.2.1.3.3.3.5s-.1.4-.3.5l-6.5 4.4c-.1.3-.2.3-.3.3zM12.8 13.1c-.5 0-.8-.4-.8-.8V3.7c0-.5.4-.8.8-.8.5 0 .8.4.8.8v8.6c.1.4-.3.8-.8.8z"/></svg> 
+      <svg slot="forward" viewBox="0 0 16 16"><path d="M3.1 13.1c-.1 0-.2 0-.3-.1-.2-.1-.3-.4-.3-.6V3.5c0-.3.1-.5.3-.6.1-.1.4 0 .6.1l6.5 4.4c.2.1.3.3.3.5s-.1.4-.3.5l-6.5 4.4c-.1.3-.2.3-.3.3zM12.8 13.1c-.5 0-.8-.4-.8-.8V3.7c0-.5.4-.8.8-.8.5 0 .8.4.8.8v8.6c.1.4-.3.8-.8.8z"/></svg>
     </media-seek-forward-button>
     <media-time-display show-duration></media-time-display>
     <media-time-range>
@@ -366,7 +366,7 @@ class MediaThemeDemuxed extends MediaThemeElement {
 
   connectedCallback() {
     this.render();
-    
+
     const resizeObserver = new window.ResizeObserver((entries) => {
       entries.forEach((entry) => {
         entry.target.className = this.#getBreakpoints(entry.contentRect).join(' ');

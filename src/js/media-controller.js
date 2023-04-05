@@ -24,16 +24,26 @@ const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k
 const DEFAULT_SEEK_OFFSET = 10;
 const DEFAULT_TIME = 0;
 
+export const Attributes = {
+  DEFAULT_STREAM_TYPE: 'defaultstreamtype',
+  FULLSCREEN_ELEMENT: 'fullscreenelement',
+  HOTKEYS: 'hotkeys',
+  KEYS_USED: 'keysused',
+  LIVE_EDGE_OFFSET: 'liveedgeoffset',
+  NO_AUTO_SEEK_TO_LIVE: 'noautoseektolive',
+  NO_HOTKEYS: 'nohotkeys',
+};
+
 /**
  * Media Controller should not mimic the HTMLMediaElement API.
  * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {
-    return super.observedAttributes.concat('nohotkeys', 'hotkeys', 'default-stream-type');
+    return super.observedAttributes.concat(Attributes.NO_HOTKEYS, Attributes.HOTKEYS, Attributes.DEFAULT_STREAM_TYPE);
   }
 
-  #hotKeys = new AttributeTokenList(this, 'hotkeys');
+  #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
   #fullscreenElement;
 
   constructor() {
@@ -94,27 +104,27 @@ class MediaController extends MediaContainer {
   }
 
   set fullscreenElement(element) {
-    if (this.hasAttribute('fullscreen-element')) {
-      this.removeAttribute('fullscreen-element');
+    if (this.hasAttribute(Attributes.FULLSCREEN_ELEMENT)) {
+      this.removeAttribute(Attributes.FULLSCREEN_ELEMENT);
     }
     this.#fullscreenElement = element;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === 'nohotkeys') {
+    if (attrName === Attributes.NO_HOTKEYS) {
       if (newValue !== oldValue && newValue === '') {
-        if (this.hasAttribute('hotkeys')) {
+        if (this.hasAttribute(Attributes.HOTKEYS)) {
           console.warn('Both `hotkeys` and `nohotkeys` have been set. All hotkeys will be disabled.');
         }
         this.disableHotkeys();
       } else if (newValue !== oldValue && newValue === null) {
         this.enableHotkeys();
       }
-    } else if (attrName === 'hotkeys') {
+    } else if (attrName === Attributes.HOTKEYS) {
         this.#hotKeys.value = newValue;
-    } else if (attrName === 'default-stream-type') {
+    } else if (attrName === Attributes.DEFAULT_STREAM_TYPE) {
       this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
-    } else if (attrName === 'fullscreen-element') {
+    } else if (attrName === Attributes.FULLSCREEN_ELEMENT) {
       const el = newValue
         // @ts-ignore
         ? this.getRootNode()?.getElementById(newValue)
@@ -132,7 +142,7 @@ class MediaController extends MediaContainer {
 
     // TODO: What does this do? At least add comment, maybe move to media-container
     if (!media.hasAttribute('tabindex')) {
-      media.setAttribute('tabindex', -1);
+      media.tabIndex = -1;
     }
 
     // Listen for media state changes and propagate them to children and associated els
@@ -342,7 +352,7 @@ class MediaController extends MediaContainer {
     // keysUsed is either an attribute or a property.
     // The attribute is a DOM array and the property is a JS array
     // In the attribute Space represents the space key and gets convered to ' '
-    const keysUsed = (e.target.getAttribute('keysused')?.split(' ') ?? e.target?.keysUsed ?? [])
+    const keysUsed = (e.target.getAttribute(Attributes.KEYS_USED)?.split(' ') ?? e.target?.keysUsed ?? [])
       .map(key => key === 'Space' ? ' ' : key)
       .filter(Boolean);
 

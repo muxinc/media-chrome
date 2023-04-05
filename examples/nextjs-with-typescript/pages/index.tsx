@@ -1,24 +1,8 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styles from '../styles/Home.module.css';
-import {
-  MediaController,
-  MediaControlBar,
-  MediaTimeRange,
-  MediaTimeDisplay,
-  MediaLoadingIndicator,
-  MediaVolumeRange,
-  MediaPlaybackRateButton,
-  MediaPlayButton,
-  MediaSeekBackwardButton,
-  MediaSeekForwardButton,
-  MediaMuteButton,
-  MediaCaptionsButton,
-  MediaAirplayButton,
-  MediaPipButton,
-  MediaFullscreenButton,
-  MediaPosterImage,
-} from 'media-chrome/dist/react';
+
+import 'media-chrome';
 
 const primaryColor = 'white';
 const chromeStyles = {
@@ -26,6 +10,7 @@ const chromeStyles = {
   '--media-range-thumb-background': primaryColor,
   '--media-range-bar-color': primaryColor,
   color: primaryColor,
+  height: '500px',
 };
 
 const Home: NextPage = () => {
@@ -44,11 +29,22 @@ const Home: NextPage = () => {
             Media Chrome!
           </a>
         </h1>
-        <MediaController
-          ref={(node: HTMLElement) => console.log('ref', node)}
-          style={chromeStyles}
+        <media-controller
+          // suppressHydrationWarning={true}
+          ref={(ref) => {}}
+          style={{
+            '--media-icon-color': primaryColor,
+            '--media-range-thumb-background': primaryColor,
+            '--media-range-bar-color': primaryColor,
+            color: primaryColor,
+            height: '500px',
+          }}
+          /** @ts-ignore */
+          onMediaPausedChange={console.log.bind(null, 'mediapausedchange')}
+          onClick={console.log.bind(null, 'click')}
         >
           <video
+            ref={(ref) => console.log(ref)}
             slot="media"
             src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
             preload="auto"
@@ -68,33 +64,66 @@ const Home: NextPage = () => {
               src="./vtt/en-cc.vtt"
             />
           </video>
-          <MediaPosterImage
+          <media-poster-image
+            // suppressHydrationWarning={true}
             slot="poster"
             src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
-            placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
-          ></MediaPosterImage>
-          <div slot="centered-chrome" no-auto-hide="">
-            <MediaLoadingIndicator
-              style={{ '--media-loading-icon-width': 80 }}
-            ></MediaLoadingIndicator>
-          </div>
-          <MediaControlBar>
-            <MediaPlayButton></MediaPlayButton>
-            <MediaSeekBackwardButton></MediaSeekBackwardButton>
-            <MediaSeekForwardButton></MediaSeekForwardButton>
-            <MediaTimeRange></MediaTimeRange>
-            <MediaTimeDisplay showDuration></MediaTimeDisplay>
-            <MediaMuteButton></MediaMuteButton>
-            <MediaVolumeRange></MediaVolumeRange>
-            <MediaPlaybackRateButton></MediaPlaybackRateButton>
-            <MediaCaptionsButton defaultShowing></MediaCaptionsButton>
-            <MediaAirplayButton></MediaAirplayButton>
-            <MediaPipButton></MediaPipButton>
-            <MediaFullscreenButton></MediaFullscreenButton>
-          </MediaControlBar>
-        </MediaController>
+            placeholderSrc="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
+          ></media-poster-image>
+          <media-loading-indicator
+            // suppressHydrationWarning={true}
+            slot="centered-chrome"
+            noautohide
+            style={{ '--media-loading-icon-width': 80 }}
+          ></media-loading-indicator>
+          <media-control-bar
+          // suppressHydrationWarning={true}
+          >
+            <media-play-button
+            // suppressHydrationWarning={true}
+            ></media-play-button>
+            <media-seek-backward-button
+              // suppressHydrationWarning={true}
+              seekOffset={15}
+            ></media-seek-backward-button>
+            <media-seek-forward-button
+              // suppressHydrationWarning={true}
+              seekOffset={15}
+            ></media-seek-forward-button>
+            <media-time-range
+            // suppressHydrationWarning={true}
+            ></media-time-range>
+            <media-time-display
+              // suppressHydrationWarning={true}
+              showDuration
+              remaining
+            ></media-time-display>
+            <media-mute-button
+            // suppressHydrationWarning={true}
+            ></media-mute-button>
+            <media-volume-range
+            // suppressHydrationWarning={true}
+            ></media-volume-range>
+            <media-playback-rate-button
+              // suppressHydrationWarning={true}
+              rates={[1, 2]}
+            ></media-playback-rate-button>
+            <media-captions-button
+              // suppressHydrationWarning={true}
+              defaultShowing
+            ></media-captions-button>
+            <media-airplay-button
+            // suppressHydrationWarning={true}
+            ></media-airplay-button>
+            <media-pip-button
+            // suppressHydrationWarning={true}
+            ></media-pip-button>
+            <media-fullscreen-button
+            // suppressHydrationWarning={true}
+            ></media-fullscreen-button>
+          </media-control-bar>
+        </media-controller>
       </main>
-
       <footer className={styles.footer}></footer>
     </div>
   );

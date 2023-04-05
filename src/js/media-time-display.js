@@ -4,6 +4,13 @@ import { window } from './utils/server-safe-globals.js';
 import { formatAsTimePhrase, formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
+
+export const Attributes = {
+  REMAINING: 'remaining',
+  SHOW_DURATION: 'showduration',
+};
+
+
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 //
 
@@ -12,8 +19,8 @@ const ButtonPressedKeys = ['Enter', ' '];
 const DEFAULT_TIMES_SEP = '&nbsp;/&nbsp;';
 
 const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
-  const showRemaining = el.getAttribute('remaining') != null;
-  const showDuration = el.getAttribute('show-duration') != null;
+  const showRemaining = el.showRemaining;
+  const showDuration = el.showDuration;
   const currentTime = el.mediaCurrentTime ?? 0;
   const endTime = el.mediaDuration ?? el.mediaSeekableEnd ?? 0;
 
@@ -34,8 +41,8 @@ const updateAriaValueText = (el) => {
     el.setAttribute('aria-valuetext', DEFAULT_MISSING_TIME_PHRASE);
     return;
   }
-  const showRemaining = el.hasAttribute('remaining');
-  const showDuration = el.hasAttribute('show-duration');
+  const showRemaining = el.remaining;
+  const showDuration = el.showDuration;
 
   const currentTimePhrase = showRemaining
     ? formatAsTimePhrase(0 - (endTime - currentTime))
@@ -59,11 +66,16 @@ class MediaTimeDisplay extends MediaTextDisplay {
       MediaUIAttributes.MEDIA_CURRENT_TIME,
       MediaUIAttributes.MEDIA_DURATION,
       MediaUIAttributes.MEDIA_SEEKABLE,
-      'remaining',
-      'show-duration',
+      Attributes.REMAINING,
+      Attributes.SHOW_DURATION,
       'disabled',
     ];
   }
+
+  /** @type boolean | undefined */
+  #_showDuration;
+  /** @type boolean | undefined */
+  #_remaining;
 
   constructor() {
     super();
@@ -121,21 +133,18 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (
+    if (attrName === Attributes.SHOW_DURATION) {
+      this.showDuration = newValue != null;
+    } else if (attrName === Attributes.REMAINING) {
+      this.REMAINING = newValue != null;
+    } else if (
       [
         MediaUIAttributes.MEDIA_CURRENT_TIME,
         MediaUIAttributes.MEDIA_DURATION,
         MediaUIAttributes.MEDIA_SEEKABLE,
-        'remaining',
-        'show-duration',
       ].includes(attrName)
     ) {
-      const timesLabel = formatTimesLabel(this);
-      updateAriaValueText(this);
-      // Only update if it changed, timeupdate events are called a few times per second.
-      if (timesLabel !== this.#slot.innerHTML) {
-        this.#slot.innerHTML = timesLabel;
-      }
+      this.update();
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
@@ -148,11 +157,31 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   enable() {
-    this.setAttribute('tabindex', 0);
+    this.tabIndex = 0;
   }
 
   disable() {
-    this.removeAttribute('tabindex');
+    this.tabIndex = -1;
+  }
+
+  get showDuration() {
+    return this.#_showDuration ?? false;
+  }
+
+  set showDuration(val) {
+    if (val === this.showDuration) return;
+    this.#_showDuration = val;
+    this.update();
+  }
+
+  get remaining() {
+    return this.#_remaining ?? false;
+  }
+
+  set remaining(val) {
+    if (val === this.remaining) return;
+    this.#_remaining = val;
+    this.update();
   }
 
   get mediaDuration() {
@@ -180,6 +209,15 @@ class MediaTimeDisplay extends MediaTextDisplay {
   get mediaSeekableStart() {
     const [start] = this.mediaSeekable ?? [];
     return start;
+  }
+
+  update() {
+    const timesLabel = formatTimesLabel(this);
+    updateAriaValueText(this);
+    // Only update if it changed, timeupdate events are called a few times per second.
+    if (timesLabel !== this.#slot.innerHTML) {
+      this.#slot.innerHTML = timesLabel;
+    }
   }
 }
 

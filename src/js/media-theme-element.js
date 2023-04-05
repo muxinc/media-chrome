@@ -7,8 +7,8 @@ import { camelCase, isNumericString } from './utils/utils.js';
 export * from './utils/template-parts.js';
 
 const observedMediaAttributes = {
-  'media-target-live-window': 'targetLiveWindow',
-  'media-stream-type': 'streamType',
+  mediatargetlivewindow: 'targetLiveWindow',
+  mediastreamtype: 'streamType',
 };
 
 const prependTemplate = document.createElement('template');

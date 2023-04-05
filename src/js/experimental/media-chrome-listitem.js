@@ -22,12 +22,16 @@ template.innerHTML = `
 </li>
 `;
 
+export const Attributes = {
+  VALUE: 'value',
+};
+
 class MediaChromeListitem extends window.HTMLElement {
   static get observedAttributes() {
     return [
       'disabled',
       'aria-selected',
-      'value',
+      Attributes.VALUE,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
   ];
   }
@@ -47,11 +51,11 @@ class MediaChromeListitem extends window.HTMLElement {
   }
 
   set value(value) {
-    this.setAttribute('value', value);
+    this.setAttribute(Attributes.VALUE, value);
   }
 
   get value() {
-    return this.getAttribute('value');
+    return this.getAttribute(Attributes.VALUE);
   }
 
   enable() {

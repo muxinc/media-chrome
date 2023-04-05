@@ -16,10 +16,10 @@
         width: 100%;      /* prevents video to expand beyond its container */
       }
 
-      media-airplay-button[media-airplay-unavailable],
-      media-fullscreen-button[media-fullscreen-unavailable],
-      media-volume-range[media-volume-unavailable],
-      media-pip-button[media-pip-unavailable] {
+      media-airplay-button[mediaairplayunavailable],
+      media-fullscreen-button[mediafullscreenunavailable],
+      media-volume-range[mediavolumeunavailable],
+      media-pip-button[mediapipunavailable] {
         display: none;
       }
 
@@ -62,15 +62,15 @@
           src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
           placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
         ></media-poster-image>
-        <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
+        <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
         <media-control-bar>
           <media-play-button disabled aria-disabled="true"></media-play-button>
-          <media-seek-backward-button seek-offset="15" disabled aria-disabled="true"></media-seek-backward-button>
-          <media-seek-forward-button seek-offset="15" disabled aria-disabled="true"></media-seek-forward-button>
+          <media-seek-backward-button seekoffset="15" disabled aria-disabled="true"></media-seek-backward-button>
+          <media-seek-forward-button seekoffset="15" disabled aria-disabled="true"></media-seek-forward-button>
           <media-mute-button disabled aria-disabled="true"></media-mute-button>
           <media-volume-range disabled aria-disabled="true"></media-volume-range>
           <media-time-range disabled aria-disabled="true"></media-time-range>
-          <media-time-display show-duration remaining disabled aria-disabled="true"></media-time-display>
+          <media-time-display showduration remaining disabled aria-disabled="true"></media-time-display>
           <media-captions-button default-showing disabled aria-disabled="true"></media-captions-button>
           <media-playback-rate-button disabled aria-disabled="true"></media-playback-rate-button>
           <media-pip-button disabled aria-disabled="true"></media-pip-button>
