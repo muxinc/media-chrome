@@ -7,7 +7,7 @@
     "dev": "(cd .. && yarn build:esm --watch=forever) & astro dev",
     "start": "astro dev",
     "check": "astro check && tsc",
-    "prebuild": "cd .. && yarn build",
+    "prebuild": "cd .. && yarn && yarn build",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
