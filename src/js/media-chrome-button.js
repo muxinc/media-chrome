@@ -77,22 +77,25 @@ class MediaChromeButton extends window.HTMLElement {
   constructor(options = {}) {
     super();
 
-    this.attachShadow({ mode: 'open' });
+    if (!this.shadowRoot) {
+      // Set up the Shadow DOM if not using Declarative Shadow DOM.
+      this.attachShadow({ mode: 'open' });
 
-    const buttonHTML = template.content.cloneNode(true);
-    this.nativeEl = buttonHTML;
+      const buttonHTML = template.content.cloneNode(true);
+      this.nativeEl = buttonHTML;
 
-    // Slots
-    let slotTemplate = options.slotTemplate;
+      // Slots
+      let slotTemplate = options.slotTemplate;
 
-    if (!slotTemplate) {
-      slotTemplate = document.createElement('template');
-      slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
+      if (!slotTemplate) {
+        slotTemplate = document.createElement('template');
+        slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
+      }
+
+      this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
+
+      this.shadowRoot.appendChild(buttonHTML);
     }
-
-    this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
-
-    this.shadowRoot.appendChild(buttonHTML);
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);

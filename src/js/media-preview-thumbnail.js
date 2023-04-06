@@ -43,8 +43,11 @@ class MediaPreviewThumbnail extends window.HTMLElement {
   constructor() {
     super();
 
-    this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
+    if (!this.shadowRoot) {
+      // Set up the Shadow DOM if not using Declarative Shadow DOM.
+      this.attachShadow({ mode: 'open' });
+      this.shadowRoot.appendChild(template.content.cloneNode(true));
+    }
   }
 
   connectedCallback() {

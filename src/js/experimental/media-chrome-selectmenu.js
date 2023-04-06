@@ -54,12 +54,15 @@ class MediaChromeSelectMenu extends window.HTMLElement {
   constructor() {
     super();
 
-    const shadow = this.attachShadow({ mode: 'open' });
+    if (!this.shadowRoot) {
+      // Set up the Shadow DOM if not using Declarative Shadow DOM.
+      const shadow = this.attachShadow({ mode: 'open' });
 
-    const buttonHTML = template.content.cloneNode(true);
-    this.nativeEl = buttonHTML;
+      const buttonHTML = template.content.cloneNode(true);
+      this.nativeEl = buttonHTML;
 
-    shadow.appendChild(buttonHTML);
+      shadow.appendChild(buttonHTML);
+    }
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
