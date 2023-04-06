@@ -1,4 +1,4 @@
-import { window, document } from './utils/server-safe-globals.js';
+import { window, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
