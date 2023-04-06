@@ -5,7 +5,9 @@
   "author": "@muxinc",
   "license": "MIT",
   "homepage": "https://github.com/muxinc/media-chrome#readme",
-  "bugs": { "url": "https://github.com/muxinc/media-chrome/issues" },
+  "bugs": {
+    "url": "https://github.com/muxinc/media-chrome/issues"
+  },
   "type": "module",
   "main": "dist/index.js",
   "customElements": "dist/custom-elements.json",
@@ -38,7 +40,7 @@
     "url": "git+https://github.com/muxinc/media-chrome.git"
   },
   "devDependencies": {
-    "@custom-elements-manifest/analyzer": "^0.6.6",
+    "@custom-elements-manifest/analyzer": "^0.8.0",
     "@open-wc/testing": "^3.1.6",
     "@web/test-runner": "^0.15.0",
     "esbuild": "^0.15.12",
