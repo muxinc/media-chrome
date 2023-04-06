@@ -26,7 +26,7 @@ template.innerHTML = `
 
     pointer-events: auto;
     cursor: pointer;
-    font-family: Arial, sans-serif;
+    font-family: "Helvetica Neue", Arial, sans-serif;
   }
 
   ${/*

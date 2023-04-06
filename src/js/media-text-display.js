@@ -19,7 +19,7 @@ template.innerHTML = `
 
       font-size: 14px;
       line-height: var(--media-text-content-height, var(--media-control-height, 24px));
-      font-family: Arial, sans-serif;
+      font-family: "Helvetica Neue", Arial, sans-serif;
       text-align: center;
       color: #ffffff;
       pointer-events: auto;
