@@ -78,9 +78,12 @@ class MediaLoadingIndicator extends window.HTMLElement {
   constructor() {
     super();
 
-    const shadow = this.attachShadow({ mode: 'open' });
-    const indicatorHTML = template.content.cloneNode(true);
-    shadow.appendChild(indicatorHTML);
+    if (!this.shadowRoot) {
+      // Set up the Shadow DOM if not using Declarative Shadow DOM.
+      const shadow = this.attachShadow({ mode: 'open' });
+      const indicatorHTML = template.content.cloneNode(true);
+      shadow.appendChild(indicatorHTML);
+    }
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {

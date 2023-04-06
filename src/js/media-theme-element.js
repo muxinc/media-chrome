@@ -43,7 +43,14 @@ export class MediaThemeElement extends window.HTMLElement {
 
   constructor() {
     super();
-    this.renderRoot = this.attachShadow({ mode: 'open' });
+
+    if (this.shadowRoot) {
+      this.renderRoot = this.shadowRoot;
+    } else {
+      // Set up the Shadow DOM if not using Declarative Shadow DOM.
+      this.renderRoot = this.attachShadow({ mode: 'open' });
+      this.createRenderer();
+    }
 
     const observer = new MutationObserver((mutationList) => {
       if (mutationList.some((mutation) => {
@@ -75,8 +82,6 @@ export class MediaThemeElement extends window.HTMLElement {
       attributes: true,
       subtree: true,
     });
-
-    this.createRenderer();
 
     // In case the template prop was set before custom element upgrade.
     // https://web.dev/custom-elements-best-practices/#make-properties-lazy

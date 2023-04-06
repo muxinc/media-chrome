@@ -55,21 +55,24 @@ class MediaChromeListbox extends window.HTMLElement {
   constructor(options = {}) {
     super();
 
-    const shadow = this.attachShadow({ mode: 'open' });
+    if (!this.shadowRoot) {
+      // Set up the Shadow DOM if not using Declarative Shadow DOM.
+      const shadow = this.attachShadow({ mode: 'open' });
 
-    const listboxHTML = template.content.cloneNode(true);
-    this.nativeEl = listboxHTML;
+      const listboxHTML = template.content.cloneNode(true);
+      this.nativeEl = listboxHTML;
 
-    let slotTemplate = options.slotTemplate;
+      let slotTemplate = options.slotTemplate;
 
-    if (!slotTemplate) {
-      slotTemplate = document.createElement('template');
-      slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
+      if (!slotTemplate) {
+        slotTemplate = document.createElement('template');
+        slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
+      }
+
+      this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
+
+      shadow.appendChild(listboxHTML);
     }
-
-    this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
-
-    shadow.appendChild(listboxHTML);
 
     this.#slot = this.shadowRoot.querySelector('slot');
 

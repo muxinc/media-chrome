@@ -35,12 +35,15 @@ class MediaChromeListitem extends window.HTMLElement {
   constructor() {
     super();
 
-    const shadow = this.attachShadow({ mode: 'open' });
+    if (!this.shadowRoot) {
+      // Set up the Shadow DOM if not using Declarative Shadow DOM.
+      const shadow = this.attachShadow({ mode: 'open' });
 
-    const listitemHTML = template.content.cloneNode(true);
-    this.nativeEl = listitemHTML;
+      const listitemHTML = template.content.cloneNode(true);
+      this.nativeEl = listitemHTML;
 
-    shadow.appendChild(listitemHTML);
+      shadow.appendChild(listitemHTML);
+    }
   }
 
   set value(value) {
