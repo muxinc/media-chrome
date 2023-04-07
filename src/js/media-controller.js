@@ -47,7 +47,7 @@ const DEFAULT_SEEK_OFFSET = 10;
 const DEFAULT_TIME = 0;
 
 const MediaUIStates = {
-  paused: {
+  MEDIA_PAUSED: {
     get: function(controller){
       const { media } = controller;
 
@@ -55,21 +55,23 @@ const MediaUIStates = {
     },
     mediaEvents: ['play', 'pause', 'emptied']
   }, 
-  hasPlayed: {
+  MEDIA_HAS_PLAYED: {
     // We want to let the user know that the media started playing at any point (`media-has-played`).
     // Since these propagators are all called when boostrapping state, let's verify this is
     // a real playing event by checking that 1) there's media and 2) it isn't currently paused.
-    get: function(controller) {
+    get: function(controller, e) {
       const { media } = controller;
+
+      if (!media) return false;
 
       // TODO: Would seem to leave room for issue if this is called
       // after a video has played but is currently paused.
       // Could possibly check for a duration and a positive current time.
-      return media ? media.paused : false;
+      return !media.paused;
     },
     mediaEvents: ['playing', 'emptied']
   },
-  playbackRate: {
+  MEDIA_PLAYBACK_RATE: {
     get: function(controller) {
       const { media } = controller;
 
@@ -81,7 +83,7 @@ const MediaUIStates = {
     },
     mediaEvents: ['ratechange','loadstart']
   },
-  muted: {
+  MEDIA_MUTED: {
     get: function(controller) {
       const { media } = controller;
 
@@ -93,7 +95,7 @@ const MediaUIStates = {
     },
     mediaEvents: ['volumechange']
   },
-  volume: {
+  MEDIA_VOLUME: {
     get: function(controller) {
       const { media } = controller;
 
@@ -105,7 +107,7 @@ const MediaUIStates = {
     },
     mediaEvents: ['volumechange']
   },
-  volumeLevel: {
+  MEDIA_VOLUME_LEVEL: {
     get: function(controller) {
       const { media } = controller;
       let level = 'high';
@@ -128,7 +130,7 @@ const MediaUIStates = {
     },
     mediaEvents: ['volumechange']
   },
-  currentTime: {
+  MEDIA_CURRENT_TIME: {
     get: function(controller) {
       const { media } = controller;
 
@@ -140,7 +142,7 @@ const MediaUIStates = {
     },
     mediaEvents: ['timeupdate', 'loadedmetadata']
   },
-  duration: {
+  MEDIA_DURATION: {
     get: function(controller){
       const { media } = controller;
 
@@ -153,34 +155,36 @@ const MediaUIStates = {
     },
     mediaEvents: ['durationchange','loadedmetadata','emptied']
   },
-  seekable: {
+  MEDIA_SEEKABLE: {
     // TODO: Returns undefined and a string, consider a better type
     // not tied to attribute strings
     get: function(controller){
       const { media } = controller;
 
       if (!media?.seekable?.length) return undefined;
+
       const start = media.seekable.start(0);
       const end = media.seekable.end(media.seekable.length - 1);
+
       // Account for cases where metadata from slotted media has an "empty" seekable (CJP)
       if (!start && !end) return undefined;
       return [Number(start.toFixed(3)), Number(end.toFixed(3))].join(':');
     },
     mediaEvents: ['loadedmetadata','emptied','progress']
   },
-  loading: {
+  MEDIA_LOADING: {
     get: function(controller) {
       return !!(controller.media?.readyState < 3);
     },
     mediaEvents: ['waiting','playing','emptied']
   },
-  buffered: {
+  MEDIA_BUFFERED: {
     get: function(controller) {
       serializeTimeRanges(controller.media?.buffered)
     },
     mediaEvents: ['progress','emptied']
   },
-  streamType: {
+  MEDIA_STREAM_TYPE: {
     get: function(controller) {
       const { media } = controller;
 
@@ -222,13 +226,13 @@ const MediaUIStates = {
     },
     mediaEvents: ['emptied','durationchange','loadedmetadata','streamtypechange']
   },
-  targetLiveWindow: {
+  MEDIA_TARGET_LIVE_WINDOW: {
     get: function(controller){
       const { media } = controller;
 
       if (!media) return Number.NaN;
       const { targetLiveWindow } = media;
-      const streamType = MediaUIStates.streamType.get(controller);
+      const streamType = MediaUIStates.MEDIA_STREAM_TYPE.get(controller);
 
       // Since `NaN` represents either "unknown" or "inapplicable", need to check if `streamType`
       // is `"live"`. If so, assume it's "standard live" (aka `targetLiveWindow === 0`) (CJP)
@@ -242,7 +246,7 @@ const MediaUIStates = {
     },
     mediaEvents: ['emptied','durationchange','loadedmetadata','streamtypechange','targetlivewindowchange']
   },
-  timeIsLive: {
+  MEDIA_TIME_IS_LIVE: {
     get: function(controller){
       const { media } = controller;
     
@@ -253,7 +257,7 @@ const MediaUIStates = {
         return media.currentTime >= media.liveEdgeStart;
       }
   
-      const live = MediaUIStates.streamType.get(controller) === 'live';
+      const live = MediaUIStates.MEDIA_STREAM_TYPE.get(controller) === 'live';
       // Can't be playing live if it's not a live stream
       if (!live) return false;
       
@@ -275,7 +279,7 @@ const MediaUIStates = {
     },
     mediaEvents: ['playing','timeupdate','progress','waiting','emptied']
   },
-  isFullscreen: {
+  MEDIA_IS_FULLSCREEN: {
     get: function(controller, e) {
       // Safari doesn't support ShadowRoot.fullscreenElement and document.fullscreenElement
       // could be several ancestors up the tree. Use event.target instead.
@@ -286,7 +290,7 @@ const MediaUIStates = {
     // TODO: Don't miss this special event type when implementing
     rootEvents: [fullscreenApi.event]
   },
-  isPip: {
+  MEDIA_IS_PIP: {
     get: function(controller, e) {
       const media = controller.media;
 
@@ -307,7 +311,7 @@ const MediaUIStates = {
     },
     mediaEvents: ['enterpictureinpicture', 'leavepictureinpicture']
   },
-  isCasting: {
+  MEDIA_IS_CASTING: {
     // Note this relies on a customized video[is=castable-video] element.
     get: function(controller, e) {
       const { media } = controller;
@@ -326,7 +330,7 @@ const MediaUIStates = {
     },
     mediaEvents: ['entercast','leavecast','castchange']
   },
-  airplayUnavailable: {
+  MEDIA_AIRPLAY_UNAVAILABLE: {
     // NOTE: only adding this if airplay is supported, in part to avoid unnecessary battery consumption per
     // Apple docs recommendations (See: https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls)
     // For a more advanced solution, we could monitor for media state receivers that "care" about airplay support and add/remove
@@ -352,7 +356,7 @@ const MediaUIStates = {
     },
     mediaEvents: ['webkitplaybacktargetavailabilitychanged']
   },
-  castUnavailable: {
+  MEDIA_CAST_UNAVAILABLE: {
     get: function() {
       const castState = globalThis.CastableVideoElement?.castState;
 
@@ -370,19 +374,19 @@ const MediaUIStates = {
     },
     mediaEvents: ['castchange']
   },
-  fullscreenUnavailable: {
+  MEDIA_FULLSCREEN_UNAVAILABLE: {
     get: function() {
       // TODO: Move to non attr specific value
       return (fullscreenSupported) ? undefined : AvailabilityStates.UNAVAILABLE;
     }
   },
-  pipUnavailable: {
+  MEDIA_PIP_UNAVAILABLE: {
     get: function() {
       // TODO: Move to non attr specific value
       return (pipSupported) ? undefined : AvailabilityStates.UNSUPPORTED;
     }
   },
-  volumeUnavailable: {
+  MEDIA_VOLUME_UNAVAILABLE: {
     get: function(controller) {
       if (volumeSupported !== undefined && !volumeSupported) {
         return AvailabilityStates.UNSUPPORTED;
@@ -400,7 +404,7 @@ const MediaUIStates = {
     // Give a little time for the volume support promise to run
     mediaEvents: ['loadstart']
   },
-  captionsList: {
+  MEDIA_CAPTIONS_LIST: {
     get: function(controller) {
       // TODO: Move to non attr specific values
       return stringifyTextTrackList(getCaptionTracks(controller)) || undefined
@@ -408,7 +412,7 @@ const MediaUIStates = {
     mediaEvents: ['loadstart'],
     trackListEvents: ['addtrack','removetrack']
   },
-  subtitlesList: {
+  MEDIA_SUBTITLES_LIST: {
     get: function(controller) {
       // TODO: Move to non attr specific values
       return stringifyTextTrackList(getSubtitleTracks(controller)) || undefined
@@ -416,7 +420,7 @@ const MediaUIStates = {
     mediaEvents: ['loadstart'],
     trackListEvents: ['addtrack','removetrack']
   },
-  captionsShowing: {
+  MEDIA_CAPTIONS_SHOWING: {
     get: function(controller) {
       // TODO: Move to non attr specific values
       return stringifyTextTrackList(getShowingCaptionTracks(controller)) || undefined
@@ -424,7 +428,7 @@ const MediaUIStates = {
     mediaEvents: ['loadstart'],
     trackListEvents: ['addtrack','removetrack', 'change']
   },
-  subtitlesShowing: {
+  MEDIA_SUBTITLES_SHOWING: {
     get: function(controller) {
       // TODO: Move to non attr specific values
       return stringifyTextTrackList(getShowingSubtitleTracks(controller)) || undefined
@@ -486,7 +490,7 @@ class MediaController extends MediaContainer {
     // Capture request events from internal controls
     const mediaUIEventHandlers = {
       MEDIA_PLAY_REQUEST: (e, media) => {
-        const streamType = Delegates[MediaUIAttributes.MEDIA_STREAM_TYPE](this);
+        const streamType = MediaUIStates.MEDIA_STREAM_TYPE.get(this);
         // TODO: Move to not attr value
         const autoSeekToLive = this.getAttribute('noautoseektolive') === null;
 
@@ -790,187 +794,13 @@ class MediaController extends MediaContainer {
       this.addEventListener(MediaUIEvents[key], this[handlerName]);
     });
 
-    // Pass media state to child and associated control elements
-    this._mediaStatePropagators = {
-      'play,pause,emptied': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, getPaused(this));
-      },
-      'playing,emptied': () => {
-        // We want to let the user know that the media started playing at any point (`media-has-played`).
-        // Since these propagators are all called when boostrapping state, let's verify this is
-        // a real playing event by checking that 1) there's media and 2) it isn't currently paused.
-        this.propagateMediaState(MediaUIAttributes.MEDIA_HAS_PLAYED, !this.media?.paused);
-      },
-      volumechange: () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_MUTED, getMuted(this));
-        this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME, getVolume(this));
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_VOLUME_LEVEL,
-          getVolumeLevel(this)
-        );
-      },
-      [fullscreenApi.event]: (e) => {
-        // Safari doesn't support ShadowRoot.fullscreenElement and document.fullscreenElement
-        // could be several ancestors up the tree. Use event.target instead.
-        const isSomeElementFullscreen = !!document[fullscreenApi.element];
-        const fullscreenEl = isSomeElementFullscreen && e?.target;
-        const isFullScreen = containsComposedNode(this.fullscreenElement, fullscreenEl);
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_IS_FULLSCREEN,
-          isFullScreen
-        );
-      },
-      'enterpictureinpicture,leavepictureinpicture': (e) => {
-        let isPip;
-
-        // Rely on event type for state first
-        // in case this doesn't work well for custom elements using internal <video>
-        if (e) {
-          isPip = e.type == 'enterpictureinpicture';
-        } else {
-          const pipElement =
-            // @ts-ignore
-            this.getRootNode().pictureInPictureElement ??
-            document.pictureInPictureElement;
-          isPip = this.media && containsComposedNode(this.media, pipElement);
-        }
-        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_PIP, isPip);
-      },
-      // Note this relies on a customized video[is=castable-video] element.
-      'entercast,leavecast,castchange': (e) => {
-        const castElement = globalThis.CastableVideoElement?.castElement;
-        let castState = this.media && containsComposedNode(this.media, castElement);
-
-        // While the cast is connecting set media-is-cast="connecting"
-        if (e?.type === 'castchange' && e?.detail === 'CONNECTING') {
-          castState = 'connecting';
-        }
-
-        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_CASTING, castState);
-      },
-      'timeupdate,loadedmetadata': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_CURRENT_TIME,
-          getCurrentTime(this)
-        );
-      },
-      'durationchange,loadedmetadata,emptied': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_DURATION,
-          getDuration(this)
-        );
-      },
-      'emptied,durationchange,loadedmetadata,streamtypechange': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_STREAM_TYPE
-        );
-      },
-      'emptied,durationchange,loadedmetadata,streamtypechange,targetlivewindowchange': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_TARGET_LIVE_WINDOW
-        );
-      },
-      'loadedmetadata,emptied,progress': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_SEEKABLE,
-          getSeekable(this)?.join(':')
-        );
-      },
-      'progress,emptied': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_BUFFERED,
-          serializeTimeRanges(this.media?.buffered)
-        );
-      },
-      'ratechange,loadstart': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_PLAYBACK_RATE,
-          getPlaybackRate(this)
-        );
-      },
-      'waiting,playing,emptied': () => {
-        const isLoading = this.media?.readyState < 3;
-        this.propagateMediaState(MediaUIAttributes.MEDIA_LOADING, isLoading);
-      },
-      'playing,timeupdate,progress,waiting,emptied': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_TIME_IS_LIVE);
-      },
-    };
-
-    if (this._airplayUnavailable !== AvailabilityStates.UNSUPPORTED) {
-      const airplaySupporHandler = (event) => {
-        // NOTE: since we invoke all these event handlers without arguments whenever a media is attached,
-        // need to account for the possibility that event is undefined (CJP).
-        if (event?.availability === 'available') {
-          this._airplayUnavailable = undefined;
-        } else if (event?.availability === 'not-available') {
-          this._airplayUnavailable = AvailabilityStates.UNAVAILABLE;
-        }
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE,
-          this._airplayUnavailable
-        );
+    // Build event listeners for media states
+    this._mediaStatePropagators = {};
+    Object.keys(MediaUIStates).forEach((key)=>{
+      this._mediaStatePropagators[key] = e => {
+        this.propagateMediaState(MediaUIAttributes[key], MediaUIStates[key].get(this, e));
       };
-      // NOTE: only adding this if airplay is supported, in part to avoid unnecessary battery consumption per
-      // Apple docs recommendations (See: https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls)
-      // For a more advanced solution, we could monitor for media state receivers that "care" about airplay support and add/remove
-      // whenever these are added/removed. (CJP)
-      this._mediaStatePropagators['webkitplaybacktargetavailabilitychanged'] =
-        airplaySupporHandler;
-    }
-
-    if (this._castUnavailable !== AvailabilityStates.UNSUPPORTED) {
-      const castSupportHandler = () => {
-        // Cast state: NO_DEVICES_AVAILABLE, NOT_CONNECTED, CONNECTING, CONNECTED
-        const castState = globalThis.CastableVideoElement?.castState;
-        if (castState?.includes('CONNECT')) {
-          this._castUnavailable = undefined;
-        } else {
-          this._castUnavailable = AvailabilityStates.UNAVAILABLE;
-        }
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_CAST_UNAVAILABLE,
-          this._castUnavailable
-        );
-      };
-      // Note this relies on a customized video[is=castable-video] element.
-      this._mediaStatePropagators['castchange'] = castSupportHandler;
-    }
-
-    /**
-     * @TODO This and _mediaStatePropagators should be refactored to be less presumptuous about what is being
-     * monitored (and also probably how it's being monitored) (CJP)
-     */
-    this._textTrackMediaStatePropagators = {
-      'addtrack,removetrack,loadstart': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_CAPTIONS_LIST,
-          stringifyTextTrackList(getCaptionTracks(this)) || undefined
-        );
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_SUBTITLES_LIST,
-          stringifyTextTrackList(getSubtitleTracks(this)) || undefined
-        );
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
-          stringifyTextTrackList(getShowingCaptionTracks(this)) || undefined
-        );
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
-          stringifyTextTrackList(getShowingSubtitleTracks(this)) || undefined
-        );
-      },
-      change: () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
-          stringifyTextTrackList(getShowingCaptionTracks(this)) || undefined
-        );
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
-          stringifyTextTrackList(getShowingSubtitleTracks(this)) || undefined
-        );
-      },
-    };
+    });
 
     this.enableHotkeys();
   }
@@ -1022,31 +852,28 @@ class MediaController extends MediaContainer {
     }
 
     // Listen for media state changes and propagate them to children and associated els
-    Object.keys(this._mediaStatePropagators).forEach((key) => {
-      const events = key.split(',');
+    Object.keys(MediaUIStates).forEach((key) => {
+      const {
+        get,
+        mediaEvents,
+        rootEvents,
+        trackListEvents
+      } = MediaUIStates[key];
+
       const handler = this._mediaStatePropagators[key];
 
-      events.forEach((event) => {
-        // If this is fullscreen apply to the document
-        const target =
-          event == fullscreenApi.event ? this.getRootNode() : media;
-
-        target.addEventListener(event, handler);
+      mediaEvents?.forEach((eventName)=>{
+        media.addEventListener(eventName, handler);
       });
-      handler();
-    });
 
-    Object.entries(this._textTrackMediaStatePropagators).forEach(
-      ([eventsStr, handler]) => {
-        const events = eventsStr.split(',');
-        events.forEach((event) => {
-          if (media.textTracks) {
-            media.textTracks.addEventListener(event, handler);
-          }
-        });
-        handler();
-      }
-    );
+      rootEvents?.forEach((eventName)=>{
+        this.getRootNode().addEventListener(eventName, handler);
+      });
+
+      trackListEvents?.forEach((eventName)=>{
+        media.textTracks?.addEventListener(eventName, handler);
+      });
+    });
 
     // Update the media with the last set volume preference
     // This would preferably live with the media element,
@@ -1063,39 +890,37 @@ class MediaController extends MediaContainer {
     super.mediaUnsetCallback(media);
 
     // Remove all state change propagators
-    Object.keys(this._mediaStatePropagators).forEach((key) => {
-      const events = key.split(',');
+    Object.keys(MediaUIStates).forEach((key) => {
+      const {
+        get,
+        mediaEvents,
+        rootEvents,
+        trackListEvents
+      } = MediaUIStates[key];
+
       const handler = this._mediaStatePropagators[key];
 
-      events.forEach((event) => {
-        const target =
-          event == fullscreenApi.event ? this.getRootNode() : media;
-        target.removeEventListener(event, handler);
+      mediaEvents?.forEach((eventName)=>{
+        media.removeEventListener(eventName, handler);
+      });
+
+      rootEvents?.forEach((eventName)=>{
+        this.getRootNode().removeEventListener(eventName, handler);
+      });
+
+      trackListEvents?.forEach((eventName)=>{
+        media.textTracks?.removeEventListener(eventName, handler);
       });
     });
 
-    Object.entries(this._textTrackMediaStatePropagators).forEach(
-      ([eventsStr, handler]) => {
-        const events = eventsStr.split(',');
-        events.forEach((event) => {
-          if (media.textTracks) {
-            media.textTracks.removeEventListener(event, handler);
-          }
-        });
-        handler();
-      }
-    );
-
     // Reset to paused state
+    // TODO: Can we just reset all state here?
     this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, true);
   }
 
   propagateMediaState(stateName, state) {
-    if (arguments.length === 1) {
-      state = Delegates[stateName](this);
-    }
-
     propagateMediaState(this.mediaStateReceivers, stateName, state);
+    // TODO: I don't think we want these events to bubble? Video element states don't. (heff)
     const evt = new window.CustomEvent(
       AttributeToStateChangeEventMap[stateName],
       { composed: true, bubbles: true, detail: state }
@@ -1159,46 +984,15 @@ class MediaController extends MediaContainer {
 
     els.push(el);
 
-    // No media depedencies, so push regardless of media availability.
-    // TODO: For future MediaUIStates, none should require media to exist
-    propagateMediaState(
-      [el],
-      MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE,
-      this._volumeUnavailable
-    );
-    propagateMediaState(
-      [el],
-      MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE,
-      this._airplayUnavailable
-    );
-    propagateMediaState(
-      [el],
-      MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE,
-      this._fullscreenUnavailable
-    );
-    propagateMediaState(
-      [el],
-      MediaUIAttributes.MEDIA_CAST_UNAVAILABLE,
-      this._castUnavailable
-    );
-    propagateMediaState(
-      [el],
-      MediaUIAttributes.MEDIA_PIP_UNAVAILABLE,
-      this._pipUnavailable,
-    );
+    Object.keys(MediaUIStates).forEach((stateConstName)=>{
+      const stateDetails = MediaUIStates[stateConstName];
 
-    if (this.media) {
-      Object.keys(MediaUIAttributes).forEach((attribute) => {
-        // skip availability delegates as they were completed above
-        if (attribute.includes('UNAVAILABLE')) return;
-
-        propagateMediaState(
-          [el],
-          MediaUIAttributes[attribute],
-          Delegates[MediaUIAttributes[attribute]] ? Delegates[MediaUIAttributes[attribute]](this) : Delegates.default(this, MediaUIAttributes[attribute])
-        );
-      });
-    }
+      propagateMediaState(
+        [el],
+        MediaUIAttributes[stateConstName],
+        stateDetails.get(this)
+      );
+    });
   }
 
   unregisterMediaStateReceiver(el) {
@@ -1351,157 +1145,6 @@ class MediaController extends MediaContainer {
   }
 }
 
-const Delegates = {
-  default(el, attribute) {
-    return el.getAttribute(attribute);
-  },
-
-  [MediaUIAttributes.MEDIA_CAPTIONS_LIST](el) {
-    return stringifyTextTrackList(getCaptionTracks(el)) || undefined;
-  },
-
-  [MediaUIAttributes.MEDIA_SUBTITLES_LIST](el) {
-    return stringifyTextTrackList(getSubtitleTracks(el)) || undefined;
-  },
-
-  [MediaUIAttributes.MEDIA_SUBTITLES_LIST](el) {
-    return stringifyTextTrackList(getSubtitleTracks(el)) || undefined;
-  },
-
-  [MediaUIAttributes.MEDIA_CAPTIONS_SHOWING](el) {
-    return stringifyTextTrackList(getShowingCaptionTracks(el)) || undefined;
-  },
-
-  [MediaUIAttributes.MEDIA_PAUSED](el) {
-    return getPaused(el);
-  },
-
-  [MediaUIAttributes.MEDIA_MUTED](el) {
-    return getMuted(el);
-  },
-
-  [MediaUIAttributes.MEDIA_VOLUME](el) {
-    return getVolume(el);
-  },
-
-  [MediaUIAttributes.MEDIA_VOLUME_LEVEL](el) {
-    return getVolumeLevel(el);
-  },
-
-  [MediaUIAttributes.MEDIA_CURRENT_TIME](el) {
-    return getCurrentTime(el);
-  },
-
-  [MediaUIAttributes.MEDIA_DURATION](el) {
-    return getDuration(el);
-  },
-
-  [MediaUIAttributes.MEDIA_SEEKABLE](el) {
-    return getSeekable(el)?.join(':');
-  },
-
-  [MediaUIAttributes.MEDIA_PLAYBACK_RATE](el) {
-    return getPlaybackRate(el);
-  },
-
-  [MediaUIAttributes.MEDIA_STREAM_TYPE](el) {
-    return getStreamType(el);
-  },
-  [MediaUIAttributes.MEDIA_TARGET_LIVE_WINDOW](el) {
-    return getTargetLiveWindow(el);
-  },
-  [MediaUIAttributes.MEDIA_TIME_IS_LIVE](controller) {
-    const media = controller.media;
-    
-    if (!media) return false;
-    if (typeof media.liveEdgeStart === 'number') {
-      if (Number.isNaN(media.liveEdgeStart)) return false;
-      return media.currentTime >= media.liveEdgeStart;
-    }
-
-    const live = getStreamType(controller) === 'live';
-    // Can't be playing live if it's not a live stream
-    if (!live) return false;
-    
-    const seekable = media.seekable;
-    // If the slotted media element is live but does not expose a 'seekable' `TimeRanges` object,
-    // always assume playing live
-    if (!seekable) return true;
-    // If there is an empty `seekable`, assume we are not playing live
-    if (!seekable.length) return false;
-
-    // Default to 10 seconds
-    // Assuming seekable range already accounts for appropriate buffer room
-    const liveEdgeStartOffset = controller.hasAttribute('liveedgeoffset') 
-      ? Number(controller.getAttribute('liveedgeoffset'))
-      : 10;
-    const liveEdgeStart = seekable.end(seekable.length - 1) - liveEdgeStartOffset
-    return media.currentTime >= liveEdgeStart;
-  },
-};
-
-const getPaused = (controller) => {
-  if (!controller.media) return true;
-
-  return controller.media.paused;
-};
-
-const getMuted = (controller) => {
-  return !!(controller.media && controller.media.muted);
-};
-
-const getVolume = (controller) => {
-  const media = controller.media;
-
-  return media ? media.volume : 1;
-};
-
-const getVolumeLevel = (controller) => {
-  let level = 'high';
-
-  if (!controller.media) return level;
-
-  const { muted, volume } = controller.media;
-
-  if (volume === 0 || muted) {
-    level = 'off';
-  } else if (volume < 0.5) {
-    level = 'low';
-  } else if (volume < 0.75) {
-    level = 'medium';
-  }
-
-  return level;
-};
-
-const getCurrentTime = (controller) => {
-  const media = controller.media;
-
-  return media ? media.currentTime : 0;
-};
-
-const getDuration = (controller) => {
-  const media = controller?.media;
-  if (!Number.isFinite(media?.duration)) return NaN;
-  return media.duration;
-};
-
-const getSeekable = (controller) => {
-  const media = controller?.media;
-  if (!media?.seekable?.length) return undefined;
-  const start = media.seekable.start(0);
-  const end = media.seekable.end(media.seekable.length - 1);
-  // Account for cases where metadata from slotted media has an "empty" seekable (CJP)
-  if (!start && !end) return undefined;
-  return [Number(start.toFixed(3)), Number(end.toFixed(3))];
-};
-
-const getPlaybackRate = (controller) => {
-  const media = controller.media;
-
-  return media ? media.playbackRate : 1;
-};
-
 const getSubtitleTracks = (controller) => {
   return getTextTracksList(controller.media, { kind: TextTrackKinds.SUBTITLES });
 };
@@ -1558,22 +1201,6 @@ const getStreamType = (controller) => {
   }
 
   return undefined;
-};
-
-const getTargetLiveWindow = (controller) => {
-  const { media } = controller;
-
-  if (!media) return Number.NaN;
-  const { targetLiveWindow } = media;
-  // Since `NaN` represents either "unknown" or "inapplicable", need to check if `streamType`
-  // is `"live"`. If so, assume it's "standard live" (aka `targetLiveWindow === 0`) (CJP)
-  if (
-    (targetLiveWindow == null || Number.isNaN(targetLiveWindow)) &&
-    getStreamType(controller) === StreamTypes.LIVE
-  ) {
-    return 0;
-  }
-  return targetLiveWindow;
 };
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
