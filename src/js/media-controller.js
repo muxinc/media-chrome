@@ -481,20 +481,20 @@ class MediaController extends MediaContainer {
 
     // Capture request events from internal controls
     const mediaUIEventHandlers = {
-      MEDIA_PLAY_REQUEST: (e, media) => {
-        const streamType = MediaUIStates.MEDIA_STREAM_TYPE.get(this);
+      MEDIA_PLAY_REQUEST: (media, e, controller) => {
+        const streamType = MediaUIStates.MEDIA_STREAM_TYPE.get(controller);
         // TODO: Move to not attr value
-        const autoSeekToLive = this.getAttribute('noautoseektolive') === null;
+        const autoSeekToLive = controller.getAttribute('noautoseektolive') === null;
 
         if (streamType == StreamTypes.LIVE && autoSeekToLive) {
-          mediaUIEventHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](e, media);
+          mediaUIEventHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](media);
         }
 
         media.play().catch(() => {});
       },
-      MEDIA_PAUSE_REQUEST: (e, media) => media.pause(),
-      MEDIA_MUTE_REQUEST: (e, media) => (media.muted = true),
-      MEDIA_UNMUTE_REQUEST: (e, media) => {
+      MEDIA_PAUSE_REQUEST: (media) => media.pause(),
+      MEDIA_MUTE_REQUEST: (media) => (media.muted = true),
+      MEDIA_UNMUTE_REQUEST: (media) => {
         media.muted = false;
 
         // Avoid confusion by bumping the volume on unmute
@@ -502,7 +502,7 @@ class MediaController extends MediaContainer {
           media.volume = 0.25;
         }
       },
-      MEDIA_VOLUME_REQUEST: (e, media) => {
+      MEDIA_VOLUME_REQUEST: (media, e) => {
         const volume = e.detail;
 
         media.volume = volume;
@@ -538,7 +538,7 @@ class MediaController extends MediaContainer {
       //   - Document.fullscreenElement / (ShadowRoot.fullscreenElement)
       //   - Element.requestFullscreen()
       //
-      MEDIA_ENTER_FULLSCREEN_REQUEST: (e, media) => {
+      MEDIA_ENTER_FULLSCREEN_REQUEST: (media, e, controller) => {
         if (!fullscreenSupported) {
           console.warn('Fullscreen support is unavailable; not entering fullscreen');
           return;
@@ -551,7 +551,7 @@ class MediaController extends MediaContainer {
 
         if (super[fullscreenApi.enter]) {
           // Media chrome container fullscreen
-          this.fullscreenElement[fullscreenApi.enter]();
+          controller.fullscreenElement[fullscreenApi.enter]();
         } else if (media.webkitEnterFullscreen) {
           // Media element fullscreen using iOS API
           media.webkitEnterFullscreen();
@@ -566,7 +566,7 @@ class MediaController extends MediaContainer {
       MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
         document[fullscreenApi.exit]();
       },
-      MEDIA_ENTER_PIP_REQUEST: (e, media) => {
+      MEDIA_ENTER_PIP_REQUEST: (media) => {
         if (!document.pictureInPictureEnabled) {
           console.warn('MediaChrome: Picture-in-picture is not enabled');
           // Placeholder for emitting a user-facing warning
@@ -632,7 +632,7 @@ class MediaController extends MediaContainer {
           document.exitPictureInPicture();
         }
       },
-      MEDIA_ENTER_CAST_REQUEST: (e, media) => {
+      MEDIA_ENTER_CAST_REQUEST: (media) => {
         if (!globalThis.CastableVideoElement?.castEnabled) return;
 
         // Exit fullscreen if needed
@@ -649,7 +649,7 @@ class MediaController extends MediaContainer {
           globalThis.CastableVideoElement.exitCast();
         }
       },
-      MEDIA_SEEK_REQUEST: (e, media) => {
+      MEDIA_SEEK_REQUEST: (media, e) => {
         const time = e.detail;
 
         // Can't set the time before the media is ready
@@ -658,10 +658,10 @@ class MediaController extends MediaContainer {
           media.currentTime = time;
         }
       },
-      MEDIA_PLAYBACK_RATE_REQUEST: (e, media) => {
+      MEDIA_PLAYBACK_RATE_REQUEST: (media, e) => {
         media.playbackRate = e.detail;
       },
-      MEDIA_PREVIEW_REQUEST: (e, media) => {
+      MEDIA_PREVIEW_REQUEST: (media, e, controller) => {
         // No media (yet), so bail early
         if (!media) return;
 
@@ -669,9 +669,9 @@ class MediaController extends MediaContainer {
 
         // if time is null, then we're done previewing and want to remove the attributes
         if (time === null) {
-          this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, undefined);
+          controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, undefined);
         }
-        this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, time);
+        controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, time);
 
         const [track] = getTextTracksList(media, {
           kind: TextTrackKinds.METADATA,
@@ -682,8 +682,8 @@ class MediaController extends MediaContainer {
 
         // if time is null, then we're done previewing and want to remove the attributes
         if (time === null) {
-          this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, undefined);
-          this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, undefined);
+          controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, undefined);
+          controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, undefined);
           return;
         }
 
@@ -703,41 +703,41 @@ class MediaController extends MediaContainer {
           : undefined;
         const url = new URL(cue.text, base);
         const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-        this.propagateMediaState(
+        controller.propagateMediaState(
           MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
           url.href
         );
-        this.propagateMediaState(
+        controller.propagateMediaState(
           MediaUIAttributes.MEDIA_PREVIEW_COORDS,
           previewCoordsStr.split(',').join(' ')
         );
       },
-      MEDIA_SHOW_CAPTIONS_REQUEST: (e) => {
-        const tracks = getCaptionTracks(this);
+      MEDIA_SHOW_CAPTIONS_REQUEST: (media, e, controller) => {
+        const tracks = getCaptionTracks(controller);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
       },
       // NOTE: We're currently recommending and providing default components that will "disable" tracks when
       // we don't want them shown (rather than "hiding" them).
       // For a discussion why, see: https://github.com/muxinc/media-chrome/issues/60
-      MEDIA_DISABLE_CAPTIONS_REQUEST: (e) => {
-        const tracks = getCaptionTracks(this);
+      MEDIA_DISABLE_CAPTIONS_REQUEST: (media, e, controller) => {
+        const tracks = getCaptionTracks(controller);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
       },
-      MEDIA_SHOW_SUBTITLES_REQUEST: (e) => {
-        const tracks = getSubtitleTracks(this);
+      MEDIA_SHOW_SUBTITLES_REQUEST: (media, e, controller) => {
+        const tracks = getSubtitleTracks(controller);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
       },
-      MEDIA_DISABLE_SUBTITLES_REQUEST: (e) => {
-        const tracks = getSubtitleTracks(this);
+      MEDIA_DISABLE_SUBTITLES_REQUEST: (media, e, controller) => {
+        const tracks = getSubtitleTracks(controller);
         const { detail: tracksToUpdate = [] } = e;
         updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
       },
-      MEDIA_AIRPLAY_REQUEST: () => {
-        const { media } = this;
+      MEDIA_AIRPLAY_REQUEST: (media) => {
         if (!media) return;
+
         if (
           !(
             media.webkitShowPlaybackTargetPicker &&
@@ -751,7 +751,7 @@ class MediaController extends MediaContainer {
         }
         media.webkitShowPlaybackTargetPicker();
       },
-      MEDIA_SEEK_TO_LIVE_REQUEST: (e, media) => {
+      MEDIA_SEEK_TO_LIVE_REQUEST: (media) => {
         const seekable = media.seekable;
 
         if (!seekable) {
@@ -781,7 +781,7 @@ class MediaController extends MediaContainer {
           return;
         }
 
-        mediaUIEventHandlers[key](e, this.media);
+        mediaUIEventHandlers[key](this.media, e, this);
       };
       this.addEventListener(MediaUIEvents[key], this[handlerName]);
     });
