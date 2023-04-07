@@ -23,6 +23,13 @@ import {
   castSupported
 } from './utils/platform-tests.js';
 
+let volumeSupported;
+const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
+  volumeSupported = supported;
+  return volumeSupported;
+});
+
+
 import {
   MediaUIEvents,
   MediaUIAttributes,
@@ -453,28 +460,13 @@ class MediaController extends MediaContainer {
   constructor() {
     super();
 
-    if (!airplaySupported) {
-      this._airplayUnavailable = AvailabilityStates.UNSUPPORTED;
-    }
-    if (!fullscreenSupported) {
-      this._fullscreenUnavailable = AvailabilityStates.UNAVAILABLE;
-    }
-    if (!castSupported) {
-      this._castUnavailable = AvailabilityStates.UNSUPPORTED;
-    }
-    if (!pipSupported) {
-      this._pipUnavailable = AvailabilityStates.UNSUPPORTED;
-    }
-    if (volumeSupported !== undefined) {
-      if (!volumeSupported) {
-        this._volumeUnavailable = AvailabilityStates.UNSUPPORTED;
-      }
-    } else {
+    // Update volume support ASAP
+    if (volumeSupported === undefined) {
       volumeSupportPromise.then(() => {
-        if (!volumeSupported) {
-          this._volumeUnavailable = AvailabilityStates.UNSUPPORTED;
-          this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, this._volumeUnavailable);
-        }
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, 
+          MediaUIStates.MEDIA_VOLUME_UNAVAILABLE.get(this)
+        );
       });
     }
 
@@ -915,6 +907,8 @@ class MediaController extends MediaContainer {
 
     // Reset to paused state
     // TODO: Can we just reset all state here?
+    // Should hasPlayed refer to the media element or the controller?
+    // i.e. the poster might re-show if not handled by the poster el
     this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, true);
   }
 
@@ -1167,42 +1161,6 @@ const getShowingCaptionTracks = (controller) => {
   });
 };
 
-const getStreamType = (controller) => {
-  const { media } = controller;
-
-  if (!media) return undefined;
-
-  const { streamType } = media;
-  if (StreamTypeValues.includes(streamType)) {
-    // If the slotted media supports `streamType` but
-    // `streamType` is "unknown", prefer `default-stream-type`
-    // if set (CJP)
-    if (streamType === StreamTypes.UNKNOWN) {
-      const defaultType = controller.getAttribute('default-stream-type');
-      if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
-        return defaultType;
-      }
-      return undefined;
-    }
-    return streamType;
-  }
-  const duration = media.duration;
-
-  if (duration === Infinity) {
-    return StreamTypes.LIVE;
-  } else if (Number.isFinite(duration)) {
-    return StreamTypes.ON_DEMAND;
-  } else {
-    const defaultType = controller.getAttribute('default-stream-type');
-
-    if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
-      return defaultType;
-    }
-  }
-
-  return undefined;
-};
-
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 const getMediaUIAttributesFrom = (child) => {
@@ -1417,12 +1375,6 @@ const monitorForMediaStateReceivers = (
 
   return unsubscribe;
 };
-
-let volumeSupported;
-const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
-  volumeSupported = supported;
-  return volumeSupported;
-});
 
 if (!window.customElements.get('media-controller')) {
   window.customElements.define('media-controller', MediaController);
