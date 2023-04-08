@@ -29,7 +29,6 @@ const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
   return volumeSupported;
 });
 
-
 import {
   MediaUIEvents,
   MediaUIAttributes,
@@ -445,6 +444,296 @@ const MediaUIStates = {
   },
 };
 
+// Capture request events from UI elements and tranlate to actions
+const MediaUIRequestHandlers = {
+  MEDIA_PLAY_REQUEST: (media, e, controller) => {
+    const streamType = MediaUIStates.MEDIA_STREAM_TYPE.get(controller);
+    // TODO: Move to not attr value
+    const autoSeekToLive = controller.getAttribute('noautoseektolive') === null;
+
+    if (streamType == StreamTypes.LIVE && autoSeekToLive) {
+      MediaUIRequestHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](media);
+    }
+
+    media.play().catch(() => {});
+  },
+  MEDIA_PAUSE_REQUEST: (media) => media.pause(),
+  MEDIA_MUTE_REQUEST: (media) => (media.muted = true),
+  MEDIA_UNMUTE_REQUEST: (media) => {
+    media.muted = false;
+
+    // Avoid confusion by bumping the volume on unmute
+    if (media.volume === 0) {
+      media.volume = 0.25;
+    }
+  },
+  MEDIA_VOLUME_REQUEST: (media, e) => {
+    const volume = e.detail;
+
+    media.volume = volume;
+
+    // If the viewer moves the volume we should unmute for them.
+    if (volume > 0 && media.muted) {
+      media.muted = false;
+    }
+
+    // Store the last set volume as a local preference, if ls is supported
+    try {
+      window.localStorage.setItem(
+        'media-chrome-pref-volume',
+        volume.toString()
+      );
+    } catch (err) {
+      // ignore
+    }
+  },
+
+  // This current assumes that the media controller is the fullscreen element
+  // which may be true in most cases but not all.
+  // The prior version of media-chrome supported alt fullscreen elements
+  // and that's something we can work towards here.
+  //
+  // Generally the fullscreen and PiP API's have the exit methods and enabled
+  // flags on the `document`. The active element is accessed on the document
+  // or shadow root but Safari doesn't support this.
+  // Entering fullscreen or PiP is called on the element. i.e.
+  //
+  //   - Document.exitFullscreen()
+  //   - Document.fullscreenEnabled
+  //   - Document.fullscreenElement / (ShadowRoot.fullscreenElement)
+  //   - Element.requestFullscreen()
+  //
+  MEDIA_ENTER_FULLSCREEN_REQUEST: (media, e, controller) => {
+    if (!fullscreenSupported) {
+      console.warn('Fullscreen support is unavailable; not entering fullscreen');
+      return;
+    }
+
+    if (document.pictureInPictureElement) {
+      // Should be async
+      document.exitPictureInPicture();
+    }
+
+    // TODO: Moved from super to just controller, verify that works
+    if (controller[fullscreenApi.enter]) {
+      // Media chrome container fullscreen
+      controller.fullscreenElement[fullscreenApi.enter]();
+    } else if (media.webkitEnterFullscreen) {
+      // Media element fullscreen using iOS API
+      media.webkitEnterFullscreen();
+    } else if (media.requestFullscreen) {
+      // Media element fullscreen, using correct API
+      // So media els don't have to implement multiple APIs.
+      media.requestFullscreen();
+    } else {
+      console.warn('MediaChrome: Fullscreen not supported');
+    }
+  },
+  MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
+    document[fullscreenApi.exit]();
+  },
+  MEDIA_ENTER_PIP_REQUEST: (media) => {
+    if (!document.pictureInPictureEnabled) {
+      console.warn('MediaChrome: Picture-in-picture is not enabled');
+      // Placeholder for emitting a user-facing warning
+      return;
+    }
+
+    if (!media.requestPictureInPicture) {
+      console.warn('MediaChrome: The current media does not support picture-in-picture');
+      // Placeholder for emitting a user-facing warning
+      return;
+    }
+
+    // Exit fullscreen if needed
+    if (document[fullscreenApi.element]) {
+      document[fullscreenApi.exit]();
+    }
+
+    const warnNotReady = () => {
+      console.warn('MediaChrome: The media is not ready for picture-in-picture. It must have a readyState > 0.');
+    };
+
+    media.requestPictureInPicture().catch(err => {
+      // InvalidStateError, readyState == 0 (Not ready)
+      if (err.code === 11) {
+        // We can assume the viewer wants the video to load, so attempt to
+        // if we can rely on readyState and preload
+        // Only works in Chrome currently. Safari doesn't allow triggering
+        // in an event listener. Also requires readyState == 4.
+        // Firefox doesn't have the PiP API yet.
+        if (media.readyState === 0 && media.preload === 'none') {
+          const cleanup = () => {
+            media.removeEventListener('loadedmetadata', tryPip);
+            media.preload = 'none';
+          };
+
+          const tryPip = () => {
+            media.requestPictureInPicture().catch(warnNotReady);
+            cleanup();
+          };
+
+          media.addEventListener('loadedmetadata', tryPip);
+          media.preload = 'metadata';
+
+          // No easy way to know if this failed and we should clean up
+          // quickly if it doesn't to prevent an awkward delay for the user
+          setTimeout(()=>{
+            if (media.readyState === 0) warnNotReady();
+            cleanup();
+          }, 1000);
+        } else {
+          // Rethrow if unknown context
+          throw err;
+        }
+      } else {
+        // Rethrow if unknown context
+        throw err;
+      }
+    });
+  },
+  MEDIA_EXIT_PIP_REQUEST: () => {
+    if (document.pictureInPictureElement) {
+      // Should be async
+      document.exitPictureInPicture();
+    }
+  },
+  MEDIA_ENTER_CAST_REQUEST: (media) => {
+    if (!globalThis.CastableVideoElement?.castEnabled) return;
+
+    // Exit fullscreen if needed
+    if (document[fullscreenApi.element]) {
+      document[fullscreenApi.exit]();
+    }
+
+    // Open the browser cast menu.
+    // Note this relies on a customized video[is=castable-video] element.
+    media.requestCast();
+  },
+  MEDIA_EXIT_CAST_REQUEST: async () => {
+    if (globalThis.CastableVideoElement?.castElement) {
+      globalThis.CastableVideoElement.exitCast();
+    }
+  },
+  MEDIA_SEEK_REQUEST: (media, e) => {
+    const time = e.detail;
+
+    // Can't set the time before the media is ready
+    // Ignore if readyState isn't supported
+    if (media.readyState > 0 || media.readyState === undefined) {
+      media.currentTime = time;
+    }
+  },
+  MEDIA_PLAYBACK_RATE_REQUEST: (media, e) => {
+    media.playbackRate = e.detail;
+  },
+  MEDIA_PREVIEW_REQUEST: (media, e, controller) => {
+    // No media (yet), so bail early
+    if (!media) return;
+
+    const time = e.detail;
+
+    // if time is null, then we're done previewing and want to remove the attributes
+    if (time === null) {
+      controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, undefined);
+    }
+    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, time);
+
+    const [track] = getTextTracksList(media, {
+      kind: TextTrackKinds.METADATA,
+      label: 'thumbnails',
+    });
+    // No thumbnails track (yet) or no cues available in thumbnails track, so bail early.
+    if (!(track && track.cues)) return;
+
+    // if time is null, then we're done previewing and want to remove the attributes
+    if (time === null) {
+      controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, undefined);
+      controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, undefined);
+      return;
+    }
+
+    const cue = Array.prototype.find.call(
+      track.cues,
+      (c) => c.startTime >= time
+    );
+
+    // No corresponding cue, so bail early
+    if (!cue) return;
+
+    // Since this isn't really "global state", we may want to consider moving this "down" to the component level,
+    // probably pulled out into its own module/set of functions (CJP)
+    const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
+      // @ts-ignore
+      ? media.querySelector('track[label="thumbnails"]')?.src
+      : undefined;
+    const url = new URL(cue.text, base);
+    const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
+    controller.propagateMediaState(
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
+      url.href
+    );
+    controller.propagateMediaState(
+      MediaUIAttributes.MEDIA_PREVIEW_COORDS,
+      previewCoordsStr.split(',').join(' ')
+    );
+  },
+  MEDIA_SHOW_CAPTIONS_REQUEST: (media, e, controller) => {
+    const tracks = getCaptionTracks(controller);
+    const { detail: tracksToUpdate = [] } = e;
+    updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
+  },
+  // NOTE: We're currently recommending and providing default components that will "disable" tracks when
+  // we don't want them shown (rather than "hiding" them).
+  // For a discussion why, see: https://github.com/muxinc/media-chrome/issues/60
+  MEDIA_DISABLE_CAPTIONS_REQUEST: (media, e, controller) => {
+    const tracks = getCaptionTracks(controller);
+    const { detail: tracksToUpdate = [] } = e;
+    updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
+  },
+  MEDIA_SHOW_SUBTITLES_REQUEST: (media, e, controller) => {
+    const tracks = getSubtitleTracks(controller);
+    const { detail: tracksToUpdate = [] } = e;
+    updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
+  },
+  MEDIA_DISABLE_SUBTITLES_REQUEST: (media, e, controller) => {
+    const tracks = getSubtitleTracks(controller);
+    const { detail: tracksToUpdate = [] } = e;
+    updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
+  },
+  MEDIA_AIRPLAY_REQUEST: (media) => {
+    if (!media) return;
+
+    if (
+      !(
+        media.webkitShowPlaybackTargetPicker &&
+        window.WebKitPlaybackTargetAvailabilityEvent
+      )
+    ) {
+      console.warn(
+        'received a request to select AirPlay but AirPlay is not supported in this environment'
+      );
+      return;
+    }
+    media.webkitShowPlaybackTargetPicker();
+  },
+  MEDIA_SEEK_TO_LIVE_REQUEST: (media) => {
+    const seekable = media.seekable;
+
+    if (!seekable) {
+      console.warn('MediaController: Media element does not support seeking to live.');
+      return;
+    }
+
+    if (!seekable.length) {
+      console.warn('MediaController: Media is unable to seek to live.');
+      return;
+    }
+
+    media.currentTime = seekable.end(seekable.length - 1);
+  }
+};
+
 /**
  * Media Controller should not mimic the HTMLMediaElement API.
  * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
@@ -470,308 +759,17 @@ class MediaController extends MediaContainer {
       });
     }
 
-    // Include this for styling convenience or exclude since it
-    // can be derived from MEDIA_CAPTIONS_LIST && MEDIA_SUBTITLES_LIST? (CJP)
-    // this._captionsUnavailable;
-
     // Track externally associated control elements
     this.mediaStateReceivers = [];
     this.associatedElementSubscriptions = new Map();
     this.associateElement(this);
 
-    // Capture request events from internal controls
-    const mediaUIEventHandlers = {
-      MEDIA_PLAY_REQUEST: (media, e, controller) => {
-        const streamType = MediaUIStates.MEDIA_STREAM_TYPE.get(controller);
-        // TODO: Move to not attr value
-        const autoSeekToLive = controller.getAttribute('noautoseektolive') === null;
-
-        if (streamType == StreamTypes.LIVE && autoSeekToLive) {
-          mediaUIEventHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](media);
-        }
-
-        media.play().catch(() => {});
-      },
-      MEDIA_PAUSE_REQUEST: (media) => media.pause(),
-      MEDIA_MUTE_REQUEST: (media) => (media.muted = true),
-      MEDIA_UNMUTE_REQUEST: (media) => {
-        media.muted = false;
-
-        // Avoid confusion by bumping the volume on unmute
-        if (media.volume === 0) {
-          media.volume = 0.25;
-        }
-      },
-      MEDIA_VOLUME_REQUEST: (media, e) => {
-        const volume = e.detail;
-
-        media.volume = volume;
-
-        // If the viewer moves the volume we should unmute for them.
-        if (volume > 0 && media.muted) {
-          media.muted = false;
-        }
-
-        // Store the last set volume as a local preference, if ls is supported
-        try {
-          window.localStorage.setItem(
-            'media-chrome-pref-volume',
-            volume.toString()
-          );
-        } catch (err) {
-          // ignore
-        }
-      },
-
-      // This current assumes that the media controller is the fullscreen element
-      // which may be true in most cases but not all.
-      // The prior version of media-chrome supported alt fullscreen elements
-      // and that's something we can work towards here.
-      //
-      // Generally the fullscreen and PiP API's have the exit methods and enabled
-      // flags on the `document`. The active element is accessed on the document
-      // or shadow root but Safari doesn't support this.
-      // Entering fullscreen or PiP is called on the element. i.e.
-      //
-      //   - Document.exitFullscreen()
-      //   - Document.fullscreenEnabled
-      //   - Document.fullscreenElement / (ShadowRoot.fullscreenElement)
-      //   - Element.requestFullscreen()
-      //
-      MEDIA_ENTER_FULLSCREEN_REQUEST: (media, e, controller) => {
-        if (!fullscreenSupported) {
-          console.warn('Fullscreen support is unavailable; not entering fullscreen');
-          return;
-        }
-
-        if (document.pictureInPictureElement) {
-          // Should be async
-          document.exitPictureInPicture();
-        }
-
-        if (super[fullscreenApi.enter]) {
-          // Media chrome container fullscreen
-          controller.fullscreenElement[fullscreenApi.enter]();
-        } else if (media.webkitEnterFullscreen) {
-          // Media element fullscreen using iOS API
-          media.webkitEnterFullscreen();
-        } else if (media.requestFullscreen) {
-          // Media element fullscreen, using correct API
-          // So media els don't have to implement multiple APIs.
-          media.requestFullscreen();
-        } else {
-          console.warn('MediaChrome: Fullscreen not supported');
-        }
-      },
-      MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
-        document[fullscreenApi.exit]();
-      },
-      MEDIA_ENTER_PIP_REQUEST: (media) => {
-        if (!document.pictureInPictureEnabled) {
-          console.warn('MediaChrome: Picture-in-picture is not enabled');
-          // Placeholder for emitting a user-facing warning
-          return;
-        }
-
-        if (!media.requestPictureInPicture) {
-          console.warn('MediaChrome: The current media does not support picture-in-picture');
-          // Placeholder for emitting a user-facing warning
-          return;
-        }
-
-        // Exit fullscreen if needed
-        if (document[fullscreenApi.element]) {
-          document[fullscreenApi.exit]();
-        }
-
-        const warnNotReady = () => {
-          console.warn('MediaChrome: The media is not ready for picture-in-picture. It must have a readyState > 0.');
-        };
-
-        media.requestPictureInPicture().catch(err => {
-          // InvalidStateError, readyState == 0 (Not ready)
-          if (err.code === 11) {
-            // We can assume the viewer wants the video to load, so attempt to
-            // if we can rely on readyState and preload
-            // Only works in Chrome currently. Safari doesn't allow triggering
-            // in an event listener. Also requires readyState == 4.
-            // Firefox doesn't have the PiP API yet.
-            if (media.readyState === 0 && media.preload === 'none') {
-              const cleanup = () => {
-                media.removeEventListener('loadedmetadata', tryPip);
-                media.preload = 'none';
-              };
-
-              const tryPip = () => {
-                media.requestPictureInPicture().catch(warnNotReady);
-                cleanup();
-              };
-
-              media.addEventListener('loadedmetadata', tryPip);
-              media.preload = 'metadata';
-
-              // No easy way to know if this failed and we should clean up
-              // quickly if it doesn't to prevent an awkward delay for the user
-              setTimeout(()=>{
-                if (media.readyState === 0) warnNotReady();
-                cleanup();
-              }, 1000);
-            } else {
-              // Rethrow if unknown context
-              throw err;
-            }
-          } else {
-            // Rethrow if unknown context
-            throw err;
-          }
-        });
-      },
-      MEDIA_EXIT_PIP_REQUEST: () => {
-        if (document.pictureInPictureElement) {
-          // Should be async
-          document.exitPictureInPicture();
-        }
-      },
-      MEDIA_ENTER_CAST_REQUEST: (media) => {
-        if (!globalThis.CastableVideoElement?.castEnabled) return;
-
-        // Exit fullscreen if needed
-        if (document[fullscreenApi.element]) {
-          document[fullscreenApi.exit]();
-        }
-
-        // Open the browser cast menu.
-        // Note this relies on a customized video[is=castable-video] element.
-        media.requestCast();
-      },
-      MEDIA_EXIT_CAST_REQUEST: async () => {
-        if (globalThis.CastableVideoElement?.castElement) {
-          globalThis.CastableVideoElement.exitCast();
-        }
-      },
-      MEDIA_SEEK_REQUEST: (media, e) => {
-        const time = e.detail;
-
-        // Can't set the time before the media is ready
-        // Ignore if readyState isn't supported
-        if (media.readyState > 0 || media.readyState === undefined) {
-          media.currentTime = time;
-        }
-      },
-      MEDIA_PLAYBACK_RATE_REQUEST: (media, e) => {
-        media.playbackRate = e.detail;
-      },
-      MEDIA_PREVIEW_REQUEST: (media, e, controller) => {
-        // No media (yet), so bail early
-        if (!media) return;
-
-        const time = e.detail;
-
-        // if time is null, then we're done previewing and want to remove the attributes
-        if (time === null) {
-          controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, undefined);
-        }
-        controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, time);
-
-        const [track] = getTextTracksList(media, {
-          kind: TextTrackKinds.METADATA,
-          label: 'thumbnails',
-        });
-        // No thumbnails track (yet) or no cues available in thumbnails track, so bail early.
-        if (!(track && track.cues)) return;
-
-        // if time is null, then we're done previewing and want to remove the attributes
-        if (time === null) {
-          controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, undefined);
-          controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, undefined);
-          return;
-        }
-
-        const cue = Array.prototype.find.call(
-          track.cues,
-          (c) => c.startTime >= time
-        );
-
-        // No corresponding cue, so bail early
-        if (!cue) return;
-
-        // Since this isn't really "global state", we may want to consider moving this "down" to the component level,
-        // probably pulled out into its own module/set of functions (CJP)
-        const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
-          // @ts-ignore
-          ? media.querySelector('track[label="thumbnails"]')?.src
-          : undefined;
-        const url = new URL(cue.text, base);
-        const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-        controller.propagateMediaState(
-          MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
-          url.href
-        );
-        controller.propagateMediaState(
-          MediaUIAttributes.MEDIA_PREVIEW_COORDS,
-          previewCoordsStr.split(',').join(' ')
-        );
-      },
-      MEDIA_SHOW_CAPTIONS_REQUEST: (media, e, controller) => {
-        const tracks = getCaptionTracks(controller);
-        const { detail: tracksToUpdate = [] } = e;
-        updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
-      },
-      // NOTE: We're currently recommending and providing default components that will "disable" tracks when
-      // we don't want them shown (rather than "hiding" them).
-      // For a discussion why, see: https://github.com/muxinc/media-chrome/issues/60
-      MEDIA_DISABLE_CAPTIONS_REQUEST: (media, e, controller) => {
-        const tracks = getCaptionTracks(controller);
-        const { detail: tracksToUpdate = [] } = e;
-        updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
-      },
-      MEDIA_SHOW_SUBTITLES_REQUEST: (media, e, controller) => {
-        const tracks = getSubtitleTracks(controller);
-        const { detail: tracksToUpdate = [] } = e;
-        updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
-      },
-      MEDIA_DISABLE_SUBTITLES_REQUEST: (media, e, controller) => {
-        const tracks = getSubtitleTracks(controller);
-        const { detail: tracksToUpdate = [] } = e;
-        updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
-      },
-      MEDIA_AIRPLAY_REQUEST: (media) => {
-        if (!media) return;
-
-        if (
-          !(
-            media.webkitShowPlaybackTargetPicker &&
-            window.WebKitPlaybackTargetAvailabilityEvent
-          )
-        ) {
-          console.warn(
-            'received a request to select AirPlay but AirPlay is not supported in this environment'
-          );
-          return;
-        }
-        media.webkitShowPlaybackTargetPicker();
-      },
-      MEDIA_SEEK_TO_LIVE_REQUEST: (media) => {
-        const seekable = media.seekable;
-
-        if (!seekable) {
-          console.warn('MediaController: Media element does not support seeking to live.');
-          return;
-        }
-
-        if (!seekable.length) {
-          console.warn('MediaController: Media is unable to seek to live.');
-          return;
-        }
-
-        media.currentTime = seekable.end(seekable.length - 1);
-      }
-    };
-
-    // Apply ui event listeners
-    Object.keys(mediaUIEventHandlers).forEach((key) => {
+    // Apply ui event listeners to self
+    // Should apply to any UI container, not just controller
+    Object.keys(MediaUIRequestHandlers).forEach((key) => {
       const handlerName = `_handle${constToCamel(key, true)}`;
 
+      // TODO: Move to map, not obj root property
       this[handlerName] = (e) => {
         // Stop media UI events from continuing to bubble
         e.stopPropagation();
@@ -781,7 +779,7 @@ class MediaController extends MediaContainer {
           return;
         }
 
-        mediaUIEventHandlers[key](this.media, e, this);
+        MediaUIRequestHandlers[key](this.media, e, this);
       };
       this.addEventListener(MediaUIEvents[key], this[handlerName]);
     });
