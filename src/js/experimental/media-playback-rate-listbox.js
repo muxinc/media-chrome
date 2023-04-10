@@ -31,7 +31,7 @@ class MediaPlaybackrateListbox extends MediaChromeListbox {
     } else if (attrName === 'aria-multiselectable') {
       // diallow aria-multiselectable
       this.removeAttribute('aria-multiselectable');
-      console.warn("Captions List doesn't currently support multiple selections. You can enable multiple items via the media.textTrack API.");
+      console.warn("Playback rate listbox doesn't support multiple selections.");
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
