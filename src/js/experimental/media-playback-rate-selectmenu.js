@@ -56,7 +56,7 @@ class MediaPlaybackrateSelectMenu extends MediaChromeSelectMenu {
 
       listbox.textContent = '';
 
-      const rates = newValue.trim().split(' ');
+      const rates = newValue ? newValue.trim().split(' ') : DEFAULT_RATES;
 
       rates.forEach(rate => {
         listbox.append(createItem(rate));
