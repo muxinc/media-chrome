@@ -6,6 +6,7 @@ import { window, document, } from '../utils/server-safe-globals.js';
 
 const createItem = (rate) => {
   const item = document.createElement('media-chrome-listitem');
+  item.part.add('listitem');
   item.value = rate;
   item.textContent = rate + 'x';
 
