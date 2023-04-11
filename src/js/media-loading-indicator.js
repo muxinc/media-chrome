@@ -20,7 +20,7 @@ const loadingIndicatorIcon = `
 </svg>
 `;
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
 <style>
 :host {
   display: var(--media-control-display, var(--media-loading-indicator-display, inline-block));
