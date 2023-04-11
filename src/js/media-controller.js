@@ -57,7 +57,7 @@ const MediaUIStates = {
     get: function(controller){
       const { media } = controller;
 
-      return (media) ? media.paused : true;
+      return media ? media.paused : true;
     },
     mediaEvents: ['play', 'pause', 'emptied']
   }, 
