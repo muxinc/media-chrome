@@ -14,7 +14,7 @@ template.innerHTML = /*html*/`
         var(--media-text-content-height, var(--media-control-height, 24px))
         var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
       color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7)));
+      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
       padding: var(--media-control-padding, 10px);
       display: inline-flex;
       justify-content: center;
@@ -30,7 +30,7 @@ template.innerHTML = /*html*/`
       https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
     */''}
     :host(:focus-visible) {
-      box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+      box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
       outline: 0;
     }
 

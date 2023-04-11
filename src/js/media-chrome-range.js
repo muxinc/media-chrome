@@ -26,27 +26,27 @@ const trackStyles = `
   outline: var(--media-range-track-outline);
   outline-offset: var(--media-range-track-outline-offset);
   border-radius: var(--media-range-track-border-radius, 0);
-  background: var(--media-range-track-progress-internal, var(--media-range-track-background, #eee));
+  background: var(--media-range-track-progress-internal, var(--media-range-track-background, rgb(255 255 255 / .2)));
   box-shadow: var(--media-range-track-box-shadow, none);
   transition: var(--media-range-track-transition, none);
   transform: translate(var(--media-range-track-translate-x, 0), var(--media-range-track-translate-y, 0));
   cursor: pointer;
 `;
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
   <style>
     :host {
       --thumb-height: var(--media-range-thumb-height, 10px);
       --track-height: var(--media-range-track-height, 4px);
-      --_focus-box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgba(27, 127, 204, 0.9));
+      --_focus-box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
       --_media-range-padding: var(--media-range-padding, var(--media-control-padding, 10px));
 
       vertical-align: middle;
       box-sizing: border-box;
       display: inline-block;
       position: relative;
-      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7)));
-      transition: background 0.15s linear;
+      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
+      transition: background .15s linear;
       width: 100px;
       height: calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
       padding-left: var(--media-range-padding-left, var(--_media-range-padding));
@@ -66,7 +66,7 @@ template.innerHTML = `
     }
 
     :host(:hover) {
-      background: var(--media-control-hover-background, rgba(50,50,60, 0.7));
+      background: var(--media-control-hover-background, rgb(50 50 70 / .7));
     }
 
     #container {
@@ -125,7 +125,7 @@ template.innerHTML = `
       position: absolute;
       top: 50%;
       transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px) - 50%));
-      background: var(--media-range-track-background, #333);
+      background: var(--media-range-track-background, rgb(255 255 255 / .2));
     }
 
     #pointer {

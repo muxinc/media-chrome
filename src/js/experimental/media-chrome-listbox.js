@@ -12,7 +12,7 @@ template.innerHTML = /*html*/`
       var(--media-text-content-height, var(--media-control-height, 24px))
       var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
     color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-    background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7))));
+    background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
     list-style: none;
     display: inline-flex;
     flex-direction: column;
