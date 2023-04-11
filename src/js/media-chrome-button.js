@@ -4,29 +4,25 @@ import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
 <style>
   :host {
+    font: var(--media-font,
+      var(--media-font-weight, bold)
+      var(--media-font-size, 14px) /
+      var(--media-text-content-height, var(--media-control-height, 24px))
+      var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+    color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
+    background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7)));
+    padding: var(--media-control-padding, 10px);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     vertical-align: middle;
     box-sizing: border-box;
-    background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7)));
-
-    padding: var(--media-control-padding, 10px);
-
-    ${/* Vertically center any text */''}
-    font-size: 14px;
-    line-height: var(--media-text-content-height, var(--media-control-height, 24px));
-    font-weight: bold;
-    color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-
     transition: background 0.15s linear;
-
     pointer-events: auto;
     cursor: pointer;
-    font-family: helvetica neue, segoe ui, roboto, arial, sans-serif;
   }
 
   ${/*

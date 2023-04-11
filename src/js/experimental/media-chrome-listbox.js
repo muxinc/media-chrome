@@ -3,18 +3,22 @@ import { window, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
 <style>
   :host ul {
+    font: var(--media-font,
+      var(--media-font-weight, normal)
+      var(--media-font-size, 1em) /
+      var(--media-text-content-height, var(--media-control-height, 24px))
+      var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+    color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
+    background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / 0.7))));
     list-style: none;
     display: inline-flex;
     flex-direction: column;
     gap: 0.5em;
     margin: 0;
     padding: 0.5em;
-    background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
-    color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-    font-family: helvetica neue, segoe ui, roboto, arial, sans-serif;
   }
 
   ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible),
