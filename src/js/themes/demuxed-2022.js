@@ -11,29 +11,17 @@ import { window, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
-template.innerHTML = `
+template.innerHTML = /*html*/`
 <style>
   :host {
     --media-primary-color: black;
     --media-secondary-color: transparent;
     --media-tertiary-color: #7596CC;
-  }
-
-  media-time-display {
-    --media-primary-color: initial;
-  }
-
-  :host([stream-type="live"]) media-time-range, :host([stream-type="live"]) media-time-display {
-    opacity: 0;
-  }
-
-  media-controller {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-
+    --media-text-color: white;
     --media-control-hover-background: var(--media-secondary-color);
-    
+
     --media-range-track-height: 6px;
+    --media-range-bar-color: white;
     --media-range-track-background: rgba(0,0,0,0.4);
     --media-range-track-border-radius: 9999px;
 
@@ -42,8 +30,8 @@ template.innerHTML = `
     --media-range-thumb-height: 14px;
   }
 
-  media-controller[media-is-fullscreen] {
-    aspect-ratio: auto;
+  :host([stream-type="live"]) media-time-range, :host([stream-type="live"]) media-time-display {
+    opacity: 0;
   }
 
   media-control-bar {
