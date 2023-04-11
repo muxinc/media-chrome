@@ -97,7 +97,7 @@ template.innerHTML = /*html*/`
         var(--media-preview-border-radius) var(--media-preview-border-radius));
       padding: var(--media-preview-time-padding, 1px 10px 0);
       margin: var(--media-preview-time-margin, 0 0 10px);
-      text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgba(0 0 0 / .75));
+      text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / .75));
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-time-display,
