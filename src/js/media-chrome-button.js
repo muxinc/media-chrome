@@ -20,7 +20,7 @@ template.innerHTML = `
     font-size: 14px;
     line-height: var(--media-text-content-height, var(--media-control-height, 24px));
     font-weight: bold;
-    color: var(--media-control-font-color, var(--media-primary-color, rgb(238 238 238)));
+    color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
 
     transition: background 0.15s linear;
 

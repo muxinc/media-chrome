@@ -13,7 +13,7 @@ template.innerHTML = `
     margin: 0;
     padding: 0.5em;
     background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
-    color: var(--media-control-font-color, var(--media-primary-color, rgb(238 238 238)));
+    color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     font-family: helvetica neue, segoe ui, roboto, arial, sans-serif;
   }
 
