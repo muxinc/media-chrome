@@ -65,7 +65,7 @@ const MediaUIStates = {
     // We want to let the user know that the media started playing at any point (`media-has-played`).
     // Since these propagators are all called when boostrapping state, let's verify this is
     // a real playing event by checking that 1) there's media and 2) it isn't currently paused.
-    get: function(controller, e) {
+    get: function(controller) {
       const { media } = controller;
 
       if (!media) return false;
@@ -844,7 +844,6 @@ class MediaController extends MediaContainer {
     // Listen for media state changes and propagate them to children and associated els
     Object.keys(MediaUIStates).forEach((key) => {
       const {
-        get,
         mediaEvents,
         rootEvents,
         trackListEvents
@@ -882,7 +881,6 @@ class MediaController extends MediaContainer {
     // Remove all state change propagators
     Object.keys(MediaUIStates).forEach((key) => {
       const {
-        get,
         mediaEvents,
         rootEvents,
         trackListEvents
