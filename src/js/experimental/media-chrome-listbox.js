@@ -23,12 +23,6 @@ template.innerHTML = `
     outline: 0;
   }
 
-  ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible),
-  media-chrome-listitem[tabindex="0"]:focus-visible {
-    box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
-    outline: 0;
-  }
-
   ::slotted(media-chrome-listitem[aria-selected="true"]),
   media-chrome-listitem[aria-selected="true"] {
     background-color: var(--media-listbox-selected-background, rgb(122 122 184 / .8));
