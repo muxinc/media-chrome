@@ -25,7 +25,7 @@ const trackStyles = `
   border: var(--media-range-track-border, none);
   outline: var(--media-range-track-outline);
   outline-offset: var(--media-range-track-outline-offset);
-  border-radius: var(--media-range-track-border-radius, 0);
+  border-radius: var(--media-range-track-border-radius, 1px);
   background: var(--media-range-track-progress-internal, var(--media-range-track-background, rgb(255 255 255 / .2)));
   box-shadow: var(--media-range-track-box-shadow, none);
   transition: var(--media-range-track-transition, none);
@@ -121,7 +121,7 @@ template.innerHTML = /*html*/`
       min-width: 40px;
       width: var(--media-range-track-width, 100%);
       height: var(--track-height);
-      border-radius: var(--media-range-track-border-radius, 0);
+      border-radius: var(--media-range-track-border-radius, 1px);
       position: absolute;
       top: 50%;
       transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px) - 50%));
