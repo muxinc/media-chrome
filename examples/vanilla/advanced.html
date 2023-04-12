@@ -23,6 +23,21 @@
         display: none;
       }
 
+      video::-webkit-media-text-track-container {
+        transition: transform .25s;
+      }
+
+      media-controller:is([media-paused],:not([user-inactive])) video::-webkit-media-text-track-container {
+        transform: translateY(-50px);
+      }
+
+      video::-webkit-media-text-track-display {
+        width: auto !important;
+        left: 50% !important;
+        transform: translateX(-50%);
+        padding: .4em;
+      }
+
       .examples {
         margin-top: 20px;
       }
