@@ -158,17 +158,17 @@ class MediaChromeSelectMenu extends window.HTMLElement {
   }
 
   #handleChange_() {
-    this.#toggle();
+    this.#toggle(true);
   }
 
-  #toggle() {
-    this.#listboxSlot.hidden = !this.#listboxSlot.hidden;
-    this.#toggleExpanded();
+  #toggle(closeOnly) {
+    this.#listboxSlot.hidden = !this.#listboxSlot.hidden || closeOnly;
+    this.#toggleExpanded(closeOnly);
 
     if (!this.#listboxSlot.hidden) {
       this.#listbox.focus();
       this.#updateMenuPosition();
-    } else {
+    } else if (this.shadowRoot.activeElement === this.#listbox || this.#listbox.contains(this.shadowRoot.activeElement)) {
       this.#button.focus();
     }
   }
@@ -209,8 +209,8 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     this.#listbox.style.transform = `translateX(${position}px)`;
   }
 
-  #toggleExpanded() {
-    this.#expanded = !this.#expanded;
+  #toggleExpanded(closeOnly = false) {
+    this.#expanded = !this.#expanded || closeOnly;
     this.#button.setAttribute('aria-expanded', this.#expanded);
   }
 

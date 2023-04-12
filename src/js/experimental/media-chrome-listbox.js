@@ -47,6 +47,7 @@ class MediaChromeListbox extends window.HTMLElement {
   #clearKeysTimeout = null;
   #slot;
   #_assignedElements;
+  #metaPressed = false;
 
   static get observedAttributes() {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
@@ -129,12 +130,34 @@ class MediaChromeListbox extends window.HTMLElement {
     return this.#items.filter(el => el.getAttribute('aria-selected') === 'true');
   }
 
+  get value() {
+    return this.selectedOptions[0].value || this.selectedOptions[0].textContent;
+  }
+
+  set value(newValue) {
+    const item = this.#items.find(el => el.value === newValue || el.textContent === newValue);
+
+    if (!item) return;
+
+    this.#selectItem(item);
+  }
+
   focus() {
     this.selectedOptions[0]?.focus();
   }
 
   #clickListener = (e) => {
     this.handleClick(e);
+  }
+
+  #handleKeyListener(e) {
+    const { key } = e;
+
+    if (key === 'Enter' || key === ' ') {
+      this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
+    } else {
+      this.handleMovement(e);
+    }
   }
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
@@ -147,20 +170,37 @@ class MediaChromeListbox extends window.HTMLElement {
       return;
     }
 
-    if (key === 'Enter' || key === ' ') {
-      this.handleSelection(e);
-    } else {
-      this.handleMovement(e);
+    if (key === 'Meta') {
+      this.#metaPressed = false;
+      return;
     }
+
+    this.#handleKeyListener(e);
   }
 
   #keydownListener = (e) => {
-    const { metaKey, altKey } = e;
-    if (metaKey || altKey) {
+    const { key, altKey } = e;
+
+    if (altKey) {
       this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
-    e.preventDefault();
+
+    if (key === 'Meta') {
+      this.#metaPressed = true;
+      return;
+    }
+
+    // only prevent default on used keys
+    if (this.keysUsed.includes(key)) {
+      e.preventDefault();
+    }
+
+    if (this.#metaPressed && this.keysUsed.includes(key)) {
+      this.#handleKeyListener(e);
+      return;
+    }
+
     this.addEventListener('keyup', this.#keyupListener, {once: true});
   }
 
@@ -237,19 +277,27 @@ class MediaChromeListbox extends window.HTMLElement {
     return composedPath[index];
   }
 
-  handleSelection(e) {
+  handleSelection(e, toggle) {
     const item = this.#getItem(e);
 
     if (!item) return;
 
-    const selected = item.getAttribute('aria-selected') === 'true';
+    this.#selectItem(item, toggle);
+  }
 
-    if (this.getAttribute('aria-multiselectable') !== 'true') {
+  #selectItem(item, toggle) {
+    if (!this.hasAttribute('aria-multiselectable') || this.getAttribute('aria-multiselectable') !== 'true') {
       this.#assignedElements.forEach(el => el.setAttribute('aria-selected', 'false'));
     }
 
-    if (selected) {
-      item.setAttribute('aria-selected', 'false');
+    if (toggle) {
+      const selected = item.getAttribute('aria-selected') === 'true';
+
+      if (selected) {
+        item.setAttribute('aria-selected', 'false');
+      } else {
+        item.setAttribute('aria-selected', 'true');
+      }
     } else {
       item.setAttribute('aria-selected', 'true');
     }
@@ -311,7 +359,7 @@ class MediaChromeListbox extends window.HTMLElement {
     this.#items.forEach(el => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
 
-    this.handleSelection(e);
+    this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
   }
 
   #searchItem(key) {
