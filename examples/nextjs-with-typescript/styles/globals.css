@@ -15,14 +15,14 @@ a {
   box-sizing: border-box;
 }
 
-media-airplay-button[mediaairplayunavailable] {
+media-airplay-button[media-airplay-unavailable] {
   display: none;
 }
 
-media-volume-range[mediavolumeunavailable] {
+media-volume-range[media-volume-unavailable] {
   display: none;
 }
 
-media-pip-button[mediapipunavailable] {
+media-pip-button[media-pip-unavailable] {
   display: none;
 }
