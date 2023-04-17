@@ -1,3 +1,23 @@
+# [0.21.0](https://github.com/muxinc/media-chrome/compare/v0.20.4...v0.21.0) (2023-04-17)
+
+
+### Bug Fixes
+
+* Automatically serialize arrays as arr.join(' ') for react components ([#527](https://github.com/muxinc/media-chrome/issues/527)) ([c24025c](https://github.com/muxinc/media-chrome/commit/c24025c75c5f2d957b7827d06b9d30a41686c360))
+* custom element manifest imports from dist/ ([#521](https://github.com/muxinc/media-chrome/issues/521)) ([32b8149](https://github.com/muxinc/media-chrome/commit/32b8149da9252d699df5ca82a8edd4b29f5638f6))
+* font numeric uniform width ([#526](https://github.com/muxinc/media-chrome/issues/526)) ([f31d5a3](https://github.com/muxinc/media-chrome/commit/f31d5a3b7bf28ae92b4b833747ad22d235e9dac5))
+* inactive live button ([#535](https://github.com/muxinc/media-chrome/issues/535)) ([8d841ae](https://github.com/muxinc/media-chrome/commit/8d841ae53eeecb8eeb31772f75c8c9ddf061ceb6))
+* make DSD (declarative shadow dom) compatible ([#524](https://github.com/muxinc/media-chrome/issues/524)) ([e6105f4](https://github.com/muxinc/media-chrome/commit/e6105f456173225a4f299b2ae6fb4dbf3a4871cf))
+* relative src path ([6e45bab](https://github.com/muxinc/media-chrome/commit/6e45bab3e7847a3eed567f57fb093347e44e2b42))
+
+
+### Features
+
+* introduce a playback rates selectmenu ([#513](https://github.com/muxinc/media-chrome/issues/513)) ([502f83f](https://github.com/muxinc/media-chrome/commit/502f83fa1a9dfc6eabfbe08535fa81097416dbd4))
+* remove deprecated, move experimental files ([#525](https://github.com/muxinc/media-chrome/issues/525)) ([13218c0](https://github.com/muxinc/media-chrome/commit/13218c0281a20759c9a352e575249e2a42e911a2))
+
+
+
 ## [0.20.4](https://github.com/muxinc/media-chrome/compare/v0.20.3...v0.20.4) (2023-04-04)
 
 
