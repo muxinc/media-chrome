@@ -28,6 +28,8 @@ export const verbs = {
     `seek forward ${seekOffset} seconds`,
   SEEK_BACK_N_SECS: ({ seekOffset = 30 } = {}) =>
     `seek back ${seekOffset} seconds`,
+  SEEK_LIVE: () => 'seek to live',
+  PLAYING_LIVE: () => 'playing live',
 };
 
 export default {

@@ -4,6 +4,7 @@ import {
   Document as document,
 } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { verbs } from './labels/labels.js';
 
 const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
@@ -53,16 +54,18 @@ class MediaLiveButton extends MediaChromeButton {
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
-    this.setAttribute('aria-label', 'Seek to Live');
+    this.setAttribute('aria-label', verbs.SEEK_LIVE());
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (this.hasAttribute(MEDIA_PAUSED) || !this.hasAttribute(MEDIA_TIME_IS_LIVE)) {
+      this.setAttribute('aria-label', verbs.SEEK_LIVE());
       this.removeAttribute('aria-disabled');
       this.setAttribute('tabindex', '0');
     } else {
+      this.setAttribute('aria-label', verbs.PLAYING_LIVE());
       this.setAttribute('aria-disabled', 'true');
       this.removeAttribute('tabindex');
     }
