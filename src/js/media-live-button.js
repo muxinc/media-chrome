@@ -63,11 +63,9 @@ class MediaLiveButton extends MediaChromeButton {
     if (this.hasAttribute(MEDIA_PAUSED) || !this.hasAttribute(MEDIA_TIME_IS_LIVE)) {
       this.setAttribute('aria-label', verbs.SEEK_LIVE());
       this.removeAttribute('aria-disabled');
-      this.setAttribute('tabindex', '0');
     } else {
       this.setAttribute('aria-label', verbs.PLAYING_LIVE());
       this.setAttribute('aria-disabled', 'true');
-      this.removeAttribute('tabindex');
     }
   }
 
