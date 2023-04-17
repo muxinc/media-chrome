@@ -3,7 +3,7 @@ import { toNativeProps } from '../../../../../scripts/react/common/utils';
 
 describe('module: scripts/react/common/utils', () => {
   describe('toNativeProps()', () => {
-    it('should rename camelCase props to kebab-case for generic props', async () => {
+    it('should rename camelCase props to lowercase ("smushedcase") for generic props', async () => {
       const props = {
         camelCase: 'foo',
         nocamelcase: 'bar',
@@ -11,7 +11,7 @@ describe('module: scripts/react/common/utils', () => {
 
       const actual = toNativeProps(props);
 
-      expect(actual).to.deep.equal({ 'camel-case': 'foo', nocamelcase: 'bar' });
+      expect(actual).to.deep.equal({ 'camelcase': 'foo', nocamelcase: 'bar' });
     });
 
     it('should appropriately translate special React props to their DOM equivalent names, even for camelCase', async () => {

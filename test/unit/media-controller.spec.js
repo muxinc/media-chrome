@@ -1,5 +1,6 @@
 import { fixture, assert, aTimeout, waitUntil } from '@open-wc/testing';
 import { constants } from '../../src/js/index.js';
+import { MediaUIAttributes } from '../../src/js/constants.js';
 
 const { MediaUIEvents } = constants;
 
@@ -18,7 +19,7 @@ describe('<media-controller>', () => {
       <media-controller id="ctrl"></media-controller>
     `);
     const playButton = await fixture(`
-      <media-play-button media-controller="ctrl"></media-play-button>
+      <media-play-button mediacontroller="ctrl"></media-play-button>
     `);
     assert.equal(mediaController.associatedElementSubscriptions.size, 2);
     assert(mediaController.associatedElementSubscriptions.has(playButton));
@@ -43,7 +44,7 @@ describe('<media-controller>', () => {
       <media-controller id="ctrl"></media-controller>
     `);
     const ui = await fixture(`
-      <media-play-button media-controller="ctrl"></media-play-button>
+      <media-play-button mediacontroller="ctrl"></media-play-button>
     `);
 
     // Also includes the media-gesture-receiver by default
@@ -62,7 +63,7 @@ describe('<media-controller>', () => {
       <media-controller id="ctrl"></media-controller>
     `);
     const ui = await fixture(`
-      <media-time-range media-controller="ctrl"></media-time-range>
+      <media-time-range mediacontroller="ctrl"></media-time-range>
     `);
 
     // Also includes media-gesture-receiver, media-preview-thumbnail, media-preview-time-display
@@ -81,7 +82,7 @@ describe('<media-controller>', () => {
       <media-controller id="ctrl"></media-controller>
     `);
     const ui = await fixture(`
-      <media-gesture-receiver media-controller="ctrl"></media-gesture-receiver>
+      <media-gesture-receiver mediacontroller="ctrl"></media-gesture-receiver>
     `);
 
     // Also includes the media-gesture-receiver by default
@@ -100,7 +101,7 @@ describe('<media-controller>', () => {
       <media-controller id="ctrl"></media-controller>
     `);
     const ui = await fixture(`
-      <media-loading-indicator media-controller="ctrl"></media-loading-indicator>
+      <media-loading-indicator mediacontroller="ctrl"></media-loading-indicator>
     `);
 
     // Also includes the media-gesture-receiver by default
@@ -119,7 +120,7 @@ describe('<media-controller>', () => {
       <media-controller id="ctrl"></media-controller>
     `);
     const ui = await fixture(`
-      <media-preview-thumbnail media-controller="ctrl"></media-preview-thumbnail>
+      <media-preview-thumbnail mediacontroller="ctrl"></media-preview-thumbnail>
     `);
 
     // Also includes the media-gesture-receiver by default
@@ -138,7 +139,7 @@ describe('<media-controller>', () => {
       <media-controller id="ctrl"></media-controller>
     `);
     const ui = await fixture(`
-      <media-time-display media-controller="ctrl"></media-time-display>
+      <media-time-display mediacontroller="ctrl"></media-time-display>
     `);
 
     // Also includes the media-gesture-receiver by default
@@ -155,7 +156,7 @@ describe('<media-controller>', () => {
   it('registers itself and child simple element state receivers', async () => {
     const mediaController = await fixture(`
       <media-controller>
-        <div media-chrome-attributes="media-paused media-current-time"></div>
+        <div mediachromeattributes="mediapaused mediacurrenttime"></div>
       </media-controller>
     `);
 
@@ -190,49 +191,49 @@ describe('receiving state / dispatching (bubbling) events', () => {
   });
 
   it('receives state as attributes from the media', async () => {
-    assert(mediaController.hasAttribute('media-paused'));
-    assert(mediaController.hasAttribute('media-muted'));
-    assert.equal(mediaController.getAttribute('media-current-time'), '0', 'media-current-time');
-    assert.equal(mediaController.getAttribute('media-playback-rate'), '1', 'media-playback-rate');
-    assert.equal(mediaController.getAttribute('media-volume'), '1', 'media-volume');
-    assert.equal(mediaController.getAttribute('media-volume-level'), 'off', 'media-volume-level');
+    assert(mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED));
+    assert(mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED));
+    assert.equal(mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME), '0', MediaUIAttributes.MEDIA_CURRENT_TIME);
+    assert.equal(mediaController.getAttribute(MediaUIAttributes.MEDIA_PLAYBACK_RATE), '1', MediaUIAttributes.MEDIA_PLAYBACK_RATE);
+    assert.equal(mediaController.getAttribute(MediaUIAttributes.MEDIA_VOLUME), '1', MediaUIAttributes.MEDIA_VOLUME);
+    assert.equal(mediaController.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL), 'off', MediaUIAttributes.MEDIA_VOLUME_LEVEL);
 
     await video.play();
 
-    assert(!mediaController.hasAttribute('media-paused'));
+    assert(!mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED));
     video.pause();
   });
 
   it('can play/pause', async () => {
-    assert(mediaController.hasAttribute('media-paused'));
+    assert(mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED));
 
     div.dispatchEvent(new Event(MediaUIEvents.MEDIA_PLAY_REQUEST, { bubbles: true }));
     await aTimeout(10);
 
     assert(!video.paused, 'video.paused is false');
-    assert(!mediaController.hasAttribute('media-paused'), 'has no media-paused');
+    assert(!mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED), 'has no mediapaused');
 
     div.dispatchEvent(new Event(MediaUIEvents.MEDIA_PAUSE_REQUEST, { bubbles: true }));
     await aTimeout(10);
 
     assert(video.paused, 'video.paused is true');
-    assert(mediaController.hasAttribute('media-paused'), 'has media-paused');
+    assert(mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED), 'has mediapaused');
   });
 
   it('can unmute/mute', async () => {
-    assert(mediaController.hasAttribute('media-muted'));
+    assert(mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED));
 
     div.dispatchEvent(new Event(MediaUIEvents.MEDIA_UNMUTE_REQUEST, { bubbles: true }));
     await aTimeout(10);
 
     assert(!video.muted, 'video.muted is false');
-    assert(!mediaController.hasAttribute('media-muted'), 'has no media-muted');
+    assert(!mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED), 'has no mediamuted');
 
     div.dispatchEvent(new Event(MediaUIEvents.MEDIA_MUTE_REQUEST, { bubbles: true }));
     await aTimeout(10);
 
     assert(video.muted, 'video.muted is true');
-    assert(mediaController.hasAttribute('media-muted'), 'has media-muted');
+    assert(mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED), 'has mediamuted');
   });
 
   it('can seek', async () => {
@@ -243,8 +244,8 @@ describe('receiving state / dispatching (bubbling) events', () => {
       bubbles: true
     }));
 
-    await waitUntil(() => mediaController.getAttribute('media-current-time') >= 2);
-    assert(true, 'media-current-time is 2');
+    await waitUntil(() => mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) >= 2);
+    assert(true, 'mediacurrenttime is 2');
   });
 
   it('can change volume', async () => {
@@ -253,8 +254,8 @@ describe('receiving state / dispatching (bubbling) events', () => {
       bubbles: true
     }));
 
-    await waitUntil(() => mediaController.getAttribute('media-volume') == 0.73, 3000);
-    assert(true, 'media-volume is 0.73');
+    await waitUntil(() => mediaController.getAttribute(MediaUIAttributes.MEDIA_VOLUME) == 0.73, 3000);
+    assert(true, 'mediavolume is 0.73');
   });
 
 });
