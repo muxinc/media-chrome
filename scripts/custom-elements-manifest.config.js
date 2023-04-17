@@ -1,10 +1,11 @@
 import fs from 'fs';
+import { generateCustomData } from "cem-plugin-vs-code-custom-data-generator";
 
 const packageData = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const { name, description, version, author, homepage, license } = packageData;
 
 export default {
-  globs: ['src/js/media-*', 'src/js/extras'],
+  globs: ['dist/media-*', 'dist/extras'],
   outdir: 'dist',
   plugins: [
     // Append package data
@@ -21,5 +22,10 @@ export default {
         };
       },
     },
+    generateCustomData({
+      outdir: 'dist',
+      htmlFileName: 'vscode.html-data.json',
+      cssFileName: 'vscode.css-data.json',
+    })
   ],
 };

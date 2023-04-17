@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Mobile Video Usage Example</title>
+    <script type="module" src="../../dist/index.js"></script>
+    <style>
+      body {
+        width: 100vw;
+        height: 100vh;
+        margin: 0px;
+      }
+
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 320px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
+      video {
+        width: 100%;      /* prevents video to expand beyond its container */
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+
+      media-airplay-button[media-airplay-unavailable] {
+        display: none;
+      }
+
+      media-volume-range[media-volume-unavailable] {
+        display: none;
+      }
+
+      /* Breaking these up into two selectors to demonstrate how this could work with a new custom "contaienr" element (CJP) */
+      media-controller .centered-controls-overlay {
+        align-self: stretch;
+      }
+
+      .centered-controls-overlay {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-evenly;
+      }
+
+      *[slot='centered-chrome'] {
+        margin: 0 15%;
+        --media-control-hover-background: none;
+        --media-control-background: none;
+      }
+
+      *[slot='centered-chrome']
+        :is(media-play-button, media-seek-backward-button, media-seek-forward-button) {
+        padding: 0px;
+      }
+
+      *[slot='centered-chrome'] media-play-button {
+        width: 20%;
+      }
+
+      *[slot='centered-chrome']
+        :is(media-seek-backward-button, media-seek-forward-button) {
+        width: 15%;
+      }
+
+      .seek-control-bar {
+        padding: 0 5px;
+      }
+
+      .seek-control-bar > * {
+        background: none;
+        height: auto;
+        padding: 0px;
+      }
+
+      .seek-control-bar > media-time-range {
+        padding-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome Standard Mobile Video Usage Example</h1>
+      <media-controller autohide="2">
+        <video
+          slot="media"
+          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+          preload="none"
+          muted
+          crossorigin
+          playsinline
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+          />
+        </video>
+        <media-poster-image
+          slot="poster"
+          src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
+          placeholder-src="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
+        ></media-poster-image>
+        <div slot="centered-chrome" class="centered-controls-overlay">
+          <media-seek-backward-button></media-seek-backward-button>
+          <media-play-button></media-play-button>
+          <media-seek-forward-button></media-seek-forward-button>
+        </div>
+        <media-control-bar class="seek-control-bar">
+          <media-time-range></media-time-range>
+          <media-time-display show-duration remaining></media-time-display>
+        </media-control-bar>
+        <media-control-bar>
+          <media-mute-button></media-mute-button>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-pip-button></media-pip-button>
+          <media-fullscreen-button></media-fullscreen-button>
+          <media-airplay-button></media-button-button>
+        </media-control-bar>
+      </media-controller>
+      <div class="examples">
+        <a href="./">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>

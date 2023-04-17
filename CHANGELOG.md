@@ -1,3 +1,22 @@
+## [0.20.4](https://github.com/muxinc/media-chrome/compare/v0.20.3...v0.20.4) (2023-04-04)
+
+
+### Bug Fixes
+
+* media-theme element lazy doc append ([#519](https://github.com/muxinc/media-chrome/issues/519)) ([7efe0e2](https://github.com/muxinc/media-chrome/commit/7efe0e2e3d52a57722d0f3a61fde016d9f40bbdc))
+
+
+
+## [0.20.3](https://github.com/muxinc/media-chrome/compare/v0.20.2...v0.20.3) (2023-03-31)
+
+
+### Bug Fixes
+
+* over firing user-inactive event, attr name ([#515](https://github.com/muxinc/media-chrome/issues/515)) ([26a05f6](https://github.com/muxinc/media-chrome/commit/26a05f6ac4accc47241e17f8c58d1d9269e77722))
+* toggle selectmenu via keyboard, hide on click outside of selectmenu ([#514](https://github.com/muxinc/media-chrome/issues/514)) ([df9a50d](https://github.com/muxinc/media-chrome/commit/df9a50d62133d02d53ad749a02e4b801f210d2ef))
+
+
+
 ## [0.20.2](https://github.com/muxinc/media-chrome/compare/v0.20.1...v0.20.2) (2023-03-30)
 
 

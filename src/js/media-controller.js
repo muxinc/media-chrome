@@ -60,7 +60,7 @@ const MediaUIStates = {
       return media ? media.paused : true;
     },
     mediaEvents: ['play', 'pause', 'emptied']
-  }, 
+  },
   MEDIA_HAS_PLAYED: {
     // We want to let the user know that the media started playing at any point (`media-has-played`).
     // Since these propagators are all called when boostrapping state, let's verify this is
@@ -121,9 +121,9 @@ const MediaUIStates = {
       if (!media || typeof media.volume == 'undefined') {
         return level;
       }
-    
+
       const { muted, volume } = media;
-    
+
       if (volume === 0 || muted) {
         level = 'off';
       } else if (volume < 0.5) {
@@ -131,7 +131,7 @@ const MediaUIStates = {
       } else if (volume < 0.75) {
         level = 'medium';
       }
-    
+
       return level;
     },
     mediaEvents: ['volumechange']
@@ -197,7 +197,7 @@ const MediaUIStates = {
       // TODO: Should return default-stream-type in this case if set
       // Reconsider undefined as default otherwise. Feels odd to return it.
       if (!media) return undefined;
-    
+
       const { streamType } = media;
       if (StreamTypeValues.includes(streamType)) {
         // If the slotted media supports `streamType` but
@@ -214,7 +214,7 @@ const MediaUIStates = {
         return streamType;
       }
       const duration = media.duration;
-    
+
       if (duration === Infinity) {
         return StreamTypes.LIVE;
       } else if (Number.isFinite(duration)) {
@@ -222,12 +222,12 @@ const MediaUIStates = {
       } else {
         // TODO: Move to non attr state
         const defaultType = controller.getAttribute('default-stream-type');
-    
+
         if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
           return defaultType;
         }
       }
-    
+
       return undefined;
     },
     mediaEvents: ['emptied','durationchange','loadedmetadata','streamtypechange']
@@ -255,28 +255,28 @@ const MediaUIStates = {
   MEDIA_TIME_IS_LIVE: {
     get: function(controller){
       const { media } = controller;
-    
+
       if (!media) return false;
 
       if (typeof media.liveEdgeStart === 'number') {
         if (Number.isNaN(media.liveEdgeStart)) return false;
         return media.currentTime >= media.liveEdgeStart;
       }
-  
+
       const live = MediaUIStates.MEDIA_STREAM_TYPE.get(controller) === 'live';
       // Can't be playing live if it's not a live stream
       if (!live) return false;
-      
+
       const seekable = media.seekable;
       // If the slotted media element is live but does not expose a 'seekable' `TimeRanges` object,
       // always assume playing live
       if (!seekable) return true;
       // If there is an empty `seekable`, assume we are not playing live
       if (!seekable.length) return false;
-  
+
       // Default to 10 seconds
       // Assuming seekable range already accounts for appropriate buffer room
-      const liveEdgeStartOffset = controller.hasAttribute('liveedgeoffset') 
+      const liveEdgeStartOffset = controller.hasAttribute('liveedgeoffset')
         // TODO: Move to no attr value
         ? Number(controller.getAttribute('liveedgeoffset'))
         : 10;
@@ -341,7 +341,7 @@ const MediaUIStates = {
     // Apple docs recommendations (See: https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls)
     // For a more advanced solution, we could monitor for media state receivers that "care" about airplay support and add/remove
     // whenever these are added/removed. (CJP)
-    // NOTE: I don't think only adding this if supported helps, so making this match others. 
+    // NOTE: I don't think only adding this if supported helps, so making this match others.
     // If Airplay's not supported then it it doesn't hurt to add it.
     // If battery is really an issue we need a different approach.
     // Also this is a terrible API, Apple. (heff)
@@ -753,7 +753,7 @@ class MediaController extends MediaContainer {
     if (volumeSupported === undefined) {
       volumeSupportPromise.then(() => {
         this.propagateMediaState(
-          MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, 
+          MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE,
           MediaUIStates.MEDIA_VOLUME_UNAVAILABLE.get(this)
         );
       });
@@ -821,9 +821,9 @@ class MediaController extends MediaContainer {
     } else if (attrName === 'default-stream-type') {
       this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
     } else if (attrName === 'fullscreen-element') {
-      const el = newValue 
+      const el = newValue
         // @ts-ignore
-        ? this.getRootNode()?.getElementById(newValue) 
+        ? this.getRootNode()?.getElementById(newValue)
         : undefined;
       // NOTE: Setting the internal private prop here to not
       // clear the attribute that was just set (CJP).
@@ -909,7 +909,12 @@ class MediaController extends MediaContainer {
   }
 
   propagateMediaState(stateName, state) {
+    const previousState = this.getAttribute(stateName);
+
     propagateMediaState(this.mediaStateReceivers, stateName, state);
+
+    if (previousState === this.getAttribute(stateName)) return;
+
     // TODO: I don't think we want these events to bubble? Video element states don't. (heff)
     const evt = new window.CustomEvent(
       AttributeToStateChangeEventMap[stateName],

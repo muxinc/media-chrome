@@ -18,16 +18,12 @@ const updateAriaValueText = (el) => {
 };
 
 const template = document.createElement('template');
-template.innerHTML = `
+template.innerHTML = /*html*/`
   <style>
     :host {
-      --media-preview-background-color: rgba(20,20,30, .5);
-      --media-preview-background: var(--media-control-background,
-        var(--media-preview-background-color));
       --media-preview-border-radius: 3px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;
-      color: #fff;
     }
 
     #preview-rail,
@@ -72,8 +68,8 @@ template.innerHTML = `
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: visibility 0s .25s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-time-background, var(--media-preview-background));
-      box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 4px rgba(0,0,0, .2));
+      background: var(--media-preview-time-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 4px rgb(0 0 0 / .2));
       max-width: var(--media-preview-thumbnail-max-width, 180px);
       max-height: var(--media-preview-thumbnail-max-height, 160px);
       min-width: var(--media-preview-thumbnail-min-width, 120px);
@@ -91,18 +87,17 @@ template.innerHTML = `
 
     media-preview-time-display,
     ::slotted(media-preview-time-display) {
-      color: unset;
       min-width: 0;
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: min-width 0s, border-radius 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-time-background, var(--media-preview-background));
+      background: var(--media-preview-time-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
       border-radius: var(--media-preview-time-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));
       padding: var(--media-preview-time-padding, 1px 10px 0);
       margin: var(--media-preview-time-margin, 0 0 10px);
-      text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgba(0,0,0, .75));
+      text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / .75));
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-time-display,
@@ -329,7 +324,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     const buffPercent = (relativeBufferedEnd / relativeMax) * 100;
     colorsArray.splice(1, 0, [
-      'var(--media-time-buffered-color, rgba(255,255,255, .4))',
+      'var(--media-time-buffered-color, rgb(255 255 255 / .4))',
       buffPercent,
     ]);
     return colorsArray;

@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@custom-elements-manifest/analyzer@^0.6.6":
-  version "0.6.6"
-  resolved "https://registry.yarnpkg.com/@custom-elements-manifest/analyzer/-/analyzer-0.6.6.tgz#52db8a3f6c575821d05694ff5a0295c0cb4bbb07"
-  integrity sha512-aPBZBdkrGcQPhgPPEucgw66vfOfLpS80GOGzDXE8NZuO/VmTdy3QQNAsuD4MPJmv9eRPV9W2V7ezodS5g8erng==
+"@custom-elements-manifest/analyzer@^0.8.0":
+  version "0.8.0"
+  resolved "https://registry.yarnpkg.com/@custom-elements-manifest/analyzer/-/analyzer-0.8.0.tgz#757bdd5fd97c8b19ddcec05d2691557df0bc10cc"
+  integrity sha512-w+OMAWW4x04eE6dpEInoVkk6ITEsQTsbx/jv7ofbl5QniXFiY5CFwWCVVAxCd3pTQbXd2Y9VxwefVJuGs/vNWw==
   dependencies:
     "@custom-elements-manifest/find-dependencies" "^0.0.5"
     "@github/catalyst" "^1.6.0"
@@ -926,6 +926,13 @@ camelcase@^6.2.0:
   version "6.2.0"
   resolved "https://registry.npmjs.org/camelcase/-/camelcase-6.2.0.tgz"
   integrity sha512-c7wVvbw3f37nuobQNtgsgG9POC9qMbNuMQmTCqZv23b6MIz0fcYpBiOlv9gEN/hdLdnZTDQhg6e9Dq5M1vKvfg==
+
+cem-plugin-vs-code-custom-data-generator@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/cem-plugin-vs-code-custom-data-generator/-/cem-plugin-vs-code-custom-data-generator-1.4.1.tgz#4e2b72b835d2afc929df41e966e1e20f33549346"
+  integrity sha512-mulzg6I2wJVNKCM9ml4ttxTnGK25kHHdkhX979vbrKwSIIplFnPOgGa0Sj14pQWnfDwbGr6pSbLgBmi4nVHFxA==
+  dependencies:
+    prettier "^2.7.1"
 
 chai-a11y-axe@^1.3.2:
   version "1.3.2"

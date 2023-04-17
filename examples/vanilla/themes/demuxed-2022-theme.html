@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Demuxed 2022 Theme Example</title>
+    <script type="module" src="../../../dist/index.js"></script>
+    <script type="module" src="../../../src/js/themes/demuxed-2022.js"></script>
+    <link rel="stylesheet" href="https://use.typekit.net/dbt1sbf.css">
+  </head>
+  <body>
+    <style>
+      .examples {
+        margin-top: 20px;
+      }
+
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-theme-demuxed-2022 {
+        display: block;         /* expands the container if preload=none */
+        max-width: 720px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        overflow: hidden;
+      }
+
+      video {
+        width: 100%;  /* prevents video to expand beyond its container */
+      }
+    </style>
+    <main>
+      <h1>Media Chrome Demuxed 2022 Theme Example</h1>
+
+      <media-theme-demuxed-2022 stream-type="on-demand">
+      <!-- <media-theme-demuxed-2022 stream-type="live"> -->
+        <video
+          slot="media"
+          src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+          poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=23"
+          crossorigin
+          playsinline
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.vtt"
+          />
+        </video>
+      </media-theme-demuxed-2022>
+
+      <div class="examples">
+        <a href="../">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>

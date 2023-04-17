@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome DASH Media Example</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/dash-video-element@0.0"></script>
+    <script type="module" src="../../../dist/index.js"></script>
+    <style>
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome DASH Media Example</h1>
+      <media-controller>
+        <dash-video
+          slot="media"
+          src="https://dash.akamaized.net/akamai/bbb_30fps/bbb_30fps.mpd"
+        ></dash-video>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-time-range></media-time-range>
+          <media-mute-button></media-mute-button>
+          <media-volume-range></media-volume-range>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+      <div class="examples">
+        <a href="../">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>

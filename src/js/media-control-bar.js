@@ -14,7 +14,7 @@ template.innerHTML = `
       ${/* Need position to display above video for some reason */''}
       box-sizing: border-box;
       display: var(--media-control-display, var(--media-control-bar-display, inline-flex));
-      color: var(--media-icon-color, #eee);
+      color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
       --media-loading-icon-width: 44px;
     }
 
@@ -39,8 +39,11 @@ class MediaControlBar extends window.HTMLElement {
   constructor() {
     super();
 
-    this.attachShadow({ mode: 'open' });
-    this.shadowRoot.appendChild(template.content.cloneNode(true));
+    if (!this.shadowRoot) {
+      // Set up the Shadow DOM if not using Declarative Shadow DOM.
+      this.attachShadow({ mode: 'open' });
+      this.shadowRoot.appendChild(template.content.cloneNode(true));
+    }
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {

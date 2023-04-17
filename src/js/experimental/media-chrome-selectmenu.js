@@ -54,12 +54,15 @@ class MediaChromeSelectMenu extends window.HTMLElement {
   constructor() {
     super();
 
-    const shadow = this.attachShadow({ mode: 'open' });
+    if (!this.shadowRoot) {
+      // Set up the Shadow DOM if not using Declarative Shadow DOM.
+      const shadow = this.attachShadow({ mode: 'open' });
 
-    const buttonHTML = template.content.cloneNode(true);
-    this.nativeEl = buttonHTML;
+      const buttonHTML = template.content.cloneNode(true);
+      this.nativeEl = buttonHTML;
 
-    shadow.appendChild(buttonHTML);
+      shadow.appendChild(buttonHTML);
+    }
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
@@ -103,11 +106,51 @@ class MediaChromeSelectMenu extends window.HTMLElement {
 
     this.#listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
     this.#listboxSlot.addEventListener('slotchange', () => {
-      this.#listbox.removeEventListener('change', this.#handleChange);
+      this.disable();
       // update listbox reference if necessary
       this.#listbox = this.#listboxSlot.assignedElements()[0] || this.#listbox;
-      this.#listbox.addEventListener('change', this.#handleChange);
+      this.enable();
     });
+  }
+
+  // NOTE: There are definitely some "false positive" cases with multi-key pressing,
+  // but this should be good enough for most use cases.
+  #keyupListener = (e) => {
+    const { key } = e;
+
+    if (!this.keysUsed.includes(key)) {
+      this.removeEventListener('keyup', this.#keyupListener);
+      return;
+    }
+
+    const isButton = e.composedPath().includes(this.#button);
+
+    // only allow Enter/Space on the button itself and not on the listbox
+    // and allow hiding the menu when pressing Escape when focused on the listbox
+    if (isButton && (key === 'Enter' || key === ' ')) {
+      this.#handleClick();
+    } else if (key === 'Escape' && !this.#listboxSlot.hidden) {
+      this.#toggle();
+    }
+  }
+
+  #keydownListener = (e) => {
+    const { metaKey, altKey, key } = e;
+    if (metaKey || altKey || !this.keysUsed.includes(key)) {
+      this.removeEventListener('keyup', this.#keyupListener);
+      return;
+    }
+    e.preventDefault();
+    this.addEventListener('keyup', this.#keyupListener, {once: true});
+  }
+
+  #documentClickHandler = (e) => {
+    // if we clicked inside the selectmenu, don't handle it here
+    if (e.composedPath().includes(this)) return;
+
+    if (!this.#listboxSlot.hidden) {
+      this.#toggle();
+    }
   }
 
   #handleClick_() {
@@ -115,17 +158,17 @@ class MediaChromeSelectMenu extends window.HTMLElement {
   }
 
   #handleChange_() {
-    this.#toggle();
+    this.#toggle(true);
   }
 
-  #toggle() {
-    this.#listboxSlot.hidden = !this.#listboxSlot.hidden;
-    this.#toggleExpanded();
+  #toggle(closeOnly) {
+    this.#listboxSlot.hidden = !this.#listboxSlot.hidden || closeOnly;
+    this.#toggleExpanded(closeOnly);
 
     if (!this.#listboxSlot.hidden) {
       this.#listbox.focus();
       this.#updateMenuPosition();
-    } else {
+    } else if (this.shadowRoot.activeElement === this.#listbox || this.#listbox.contains(this.shadowRoot.activeElement)) {
       this.#button.focus();
     }
   }
@@ -166,22 +209,30 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     this.#listbox.style.transform = `translateX(${position}px)`;
   }
 
-  #toggleExpanded() {
-    this.#expanded = !this.#expanded;
+  #toggleExpanded(closeOnly = false) {
+    this.#expanded = !this.#expanded || closeOnly;
     this.#button.setAttribute('aria-expanded', this.#expanded);
   }
 
   enable() {
     this.#button.removeAttribute('disabled');
     this.#button.addEventListener('click', this.#handleClick);
+    this.#button.addEventListener('keydown', this.#keydownListener);
+    this.#listbox.addEventListener('keydown', this.#keydownListener);
     this.#toggleExpanded();
     this.#listbox.addEventListener('change', this.#handleChange);
+    document.addEventListener('click', this.#documentClickHandler);
   }
 
   disable() {
     this.#button.setAttribute('disabled', '');
     this.#button.removeEventListener('click', this.#handleClick);
+    this.#button.removeEventListener('keydown', this.#keydownListener);
+    this.#button.removeEventListener('keyup', this.#keyupListener);
+    this.#listbox.removeEventListener('keydown', this.#keydownListener);
+    this.#listbox.removeEventListener('keyup', this.#keyupListener);
     this.#listbox.addEventListener('change', this.#handleChange);
+    document.removeEventListener('click', this.#documentClickHandler);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -236,7 +287,7 @@ class MediaChromeSelectMenu extends window.HTMLElement {
   }
 
   get keysUsed() {
-    return ['Enter', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
+    return ['Enter', 'Escape', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
   }
 
 }

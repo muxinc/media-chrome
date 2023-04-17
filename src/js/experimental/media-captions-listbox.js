@@ -6,7 +6,7 @@ import { parseTextTracksStr, formatTextTrackObj } from '../utils/captions.js';
 import { toggleSubsCaps } from '../utils/captions.js';
 
 const captionsIndicatorInlineStyle = `
-  fill: var(--media-icon-color, #eee);
+  fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
   height: var(--media-captions-indicator-height, 1em);
   vertical-align: var(--media-captions-indicator-vertical-align, bottom);
   margin-inline-start: 1ch;
@@ -227,7 +227,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     const [newType, selectedOption] = this.selectedOptions[0]?.value?.split('!') ?? [];
 
     // turn off currently selected tracks
-    toggleSubsCaps(this);
+    toggleSubsCaps(this, true);
 
     if (!selectedOption) return;
 

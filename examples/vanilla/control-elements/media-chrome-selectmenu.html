@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width">
+  <title>Media Chrome Captions Usage Examples</title>
+  <script type="module" src="../../../dist/index.js"></script>
+  <script type="module" src="../../../dist/experimental/media-chrome-selectmenu.js"></script>
+  <script type="module" src="../../../dist/experimental/media-captions-selectmenu.js"></script>
+  <script type="module" src="../../../dist/experimental/media-playback-rate-selectmenu.js"></script>
+  <style>
+    media-controller {
+      margin-top: 2em;
+    }
+
+    .examples {
+      margin-top: 20px;
+    }
+
+    main {
+      margin-inline: auto;
+      max-width: 640px;
+      height: 5000px;
+      /* --media-control-padding: 5px; */
+    }
+
+    [disabled]:not(media-captions-selectmenu),
+    [disabled]::part(button) {
+      opacity: 60%;
+      cursor: not-allowed;
+    }
+
+    media-captions-selectmenu::part(button) {
+      background: purple;
+    }
+
+    media-captions-selectmenu::part(listbox) {
+      background: green;
+    }
+
+    media-captions-selectmenu::part(listitem) {
+      color: yellow;
+    }
+    media-captions-listbox::part(listitem) {
+      color: red;
+    }
+
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Media Chrome Standard Video Usage Example</h1>
+    <media-playback-rate-listbox media-controller="mc">
+      <media-chrome-listitem value="1">1x</media-chrome-listitem>
+      <media-chrome-listitem value="1.5">1.5x</media-chrome-listitem>
+      <media-chrome-listitem value="2">2x</media-chrome-listitem>
+      <media-chrome-listitem value="3">3x</media-chrome-listitem>
+    </media-playback-rate-listbox>
+    <media-playback-rate-selectmenu rates="1 2 3 4" media-controller="mc">
+      <media-playback-rate-listbox slot="listbox">
+        <media-chrome-listitem value="1">1x</media-chrome-listitem>
+        <media-chrome-listitem value="1.5">1.5x</media-chrome-listitem>
+        <media-chrome-listitem value="2">2x</media-chrome-listitem>
+        <media-chrome-listitem value="3">3x</media-chrome-listitem>
+      </media-playback-rate-listbox>
+    </media-playback-rate-selectmenu>
+    <media-playback-rate-selectmenu rates="1 2 3 4" media-controller="mc"></media-playback-rate-selectmenu>
+    <media-chrome-selectmenu>
+      <span slot="button-content">Menu Button</span>
+      <media-chrome-listitem>lorem</media-chrome-listitem>
+      <media-chrome-listitem>ipsum</media-chrome-listitem>
+      <media-chrome-listitem>dolor</media-chrome-listitem>
+      <media-chrome-listitem>sit</media-chrome-listitem>
+    </media-chrome-selectmenu>
+    <media-chrome-selectmenu>
+      <span slot="button-content">Menu Button</span>
+      <media-captions-listbox slot="listbox" media-controller="mc"></media-captions-listbox>
+    </media-chrome-selectmenu>
+
+    <br>
+    <br>
+
+
+    <media-chrome-selectmenu media-controller="mc" aria-label="captions menu button">
+      <media-captions-button slot="button"></media-captions-button>
+      <media-captions-listbox slot="listbox" ></media-captions-listbox>
+    </media-chrome-selectmenu>
+    <media-captions-selectmenu media-controller="mc" disabled></media-captions-selectmenu>
+
+    <br>
+
+    <media-controller id="mc">
+      <video
+        slot="media"
+        src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/ed_hd.mp4"
+        preload="metadata"
+        muted
+        crossorigin
+      >
+        <track label="English" kind="captions" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
+        <track label="Japanese" kind="captions" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
+        <track label="Swedish" kind="captions" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
+        <track label="Russian" kind="captions" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
+        <track label="Arabic" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
+        <track label="Scandinavian" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
+        <track label="Subs English" kind="subtitles" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
+        <track label="Subs Japanese" kind="subtitles" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
+        <track label="Subs Swedish" kind="subtitles" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
+        <track label="Subs Russian" kind="subtitles" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
+        <track label="Subs Arabic" kind="subtitles" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
+      </video>
+      <media-poster-image slot="poster" src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/poster.png"></media-poster-image>
+      <media-control-bar>
+        <media-chrome-selectmenu aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-selectmenu>
+        <media-play-button></media-play-button>
+        <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+        <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+        <media-mute-button></media-mute-button>
+        <media-time-display show-duration remaining></media-time-display>
+        <media-captions-button></media-captions-button>
+        <media-chrome-selectmenu aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-selectmenu>
+        <!-- <media-playback-rate-button></media-playback-rate-button> -->
+        <media-playback-rate-selectmenu></media-playback-rate-selectmenu>
+        <media-pip-button></media-pip-button>
+        <media-chrome-selectmenu disabled aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox" ></media-captions-listbox>
+        </media-chrome-selectmenu>
+        <media-captions-selectmenu></media-captions-selectmenu>
+        <media-fullscreen-button></media-fullscreen-button>
+        <media-airplay-button></media-airplay-button>
+        <media-captions-selectmenu></media-captions-selectmenu>
+        <media-chrome-selectmenu aria-label="captions menu button">
+          <media-captions-button default-showing slot="button"></media-captions-button>
+          <media-captions-listbox slot="listbox"></media-captions-listbox>
+        </media-chrome-selectmenu>
+      </media-control-bar>
+    </media-controller>
+    <div class="examples">
+      <a href="../">View more examples</a>
+    </div>
+  </main>
+</body>
+</html>

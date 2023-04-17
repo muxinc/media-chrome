@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Wistia Media Example</title>
+    <style>
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 720px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
+      wistia-video {
+        width: 100%;      /* prevents video to expand beyond its container */
+        background-color: #000;
+      }
+
+      media-airplay-button[media-airplay-unavailable] {
+        display: none;
+      }
+
+      media-volume-range[media-volume-unavailable] {
+        display: none;
+      }
+
+      media-pip-button[media-pip-unavailable] {
+        display: none;
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/wistia-video-element@0.2/+esm"></script>
+    <script type="module" src="../../../dist/index.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome Wistia Media Example</h1>
+      <media-controller style="aspect-ratio: 16 / 9;">
+        <wistia-video
+          slot="media"
+          crossorigin
+          src="https://wesleyluyten.wistia.com/medias/oifkgmxnkb"
+          playsinline
+        ></wistia-video>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+          <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+          <media-mute-button></media-mute-button>
+          <media-volume-range></media-volume-range>
+          <media-time-range></media-time-range>
+          <media-time-display show-duration remaining></media-time-display>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-pip-button></media-pip-button>
+          <media-airplay-button></media-airplay-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+      <div class="examples">
+        <a href="../">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>

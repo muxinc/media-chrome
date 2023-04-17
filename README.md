@@ -1,4 +1,8 @@
-# [`<media-chrome>`](https://media-chrome.org) [![npm version](https://img.shields.io/npm/v/media-chrome)](http://npmjs.org/media-chrome) [![size](https://img.shields.io/bundlephobia/minzip/media-chrome?label=size)](https://bundlephobia.com/result?p=media-chrome) [![slack](https://img.shields.io/badge/slack-%23media--chrome-pink)](https://video-dev.fly.dev/)
+# [`<media-chrome>`](https://media-chrome.org) 
+
+[![npm version](https://img.shields.io/npm/v/media-chrome?style=flat-square&color=success)](http://npmjs.org/media-chrome) 
+[![size](https://img.shields.io/bundlephobia/minzip/media-chrome?label=size&style=flat-square)](https://bundlephobia.com/result?p=media-chrome) 
+[![slack](https://img.shields.io/badge/slack-%23media--chrome-pink?style=flat-square)](https://video-dev.fly.dev/)
 
 Your media player's dancing suit. :man_dancing:
 
@@ -17,7 +21,7 @@ Visit the [official documentation for Media Chrome](https://media-chrome.org/en/
 
 ## Examples
 
-<a href="https://media-chrome.mux.dev/examples/" target="_blank">See all of the repo examples in action.</a>
+<a href="https://media-chrome.mux.dev/examples/vanilla/" target="_blank">See all of the repo examples in action.</a>
 
 ### Video Example
 

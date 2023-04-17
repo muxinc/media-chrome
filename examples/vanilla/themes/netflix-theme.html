@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Netflix Theme Example</title>
+    <script type="module" src="../../../dist/index.js"></script>
+    <script type="module" src="../../../src/js/themes/netflix.js"></script>
+  </head>
+  <body>
+    <style>
+      body {
+        margin: 0px;
+      }
+
+      media-theme-netflix {
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
+
+    <main aria-label="Media Chrome Netflix Theme Example">
+      <media-theme-netflix>
+        <video
+          slot="media"
+          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+          crossorigin
+          muted
+          playsinline
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+          />
+        </video>
+        <h3 slot="title">
+          <b>My Title</b>
+          <span>P2:E4 Episode 4</span>
+        </h3>
+      </media-theme-netflix>
+    </main>
+  </body>
+</html>

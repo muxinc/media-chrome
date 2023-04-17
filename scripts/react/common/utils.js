@@ -19,6 +19,7 @@ export const toNativeAttrName = (propName, propValue) => {
 
 export const toNativeAttrValue = (propValue, _propName) => {
   if (typeof propValue === 'boolean') return '';
+  if (Array.isArray(propValue)) return propValue.join(' ');
   return propValue;
 };
 
