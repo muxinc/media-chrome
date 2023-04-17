@@ -31,8 +31,7 @@ template.innerHTML = /*html*/`
     color: var(--_primary-color);
   }
 
-  [disabled],
-  [aria-disabled=true] {
+  [disabled] {
     opacity: 60%;
     cursor: not-allowed;
   }

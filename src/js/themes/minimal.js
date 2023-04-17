@@ -70,8 +70,7 @@ template.innerHTML = /*html*/`
       color: inherit;
     }
 
-    [disabled],
-    [aria-disabled='true'] {
+    [disabled] {
       opacity: 60%;
       cursor: not-allowed;
     }
