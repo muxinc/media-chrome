@@ -20,7 +20,7 @@ const loadingIndicatorIcon = `
 </svg>
 `;
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
 <style>
 :host {
   display: var(--media-control-display, var(--media-loading-indicator-display, inline-block));
@@ -52,7 +52,7 @@ template.innerHTML = `
 svg, img, ::slotted(svg), ::slotted(img) {
   width: var(--media-loading-icon-width, 100px);
   height: var(--media-loading-icon-height);
-  fill: var(--media-icon-color, #fff);
+  fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
   vertical-align: middle;
 }
 </style>

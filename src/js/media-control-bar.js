@@ -14,7 +14,7 @@ template.innerHTML = `
       ${/* Need position to display above video for some reason */''}
       box-sizing: border-box;
       display: var(--media-control-display, var(--media-control-bar-display, inline-flex));
-      color: var(--media-icon-color, #eee);
+      color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
       --media-loading-icon-width: 44px;
     }
 

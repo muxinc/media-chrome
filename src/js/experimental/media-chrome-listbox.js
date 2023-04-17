@@ -3,34 +3,38 @@ import { window, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
 <style>
   :host ul {
+    font: var(--media-font,
+      var(--media-font-weight, normal)
+      var(--media-font-size, 1em) /
+      var(--media-text-content-height, var(--media-control-height, 24px))
+      var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+    color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
+    background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
     list-style: none;
     display: inline-flex;
     flex-direction: column;
     gap: 0.5em;
     margin: 0;
     padding: 0.5em;
-    background-color: var(--media-listbox-background, var(--media-control-background, rgba(10,10,15, .8)));
-    color: var(--media-text-color, white);
-    font-family: helvetica neue, segoe ui, roboto, arial, sans-serif;
   }
 
   ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible),
   media-chrome-listitem[tabindex="0"]:focus-visible {
-    box-shadow: inset 0 0 0 2px rgba(27, 127, 204, 0.9);
+    box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
     outline: 0;
   }
 
   ::slotted(media-chrome-listitem[aria-selected="true"]),
   media-chrome-listitem[aria-selected="true"] {
-    background-color: var(--media-listbox-selected-background, rgba(122,122,184, .8));
+    background-color: var(--media-listbox-selected-background, rgb(122 122 184 / .8));
   }
 
   ::slotted(media-chrome-listitem:hover),
   media-chrome-listitem:hover {
-    background-color: var(--media-listbox-hover-background, rgba(82,82,122, .8));
+    background-color: var(--media-listbox-hover-background, rgb(82 82 122 / .8));
     outline: var(--media-listbox-hover-outline, none);
   }
 </style>
