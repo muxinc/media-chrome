@@ -440,7 +440,7 @@ template.innerHTML = /*html*/`
 </template>
 
 <media-controller
-  style="--_control-bar-place-self:{{controlBarPlace ?? 'unset'}}"
+  style="--_control-bar-place-self:{{controlbarplace ?? 'unset'}}"
   gestures-disabled="{{disabled}}"
   hotkeys="{{hotkeys}}"
   nohotkeys="{{nohotkeys}}"
