@@ -701,6 +701,15 @@
     "@types/mocha" "^8.2.0"
     "@web/test-runner-core" "^0.10.20"
 
+"@web/test-runner-playwright@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@web/test-runner-playwright/-/test-runner-playwright-0.9.0.tgz#c13b71ecfe763ae5d15dff586a35a9840c238b1f"
+  integrity sha512-RhWkz1CY3KThHoX89yZ/gz9wDSPujxd2wMWNxqhov4y/XDI+0TS44TWKBfWXnuvlQFZPi8JFT7KibCo3pb/Mcg==
+  dependencies:
+    "@web/test-runner-core" "^0.10.20"
+    "@web/test-runner-coverage-v8" "^0.5.0"
+    playwright "^1.22.2"
+
 "@web/test-runner@^0.15.0":
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/@web/test-runner/-/test-runner-0.15.0.tgz#789d4599228b6e991bfeb14db4dfffb50b7ffb4a"
@@ -2807,6 +2816,18 @@ pkg-dir@4.2.0:
   integrity sha512-HRDzbaKjC+AOWVXxAU/x54COGeIv9eb+6CkDSQoNTt4XyWoIJvuPsXizxu/Fr23EiekbtZwmh1IcIG/l/a10GQ==
   dependencies:
     find-up "^4.0.0"
+
+playwright-core@1.32.3:
+  version "1.32.3"
+  resolved "https://registry.yarnpkg.com/playwright-core/-/playwright-core-1.32.3.tgz#e6dc7db0b49e9b6c0b8073c4a2d789a96f519c48"
+  integrity sha512-SB+cdrnu74ZIn5Ogh/8278ngEh9NEEV0vR4sJFmK04h2iZpybfbqBY0bX6+BLYWVdV12JLLI+JEFtSnYgR+mWg==
+
+playwright@^1.22.2:
+  version "1.32.3"
+  resolved "https://registry.yarnpkg.com/playwright/-/playwright-1.32.3.tgz#88583167880e42ca04fa8c4cc303680f4ff457d0"
+  integrity sha512-h/ylpgoj6l/EjkfUDyx8cdOlfzC96itPpPe8BXacFkqpw/YsuxkpPyVbzEq4jw+bAJh5FLgh31Ljg2cR6HV3uw==
+  dependencies:
+    playwright-core "1.32.3"
 
 portfinder@^1.0.32:
   version "1.0.32"

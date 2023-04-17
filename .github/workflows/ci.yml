@@ -16,7 +16,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: yarn install --frozen-lockfile
       - run: yarn lint
-      - run: yarn test
+      - run: yarn test --all
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
         with:
