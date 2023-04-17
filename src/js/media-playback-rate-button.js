@@ -24,8 +24,9 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     ];
   }
 
+  // NOTE: Adding for TypeScript Errors. Followup should add correct getter/setter & private var (CJP)
   /** @type number[] | undefined */
-  #_rates;
+  _rates;
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
@@ -48,7 +49,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
         .map((str) => Number(str))
         .filter((num) => !Number.isNaN(num))
         .sort((a, b) => a - b);
-      this.#_rates = newRates.length ? newRates : DEFAULT_RATES;
+      this._rates = newRates.length ? newRates : DEFAULT_RATES;
       return;
     }
     if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
@@ -63,22 +64,12 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  get rates() {
-    return Array.isArray(this.#_rates) && this.#_rates.length
-      ? this.#_rates
-      : DEFAULT_RATES;
-  }
-
-  set rates(val) {
-    this.#_rates = val;
-  }
-
   handleClick() {
     const currentRate =
       +this.getAttribute(MediaUIAttributes.MEDIA_PLAYBACK_RATE) || DEFAULT_RATE;
     const detail =
-      this.rates.find((r) => r > currentRate) ??
-      this.rates[0] ??
+      this._rates.find((r) => r > currentRate) ??
+      this._rates[0] ??
       DEFAULT_RATE;
     const evt = new window.CustomEvent(
       MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST,
