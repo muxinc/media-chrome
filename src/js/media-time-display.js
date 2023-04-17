@@ -136,7 +136,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
     if (attrName === Attributes.SHOW_DURATION) {
       this.showDuration = newValue != null;
     } else if (attrName === Attributes.REMAINING) {
-      this.REMAINING = newValue != null;
+      this.remaining = newValue != null;
     } else if (
       [
         MediaUIAttributes.MEDIA_CURRENT_TIME,
