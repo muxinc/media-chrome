@@ -58,6 +58,14 @@ class MediaLiveButton extends MediaChromeButton {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
+
+    if (this.hasAttribute(MEDIA_PAUSED) || !this.hasAttribute(MEDIA_TIME_IS_LIVE)) {
+      this.removeAttribute('aria-disabled');
+      this.setAttribute('tabindex', '0');
+    } else {
+      this.setAttribute('aria-disabled', 'true');
+      this.removeAttribute('tabindex');
+    }
   }
 
   handleClick() {
