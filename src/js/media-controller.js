@@ -8,31 +8,17 @@
   * Auto-hide controls on inactivity while playing
 */
 import MediaContainer from './media-container.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { window } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
-import { fullscreenApi } from './utils/fullscreenApi.js';
-import { constToCamel } from './utils/utils.js';
-import { containsComposedNode } from './utils/element-utils.js';
+import { constToCamel, delay } from './utils/utils.js';
 import { toggleSubsCaps } from './utils/captions.js';
-
 import {
   MediaUIEvents,
   MediaUIAttributes,
   MediaStateReceiverAttributes,
-  TextTrackKinds,
-  TextTrackModes,
-  AvailabilityStates,
   AttributeToStateChangeEventMap,
-  StreamTypes,
 } from './constants.js';
-
-const StreamTypeValues = Object.values(StreamTypes);
-
-import {
-  stringifyTextTrackList,
-  getTextTracksList,
-  updateTracksModeTo,
-} from './utils/captions.js';
+import { MediaUIRequestHandlers, MediaUIStates, volumeSupportPromise } from './controller.js';
 
 const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;
@@ -53,342 +39,31 @@ class MediaController extends MediaContainer {
   constructor() {
     super();
 
-    if (!airplaySupported) {
-      this._airplayUnavailable = AvailabilityStates.UNSUPPORTED;
-    }
-    if (!fullscreenEnabled) {
-      this._fullscreenUnavailable = AvailabilityStates.UNAVAILABLE;
-    }
-    if (!castSupported) {
-      this._castUnavailable = AvailabilityStates.UNSUPPORTED;
-    }
-    if (!pipSupported) {
-      this._pipUnavailable = AvailabilityStates.UNSUPPORTED;
-    }
-    if (volumeSupported !== undefined) {
-      if (!volumeSupported) {
-        this._volumeUnavailable = AvailabilityStates.UNSUPPORTED;
-      }
-    } else {
+    // Update volume support ASAP
+    if (MediaUIStates.MEDIA_VOLUME_UNAVAILABLE.get(this) === undefined) {
+      // NOTE: In order to propagate ASAP, we currently need to ensure that
+      // the volume support promise has resolved. Given the async nature of
+      // some of these environment state values, we may want to model this
+      // a bit better (CJP).
       volumeSupportPromise.then(() => {
-        if (!volumeSupported) {
-          this._volumeUnavailable = AvailabilityStates.UNSUPPORTED;
-          this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, this._volumeUnavailable);
-        }
+        this.propagateMediaState(
+          MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE,
+          MediaUIStates.MEDIA_VOLUME_UNAVAILABLE.get(this)
+        );
       });
     }
-
-    // Include this for styling convenience or exclude since it
-    // can be derived from MEDIA_CAPTIONS_LIST && MEDIA_SUBTITLES_LIST? (CJP)
-    // this._captionsUnavailable;
 
     // Track externally associated control elements
     this.mediaStateReceivers = [];
     this.associatedElementSubscriptions = new Map();
     this.associateElement(this);
 
-    // Capture request events from internal controls
-    const mediaUIEventHandlers = {
-      MEDIA_PLAY_REQUEST: (e, media) => {
-        const streamType = Delegates[MediaUIAttributes.MEDIA_STREAM_TYPE](this);
-        const autoSeekToLive = this.getAttribute('noautoseektolive') === null;
-
-        if (streamType == StreamTypes.LIVE && autoSeekToLive) {
-          mediaUIEventHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](e, media);
-        }
-
-        this.media.play().catch(() => {});
-      },
-      MEDIA_PAUSE_REQUEST: () => this.media.pause(),
-      MEDIA_MUTE_REQUEST: () => (this.media.muted = true),
-      MEDIA_UNMUTE_REQUEST: () => {
-        const media = this.media;
-
-        media.muted = false;
-
-        // Avoid confusion by bumping the volume on unmute
-        if (media.volume === 0) {
-          media.volume = 0.25;
-        }
-      },
-      MEDIA_VOLUME_REQUEST: (e) => {
-        const media = this.media;
-        const volume = e.detail;
-
-        media.volume = volume;
-
-        // If the viewer moves the volume we should unmute for them.
-        if (volume > 0 && media.muted) {
-          media.muted = false;
-        }
-
-        // Store the last set volume as a local preference, if ls is supported
-        try {
-          window.localStorage.setItem(
-            'media-chrome-pref-volume',
-            volume.toString()
-          );
-        } catch (err) {
-          // ignore
-        }
-      },
-
-      // This current assumes that the media controller is the fullscreen element
-      // which may be true in most cases but not all.
-      // The prior version of media-chrome supported alt fullscreen elements
-      // and that's something we can work towards here.
-      //
-      // Generally the fullscreen and PiP API's have the exit methods and enabled
-      // flags on the `document`. The active element is accessed on the document
-      // or shadow root but Safari doesn't support this.
-      // Entering fullscreen or PiP is called on the element. i.e.
-      //
-      //   - Document.exitFullscreen()
-      //   - Document.fullscreenEnabled
-      //   - Document.fullscreenElement / (ShadowRoot.fullscreenElement)
-      //   - Element.requestFullscreen()
-      //
-      MEDIA_ENTER_FULLSCREEN_REQUEST: () => {
-        if (!fullscreenEnabled) {
-          console.warn('Fullscreen support is unavailable; not entering fullscreen');
-          return;
-        }
-        const media = this.media;
-
-        if (document.pictureInPictureElement) {
-          // Should be async
-          document.exitPictureInPicture();
-        }
-
-        if (super[fullscreenApi.enter]) {
-          // Media chrome container fullscreen
-          this.fullscreenElement[fullscreenApi.enter]();
-        } else if (media.webkitEnterFullscreen) {
-          // Media element fullscreen using iOS API
-          media.webkitEnterFullscreen();
-        } else if (media.requestFullscreen) {
-          // Media element fullscreen, using correct API
-          // So media els don't have to implement multiple APIs.
-          media.requestFullscreen();
-        } else {
-          console.warn('MediaChrome: Fullscreen not supported');
-        }
-      },
-      MEDIA_EXIT_FULLSCREEN_REQUEST: () => {
-        document[fullscreenApi.exit]();
-      },
-      MEDIA_ENTER_PIP_REQUEST: () => {
-        const media = this.media;
-
-        if (!document.pictureInPictureEnabled) {
-          console.warn('MediaChrome: Picture-in-picture is not enabled');
-          // Placeholder for emitting a user-facing warning
-          return;
-        }
-
-        if (!media.requestPictureInPicture) {
-          console.warn('MediaChrome: The current media does not support picture-in-picture');
-          // Placeholder for emitting a user-facing warning
-          return;
-        }
-
-        // Exit fullscreen if needed
-        if (document[fullscreenApi.element]) {
-          document[fullscreenApi.exit]();
-        }
-
-        const warnNotReady = () => {
-          console.warn('MediaChrome: The media is not ready for picture-in-picture. It must have a readyState > 0.');
-        };
-
-        media.requestPictureInPicture().catch(err => {
-          // InvalidStateError, readyState == 0 (Not ready)
-          if (err.code === 11) {
-            // We can assume the viewer wants the video to load, so attempt to
-            // if we can rely on readyState and preload
-            // Only works in Chrome currently. Safari doesn't allow triggering
-            // in an event listener. Also requires readyState == 4.
-            // Firefox doesn't have the PiP API yet.
-            if (media.readyState === 0 && media.preload === 'none') {
-              const cleanup = () => {
-                media.removeEventListener('loadedmetadata', tryPip);
-                media.preload = 'none';
-              };
-
-              const tryPip = () => {
-                media.requestPictureInPicture().catch(warnNotReady);
-                cleanup();
-              };
-
-              media.addEventListener('loadedmetadata', tryPip);
-              media.preload = 'metadata';
-
-              // No easy way to know if this failed and we should clean up
-              // quickly if it doesn't to prevent an awkward delay for the user
-              setTimeout(()=>{
-                if (media.readyState === 0) warnNotReady();
-                cleanup();
-              }, 1000);
-            } else {
-              // Rethrow if unknown context
-              throw err;
-            }
-          } else {
-            // Rethrow if unknown context
-            throw err;
-          }
-        });
-      },
-      MEDIA_EXIT_PIP_REQUEST: () => {
-        if (document.pictureInPictureElement) {
-          // Should be async
-          document.exitPictureInPicture();
-        }
-      },
-      MEDIA_ENTER_CAST_REQUEST: () => {
-        const media = this.media;
-
-        if (!globalThis.CastableVideoElement?.castEnabled) return;
-
-        // Exit fullscreen if needed
-        if (document[fullscreenApi.element]) {
-          document[fullscreenApi.exit]();
-        }
-
-        // Open the browser cast menu.
-        // Note this relies on a customized video[is=castable-video] element.
-        media.requestCast();
-      },
-      MEDIA_EXIT_CAST_REQUEST: async () => {
-        if (globalThis.CastableVideoElement?.castElement) {
-          globalThis.CastableVideoElement.exitCast();
-        }
-      },
-      MEDIA_SEEK_REQUEST: (e) => {
-        const media = this.media;
-        const time = e.detail;
-
-        // Can't set the time before the media is ready
-        // Ignore if readyState isn't supported
-        if (media.readyState > 0 || media.readyState === undefined) {
-          media.currentTime = time;
-        }
-      },
-      MEDIA_PLAYBACK_RATE_REQUEST: (e) => {
-        this.media.playbackRate = e.detail;
-      },
-      MEDIA_PREVIEW_REQUEST: (e) => {
-        const media = this.media;
-        // No media (yet), so bail early
-        if (!media) return;
-
-        const time = e.detail;
-
-        // if time is null, then we're done previewing and want to remove the attributes
-        if (time === null) {
-          this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, undefined);
-        }
-        this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, time);
-
-        const [track] = getTextTracksList(media, {
-          kind: TextTrackKinds.METADATA,
-          label: 'thumbnails',
-        });
-        // No thumbnails track (yet) or no cues available in thumbnails track, so bail early.
-        if (!(track && track.cues)) return;
-
-        // if time is null, then we're done previewing and want to remove the attributes
-        if (time === null) {
-          this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, undefined);
-          this.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, undefined);
-          return;
-        }
-
-        const cue = Array.prototype.find.call(
-          track.cues,
-          (c) => c.startTime >= time
-        );
-
-        // No corresponding cue, so bail early
-        if (!cue) return;
-
-        // Since this isn't really "global state", we may want to consider moving this "down" to the component level,
-        // probably pulled out into its own module/set of functions (CJP)
-        const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
-          // @ts-ignore
-          ? media.querySelector('track[label="thumbnails"]')?.src
-          : undefined;
-        const url = new URL(cue.text, base);
-        const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
-          url.href
-        );
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_PREVIEW_COORDS,
-          previewCoordsStr.split(',').join(' ')
-        );
-      },
-      MEDIA_SHOW_CAPTIONS_REQUEST: (e) => {
-        const tracks = getCaptionTracks(this);
-        const { detail: tracksToUpdate = [] } = e;
-        updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
-      },
-      // NOTE: We're currently recommending and providing default components that will "disable" tracks when
-      // we don't want them shown (rather than "hiding" them).
-      // For a discussion why, see: https://github.com/muxinc/media-chrome/issues/60
-      MEDIA_DISABLE_CAPTIONS_REQUEST: (e) => {
-        const tracks = getCaptionTracks(this);
-        const { detail: tracksToUpdate = [] } = e;
-        updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
-      },
-      MEDIA_SHOW_SUBTITLES_REQUEST: (e) => {
-        const tracks = getSubtitleTracks(this);
-        const { detail: tracksToUpdate = [] } = e;
-        updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
-      },
-      MEDIA_DISABLE_SUBTITLES_REQUEST: (e) => {
-        const tracks = getSubtitleTracks(this);
-        const { detail: tracksToUpdate = [] } = e;
-        updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
-      },
-      MEDIA_AIRPLAY_REQUEST: () => {
-        const { media } = this;
-        if (!media) return;
-        if (
-          !(
-            media.webkitShowPlaybackTargetPicker &&
-            window.WebKitPlaybackTargetAvailabilityEvent
-          )
-        ) {
-          console.warn(
-            'received a request to select AirPlay but AirPlay is not supported in this environment'
-          );
-          return;
-        }
-        media.webkitShowPlaybackTargetPicker();
-      },
-      MEDIA_SEEK_TO_LIVE_REQUEST: (e, media) => {
-        const seekable = media.seekable;
-
-        if (!seekable) {
-          console.warn('MediaController: Media element does not support seeking to live.');
-          return;
-        }
-
-        if (!seekable.length) {
-          console.warn('MediaController: Media is unable to seek to live.');
-          return;
-        }
-
-        media.currentTime = seekable.end(seekable.length - 1);
-      }
-    };
-
-    // Apply ui event listeners
-    Object.keys(mediaUIEventHandlers).forEach((key) => {
+    // Apply ui event listeners to self
+    // Should apply to any UI container, not just controller
+    Object.keys(MediaUIRequestHandlers).forEach((key) => {
       const handlerName = `_handle${constToCamel(key, true)}`;
 
+      // TODO: Move to map, not obj root property
       this[handlerName] = (e) => {
         // Stop media UI events from continuing to bubble
         e.stopPropagation();
@@ -398,192 +73,18 @@ class MediaController extends MediaContainer {
           return;
         }
 
-        mediaUIEventHandlers[key](e, this.media);
+        MediaUIRequestHandlers[key](this.media, e, this);
       };
       this.addEventListener(MediaUIEvents[key], this[handlerName]);
     });
 
-    // Pass media state to child and associated control elements
-    this._mediaStatePropagators = {
-      'play,pause,emptied': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, getPaused(this));
-      },
-      'playing,emptied': () => {
-        // We want to let the user know that the media started playing at any point (`media-has-played`).
-        // Since these propagators are all called when boostrapping state, let's verify this is
-        // a real playing event by checking that 1) there's media and 2) it isn't currently paused.
-        this.propagateMediaState(MediaUIAttributes.MEDIA_HAS_PLAYED, !this.media?.paused);
-      },
-      volumechange: () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_MUTED, getMuted(this));
-        this.propagateMediaState(MediaUIAttributes.MEDIA_VOLUME, getVolume(this));
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_VOLUME_LEVEL,
-          getVolumeLevel(this)
-        );
-      },
-      [fullscreenApi.event]: (e) => {
-        // Safari doesn't support ShadowRoot.fullscreenElement and document.fullscreenElement
-        // could be several ancestors up the tree. Use event.target instead.
-        const isSomeElementFullscreen = !!document[fullscreenApi.element];
-        const fullscreenEl = isSomeElementFullscreen && e?.target;
-        const isFullScreen = containsComposedNode(this.fullscreenElement, fullscreenEl);
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_IS_FULLSCREEN,
-          isFullScreen
-        );
-      },
-      'enterpictureinpicture,leavepictureinpicture': (e) => {
-        let isPip;
-
-        // Rely on event type for state first
-        // in case this doesn't work well for custom elements using internal <video>
-        if (e) {
-          isPip = e.type == 'enterpictureinpicture';
-        } else {
-          const pipElement =
-            // @ts-ignore
-            this.getRootNode().pictureInPictureElement ??
-            document.pictureInPictureElement;
-          isPip = this.media && containsComposedNode(this.media, pipElement);
-        }
-        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_PIP, isPip);
-      },
-      // Note this relies on a customized video[is=castable-video] element.
-      'entercast,leavecast,castchange': (e) => {
-        const castElement = globalThis.CastableVideoElement?.castElement;
-        let castState = this.media && containsComposedNode(this.media, castElement);
-
-        // While the cast is connecting set media-is-cast="connecting"
-        if (e?.type === 'castchange' && e?.detail === 'CONNECTING') {
-          castState = 'connecting';
-        }
-
-        this.propagateMediaState(MediaUIAttributes.MEDIA_IS_CASTING, castState);
-      },
-      'timeupdate,loadedmetadata': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_CURRENT_TIME,
-          getCurrentTime(this)
-        );
-      },
-      'durationchange,loadedmetadata,emptied': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_DURATION,
-          getDuration(this)
-        );
-      },
-      'emptied,durationchange,loadedmetadata,streamtypechange': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_STREAM_TYPE
-        );
-      },
-      'emptied,durationchange,loadedmetadata,streamtypechange,targetlivewindowchange': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_TARGET_LIVE_WINDOW
-        );
-      },
-      'loadedmetadata,emptied,progress': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_SEEKABLE,
-          getSeekable(this)?.join(':')
-        );
-      },
-      'progress,emptied': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_BUFFERED,
-          serializeTimeRanges(this.media?.buffered)
-        );
-      },
-      'ratechange,loadstart': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_PLAYBACK_RATE,
-          getPlaybackRate(this)
-        );
-      },
-      'waiting,playing,emptied': () => {
-        const isLoading = this.media?.readyState < 3;
-        this.propagateMediaState(MediaUIAttributes.MEDIA_LOADING, isLoading);
-      },
-      'playing,timeupdate,progress,waiting,emptied': () => {
-        this.propagateMediaState(MediaUIAttributes.MEDIA_TIME_IS_LIVE);
-      },
-    };
-
-    if (this._airplayUnavailable !== AvailabilityStates.UNSUPPORTED) {
-      const airplaySupporHandler = (event) => {
-        // NOTE: since we invoke all these event handlers without arguments whenever a media is attached,
-        // need to account for the possibility that event is undefined (CJP).
-        if (event?.availability === 'available') {
-          this._airplayUnavailable = undefined;
-        } else if (event?.availability === 'not-available') {
-          this._airplayUnavailable = AvailabilityStates.UNAVAILABLE;
-        }
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE,
-          this._airplayUnavailable
-        );
+    // Build event listeners for media states
+    this._mediaStatePropagators = {};
+    Object.keys(MediaUIStates).forEach((key)=>{
+      this._mediaStatePropagators[key] = e => {
+        this.propagateMediaState(MediaUIAttributes[key], MediaUIStates[key].get(this, e));
       };
-      // NOTE: only adding this if airplay is supported, in part to avoid unnecessary battery consumption per
-      // Apple docs recommendations (See: https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls)
-      // For a more advanced solution, we could monitor for media state receivers that "care" about airplay support and add/remove
-      // whenever these are added/removed. (CJP)
-      this._mediaStatePropagators['webkitplaybacktargetavailabilitychanged'] =
-        airplaySupporHandler;
-    }
-
-    if (this._castUnavailable !== AvailabilityStates.UNSUPPORTED) {
-      const castSupportHandler = () => {
-        // Cast state: NO_DEVICES_AVAILABLE, NOT_CONNECTED, CONNECTING, CONNECTED
-        const castState = globalThis.CastableVideoElement?.castState;
-        if (castState?.includes('CONNECT')) {
-          this._castUnavailable = undefined;
-        } else {
-          this._castUnavailable = AvailabilityStates.UNAVAILABLE;
-        }
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_CAST_UNAVAILABLE,
-          this._castUnavailable
-        );
-      };
-      // Note this relies on a customized video[is=castable-video] element.
-      this._mediaStatePropagators['castchange'] = castSupportHandler;
-    }
-
-    /**
-     * @TODO This and _mediaStatePropagators should be refactored to be less presumptuous about what is being
-     * monitored (and also probably how it's being monitored) (CJP)
-     */
-    this._textTrackMediaStatePropagators = {
-      'addtrack,removetrack,loadstart': () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_CAPTIONS_LIST,
-          stringifyTextTrackList(getCaptionTracks(this)) || undefined
-        );
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_SUBTITLES_LIST,
-          stringifyTextTrackList(getSubtitleTracks(this)) || undefined
-        );
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
-          stringifyTextTrackList(getShowingCaptionTracks(this)) || undefined
-        );
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
-          stringifyTextTrackList(getShowingSubtitleTracks(this)) || undefined
-        );
-      },
-      change: () => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
-          stringifyTextTrackList(getShowingCaptionTracks(this)) || undefined
-        );
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
-          stringifyTextTrackList(getShowingSubtitleTracks(this)) || undefined
-        );
-      },
-    };
+    });
 
     this.enableHotkeys();
   }
@@ -614,9 +115,9 @@ class MediaController extends MediaContainer {
     } else if (attrName === 'default-stream-type') {
       this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
     } else if (attrName === 'fullscreen-element') {
-      const el = newValue 
+      const el = newValue
         // @ts-ignore
-        ? this.getRootNode()?.getElementById(newValue) 
+        ? this.getRootNode()?.getElementById(newValue)
         : undefined;
       // NOTE: Setting the internal private prop here to not
       // clear the attribute that was just set (CJP).
@@ -629,36 +130,33 @@ class MediaController extends MediaContainer {
   mediaSetCallback(media) {
     super.mediaSetCallback(media);
 
+    // TODO: What does this do? At least add comment, maybe move to media-container
     if (!media.hasAttribute('tabindex')) {
       media.setAttribute('tabindex', -1);
     }
 
     // Listen for media state changes and propagate them to children and associated els
-    Object.keys(this._mediaStatePropagators).forEach((key) => {
-      const events = key.split(',');
+    Object.keys(MediaUIStates).forEach((key) => {
+      const {
+        mediaEvents,
+        rootEvents,
+        trackListEvents
+      } = MediaUIStates[key];
+
       const handler = this._mediaStatePropagators[key];
 
-      events.forEach((event) => {
-        // If this is fullscreen apply to the document
-        const target =
-          event == fullscreenApi.event ? this.getRootNode() : media;
-
-        target.addEventListener(event, handler);
+      mediaEvents?.forEach((eventName)=>{
+        media.addEventListener(eventName, handler);
       });
-      handler();
-    });
 
-    Object.entries(this._textTrackMediaStatePropagators).forEach(
-      ([eventsStr, handler]) => {
-        const events = eventsStr.split(',');
-        events.forEach((event) => {
-          if (media.textTracks) {
-            media.textTracks.addEventListener(event, handler);
-          }
-        });
-        handler();
-      }
-    );
+      rootEvents?.forEach((eventName)=>{
+        this.getRootNode().addEventListener(eventName, handler);
+      });
+
+      trackListEvents?.forEach((eventName)=>{
+        media.textTracks?.addEventListener(eventName, handler);
+      });
+    });
 
     // Update the media with the last set volume preference
     // This would preferably live with the media element,
@@ -675,47 +173,47 @@ class MediaController extends MediaContainer {
     super.mediaUnsetCallback(media);
 
     // Remove all state change propagators
-    Object.keys(this._mediaStatePropagators).forEach((key) => {
-      const events = key.split(',');
+    Object.keys(MediaUIStates).forEach((key) => {
+      const {
+        mediaEvents,
+        rootEvents,
+        trackListEvents
+      } = MediaUIStates[key];
+
       const handler = this._mediaStatePropagators[key];
 
-      events.forEach((event) => {
-        const target =
-          event == fullscreenApi.event ? this.getRootNode() : media;
-        target.removeEventListener(event, handler);
+      mediaEvents?.forEach((eventName)=>{
+        media.removeEventListener(eventName, handler);
+      });
+
+      rootEvents?.forEach((eventName)=>{
+        this.getRootNode().removeEventListener(eventName, handler);
+      });
+
+      trackListEvents?.forEach((eventName)=>{
+        media.textTracks?.removeEventListener(eventName, handler);
       });
     });
 
-    Object.entries(this._textTrackMediaStatePropagators).forEach(
-      ([eventsStr, handler]) => {
-        const events = eventsStr.split(',');
-        events.forEach((event) => {
-          if (media.textTracks) {
-            media.textTracks.removeEventListener(event, handler);
-          }
-        });
-        handler();
-      }
-    );
-
     // Reset to paused state
+    // TODO: Can we just reset all state here?
+    // Should hasPlayed refer to the media element or the controller?
+    // i.e. the poster might re-show if not handled by the poster el
     this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, true);
   }
 
   propagateMediaState(stateName, state) {
-    if (arguments.length === 1) {
-      state = Delegates[stateName](this);
-    }
-
     const previousState = this.getAttribute(stateName);
+
     propagateMediaState(this.mediaStateReceivers, stateName, state);
 
     if (previousState === this.getAttribute(stateName)) return;
 
-    const eventName = AttributeToStateChangeEventMap[stateName];
-    if (!eventName) return;
-
-    const evt = new window.CustomEvent(eventName, { composed: true, bubbles: true, detail: state });
+    // TODO: I don't think we want these events to bubble? Video element states don't. (heff)
+    const evt = new window.CustomEvent(
+      AttributeToStateChangeEventMap[stateName],
+      { composed: true, bubbles: true, detail: state }
+    );
     this.dispatchEvent(evt);
   }
 
@@ -775,45 +273,15 @@ class MediaController extends MediaContainer {
 
     els.push(el);
 
-    // No media depedencies, so push regardless of media availability.
-    propagateMediaState(
-      [el],
-      MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE,
-      this._volumeUnavailable
-    );
-    propagateMediaState(
-      [el],
-      MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE,
-      this._airplayUnavailable
-    );
-    propagateMediaState(
-      [el],
-      MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE,
-      this._fullscreenUnavailable
-    );
-    propagateMediaState(
-      [el],
-      MediaUIAttributes.MEDIA_CAST_UNAVAILABLE,
-      this._castUnavailable
-    );
-    propagateMediaState(
-      [el],
-      MediaUIAttributes.MEDIA_PIP_UNAVAILABLE,
-      this._pipUnavailable,
-    );
+    Object.keys(MediaUIStates).forEach((stateConstName)=>{
+      const stateDetails = MediaUIStates[stateConstName];
 
-    if (this.media) {
-      Object.keys(MediaUIAttributes).forEach((attribute) => {
-        // skip availability delegates as they were completed above
-        if (attribute.includes('UNAVAILABLE')) return;
-
-        propagateMediaState(
-          [el],
-          MediaUIAttributes[attribute],
-          Delegates[MediaUIAttributes[attribute]] ? Delegates[MediaUIAttributes[attribute]](this) : Delegates.default(this, MediaUIAttributes[attribute])
-        );
-      });
-    }
+      propagateMediaState(
+        [el],
+        MediaUIAttributes[stateConstName],
+        stateDetails.get(this)
+      );
+    });
   }
 
   unregisterMediaStateReceiver(el) {
@@ -965,231 +433,6 @@ class MediaController extends MediaContainer {
     }
   }
 }
-
-const Delegates = {
-  default(el, attribute) {
-    return el.getAttribute(attribute);
-  },
-
-  [MediaUIAttributes.MEDIA_CAPTIONS_LIST](el) {
-    return stringifyTextTrackList(getCaptionTracks(el)) || undefined;
-  },
-
-  [MediaUIAttributes.MEDIA_SUBTITLES_LIST](el) {
-    return stringifyTextTrackList(getSubtitleTracks(el)) || undefined;
-  },
-
-  [MediaUIAttributes.MEDIA_SUBTITLES_LIST](el) {
-    return stringifyTextTrackList(getSubtitleTracks(el)) || undefined;
-  },
-
-  [MediaUIAttributes.MEDIA_CAPTIONS_SHOWING](el) {
-    return stringifyTextTrackList(getShowingCaptionTracks(el)) || undefined;
-  },
-
-  [MediaUIAttributes.MEDIA_PAUSED](el) {
-    return getPaused(el);
-  },
-
-  [MediaUIAttributes.MEDIA_MUTED](el) {
-    return getMuted(el);
-  },
-
-  [MediaUIAttributes.MEDIA_VOLUME](el) {
-    return getVolume(el);
-  },
-
-  [MediaUIAttributes.MEDIA_VOLUME_LEVEL](el) {
-    return getVolumeLevel(el);
-  },
-
-  [MediaUIAttributes.MEDIA_CURRENT_TIME](el) {
-    return getCurrentTime(el);
-  },
-
-  [MediaUIAttributes.MEDIA_DURATION](el) {
-    return getDuration(el);
-  },
-
-  [MediaUIAttributes.MEDIA_SEEKABLE](el) {
-    return getSeekable(el)?.join(':');
-  },
-
-  [MediaUIAttributes.MEDIA_PLAYBACK_RATE](el) {
-    return getPlaybackRate(el);
-  },
-
-  [MediaUIAttributes.MEDIA_STREAM_TYPE](el) {
-    return getStreamType(el);
-  },
-  [MediaUIAttributes.MEDIA_TARGET_LIVE_WINDOW](el) {
-    return getTargetLiveWindow(el);
-  },
-  [MediaUIAttributes.MEDIA_TIME_IS_LIVE](controller) {
-    const media = controller.media;
-    
-    if (!media) return false;
-    if (typeof media.liveEdgeStart === 'number') {
-      if (Number.isNaN(media.liveEdgeStart)) return false;
-      return media.currentTime >= media.liveEdgeStart;
-    }
-
-    const live = getStreamType(controller) === 'live';
-    // Can't be playing live if it's not a live stream
-    if (!live) return false;
-    
-    const seekable = media.seekable;
-    // If the slotted media element is live but does not expose a 'seekable' `TimeRanges` object,
-    // always assume playing live
-    if (!seekable) return true;
-    // If there is an empty `seekable`, assume we are not playing live
-    if (!seekable.length) return false;
-
-    // Default to 10 seconds
-    // Assuming seekable range already accounts for appropriate buffer room
-    const liveEdgeStartOffset = controller.hasAttribute('liveedgeoffset') 
-      ? Number(controller.getAttribute('liveedgeoffset'))
-      : 10;
-    const liveEdgeStart = seekable.end(seekable.length - 1) - liveEdgeStartOffset
-    return media.currentTime >= liveEdgeStart;
-  },
-};
-
-const getPaused = (controller) => {
-  if (!controller.media) return true;
-
-  return controller.media.paused;
-};
-
-const getMuted = (controller) => {
-  return !!(controller.media && controller.media.muted);
-};
-
-const getVolume = (controller) => {
-  const media = controller.media;
-
-  return media ? media.volume : 1;
-};
-
-const getVolumeLevel = (controller) => {
-  let level = 'high';
-
-  if (!controller.media) return level;
-
-  const { muted, volume } = controller.media;
-
-  if (volume === 0 || muted) {
-    level = 'off';
-  } else if (volume < 0.5) {
-    level = 'low';
-  } else if (volume < 0.75) {
-    level = 'medium';
-  }
-
-  return level;
-};
-
-const getCurrentTime = (controller) => {
-  const media = controller.media;
-
-  return media ? media.currentTime : 0;
-};
-
-const getDuration = (controller) => {
-  const media = controller?.media;
-  if (!Number.isFinite(media?.duration)) return NaN;
-  return media.duration;
-};
-
-const getSeekable = (controller) => {
-  const media = controller?.media;
-  if (!media?.seekable?.length) return undefined;
-  const start = media.seekable.start(0);
-  const end = media.seekable.end(media.seekable.length - 1);
-  // Account for cases where metadata from slotted media has an "empty" seekable (CJP)
-  if (!start && !end) return undefined;
-  return [Number(start.toFixed(3)), Number(end.toFixed(3))];
-};
-
-const getPlaybackRate = (controller) => {
-  const media = controller.media;
-
-  return media ? media.playbackRate : 1;
-};
-
-const getSubtitleTracks = (controller) => {
-  return getTextTracksList(controller.media, { kind: TextTrackKinds.SUBTITLES });
-};
-
-const getCaptionTracks = (controller) => {
-  return getTextTracksList(controller.media, { kind: TextTrackKinds.CAPTIONS });
-};
-
-const getShowingSubtitleTracks = (controller) => {
-  return getTextTracksList(controller.media, {
-    kind: TextTrackKinds.SUBTITLES,
-    mode: TextTrackModes.SHOWING,
-  });
-};
-
-const getShowingCaptionTracks = (controller) => {
-  return getTextTracksList(controller.media, {
-    kind: TextTrackKinds.CAPTIONS,
-    mode: TextTrackModes.SHOWING,
-  });
-};
-
-const getStreamType = (controller) => {
-  const { media } = controller;
-
-  if (!media) return undefined;
-
-  const { streamType } = media;
-  if (StreamTypeValues.includes(streamType)) {
-    // If the slotted media supports `streamType` but
-    // `streamType` is "unknown", prefer `default-stream-type`
-    // if set (CJP)
-    if (streamType === StreamTypes.UNKNOWN) {
-      const defaultType = controller.getAttribute('default-stream-type');
-      if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
-        return defaultType;
-      }
-      return undefined;
-    }
-    return streamType;
-  }
-  const duration = media.duration;
-
-  if (duration === Infinity) {
-    return StreamTypes.LIVE;
-  } else if (Number.isFinite(duration)) {
-    return StreamTypes.ON_DEMAND;
-  } else {
-    const defaultType = controller.getAttribute('default-stream-type');
-
-    if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
-      return defaultType;
-    }
-  }
-
-  return undefined;
-};
-
-const getTargetLiveWindow = (controller) => {
-  const { media } = controller;
-
-  if (!media) return Number.NaN;
-  const { targetLiveWindow } = media;
-  // Since `NaN` represents either "unknown" or "inapplicable", need to check if `streamType`
-  // is `"live"`. If so, assume it's "standard live" (aka `targetLiveWindow === 0`) (CJP)
-  if (
-    (targetLiveWindow == null || Number.isNaN(targetLiveWindow)) &&
-    getStreamType(controller) === StreamTypes.LIVE
-  ) {
-    return 0;
-  }
-  return targetLiveWindow;
-};
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
@@ -1405,90 +648,6 @@ const monitorForMediaStateReceivers = (
 
   return unsubscribe;
 };
-
-let testMediaEl;
-export const getTestMediaEl = () => {
-  if (testMediaEl) return testMediaEl;
-  testMediaEl = document?.createElement?.('video');
-  return testMediaEl;
-};
-
-export const hasVolumeSupportAsync = async (mediaEl = getTestMediaEl()) => {
-  if (!mediaEl) return false;
-  const prevVolume = mediaEl.volume;
-  mediaEl.volume = prevVolume / 2 + 0.1;
-  await delay(0);
-  return mediaEl.volume !== prevVolume;
-};
-
-/**
- * Returns a promise that will resolve after passed ms.
- * @param  {number} ms
- * @return {Promise}
- */
-export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-export const hasPipSupport = (mediaEl = getTestMediaEl()) =>
-  typeof mediaEl?.requestPictureInPicture === 'function';
-
-const pipSupported = hasPipSupport();
-
-let volumeSupported;
-const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
-  volumeSupported = supported;
-  return volumeSupported;
-});
-
-const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
-const castSupported = !!window.chrome;
-
-export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {
-  let fullscreenEnabled = document[fullscreenApi.enabled];
-
-  if (!fullscreenEnabled && mediaEl) {
-    fullscreenEnabled = 'webkitSupportsFullscreen' in mediaEl;
-  }
-
-  return fullscreenEnabled;
-};
-const fullscreenEnabled = hasFullscreenSupport();
-
-
-/** @type {TimeRanges} */
-const emptyTimeRanges = Object.freeze({
-  length: 0,
-  start(index) {
-    const unsignedIdx = index >>> 0;
-    if (unsignedIdx >= this.length) {
-      throw new DOMException(
-        `Failed to execute 'start' on 'TimeRanges': The index provided (${unsignedIdx}) is greater than or equal to the maximum bound (${this.length}).`
-      );
-    }
-    return 0;
-  },
-  end(index) {
-    const unsignedIdx = index >>> 0;
-    if (unsignedIdx >= this.length) {
-      throw new DOMException(
-        `Failed to execute 'end' on 'TimeRanges': The index provided (${unsignedIdx}) is greater than or equal to the maximum bound (${this.length}).`
-      );
-    }
-    return 0;
-  },
-});
-
-/**
- * @argument {TimeRanges} [timeRanges]
- */
-function serializeTimeRanges(timeRanges = emptyTimeRanges) {
-  // @ts-ignore
-  return Array.from(timeRanges)
-    .map((_, i) => [
-      Number(timeRanges.start(i).toFixed(3)),
-      Number(timeRanges.end(i).toFixed(3)),
-    ].join(':'))
-    .join(' ');
-}
 
 if (!window.customElements.get('media-controller')) {
   window.customElements.define('media-controller', MediaController);
