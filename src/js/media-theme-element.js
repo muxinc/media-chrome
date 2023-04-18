@@ -13,7 +13,7 @@ const observedMediaAttributes = {
 
 const prependTemplate = document.createElement('template');
 
-prependTemplate.innerHTML = `
+prependTemplate.innerHTML = /*html*/`
   <style>
     :host {
       display: inline-block;
@@ -23,6 +23,16 @@ prependTemplate.innerHTML = `
     media-controller {
       width: 100%;
       height: 100%;
+    }
+
+    media-controller:not(:where([mediacaptionslist], [mediasubtitleslist])) media-captions-selectmenu,
+    media-captions-button:not(:where([mediacaptionslist], [mediasubtitleslist])),
+    media-volume-range[mediavolumeunavailable],
+    media-airplay-button[mediaairplayunavailable],
+    media-fullscreen-button[mediafullscreenunavailable],
+    media-cast-button[mediacastunavailable],
+    media-pip-button[mediapipunavailable] {
+      display: none;
     }
   </style>
 `;
