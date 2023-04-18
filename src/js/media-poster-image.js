@@ -1,5 +1,10 @@
 import { window, document } from './utils/server-safe-globals.js';
 
+export const Attributes = {
+  PLACEHOLDER_SRC: 'placeholdersrc',
+  SRC: 'src',
+}
+
 const template = document.createElement('template');
 
 template.innerHTML = `
@@ -35,7 +40,7 @@ const setBackgroundImage = (el, image) => {
 
 class MediaPosterImage extends window.HTMLElement {
   static get observedAttributes() {
-    return ['placeholder-src', 'src'];
+    return [Attributes.PLACEHOLDER_SRC, Attributes.SRC];
   }
 
   constructor() {
@@ -51,15 +56,15 @@ class MediaPosterImage extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
-    if (attrName === 'src') {
+    if (attrName === Attributes.SRC) {
       if (newValue == null) {
-        this.image.removeAttribute('src');
+        this.image.removeAttribute(Attributes.SRC);
       } else {
-        this.image.setAttribute('src', newValue);
+        this.image.setAttribute(Attributes.SRC, newValue);
       }
     }
 
-    if (attrName === 'placeholder-src') {
+    if (attrName === Attributes.PLACEHOLDER_SRC) {
       if (newValue == null) {
         unsetBackgroundImage(this.image);
       } else {

@@ -3,6 +3,10 @@ import '../media-captions-button.js';
 import './media-captions-listbox.js';
 import { window, document, } from '../utils/server-safe-globals.js';
 
+export const Attributes = {
+  DEFAULT_SHOWING: 'defaultshowing',
+};
+
 class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
   constructor() {
     super();
@@ -14,8 +18,9 @@ class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
 
     captionsButton.preventClick = true;
 
-    if (this.hasAttribute('default-showing')) {
-      captionsButton.setAttribute('default-showing', '');
+    /** @TODO This should probably be an observedAttribute and updated in attributeChangedCallback() (CJP) */
+    if (this.hasAttribute(Attributes.DEFAULT_SHOWING)) {
+      captionsButton.setAttribute(Attributes.DEFAULT_SHOWING, '');
     }
 
     const captionsListbox = document.createElement('media-captions-listbox');

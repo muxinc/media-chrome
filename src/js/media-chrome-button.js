@@ -129,14 +129,14 @@ class MediaChromeButton extends window.HTMLElement {
   enable() {
     this.addEventListener('click', this.#clickListener);
     this.addEventListener('keydown', this.#keydownListener);
-    this.setAttribute('tabindex', '0');
+    this.tabIndex = 0;
   }
 
   disable() {
     this.removeEventListener('click', this.#clickListener);
     this.removeEventListener('keydown', this.#keydownListener);
     this.removeEventListener('keyup', this.#keyupListener);
-    this.removeAttribute('tabindex');
+    this.tabIndex = -1;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {

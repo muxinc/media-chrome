@@ -1,4 +1,4 @@
-/* 
+/*
 <media-theme-responsive>
   <video
     slot="media"
@@ -83,10 +83,10 @@ template.innerHTML = `
     inset: 0;
   }
 
-  media-airplay-button[media-airplay-unavailable],
-  media-fullscreen-button[media-fullscreen-unavailable],
-  media-volume-range[media-volume-unavailable],
-  media-pip-button[media-pip-unavailable] {
+  media-airplay-button[mediaairplayunavailable],
+  media-fullscreen-button[mediafullscreenunavailable],
+  media-volume-range[mediavolumeunavailable],
+  media-pip-button[mediapipunavailable] {
     display: none;
   }
 </style>

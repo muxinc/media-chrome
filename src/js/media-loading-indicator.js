@@ -1,7 +1,11 @@
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { window, document } from './utils/server-safe-globals.js';
-// Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
+
+export const Attributes = {
+  LOADING_DELAY: 'loadingdelay',
+  IS_LOADING: 'isloading',
+};
 
 const template = document.createElement('template');
 
@@ -40,12 +44,12 @@ template.innerHTML = /*html*/`
   transition: opacity 0.15s;
 }
 
-:host(:not([is-loading])) slot[name=loading] > *, 
-:host(:not([is-loading])) ::slotted([slot=loading]) {
+:host(:not([${Attributes.IS_LOADING}])) slot[name=loading] > *,
+:host(:not([${Attributes.IS_LOADING}])) ::slotted([slot=loading]) {
   opacity: 0;
 }
 
-:host(:not([is-loading])) #status {
+:host(:not([${Attributes.IS_LOADING}])) #status {
   display: none;
 }
 
@@ -71,7 +75,7 @@ class MediaLoadingIndicator extends window.HTMLElement {
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
       MediaUIAttributes.MEDIA_PAUSED,
       MediaUIAttributes.MEDIA_LOADING,
-      'loading-delay',
+      Attributes.LOADING_DELAY,
     ];
   }
 
@@ -101,13 +105,13 @@ class MediaLoadingIndicator extends window.HTMLElement {
           clearTimeout(this.loadingDelayHandle);
           this.loadingDelayHandle = undefined;
         }
-        this.removeAttribute('is-loading');
+        this.removeAttribute(Attributes.IS_LOADING);
       } else if (!this.loadingDelayHandle && isLoading) {
         const loadingDelay = +(
-          this.getAttribute('loading-delay') ?? DEFAULT_LOADING_DELAY
+          this.getAttribute(Attributes.LOADING_DELAY) ?? DEFAULT_LOADING_DELAY
         );
         this.loadingDelayHandle = setTimeout(() => {
-          this.setAttribute('is-loading', '');
+          this.setAttribute(Attributes.IS_LOADING, '');
           this.loadingDelayHandle = undefined;
         }, loadingDelay);
       }

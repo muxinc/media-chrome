@@ -46,49 +46,49 @@
       </media-controller>
 
       <h2>Outside the control-bar element</h2>
-      <media-play-button media-controller="controller"></media-play-button>
-      <media-mute-button media-controller="controller"></media-mute-button>
+      <media-play-button mediacontroller="controller"></media-play-button>
+      <media-mute-button mediacontroller="controller"></media-mute-button>
       <media-seek-backward-button
-        media-controller="controller"
+        mediacontroller="controller"
       ></media-seek-backward-button>
       <media-seek-forward-button
-        media-controller="controller"
+        mediacontroller="controller"
       ></media-seek-forward-button>
-      <media-volume-range media-controller="controller"></media-volume-range>
-      <media-time-range media-controller="controller"></media-time-range>
+      <media-volume-range mediacontroller="controller"></media-volume-range>
+      <media-time-range mediacontroller="controller"></media-time-range>
       <!-- It works for "display-only" components, too! -->
       <media-time-display
-        media-controller="controller"
+        mediacontroller="controller"
         remaining
         show-duration
       ></media-time-display>
       <media-captions-button
-        media-controller="controller"
+        mediacontroller="controller"
       ></media-captions-button>
       <media-playback-rate-button
-        media-controller="controller"
+        mediacontroller="controller"
       ></media-playback-rate-button>
-      <media-pip-button media-controller="controller"></media-pip-button>
+      <media-pip-button mediacontroller="controller"></media-pip-button>
       <media-fullscreen-button
-        media-controller="controller"
+        mediacontroller="controller"
       ></media-fullscreen-button>
 
       <h2>Inside the control-bar element</h2>
       <p>
-        Note: You only need to set the <code>media-controller=</code> attribute
+        Note: You only need to set the <code>mediacontroller=</code> attribute
         on the <code>media-control-bar</code>. The media-controller will pass
         the media state details to their child media-chrome elements
         automatically.
       </p>
 
-      <media-control-bar media-controller="controller">
+      <media-control-bar mediacontroller="controller">
         <media-play-button></media-play-button>
         <media-mute-button></media-mute-button>
         <media-seek-backward-button></media-seek-backward-button>
         <media-seek-forward-button></media-seek-forward-button>
         <media-volume-range></media-volume-range>
         <media-time-range></media-time-range>
-        <media-time-display remaining show-duration></media-time-display>
+        <media-time-display remaining showduration></media-time-display>
         <media-captions-button></media-captions-button>
         <media-playback-rate-button></media-playback-rate-button>
         <media-pip-button></media-pip-button>

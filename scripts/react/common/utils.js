@@ -6,14 +6,11 @@ const ReactPropToAttrNameMap = {
   viewBox: 'viewBox',
 };
 
-export const toKebabCase = (string) =>
-  string.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`);
-
 export const toNativeAttrName = (propName, propValue) => {
   if (ReactPropToAttrNameMap[propName]) return ReactPropToAttrNameMap[propName];
   if (typeof propValue == undefined) return undefined;
   if (typeof propValue === 'boolean' && !propValue) return undefined;
-  if (/[A-Z]/.test(propName)) return toKebabCase(propName);
+  if (/[A-Z]/.test(propName)) return propName.toLowerCase();
   return propName;
 };
 

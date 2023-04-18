@@ -52,40 +52,40 @@ export const MediaStateChangeEvents = {
 };
 
 export const MediaStateReceiverAttributes = {
-  MEDIA_CHROME_ATTRIBUTES: 'media-chrome-attributes',
-  MEDIA_CONTROLLER: 'media-controller',
+  MEDIA_CHROME_ATTRIBUTES: 'mediachromeattributes',
+  MEDIA_CONTROLLER: 'mediacontroller',
 };
 
 export const MediaUIAttributes = {
-  MEDIA_AIRPLAY_UNAVAILABLE: 'media-airplay-unavailable',
-  MEDIA_FULLSCREEN_UNAVAILABLE: 'media-fullscreen-unavailable',
-  MEDIA_PIP_UNAVAILABLE: 'media-pip-unavailable',
-  MEDIA_CAST_UNAVAILABLE: 'media-cast-unavailable',
-  MEDIA_PAUSED: 'media-paused',
-  MEDIA_HAS_PLAYED: 'media-has-played',
-  MEDIA_MUTED: 'media-muted',
-  MEDIA_VOLUME_LEVEL: 'media-volume-level',
-  MEDIA_VOLUME: 'media-volume',
-  MEDIA_VOLUME_UNAVAILABLE: 'media-volume-unavailable',
-  MEDIA_IS_PIP: 'media-is-pip',
-  MEDIA_IS_CASTING: 'media-is-casting',
-  MEDIA_CAPTIONS_LIST: 'media-captions-list',
-  MEDIA_SUBTITLES_LIST: 'media-subtitles-list',
-  MEDIA_CAPTIONS_SHOWING: 'media-captions-showing',
-  MEDIA_SUBTITLES_SHOWING: 'media-subtitles-showing',
-  MEDIA_IS_FULLSCREEN: 'media-is-fullscreen',
-  MEDIA_PLAYBACK_RATE: 'media-playback-rate',
-  MEDIA_CURRENT_TIME: 'media-current-time',
-  MEDIA_DURATION: 'media-duration',
-  MEDIA_SEEKABLE: 'media-seekable',
-  MEDIA_PREVIEW_TIME: 'media-preview-time',
-  MEDIA_PREVIEW_IMAGE: 'media-preview-image',
-  MEDIA_PREVIEW_COORDS: 'media-preview-coords',
-  MEDIA_LOADING: 'media-loading',
-  MEDIA_BUFFERED: 'media-buffered',
-  MEDIA_STREAM_TYPE: 'media-stream-type',
-  MEDIA_TARGET_LIVE_WINDOW: 'media-target-live-window',
-  MEDIA_TIME_IS_LIVE: 'media-time-is-live',
+  MEDIA_AIRPLAY_UNAVAILABLE: 'mediaairplayunavailable',
+  MEDIA_FULLSCREEN_UNAVAILABLE: 'mediafullscreenunavailable',
+  MEDIA_PIP_UNAVAILABLE: 'mediapipunavailable',
+  MEDIA_CAST_UNAVAILABLE: 'mediacastunavailable',
+  MEDIA_PAUSED: 'mediapaused',
+  MEDIA_HAS_PLAYED: 'mediahasplayed',
+  MEDIA_MUTED: 'mediamuted',
+  MEDIA_VOLUME_LEVEL: 'mediavolumelevel',
+  MEDIA_VOLUME: 'mediavolume',
+  MEDIA_VOLUME_UNAVAILABLE: 'mediavolumeunavailable',
+  MEDIA_IS_PIP: 'mediaispip',
+  MEDIA_IS_CASTING: 'mediaiscasting',
+  MEDIA_CAPTIONS_LIST: 'mediacaptionslist',
+  MEDIA_SUBTITLES_LIST: 'mediasubtitleslist',
+  MEDIA_CAPTIONS_SHOWING: 'mediacaptionsshowing',
+  MEDIA_SUBTITLES_SHOWING: 'mediasubtitlesshowing',
+  MEDIA_IS_FULLSCREEN: 'mediaisfullscreen',
+  MEDIA_PLAYBACK_RATE: 'mediaplaybackrate',
+  MEDIA_CURRENT_TIME: 'mediacurrenttime',
+  MEDIA_DURATION: 'mediaduration',
+  MEDIA_SEEKABLE: 'mediaseekable',
+  MEDIA_PREVIEW_TIME: 'mediapreviewtime',
+  MEDIA_PREVIEW_IMAGE: 'mediapreviewimage',
+  MEDIA_PREVIEW_COORDS: 'mediapreviewcoords',
+  MEDIA_LOADING: 'medialoading',
+  MEDIA_BUFFERED: 'mediabuffered',
+  MEDIA_STREAM_TYPE: 'mediastreamtype',
+  MEDIA_TARGET_LIVE_WINDOW: 'mediatargetlivewindow',
+  MEDIA_TIME_IS_LIVE: 'mediatimeislive',
 };
 
 // Maps from state change event type -> attribute name
@@ -99,7 +99,7 @@ export const StateChangeEventToAttributeMap = Object.entries(
     }
     return mapObj;
   },
-  { userinactivechange: 'user-inactive' }
+  { userinactivechange: 'userinactive' }
 );
 
 // Maps from attribute name -> state change event type
@@ -113,7 +113,7 @@ export const AttributeToStateChangeEventMap = Object.entries(
     }
     return mapObj;
   },
-  { 'user-inactive': 'userinactivechange' }
+  { userinactive: 'userinactivechange' }
 );
 
 export const TextTrackKinds = {

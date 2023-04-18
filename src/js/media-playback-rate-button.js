@@ -3,9 +3,9 @@ import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 
-/*
-  <media-playback-rate-button rates="1 1.5 2">
-*/
+export const Attributes = {
+  RATES: 'rates',
+};
 
 export const DEFAULT_RATES = [1, 1.25, 1.5, 1.75, 2];
 export const DEFAULT_RATE = 1;
@@ -20,25 +20,29 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
-      'rates',
+      Attributes.RATES,
     ];
   }
 
+  // NOTE: Adding for TypeScript Errors. Followup should add correct getter/setter & private var (CJP)
+  /** @type number[] | undefined */
+  _rates;
+
   constructor(options = {}) {
     super({ slotTemplate, ...options });
-    this._rates = DEFAULT_RATES;
     this.container = this.shadowRoot.querySelector('#container');
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === 'rates') {
+    if (attrName === Attributes.RATES) {
       // This will:
       // 1. parse the space-separated attribute string (standard for representing lists as HTML/CSS values) into an array (of strings)
       //   The current regex allows for commas to be present between numbers to preserve legacy behavior
       // 2. convert that list into numbers (including potentially NaN)
       // 3. filter out all NaNs for invalid values
       // 4. sort the array of numbers to ensure the expected toggle-through order for playback rate.
+      /** @type number[] */
       const newRates = (newValue ?? '')
         .trim()
         .split(/\s*,?\s+/)

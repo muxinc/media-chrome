@@ -65,7 +65,7 @@ class MediaGestureReceiver extends window.HTMLElement {
   }
 
   connectedCallback() {
-    this.setAttribute('tabindex', -1);
+    this.tabIndex = -1;
     this.setAttribute('aria-hidden', true);
 
     this.#mediaController = getMediaControllerEl(this);

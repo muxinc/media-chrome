@@ -1,6 +1,7 @@
 import { fixture, assert, waitUntil } from '@open-wc/testing';
 import '../../src/js/media-theme-element.js';
 import '../../src/js/index.js';
+import { MediaUIAttributes } from '../../src/js/constants.js';
 
 describe('<media-theme>', () => {
   it(`<media-theme> with template attribute works w/ delayed document append`, async () => {
@@ -62,7 +63,7 @@ describe('<media-theme>', () => {
     assert(
       theme1.shadowRoot
         .querySelector('media-controller')
-        .hasAttribute('media-current-time')
+        .hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME)
     );
 
     const theme2 = await fixture(`
@@ -74,26 +75,26 @@ describe('<media-theme>', () => {
     await waitUntil(() =>
       theme1.shadowRoot
         .querySelector('media-controller')
-        .hasAttribute('media-paused')
+        .hasAttribute(MediaUIAttributes.MEDIA_PAUSED)
     );
 
     assert(
       theme1.shadowRoot
         .querySelector('media-controller')
-        .hasAttribute('media-paused'),
+        .hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
       'should be reset to paused state on mediaUnsetCallback'
     );
 
     await waitUntil(() =>
       theme2.shadowRoot
         .querySelector('media-controller')
-        .hasAttribute('media-current-time')
+        .hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME)
     );
 
     assert(
       theme2.shadowRoot
         .querySelector('media-controller')
-        .hasAttribute('media-current-time'),
+        .hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME),
       'should have a media-current-time attribute on mediaSetCallback'
     );
   });
@@ -137,7 +138,7 @@ describe('<media-theme>', () => {
         <media-controller id="ctrl">
           <slot name="media" slot="media"></slot>
         </media-controller>
-        <media-play-button media-controller="ctrl"></media-play-button>
+        <media-play-button mediacontroller="ctrl"></media-play-button>
       </template>
     `);
 
