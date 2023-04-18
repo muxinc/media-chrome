@@ -38,7 +38,7 @@ template.innerHTML = `
        * which is particularly noticeable when going fullscreen via hotkeys.
        */ ''
     }
-    :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])  ::slotted([slot=media]) {
+    :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) ::slotted([slot=media]) {
       outline: none;
     }
 
@@ -78,12 +78,8 @@ template.innerHTML = `
        * if gestures are disabled, don't accept pointer-events
        */ ''
     }
-    :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) ::slotted([slot=gestures-chrome]),
-    :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) media-gesture-receiver[slot=gestures-chrome] {
+    :host(:not([${Attributes.AUDIO}])[${Attributes.GESTURES_DISABLED}]) ::slotted([slot=gestures-chrome]),
+    :host(:not([${Attributes.AUDIO}])[${Attributes.GESTURES_DISABLED}]) media-gesture-receiver[slot=gestures-chrome] {
       display: none;
     }
 
@@ -102,12 +98,8 @@ template.innerHTML = `
       justify-content: center;
     }
 
-    :host(:not([${
-      Attributes.AUDIO
-    }])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
-    :host(:not([${
-      Attributes.AUDIO
-    }])) media-gesture-receiver[slot=gestures-chrome] {
+    :host(:not([${Attributes.AUDIO}])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
+    :host(:not([${Attributes.AUDIO}])) media-gesture-receiver[slot=gestures-chrome] {
       align-self: stretch;
       flex-grow: 1;
     }
@@ -147,11 +139,7 @@ template.innerHTML = `
     ${
       /* Hide controls when inactive, not paused, not audio and auto hide not disabled */ ''
     }
-    :host([${Attributes.USER_INACTIVE}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
-  Attributes.AUDIO
-}])) ::slotted(:not([slot=media]):not([${Attributes.NO_AUTOHIDE}])) {
+    :host([${Attributes.USER_INACTIVE}]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${Attributes.AUDIO}])) ::slotted(:not([slot=media]):not([${Attributes.NO_AUTOHIDE}])) {
       opacity: 0;
       transition: opacity 1s;
     }
