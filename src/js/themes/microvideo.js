@@ -36,11 +36,11 @@ template.innerHTML = /*html*/`
     cursor: not-allowed;
   }
 
-  [breakpoint-sm] {
+  [breakpointsm] {
     --media-control-padding: 9px 5px;
   }
 
-  [breakpoint-md] {
+  [breakpointmd] {
     --media-control-padding: 9px 7px;
   }
 

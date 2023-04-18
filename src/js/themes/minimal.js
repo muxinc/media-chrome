@@ -41,20 +41,20 @@ template.innerHTML = /*html*/`
       padding-inline: 2px;
     }
 
-    media-controller[breakpoint-sm] media-control-bar {
+    media-controller[breakpointsm] media-control-bar {
       --media-control-padding: 4px;
       height: 38px;
       border-radius: 8px;
       padding-inline: 5px;
     }
 
-    media-controller[breakpoint-md] media-control-bar {
+    media-controller[breakpointmd] media-control-bar {
       height: 46px;
       margin: 0 8px 8px;
     }
 
-    media-controller[breakpoint-lg] media-control-bar,
-    media-controller[breakpoint-xl] media-control-bar {
+    media-controller[breakpointlg] media-control-bar,
+    media-controller[breakpointxl] media-control-bar {
       padding-inline: 7px;
     }
 
@@ -364,7 +364,7 @@ template.innerHTML = /*html*/`
     </template>
 
     <template if="streamType == 'on-demand'">
-      <template if="breakpointSm == null">
+      <template if="breakpointsm == null">
         <media-control-bar>
           {{>PlayButton}}
           {{>TimeRange}}
@@ -374,13 +374,13 @@ template.innerHTML = /*html*/`
         </media-control-bar>
       </template>
 
-      <template if="breakpointSm">
+      <template if="breakpointsm">
         <media-control-bar>
           {{>PlayButton}}
           {{>SeekBackwardButton}}
           {{>SeekForwardButton}}
           {{>TimeRange}}
-          <template if="breakpointMd">
+          <template if="breakpointmd">
             <media-time-display></media-time-display>
           </template>
           {{>MuteButton}}
@@ -399,13 +399,13 @@ template.innerHTML = /*html*/`
         <div class="live-controls-left">
           {{>LiveButton}}
           <template if="!targetLiveWindow">
-            <template if="breakpointSm">
+            <template if="breakpointsm">
               <media-time-display></media-time-display>
             </template>
           </template>
         </div>
         <template if="targetLiveWindow > 0">
-          <template if="breakpointSm">{{>TimeRange}}</template>
+          <template if="breakpointsm">{{>TimeRange}}</template>
         </template>
         <div class="live-controls-right">
           <template if="targetLiveWindow > 0">

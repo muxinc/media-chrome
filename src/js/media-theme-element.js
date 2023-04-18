@@ -65,8 +65,8 @@ export class MediaThemeElement extends window.HTMLElement {
         // Render if this attribute is directly observed.
         if (observedMediaAttributes[mutation.attributeName]) return true;
 
-        // Render if `breakpoint-x` attributes change.
-        if (mutation.attributeName.startsWith('breakpoint-')) return true;
+        // Render if `breakpointx` attributes change.
+        if (mutation.attributeName.startsWith('breakpoint')) return true;
 
         return false;
       })) {
@@ -118,7 +118,7 @@ export class MediaThemeElement extends window.HTMLElement {
     const observedAttributes = [
       ...Array.from(this.mediaController?.attributes ?? [])
         .filter(({ name }) => {
-          return observedMediaAttributes[name] || name.startsWith('breakpoint-')
+          return observedMediaAttributes[name] || name.startsWith('breakpoint')
         }),
       ...Array.from(this.attributes),
     ];

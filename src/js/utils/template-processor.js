@@ -158,7 +158,7 @@ export function tokenizeExpression(expr) {
 //   value | string
 //   streamType == 'on-demand'
 //   streamType != 'live'
-//   breakpointMd
+//   breakpointmd
 //   !targetLiveWindow
 export function evaluateExpression(expr, state = {}) {
   const tokens = tokenizeExpression(expr);
@@ -191,7 +191,7 @@ export function evaluateExpression(expr, state = {}) {
     return partial;
   }
 
-  // e.g. {{'hello world'}} or {{breakpointMd}}
+  // e.g. {{'hello world'}} or {{breakpointmd}}
   if (tokens.length === 1) {
     if (!isValidParam(tokens[0])) {
       return invalidExpression(expr);
