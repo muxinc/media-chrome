@@ -5,9 +5,13 @@ layout: ../../layouts/MainLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-play-button.js
 ---
 
-Button to toggle media playback.
+The `<media-play-button>` component is used to toggle your media playback state. In simpler terms, it is used to both play and pause your media content.
 
-<h3>Default</h3>
+The contents and behavior of the `<media-play-button>` will update automatically once your media playback state changes.
+  - When your media begins to play, the `<media-play-button>` component will switch to show the contents of its `pause` slot.
+  - When your media is paused, the `<media-play-button>` component will display the contents of its `play` slot.
+
+<h3>Play control appearance (paused state)</h3>
 
 <media-play-button media-paused></media-play-button>
 
@@ -15,7 +19,7 @@ Button to toggle media playback.
 <media-play-button media-paused></media-play-button>
 ```
 
-<h3>Pause</h3>
+<h3>Pause control appearance (playing state)</h3>
 
 <media-play-button></media-play-button>
 
@@ -23,7 +27,10 @@ Button to toggle media playback.
 <media-play-button></media-play-button>
 ```
 
-<h3>Alternate content</h3>
+<h3>Modifying the default appearance</h3>
+You can modify the contents of the `<media-play-button>` component using slots. This is useful if you'd like to use your own custom play button instead of the default one provided by media-chrome.
+
+Here's an example of how you can replace the default Play and Pause icons with the literal words "Play" and "Pause":
 
 <media-play-button media-paused>
   <span slot="play">Play</span>
@@ -45,12 +52,20 @@ Button to toggle media playback.
 </media-play-button>
 ```
 
+## Attributes reference
+The `<media-play-button>` does not expose any configuration attributes. However, it will be updated with **readonly** attributes any time your media playback state changes. 
 
-## Attributes
+`media-paused`
 
-_None_
+You can use these readonly attributes to apply custom styles to your `<media-play-button>` element under different state conditions:
 
-## Slots
+```css
+media-play-button[media-paused] {
+  animation: glow 2s;
+}
+```
+
+## Slots reference
 
 | Name    | Default Type | Description                                                                                  |
 | ------- | ------------ | -------------------------------------------------------------------------------------------- |
