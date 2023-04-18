@@ -18,20 +18,20 @@ Button to show/disable captions
 <h3>Closed Captions on ("captions showing")</h3>
 
 <media-captions-button
-  media-captions-showing="en:English%20Closed%20Captions"
-  media-captions-list="en:English%20Closed%20Captions"></media-captions-button>
+  mediacaptionsshowing="en:English%20Closed%20Captions"
+  mediacaptionslist="en:English%20Closed%20Captions"></media-captions-button>
 
 ```html
 <media-captions-button
-  media-captions-showing="en:English%20Closed%20Captions"
-  media-captions-list="en:English%20Closed%20Captions"
+  mediacaptionsshowing="en:English%20Closed%20Captions"
+  mediacaptionslist="en:English%20Closed%20Captions"
 ></media-captions-button>
 
 ```
 
 <h3>Alternate Content</h3>
 
-<media-captions-button media-captions-showing="en:English%20Closed%20Captions">
+<media-captions-button mediacaptionsshowing="en:English%20Closed%20Captions">
   <span slot="on"><b><u>CC</u></b></span>
   <span slot="off">CC</span>
 </media-captions-button>
@@ -41,7 +41,7 @@ Button to show/disable captions
 </media-captions-button>
 
 ```html
-<media-captions-button media-captions-showing="en:English%20Closed%20Captions">
+<media-captions-button mediacaptionsshowing="en:English%20Closed%20Captions">
   <span slot="on"><b><u>CC</u></b></span>
   <span slot="off">CC</span>
 </media-captions-button>
@@ -55,8 +55,8 @@ Button to show/disable captions
 
 | Name                    | Type      | Default Value | Description                                                                                        |
 | ----------------------- | --------- | ------------- | -------------------------------------------------------------------------------------------------- |
-| `default-showing` | `boolean` | `false`       | Controls whether media-chrome will show a subtitle or captions tracks by default |
-| `no-subtitles-fallback` | `boolean` | `false`       | Controls whether media-chrome will show subtitle tracks if no closed captions tracks are available |
+| `defaultshowing` | `boolean` | `false`       | Controls whether media-chrome will show a subtitle or captions tracks by default |
+| `nosubtitlesfallback` | `boolean` | `false`       | Controls whether media-chrome will show subtitle tracks if no closed captions tracks are available |
 
 ## Slots
 

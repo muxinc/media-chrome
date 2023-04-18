@@ -13,7 +13,7 @@ There is no need to add this element yourself, it's automatically included by `<
     display: block;
   }
 
-  media-preview-thumbnail[media-preview-image] {
+  media-preview-thumbnail[mediapreviewimage] {
     height: 160px;
   }
 </style>
@@ -29,13 +29,13 @@ There is no need to add this element yourself, it's automatically included by `<
 <h3>With thumbnail and coords</h3>
 
 <media-preview-thumbnail
-  media-preview-image="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.jpg"
-  media-preview-coords="284 640 284 160"></media-preview-thumbnail>
+  mediapreviewimage="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.jpg"
+  mediapreviewcoords="284 640 284 160"></media-preview-thumbnail>
 
 ```html
 <media-preview-thumbnail
-  media-preview-image="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.jpg"
-  media-preview-coords="284 640 284 160"
+  mediapreviewimage="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.jpg"
+  mediapreviewcoords="284 640 284 160"
 ></media-preview-thumbnail>
 ```
 

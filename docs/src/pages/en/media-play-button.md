@@ -9,10 +9,10 @@ Button to toggle media playback.
 
 <h3>Default</h3>
 
-<media-play-button media-paused></media-play-button>
+<media-play-button mediapaused></media-play-button>
 
 ```html
-<media-play-button media-paused></media-play-button>
+<media-play-button mediapaused></media-play-button>
 ```
 
 <h3>Pause</h3>
@@ -25,7 +25,7 @@ Button to toggle media playback.
 
 <h3>Alternate content</h3>
 
-<media-play-button media-paused>
+<media-play-button mediapaused>
   <span slot="play">Play</span>
   <span slot="pause">Pause</span>
 </media-play-button>
@@ -35,7 +35,7 @@ Button to toggle media playback.
 </media-play-button>
 
 ```html
-<media-play-button media-paused>
+<media-play-button mediapaused>
   <span slot="play">Play</span>
   <span slot="pause">Pause</span>
 </media-play-button>

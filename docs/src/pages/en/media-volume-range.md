@@ -16,24 +16,24 @@ Slider to Change the volume of the sound.
 ```
 
 <h3>Volume 0</h3>
-<media-volume-range media-volume="0"></media-volume-range>
+<media-volume-range mediavolume="0"></media-volume-range>
 
 ```html
-<media-volume-range media-volume="0"></media-volume-range>
+<media-volume-range mediavolume="0"></media-volume-range>
 ```
 
 <h3>Volume 0.5</h3>
-<media-volume-range media-volume="0.5"></media-volume-range>
+<media-volume-range mediavolume="0.5"></media-volume-range>
 
 ```html
-<media-volume-range media-volume="0.5"></media-volume-range>
+<media-volume-range mediavolume="0.5"></media-volume-range>
 ```
 
 <h3>Volume 1</h3>
-<media-volume-range media-volume="1"></media-volume-range>
+<media-volume-range mediavolume="1"></media-volume-range>
 
 ```html
-<media-volume-range media-volume="1"></media-volume-range>
+<media-volume-range mediavolume="1"></media-volume-range>
 ```
 
 <h3>In control bar</h3>

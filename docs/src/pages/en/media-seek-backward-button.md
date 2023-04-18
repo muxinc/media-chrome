@@ -17,10 +17,10 @@ Button to jump back 30 seconds in the media.
 
 <h3>Adjust seek offset (10 seconds)</h3>
 
-<media-seek-backward-button seek-offset="10"></media-seek-backward-button>
+<media-seek-backward-button seekoffset="10"></media-seek-backward-button>
 
 ```html
-<media-seek-backward-button seek-offset="10"></media-seek-backward-button>
+<media-seek-backward-button seekoffset="10"></media-seek-backward-button>
 ```
 
 <h3>Alternate content</h3>
@@ -38,7 +38,7 @@ Button to jump back 30 seconds in the media.
 
 | Name          | Type     | Default Value | Description                                                         |
 | ------------- | -------- | ------------- | ------------------------------------------------------------------- |
-| `seek-offset` | `number` | `30`          | Adjusts how much time (in seconds) the playhead should seek forward |
+| `seekoffset` | `number` | `30`          | Adjusts how much time (in seconds) the playhead should seek forward |
 
 ## Slots
 

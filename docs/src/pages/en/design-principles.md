@@ -27,9 +27,9 @@ Many js application frameworks today like React follow a "unidirectional data fl
 
 Media chrome UI elements emit events to request media state changes. These events bubble up the DOM and are caught by a parent `<media-controller>` element. The media-controller handles the request and calls the appropriate API on a child media element, designated with the attribute `slot="media"`. A media element can be `<video>`, `<audio>`, or any element with a matching API.
 
-Media state is set on UI elements via HTML attributes, for example `<media-ui-element media-paused>`. For UI elements that are children of or associated with a media-controller, the media-controller will update these attributes automatically.
+Media state is set on UI elements via HTML attributes, for example `<media-ui-element mediapaused>`. For UI elements that are children of or associated with a media-controller, the media-controller will update these attributes automatically.
 
-UI elements that are not children of a media-controller can be associated with a media-controller through a javascript function or the `media-controller=""` attribute.
+UI elements that are not children of a media-controller can be associated with a media-controller through a javascript function or the `mediacontroller=""` attribute.
 
 > Note: We have been through many different approaches to the architecture:
 >

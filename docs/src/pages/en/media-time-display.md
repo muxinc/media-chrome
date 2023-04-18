@@ -17,46 +17,46 @@ Display only component to show the time of the playhead.
 
 <h3>Current time of 2 minutes</h3>
 
-<media-time-display media-current-time="120.0"></media-time-display>
+<media-time-display mediacurrenttime="120.0"></media-time-display>
 
 ```html
-<media-time-display media-current-time="120.0"></media-time-display>
+<media-time-display mediacurrenttime="120.0"></media-time-display>
 ```
 
 <h3>Current time of one hour</h3>
 
-<media-time-display media-current-time="3600.0"></media-time-display>
+<media-time-display mediacurrenttime="3600.0"></media-time-display>
 
 ```html
-<media-time-display media-current-time="3600.0"></media-time-display>
+<media-time-display mediacurrenttime="3600.0"></media-time-display>
 ```
 
 <h3>Include duration (10 minutes)</h3>
 
 <media-time-display
-  media-current-time="120"
-  media-duration="600"
-  show-duration></media-time-display>
+  mediacurrenttime="120"
+  mediaduration="600"
+  showduration></media-time-display>
 
 ```html
 <media-time-display
-  media-current-time="120"
-  media-duration="600"
-  show-duration
+  mediacurrenttime="120"
+  mediaduration="600"
+  showduration
 ></media-time-display>
 ```
 
 <h3>Show remaining time (at 2 minutes of 10)</h3>
 
 <media-time-display
-  media-current-time="120"
-  media-duration="600"
+  mediacurrenttime="120"
+  mediaduration="600"
   remaining></media-time-display>
 
 ```html
 <media-time-display
-  media-current-time="120"
-  media-duration="600"
+  mediacurrenttime="120"
+  mediaduration="600"
   remaining
 ></media-time-display>
 ```

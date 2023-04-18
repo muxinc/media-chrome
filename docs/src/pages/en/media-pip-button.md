@@ -17,10 +17,10 @@ Button to toggle picture-in-picture mode of the video.
 
 <h3>Exit pip</h3>
 
-<media-pip-button media-is-pip></media-pip-button>
+<media-pip-button mediaispip></media-pip-button>
 
 ```html
-<media-pip-button media-is-pip></media-pip-button>
+<media-pip-button mediaispip></media-pip-button>
 ```
 
 <h3>Alternate content</h3>
@@ -29,7 +29,7 @@ Button to toggle picture-in-picture mode of the video.
   <span slot="enter">PIP</span>
   <span slot="exit">Off</span>
 </media-pip-button>
-<media-pip-button media-is-pip>
+<media-pip-button mediaispip>
   <span slot="enter">Enter</span>
   <span slot="exit">Exit</span>
 </media-pip-button>
@@ -39,7 +39,7 @@ Button to toggle picture-in-picture mode of the video.
   <span slot="enter">PIP</span>
   <span slot="exit">Off</span>
 </media-pip-button>
-<media-pip-button media-is-pip>
+<media-pip-button mediaispip>
   <span slot="enter">Enter</span>
   <span slot="exit">Exit</span>
 </media-pip-button>

@@ -10,23 +10,23 @@ Any control element can _send_ user input to the [`MediaController`](https://git
 
 The `MediaController` receives user input via [`MediaUIEvents`](https://github.com/muxinc/media-chrome/blob/main/src/js/constants.js#L1) like `MediaUIEvents.MEDIA_PLAY_REQUEST` or `MediaUIEvents.MEDIA_SEEK_REQUEST`. The `MediaController` may receive these events in one of two ways:
 
-- From a control element that is nested under the `<media-controller>` element (see [diagram 1](#1-by-media-controller-nesting)).  
+- From a control element that is nested under the `<media-controller>` element (see [diagram 1](#1-by-media-controller-nesting)).
   The DOM element that will receive bubbling up events from the control element is the `<media-controller>` element, it's also called an **associated element** in the codebase.
 
-- From a control element that is **not** nested under the `<media-controller>` element (see [diagram 2](#2-by-media-controller-id)).  
-  An **associated element** is created by targeting the media controller via the `media-controller` attribute or property.
+- From a control element that is **not** nested under the `<media-controller>` element (see [diagram 2](#2-by-media-controller-id)).
+  An **associated element** is created by targeting the media controller via the `mediacontroller` attribute or property.
 
   ```html
   <media-controller id="my-ctrl">
     <video slot="media"></video>
   </media-controller>
 
-  <media-play-button media-controller="my-ctrl"></media-play-button>
+  <media-play-button mediacontroller="my-ctrl"></media-play-button>
   ```
 
   Now the DOM events are received by the **associated element** and passed through to the `MediaController`.
 
-  All Media Chrome elements support the `media-controller` attribute and can be made an **associated element**.  
+  All Media Chrome elements support the `mediacontroller` attribute and can be made an **associated element**.
   Simple HTML elements can be made associated elements but require some [JavaScript](https://github.com/muxinc/media-chrome/blob/main/src/js/media-control-bar.js#L60-L64) to get this to work.
 
 ### Receiving
@@ -45,10 +45,10 @@ Any **associated element** or any of its descendants can receive media state fro
   }
   ```
 
-- Simple HTML elements like a `<div>` element for example are also able to receive media state by defining a `media-chrome-attributes` attribute and listing the `MediaUIAttributes` space separated.
+- Simple HTML elements like a `<div>` element for example are also able to receive media state by defining a `mediachromeattributes` attribute and listing the `MediaUIAttributes` space separated.
 
   ```html
-  <div media-chrome-attributes="media-paused media-current-time"></div>
+  <div mediachromeattributes="mediapaused mediacurrenttime"></div>
   ```
 
 <br>

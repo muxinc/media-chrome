@@ -1,6 +1,6 @@
 ---
 title: Responsive controls
-description: Learn how to make controls responsive with Media Chrome 
+description: Learn how to make controls responsive with Media Chrome
 layout: ../../layouts/MainLayout.astro
 ---
 
@@ -8,7 +8,7 @@ One thing you'll quickly notice is that Media Chrome is not responsive out of
 the box. This is by design, there are way too many permutations possible to
 provide one configuration for a responsive media player.
 
-There are different techniques available to make your Media Chrome controls 
+There are different techniques available to make your Media Chrome controls
 responsive. We'll show you a future facing method using
 [Container Queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries)
 (CQ) and a simple but cross browser method using a
@@ -38,8 +38,8 @@ Lets create a basic layout for our Media Chrome player.
   ></video>
   <media-control-bar>
     <media-play-button></media-play-button>
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
     <media-time-display></media-time-display>
@@ -69,8 +69,8 @@ Lets create a basic layout for our Media Chrome player.
   ></video>
   <media-control-bar>
     <media-play-button></media-play-button>
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
     <media-time-display></media-time-display>
@@ -81,9 +81,9 @@ Lets create a basic layout for our Media Chrome player.
   </media-control-bar>
 </media-controller>
 
-That looks pretty good but the controls are static no matter the size of the player. 
-Lets change that, for this exercise we'll make a big center play button when the player 
-width is smaller than `484px` and only show the timerange at the bottom of the player. 
+That looks pretty good but the controls are static no matter the size of the player.
+Lets change that, for this exercise we'll make a big center play button when the player
+width is smaller than `484px` and only show the timerange at the bottom of the player.
 
 ## Using Container Queries
 
@@ -109,9 +109,9 @@ Let's make a [simple responsive layout](https://media-chrome-mux.vercel.app/exam
 In addition to the media-control-bar above, we want to add some center controls.
 ```html
 <div class="center" slot="centered-chrome">
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
     <media-play-button></media-play-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
 </div>
 ```
 
@@ -129,14 +129,14 @@ The combined HTML for the player should look like this:
     poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
   ></video>
   <div class="center" slot="centered-chrome">
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
     <media-play-button></media-play-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
   </div>
   <media-control-bar class="bottom">
     <media-play-button></media-play-button>
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
     <media-time-display></media-time-display>
@@ -398,14 +398,14 @@ document.querySelectorAll('[name=width]').forEach(radio => {
     poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
   ></video>
   <div class="center" slot="centered-chrome">
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
     <media-play-button></media-play-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
   </div>
   <media-control-bar class="bottom">
     <media-play-button></media-play-button>
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
     <media-time-display></media-time-display>
@@ -420,14 +420,14 @@ document.querySelectorAll('[name=width]').forEach(radio => {
 
 ### Observe player resizing
 
-Since we're still waiting for 
-[CSS Container Queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries) 
-to get [wider adoption](https://caniuse.com/css-container-queries), 
+Since we're still waiting for
+[CSS Container Queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries)
+to get [wider adoption](https://caniuse.com/css-container-queries),
 this will require [`ResizeObserver`](https://developer.mozilla.org/en-US/docs/Web/API/ResizeObserver)
-to detect any size changes to the container of the player. 
+to detect any size changes to the container of the player.
 
-You might be tempted to use media queries for this but that solution will probably 
-backfire because a media query listens to the browser viewport dimensions, 
+You might be tempted to use media queries for this but that solution will probably
+backfire because a media query listens to the browser viewport dimensions,
 not the player container dimensions.
 
 ```html
@@ -455,7 +455,7 @@ the width of the player is smaller than the defined breakpoint.
 ### CSS classes & properties
 
 Now it's as simple as adding some CSS classes and CSS properties to hide and show controls based
-on the breakpoints. 
+on the breakpoints.
 
 ```html
 <style>
@@ -485,14 +485,14 @@ on the breakpoints.
     poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
   ></video>
   <div class="center" slot="centered-chrome">
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
     <media-play-button></media-play-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
   </div>
   <media-control-bar class="bottom">
     <media-play-button></media-play-button>
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
     <media-time-display></media-time-display>
@@ -551,14 +551,14 @@ show and hide like expected.
     poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
   ></video>
   <div class="center" slot="centered-chrome">
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
     <media-play-button></media-play-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
   </div>
   <media-control-bar class="bottom">
     <media-play-button></media-play-button>
-    <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
-    <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
     <media-time-display></media-time-display>

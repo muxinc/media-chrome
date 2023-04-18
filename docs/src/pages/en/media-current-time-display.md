@@ -17,18 +17,18 @@ Display only component to show the current time of the playhead.
 
 <h3>Current time of 2 minutes</h3>
 
-<media-current-time-display media-current-time="120.0"></media-current-time-display>
+<media-current-time-display mediacurrenttime="120.0"></media-current-time-display>
 
 ```html
-<media-current-time-display media-current-time="120.0"></media-current-time-display>
+<media-current-time-display mediacurrenttime="120.0"></media-current-time-display>
 ```
 
 <h3>Current time of one hour</h3>
 
-<media-current-time-display media-current-time="3600.0"></media-current-time-display>
+<media-current-time-display mediacurrenttime="3600.0"></media-current-time-display>
 
 ```html
-<media-current-time-display media-current-time="3600.0"></media-current-time-display>
+<media-current-time-display mediacurrenttime="3600.0"></media-current-time-display>
 ```
 
 ## Attributes

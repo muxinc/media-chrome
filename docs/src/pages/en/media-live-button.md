@@ -17,7 +17,7 @@ The Media Live Button shows when the stream is live via an indicator (red dot, b
 
 <h3>Media is live</h3>
 
-<media-live-button media-time-is-live></media-live-button>
+<media-live-button mediatimeislive></media-live-button>
 
 ```html
 <media-live-button media-time-is-live></media-live-button>
@@ -25,7 +25,7 @@ The Media Live Button shows when the stream is live via an indicator (red dot, b
 
 <h3>Alternate text</h3>
 
-<media-live-button media-time-is-live>
+<media-live-button mediatimeislive>
   <span slot="text">Hello!</span>
 </media-live-button>
 
@@ -40,24 +40,24 @@ The Media Live Button shows when the stream is live via an indicator (red dot, b
 <media-live-button>
   <svg slot="indicator" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
 </media-live-button>
-<media-live-button media-time-is-live>
+<media-live-button mediatimeislive>
   <svg slot="indicator" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
 </media-live-button>
 
 ```html
-<media-live-button media-time-is-live>
+<media-live-button mediatimeislive>
   <svg slot="indicator" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
 </media-live-button>
 ```
 
 <h3>Alternate indicator text or font icon</h3>
 
-<media-live-button media-time-is-live>
+<media-live-button mediatimeislive>
   <span slot="indicator">Hello!</span>
 </media-live-button>
 
 ```html
-<media-live-button media-time-is-live>
+<media-live-button mediatimeislive>
   <span slot="indicator">Hello!</span>
 </media-live-button>
 ```
@@ -74,7 +74,7 @@ The Media Live Button shows when the stream is live via an indicator (red dot, b
   <span slot="spacer"></span>
   <span slot="text"></span>
 </media-live-button>
-<media-live-button id="textlive" media-time-is-live>
+<media-live-button id="textlive" mediatimeislive>
   <span slot="indicator">LIVE</span>
   <span slot="spacer"></span>
   <span slot="text"></span>
@@ -97,8 +97,8 @@ The Media Live Button shows when the stream is live via an indicator (red dot, b
 
 | Name            | Type      | Default Value | Description |
 | --------------- | --------- | ------------- | ----------- |
-| `media-time-is-live` | `boolean` | `false`| Include when the media time is at or close to the most current time or _live edge_. Clicking the button will not seek to live when true. [_Set automatically by media-controller._] |
-| `media-paused` | `boolean` | `false`| Include when the media is paused. The button will unpause the video if paused when seeking to live. [_Set automatically by media-controller._] |
+| `mediatimeislive` | `boolean` | `false`| Include when the media time is at or close to the most current time or _live edge_. Clicking the button will not seek to live when true. [_Set automatically by media-controller._] |
+| `mediapaused` | `boolean` | `false`| Include when the media is paused. The button will unpause the video if paused when seeking to live. [_Set automatically by media-controller._] |
 
 ## Slots
 
