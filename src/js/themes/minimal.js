@@ -75,30 +75,6 @@ template.innerHTML = /*html*/`
       cursor: not-allowed;
     }
 
-    media-captions-button:not(:is([mediacaptionslist], [mediasubtitleslist])) {
-      display: none;
-    }
-
-    media-volume-range[mediavolumeunavailable] {
-      display: none;
-    }
-
-    media-airplay-button[mediaairplayunavailable] {
-      display: none;
-    }
-
-    media-fullscreen-button[mediafullscreenunavailable] {
-      display: none;
-    }
-
-    media-cast-button[mediacastunavailable] {
-      display: none;
-    }
-
-    media-pip-button[mediapipunavailable] {
-      display: none;
-    }
-
     ${/* Turn some buttons off by default */''}
     media-seek-backward-button {
       display: var(--media-control-display, var(--media-seek-backward-button-display, none));

@@ -44,30 +44,6 @@ template.innerHTML = /*html*/`
     --media-control-padding: 9px 7px;
   }
 
-  media-captions-button:not(:is([mediacaptionslist], [mediasubtitleslist])) {
-    display: none;
-  }
-
-  media-volume-range[mediavolumeunavailable] {
-    display: none;
-  }
-
-  media-airplay-button[mediaairplayunavailable] {
-    display: none;
-  }
-
-  media-fullscreen-button[mediafullscreenunavailable] {
-    display: none;
-  }
-
-  media-cast-button[mediacastunavailable] {
-    display: none;
-  }
-
-  media-pip-button[mediapipunavailable] {
-    display: none;
-  }
-
   media-time-range,
   media-live-button,
   media-time-display,
