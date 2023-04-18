@@ -184,13 +184,13 @@ const resizeCallback = (entries) => {
 
     Object.keys(ranges).forEach((name) => {
       if (activeBreakpoints.includes(name)) {
-        if (!container.hasAttribute(`breakpoint-${name}`)) {
-          container.setAttribute(`breakpoint-${name}`, '');
+        if (!container.hasAttribute(`breakpoint${name}`)) {
+          container.setAttribute(`breakpoint${name}`, '');
         }
         return;
       }
 
-      container.removeAttribute(`breakpoint-${name}`);
+      container.removeAttribute(`breakpoint${name}`);
     });
   }
 };

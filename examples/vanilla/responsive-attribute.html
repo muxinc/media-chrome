@@ -9,7 +9,7 @@
     <main>
       <h1>Responsive Media Chrome Example</h1>
 
-      <p>This is an example of making Media Chrome responsive using the <code>breakpoint-</code> attributes.</p>
+      <p>This is an example of making Media Chrome responsive using the <code>breakpoint</code> attributes.</p>
 
       <media-controller breakpoints="sm:384 md:576 lg:768 xl:960">
         <video
@@ -103,15 +103,15 @@ media-control-bar {
  * room for the other buttons in the control bar.
  *
  */
-[breakpoint-sm] .centered-controls-overlay {
+[breakpointsm] .centered-controls-overlay {
   display: flex;
 }
 
-[breakpoint-sm] media-control-bar {
+[breakpointsm] media-control-bar {
   display: flex;
 }
 
-[breakpoint-sm]:not([breakpoint-md]) media-control-bar :is(
+[breakpointsm]:not([breakpointmd]) media-control-bar :is(
   media-play-button,
   media-seek-backward-button,
   media-seek-forward-button
@@ -127,11 +127,11 @@ media-control-bar {
  * this query isn't strictly necessary but is included for the sake of completeness.
  *
  */
-[breakpoint-md] .centered-controls-overlay {
+[breakpointmd] .centered-controls-overlay {
   display: none;
 }
 
-[breakpoint-md] media-control-bar {
+[breakpointmd] media-control-bar {
   display: flex;
 }
 
