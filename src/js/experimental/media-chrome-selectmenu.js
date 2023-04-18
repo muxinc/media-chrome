@@ -180,14 +180,14 @@ class MediaChromeSelectMenu extends window.HTMLElement {
     const buttonRect = this.#button.getBoundingClientRect();
 
     // if we're outside of the controller,
-    // one of the components should have a media-controller attribute.
+    // one of the components should have a mediacontroller attribute.
     // There isn't a good way now to differentiate between default buttons or
     // or a slotted button but outside of the media-controller.
     // So, a regular declarative selectmenu may default to open up rather than down.
     if (
-      this.hasAttribute('media-controller') ||
-      this.#button.hasAttribute('media-controller') ||
-      this.#listbox.hasAttribute('media-controller')
+      this.hasAttribute('mediacontroller') ||
+      this.#button.hasAttribute('mediacontroller') ||
+      this.#listbox.hasAttribute('mediacontroller')
     ) {
       this.#listbox.style.zIndex = '1';
       this.#listbox.style.bottom = 'unset';
