@@ -179,50 +179,48 @@ template.innerHTML = /*html*/`
  * @preserve
  * @extends {HTMLElement}
  *
- * @cssproperty --media-chrome-range-display
- * @cssproperty --media-control-display
+ * @cssproperty [--media-control-display = var(--media-chrome-range-display, inline-block)]
  *
- * @cssproperty --media-range-padding
- * @cssproperty --media-range-padding-left
- * @cssproperty --media-range-padding-right
+ * @cssproperty [--media-range-padding = var(--media-control-padding, 10px)]
+ * @cssproperty [--media-range-padding-left = var(--media-range-padding, var(--media-control-padding, 10px))]
+ * @cssproperty [--media-range-padding-right = var(--media-range-padding, var(--media-control-padding, 10px))]
  *
- * @cssproperty --media-range-thumb-width
- * @cssproperty --media-range-thumb-height
+ * @cssproperty [--media-range-thumb-width = 10px]
+ * @cssproperty [--media-range-thumb-height = 10px]
  * @cssproperty --media-range-thumb-border
- * @cssproperty --media-range-thumb-border-radius
- * @cssproperty --media-range-thumb-background
- * @cssproperty --media-range-thumb-box-shadow
+ * @cssproperty [--media-range-thumb-border-radius = 10px]
+ * @cssproperty [--media-range-thumb-background = var(--media-primary-color, rgb(238 238 238))]
+ * @cssproperty [--media-range-thumb-box-shadow = 1px 1px 1px transparent]
  * @cssproperty --media-range-thumb-transition
  * @cssproperty --media-range-thumb-transform
  * @cssproperty --media-range-thumb-opacity
  *
  * @cssproperty --media-range-track-background
- * @cssproperty --media-range-track-width
- * @cssproperty --media-range-track-height
+ * @cssproperty [--media-range-track-width = 100%]
+ * @cssproperty [--media-range-track-height = 4px]
  * @cssproperty --media-range-track-border
  * @cssproperty --media-range-track-outline
  * @cssproperty --media-range-track-outline-offset
- * @cssproperty --media-range-track-border-radius
+ * @cssproperty [--media-range-track-border-radius = 1px]
  * @cssproperty --media-range-track-box-shadow
  * @cssproperty --media-range-track-transition
  * @cssproperty --media-range-track-translate-x
  * @cssproperty --media-range-track-translate-y
  *
- * @cssproperty --media-time-range-hover-display
- * @cssproperty --media-time-range-hover-bottom
- * @cssproperty --media-time-range-hover-bottom
+ * @cssproperty [--media-time-range-hover-display = none]
+ * @cssproperty [--media-time-range-hover-bottom = 5px]
+ * @cssproperty [--media-time-range-hover-height = max(calc(100% + 5px), 20px)]
  *
  * @cssproperty --media-range-track-pointer-background
  * @cssproperty --media-range-track-pointer-border-right
  *
- * @cssproperty --media-control-padding
- * @cssproperty --media-control-background
- * @cssproperty --media-control-hover-background
+ * @cssproperty [--media-control-padding = 10px]
+ * @cssproperty [--media-control-background = var(--media-secondary-color, rgb(20 20 30 / .7)]
+ * @cssproperty [--media-control-hover-background = rgb(50 50 70 / .7)]
  *
- * @cssproperty --media-primary-color
- * @cssproperty --media-secondary-color
- * @cssproperty --media-focus-box-shadow
- * @cssproperty --media-control-height
+ * @cssproperty [--media-primary-color = rgb(238 238 238)]
+ * @cssproperty [--media-secondary-color = rgb(20 20 30 / .7)]
+ * @cssproperty [--media-control-height = 24px]
  */
 class MediaChromeRange extends window.HTMLElement {
   #thumbWidth;
