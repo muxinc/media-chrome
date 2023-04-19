@@ -63,26 +63,25 @@ template.innerHTML = /*html*/`
  * @preserve
  * @extends {HTMLElement}
  *
- * @cssproperty --media-chrome-button-display
- * @cssproperty --media-control-display
- *
- * @cssproperty --media-font
- * @cssproperty --media-font-weight
- * @cssproperty --media-font-family
- * @cssproperty --media-font-size
- * @cssproperty --media-text-content-height
- *
- * @cssproperty --media-text-color
- * @cssproperty --media-icon-color
- * @cssproperty --media-control-background
- * @cssproperty --media-control-hover-background
+ * @cssproperty [--media-text-color=var(--media-primary-color, rgb(238 238 238))]
+ * @cssproperty [--media-icon-color=var(--media-primary-color, rgb(238 238 238))]
  * @cssproperty --media-primary-color
  * @cssproperty --media-secondary-color
  *
+ * @cssproperty [--media-control-display=inline-flex]
+ * @cssproperty [--media-control-background=var(--media-secondary-color, rgb(20 20 30 / .7))]
+ * @cssproperty [--media-control-hover-background=rgba(50 50 70 / .7)]
+ * @cssproperty [--media-control-padding=10px]
  * @cssproperty --media-control-height
- * @cssproperty --media-control-padding
+ *
+ * @cssproperty --media-font
+ * @cssproperty [--media-font-weight=bold]
+ * @cssproperty [--media-font-family=helvetica neue, segoe ui, roboto, arial, sans-serif]
+ * @cssproperty [--media-font-size=14px]
+ * @cssproperty [--media-text-content-height=var(--media-control-height, 24px)]
+ *
  * @cssproperty --media-button-icon-width
- * @cssproperty --media-button-icon-height
+ * @cssproperty [--media-button-icon-height=var(--media-control-height, 24px)]
  * @cssproperty --media-button-icon-transform
  * @cssproperty --media-button-icon-transition
  */
