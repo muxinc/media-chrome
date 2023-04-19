@@ -33,6 +33,14 @@ const updateSeekIconValue = (el) => {
   updateIconText(svg, value);
 };
 
+/**
+ * @extends {MediaChromeButton}
+ *
+ * @slot forward
+ *
+ * @cssproperty --media-seek-forward-display
+ * @cssproperty --media-control-display
+ */
 class MediaSeekForwardButton extends MediaChromeButton {
   static get observedAttributes() {
     return [

@@ -14,9 +14,14 @@ slotTemplate.innerHTML = `
 `;
 
 /**
- * @attr {(unavailable|unsupported)} media-airplay-unavailable
+ * @extends {MediaChromeButton}
  *
  * @slot airplay
+ *
+ * @cssproperty --media-airplay-button-display
+ * @cssproperty --media-control-display
+ *
+ * @attr {(unavailable|unsupported)} mediaairplayunavailable
  *
  * @event {CustomEvent} mediaairplayrequest
  */

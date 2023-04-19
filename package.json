@@ -20,7 +20,7 @@
     "clean": "rimraf dist",
     "lint": "eslint src/js",
     "build:types": "tsc",
-    "build:esm": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=esm --outdir=dist",
+    "build:esm": "cp -R src/js/ dist/",
     "build:cjs": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=cjs --outdir=dist/cjs",
     "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome && yarn size",
     "build:react": "node ./scripts/react/build.js",

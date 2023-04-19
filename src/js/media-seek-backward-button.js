@@ -33,6 +33,14 @@ const updateSeekIconValue = (el) => {
   updateIconText(svg, value);
 };
 
+/**
+ * @extends {MediaChromeButton}
+ *
+ * @slot backward
+ *
+ * @cssproperty --media-seek-backward-button-display
+ * @cssproperty --media-control-display
+ */
 class MediaSeekBackwardButton extends MediaChromeButton {
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME];

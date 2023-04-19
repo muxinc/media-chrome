@@ -35,6 +35,15 @@ const updateAriaLabel = (el) => {
   el.setAttribute('aria-label', label);
 };
 
+/**
+ * @extends {MediaChromeButton}
+ *
+ * @slot play
+ * @slot pause
+ *
+ * @cssproperty --media-play-button-display
+ * @cssproperty --media-control-display
+ */
 class MediaPlayButton extends MediaChromeButton {
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_PAUSED];

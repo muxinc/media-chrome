@@ -43,6 +43,16 @@ slotTemplate.innerHTML = `
   <slot name="spacer">&nbsp;</slot><slot name="text">LIVE</slot>
 `;
 
+/**
+ * @extends {MediaChromeButton}
+ *
+ * @slot indicator
+ * @slot spacer
+ * @slot text
+ *
+ * @cssproperty --media-live-button-display
+ * @cssproperty --media-control-display
+ */
 class MediaLiveButton extends MediaChromeButton {
   static get observedAttributes() {
     return [

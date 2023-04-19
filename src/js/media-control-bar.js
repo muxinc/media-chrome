@@ -29,6 +29,15 @@ template.innerHTML = `
   <slot></slot>
 `;
 
+/**
+ * @extends {HTMLElement}
+ *
+ * @cssproperty --media-control-bar-display
+ * @cssproperty --media-control-display
+ *
+ * @cssproperty --media-text-color
+ * @cssproperty --media-primary-color
+ */
 class MediaControlBar extends window.HTMLElement {
   #mediaController;
 
