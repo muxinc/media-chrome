@@ -176,6 +176,7 @@ template.innerHTML = /*html*/`
 `;
 
 /**
+ * @preserve
  * @extends {HTMLElement}
  *
  * @cssproperty --media-chrome-range-display

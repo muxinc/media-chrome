@@ -17,7 +17,7 @@ const formatAsPercentString = ({ value, max }) =>
   `${Math.round((value / max) * 100)}%`;
 
 /**
- * @extends {MediaChromeRange}
+ * @preserve
  *
  * @cssproperty --media-volume-range-display
  * @cssproperty --media-control-display

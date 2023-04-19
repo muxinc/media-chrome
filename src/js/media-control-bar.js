@@ -30,7 +30,7 @@ template.innerHTML = `
 `;
 
 /**
- * @extends {HTMLElement}
+ * @preserve
  *
  * @cssproperty --media-control-bar-display
  * @cssproperty --media-control-display

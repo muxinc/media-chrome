@@ -34,7 +34,7 @@ const updateSeekIconValue = (el) => {
 };
 
 /**
- * @extends {MediaChromeButton}
+ * @preserve
  *
  * @slot forward
  *

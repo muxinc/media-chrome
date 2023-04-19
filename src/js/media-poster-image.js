@@ -7,7 +7,7 @@ export const Attributes = {
 
 const template = document.createElement('template');
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
   <style>
     :host {
       pointer-events: none;
@@ -38,6 +38,9 @@ const setBackgroundImage = (el, image) => {
   el.style['background-image'] = `url('${image}')`;
 }
 
+/**
+ * @preserve
+ */
 class MediaPosterImage extends window.HTMLElement {
   static get observedAttributes() {
     return [Attributes.PLACEHOLDER_SRC, Attributes.SRC];

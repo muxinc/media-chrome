@@ -16,7 +16,7 @@ slotTemplate.innerHTML = `
 `;
 
 /**
- * @extends {MediaChromeButton}
+ * @preserve
  *
  * @cssproperty --media-playback-rate-button-display
  * @cssproperty --media-control-display

@@ -18,6 +18,9 @@ template.innerHTML = `
 </style>
 `;
 
+/**
+ * @preserve
+ */
 class MediaGestureReceiver extends window.HTMLElement {
   #mediaController;
 

@@ -36,7 +36,7 @@ const updateAriaLabel = (el) => {
 };
 
 /**
- * @extends {MediaChromeButton}
+ * @preserve
  *
  * @slot enter
  * @slot exit

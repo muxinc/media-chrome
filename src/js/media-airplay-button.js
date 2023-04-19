@@ -14,7 +14,7 @@ slotTemplate.innerHTML = `
 `;
 
 /**
- * @extends {MediaChromeButton}
+ * @preserve
  *
  * @slot airplay
  *

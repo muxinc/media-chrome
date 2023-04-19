@@ -46,7 +46,7 @@ template.innerHTML = /*html*/`
 `;
 
 /**
- * @extends {HTMLElement}
+ * @preserve
  *
  * @cssproperty --media-text-display-display
  * @cssproperty --media-control-display
