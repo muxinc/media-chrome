@@ -18,8 +18,7 @@ slotTemplate.innerHTML = `
  *
  * @slot airplay
  *
- * @cssproperty --media-airplay-button-display
- * @cssproperty --media-control-display
+ * @cssproperty [--media-airplay-button-display = inline-flex]
  *
  * @attr {(unavailable|unsupported)} mediaairplayunavailable
  *

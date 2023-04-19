@@ -42,8 +42,7 @@ const updateAriaChecked = (el) => {
  * @slot on
  * @slot off
  *
- * @cssproperty --media-captions-button-display
- * @cssproperty --media-control-display
+ * @cssproperty [--media-captions-button-display = inline-flex]
  *
  */
 class MediaCaptionsButton extends MediaChromeButton {

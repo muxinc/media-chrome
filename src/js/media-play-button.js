@@ -41,8 +41,7 @@ const updateAriaLabel = (el) => {
  * @slot play
  * @slot pause
  *
- * @cssproperty --media-play-button-display
- * @cssproperty --media-control-display
+ * @cssproperty [--media-play-button-display = inline-flex]
  */
 class MediaPlayButton extends MediaChromeButton {
   static get observedAttributes() {

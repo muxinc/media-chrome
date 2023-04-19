@@ -12,7 +12,7 @@ const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
 const indicatorSVG = '<svg viewBox="0 0 6 12"><circle cx="3" cy="6" r="2"></circle></svg>';
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = `
+slotTemplate.innerHTML = /*html*/`
   <style>
 
   slot[name=indicator] > *,
@@ -50,8 +50,7 @@ slotTemplate.innerHTML = `
  * @slot spacer
  * @slot text
  *
- * @cssproperty --media-live-button-display
- * @cssproperty --media-control-display
+ * @cssproperty [--media-live-button-display = inline-flex]
  */
 class MediaLiveButton extends MediaChromeButton {
   static get observedAttributes() {
