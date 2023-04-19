@@ -34,31 +34,31 @@ Button to toggle the sound. The icon responds to volume changes and acts as part
 ```
 
 **Volume Off / Muted**
-<media-mute-button media-volume-level="off"></media-mute-button>
+<media-mute-button mediavolumelevel="off"></media-mute-button>
 
 ```html
-<media-mute-button media-volume-level="off"></media-mute-button>
+<media-mute-button mediavolumelevel="off"></media-mute-button>
 ```
 
 **Volume Low**
-<media-mute-button media-volume-level="low"></media-mute-button>
+<media-mute-button mediavolumelevel="low"></media-mute-button>
 
 ```html
-<media-mute-button media-volume-level="low"></media-mute-button>
+<media-mute-button mediavolumelevel="low"></media-mute-button>
 ```
 
 **Volume Medium**
-<media-mute-button media-volume-level="medium"></media-mute-button>
+<media-mute-button mediavolumelevel="medium"></media-mute-button>
 
 ```html
-<media-mute-button media-volume-level="medium"></media-mute-button>
+<media-mute-button mediavolumelevel="medium"></media-mute-button>
 ```
 
 **Volume High**
-<media-mute-button media-volume-level="high"></media-mute-button>
+<media-mute-button mediavolumelevel="high"></media-mute-button>
 
 ```html
-<media-mute-button media-volume-level="high"></media-mute-button>
+<media-mute-button mediavolumelevel="high"></media-mute-button>
 ```
 
 </div>
@@ -76,31 +76,31 @@ Button to toggle the sound. The icon responds to volume changes and acts as part
 ```
 
 **Volume Off / Muted**
-<media-mute-button media-volume-level="off"><span slot="off">Off</span></media-mute-button>
+<media-mute-button mediavolumelevel="off"><span slot="off">Off</span></media-mute-button>
 
 ```html
-<media-mute-button media-volume-level="off"><span slot="off">Off</span></media-mute-button>
+<media-mute-button mediavolumelevel="off"><span slot="off">Off</span></media-mute-button>
 ```
 
 **Volume Low**
-<media-mute-button media-volume-level="low"><span slot="low">Low</span></media-mute-button>
+<media-mute-button mediavolumelevel="low"><span slot="low">Low</span></media-mute-button>
 
 ```html
-<media-mute-button media-volume-level="low"><span slot="low">Low</span></media-mute-button>
+<media-mute-button mediavolumelevel="low"><span slot="low">Low</span></media-mute-button>
 ```
 
 **Volume Medium**
-<media-mute-button media-volume-level="medium"><span slot="medium">Med</span></media-mute-button>
+<media-mute-button mediavolumelevel="medium"><span slot="medium">Med</span></media-mute-button>
 
 ```html
-<media-mute-button media-volume-level="medium"><span slot="medium">Med</span></media-mute-button>
+<media-mute-button mediavolumelevel="medium"><span slot="medium">Med</span></media-mute-button>
 ```
 
 **Volume High**
-<media-mute-button media-volume-level="high"><span slot="high">High</span></media-mute-button>
+<media-mute-button mediavolumelevel="high"><span slot="high">High</span></media-mute-button>
 
 ```html
-<media-mute-button media-volume-level="high"><span slot="high">High</span></media-mute-button>
+<media-mute-button mediavolumelevel="high"><span slot="high">High</span></media-mute-button>
 ```
 
 </div>

@@ -50,7 +50,7 @@ Example (`autohide` disabled):
 
 Change the default breakpoints that will get activated once the player width
 equals or is greater than the breakpoint value. The breakpoints are propagated
-as `breakpoint-x` attributes on media-controller and as `breakpointX` 
+as `breakpointx` attributes on media-controller and as `breakpointx`
 [theme variables](./themes/handling-variables).
 
 ```html
@@ -59,30 +59,30 @@ as `breakpoint-x` attributes on media-controller and as `breakpointX`
 </media-controller>
 ```
 
-### default-stream-type
+### defaultstreamtype
 
-`default-stream-type` (values: `live`, `on-demand`)
+`defaultstreamtype` (values: `live`, `on-demand`)
 
-Media controller can't know the stream is live or on-demand until the media is loaded. Setting `default-stream-type` can prevent UI changes happening between when the player is loaded and when the media is loaded. This may happen when a player is built to support both stream types, and then is used to play a stream type that is different from the player's default.
+Media controller can't know the stream is live or on-demand until the media is loaded. Setting `defaultstreamtype` can prevent UI changes happening between when the player is loaded and when the media is loaded. This may happen when a player is built to support both stream types, and then is used to play a stream type that is different from the player's default.
 
-[See also media-stream-type.](./stream-type)
+[See also mediastreamtype.](./stream-type)
 
 ```html
-<media-controller default-stream-type="live">
+<media-controller defaultstreamtype="live">
   ...
 </media-controller>
 ```
 
-### fullscreen-element
+### fullscreenelement
 
-`fullscreen-element` (`id` string)
+`fullscreenelement` (`id` string)
 
-By default, the media-controller will be the target element when entering fullscreen. However, you may specify a different element by setting `fullscreen-element` to that
+By default, the media-controller will be the target element when entering fullscreen. However, you may specify a different element by setting `fullscreenelement` to that
 element's `id` attribute.
 
 ```html
 <div id="wrapper">
-  <media-controller fullscreen-element="wrapper">
+  <media-controller fullscreenelement="wrapper">
     ...
   </media-controller>
   <div>This will show up when in fullscreen.</div>
@@ -96,16 +96,16 @@ NOTE: For more advanced use cases, there is also the `fullscreenElement` propert
 mediaControllerEl.fullscreenElement = myWrapperEl;
 ```
 
-### gestures-disabled
+### gesturesdisabled
 
-`gestures-disabled` (boolean, video only) 
+`gesturesdisabled` (boolean, video only)
 
 Use this to turn off any built in or custom gestures, such as "click to toggle play/pause".
 
-Example (disabling gestures via `gestures-disabled`):
+Example (disabling gestures via `gesturesdisabled`):
 
 ```html
-<media-controller gestures-disabled>
+<media-controller gesturesdisabled>
   ...
 </media-controller>
 ```
@@ -145,8 +145,8 @@ Example (disallow seeking shortcuts):
 For live media streams, you may want to know a range of times that, when playing, count as playing "the live edge". The `liveedgeoffset` defines the delta, in seconds, from the latest playable/seekable time that should count as the live edge. By default this value is 10 (seconds). The `<media-live-button>` element uses this to indicate when playback is or is not live.
 
 See also:
-- [default-stream-type attribute](#default-stream-type)
-- [media-stream-type description](./stream-type)
+- [defaultstreamtype attribute](#default-stream-type)
+- [mediastreamtype description](./stream-type)
 - [```<media-live-button>``` element](./media-live-button)
 
 ```html
@@ -159,7 +159,7 @@ See also:
 
 `noautoseektolive` (boolean)
 
-By default, when a user unpauses a live stream, media-controller will also automatically seek to the most current time (or live edge) in the live stream. If you don't want media-controller to do this you can include the `noautoseektolive` attribute. 
+By default, when a user unpauses a live stream, media-controller will also automatically seek to the most current time (or live edge) in the live stream. If you don't want media-controller to do this you can include the `noautoseektolive` attribute.
 
 ```html
 <media-controller noautoseektolive>

@@ -18,43 +18,43 @@ Slider to see how far the playhead is through the media duration, and seek to ne
 <h3>Time 0s (buffered 15s, duration 60s)</h3>
 
 <media-time-range
-  media-current-time="0"
-  media-buffered="0:15"
-  media-duration="60"></media-time-range>
+  mediacurrenttime="0"
+  mediabuffered="0:15"
+  mediaduration="60"></media-time-range>
 
 ```html
 <media-time-range
-  media-current-time="0"
-  media-buffered="0:15"
-  media-duration="60"
+  mediacurrenttime="0"
+  mediabuffered="0:15"
+  mediaduration="60"
 ></media-time-range>
 ```
 
 <h3>Time 30s (buffered 60s, duration 60s)</h3>
 
 <media-time-range
-  media-current-time="30"
-  media-buffered="0:60"
-  media-duration="60"></media-time-range>
+  mediacurrenttime="30"
+  mediabuffered="0:60"
+  mediaduration="60"></media-time-range>
 
 ```html
 <media-time-range
-  media-current-time="30"
-  media-buffered="0:60"
-  media-duration="60"
+  mediacurrenttime="30"
+  mediabuffered="0:60"
+  mediaduration="60"
 ></media-time-range>
 ```
 
 <h3>Time 60s (duration 60s)</h3>
 
 <media-time-range
-  media-current-time="60"
-  media-duration="60"></media-time-range>
+  mediacurrenttime="60"
+  mediaduration="60"></media-time-range>
 
 ```html
 <media-time-range
-  media-current-time="60"
-  media-duration="60"
+  mediacurrenttime="60"
+  mediaduration="60"
 ></media-time-range>
 ```
 

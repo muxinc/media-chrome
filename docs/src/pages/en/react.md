@@ -20,11 +20,11 @@ and so on. For a complete list of components, see the left sidebar.
 
 ## Property Names
 
-Also, to keep things "idiomatically React", the wrapper components use camelCase prop names for any kebab-case attribute names, so
+Also, to keep things "idiomatically React", the wrapper components use camelCase prop names for lowercase attribute names, so
 
-- `seek-offset` becomes `seekOffset`
-- `show-duration` becomes `showDuration`
-- `no-subtitles-fallback` becomes `noSubtitlesFallback`
+- `seekoffset` becomes `seekOffset`
+- `showduration` becomes `showDuration`
+- `nosubtitlesfallback` becomes `noSubtitlesFallback`
 
 and so on. Additionally, we'll automatically translate "special" React attributes like [`className`](https://reactjs.org/docs/dom-elements.html#classname).
 

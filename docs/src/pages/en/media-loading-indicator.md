@@ -25,15 +25,15 @@ Shows a loading indicator when the media is buffering.
 
 <h3>Is loading (media is buffering)</h3>
 
-<media-loading-indicator is-loading></media-loading-indicator>
+<media-loading-indicator isloading></media-loading-indicator>
 
 ```html
-<media-loading-indicator is-loading></media-loading-indicator>
+<media-loading-indicator isloading></media-loading-indicator>
 ```
 
 <h3>Alternate content</h3>
 
-<media-loading-indicator is-loading>
+<media-loading-indicator isloading>
   <svg slot="loading" viewBox="-12 -15 48 60">
     <path d="M0 0h4v10H0z">
       <animateTransform
@@ -72,7 +72,7 @@ Shows a loading indicator when the media is buffering.
 </media-loading-indicator>
 
 ```html
-<media-loading-indicator is-loading>
+<media-loading-indicator isloading>
   <svg slot="loading" viewBox="-12 -15 48 60">
     <path d="M0 0h4v10H0z">
       <animateTransform
@@ -115,7 +115,7 @@ Shows a loading indicator when the media is buffering.
 
 | Name            | Type     | Default Value | Description                                                                                   |
 | --------------- | -------- | ------------- | --------------------------------------------------------------------------------------------- |
-| `loading-delay` | `number` | `500`         | The amount of time in ms the media has to be buffering before the loading indicator is shown. |
+| `loadingdelay` | `number` | `500`         | The amount of time in ms the media has to be buffering before the loading indicator is shown. |
 
 # Slots
 

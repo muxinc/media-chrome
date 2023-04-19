@@ -27,7 +27,7 @@ For alternative content for the button, slot a [media-captions-button](./media-c
 </media-captions-selectmenu>
 
 <media-captions-selectmenu>
-    <media-captions-button slot="button" media-captions-showing="en:English%20Closed%20Captions">
+    <media-captions-button slot="button" mediacaptionsshowing="en:English%20Closed%20Captions">
       <span slot="on"><b><u>CC</u></b></span>
       <span slot="off">CC</span>
     </media-captions-button>
@@ -42,7 +42,7 @@ For alternative content for the button, slot a [media-captions-button](./media-c
 </media-captions-selectmenu>
 
 <media-captions-selectmenu>
-    <media-captions-button slot="button" media-captions-showing="en:English%20Closed%20Captions">
+    <media-captions-button slot="button" mediacaptionsshowing="en:English%20Closed%20Captions">
       <span slot="on"><b><u>CC</u></b></span>
       <span slot="off">CC</span>
     </media-captions-button>
@@ -98,8 +98,8 @@ Check out this example for usage, but please try and use better colors as this c
 
 | Name                    | Type      | Default Value | Description                                                                                        |
 | ----------------------- | --------- | ------------- | -------------------------------------------------------------------------------------------------- |
-| `default-showing` | `boolean` | `false`       | Controls whether media-chrome will show a subtitle or captions tracks by default |
-| `no-subtitles-fallback` | `boolean` | `false`       | Controls whether media-chrome will show subtitle tracks if no closed captions tracks are available |
+| `defaultshowing` | `boolean` | `false`       | Controls whether media-chrome will show a subtitle or captions tracks by default |
+| `nosubtitlesfallback` | `boolean` | `false`       | Controls whether media-chrome will show subtitle tracks if no closed captions tracks are available |
 
 ## Slots
 

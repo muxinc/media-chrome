@@ -17,18 +17,18 @@ Display only component to show the duration of the media.
 
 <h3>Current time of 2 minutes</h3>
 
-<media-duration-display media-duration="120.0"></media-duration-display>
+<media-duration-display mediaduration="120.0"></media-duration-display>
 
 ```html
-<media-duration-display media-duration="120.0"></media-duration-display>
+<media-duration-display mediaduration="120.0"></media-duration-display>
 ```
 
 <h3>Current time of one hour</h3>
 
-<media-duration-display media-duration="3600.0"></media-duration-display>
+<media-duration-display mediaduration="3600.0"></media-duration-display>
 
 ```html
-<media-duration-display media-duration="3600.0"></media-duration-display>
+<media-duration-display mediaduration="3600.0"></media-duration-display>
 ```
 
 ## Attributes

@@ -17,10 +17,10 @@ Button to bring up the Cast menu and select playback on a Chromecast device.
 
 <h3>Stop casting</h3>
 
-<media-cast-button media-is-casting></media-cast-button>
+<media-cast-button mediaiscasting></media-cast-button>
 
 ```html
-<media-cast-button media-is-casting></media-cast-button>
+<media-cast-button mediaiscasting></media-cast-button>
 ```
 
 <h3>Alternate content</h3>
@@ -29,7 +29,7 @@ Button to bring up the Cast menu and select playback on a Chromecast device.
   <span slot="enter">Cast</span>
   <span slot="exit">Exit</span>
 </media-cast-button>
-<media-cast-button media-is-casting>
+<media-cast-button mediaiscasting>
   <span slot="enter">Cast</span>
   <span slot="exit">Exit</span>
 </media-cast-button>
@@ -39,7 +39,7 @@ Button to bring up the Cast menu and select playback on a Chromecast device.
   <span slot="enter">Cast</span>
   <span slot="exit">Exit</span>
 </media-cast-button>
-<media-cast-button media-is-casting>
+<media-cast-button mediaiscasting>
   <span slot="enter">Cast</span>
   <span slot="exit">Exit</span>
 </media-cast-button>
