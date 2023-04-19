@@ -19,8 +19,7 @@ const formatAsPercentString = ({ value, max }) =>
 /**
  * @preserve
  *
- * @cssproperty --media-volume-range-display
- * @cssproperty --media-control-display
+ * @cssproperty [--media-volume-range-display = inline-block]
  */
 class MediaVolumeRange extends MediaChromeRange {
   static get observedAttributes() {
