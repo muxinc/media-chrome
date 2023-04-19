@@ -44,7 +44,7 @@ slotTemplate.innerHTML = `
 `;
 
 /**
- * @extends {MediaChromeButton}
+ * @preserve
  *
  * @slot indicator
  * @slot spacer

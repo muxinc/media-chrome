@@ -42,7 +42,7 @@ const updateAriaChecked = (el) => {
 };
 
 /**
- * @extends {MediaChromeButton}
+ * @preserve
  *
  * @slot on
  * @slot off

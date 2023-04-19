@@ -67,6 +67,9 @@ svg, img, ::slotted(svg), ::slotted(img) {
 
 const DEFAULT_LOADING_DELAY = 500;
 
+/**
+ * @preserve
+ */
 class MediaLoadingIndicator extends window.HTMLElement {
   #mediaController;
 

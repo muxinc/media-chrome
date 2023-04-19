@@ -58,7 +58,7 @@ const updateAriaValueText = (el) => {
 };
 
 /**
- * @extends {MediaTextDisplay}
+ * @preserve
  *
  * @cssproperty --media-time-display-display
  * @cssproperty --media-control-display

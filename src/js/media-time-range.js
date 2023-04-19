@@ -127,7 +127,7 @@ template.innerHTML = /*html*/`
 `;
 
 /**
- * @extends {MediaChromeRange}
+ * @preserve
  *
  * @cssproperty --media-time-range-display
  * @cssproperty --media-control-display

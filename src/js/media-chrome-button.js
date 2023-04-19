@@ -60,6 +60,7 @@ template.innerHTML = /*html*/`
 `;
 
 /**
+ * @preserve
  * @extends {HTMLElement}
  *
  * @cssproperty --media-chrome-button-display

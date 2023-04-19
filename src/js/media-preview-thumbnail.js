@@ -13,7 +13,7 @@ export const Attributes = {
 }
 
 const template = document.createElement('template');
-template.innerHTML = `
+template.innerHTML = /*html*/`
   <style>
     :host {
       box-sizing: border-box;
@@ -30,6 +30,7 @@ template.innerHTML = `
 `;
 
 /**
+ * @preserve
  * @extends {HTMLElement}
  */
 class MediaPreviewThumbnail extends window.HTMLElement {
