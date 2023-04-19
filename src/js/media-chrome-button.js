@@ -61,6 +61,29 @@ template.innerHTML = /*html*/`
 
 /**
  * @extends {HTMLElement}
+ *
+ * @cssproperty --media-chrome-button-display
+ * @cssproperty --media-control-display
+ *
+ * @cssproperty --media-font
+ * @cssproperty --media-font-weight
+ * @cssproperty --media-font-family
+ * @cssproperty --media-font-size
+ * @cssproperty --media-text-content-height
+ *
+ * @cssproperty --media-text-color
+ * @cssproperty --media-icon-color
+ * @cssproperty --media-control-background
+ * @cssproperty --media-control-hover-background
+ * @cssproperty --media-primary-color
+ * @cssproperty --media-secondary-color
+ *
+ * @cssproperty --media-control-height
+ * @cssproperty --media-control-padding
+ * @cssproperty --media-button-icon-width
+ * @cssproperty --media-button-icon-height
+ * @cssproperty --media-button-icon-transform
+ * @cssproperty --media-button-icon-transition
  */
 class MediaChromeButton extends window.HTMLElement {
   #mediaController;

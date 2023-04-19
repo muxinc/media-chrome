@@ -126,6 +126,12 @@ template.innerHTML = /*html*/`
   </div>
 `;
 
+/**
+ * @extends {MediaChromeRange}
+ *
+ * @cssproperty --media-time-range-display
+ * @cssproperty --media-control-display
+ */
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
     return [

@@ -47,6 +47,15 @@ const updateAriaLabel = (el) => {
   el.setAttribute('aria-label', label);
 };
 
+/**
+ * @extends {MediaChromeButton}
+ *
+ * @slot enter
+ * @slot exit
+ *
+ * @cssproperty --media-fullscreen-button-display
+ * @cssproperty --media-control-display
+ */
 class MediaFullscreenButton extends MediaChromeButton {
   static get observedAttributes() {
     return [

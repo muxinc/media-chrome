@@ -45,6 +45,28 @@ template.innerHTML = /*html*/`
   <slot></slot>
 `;
 
+/**
+ * @extends {HTMLElement}
+ *
+ * @cssproperty --media-text-display-display
+ * @cssproperty --media-control-display
+ *
+ * @cssproperty --media-font
+ * @cssproperty --media-font-weight
+ * @cssproperty --media-font-family
+ * @cssproperty --media-font-size
+ * @cssproperty --media-text-content-height
+ *
+ * @cssproperty --media-text-color
+ * @cssproperty --media-icon-color
+ * @cssproperty --media-control-background
+ * @cssproperty --media-control-hover-background
+ * @cssproperty --media-primary-color
+ * @cssproperty --media-secondary-color
+ *
+ * @cssproperty --media-control-height
+ * @cssproperty --media-control-padding
+ */
 class MediaTextDisplay extends window.HTMLElement {
   #mediaController;
 

@@ -177,6 +177,51 @@ template.innerHTML = /*html*/`
 
 /**
  * @extends {HTMLElement}
+ *
+ * @cssproperty --media-chrome-range-display
+ * @cssproperty --media-control-display
+ *
+ * @cssproperty --media-range-padding
+ * @cssproperty --media-range-padding-left
+ * @cssproperty --media-range-padding-right
+ *
+ * @cssproperty --media-range-thumb-width
+ * @cssproperty --media-range-thumb-height
+ * @cssproperty --media-range-thumb-border
+ * @cssproperty --media-range-thumb-border-radius
+ * @cssproperty --media-range-thumb-background
+ * @cssproperty --media-range-thumb-box-shadow
+ * @cssproperty --media-range-thumb-transition
+ * @cssproperty --media-range-thumb-transform
+ * @cssproperty --media-range-thumb-opacity
+ *
+ * @cssproperty --media-range-track-background
+ * @cssproperty --media-range-track-width
+ * @cssproperty --media-range-track-height
+ * @cssproperty --media-range-track-border
+ * @cssproperty --media-range-track-outline
+ * @cssproperty --media-range-track-outline-offset
+ * @cssproperty --media-range-track-border-radius
+ * @cssproperty --media-range-track-box-shadow
+ * @cssproperty --media-range-track-transition
+ * @cssproperty --media-range-track-translate-x
+ * @cssproperty --media-range-track-translate-y
+ *
+ * @cssproperty --media-time-range-hover-display
+ * @cssproperty --media-time-range-hover-bottom
+ * @cssproperty --media-time-range-hover-bottom
+ *
+ * @cssproperty --media-range-track-pointer-background
+ * @cssproperty --media-range-track-pointer-border-right
+ *
+ * @cssproperty --media-control-padding
+ * @cssproperty --media-control-background
+ * @cssproperty --media-control-hover-background
+ *
+ * @cssproperty --media-primary-color
+ * @cssproperty --media-secondary-color
+ * @cssproperty --media-focus-box-shadow
+ * @cssproperty --media-control-height
  */
 class MediaChromeRange extends window.HTMLElement {
   #thumbWidth;

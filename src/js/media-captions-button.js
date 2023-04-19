@@ -41,6 +41,16 @@ const updateAriaChecked = (el) => {
   el.setAttribute('aria-checked', areSubsOn(el));
 };
 
+/**
+ * @extends {MediaChromeButton}
+ *
+ * @slot on
+ * @slot off
+ *
+ * @cssproperty --media-captions-button-display
+ * @cssproperty --media-control-display
+ *
+ */
 class MediaCaptionsButton extends MediaChromeButton {
   static get observedAttributes() {
     return [

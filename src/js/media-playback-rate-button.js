@@ -15,6 +15,12 @@ slotTemplate.innerHTML = `
   <span id="container"></span>
 `;
 
+/**
+ * @extends {MediaChromeButton}
+ *
+ * @cssproperty --media-playback-rate-button-display
+ * @cssproperty --media-control-display
+ */
 class MediaPlaybackRateButton extends MediaChromeButton {
   static get observedAttributes() {
     return [

@@ -16,6 +16,12 @@ const toVolume = (el) => {
 const formatAsPercentString = ({ value, max }) =>
   `${Math.round((value / max) * 100)}%`;
 
+/**
+ * @extends {MediaChromeRange}
+ *
+ * @cssproperty --media-volume-range-display
+ * @cssproperty --media-control-display
+ */
 class MediaVolumeRange extends MediaChromeRange {
   static get observedAttributes() {
     return [
