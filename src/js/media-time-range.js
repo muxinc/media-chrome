@@ -68,7 +68,7 @@ template.innerHTML = /*html*/`
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: visibility 0s .25s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-time-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      background: var(--media-preview-thumbnail-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
       box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 4px rgb(0 0 0 / .2));
       max-width: var(--media-preview-thumbnail-max-width, 180px);
       max-height: var(--media-preview-thumbnail-max-height, 160px);
@@ -129,8 +129,28 @@ template.innerHTML = /*html*/`
 /**
  * @preserve
  *
- * @cssproperty --media-time-range-display
- * @cssproperty --media-control-display
+ * @cssproperty [--media-time-range-display = inline-block]
+ *
+ * @cssproperty [--media-preview-transition-property = visibility, opacity]
+ * @cssproperty [--media-preview-transition-duration-out = .25s]
+ * @cssproperty [--media-preview-transition-delay-out = 0]
+ * @cssproperty [--media-preview-transition-duration-in = .5s]
+ * @cssproperty [--media-preview-transition-delay-in = .25s]
+ *
+ * @cssproperty [--media-preview-thumbnail-background = var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7))))]
+ * @cssproperty [--media-preview-thumbnail-box-shadow = 0 0 4px rgb(0 0 0 / .2)]
+ * @cssproperty [--media-preview-thumbnail-max-width = 180px]
+ * @cssproperty [--media-preview-thumbnail-max-height = 160px]
+ * @cssproperty [--media-preview-thumbnail-min-width = 120px]
+ * @cssproperty [--media-preview-thumbnail-min-height = 80px]
+ * @cssproperty [--media-preview-thumbnail-border-radius = var(--media-preview-border-radius) var(--media-preview-border-radius) 0 0]
+ * @cssproperty --media-preview-thumbnail-border
+ *
+ * @cssproperty [--media-preview-time-background = var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7))))]
+ * @cssproperty [--media-preview-time-border-radius = var(--media-preview-border-radius) var(--media-preview-border-radius) var(--media-preview-border-radius) var(--media-preview-border-radius)]
+ * @cssproperty [--media-preview-time-padding = 1px 10px 0]
+ * @cssproperty [--media-preview-time-margin = 0 0 10px]
+ * @cssproperty [--media-preview-time-text-shadow = 0 0 4px rgb(0 0 0 / .75)]
  */
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {

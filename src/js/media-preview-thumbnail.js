@@ -32,6 +32,9 @@ template.innerHTML = /*html*/`
 /**
  * @preserve
  * @extends {HTMLElement}
+ *
+ * @cssproperty [--media-preview-thumbnail-display = inline-block]
+ * @cssproperty [--media-control-display = inline-block]
  */
 class MediaPreviewThumbnail extends window.HTMLElement {
   #mediaController;
