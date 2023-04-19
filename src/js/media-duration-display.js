@@ -7,24 +7,23 @@ import { MediaUIAttributes } from './constants.js';
 /**
  * @preserve
  *
- * @cssproperty --media-duration-display-display
- * @cssproperty --media-control-display
+ * @cssproperty [--media-text-color = var(--media-primary-color, rgb(238 238 238))]
+ * @cssproperty [--media-icon-color = var(--media-primary-color, rgb(238 238 238))]
+ * @cssproperty [--media-primary-color = rgb(238 238 238)]
+ * @cssproperty [--media-secondary-color = rgb(20 20 30 / .7)]
+ *
+ * @cssproperty [--media-duration-display-display = inline-flex]
+ * @cssproperty [--media-control-display = var(--media-duration-display-display, inline-flex))]
+ * @cssproperty [--media-control-background = var(--media-secondary-color, rgb(20 20 30 / .7))]
+ * @cssproperty [--media-control-hover-background = rgba(50 50 70 / .7)]
+ * @cssproperty [--media-control-padding = 10px]
+ * @cssproperty [--media-control-height = 24px]
  *
  * @cssproperty --media-font
- * @cssproperty --media-font-weight
- * @cssproperty --media-font-family
- * @cssproperty --media-font-size
- * @cssproperty --media-text-content-height
- *
- * @cssproperty --media-text-color
- * @cssproperty --media-icon-color
- * @cssproperty --media-control-background
- * @cssproperty --media-control-hover-background
- * @cssproperty --media-primary-color
- * @cssproperty --media-secondary-color
- *
- * @cssproperty --media-control-height
- * @cssproperty --media-control-padding
+ * @cssproperty [--media-font-weight = bold]
+ * @cssproperty [--media-font-family = helvetica neue, segoe ui, roboto, arial, sans-serif]
+ * @cssproperty [--media-font-size = 14px]
+ * @cssproperty [--media-text-content-height = var(--media-control-height, 24px)]
  */
 class MediaDurationDisplay extends MediaTextDisplay {
   #slot;
