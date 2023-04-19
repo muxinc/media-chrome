@@ -188,7 +188,7 @@ export const MediaUIStates = {
   },
   MEDIA_BUFFERED: {
     get: function (controller) {
-      serializeTimeRanges(controller.media?.buffered);
+      return serializeTimeRanges(controller.media?.buffered);
     },
     mediaEvents: ['progress', 'emptied'],
   },
