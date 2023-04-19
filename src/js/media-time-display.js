@@ -60,23 +60,7 @@ const updateAriaValueText = (el) => {
 /**
  * @preserve
  *
- * @cssproperty [--media-text-color = var(--media-primary-color, rgb(238 238 238))]
- * @cssproperty [--media-icon-color = var(--media-primary-color, rgb(238 238 238))]
- * @cssproperty [--media-primary-color = rgb(238 238 238)]
- * @cssproperty [--media-secondary-color = rgb(20 20 30 / .7)]
- *
  * @cssproperty [--media-time-display-display = inline-flex]
- * @cssproperty [--media-control-display = var(--media-time-display-display, inline-flex))]
- * @cssproperty [--media-control-background = var(--media-secondary-color, rgb(20 20 30 / .7))]
- * @cssproperty [--media-control-hover-background = rgba(50 50 70 / .7)]
- * @cssproperty [--media-control-padding = 10px]
- * @cssproperty [--media-control-height = 24px]
- *
- * @cssproperty --media-font
- * @cssproperty [--media-font-weight = bold]
- * @cssproperty [--media-font-family = helvetica neue, segoe ui, roboto, arial, sans-serif]
- * @cssproperty [--media-font-size = 14px]
- * @cssproperty [--media-text-content-height = var(--media-control-height, 24px)]
  */
 class MediaTimeDisplay extends MediaTextDisplay {
   #slot;

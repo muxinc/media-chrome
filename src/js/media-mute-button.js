@@ -62,8 +62,7 @@ const updateAriaLabel = (el) => {
  * @slot medium
  * @slot high
  *
- * @cssproperty --media-mute-button-display
- * @cssproperty --media-control-display
+ * @cssproperty [--media-mute-button-display = inline-flex]
  */
 class MediaMuteButton extends MediaChromeButton {
   static get observedAttributes() {

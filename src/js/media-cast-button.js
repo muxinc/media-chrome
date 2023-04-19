@@ -41,8 +41,7 @@ const updateAriaLabel = (el) => {
  * @slot enter
  * @slot exit
  *
- * @cssproperty --media-cast-button-display
- * @cssproperty --media-control-display
+ * @cssproperty [--media-cast-button-display = inline-flex]
  */
 class MediaCastButton extends MediaChromeButton {
   static get observedAttributes() {
