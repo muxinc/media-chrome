@@ -34,7 +34,7 @@ const StreamTypeValues = Object.values(StreamTypes);
 const getSubtitleTracks = (controller) => {
   return getTextTracksList(controller.media, (textTrack) => {
     return [TextTrackKinds.SUBTITLES, TextTrackKinds.CAPTIONS].includes(textTrack.kind);
-  });
+  }).sort((a, b) => a.kind >= b.kind ? 1 : -1);
 };
 
 const getShowingSubtitleTracks = (controller) => {
