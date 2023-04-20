@@ -81,7 +81,7 @@ class MediaCaptionsButton extends MediaChromeButton {
       // by using a simple truthy (empty or non-empty) string check on the relevant values
       // NOTE: We're using `getAttribute` here instead of `newValue` because we may care about
       // multiple attributes.
-      const nextCaptionsReady = !!this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST);
+      const nextCaptionsReady = newValue
       // If the value changed, (re)set the internal prop
       if (this._captionsReady !== nextCaptionsReady) {
         this._captionsReady = nextCaptionsReady;
