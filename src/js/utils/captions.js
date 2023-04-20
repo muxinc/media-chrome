@@ -282,9 +282,9 @@ export const toggleSubsCaps = (el, forceOff = false) => {
       el.dispatchEvent(evt);
     }
   } else {
-    // If we end up here, it means we have an enabled CC-button that a user has clicked on but there are no captions and no subtitles (or we've disabled subtitles fallback).
+    // If we end up here, it means we have an enabled CC-button that a user has clicked on but there are no captions or subtitles.
     console.error(
-      'Attempting to enable closed captions but none are available! Please verify your media content if this is unexpected.'
+      'Attempting to enable captions or subtitles but none are available! Please verify your media content if this is unexpected.'
     );
   }
 };
