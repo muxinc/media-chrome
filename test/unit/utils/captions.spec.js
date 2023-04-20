@@ -123,7 +123,7 @@ describe('module: util/captions', () => {
       };
 
       const actual = formatTextTrackObj(track);
-      const expected = 'en:English%3A%20with%20descriptions';
+      const expected = 'cc:en:English%3A%20with%20descriptions';
 
       expect(actual).to.equal(expected);
     });
