@@ -101,7 +101,7 @@ describe('module: util/captions', () => {
       const track = { label: 'Spanish', kind: 'subtitles', language: 'es' };
 
       const actual = formatTextTrackObj(track);
-      const expected = 'es:Spanish';
+      const expected = 'sb:es:Spanish';
 
       expect(actual).to.equal(expected);
     });

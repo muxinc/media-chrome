@@ -23,10 +23,6 @@ export const splitTextTracksStr = (textTracksStr = '') =>
  */
 export const parseTextTrackStr = (textTrackStr = '') => {
   let [kind, language, encodedLabel] = textTrackStr.split(':');
-  // if encodedLbale doesn't exist, it means that kind and lanugage are set to the langauge and encodedLbale
-  if (!encodedLabel) {
-    [kind, language, encodedLabel] = ['subtitles', kind, language]
-  }
   const label = encodedLabel ? decodeURIComponent(encodedLabel) : undefined;
   kind = kind === 'cc' ? 'captions' : 'subtitles';
   return {
@@ -95,14 +91,14 @@ export const parseTracks = (trackOrTracks) => {
 /**
  * Translates a TextTrack-like object into a well-defined string representation for the TextTrack
  * @param {Object} obj - A TextTrack or TextTrack-like object
- * @param {string} [obj.kind] - An optional kind for the track.
+ * @param {string} obj.kind - A required kind for the track.
  * @param {string} [obj.label] - An optional label for the track.
  * @param {string} [obj.language] - The BCP-47 compliant string representing the language code of the track
  * @returns {string} A string representing a TextTrack with the format: "language[:label]"
  */
-export const formatTextTrackObj = ({ kind, label, language } = {}) => {
+export const formatTextTrackObj = ({ kind, label, language } = {kind: 'subtitles'}) => {
   if (!label) return language;
-  return `${kind === 'captions' ? 'cc:': ''}${language}:${encodeURIComponent(label)}`;
+  return `${kind === 'captions' ? 'cc': 'sb'}:${language}:${encodeURIComponent(label)}`;
 };
 
 /**
