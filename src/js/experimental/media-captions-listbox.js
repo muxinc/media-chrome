@@ -149,7 +149,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     return oldItems.filter(track => !removedTracks.includes(track)).concat(newTracks);
   }
 
-  #perTypeRender(tracks) {
+  #renderTracks(tracks) {
     const container = this.shadowRoot.querySelector('ul slot');
 
     tracks.forEach(track => {
@@ -203,7 +203,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       this.#offOption.setAttribute('tabindex', '-1');
     }
 
-    this.#perTypeRender(this.#subs);
+    this.#renderTracks(this.#subs);
   }
 
   #onChange() {
