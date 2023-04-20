@@ -34,7 +34,6 @@ const compareTracks = (a, b) => {
 
 class MediaCaptionsListbox extends MediaChromeListbox {
   #subs = [];
-  #caps = [];
   #offOption;
   /** @type {Element} */
   #captionsIndicator;
@@ -43,8 +42,6 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     return [
       ...super.observedAttributes,
       'aria-multiselectable',
-      MediaUIAttributes.MEDIA_CAPTIONS_LIST,
-      MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
     ];
@@ -95,24 +92,10 @@ class MediaCaptionsListbox extends MediaChromeListbox {
 
       this.#render();
 
-    } else if (attrName === MediaUIAttributes.MEDIA_CAPTIONS_LIST && oldValue !== newValue) {
-
-      this.#caps = this.#perTypeUpdate(newValue, this.#caps);
-
-      this.#render();
-
     } else if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING && oldValue !== newValue) {
       const selectedTrack = parseTextTracksStr(newValue ?? '')[0];
 
       this.#subs.forEach(track => {
-        track.selected = track.language === selectedTrack.language && track.label === selectedTrack.label;
-      });
-      this.#render();
-
-    } else if (attrName === MediaUIAttributes.MEDIA_CAPTIONS_SHOWING && oldValue !== newValue) {
-      const selectedTrack = parseTextTracksStr(newValue ?? '')[0];
-
-      this.#caps.forEach(track => {
         track.selected = track.language === selectedTrack.language && track.label === selectedTrack.label;
       });
       this.#render();
@@ -166,19 +149,20 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     return oldItems.filter(track => !removedTracks.includes(track)).concat(newTracks);
   }
 
-  #perTypeRender(tracks, type) {
+  #renderTracks(tracks) {
     const container = this.shadowRoot.querySelector('ul slot');
 
     tracks.forEach(track => {
       let option = track.el;
       let alreadyInDom = true;
+      const type = track.kind ?? 'subs';
 
       if (!option) {
         option = document.createElement('media-chrome-listitem');
         alreadyInDom = false;
 
         option.part.add('listitem');
-        option.value = type + '!' + formatTextTrackObj(track);
+        option.value = formatTextTrackObj(track);
 
         const label = document.createElement('span');
 
@@ -186,7 +170,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
         option.append(label);
 
         // add CC icon for captions
-        if (type === 'cc') {
+        if (type === 'captions') {
           option.append(this.#captionsIndicator.cloneNode(true));
         }
       }
@@ -211,7 +195,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       container.append(this.#offOption);
     }
 
-    if (!this.hasAttribute(MediaUIAttributes.MEDIA_CAPTIONS_SHOWING) && !this.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING)) {
+    if (!this.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING)) {
       this.#offOption.setAttribute('aria-selected', 'true');
       this.#offOption.setAttribute('tabindex', '0');
     } else {
@@ -219,12 +203,11 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       this.#offOption.setAttribute('tabindex', '-1');
     }
 
-    this.#perTypeRender(this.#caps, 'cc');
-    this.#perTypeRender(this.#subs, 'subs');
+    this.#renderTracks(this.#subs);
   }
 
   #onChange() {
-    const [newType, selectedOption] = this.selectedOptions[0]?.value?.split('!') ?? [];
+    const selectedOption = this.selectedOptions[0]?.value;
 
     // turn off currently selected tracks
     toggleSubsCaps(this, true);
@@ -232,7 +215,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     if (!selectedOption) return;
 
     const event = new window.CustomEvent(
-      newType === 'cc' ? MediaUIEvents.MEDIA_SHOW_CAPTIONS_REQUEST : MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,
+      MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,
       {
         composed: true,
         bubbles: true,

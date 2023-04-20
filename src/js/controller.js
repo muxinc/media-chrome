@@ -32,27 +32,17 @@ export const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => 
 const StreamTypeValues = Object.values(StreamTypes);
 
 const getSubtitleTracks = (controller) => {
-    return getTextTracksList(controller.media, { kind: TextTrackKinds.SUBTITLES });
-  };
+  return getTextTracksList(controller.media, (textTrack) => {
+    return [TextTrackKinds.SUBTITLES, TextTrackKinds.CAPTIONS].includes(textTrack.kind);
+  }).sort((a, b) => a.kind >= b.kind ? 1 : -1);
+};
 
-  const getCaptionTracks = (controller) => {
-    return getTextTracksList(controller.media, { kind: TextTrackKinds.CAPTIONS });
-  };
-
-  const getShowingSubtitleTracks = (controller) => {
-    return getTextTracksList(controller.media, {
-      kind: TextTrackKinds.SUBTITLES,
-      mode: TextTrackModes.SHOWING,
-    });
-  };
-
-  const getShowingCaptionTracks = (controller) => {
-    return getTextTracksList(controller.media, {
-      kind: TextTrackKinds.CAPTIONS,
-      mode: TextTrackModes.SHOWING,
-    });
-  };
-
+const getShowingSubtitleTracks = (controller) => {
+  return getTextTracksList(controller.media, (textTrack) => {
+    return textTrack.mode === TextTrackModes.SHOWING &&
+      [TextTrackKinds.SUBTITLES, TextTrackKinds.CAPTIONS].includes(textTrack.kind);
+  });
+};
 
 export const MediaUIStates = {
   MEDIA_PAUSED: {
@@ -424,14 +414,6 @@ export const MediaUIStates = {
     // Give a little time for the volume support promise to run
     mediaEvents: ['loadstart'],
   },
-  MEDIA_CAPTIONS_LIST: {
-    get: function (controller) {
-      // TODO: Move to non attr specific values
-      return stringifyTextTrackList(getCaptionTracks(controller)) || undefined;
-    },
-    mediaEvents: ['loadstart'],
-    trackListEvents: ['addtrack', 'removetrack'],
-  },
   MEDIA_SUBTITLES_LIST: {
     get: function (controller) {
       // TODO: Move to non attr specific values
@@ -439,16 +421,6 @@ export const MediaUIStates = {
     },
     mediaEvents: ['loadstart'],
     trackListEvents: ['addtrack', 'removetrack'],
-  },
-  MEDIA_CAPTIONS_SHOWING: {
-    get: function (controller) {
-      // TODO: Move to non attr specific values
-      return (
-        stringifyTextTrackList(getShowingCaptionTracks(controller)) || undefined
-      );
-    },
-    mediaEvents: ['loadstart'],
-    trackListEvents: ['addtrack', 'removetrack', 'change'],
   },
   MEDIA_SUBTITLES_SHOWING: {
     get: function (controller) {
@@ -711,19 +683,6 @@ export const MediaUIRequestHandlers = {
       MediaUIAttributes.MEDIA_PREVIEW_COORDS,
       previewCoordsStr.split(',').join(' ')
     );
-  },
-  MEDIA_SHOW_CAPTIONS_REQUEST: (media, e, controller) => {
-    const tracks = getCaptionTracks(controller);
-    const { detail: tracksToUpdate = [] } = e;
-    updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
-  },
-  // NOTE: We're currently recommending and providing default components that will "disable" tracks when
-  // we don't want them shown (rather than "hiding" them).
-  // For a discussion why, see: https://github.com/muxinc/media-chrome/issues/60
-  MEDIA_DISABLE_CAPTIONS_REQUEST: (media, e, controller) => {
-    const tracks = getCaptionTracks(controller);
-    const { detail: tracksToUpdate = [] } = e;
-    updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
   },
   MEDIA_SHOW_SUBTITLES_REQUEST: (media, e, controller) => {
     const tracks = getSubtitleTracks(controller);
