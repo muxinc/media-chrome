@@ -20,7 +20,8 @@ const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
   const showRemaining = el.hasAttribute(Attributes.REMAINING);
   const showDuration = el.hasAttribute(Attributes.SHOW_DURATION);
   const currentTime = el.mediaCurrentTime ?? 0;
-  const endTime = el.mediaDuration ?? el.mediaSeekableEnd ?? 0;
+  const [, seekableEnd] = el.mediaSeekable ?? [];
+  const endTime = el.mediaDuration ?? seekableEnd ?? 0;
 
   const timeLabel = showRemaining
     ? formatTime(0 - (endTime - currentTime))
@@ -34,7 +35,8 @@ const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
 const updateAriaValueText = (el) => {
   const currentTime = el.mediaCurrentTime;
-  const endTime = el.mediaDuration || el.mediaSeekableEnd;
+  const [, seekableEnd] = el.mediaSeekable ?? [];
+  const endTime = el.mediaDuration || seekableEnd;
   if (currentTime == null || endTime == null) {
     el.setAttribute('aria-valuetext', DEFAULT_MISSING_TIME_PHRASE);
     return;
@@ -185,16 +187,6 @@ class MediaTimeDisplay extends MediaTextDisplay {
     if (!seekable) return undefined;
     // Only currently supports a single, contiguous seekable range (CJP)
     return seekable.split(':').map((time) => +time);
-  }
-
-  get mediaSeekableEnd() {
-    const [, end] = this.mediaSeekable ?? [];
-    return end;
-  }
-
-  get mediaSeekableStart() {
-    const [start] = this.mediaSeekable ?? [];
-    return start;
   }
 
   update() {
