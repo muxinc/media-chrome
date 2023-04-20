@@ -162,7 +162,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
         alreadyInDom = false;
 
         option.part.add('listitem');
-        option.value = type + '!' + formatTextTrackObj(track);
+        option.value = formatTextTrackObj(track);
 
         const label = document.createElement('span');
 
@@ -207,7 +207,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 
   #onChange() {
-    const [newType, selectedOption] = this.selectedOptions[0]?.value?.split('!') ?? [];
+    const selectedOption = this.selectedOptions[0]?.value;
 
     // turn off currently selected tracks
     toggleSubsCaps(this, true);

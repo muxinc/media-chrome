@@ -687,7 +687,6 @@ export const MediaUIRequestHandlers = {
   MEDIA_SHOW_SUBTITLES_REQUEST: (media, e, controller) => {
     const tracks = getSubtitleTracks(controller);
     const { detail: tracksToUpdate = [] } = e;
-    console.log(tracksToUpdate);
     updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
   },
   MEDIA_DISABLE_SUBTITLES_REQUEST: (media, e, controller) => {
