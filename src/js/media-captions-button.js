@@ -2,7 +2,7 @@ import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
-import { isCCOn, toggleSubsCaps } from './utils/captions.js';
+import { areSubsOn, toggleSubsCaps } from './utils/captions.js';
 
 export const Attributes = {
   DEFAULT_SHOWING: 'defaultshowing',
@@ -38,17 +38,14 @@ slotTemplate.innerHTML = `
 `;
 
 const updateAriaChecked = (el) => {
-  el.setAttribute('aria-checked', isCCOn(el));
+  el.setAttribute('aria-checked', areSubsOn(el));
 };
 
 class MediaCaptionsButton extends MediaChromeButton {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      Attributes.NO_SUBTITLES_FALLBACK,
       Attributes.DEFAULT_SHOWING,
-      MediaUIAttributes.MEDIA_CAPTIONS_LIST,
-      MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
     ];
@@ -69,48 +66,29 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (
-      [
-        MediaUIAttributes.MEDIA_CAPTIONS_SHOWING,
-        MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
-      ].includes(attrName)
-    ) {
+    if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
       updateAriaChecked(this);
     }
+
     if (
       this.hasAttribute(Attributes.DEFAULT_SHOWING) && // we want to show captions by default
-      this.getAttribute('aria-checked') !== 'true' // and we aren't currently showing them
+      this.getAttribute('aria-checked') !== 'true' && // and we aren't currently showing them
+      attrName === MediaUIAttributes.MEDIA_SUBTITLES_LIST // and we have subtitles or captions
     ) {
-      // Make sure we're only checking against the relevant attributes based on whether or not we are using subtitles fallback
-      const subtitlesIncluded = !this.hasAttribute(Attributes.NO_SUBTITLES_FALLBACK);
-      const relevantAttributes = subtitlesIncluded
-        ? [
-            MediaUIAttributes.MEDIA_CAPTIONS_LIST,
-            MediaUIAttributes.MEDIA_SUBTITLES_LIST,
-          ]
-        : [MediaUIAttributes.MEDIA_CAPTIONS_LIST];
-      // If one of the relevant attributes changed...
-      if (relevantAttributes.includes(attrName)) {
-        // check if we went
-        // a) from captions (/subs) not ready to captions (/subs) ready
-        // b) from captions (/subs) ready to captions (/subs) not ready.
-        // by using a simple truthy (empty or non-empty) string check on the relevant values
-        // NOTE: We're using `getAttribute` here instead of `newValue` because we may care about
-        // multiple attributes.
-        const nextCaptionsReady =
-          !!this.getAttribute(MediaUIAttributes.MEDIA_CAPTIONS_LIST) ||
-          !!(
-            subtitlesIncluded &&
-            this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST)
-          );
-        // If the value changed, (re)set the internal prop
-        if (this._captionsReady !== nextCaptionsReady) {
-          this._captionsReady = nextCaptionsReady;
-          // If captions are currently ready, that means we went from unready to ready, so
-          // use the click handler to dispatch a request to turn captions on
-          if (this._captionsReady) {
-            toggleSubsCaps(this);
-          }
+      // check if we went
+      // a) from captions (/subs) not ready to captions (/subs) ready
+      // b) from captions (/subs) ready to captions (/subs) not ready.
+      // by using a simple truthy (empty or non-empty) string check on the relevant values
+      // NOTE: We're using `getAttribute` here instead of `newValue` because we may care about
+      // multiple attributes.
+      const nextCaptionsReady = !!this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST);
+      // If the value changed, (re)set the internal prop
+      if (this._captionsReady !== nextCaptionsReady) {
+        this._captionsReady = nextCaptionsReady;
+        // If captions are currently ready, that means we went from unready to ready, so
+        // use the click handler to dispatch a request to turn captions on
+        if (this._captionsReady) {
+          toggleSubsCaps(this);
         }
       }
     }
