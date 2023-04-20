@@ -24,7 +24,6 @@ Also, to keep things "idiomatically React", the wrapper components use camelCase
 
 - `seekoffset` becomes `seekOffset`
 - `showduration` becomes `showDuration`
-- `nosubtitlesfallback` becomes `noSubtitlesFallback`
 
 and so on. Additionally, we'll automatically translate "special" React attributes like [`className`](https://reactjs.org/docs/dom-elements.html#classname).
 
