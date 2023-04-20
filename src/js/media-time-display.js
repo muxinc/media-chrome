@@ -10,9 +10,7 @@ export const Attributes = {
   SHOW_DURATION: 'showduration',
 };
 
-
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
-//
 
 const ButtonPressedKeys = ['Enter', ' '];
 
