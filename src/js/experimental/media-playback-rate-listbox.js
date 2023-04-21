@@ -3,15 +3,18 @@ import { window, document } from '../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = `
+slotTemplate.innerHTML = /*html*/`
   <style>
     media-chrome-listitem {
-      white-space: var(--media-captions-listbox-white-space, nowrap);
+      white-space: var(--media-playback-rate-listbox-white-space, nowrap);
     }
 
   </style>
 `;
 
+/**
+ * @cssproperty --media-playback-rate-listbox-white-space - `white-space` of playback rate list item.
+ */
 class MediaPlaybackrateListbox extends MediaChromeListbox {
   static get observedAttributes() {
     return [

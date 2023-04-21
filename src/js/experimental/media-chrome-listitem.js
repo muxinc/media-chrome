@@ -3,7 +3,7 @@ import { window, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
 <style>
   :host {
     display: list-item;

@@ -45,6 +45,22 @@ template.innerHTML = /*html*/`
 
 /**
  * @extends {HTMLElement}
+ *
+ * @cssproperty --media-primary-color - Default color of text.
+ * @cssproperty --media-secondary-color - Default color of background.
+ * @cssproperty --media-text-color - `color` of text.
+ *
+ * @cssproperty --media-control-background - `background` of control.
+ * @cssproperty --media-listbox-background - `background` of listbox.
+ * @cssproperty --media-listbox-selected-background - `background` of selected listbox item.
+ * @cssproperty --media-listbox-hover-background - `background` of hovered listbox item.
+ * @cssproperty --media-listbox-hover-outline - `outline` of hovered listbox item.
+ *
+ * @cssproperty --media-font - `font` shorthand property.
+ * @cssproperty --media-font-weight - `font-weight` property.
+ * @cssproperty --media-font-family - `font-family` property.
+ * @cssproperty --media-font-size - `font-size` property.
+ * @cssproperty --media-text-content-height - `line-height` of text.
  */
 class MediaChromeListbox extends window.HTMLElement {
   #keysSoFar = '';
