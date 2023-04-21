@@ -163,21 +163,104 @@ class MediaTimeDisplay extends MediaTextDisplay {
     this.tabIndex = -1;
   }
 
+  // Own props
+
+  /**
+   * Whether to show the remaining time
+   * @returns {boolean}
+   */
+  get remaining() {
+    return this.hasAttribute(Attributes.REMAINING);
+  }
+
+  /**
+   * Whether to show the remaining time
+   * @param {boolean} show
+   */
+  set remaining(show) {
+    if (show && !this.hasAttribute(Attributes.REMAINING)) {
+      this.setAttribute(Attributes.REMAINING, '');
+    } else if (!show && this.hasAttribute(Attributes.REMAINING)) {
+      this.removeAttribute(Attributes.REMAINING);
+    }
+    this.update();
+  }
+
+  /**
+   * Whether to show the duration
+   * @returns {boolean}
+   */
+  get showDuration() {
+    return this.hasAttribute(Attributes.SHOW_DURATION);
+  }
+
+  /**
+   * Whether to show the duration
+   * @param {boolean} show
+   */
+  set showDuration(show) {
+    if (show && !this.hasAttribute(Attributes.SHOW_DURATION)) {
+      this.setAttribute(Attributes.SHOW_DURATION, '');
+    } else if (!show && this.hasAttribute(Attributes.SHOW_DURATION)) {
+      this.removeAttribute(Attributes.SHOW_DURATION);
+    }
+    this.update();
+  }
+
+  // Props derived from media UI attributes
+
+  /**
+   * Get the duration
+   * @returns {number | undefined}
+   */
   get mediaDuration() {
     const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
     return attrVal != null ? +attrVal : undefined;
   }
 
+  /**
+   * Set the duration
+   * @param {number} time the new duration in seconds
+   */
+  set setMediaDuration(time) {
+    this.setAttribute(MediaUIAttributes.MEDIA_DURATION, time.toString(10));
+  }
+
+  /**
+   * The current time
+   * @returns {number | undefined} Time in seconds or undefined if not available
+   */
   get mediaCurrentTime() {
     const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
     return attrVal != null ? +attrVal : undefined;
   }
 
+  /**
+   * The current time
+   * @param {number} time in seconds
+   */
+  set mediaCurrentTime(time) {
+    this.setAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME, time.toString(10));
+  }
+
+  /**
+   * Range of values that can be seeked to
+   * @returns {[number, number] | undefined} An array of two numbers [start, end]
+   * or undefined if not available
+   */
   get mediaSeekable() {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
     if (!seekable) return undefined;
     // Only currently supports a single, contiguous seekable range (CJP)
     return seekable.split(':').map((time) => +time);
+  }
+
+  /**
+   * Range of values that can be seeked to
+   * @param {[number, number]} range An array of two numbers [start, end]
+   */
+  set mediaSeekable(range) {
+    this.setAttribute(range.join(':'));
   }
 
   update() {
