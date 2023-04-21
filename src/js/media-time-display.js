@@ -14,7 +14,7 @@ const CombinedAttributes = [
   ...Object.values(Attributes),
   MediaUIAttributes.MEDIA_CURRENT_TIME,
   MediaUIAttributes.MEDIA_DURATION,
-  MediaUIAttributes.MEDIA_SEEKABLE
+  MediaUIAttributes.MEDIA_SEEKABLE,
 ];
 
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
