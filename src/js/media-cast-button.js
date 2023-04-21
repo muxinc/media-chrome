@@ -36,8 +36,6 @@ const updateAriaLabel = (el) => {
 };
 
 /**
- * @preserve
- *
  * @slot enter
  * @slot exit
  *

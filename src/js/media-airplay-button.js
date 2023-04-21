@@ -14,8 +14,6 @@ slotTemplate.innerHTML = `
 `;
 
 /**
- * @preserve
- *
  * @slot airplay
  *
  * @cssproperty [--media-airplay-button-display = inline-flex]

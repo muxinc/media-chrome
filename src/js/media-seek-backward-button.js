@@ -34,8 +34,6 @@ const updateSeekIconValue = (el) => {
 };
 
 /**
- * @preserve
- *
  * @slot backward
  *
  * @cssproperty [--media-seek-backward-button-display = inline-flex]

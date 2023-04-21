@@ -60,7 +60,6 @@ template.innerHTML = /*html*/`
 `;
 
 /**
- * @preserve
  * @extends {HTMLElement}
  *
  * @cssproperty --media-primary-color - Default color of text and icon.

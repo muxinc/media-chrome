@@ -44,13 +44,13 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @preserve
- *
  * @slot indicator
  * @slot spacer
  * @slot text
  *
  * @cssproperty [--media-live-button-display = inline-flex]
+ * @cssproperty --media-live-button-icon-color - `fill` and `color` of not live button icon.
+ * @cssproperty --media-live-button-indicator-color - `fill` and `color` of live button icon.
  */
 class MediaLiveButton extends MediaChromeButton {
   static get observedAttributes() {

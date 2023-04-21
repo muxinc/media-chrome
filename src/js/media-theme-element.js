@@ -38,7 +38,6 @@ prependTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @preserve
  * @extends {HTMLElement}
  */
 export class MediaThemeElement extends window.HTMLElement {

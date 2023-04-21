@@ -30,7 +30,6 @@ template.innerHTML = /*html*/`
 `;
 
 /**
- * @preserve
  * @extends {HTMLElement}
  *
  * @cssproperty [--media-preview-thumbnail-display = inline-block]
