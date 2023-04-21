@@ -127,8 +127,6 @@ template.innerHTML = /*html*/`
 `;
 
 /**
- * @preserve
- *
  * @cssproperty [--media-time-range-display = inline-block] - `display` property of control.
  *
  * @cssproperty --media-preview-transition-property - `transition-property` of range hover preview.

@@ -9,7 +9,7 @@ import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
 <style>
   :host {
     display: var(--media-control-display, var(--media-gesture-receiver-display, inline-block));
@@ -19,7 +19,10 @@ template.innerHTML = `
 `;
 
 /**
- * @preserve
+ * @extends {HTMLElement}
+ *
+ * @cssproperty --media-gesture-receiver-display - `display` property of gesture receiver.
+ * @cssproperty --media-control-display - `display` property of control.
  */
 class MediaGestureReceiver extends window.HTMLElement {
   #mediaController;
@@ -69,7 +72,7 @@ class MediaGestureReceiver extends window.HTMLElement {
 
   connectedCallback() {
     this.tabIndex = -1;
-    this.setAttribute('aria-hidden', true);
+    this.setAttribute('aria-hidden', 'true');
 
     this.#mediaController = getMediaControllerEl(this);
     if (this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER)) {

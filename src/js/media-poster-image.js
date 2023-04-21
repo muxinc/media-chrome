@@ -39,7 +39,11 @@ const setBackgroundImage = (el, image) => {
 }
 
 /**
- * @preserve
+ * @cssproperty --media-poster-image-display - `display` property of poster image.
+ * @cssproperty --media-background-position - `background-position` of poster image.
+ * @cssproperty --media-background-size - `background-size` of poster image.
+ * @cssproperty --media-object-fit - `object-fit` of poster image.
+ * @cssproperty --media-object-position - `object-position` of poster image.
  */
 class MediaPosterImage extends window.HTMLElement {
   static get observedAttributes() {

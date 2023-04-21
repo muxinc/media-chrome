@@ -58,8 +58,6 @@ const updateAriaValueText = (el) => {
 };
 
 /**
- * @preserve
- *
  * @cssproperty [--media-time-display-display = inline-flex]
  */
 class MediaTimeDisplay extends MediaTextDisplay {

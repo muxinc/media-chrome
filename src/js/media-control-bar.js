@@ -30,13 +30,12 @@ template.innerHTML = /*html*/`
 `;
 
 /**
- * @preserve
+ * @cssproperty --media-primary-color - Default color of text and icon.
+ * @cssproperty --media-secondary-color - Default color of button background.
+ * @cssproperty --media-text-color - `color` of button text.
  *
- * @cssproperty --media-control-bar-display
- * @cssproperty --media-control-display
- *
- * @cssproperty --media-text-color
- * @cssproperty --media-primary-color
+ * @cssproperty --media-control-bar-display - `display` property of control bar.
+ * @cssproperty --media-control-display - `display` property of control.
  */
 class MediaControlBar extends window.HTMLElement {
   #mediaController;

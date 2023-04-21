@@ -46,8 +46,6 @@ template.innerHTML = /*html*/`
 `;
 
 /**
- * @preserve
- *
  * @cssproperty --media-primary-color - Default color of text.
  * @cssproperty --media-secondary-color - Default color of background.
  * @cssproperty --media-text-color - `color` of text.

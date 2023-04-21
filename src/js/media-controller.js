@@ -37,7 +37,6 @@ export const Attributes = {
 /**
  * Media Controller should not mimic the HTMLMediaElement API.
  * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
- * @preserve
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {

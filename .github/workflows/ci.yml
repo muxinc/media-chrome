@@ -24,6 +24,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           verbose: true
+      - run: yarn manifest
       - run: yarn build
       - run: npm run publish-release -- canary
         if: ${{ github.ref == 'refs/heads/main' }}

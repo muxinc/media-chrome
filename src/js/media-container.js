@@ -207,11 +207,9 @@ function getBreakpoints(breakpoints, rect) {
 }
 
 /**
- * @preserve
  * @extends {HTMLElement}
  *
- * @cssprop --media-background-color - Background color of container.
- *
+ * @cssprop --media-background-color - `background-color` of container.
  */
 class MediaContainer extends window.HTMLElement {
   constructor() {
