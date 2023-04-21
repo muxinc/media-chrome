@@ -23,7 +23,10 @@ export function generateCssVars() {
             matches.forEach(m => {
               const splitted = m.split(',');
               const cssProp = splitted[0].trim();
-              const cssDefault = splitted.slice(1).join(',').trim();
+              const cssDefault = splitted.slice(1)
+                .join(',')
+                .replace(/\s*\n\s*/g, ' ')
+                .trim();
 
               // Filter out CSS vars like --${this.localName}-display
               if (!/\$\{/.test(cssProp) && !/\$\{/.test(cssDefault)) {
