@@ -94,12 +94,6 @@ Check out this example for usage, but please try and use better colors as this c
 | `listitem` | A part that targets each listitem of the listbox |
 
 
-## Attributes
-
-| Name                    | Type      | Default Value | Description                                                                                        |
-| ----------------------- | --------- | ------------- | -------------------------------------------------------------------------------------------------- |
-| `defaultshowing` | `boolean` | `false`       | Controls whether media-chrome will show a subtitle or captions tracks by default |
-
 ## Slots
 
 | Name  | Default Type | Description                                                 |

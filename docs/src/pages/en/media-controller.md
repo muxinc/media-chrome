@@ -59,6 +59,12 @@ as `breakpointx` attributes on media-controller and as `breakpointx`
 </media-controller>
 ```
 
+### defaultshowingsubtitles
+
+`defaultshowingsubtitles` (boolean)
+
+When enabled, this will cause captions or subtitles to be turned on by default, if available.
+
 ### defaultstreamtype
 
 `defaultstreamtype` (values: `live`, `on-demand`)
