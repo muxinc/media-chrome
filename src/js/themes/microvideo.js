@@ -415,7 +415,7 @@ template.innerHTML = /*html*/`
 </template>
 
 <media-controller
-  defaultshowingsubtitles="{{defaultShowingSubtitles}}"
+  defaultshowingsubtitles="{{defaultshowingsubtitles}}"
   style="--_control-bar-place-self:{{controlbarplace ?? 'unset'}}"
   gestures-disabled="{{disabled}}"
   hotkeys="{{hotkeys}}"
