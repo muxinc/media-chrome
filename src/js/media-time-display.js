@@ -10,6 +10,13 @@ export const Attributes = {
   SHOW_DURATION: 'showduration',
 };
 
+const CombinedAttributes = [
+  ...Object.values(Attributes),
+  MediaUIAttributes.MEDIA_CURRENT_TIME,
+  MediaUIAttributes.MEDIA_DURATION,
+  MediaUIAttributes.MEDIA_SEEKABLE
+];
+
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 const ButtonPressedKeys = ['Enter', ' '];
@@ -72,15 +79,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
   #slot;
 
   static get observedAttributes() {
-    return [
-      ...super.observedAttributes,
-      MediaUIAttributes.MEDIA_CURRENT_TIME,
-      MediaUIAttributes.MEDIA_DURATION,
-      MediaUIAttributes.MEDIA_SEEKABLE,
-      Attributes.REMAINING,
-      Attributes.SHOW_DURATION,
-      'disabled',
-    ];
+    return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
   }
 
   constructor() {
@@ -143,15 +142,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (
-      [
-        Attributes.SHOW_DURATION,
-        Attributes.REMAINING,
-        MediaUIAttributes.MEDIA_CURRENT_TIME,
-        MediaUIAttributes.MEDIA_DURATION,
-        MediaUIAttributes.MEDIA_SEEKABLE,
-      ].includes(attrName)
-    ) {
+    if (CombinedAttributes.includes(attrName)) {
       this.update();
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
