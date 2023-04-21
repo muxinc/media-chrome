@@ -6,7 +6,7 @@ const packageData = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const { name, description, version, author, homepage, license } = packageData;
 
 export default {
-  globs: ['dist/media-*', 'dist/extras'],
+  globs: ['dist/media-*', 'dist/experimental/media-*'],
   outdir: 'dist',
   plugins: [
     // Append package data
