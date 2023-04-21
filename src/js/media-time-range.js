@@ -129,28 +129,28 @@ template.innerHTML = /*html*/`
 /**
  * @preserve
  *
- * @cssproperty --media-time-range-display
+ * @cssproperty [--media-time-range-display = inline-block] - `display` property of control.
  *
- * @cssproperty --media-preview-transition-property
- * @cssproperty --media-preview-transition-duration-out
- * @cssproperty --media-preview-transition-delay-out
- * @cssproperty --media-preview-transition-duration-in
- * @cssproperty --media-preview-transition-delay-in
+ * @cssproperty --media-preview-transition-property - `transition-property` of range hover preview.
+ * @cssproperty --media-preview-transition-duration-out - `transition-duration` out of range hover preview.
+ * @cssproperty --media-preview-transition-delay-out - `transition-delay` out of range hover preview.
+ * @cssproperty --media-preview-transition-duration-in - `transition-duration` in of range hover preview.
+ * @cssproperty --media-preview-transition-delay-in - `transition-delay` in of range hover preview.
  *
- * @cssproperty --media-preview-thumbnail-background
- * @cssproperty --media-preview-thumbnail-box-shadow
- * @cssproperty --media-preview-thumbnail-max-width
- * @cssproperty --media-preview-thumbnail-max-height
- * @cssproperty --media-preview-thumbnail-min-width
- * @cssproperty --media-preview-thumbnail-min-height
- * @cssproperty --media-preview-thumbnail-border-radius
- * @cssproperty --media-preview-thumbnail-border
+ * @cssproperty --media-preview-thumbnail-background - `background` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-box-shadow - `box-shadow` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-max-width - `max-width` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-max-height - `max-height` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-min-width - `min-width` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-min-height - `min-height` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-border-radius - `border-radius` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-border - `border` of range preview thumbnail.
  *
- * @cssproperty --media-preview-time-background
- * @cssproperty --media-preview-time-border-radius
- * @cssproperty --media-preview-time-padding
- * @cssproperty --media-preview-time-margin
- * @cssproperty --media-preview-time-text-shadow
+ * @cssproperty --media-preview-time-background - `background` of range preview time display.
+ * @cssproperty --media-preview-time-border-radius - `border-radius` of range preview time display.
+ * @cssproperty --media-preview-time-padding - `padding` of range preview time display.
+ * @cssproperty --media-preview-time-margin - `margin` of range preview time display.
+ * @cssproperty --media-preview-time-text-shadow - `text-shadow` of range preview time display.
  */
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
