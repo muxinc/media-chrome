@@ -36,7 +36,7 @@ const updateSeekIconValue = (el) => {
 /**
  * @slot forward
  *
- * @cssproperty [--media-seek-forward-display = inline-flex]
+ * @cssproperty [--media-seek-forward-button-display = inline-flex]
  */
 class MediaSeekForwardButton extends MediaChromeButton {
   static get observedAttributes() {
