@@ -34,6 +34,7 @@
     "start": "yarn dev",
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
     "publish-release": "./scripts/publish.sh",
+    "css-vars-list": "node ./scripts/css-vars-list.js",
     "size": "echo \"\\n  dist/\\033[1miife/index.js\\033[0m     \\033[0;32m$(($(cat dist/iife/index.js | gzip -c9 | wc -c)))B gzip\\033[0m\\n\""
   },
   "repository": {
