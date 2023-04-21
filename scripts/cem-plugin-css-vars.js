@@ -58,8 +58,9 @@ export function generateCssVars() {
         if (cls.superclass?.name) {
           const SuperClass = getClasses(manifest).find(({ name }) => cls.superclass.name === name);
 
-          for (let cssProp of SuperClass.cssProperties) {
-            if (cls.cssProperties && !cls.cssProperties.find(p => p.name === cssProp.name)) {
+          for (let cssProp of SuperClass.cssProperties ?? []) {
+            if (!cls.cssProperties) cls.cssProperties = [];
+            if (!cls.cssProperties.find(p => p.name === cssProp.name)) {
               cls.cssProperties.push(cssProp);
             }
           }
