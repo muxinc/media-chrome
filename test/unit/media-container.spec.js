@@ -1,15 +1,8 @@
 import { spy } from 'sinon';
 import { fixture, assert, aTimeout } from '@open-wc/testing';
-import MediaContainer from '../../src/js/media-container.js';
+import '../../src/js/media-container.js';
 
 describe('<media-container>', () => {
-  // NOTE: Although MediaContainer isn't designed for independent use, registering it
-  // here to test behavior independent of <media-controller>
-  before(async () => {
-    customElements.define('media-container', MediaContainer);
-    await customElements.whenDefined('media-container');
-  });
-
   it('calls media callbacks', async () => {
     const mediaContainer = await fixture(`
       <media-container></media-container>

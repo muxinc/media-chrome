@@ -14,7 +14,7 @@ export const getTestMediaEl = () => {
 
 /**
  * Test for volume support
- * 
+ *
  * @param {HTMLMediaElement} mediaEl
  * @returns {Promise<boolean>}
  */
@@ -34,8 +34,8 @@ export const hasVolumeSupportAsync = async (mediaEl = getTestMediaEl()) => {
 
 /**
  * Test for PIP support
- * 
- * @param {HTMLVideoElement} mediaEl
+ *
+ * @param {Partial<HTMLVideoElement>} mediaEl
  * @returns {boolean}
  */
 export const hasPipSupport = (mediaEl = getTestMediaEl()) =>
@@ -43,8 +43,8 @@ export const hasPipSupport = (mediaEl = getTestMediaEl()) =>
 
 /**
  * Test for Fullscreen support
- * 
- * @param {HTMLVideoElement} mediaEl
+ *
+ * @param {Partial<HTMLVideoElement>} mediaEl
  * @returns {boolean}
  */
 export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {
