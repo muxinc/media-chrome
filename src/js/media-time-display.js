@@ -76,6 +76,7 @@ const updateAriaValueText = (el) => {
  * @cssproperty --media-control-hover-background - `background` of control hover state.
  */
 class MediaTimeDisplay extends MediaTextDisplay {
+  /** @type {HTMLSlotElement} */
   #slot;
 
   static get observedAttributes() {
