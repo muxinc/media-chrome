@@ -21,6 +21,12 @@ const documentShim = {
   },
   addEventListener() {},
   removeEventListener() {},
+  /**
+   *
+   * @param {Event} event
+   * @returns {boolean}
+   */
+  dispatchEvent(event) { return false; }, // eslint-disable-line no-unused-vars
 };
 
 const globalThisShim = {
@@ -32,6 +38,22 @@ const globalThisShim = {
     get: function () {},
     define: function () {},
     whenDefined: function () {},
+  },
+  localStorage: {
+    /**
+     * @param {string} key
+     * @returns {string|null}
+    */
+    getItem(key) { return null; }, // eslint-disable-line no-unused-vars
+    /**
+     * @param {string} key
+     * @param {string} value
+     */
+    setItem(key, value) {}, // eslint-disable-line no-unused-vars
+    /**
+     * @param {string} key
+    */
+    removeItem(key) {}, // eslint-disable-line no-unused-vars
   },
   CustomEvent: function CustomEvent() {},
   getComputedStyle: function () {},

@@ -590,8 +590,9 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 }
 
-// NOTE: Since MediaContainer is not currently designed to be used directly as
-// a custom element, unlike other components, we do not `define()` it.
+if (!globalThis.customElements.get('media-container')) {
+  globalThis.customElements.define('media-container', MediaContainer);
+}
 
 export { MediaContainer };
 export default MediaContainer;
