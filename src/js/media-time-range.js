@@ -1,5 +1,8 @@
-import { MediaChromeRange } from './media-chrome-range.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
+import { MediaChromeRange } from './media-chrome-range.js';
+import './media-preview-thumbnail.js';
+import './media-preview-time-display.js';
+import './media-chapter-display.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
@@ -144,10 +147,27 @@ template.innerHTML = /*html*/`
       border-radius: var(--media-preview-time-border-radius,
         0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
     }
+
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
+      --media-time-range-hover-display: block;
+    }
+
+    media-chapter-display {
+      display: none;
+      padding: 0;transition-delay: var(--media-preview-transition-delay-in, .25s);
+      min-width: 100%;
+      border-radius: var(--media-preview-time-border-radius,
+        0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
+    }
+
+    media-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}] {
+      display: initial;
+    }
   </style>
   <div id="preview-rail">
     <slot name="preview" part="box preview-box">
       <media-preview-thumbnail></media-preview-thumbnail>
+      <media-chapter-display></media-chapter-display>
       <media-preview-time-display></media-preview-time-display>
     </slot>
   </div>
