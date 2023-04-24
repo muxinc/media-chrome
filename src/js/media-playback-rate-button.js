@@ -16,7 +16,7 @@ slotTemplate.innerHTML = `
 `;
 
 /**
- * @cssproperty [--media-playback-rate-button-display = inline-flex]
+ * @cssproperty [--media-playback-rate-button-display = inline-flex] - `display` property of button.
  */
 class MediaPlaybackRateButton extends MediaChromeButton {
   static get observedAttributes() {

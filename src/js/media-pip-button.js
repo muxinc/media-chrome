@@ -36,7 +36,7 @@ const updateAriaLabel = (el) => {
  * @slot enter
  * @slot exit
  *
- * @cssproperty [--media-pip-button-display = inline-flex]
+ * @cssproperty [--media-pip-button-display = inline-flex] - `display` property of button.
  */
 class MediaPipButton extends MediaChromeButton {
   static get observedAttributes() {

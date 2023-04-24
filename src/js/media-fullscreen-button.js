@@ -51,7 +51,7 @@ const updateAriaLabel = (el) => {
  * @slot enter
  * @slot exit
  *
- * @cssproperty [--media-fullscreen-button-display = inline-flex]
+ * @cssproperty [--media-fullscreen-button-display = inline-flex] - `display` property of button.
  */
 class MediaFullscreenButton extends MediaChromeButton {
   static get observedAttributes() {

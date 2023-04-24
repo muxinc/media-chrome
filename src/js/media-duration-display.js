@@ -5,7 +5,7 @@ import { MediaUIAttributes } from './constants.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 /**
- * @cssproperty [--media-duration-display-display = inline-flex]
+ * @cssproperty [--media-duration-display-display = inline-flex] - `display` property of display.
  */
 class MediaDurationDisplay extends MediaTextDisplay {
   #slot;
