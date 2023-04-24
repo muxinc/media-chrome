@@ -77,6 +77,7 @@ export const MediaUIAttributes = {
   MEDIA_PREVIEW_TIME: 'mediapreviewtime',
   MEDIA_PREVIEW_IMAGE: 'mediapreviewimage',
   MEDIA_PREVIEW_COORDS: 'mediapreviewcoords',
+  MEDIA_PREVIEW_CHAPTER: 'mediapreviewchapter',
   MEDIA_LOADING: 'medialoading',
   MEDIA_BUFFERED: 'mediabuffered',
   MEDIA_STREAM_TYPE: 'mediastreamtype',
