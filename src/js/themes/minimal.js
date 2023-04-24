@@ -139,7 +139,6 @@ template.innerHTML = /*html*/`
 
   <template partial="CaptionsButton">
     <media-captions-button
-      default-showing="{{defaultShowingCaptions}}"
       part="captions button"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
@@ -323,6 +322,7 @@ template.innerHTML = /*html*/`
   </template>
 
   <media-controller
+    defaultsubtitles="{{defaultsubtitles}}"
     gestures-disabled="{{disabled}}"
     hotkeys="{{hotkeys}}"
     nohotkeys="{{nohotkeys}}"

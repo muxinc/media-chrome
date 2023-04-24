@@ -4,11 +4,6 @@ import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { areSubsOn, toggleSubsCaps } from './utils/captions.js';
 
-export const Attributes = {
-  DEFAULT_SHOWING: 'defaultshowing',
-  NO_SUBTITLES_FALLBACK: 'nosubtitlesfallback',
-};
-
 const ccIconOn = `<svg aria-hidden="true" viewBox="0 0 26 24">
   <path d="M22.83 5.68a2.58 2.58 0 0 0-2.3-2.5c-3.62-.24-11.44-.24-15.06 0a2.58 2.58 0 0 0-2.3 2.5c-.23 4.21-.23 8.43 0 12.64a2.58 2.58 0 0 0 2.3 2.5c3.62.24 11.44.24 15.06 0a2.58 2.58 0 0 0 2.3-2.5c.23-4.21.23-8.43 0-12.64Zm-11.39 9.45a3.07 3.07 0 0 1-1.91.57 3.06 3.06 0 0 1-2.34-1 3.75 3.75 0 0 1-.92-2.67 3.92 3.92 0 0 1 .92-2.77 3.18 3.18 0 0 1 2.43-1 2.94 2.94 0 0 1 2.13.78c.364.359.62.813.74 1.31l-1.43.35a1.49 1.49 0 0 0-1.51-1.17 1.61 1.61 0 0 0-1.29.58 2.79 2.79 0 0 0-.5 1.89 3 3 0 0 0 .49 1.93 1.61 1.61 0 0 0 1.27.58 1.48 1.48 0 0 0 1-.37 2.1 2.1 0 0 0 .59-1.14l1.4.44a3.23 3.23 0 0 1-1.07 1.69Zm7.22 0a3.07 3.07 0 0 1-1.91.57 3.06 3.06 0 0 1-2.34-1 3.75 3.75 0 0 1-.92-2.67 3.88 3.88 0 0 1 .93-2.77 3.14 3.14 0 0 1 2.42-1 3 3 0 0 1 2.16.82 2.8 2.8 0 0 1 .73 1.31l-1.43.35a1.49 1.49 0 0 0-1.51-1.21 1.61 1.61 0 0 0-1.29.58A2.79 2.79 0 0 0 15 12a3 3 0 0 0 .49 1.93 1.61 1.61 0 0 0 1.27.58 1.44 1.44 0 0 0 1-.37 2.1 2.1 0 0 0 .6-1.15l1.4.44a3.17 3.17 0 0 1-1.1 1.7Z"/>
 </svg>`;
@@ -45,7 +40,6 @@ class MediaCaptionsButton extends MediaChromeButton {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      Attributes.DEFAULT_SHOWING,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
     ];
@@ -70,28 +64,6 @@ class MediaCaptionsButton extends MediaChromeButton {
       updateAriaChecked(this);
     }
 
-    if (
-      this.hasAttribute(Attributes.DEFAULT_SHOWING) && // we want to show captions by default
-      this.getAttribute('aria-checked') !== 'true' && // and we aren't currently showing them
-      attrName === MediaUIAttributes.MEDIA_SUBTITLES_LIST // and we have subtitles or captions
-    ) {
-      // check if we went
-      // a) from captions (/subs) not ready to captions (/subs) ready
-      // b) from captions (/subs) ready to captions (/subs) not ready.
-      // by using a simple truthy (empty or non-empty) string check on the relevant values
-      // NOTE: We're using `getAttribute` here instead of `newValue` because we may care about
-      // multiple attributes.
-      const nextCaptionsReady = newValue
-      // If the value changed, (re)set the internal prop
-      if (this._captionsReady !== nextCaptionsReady) {
-        this._captionsReady = nextCaptionsReady;
-        // If captions are currently ready, that means we went from unready to ready, so
-        // use the click handler to dispatch a request to turn captions on
-        if (this._captionsReady) {
-          toggleSubsCaps(this);
-        }
-      }
-    }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 

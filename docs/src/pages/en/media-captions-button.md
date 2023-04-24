@@ -51,12 +51,6 @@ Button to show/disable captions
 </media-captions-button>
 ```
 
-## Attributes
-
-| Name                    | Type      | Default Value | Description                                                                                        |
-| ----------------------- | --------- | ------------- | -------------------------------------------------------------------------------------------------- |
-| `defaultshowing` | `boolean` | `false`       | Controls whether media-chrome will show a subtitle or captions tracks by default |
-
 ## Slots
 
 | Name  | Default Type | Description                                                 |

@@ -25,6 +25,7 @@ const DEFAULT_SEEK_OFFSET = 10;
 const DEFAULT_TIME = 0;
 
 export const Attributes = {
+  DEFAULT_SUBTITLES: 'defaultsubtitles',
   DEFAULT_STREAM_TYPE: 'defaultstreamtype',
   FULLSCREEN_ELEMENT: 'fullscreenelement',
   HOTKEYS: 'hotkeys',
@@ -40,7 +41,12 @@ export const Attributes = {
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {
-    return super.observedAttributes.concat(Attributes.NO_HOTKEYS, Attributes.HOTKEYS, Attributes.DEFAULT_STREAM_TYPE);
+    return super.observedAttributes.concat(
+      Attributes.NO_HOTKEYS,
+      Attributes.HOTKEYS,
+      Attributes.DEFAULT_STREAM_TYPE,
+      Attributes.DEFAULT_SUBTITLES
+    );
   }
 
   #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
@@ -117,13 +123,23 @@ class MediaController extends MediaContainer {
           console.warn('Both `hotkeys` and `nohotkeys` have been set. All hotkeys will be disabled.');
         }
         this.disableHotkeys();
+
       } else if (newValue !== oldValue && newValue === null) {
         this.enableHotkeys();
       }
     } else if (attrName === Attributes.HOTKEYS) {
         this.#hotKeys.value = newValue;
+
+    } else if (
+      attrName === Attributes.DEFAULT_SUBTITLES &&
+      newValue !== oldValue &&
+      newValue === ''
+    ) {
+      toggleSubsCaps(this, true);
+
     } else if (attrName === Attributes.DEFAULT_STREAM_TYPE) {
       this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
+
     } else if (attrName === Attributes.FULLSCREEN_ELEMENT) {
       const el = newValue
         // @ts-ignore

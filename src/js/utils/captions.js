@@ -250,10 +250,12 @@ export const areSubsOn = (el) => {
  * This was originally in media-captions-button.
  *
  * @param {HTMLElement} el - An HTMLElement that has caption related attributes on it.
- * @param {boolean} [forceOff] - An optional boolean that will force captions to always turn off.
+ * @param {boolean} [force] - An optional boolean that will force captions to the given state. True for on and false for off
  */
-export const toggleSubsCaps = (el, forceOff = false) => {
-  if (areSubsOn(el)) {
+export const toggleSubsCaps = (el, force) => {
+  const subsOn = areSubsOn(el);
+
+  if (subsOn || force === false) {
     // Subtitles are on. Clicking should disable any currently showing captions (and subtitles, if relevant)
     // For why we are requesting tracks to `mode="disabled"` and not `mode="hidden"`, see: https://github.com/muxinc/media-chrome/issues/60
     const subtitlesShowingStr = el.getAttribute(
@@ -267,7 +269,7 @@ export const toggleSubsCaps = (el, forceOff = false) => {
       );
       el.dispatchEvent(evt);
     }
-  } else if (!forceOff) {
+  } else if (!subsOn || force === true) {
     // Subtitles are off. Clicking should show the first relevant captions track or subtitles track (true/"on" by default)
     const [subTrackStr] =
       splitTextTracksStr(
