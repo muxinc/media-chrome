@@ -25,7 +25,7 @@ const DEFAULT_SEEK_OFFSET = 10;
 const DEFAULT_TIME = 0;
 
 export const Attributes = {
-  DEFAULT_SHOWING_SUBTITLES: 'defaultshowingsubtitles',
+  DEFAULT_SUBTITLES: 'defaultsubtitles',
   DEFAULT_STREAM_TYPE: 'defaultstreamtype',
   FULLSCREEN_ELEMENT: 'fullscreenelement',
   HOTKEYS: 'hotkeys',
@@ -45,7 +45,7 @@ class MediaController extends MediaContainer {
       Attributes.NO_HOTKEYS,
       Attributes.HOTKEYS,
       Attributes.DEFAULT_STREAM_TYPE,
-      Attributes.DEFAULT_SHOWING_SUBTITLES
+      Attributes.DEFAULT_SUBTITLES
     );
   }
 
@@ -131,7 +131,7 @@ class MediaController extends MediaContainer {
         this.#hotKeys.value = newValue;
 
     } else if (
-      attrName === Attributes.DEFAULT_SHOWING_SUBTITLES &&
+      attrName === Attributes.DEFAULT_SUBTITLES &&
       newValue !== oldValue &&
       newValue === ''
     ) {
