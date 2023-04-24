@@ -12,7 +12,7 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = `
+slotTemplate.innerHTML = /*html*/`
   <style>
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] > *, 
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) ::slotted([slot=pause]) {
@@ -36,6 +36,8 @@ const updateAriaLabel = (el) => {
 };
 
 /**
+ * @attr {boolean} mediapaused
+ *
  * @slot play
  * @slot pause
  *

@@ -178,6 +178,9 @@ template.innerHTML = /*html*/`
 /**
  * @extends {HTMLElement}
  *
+ * @attr {boolean} disabled
+ * @attr {string} mediacontroller
+ *
  * @cssproperty --media-primary-color - Default color of range track.
  * @cssproperty --media-secondary-color - Default color of range background.
  *

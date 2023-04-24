@@ -8,7 +8,7 @@ const pipIcon = `<svg aria-hidden="true" viewBox="0 0 28 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = `
+slotTemplate.innerHTML = /*html*/`
   <style>
   :host([${MediaUIAttributes.MEDIA_IS_PIP}]) slot:not([name=exit]) > *, 
   :host([${MediaUIAttributes.MEDIA_IS_PIP}]) ::slotted(:not([slot=exit])) {
@@ -35,6 +35,9 @@ const updateAriaLabel = (el) => {
 /**
  * @slot enter
  * @slot exit
+ *
+ * @attr {(unavailable|unsupported)} mediapipunavailable
+ * @attr {boolean} mediaispip
  *
  * @cssproperty [--media-pip-button-display = inline-flex] - `display` property of button.
  */

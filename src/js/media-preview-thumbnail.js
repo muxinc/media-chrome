@@ -32,6 +32,11 @@ template.innerHTML = /*html*/`
 /**
  * @extends {HTMLElement}
  *
+ * @attr {string} time
+ * @attr {string} mediacontroller
+ * @attr {string} mediapreviewimage
+ * @attr {string} mediapreviewcoords
+ *
  * @cssproperty [--media-preview-thumbnail-display = inline-block] - `display` property of display.
  * @cssproperty [--media-control-display = inline-block] - `display` property of control.
  */

@@ -127,6 +127,16 @@ template.innerHTML = /*html*/`
 `;
 
 /**
+ * @attr {string} mediabuffered
+ * @attr {string} mediaplaybackrate
+ * @attr {string} mediaduration
+ * @attr {string} mediaseekable
+ * @attr {boolean} mediapaused
+ * @attr {boolean} medialoading
+ * @attr {string} mediacurrenttime
+ * @attr {string} mediapreviewimage
+ * @attr {string} mediapreviewcoords
+ *
  * @cssproperty [--media-time-range-display = inline-block] - `display` property of range.
  *
  * @cssproperty --media-preview-transition-property - `transition-property` of range hover preview.
@@ -154,8 +164,6 @@ class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      'thumbnails',
-      'disabled',
       MediaUIAttributes.MEDIA_PAUSED,
       MediaUIAttributes.MEDIA_DURATION,
       MediaUIAttributes.MEDIA_SEEKABLE,

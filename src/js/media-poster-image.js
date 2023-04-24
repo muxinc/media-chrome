@@ -39,6 +39,9 @@ const setBackgroundImage = (el, image) => {
 }
 
 /**
+ * @attr {string} placeholdersrc
+ * @attr {string} src
+ *
  * @cssproperty --media-poster-image-display - `display` property of poster image.
  * @cssproperty --media-background-position - `background-position` of poster image.
  * @cssproperty --media-background-size - `background-size` of poster image.

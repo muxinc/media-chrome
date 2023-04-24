@@ -34,6 +34,9 @@ const updateSeekIconValue = (el) => {
 };
 
 /**
+ * @attr {string} seekoffset
+ * @attr {string} mediacurrenttime
+ *
  * @slot forward
  *
  * @cssproperty [--media-seek-forward-button-display = inline-flex] - `display` property of button.

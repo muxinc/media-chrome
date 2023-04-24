@@ -37,6 +37,9 @@ const updateAriaChecked = (el) => {
 };
 
 /**
+ * @attr {string} mediasubtitleslist
+ * @attr {boolean} mediasubtitlesshowing
+ *
  * @slot on
  * @slot off
  *

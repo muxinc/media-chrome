@@ -16,9 +16,9 @@ slotTemplate.innerHTML = `
 /**
  * @slot airplay
  *
- * @cssproperty [--media-airplay-button-display = inline-flex] - `display` property of button.
- *
  * @attr {(unavailable|unsupported)} mediaairplayunavailable
+ *
+ * @cssproperty [--media-airplay-button-display = inline-flex] - `display` property of button.
  *
  * @event {CustomEvent} mediaairplayrequest
  */

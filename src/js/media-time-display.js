@@ -58,6 +58,13 @@ const updateAriaValueText = (el) => {
 };
 
 /**
+ * @attr {boolean} remaining
+ * @attr {boolean} showduration
+ * @attr {boolean} disabled
+ * @attr {string} mediacurrenttime
+ * @attr {string} mediaduration
+ * @attr {string} mediaseekable
+ *
  * @cssproperty [--media-time-display-display = inline-flex] - `display` property of display.
  */
 class MediaTimeDisplay extends MediaTextDisplay {

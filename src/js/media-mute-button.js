@@ -16,7 +16,7 @@ const highIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = `
+slotTemplate.innerHTML = /*html*/`
   <style>
   ${/* Default to High slot/icon. */''}
   :host(:not([${MediaUIAttributes.MEDIA_VOLUME_LEVEL}])) slot:not([name=high]) > *, 
@@ -59,6 +59,8 @@ const updateAriaLabel = (el) => {
  * @slot low
  * @slot medium
  * @slot high
+ *
+ * @attr {string} mediavolumelevel
  *
  * @cssproperty [--media-mute-button-display = inline-flex] - `display` property of button.
  */

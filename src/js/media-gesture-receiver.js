@@ -21,6 +21,9 @@ template.innerHTML = /*html*/`
 /**
  * @extends {HTMLElement}
  *
+ * @attr {boolean} mediapaused
+ * @attr {string} mediacontroller
+ *
  * @cssproperty --media-gesture-receiver-display - `display` property of gesture receiver.
  * @cssproperty --media-control-display - `display` property of control.
  */

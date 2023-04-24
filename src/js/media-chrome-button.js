@@ -62,6 +62,9 @@ template.innerHTML = /*html*/`
 /**
  * @extends {HTMLElement}
  *
+ * @attr {boolean} disabled
+ * @attr {string} mediacontroller
+ *
  * @cssproperty --media-primary-color - Default color of text and icon.
  * @cssproperty --media-secondary-color - Default color of button background.
  * @cssproperty --media-text-color - `color` of button text.
