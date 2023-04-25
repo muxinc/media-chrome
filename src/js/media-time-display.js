@@ -184,7 +184,6 @@ class MediaTimeDisplay extends MediaTextDisplay {
     } else if (!show && this.hasAttribute(Attributes.REMAINING)) {
       this.removeAttribute(Attributes.REMAINING);
     }
-    this.update();
   }
 
   /**
@@ -205,7 +204,6 @@ class MediaTimeDisplay extends MediaTextDisplay {
     } else if (!show && this.hasAttribute(Attributes.SHOW_DURATION)) {
       this.removeAttribute(Attributes.SHOW_DURATION);
     }
-    this.update();
   }
 
   // Props derived from media UI attributes
