@@ -168,16 +168,12 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   /**
    * Whether to show the remaining time
-   * @returns {boolean}
+   * @type {boolean}
    */
   get remaining() {
     return this.hasAttribute(Attributes.REMAINING);
   }
 
-  /**
-   * Whether to show the remaining time
-   * @param {boolean} show
-   */
   set remaining(show) {
     // don't set unless needed, could trigger an attr change event
     if (show === this.remaining) return;
@@ -186,16 +182,12 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   /**
    * Whether to show the duration
-   * @returns {boolean}
+   * @type {boolean}
    */
   get showDuration() {
     return this.hasAttribute(Attributes.SHOW_DURATION);
   }
 
-  /**
-   * Whether to show the duration
-   * @param {boolean} show
-   */
   set showDuration(show) {
     // don't set unless needed, could trigger an attr change event
     if (show === this.showDuration) return;
@@ -206,42 +198,33 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   /**
    * Get the duration
-   * @returns {number | undefined}
+   * @type {number | undefined} In seconds
    */
   get mediaDuration() {
     const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
     return attrVal != null ? +attrVal : undefined;
   }
 
-  /**
-   * Set the duration
-   * @param {number} time the new duration in seconds
-   */
-  set setMediaDuration(time) {
+  set mediaDuration(time) {
     this.setAttribute(MediaUIAttributes.MEDIA_DURATION, time.toString(10));
   }
 
   /**
    * The current time
-   * @returns {number | undefined} Time in seconds or undefined if not available
+   * @type {number | undefined} In seconds
    */
   get mediaCurrentTime() {
     const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
     return attrVal != null ? +attrVal : undefined;
   }
 
-  /**
-   * The current time
-   * @param {number} time in seconds
-   */
   set mediaCurrentTime(time) {
     this.setAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME, time.toString(10));
   }
 
   /**
    * Range of values that can be seeked to
-   * @returns {[number, number] | undefined} An array of two numbers [start, end]
-   * or undefined if not available
+   * @type {[number, number] | undefined} An array of two numbers [start, end]
    */
   get mediaSeekable() {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
@@ -250,10 +233,6 @@ class MediaTimeDisplay extends MediaTextDisplay {
     return seekable.split(':').map((time) => +time);
   }
 
-  /**
-   * Range of values that can be seeked to
-   * @param {[number, number]} range An array of two numbers [start, end]
-   */
   set mediaSeekable(range) {
     this.setAttribute(range.join(':'));
   }
