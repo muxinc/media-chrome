@@ -234,6 +234,10 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   set mediaSeekable(range) {
+    if (range === undefined) {
+      this.removeAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
+      return;
+    }
     this.setAttribute(range.join(':'));
   }
 
