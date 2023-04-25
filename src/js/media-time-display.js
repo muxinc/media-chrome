@@ -179,6 +179,8 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * @param {boolean} show
    */
   set remaining(show) {
+    // don't set unless needed, could trigger an attr change event
+    if (show === this.remaining) return;
     this.toggleAttribute(Attributes.REMAINING, show);
   }
 
@@ -195,6 +197,8 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * @param {boolean} show
    */
   set showDuration(show) {
+    // don't set unless needed, could trigger an attr change event
+    if (show === this.showDuration) return;
     this.toggleAttribute(Attributes.SHOW_DURATION, show);
   }
 
