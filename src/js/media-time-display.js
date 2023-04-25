@@ -179,11 +179,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * @param {boolean} show
    */
   set remaining(show) {
-    if (show && !this.hasAttribute(Attributes.REMAINING)) {
-      this.setAttribute(Attributes.REMAINING, '');
-    } else if (!show && this.hasAttribute(Attributes.REMAINING)) {
-      this.removeAttribute(Attributes.REMAINING);
-    }
+    this.toggleAttribute(Attributes.REMAINING, show);
   }
 
   /**
@@ -199,11 +195,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * @param {boolean} show
    */
   set showDuration(show) {
-    if (show && !this.hasAttribute(Attributes.SHOW_DURATION)) {
-      this.setAttribute(Attributes.SHOW_DURATION, '');
-    } else if (!show && this.hasAttribute(Attributes.SHOW_DURATION)) {
-      this.removeAttribute(Attributes.SHOW_DURATION);
-    }
+    this.toggleAttribute(Attributes.SHOW_DURATION, show);
   }
 
   // Props derived from media UI attributes
