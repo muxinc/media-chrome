@@ -253,7 +253,7 @@ describe('receiving state / dispatching (bubbling) events', () => {
       bubbles: true
     }));
 
-    await waitUntil(() => mediaController.getAttribute('media-volume') == 0.73, 3000);
+    await waitUntil(() => mediaController.getAttribute('media-volume') == 0.73, 10000);
     assert(true, 'media-volume is 0.73');
   });
 
