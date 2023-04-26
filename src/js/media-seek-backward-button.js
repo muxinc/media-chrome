@@ -31,7 +31,11 @@ const updateSeekIconValue = (el) => {
 
 class MediaSeekBackwardButton extends MediaChromeButton {
   static get observedAttributes() {
-    return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME];
+    return [
+      ...super.observedAttributes,
+      'seek-offset',
+      MediaUIAttributes.MEDIA_CURRENT_TIME
+    ];
   }
 
   constructor(options = {}) {
