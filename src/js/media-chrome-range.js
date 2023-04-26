@@ -177,6 +177,51 @@ template.innerHTML = /*html*/`
 
 /**
  * @extends {HTMLElement}
+ *
+ * @attr {boolean} disabled
+ * @attr {string} mediacontroller
+ *
+ * @cssproperty --media-primary-color - Default color of range track.
+ * @cssproperty --media-secondary-color - Default color of range background.
+ *
+ * @cssproperty [--media-control-display = inline-block] - `display` property of control.
+ * @cssproperty --media-control-padding - `padding` of control.
+ * @cssproperty --media-control-background - `background` of control.
+ * @cssproperty --media-control-hover-background - `background` of control hover state.
+ * @cssproperty --media-control-height - `height` of control.
+ *
+ * @cssproperty --media-range-padding - `padding` of range.
+ * @cssproperty --media-range-padding-left - `padding-left` of range.
+ * @cssproperty --media-range-padding-right - `padding-right` of range.
+ *
+ * @cssproperty --media-range-thumb-width - `width` of range thumb.
+ * @cssproperty --media-range-thumb-height - `height` of range thumb.
+ * @cssproperty --media-range-thumb-border - `border` of range thumb.
+ * @cssproperty --media-range-thumb-border-radius - `border-radius` of range thumb.
+ * @cssproperty --media-range-thumb-background - `background` of range thumb.
+ * @cssproperty --media-range-thumb-box-shadow - `box-shadow` of range thumb.
+ * @cssproperty --media-range-thumb-transition - `transition` of range thumb.
+ * @cssproperty --media-range-thumb-transform - `transform` of range thumb.
+ * @cssproperty --media-range-thumb-opacity - `opacity` of range thumb.
+ *
+ * @cssproperty --media-range-track-background - `background` of range track.
+ * @cssproperty --media-range-track-width - `width` of range track.
+ * @cssproperty --media-range-track-height - `height` of range track.
+ * @cssproperty --media-range-track-border - `border` of range track.
+ * @cssproperty --media-range-track-outline - `outline` of range track.
+ * @cssproperty --media-range-track-outline-offset - `outline-offset` of range track.
+ * @cssproperty --media-range-track-border-radius - `border-radius` of range track.
+ * @cssproperty --media-range-track-box-shadow - `box-shadow` of range track.
+ * @cssproperty --media-range-track-transition - `transition` of range track.
+ * @cssproperty --media-range-track-translate-x - `translate` x-coordinate of range track.
+ * @cssproperty --media-range-track-translate-y - `translate` y-coordinate of range track.
+ *
+ * @cssproperty --media-time-range-hover-display - `display` of range hover zone.
+ * @cssproperty --media-time-range-hover-bottom - `bottom` of range hover zone.
+ * @cssproperty --media-time-range-hover-height - `height` of range hover zone.
+ *
+ * @cssproperty --media-range-track-pointer-background - `background` of range track pointer.
+ * @cssproperty --media-range-track-pointer-border-right - `border-right` of range track pointer.
  */
 class MediaChromeRange extends window.HTMLElement {
   #thumbWidth;

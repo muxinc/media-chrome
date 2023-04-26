@@ -13,7 +13,7 @@ const ccIconOff = `<svg aria-hidden="true" viewBox="0 0 26 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = `
+slotTemplate.innerHTML = /*html*/`
   <style>
   :host([aria-checked="true"]) slot:not([name=on]) > *,
   :host([aria-checked="true"]) ::slotted(:not([slot=on])) {
@@ -36,6 +36,15 @@ const updateAriaChecked = (el) => {
   el.setAttribute('aria-checked', areSubsOn(el));
 };
 
+/**
+ * @attr {string} mediasubtitleslist
+ * @attr {boolean} mediasubtitlesshowing
+ *
+ * @slot on
+ * @slot off
+ *
+ * @cssproperty [--media-captions-button-display = inline-flex] - `display` property of button.
+ */
 class MediaCaptionsButton extends MediaChromeButton {
   static get observedAttributes() {
     return [

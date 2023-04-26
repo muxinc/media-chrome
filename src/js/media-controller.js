@@ -38,6 +38,15 @@ export const Attributes = {
 /**
  * Media Controller should not mimic the HTMLMediaElement API.
  * @see https://github.com/muxinc/media-chrome/pull/182#issuecomment-1067370339
+ *
+ * @attr {boolean} defaultsubtitles
+ * @attr {string} defaultstreamtype
+ * @attr {string} fullscreenelement
+ * @attr {boolean} nohotkeys
+ * @attr {string} hotkeys
+ * @attr {string} keysused
+ * @attr {string} liveedgeoffset
+ * @attr {boolean} noautoseektolive
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {

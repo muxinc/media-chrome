@@ -1,11 +1,12 @@
 import fs from 'fs';
 import { generateCustomData } from "cem-plugin-vs-code-custom-data-generator";
+import { generateCssVars } from './cem-plugin-css-vars.js';
 
 const packageData = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const { name, description, version, author, homepage, license } = packageData;
 
 export default {
-  globs: ['dist/media-*', 'dist/extras'],
+  globs: ['dist/media-*', 'dist/experimental/media-*'],
   outdir: 'dist',
   plugins: [
     // Append package data
@@ -22,6 +23,7 @@ export default {
         };
       },
     },
+    generateCssVars(),
     generateCustomData({
       outdir: 'dist',
       htmlFileName: 'vscode.html-data.json',
@@ -29,3 +31,4 @@ export default {
     })
   ],
 };
+

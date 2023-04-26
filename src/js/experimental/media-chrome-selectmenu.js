@@ -5,7 +5,7 @@ import { closestComposedNode, getOrInsertCSSRule } from '../utils/element-utils.
 import { MediaStateReceiverAttributes } from '../constants.js';
 
 const template = document.createElement('template');
-template.innerHTML = `
+template.innerHTML = /*html*/`
   <style>
   :host {
     display: inline-flex;

@@ -8,7 +8,7 @@ import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
   <style>
     :host {
       ${/* Need position to display above video for some reason */''}
@@ -29,6 +29,16 @@ template.innerHTML = `
   <slot></slot>
 `;
 
+/**
+ * @attr {string} mediacontroller
+ *
+ * @cssproperty --media-primary-color - Default color of text and icon.
+ * @cssproperty --media-secondary-color - Default color of button background.
+ * @cssproperty --media-text-color - `color` of button text.
+ *
+ * @cssproperty --media-control-bar-display - `display` property of control bar.
+ * @cssproperty --media-control-display - `display` property of control.
+ */
 class MediaControlBar extends window.HTMLElement {
   #mediaController;
 

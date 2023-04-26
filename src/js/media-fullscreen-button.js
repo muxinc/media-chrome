@@ -20,7 +20,7 @@ const exitFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = `
+slotTemplate.innerHTML = /*html*/`
   <style>
   :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot:not([name=exit]) > *,
   :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) ::slotted(:not([slot=exit])) {
@@ -47,6 +47,12 @@ const updateAriaLabel = (el) => {
   el.setAttribute('aria-label', label);
 };
 
+/**
+ * @slot enter
+ * @slot exit
+ *
+ * @cssproperty [--media-fullscreen-button-display = inline-flex] - `display` property of button.
+ */
 class MediaFullscreenButton extends MediaChromeButton {
   static get observedAttributes() {
     return [

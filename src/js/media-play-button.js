@@ -12,7 +12,7 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = `
+slotTemplate.innerHTML = /*html*/`
   <style>
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] > *, 
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) ::slotted([slot=pause]) {
@@ -35,6 +35,14 @@ const updateAriaLabel = (el) => {
   el.setAttribute('aria-label', label);
 };
 
+/**
+ * @attr {boolean} mediapaused
+ *
+ * @slot play
+ * @slot pause
+ *
+ * @cssproperty [--media-play-button-display = inline-flex] - `display` property of button.
+ */
 class MediaPlayButton extends MediaChromeButton {
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_PAUSED];

@@ -29,7 +29,7 @@ export const Attributes = {
 
 const template = document.createElement('template');
 
-template.innerHTML = `
+template.innerHTML = /*html*/`
   <style>
     ${
       /*
@@ -208,6 +208,8 @@ function getBreakpoints(breakpoints, rect) {
 
 /**
  * @extends {HTMLElement}
+ *
+ * @cssprop --media-background-color - `background-color` of container.
  */
 class MediaContainer extends window.HTMLElement {
   constructor() {

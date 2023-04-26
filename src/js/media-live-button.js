@@ -12,7 +12,7 @@ const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
 const indicatorSVG = '<svg viewBox="0 0 6 12"><circle cx="3" cy="6" r="2"></circle></svg>';
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = `
+slotTemplate.innerHTML = /*html*/`
   <style>
 
   slot[name=indicator] > *,
@@ -43,6 +43,18 @@ slotTemplate.innerHTML = `
   <slot name="spacer">&nbsp;</slot><slot name="text">LIVE</slot>
 `;
 
+/**
+ * @slot indicator
+ * @slot spacer
+ * @slot text
+ *
+ * @attr {boolean} mediapaused
+ * @attr {boolean} mediatimeislive
+ *
+ * @cssproperty [--media-live-button-display = inline-flex] - `display` property of button.
+ * @cssproperty --media-live-button-icon-color - `fill` and `color` of not live button icon.
+ * @cssproperty --media-live-button-indicator-color - `fill` and `color` of live button icon.
+ */
 class MediaLiveButton extends MediaChromeButton {
   static get observedAttributes() {
     return [

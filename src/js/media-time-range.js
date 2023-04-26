@@ -68,7 +68,7 @@ template.innerHTML = /*html*/`
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: visibility 0s .25s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-time-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      background: var(--media-preview-thumbnail-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
       box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 4px rgb(0 0 0 / .2));
       max-width: var(--media-preview-thumbnail-max-width, 180px);
       max-height: var(--media-preview-thumbnail-max-height, 160px);
@@ -126,12 +126,44 @@ template.innerHTML = /*html*/`
   </div>
 `;
 
+/**
+ * @attr {string} mediabuffered
+ * @attr {string} mediaplaybackrate
+ * @attr {string} mediaduration
+ * @attr {string} mediaseekable
+ * @attr {boolean} mediapaused
+ * @attr {boolean} medialoading
+ * @attr {string} mediacurrenttime
+ * @attr {string} mediapreviewimage
+ * @attr {string} mediapreviewcoords
+ *
+ * @cssproperty [--media-time-range-display = inline-block] - `display` property of range.
+ *
+ * @cssproperty --media-preview-transition-property - `transition-property` of range hover preview.
+ * @cssproperty --media-preview-transition-duration-out - `transition-duration` out of range hover preview.
+ * @cssproperty --media-preview-transition-delay-out - `transition-delay` out of range hover preview.
+ * @cssproperty --media-preview-transition-duration-in - `transition-duration` in of range hover preview.
+ * @cssproperty --media-preview-transition-delay-in - `transition-delay` in of range hover preview.
+ *
+ * @cssproperty --media-preview-thumbnail-background - `background` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-box-shadow - `box-shadow` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-max-width - `max-width` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-max-height - `max-height` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-min-width - `min-width` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-min-height - `min-height` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-border-radius - `border-radius` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-border - `border` of range preview thumbnail.
+ *
+ * @cssproperty --media-preview-time-background - `background` of range preview time display.
+ * @cssproperty --media-preview-time-border-radius - `border-radius` of range preview time display.
+ * @cssproperty --media-preview-time-padding - `padding` of range preview time display.
+ * @cssproperty --media-preview-time-margin - `margin` of range preview time display.
+ * @cssproperty --media-preview-time-text-shadow - `text-shadow` of range preview time display.
+ */
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      'thumbnails',
-      'disabled',
       MediaUIAttributes.MEDIA_PAUSED,
       MediaUIAttributes.MEDIA_DURATION,
       MediaUIAttributes.MEDIA_SEEKABLE,

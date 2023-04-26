@@ -13,7 +13,7 @@ export const Attributes = {
 }
 
 const template = document.createElement('template');
-template.innerHTML = `
+template.innerHTML = /*html*/`
   <style>
     :host {
       box-sizing: border-box;
@@ -31,6 +31,14 @@ template.innerHTML = `
 
 /**
  * @extends {HTMLElement}
+ *
+ * @attr {string} time
+ * @attr {string} mediacontroller
+ * @attr {string} mediapreviewimage
+ * @attr {string} mediapreviewcoords
+ *
+ * @cssproperty [--media-preview-thumbnail-display = inline-block] - `display` property of display.
+ * @cssproperty [--media-control-display = inline-block] - `display` property of control.
  */
 class MediaPreviewThumbnail extends window.HTMLElement {
   #mediaController;

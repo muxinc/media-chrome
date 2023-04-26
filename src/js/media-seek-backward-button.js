@@ -33,9 +33,21 @@ const updateSeekIconValue = (el) => {
   updateIconText(svg, value);
 };
 
+/**
+ * @attr {string} seekoffset
+ * @attr {string} mediacurrenttime
+ *
+ * @slot backward
+ *
+ * @cssproperty [--media-seek-backward-button-display = inline-flex] - `display` property of button.
+ */
 class MediaSeekBackwardButton extends MediaChromeButton {
   static get observedAttributes() {
-    return [...super.observedAttributes, MediaUIAttributes.MEDIA_CURRENT_TIME];
+    return [
+      ...super.observedAttributes,
+      MediaUIAttributes.MEDIA_CURRENT_TIME,
+      Attributes.SEEK_OFFSET,
+    ];
   }
 
   constructor(options = {}) {

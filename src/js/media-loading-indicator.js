@@ -67,6 +67,21 @@ svg, img, ::slotted(svg), ::slotted(img) {
 
 const DEFAULT_LOADING_DELAY = 500;
 
+/**
+ * @attr {string} loadingdelay
+ * @attr {string} mediacontroller
+ * @attr {boolean} mediapaused
+ * @attr {boolean} medialoading
+ *
+ * @cssproperty --media-primary-color - Default color of text and icon.
+ * @cssproperty --media-icon-color - `fill` color of button icon.
+ *
+ * @cssproperty --media-control-display - `display` property of control.
+ *
+ * @cssproperty --media-loading-indicator-display - `display` property of loading indicator.
+ * @cssproperty --media-loading-icon-width - `width` of loading icon.
+ * @cssproperty --media-loading-icon-height - `height` of loading icon.
+ */
 class MediaLoadingIndicator extends window.HTMLElement {
   #mediaController;
 

@@ -39,6 +39,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint
       - run: yarn test
+      - run: yarn manifest
       - run: yarn build
       - run: npm run publish-release -- ${{ inputs.version_type }}
         if: ${{ inputs.version_type != 'conventional' }}

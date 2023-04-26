@@ -33,6 +33,14 @@ const updateSeekIconValue = (el) => {
   updateIconText(svg, value);
 };
 
+/**
+ * @attr {string} seekoffset
+ * @attr {string} mediacurrenttime
+ *
+ * @slot forward
+ *
+ * @cssproperty [--media-seek-forward-button-display = inline-flex] - `display` property of button.
+ */
 class MediaSeekForwardButton extends MediaChromeButton {
   static get observedAttributes() {
     return [
