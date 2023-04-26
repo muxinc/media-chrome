@@ -6,7 +6,7 @@ const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
   <style>
     media-chrome-listitem {
-      white-space: var(--media-captions-listbox-white-space, nowrap);
+      white-space: var(--media-playback-rate-listbox-white-space, nowrap);
     }
 
   </style>
