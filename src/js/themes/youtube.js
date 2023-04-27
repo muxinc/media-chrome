@@ -54,7 +54,7 @@ template.innerHTML = `
     --media-range-track-transition: height 0.1s linear;
     --media-range-track-background: rgba(255,255,255,.2);
     --media-range-track-pointer-background: rgba(255,255,255,.5);
-    --media-time-buffered-color: rgba(255,255,255,.4);
+    --media-time-range-buffered-color: rgba(255,255,255,.4);
 
     --media-range-bar-color: rgb(229, 9, 20);
 

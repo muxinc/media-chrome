@@ -75,7 +75,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 | Name                                      | CSS Property          | Default Value           | Description                            | Notes                                                                                      |
 | ----------------------------------------- | --------------------- | ----------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `--media-time-buffered-color`             | `<linear-color-stop>` | `rgb(255 255 255 / .4)` | background color of the buffered range | This is a `<linear-color-stop>` part of the `linear-gradient()` CSS function.              |
+| `--media-time-range-buffered-color`             | `<linear-color-stop>` | `rgb(255 255 255 / .4)` | background color of the buffered range | This is a `<linear-color-stop>` part of the `linear-gradient()` CSS function.              |
 | `--media-preview-thumbnail-border`        | `border`              | `2px solid #fff`        | border of the thumbnail preview        |                                                                                            |
 | `--media-preview-thumbnail-border-radius` | `border-radius`       | `2px`                   | border radius of the thumbnail preview |                                                                                            |
 | `--media-preview-thumbnail-min-width`     | `width`               | `120px`                 | minimum thumbnail preview width        | The maximum CSS properties have priority over the minimum. Only `px` values are supported. |

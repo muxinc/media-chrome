@@ -183,7 +183,7 @@ template.innerHTML = /*html*/`
     --media-range-track-height: 6px;
     --media-range-track-transition: height .1s linear;
     --media-range-track-background: rgba(20, 20, 30, .25);
-    --media-time-buffered-color: rgba(20, 20, 30, .3);
+    --media-time-range-buffered-color: rgba(20, 20, 30, .3);
     --media-range-track-box-shadow: 0 -1px 0 rgba(20, 20, 30, .07);
     --media-range-padding-left: 0;
     --media-range-padding-right: 0;

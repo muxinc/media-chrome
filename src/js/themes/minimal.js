@@ -23,7 +23,7 @@ template.innerHTML = /*html*/`
       --media-control-background: transparent;
       --media-control-hover-background: transparent;
       --media-range-track-border-radius: 3px;
-      --media-time-buffered-color: rgba(255, 255, 255, 0.4);
+      --media-time-range-buffered-color: rgba(255, 255, 255, 0.4);
       --media-range-track-background: rgba(255, 255, 255, 0.5);
       --media-range-thumb-opacity: 0;
       --media-preview-thumbnail-border-radius: 2px;
