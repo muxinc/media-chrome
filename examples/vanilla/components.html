@@ -6,24 +6,123 @@
     <script type="module" src="../../dist/index.js"></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
-      media-controller:not([audio]),
-      media-poster-image:not([audio]) {
+      media-controller:not([audio]) {
         display: block;         /* expands the container if preload=none */
         max-width: 960px;       /* allows the container to shrink if small */
         aspect-ratio: 2.4;   /* set container aspect ratio if preload=none */
+      }
+
+      media-poster-image {
+        aspect-ratio: 1.5;
+        max-width: 960px;
+        display: block;
+      }
+
+      #mc2 {
+        max-width: 100px;
       }
 
       video {
         width: 100%;      /* prevents video to expand beyond its container */
       }
 
+      .hidden-control-bar {
+        --media-control-bar-display: none;
+        --media-control-display: none;
+        --media-gesture-receiver-display: none;
+        --media-loading-indicator-display: none;
+        --media-poster-image-display: none;
+        --media-time-range-hover-display: none;
+      }
+
       body {
-        --media-text-color: red;
-        --media-icon-color: blue;
-        --media-primary-color: green;
-        --media-secondary-color: yellow;
-        --media-control-background: purple;
-        --media-control-hover-background: fuchsia;
+        --media-background-color: darkgrey;
+        --media-background-position: center top;
+        --media-background-size: cover;
+        --media-button-icon-height: initial;
+        --media-button-icon-transform: initial;
+        --media-button-icon-transition: initial;
+        --media-button-icon-width: initial;
+        --media-control-background: oklch(20% 0.4 140);
+        --media-control-height: initial;
+        --media-control-hover-background: oklch(30% 0.4 140);
+        --media-control-padding: initial;
+        --media-font: initial;
+        --media-font-family: initial;
+        --media-font-size: initial;
+        --media-font-weight: inital;
+        --media-icon-color: oklch(90% 0.4 140);
+        --media-live-button-icon-color: oklch(70% 0.4 140);
+        --media-live-button-indicator-color: oklch(50% 0.4 140);
+        --media-live-indicator-color: oklch(50% 0.4 140);
+        --media-loading-icon-height: initial;
+        --media-loading-icon-width: initial;
+        --media-object-fit: initial;
+        --media-object-position: initial;
+        --media-preview-thumbnail-background: initial;
+        --media-preview-thumbnail-border: initial;
+        --media-preview-thumbnail-border-radius: initial;
+        --media-preview-thumbnail-box-shadow: initial;
+        --media-preview-thumbnail-max-height: initial;
+        --media-preview-thumbnail-max-width: initial;
+        --media-preview-thumbnail-min-height: initial;
+        --media-preview-thumbnail-min-width: initial;
+        --media-preview-time-background: initial;
+        --media-preview-time-border-radius: initial;
+        --media-preview-time-margin: initial;
+        --media-preview-time-padding: initial;
+        --media-preview-time-text-shadow: initial;
+        --media-preview-transition-delay-in: initial;
+        --media-preview-transition-delay-out: initial;
+        --media-preview-transition-duration-in: initial;
+        --media-preview-transition-duration-out: initial;
+        --media-preview-transition-property: initial;
+        --media-primary-color: oklch(90% 0.4 14);
+        --media-range-background: oklch(90% 0.4 140);
+        --media-range-bar-color: oklch(90% 0.4 140);
+        --media-range-padding: initial;
+        --media-range-padding-left: initial;
+        --media-range-padding-right: initial;
+        --media-range-thumb-background: oklch(20% 0.4 14);
+        --media-range-thumb-border: solid oklch(20% 0.4 14) 4px;
+        --media-range-thumb-border-radius: initial;
+        --media-range-thumb-box-shadow: initial;
+        --media-range-thumb-height: initial;
+        --media-range-thumb-opacity: initial;
+        --media-range-thumb-transform: initial;
+        --media-range-thumb-transition: initial;
+        --media-range-thumb-width: initial;
+        --media-range-track-background: initial;
+        --media-range-track-border: initial;
+        --media-range-track-border-radius: initial;
+        --media-range-track-box-shadow: initial;
+        --media-range-track-color: initial;
+        --media-range-track-height: initial;
+        --media-range-track-outline: initial;
+        --media-range-track-outline-offset: initial;
+        --media-range-track-pointer-background: initial;
+        --media-range-track-pointer-border-right: initial;
+        --media-range-track-progress-internal: initial;
+        --media-range-track-transition: initial;
+        --media-range-track-translate-x: initial;
+        --media-range-track-translate-y: initial;
+        --media-range-track-width: initial;
+        --media-secondary-color: initial;
+        --media-text-color: initial;
+        --media-text-content-height: 20px;
+        --media-time-buffered-color: initial;
+        --media-time-range-hover-bottom: initial;
+        --media-time-range-hover-height: initial;
+
+        /* experimental */
+        --media-captions-indicator-height: initial;
+        --media-captions-indicator-vertical-align: initial;
+        --media-captions-listbox-white-space: initial;
+        --media-listbox-background: initial;
+        --media-listbox-hover-background: initial;
+        --media-listbox-hover-outline: initial;
+        --media-listbox-selected-background: initial;
+        --media-playback-rate-listbox-white-space: initial;
       }
 
       media-airplay-button[mediaairplayunavailable],
@@ -67,7 +166,9 @@
             src="./vtt/en-cc.vtt"
           />
         </video>
-        <media-loading-indicator mediacontroller="mc" slot="centered-chrome" noautohide></media-loading-indicator>
+      </media-controller>
+      <p>media-controller</p>
+      <media-controller id="mc2" defaultsubtitles>
       </media-controller>
       <p>media-poster-image</p>
       <media-poster-image
@@ -79,6 +180,20 @@
 
       <p>media-control-bar</p>
       <media-control-bar mediacontroller="mc">
+        <media-play-button></media-play-button>
+        <media-seek-backward-button seekoffset="30"></media-seek-backward-button>
+        <media-seek-forward-button seekoffset="30"></media-seek-forward-button>
+        <media-mute-button></media-mute-button>
+        <media-volume-range></media-volume-range>
+        <media-time-range></media-time-range>
+        <media-time-display showduration remaining></media-time-display>
+        <media-captions-button></media-captions-button>
+        <media-playback-rate-button></media-playback-rate-button>
+        <media-pip-button></media-pip-button>
+        <media-fullscreen-button></media-fullscreen-button>
+        <media-airplay-button></media-airplay-button>
+      </media-control-bar>
+      <media-control-bar mediacontroller="mc" class="hidden-control-bar">
         <media-play-button></media-play-button>
         <media-seek-backward-button seekoffset="30"></media-seek-backward-button>
         <media-seek-forward-button seekoffset="30"></media-seek-forward-button>
@@ -124,6 +239,9 @@
           <br>
           <p>media-mute-button</p>
           <media-mute-button mediacontroller="mc"></media-mute-button>
+          <br>
+          <p>media-loading-indicator</p>
+          <media-loading-indicator medialoading noautohide></media-loading-indicator>
         </div>
         <div class="col-2">
           <p>media-pip-button</p>
@@ -134,9 +252,6 @@
           <br>
           <p>media-playback-rate-button</p>
           <media-playback-rate-button mediacontroller="mc"></media-playback-rate-button>
-          <br>
-          <p>media-preview-time-display</p>
-          <media-preview-time-display mediacontroller="mc"></media-preview-time-display>
           <br>
           <p>media-seek-backward-button</p>
           <media-seek-backward-button mediacontroller="mc"></media-seek-backward-button>
@@ -155,6 +270,9 @@
           <br>
           <p>media-time-range</p>
           <media-time-range mediacontroller="mc"></media-time-range>
+          <br>
+          <p>media-preview-time-display</p>
+          <media-preview-time-display mediacontroller="mc"></media-preview-time-display>
           <br>
           <p>media-preview-thumbnail</p>
           <media-preview-thumbnail mediacontroller="mc"></media-preview-thumbnail>
