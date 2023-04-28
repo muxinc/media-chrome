@@ -34,8 +34,8 @@ const updateSeekIconValue = (el) => {
 };
 
 /**
- * @attr {string} seekoffset
- * @attr {string} mediacurrenttime
+ * @attr {string} seekoffset - Set the seek offset.
+ * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
  *
  * @slot forward
  *

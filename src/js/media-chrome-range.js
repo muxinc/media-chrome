@@ -178,8 +178,8 @@ template.innerHTML = /*html*/`
 /**
  * @extends {HTMLElement}
  *
- * @attr {boolean} disabled
- * @attr {string} mediacontroller
+ * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
+ * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  *
  * @cssproperty --media-primary-color - Default color of range track.
  * @cssproperty --media-secondary-color - Default color of range background.

@@ -60,7 +60,7 @@ const updateAriaLabel = (el) => {
  * @slot medium
  * @slot high
  *
- * @attr {string} mediavolumelevel
+ * @attr {string} mediavolumelevel - (read-only) Set to the media volume level.
  *
  * @cssproperty [--media-mute-button-display = inline-flex] - `display` property of button.
  */

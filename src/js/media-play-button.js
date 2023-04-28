@@ -36,7 +36,7 @@ const updateAriaLabel = (el) => {
 };
 
 /**
- * @attr {boolean} mediapaused
+ * @attr {boolean} mediapaused - (read-only) Present if the media is paused.
  *
  * @slot play
  * @slot pause

@@ -58,12 +58,12 @@ const updateAriaValueText = (el) => {
 };
 
 /**
- * @attr {boolean} remaining
- * @attr {boolean} showduration
- * @attr {boolean} disabled
- * @attr {string} mediacurrenttime
- * @attr {string} mediaduration
- * @attr {string} mediaseekable
+ * @attr {boolean} remaining - Toggle on to show the remaining time instead of elapsed time.
+ * @attr {boolean} showduration - Toggle on to show the duration.
+ * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
+ * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
+ * @attr {string} mediaduration - (read-only) Set to the media duration.
+ * @attr {string} mediaseekable - (read-only) Set to the seekable time ranges.
  *
  * @cssproperty [--media-time-display-display = inline-flex] - `display` property of display.
  */

@@ -17,9 +17,9 @@ const formatAsPercentString = ({ value, max }) =>
   `${Math.round((value / max) * 100)}%`;
 
 /**
- * @attr {string} mediavolume
- * @attr {string} mediamuted
- * @attr {string} mediavolumeunavailable
+ * @attr {string} mediavolume - (read-only) Set to the media volume.
+ * @attr {string} mediamuted - (read-only) Set to the media muted state.
+ * @attr {string} mediavolumeunavailable - (read-only) Set if changing volume is unavailable.
  *
  * @cssproperty [--media-volume-range-display = inline-block] - `display` property of range.
  */

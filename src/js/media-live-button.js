@@ -48,8 +48,8 @@ slotTemplate.innerHTML = /*html*/`
  * @slot spacer
  * @slot text
  *
- * @attr {boolean} mediapaused
- * @attr {boolean} mediatimeislive
+ * @attr {boolean} mediapaused - (read-only) Present if the media is paused.
+ * @attr {boolean} mediatimeislive - (read-only) Present if the media playback is live.
  *
  * @cssproperty [--media-live-button-display = inline-flex] - `display` property of button.
  * @cssproperty --media-live-button-icon-color - `fill` and `color` of not live button icon.

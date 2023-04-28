@@ -39,8 +39,8 @@ const setBackgroundImage = (el, image) => {
 }
 
 /**
- * @attr {string} placeholdersrc
- * @attr {string} src
+ * @attr {string} placeholdersrc - Placeholder image source URL, often a blurhash data URL.
+ * @attr {string} src - Poster image source URL.
  *
  * @cssproperty --media-poster-image-display - `display` property of poster image.
  * @cssproperty --media-background-position - `background-position` of poster image.

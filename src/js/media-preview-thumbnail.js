@@ -8,10 +8,6 @@ import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
 
-export const Attributes = {
-  TIME: 'time',
-}
-
 const template = document.createElement('template');
 template.innerHTML = /*html*/`
   <style>
@@ -32,10 +28,9 @@ template.innerHTML = /*html*/`
 /**
  * @extends {HTMLElement}
  *
- * @attr {string} time
- * @attr {string} mediacontroller
- * @attr {string} mediapreviewimage
- * @attr {string} mediapreviewcoords
+ * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
+ * @attr {string} mediapreviewimage - (read-only) Set to the timeline preview image URL.
+ * @attr {string} mediapreviewcoords - (read-only) Set to the active preview image coordinates.
  *
  * @cssproperty [--media-preview-thumbnail-display = inline-block] - `display` property of display.
  * @cssproperty [--media-control-display = inline-block] - `display` property of control.
@@ -46,7 +41,6 @@ class MediaPreviewThumbnail extends window.HTMLElement {
   static get observedAttributes() {
     return [
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
-      Attributes.TIME,
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
       MediaUIAttributes.MEDIA_PREVIEW_COORDS,
     ];
@@ -82,7 +76,6 @@ class MediaPreviewThumbnail extends window.HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (
       [
-        Attributes.TIME,
         MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
         MediaUIAttributes.MEDIA_PREVIEW_COORDS,
       ].includes(attrName)

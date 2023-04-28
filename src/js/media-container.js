@@ -209,6 +209,14 @@ function getBreakpoints(breakpoints, rect) {
 /**
  * @extends {HTMLElement}
  *
+ * @attr {boolean} audio
+ * @attr {string} autohide
+ * @attr {string} breakpoints
+ * @attr {boolean} gesturesdisabled
+ * @attr {boolean} keyboardcontrol
+ * @attr {boolean} noautohide
+ * @attr {boolean} userinactive
+ *
  * @cssprop --media-background-color - `background-color` of container.
  */
 class MediaContainer extends window.HTMLElement {

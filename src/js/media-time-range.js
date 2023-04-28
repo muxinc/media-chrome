@@ -127,15 +127,15 @@ template.innerHTML = /*html*/`
 `;
 
 /**
- * @attr {string} mediabuffered
- * @attr {string} mediaplaybackrate
- * @attr {string} mediaduration
- * @attr {string} mediaseekable
- * @attr {boolean} mediapaused
- * @attr {boolean} medialoading
- * @attr {string} mediacurrenttime
- * @attr {string} mediapreviewimage
- * @attr {string} mediapreviewcoords
+ * @attr {string} mediabuffered - (read-only) Set to the buffered time ranges.
+ * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
+ * @attr {string} mediaduration - (read-only) Set to the media duration.
+ * @attr {string} mediaseekable - (read-only) Set to the seekable time ranges.
+ * @attr {boolean} mediapaused - (read-only) Present if the media is paused.
+ * @attr {boolean} medialoading - (read-only) Present if the media is loading.
+ * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
+ * @attr {string} mediapreviewimage - (read-only) Set to the timeline preview image URL.
+ * @attr {string} mediapreviewcoords - (read-only) Set to the active preview image coordinates.
  *
  * @cssproperty [--media-time-range-display = inline-block] - `display` property of range.
  *
