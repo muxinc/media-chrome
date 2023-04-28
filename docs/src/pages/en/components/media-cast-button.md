@@ -1,7 +1,7 @@
 ---
 title: <media-cast-button>
 description: Media Cast Button
-layout: ../../layouts/MainLayout.astro
+layout: ../../../layouts/MainLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-cast-button.js
 ---
 
