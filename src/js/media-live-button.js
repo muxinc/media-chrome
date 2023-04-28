@@ -44,9 +44,9 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @slot indicator
- * @slot spacer
- * @slot text
+ * @slot indicator - The default is an SVG of a circle that changes to red when the video or audio is live. Can be replaced with your own SVG or font icon.
+ * @slot spacer - A simple text space (&nbsp;) between the indicator and the text.
+ * @slot text - The text content of the button, with a default of “LIVE”.
  *
  * @attr {boolean} mediapaused - (read-only) Present if the media is paused.
  * @attr {boolean} mediatimeislive - (read-only) Present if the media playback is live.

@@ -36,10 +36,10 @@ const updateAriaLabel = (el) => {
 };
 
 /**
- * @attr {boolean} mediapaused - (read-only) Present if the media is paused.
+ * @slot play - An element shown when the media is paused and pressing the button will start media playback.
+ * @slot pause - An element shown when the media is playing and pressing the button will pause media playback.
  *
- * @slot play
- * @slot pause
+ * @attr {boolean} mediapaused - (read-only) Present if the media is paused.
  *
  * @cssproperty [--media-play-button-display = inline-flex] - `display` property of button.
  */

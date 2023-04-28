@@ -14,7 +14,7 @@ slotTemplate.innerHTML = `
 `;
 
 /**
- * @slot airplay
+ * @slot airplay - The element shown for the AirPlay button’s display.
  *
  * @attr {(unavailable|unsupported)} mediaairplayunavailable - (read-only) Set if airplay is unavailable.
  *

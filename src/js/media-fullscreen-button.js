@@ -48,8 +48,8 @@ const updateAriaLabel = (el) => {
 };
 
 /**
- * @slot enter
- * @slot exit
+ * @slot enter - An element shown when the media is not in fullscreen and pressing the button will trigger entering fullscreen.
+ * @slot exit - An element shown when the media is in fullscreen and pressing the button will trigger exiting fullscreen.
  *
  * @attr {(unavailable|unsupported)} mediafullscreenunavailable - (read-only) Set if fullscreen is unavailable.
  * @attr {boolean} mediaisfullscreen - (read-only) Present if the media is fullscreen.
