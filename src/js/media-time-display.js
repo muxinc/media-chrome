@@ -66,6 +66,7 @@ const updateAriaValueText = (el) => {
  * @attr {string} mediaseekable - (read-only) Set to the seekable time ranges.
  *
  * @cssproperty [--media-time-display-display = inline-flex] - `display` property of display.
+ * @cssproperty --media-control-hover-background - `background` of control hover state.
  */
 class MediaTimeDisplay extends MediaTextDisplay {
   #slot;
