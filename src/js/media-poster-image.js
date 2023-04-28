@@ -21,8 +21,8 @@ template.innerHTML = /*html*/`
       min-width: 100%;
       min-height: 100%;
       background-repeat: no-repeat;
-      background-position: var(--media-background-position, var(--media-object-position, center));
-      background-size: var(--media-background-size, var(--media-object-fit, contain));
+      background-position: var(--media-poster-image-background-position, var(--media-object-position, center));
+      background-size: var(--media-poster-image-background-size, var(--media-object-fit, contain));
       object-fit: var(--media-object-fit, contain);
       object-position: var(--media-object-position, center);
     }
@@ -43,8 +43,8 @@ const setBackgroundImage = (el, image) => {
  * @attr {string} src - Poster image source URL.
  *
  * @cssproperty --media-poster-image-display - `display` property of poster image.
- * @cssproperty --media-background-position - `background-position` of poster image.
- * @cssproperty --media-background-size - `background-size` of poster image.
+ * @cssproperty --media-poster-image-background-position - `background-position` of poster image.
+ * @cssproperty --media-poster-image-background-size - `background-size` of poster image.
  * @cssproperty --media-object-fit - `object-fit` of poster image.
  * @cssproperty --media-object-position - `object-position` of poster image.
  */

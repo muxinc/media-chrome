@@ -90,6 +90,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('cursor', 'pointer');
+    style.setProperty('background', 'var(--media-control-background, var(--media-text-background, var(--media-secondary-color, rgb(20 20 30 / .7))))');
   }
 
   connectedCallback() {

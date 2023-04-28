@@ -37,8 +37,8 @@
 
       body {
         --media-background-color: darkgrey;
-        --media-background-position: center top;
-        --media-background-size: cover;
+        --media-poster-image-background-position: center top;
+        --media-poster-image-background-size: cover;
         --media-button-icon-height: initial;
         --media-button-icon-transform: initial;
         --media-button-icon-transition: initial;
@@ -262,7 +262,9 @@
           <media-text-display mediacontroller="mc">Some Text</media-text-display>
           <br>
           <p>media-time-display</p>
+          <media-time-display showduration mediacontroller="mc"></media-time-display>
           <media-time-display mediacontroller="mc"></media-time-display>
+          <media-time-display remaining mediacontroller="mc"></media-time-display>
           <br>
           <p>media-volume-range</p>
           <media-volume-range mediacontroller="mc"></media-volume-range>
