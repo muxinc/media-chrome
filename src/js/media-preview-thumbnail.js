@@ -1,9 +1,3 @@
-/*
-  <media-preview-thumbnail media="#myVideo" time="10.00">
-
-  Uses the "thumbnails" track of a video element to show an image relative to
-  the video time given in the `time` attribute.
-*/
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
@@ -22,7 +16,7 @@ template.innerHTML = /*html*/`
       position: relative;
     }
   </style>
-  <img crossorigin loading="eager" decoding="async" />
+  <img crossorigin loading="eager" decoding="async">
 `;
 
 /**
