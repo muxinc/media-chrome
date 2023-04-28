@@ -37,8 +37,8 @@ const updateAriaChecked = (el) => {
 };
 
 /**
- * @attr {string} mediasubtitleslist - (read-only) A list of all subtitles.
- * @attr {boolean} mediasubtitlesshowing - (read-only) A list of the showing subtitles.
+ * @attr {string} mediasubtitleslist - (read-only) A list of all subtitles and captions.
+ * @attr {boolean} mediasubtitlesshowing - (read-only) A list of the showing subtitles and captions.
  *
  * @slot on
  * @slot off
