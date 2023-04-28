@@ -1,7 +1,7 @@
 ---
 title: <media-seek-backward-button>
 description: Media Seek Backward Button
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-seek-backward-button.js
 ---
 

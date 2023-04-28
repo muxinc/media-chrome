@@ -1,7 +1,7 @@
 ---
 title: <media-play-button>
 description: Media Play Button
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-play-button.js
 ---
 

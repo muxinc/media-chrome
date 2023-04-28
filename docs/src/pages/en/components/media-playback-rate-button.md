@@ -1,7 +1,7 @@
 ---
 title: <media-playback-rate-button>
 description: Media Playback Rate Button
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-playback-rate-button.js
 ---
 

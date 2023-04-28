@@ -1,7 +1,7 @@
 ---
 title: <media-time-display>
 description: Media Time Display
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-time-display.js
 ---
 

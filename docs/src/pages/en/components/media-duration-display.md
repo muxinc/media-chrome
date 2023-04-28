@@ -1,7 +1,7 @@
 ---
 title: <media-duration-display>
 description: Media Duration Display
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-duration-display.js
 ---
 

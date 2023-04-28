@@ -1,7 +1,7 @@
 ---
 title: <media-live-button>
 description: Media Live Button
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-live-button.js
 ---
 

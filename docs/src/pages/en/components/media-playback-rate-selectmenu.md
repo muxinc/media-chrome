@@ -1,7 +1,7 @@
 ---
 title: <media-playback-rate-selectmenu> (Experimental)
 description: Experimental Media Playback Rate Selectmenu
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/experimental/media-playback-rate-selectmenu.js
 ---
 

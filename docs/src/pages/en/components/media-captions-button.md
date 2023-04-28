@@ -1,7 +1,7 @@
 ---
 title: <media-captions-button>
 description: Media Captions Button
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-captions-button.js
 ---
 
