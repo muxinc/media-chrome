@@ -1,7 +1,7 @@
 ---
 title: <media-seek-forward-button>
 description: Media Seek Forward Button
-layout: ../../layouts/MainLayout.astro
+layout: ../../../layouts/MainLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-seek-forward-button.js
 ---
 
