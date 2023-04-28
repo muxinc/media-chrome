@@ -36,8 +36,8 @@ const updateAriaLabel = (el) => {
  * @slot enter
  * @slot exit
  *
- * @attr {(unavailable|unsupported)} mediapipunavailable
- * @attr {boolean} mediaispip
+ * @attr {(unavailable|unsupported)} mediapipunavailable - (read-only) Set if picture-in-picture is unavailable.
+ * @attr {boolean} mediaispip - (read-only) Present if the media is playing in picture-in-picture.
  *
  * @cssproperty [--media-pip-button-display = inline-flex] - `display` property of button.
  */

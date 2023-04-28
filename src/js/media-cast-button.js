@@ -39,8 +39,8 @@ const updateAriaLabel = (el) => {
  * @slot enter
  * @slot exit
  *
- * @attr {(unavailable|unsupported)} mediacastunavailable
- * @attr {boolean} mediaiscasting
+ * @attr {(unavailable|unsupported)} mediacastunavailable - (read-only) Set if casting is unavailable.
+ * @attr {boolean} mediaiscasting - (read-only) Present if the media is casting.
  *
  * @cssproperty [--media-cast-button-display = inline-flex] - `display` property of button.
  */

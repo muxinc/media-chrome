@@ -21,8 +21,8 @@ template.innerHTML = /*html*/`
 /**
  * @extends {HTMLElement}
  *
- * @attr {boolean} mediapaused
- * @attr {string} mediacontroller
+ * @attr {boolean} mediapaused - (read-only) Present if the media is paused.
+ * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  *
  * @cssproperty --media-gesture-receiver-display - `display` property of gesture receiver.
  * @cssproperty --media-control-display - `display` property of control.

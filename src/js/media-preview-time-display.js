@@ -5,7 +5,7 @@ import { MediaUIAttributes } from './constants.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 /**
- * @attr {string} mediapreviewtime
+ * @attr {string} mediapreviewtime - (read-only) Set to the timeline preview time.
  *
  * @cssproperty [--media-preview-time-display-display = inline-flex] - `display` property of display.
  */

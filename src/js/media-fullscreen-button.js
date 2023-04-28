@@ -51,6 +51,9 @@ const updateAriaLabel = (el) => {
  * @slot enter
  * @slot exit
  *
+ * @attr {(unavailable|unsupported)} mediafullscreenunavailable - (read-only) Set if fullscreen is unavailable.
+ * @attr {boolean} mediaisfullscreen - (read-only) Present if the media is fullscreen.
+ *
  * @cssproperty [--media-fullscreen-button-display = inline-flex] - `display` property of button.
  */
 class MediaFullscreenButton extends MediaChromeButton {

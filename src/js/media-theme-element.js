@@ -39,6 +39,8 @@ prependTemplate.innerHTML = /*html*/`
 
 /**
  * @extends {HTMLElement}
+ *
+ * @attr {string} template - The element `id` of the template to render.
  */
 export class MediaThemeElement extends window.HTMLElement {
   static template;

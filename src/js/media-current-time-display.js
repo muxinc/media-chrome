@@ -5,6 +5,8 @@ import { MediaUIAttributes } from './constants.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 /**
+ * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
+ *
  * @cssproperty [--media-current-time-display-display = inline-flex] - `display` property of display.
  */
 class MediaCurrentTimeDisplay extends MediaTextDisplay {
