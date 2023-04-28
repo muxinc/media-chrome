@@ -44,7 +44,7 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @slot indicator - The default is an SVG of a circle that changes to red when the video or audio is live. Can be replaced wiht your own SVG or font icon.
+ * @slot indicator - The default is an SVG of a circle that changes to red when the video or audio is live. Can be replaced with your own SVG or font icon.
  * @slot spacer - A simple text space (&nbsp;) between the indicator and the text.
  * @slot text - The text content of the button, with a default of “LIVE”.
  *
