@@ -46,6 +46,8 @@ template.innerHTML = /*html*/`
 `;
 
 /**
+ * @slot - Default slotted elements.
+ *
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  *
  * @cssproperty --media-primary-color - Default color of text.

@@ -33,8 +33,8 @@ const updateAriaLabel = (el) => {
 };
 
 /**
- * @slot enter
- * @slot exit
+ * @slot enter - An element shown when the media is not in PIP mode and pressing the button will trigger entering PIP mode.
+ * @slot exit - An element shown when the media is in PIP and pressing the button will trigger exiting PIP mode.
  *
  * @attr {(unavailable|unsupported)} mediapipunavailable - (read-only) Set if picture-in-picture is unavailable.
  * @attr {boolean} mediaispip - (read-only) Present if the media is playing in picture-in-picture.

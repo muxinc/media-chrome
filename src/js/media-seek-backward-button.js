@@ -34,10 +34,10 @@ const updateSeekIconValue = (el) => {
 };
 
 /**
- * @attr {string} seekoffset - Set the seek offset.
- * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
+ * @slot backward - The element shown for the seek backward button’s display.
  *
- * @slot backward
+ * @attr {string} seekoffset - Adjusts how much time (in seconds) the playhead should seek backward.
+ * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
  *
  * @cssproperty [--media-seek-backward-button-display = inline-flex] - `display` property of button.
  */

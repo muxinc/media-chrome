@@ -68,6 +68,8 @@ svg, img, ::slotted(svg), ::slotted(img) {
 const DEFAULT_LOADING_DELAY = 500;
 
 /**
+ * @slot loading - The element shown for when the media is in a buffering state.
+ *
  * @attr {string} loadingdelay - Set the delay in ms before the loading animation is shown.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  * @attr {boolean} mediapaused - (read-only) Present if the media is paused.

@@ -55,10 +55,10 @@ const updateAriaLabel = (el) => {
 };
 
 /**
- * @slot off
- * @slot low
- * @slot medium
- * @slot high
+ * @slot off - An element shown when the media is muted or the media’s volume is 0.
+ * @slot low - An element shown when the media’s volume is “low” (less than 50% / 0.5).
+ * @slot medium - An element shown when the media’s volume is “medium” (between 50% / 0.5 and 75% / 0.75).
+ * @slot high - An element shown when the media’s volume is “high” (75% / 0.75 or greater).
  *
  * @attr {string} mediavolumelevel - (read-only) Set to the media volume level.
  *
