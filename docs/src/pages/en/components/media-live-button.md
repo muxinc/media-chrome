@@ -91,28 +91,3 @@ The Media Live Button shows when the stream is live via an indicator (red dot, b
   <span slot="spacer"></span>
   <span slot="text"></span>
 </media-live-button>
-```
-
-## Attributes
-
-| Name            | Type      | Default Value | Description |
-| --------------- | --------- | ------------- | ----------- |
-| `mediatimeislive` | `boolean` | `false`| Include when the media time is at or close to the most current time or _live edge_. Clicking the button will not seek to live when true. [_Set automatically by media-controller._] |
-| `mediapaused` | `boolean` | `false`| Include when the media is paused. The button will unpause the video if paused when seeking to live. [_Set automatically by media-controller._] |
-
-## Slots
-
-| Name    | Default Type | Description |
-| ------- | ------------ | ----------- |
-| `text` | `text` | The text content of the button, with a default of "LIVE". |
-| `indicator`  | `svg` | The default is an SVG of a circle that changes to red when the video or audio is live. Can be replaced wiht your own SVG or font icon. |
-| `spacer`  | `text` | A simple text space (`&nbsp;`) between the indicator and the text. |
-
-## CSS Vars
-
-See our [styling docs](./styling#Buttons)
-
-| Var    | Description |
-| ------ | ----------- |
-| `--media-live-button-indicator-color` | The color of the indicator icon when the audio or video is live  |
-| `--media-live-button-icon-color` | The color of the indicator icon when the audio or video is *not* live  |

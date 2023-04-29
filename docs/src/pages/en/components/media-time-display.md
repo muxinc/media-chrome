@@ -60,18 +60,3 @@ Display only component to show the time of the playhead.
   remaining
 ></media-time-display>
 ```
-
-## Attributes
-
-| Name            | Type      | Default Value | Description                                                   |
-| --------------- | --------- | ------------- | ------------------------------------------------------------- |
-| `remaining`     | `boolean` | `false`       | Show as remaining time (i.e. negative "count down") when true |
-| `show-duration` | `boolean` | `false`       | Also show the duration after a slash when true                |
-
-## Slots
-
-_None_
-
-## Styling
-
-See our [styling docs](./styling#Text-Displays)

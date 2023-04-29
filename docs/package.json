@@ -7,7 +7,7 @@
     "dev": "(cd .. && yarn build:esm --watch=forever) & astro dev",
     "start": "astro dev",
     "check": "astro check && tsc",
-    "prebuild": "cd .. && yarn && yarn build",
+    "prebuild": "cd .. && yarn && yarn manifest && yarn build",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -18,6 +18,7 @@
     "@astrojs/preact": "^2.0.2",
     "@astrojs/react": "^1.2.1",
     "@astrojs/tailwind": "^2.1.1",
+    "@astropub/md": "^0.2.0",
     "@docsearch/css": "^3.3.0",
     "@docsearch/react": "^3.3.0",
     "@types/react": "^18.0.23",

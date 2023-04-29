@@ -110,20 +110,3 @@ Shows a loading indicator when the media is buffering.
   </svg>
 </media-loading-indicator>
 ```
-
-## Attributes
-
-| Name            | Type     | Default Value | Description                                                                                   |
-| --------------- | -------- | ------------- | --------------------------------------------------------------------------------------------- |
-| `loadingdelay` | `number` | `500`         | The amount of time in ms the media has to be buffering before the loading indicator is shown. |
-
-# Slots
-
-| Name      | Default Type | Description                                                   |
-| --------- | ------------ | ------------------------------------------------------------- |
-| `loading` | `svg`        | The element shown for when the media is in a buffering state. |
-
-
-## Styling
-
-See our [styling docs](./styling#Indicators)

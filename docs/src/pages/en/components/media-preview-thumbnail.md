@@ -38,15 +38,3 @@ There is no need to add this element yourself, it's automatically included by `<
   mediapreviewcoords="284 640 284 160"
 ></media-preview-thumbnail>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-_None_
-
-## Styling
-
-See our [styling docs](./styling#Buttons)

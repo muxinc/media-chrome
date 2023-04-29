@@ -44,20 +44,3 @@ Button to bring up the Cast menu and select playback on a Chromecast device.
   <span slot="exit">Exit</span>
 </media-cast-button>
 ```
-
-
-## Attributes
-
-_None_
-
-## Slots
-
-| Name    | Default Type | Description                                                                                                  |
-| ------- | ------------ | ------------------------------------------------------------------------------------------------------------ |
-| `enter` | `svg`        | An element shown when the media is not in casting mode and pressing the button will open the Cast menu       |
-| `exit`  | `svg`        | An element shown when the media is in casting mode and pressing the button will trigger exiting casting mode |
-
-
-## Styling
-
-See our [styling docs](./styling#Buttons)

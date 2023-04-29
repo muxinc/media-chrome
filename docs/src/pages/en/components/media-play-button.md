@@ -44,20 +44,3 @@ Button to toggle media playback.
   <span slot="pause">Pause</span>
 </media-play-button>
 ```
-
-
-## Attributes
-
-_None_
-
-## Slots
-
-| Name    | Default Type | Description                                                                                  |
-| ------- | ------------ | -------------------------------------------------------------------------------------------- |
-| `play`  | `svg`        | An element shown when the media is paused and pressing the button will start media playback  |
-| `pause` | `svg`        | An element shown when the media is playing and pressing the button will pause media playback |
-
-
-## Styling
-
-See our [styling docs](./styling#Buttons)

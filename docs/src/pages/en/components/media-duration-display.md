@@ -30,15 +30,3 @@ Display only component to show the duration of the media.
 ```html
 <media-duration-display mediaduration="3600.0"></media-duration-display>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-_None_
-
-## Styling
-
-See our [styling docs](./styling#Text-Displays)

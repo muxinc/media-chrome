@@ -46,15 +46,3 @@ Slider to Change the volume of the sound.
   <media-volume-range></media-volume-range>
 </media-control-bar>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-_None_
-
-## Styling
-
-See our [styling docs](./styling#Ranges)

@@ -33,20 +33,3 @@ Button to jump back 30 seconds in the media.
   <span slot="backward">Back</span>
 </media-seek-backward-button>
 ```
-
-## Attributes
-
-| Name          | Type     | Default Value | Description                                                         |
-| ------------- | -------- | ------------- | ------------------------------------------------------------------- |
-| `seekoffset` | `number` | `30`          | Adjusts how much time (in seconds) the playhead should seek forward |
-
-## Slots
-
-| Name       | Default Type | Description                                              |
-| ---------- | ------------ | -------------------------------------------------------- |
-| `backward` | `svg`        | The element shown for the seek backward button's display |
-
-
-## Styling
-
-See our [styling docs](./styling#Buttons)

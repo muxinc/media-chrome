@@ -30,15 +30,3 @@ Display only component to show the current time of the playhead.
 ```html
 <media-current-time-display mediacurrenttime="3600.0"></media-current-time-display>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-_None_
-
-## Styling
-
-See our [styling docs](./styling#Text-Displays)
