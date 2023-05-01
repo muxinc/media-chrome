@@ -3,6 +3,11 @@ import '../media-captions-button.js';
 import './media-captions-listbox.js';
 import { window, document, } from '../utils/server-safe-globals.js';
 
+/**
+ * @csspart button - The default button that's in the shadow DOM.
+ * @csspart listbox - The default listbox that's in the shadow DOM.
+ * @csspart listitem - A part that targets each listitem of the listbox.
+ */
 class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
   constructor() {
     super();

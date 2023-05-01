@@ -19,6 +19,7 @@ const notEmpty = (obj) => !(obj == null || obj?.length === 0);
 cls?.slots && headings.push({ depth: 2, slug: 'slots', text: 'Slots' });
 notEmpty(attributes) && headings.push({ depth: 2, slug: 'attributes', text: 'Attributes' });
 notEmpty(mediaUIAttributes) && headings.push({ depth: 2, slug: 'media-ui-attributes', text: 'Media UI Attributes' });
+cls?.cssParts && headings.push({ depth: 2, slug: 'css-parts', text: 'CSS Parts' });
 cls?.cssProperties && headings.push({ depth: 2, slug: 'css-custom-properties', text: 'CSS Custom Properties' });
 
 ---
@@ -95,6 +96,29 @@ cls?.cssProperties && headings.push({ depth: 2, slug: 'css-custom-properties', t
                   <td class="nowrap"><code>{name}</code></td>
                   <td class="nowrap">{type?.text && <code>{type?.text}</code>}</td>
                   <td>{description?.replace('(read-only)', '')}</td>
+                </tr>
+            })
+        }
+      </tbody>
+    </table>}
+
+  {cls?.cssParts &&
+    <Markdown of={`## CSS Parts`} />
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          cls
+            .cssParts
+            .map(({ name, description }) => {
+              return <tr>
+                  <td class="nowrap"><code>{name}</code></td>
+                  <td>{description}</td>
                 </tr>
             })
         }

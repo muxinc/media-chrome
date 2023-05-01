@@ -8,11 +8,12 @@ slotTemplate.innerHTML = /*html*/`
     media-chrome-listitem {
       white-space: var(--media-playback-rate-listbox-white-space, nowrap);
     }
-
   </style>
 `;
 
 /**
+ * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
+ *
  * @cssproperty --media-playback-rate-listbox-white-space - `white-space` of playback rate list item.
  */
 class MediaPlaybackrateListbox extends MediaChromeListbox {
