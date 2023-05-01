@@ -25,8 +25,8 @@ slotTemplate.innerHTML = /*html*/`
 
   :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) slot[name=indicator] > *,
   :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) ::slotted([slot=indicator]) {
-    fill: var(--media-live-indicator-color, rgb(255, 0, 0));
-    color: var(--media-live-indicator-color, rgb(255, 0, 0));
+    fill: var(--media-live-button-indicator-color, rgb(255, 0, 0));
+    color: var(--media-live-button-indicator-color, rgb(255, 0, 0));
   }
 
   :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) {

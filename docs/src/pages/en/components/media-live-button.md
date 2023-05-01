@@ -114,5 +114,5 @@ See our [styling docs](./styling#Buttons)
 
 | Var    | Description |
 | ------ | ----------- |
-| `--media-live-indicator-color` | The color of the indicator icon when the audio or video is live  |
+| `--media-live-button-indicator-color` | The color of the indicator icon when the audio or video is live  |
 | `--media-live-button-icon-color` | The color of the indicator icon when the audio or video is *not* live  |

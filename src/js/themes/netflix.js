@@ -32,7 +32,7 @@ template.innerHTML = `
     --media-range-thumb-height: 20px;
     --media-range-thumb-width: 20px;
     --media-range-thumb-border-radius: 20px;
-    --media-time-buffered-color: #777;
+    --media-time-range-buffered-color: #777;
     --media-range-track-pointer-border-right: 2px solid #fff;
   }
 

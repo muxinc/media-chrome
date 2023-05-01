@@ -75,7 +75,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 | Name                                      | CSS Property          | Default Value           | Description                            | Notes                                                                                      |
 | ----------------------------------------- | --------------------- | ----------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `--media-time-buffered-color`             | `<linear-color-stop>` | `rgb(255 255 255 / .4)` | background color of the buffered range | This is a `<linear-color-stop>` part of the `linear-gradient()` CSS function.              |
+| `--media-time-range-buffered-color`             | `<linear-color-stop>` | `rgb(255 255 255 / .4)` | background color of the buffered range | This is a `<linear-color-stop>` part of the `linear-gradient()` CSS function.              |
 | `--media-preview-thumbnail-border`        | `border`              | `2px solid #fff`        | border of the thumbnail preview        |                                                                                            |
 | `--media-preview-thumbnail-border-radius` | `border-radius`       | `2px`                   | border radius of the thumbnail preview |                                                                                            |
 | `--media-preview-thumbnail-min-width`     | `width`               | `120px`                 | minimum thumbnail preview width        | The maximum CSS properties have priority over the minimum. Only `px` values are supported. |
@@ -125,5 +125,5 @@ Our current styling architecture is still quite nascent and is very likely to un
 | ----------------------------- | --------------------- | ------------- | ----------------------------------------------------------------------------------------------- | ----- |
 | `--media-object-fit`          | `object-fit`          | `contain`     | how the content of the image should be resized to fit the custom element                        |       |
 | `--media-object-position`     | `object-position`     | `center`      | specifies the alignment of the image within the custom element's box                            |       |
-| `--media-background-size`     | `background-size`     | `contain`     | how the content of the background placeholder image should be resized to fit the custom element |       |
-| `--media-background-position` | `background-position` | `center`      | specifies the alignment of the background placeholder image within the custom element's box     |       |
+| `--media-poster-image-background-size`     | `background-size`     | `contain`     | how the content of the background placeholder image should be resized to fit the custom element |       |
+| `--media-poster-image-background-position` | `background-position` | `center`      | specifies the alignment of the background placeholder image within the custom element's box     |       |

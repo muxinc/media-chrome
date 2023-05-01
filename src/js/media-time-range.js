@@ -356,7 +356,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     const buffPercent = (relativeBufferedEnd / relativeMax) * 100;
     colorsArray.splice(1, 0, [
-      'var(--media-time-buffered-color, rgb(255 255 255 / .4))',
+      'var(--media-time-range-buffered-color, rgb(255 255 255 / .4))',
       buffPercent,
     ]);
     return colorsArray;
