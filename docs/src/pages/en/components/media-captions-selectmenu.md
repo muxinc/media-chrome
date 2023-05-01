@@ -1,7 +1,7 @@
 ---
 title: <media-captions-selectmenu> (Experimental)
 description: Experimental Media Captions Selectmenu
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/experimental/media-captions-selectmenu.js
 ---
 
@@ -84,19 +84,3 @@ Check out this example for usage, but please try and use better colors as this c
 </style>
 <media-captions-selectmenu id="mc-sm-1"></media-captions-selectmenu>
 ```
-
-### Exposed Parts
-
-| Name | Description |
-|------|-------------|
-| `button` | The default [media-captions-button](./media-captions-button) that's in the shadow DOM |
-| `listbox` | The default listbox that's in the shadow DOM |
-| `listitem` | A part that targets each listitem of the listbox |
-
-
-## Slots
-
-| Name  | Default Type | Description                                                 |
-| ----- | ------------ | ----------------------------------------------------------- |
-| `button`  | [`media-captions-button`](./media-captions-button)        | A button element that reflects the current state of captions and subtitles selection  |
-| `listbox` | `media-captions-listbox`        | An element that displays the associated captions for the media |

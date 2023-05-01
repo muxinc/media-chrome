@@ -1,7 +1,7 @@
 ---
 title: <media-current-time-display>
 description: Media Current Time Display
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-current-time-display.js
 ---
 
@@ -30,15 +30,3 @@ Display only component to show the current time of the playhead.
 ```html
 <media-current-time-display mediacurrenttime="3600.0"></media-current-time-display>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-_None_
-
-## Styling
-
-See our [styling docs](./styling#Text-Displays)

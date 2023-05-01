@@ -14,14 +14,14 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 ### Elements
 
-- `<media-captions-button>` ([docs](./media-captions-button))
-- `<media-fullscreen-button>` ([docs](./media-fullscreen-button))
-- `<media-mute-button>` ([docs](./media-mute-button))
-- `<media-pip-button>` ([docs](./media-pip-button))
-- `<media-play-button>` ([docs](./media-play-button))
-- `<media-playback-rate-button>` ([docs](./media-playback-rate-button)) ([See notes below \*](#notes))
-- `<media-seek-backward-button>` ([docs](./media-seek-backward-button))
-- `<media-seek-forward-button>` ([docs](./media-seek-forward-button))
+- `<media-captions-button>` ([docs](./components/media-captions-button))
+- `<media-fullscreen-button>` ([docs](./components/media-fullscreen-button))
+- `<media-mute-button>` ([docs](./components/media-mute-button))
+- `<media-pip-button>` ([docs](./components/media-pip-button))
+- `<media-play-button>` ([docs](./components/media-play-button))
+- `<media-playback-rate-button>` ([docs](./components/media-playback-rate-button)) ([See notes below \*](#notes))
+- `<media-seek-backward-button>` ([docs](./components/media-seek-backward-button))
+- `<media-seek-forward-button>` ([docs](./components/media-seek-forward-button))
 
 | Name                               | CSS Property  | Default Value                                      | Description                                                                                       | Notes                                                                                                                                                                |
 | ---------------------------------- | ------------- | -------------------------------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -41,8 +41,8 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 ### Elements
 
-- `<media-time-range>` ([docs](./media-time-range))
-- `<media-volume-range>` ([docs](./media-volume-range))
+- `<media-time-range>` ([docs](./components/media-time-range))
+- `<media-volume-range>` ([docs](./components/media-volume-range))
 
 | Name                                | CSS Property          | Default Value                                      | Description                                                                                                                | Notes                                                                                                                                                                  |
 | ----------------------------------- | --------------------- | -------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -71,7 +71,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 | `--media-range-track-translate-x`   | `translate`           | `0`                                                | apply a [translation](https://developer.mozilla.org/en-US/docs/Web/CSS/translate) to the underlying slider's track display | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
 | `--media-range-track-translate-y`   | `translate`           | `0`                                                | apply a [translation](https://developer.mozilla.org/en-US/docs/Web/CSS/translate) to the underlying slider's track display | Applied via `::-webkit-slider-runnable-track` and similar [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::-webkit-slider-runnable-track) |
 
-- `<media-time-range>` ([docs](./media-time-range))
+- `<media-time-range>` ([docs](./components/media-time-range))
 
 | Name                                      | CSS Property          | Default Value           | Description                            | Notes                                                                                      |
 | ----------------------------------------- | --------------------- | ----------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -87,7 +87,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 ### Elements
 
-- `<media-time-display>` ([docs](./media-time-display))
+- `<media-time-display>` ([docs](./components/media-time-display))
 
 | Name                          | CSS Property | Default Value                                      | Description                                                     | Notes                                                                |
 | ----------------------------- | ------------ | -------------------------------------------------- | --------------------------------------------------------------- | -------------------------------------------------------------------- |
@@ -101,7 +101,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 ### Elements
 
-- `<media-loading-indicator>` ([docs](./media-loading-indicator))
+- `<media-loading-indicator>` ([docs](./components/media-loading-indicator))
 
 | Name                          | CSS Property | Default Value                                  | Description                | Notes                               |
 | ----------------------------- | ------------ | ---------------------------------------------- | -------------------------- | ----------------------------------- |
@@ -119,7 +119,7 @@ Our current styling architecture is still quite nascent and is very likely to un
 
 ### Elements
 
-- `<media-poster-image>` ([docs](./media-poster-image))
+- `<media-poster-image>` ([docs](./components/media-poster-image))
 
 | Name                          | CSS Property          | Default Value | Description                                                                                     | Notes |
 | ----------------------------- | --------------------- | ------------- | ----------------------------------------------------------------------------------------------- | ----- |

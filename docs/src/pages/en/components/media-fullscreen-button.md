@@ -1,7 +1,7 @@
 ---
 title: <media-fullscreen-button>
 description: Media Fullscreen Button
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-fullscreen-button.js
 ---
 
@@ -44,27 +44,3 @@ Button to toggle fullscreen viewing
   <span slot="exit">Exit</span>
 </media-fullscreen-button>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-| Name    | Default Type | Description                                                                                                   |
-| ------- | ------------ | ------------------------------------------------------------------------------------------------------------- |
-| `enter` | `svg`        | An element shown when the media is not in fullscreen and pressing the button will trigger entering fullscreen |
-| `exit`  | `svg`        | An element shown when the media is in fullscreen and pressing the button will trigger exiting fullscreen      |
-
-### Example
-
-```html
-<media-fullscreen-button>
-  <svg slot="enter"><!-- your SVG --></svg>
-  <svg slot="exit"><!-- your SVG --></svg>
-</media-fullscreen-button>
-```
-
-## Styling
-
-See our [styling docs](./styling#Buttons)

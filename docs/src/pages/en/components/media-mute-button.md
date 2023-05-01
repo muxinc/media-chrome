@@ -1,7 +1,7 @@
 ---
 title: <media-mute-button>
 description: Media Mute Button
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-mute-button.js
 ---
 
@@ -104,21 +104,3 @@ Button to toggle the sound. The icon responds to volume changes and acts as part
 ```
 
 </div>
-
-## Attributes
-
-_None_
-
-## Slots
-
-| Name     | Default Type | Description                                                                             |
-| -------- | ------------ | --------------------------------------------------------------------------------------- |
-| `off`    | `svg`        | An element shown when the media is muted or the media's volume is 0                     |
-| `low`    | `svg`        | An element shown when the media's volume is "low" (less than 50% / 0.5)                 |
-| `medium` | `svg`        | An element shown when the media's volume is "medium" (between 50% / 0.5 and 75% / 0.75) |
-| `high`   | `svg`        | An element shown when the media's volume is "high" (75% / 0.75 or greater)              |
-
-
-## Styling
-
-See our [styling docs](./styling#Buttons)

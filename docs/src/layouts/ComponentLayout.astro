@@ -1,0 +1,153 @@
+---
+import { Markdown } from '@astropub/md';
+import MainLayout from './MainLayout.astro';
+import cem from '../../../dist/custom-elements.json';
+
+const { frontmatter, headings, url } = Astro.props as Props;
+const componentName = url.split('/').pop();
+
+const cls = cem.modules
+  .find(mod => mod.path.endsWith(`/${componentName}.js`))
+  ?.declarations
+  .find(({ kind }) => kind === 'class');
+
+let attributes = cls?.attributes.filter(a => !a.description?.startsWith('(read-only)'));
+let mediaUIAttributes = cls?.attributes.filter(a => a.description?.startsWith('(read-only)'));
+
+const notEmpty = (obj) => !(obj == null || obj?.length === 0);
+
+cls?.slots && headings.push({ depth: 2, slug: 'slots', text: 'Slots' });
+notEmpty(attributes) && headings.push({ depth: 2, slug: 'attributes', text: 'Attributes' });
+notEmpty(mediaUIAttributes) && headings.push({ depth: 2, slug: 'media-ui-attributes', text: 'Media UI Attributes' });
+cls?.cssParts && headings.push({ depth: 2, slug: 'css-parts', text: 'CSS Parts' });
+cls?.cssProperties && headings.push({ depth: 2, slug: 'css-custom-properties', text: 'CSS Custom Properties' });
+
+---
+<MainLayout frontmatter={frontmatter} headings={headings}>
+  <slot />
+
+  {cls?.slots &&
+    <Markdown of={`## Slots`} />
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          cls
+            .slots
+            .map(({ name, description }) => {
+              return <tr>
+                  <td class="nowrap"><code>{name}</code></td>
+                  <td>{description}</td>
+                </tr>
+            })
+        }
+      </tbody>
+    </table>}
+
+  {notEmpty(attributes) &&
+    <Markdown of={`## Attributes`} />
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          attributes
+            .map(({ name, description, type }) => {
+              return <tr>
+                  <td class="nowrap"><code>{name}</code></td>
+                  <td class="nowrap">{type?.text && <code>{type?.text}</code>}</td>
+                  <td>{description}</td>
+                </tr>
+            })
+        }
+      </tbody>
+    </table>}
+
+  {notEmpty(mediaUIAttributes) &&
+    <Markdown of={`## Media UI Attributes`} />
+    <p>
+      The media UI attributes will be set automatically by the controller if they are
+      connected via nesting or the <code>mediacontroller</code> attribute.
+      Only set these attributes manually if you know what you're doing.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          mediaUIAttributes
+            .map(({ name, description, type }) => {
+              return <tr>
+                  <td class="nowrap"><code>{name}</code></td>
+                  <td class="nowrap">{type?.text && <code>{type?.text}</code>}</td>
+                  <td>{description?.replace('(read-only)', '')}</td>
+                </tr>
+            })
+        }
+      </tbody>
+    </table>}
+
+  {cls?.cssParts &&
+    <Markdown of={`## CSS Parts`} />
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          cls
+            .cssParts
+            .map(({ name, description }) => {
+              return <tr>
+                  <td class="nowrap"><code>{name}</code></td>
+                  <td>{description}</td>
+                </tr>
+            })
+        }
+      </tbody>
+    </table>}
+
+  {cls?.cssProperties &&
+    <Markdown of={`## CSS Custom Properties`} />
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Default</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          cls
+            .cssProperties
+            .map((cssProp) => {
+              return <tr>
+                  <td class="nowrap"><code>{cssProp.name}</code></td>
+                  <td style="max-width: 20rem;">{cssProp.default && <code>{cssProp.default}</code>}</td>
+                  <td>{cssProp.description}</td>
+                </tr>
+            })
+        }
+      </tbody>
+    </table>}
+
+</MainLayout>

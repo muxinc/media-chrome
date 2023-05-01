@@ -1,7 +1,7 @@
 ---
 title: <media-playback-rate-selectmenu> (Experimental)
 description: Experimental Media Playback Rate Selectmenu
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/experimental/media-playback-rate-selectmenu.js
 ---
 
@@ -74,25 +74,3 @@ Check out this example for usage, but please try and use better colors as this c
 </style>
 <media-playback-rate-selectmenu id="mpr-sm-1"></media-playback-rate-selectmenu>
 ```
-
-### Exposed Parts
-
-| Name | Description |
-|------|-------------|
-| `button` | The default [media-playback-rate-button](./media-playback-rate-button) that's in the shadow DOM |
-| `listbox` | The default listbox that's in the shadow DOM |
-| `listitem` | A part that targets each listitem of the listbox |
-
-
-## Attributes
-
-| Name                    | Type      | Default Value | Description                                                                                        |
-| ----------------------- | --------- | ------------- | -------------------------------------------------------------------------------------------------- |
-| `rates` | `list` | `1 1.25 1.5 1.75 2` | List of playback rates to toggle through when pressing the button |
-
-## Slots
-
-| Name  | Default Type | Description                                                 |
-| ----- | ------------ | ----------------------------------------------------------- |
-| `button`  | [`media-playback-rate-button`](./media-playback-rate-button)        | A button element that reflects the current playback rate  |
-| `listbox` | `media-playback-rate-listbox`        | An element that displays the list of playback rate options |

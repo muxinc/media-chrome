@@ -23,7 +23,6 @@ slotTemplate.innerHTML = /*html*/`
     media-chrome-listitem {
       white-space: var(--media-captions-listbox-white-space, nowrap);
     }
-
   </style>
   <slot hidden name="captions-indicator">${ccIcon}</slot>
 `;
@@ -33,6 +32,9 @@ const compareTracks = (a, b) => {
 }
 
 /**
+ * @attr {string} mediasubtitleslist - (read-only) A list of all subtitles and captions.
+ * @attr {boolean} mediasubtitlesshowing - (read-only) A list of the showing subtitles and captions.
+ *
  * @cssproperty --media-primary-color - Default color of icon.
  * @cssproperty --media-icon-color - `fill` color of icon.
  *

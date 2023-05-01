@@ -1,7 +1,7 @@
 ---
 title: <media-airplay-button>
 description: Media Airplay Button
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-airplay-button.js
 ---
 
@@ -26,17 +26,3 @@ Button to bring up the AirPlay menu and select AirPlay playback.
   <span slot="airplay">Airplay</span>
 </media-airplay-button>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-| Name      | Default Type | Description                                        |
-| --------- | ------------ | -------------------------------------------------- |
-| `airplay` | `svg`        | The element shown for the AirPlay button's display |
-
-## Styling
-
-See our [styling docs](./styling#Buttons)

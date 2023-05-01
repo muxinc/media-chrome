@@ -13,6 +13,13 @@ const createItem = (rate) => {
   return item;
 }
 
+/**
+ * @attr {string} rates - Set custom playback rates for the user to choose from.
+ *
+ * @csspart button - The default button that's in the shadow DOM.
+ * @csspart listbox - The default listbox that's in the shadow DOM.
+ * @csspart listitem - A part that targets each listitem of the listbox.
+ */
 class MediaPlaybackrateSelectMenu extends MediaChromeSelectMenu {
   static get observedAttributes() {
     return [

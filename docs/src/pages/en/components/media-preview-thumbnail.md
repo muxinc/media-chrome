@@ -1,7 +1,7 @@
 ---
 title: <media-preview-thumbnail>
 description: Media Preview Thumbnail
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-preview-thumbnail.js
 ---
 
@@ -38,15 +38,3 @@ There is no need to add this element yourself, it's automatically included by `<
   mediapreviewcoords="284 640 284 160"
 ></media-preview-thumbnail>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-_None_
-
-## Styling
-
-See our [styling docs](./styling#Buttons)

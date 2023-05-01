@@ -1,7 +1,7 @@
 ---
 title: <media-time-range>
 description: Media Time Range
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-time-range.js
 ---
 
@@ -57,15 +57,3 @@ Slider to see how far the playhead is through the media duration, and seek to ne
   mediaduration="60"
 ></media-time-range>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-_None_
-
-## Styling
-
-See our [styling docs](./styling#Ranges)

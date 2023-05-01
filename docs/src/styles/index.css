@@ -321,23 +321,18 @@ table {
   border-collapse: collapse;
 }
 
-/* Zebra striping */
-
-tr:nth-of-type(even) {
-  background: var(--theme-bg-offset);
-}
-
 td,
 th {
-  padding: 6px;
+  border-top: 1px solid var(--theme-bg-offset);
+  padding: .875rem;
+  height: 3.5rem;
   text-align: left;
 }
 
 td:first-child,
-td code {
+.nowrap {
   white-space: nowrap;
 }
-
 
 
 th {

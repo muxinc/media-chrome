@@ -1,7 +1,7 @@
 ---
 title: <media-seek-forward-button>
 description: Media Seek Forward Button
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-seek-forward-button.js
 ---
 
@@ -34,20 +34,3 @@ Button to jump ahead 30 seconds in the media.
   <span slot="forward">Forward</span>
 </media-seek-forward-button>
 ```
-
-## Attributes
-
-| Name          | Type     | Default Value | Description                                                          |
-| ------------- | -------- | ------------- | -------------------------------------------------------------------- |
-| `seekoffset` | `number` | `30`          | Adjusts how much time (in seconds) the playhead should seek backward |
-
-## Slots
-
-| Name      | Default Type | Description                                             |
-| --------- | ------------ | ------------------------------------------------------- |
-| `forward` | `svg`        | The element shown for the seek forward button's display |
-
-
-## Styling
-
-See our [styling docs](./styling#Buttons)

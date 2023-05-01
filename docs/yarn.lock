@@ -312,6 +312,11 @@
     global-agent "^3.0.0"
     node-fetch "^3.2.5"
 
+"@astropub/md@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@astropub/md/-/md-0.2.0.tgz#a0eb4dd5ba0c2b95907719a2d2f87abacdcb5e58"
+  integrity sha512-CDZrXATMztMi0X0R5FM+SganLamzVIYIsAZjc8UGuqkziSMiTY8/pgXuiIhZokea0uy0rJGTI4XI+vxpQkpljg==
+
 "@babel/code-frame@^7.18.6":
   version "7.18.6"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.18.6.tgz#3b25d38c89600baa2dcc219edfa88a74eb2c427a"

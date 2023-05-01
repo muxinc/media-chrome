@@ -1,7 +1,7 @@
 ---
 title: <media-volume-range>
 description: Media Volume Range
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-volume-range.js
 ---
 
@@ -46,15 +46,3 @@ Slider to Change the volume of the sound.
   <media-volume-range></media-volume-range>
 </media-control-bar>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-_None_
-
-## Styling
-
-See our [styling docs](./styling#Ranges)

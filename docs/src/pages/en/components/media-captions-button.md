@@ -1,7 +1,7 @@
 ---
 title: <media-captions-button>
 description: Media Captions Button
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-captions-button.js
 ---
 
@@ -50,15 +50,3 @@ Button to show/disable captions
   <span slot="off">CC</span>
 </media-captions-button>
 ```
-
-## Slots
-
-| Name  | Default Type | Description                                                 |
-| ----- | ------------ | ----------------------------------------------------------- |
-| `on`  | `svg`        | An element that will be shown while closed captions are on  |
-| `off` | `svg`        | An element that will be shown while closed captions are off |
-
-
-## Styling
-
-See our [styling docs](./styling#Buttons)

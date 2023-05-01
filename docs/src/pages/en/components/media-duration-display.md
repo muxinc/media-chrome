@@ -1,7 +1,7 @@
 ---
 title: <media-duration-display>
 description: Media Duration Display
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-duration-display.js
 ---
 
@@ -30,15 +30,3 @@ Display only component to show the duration of the media.
 ```html
 <media-duration-display mediaduration="3600.0"></media-duration-display>
 ```
-
-## Attributes
-
-_None_
-
-## Slots
-
-_None_
-
-## Styling
-
-See our [styling docs](./styling#Text-Displays)
