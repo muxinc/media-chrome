@@ -20,7 +20,7 @@ The Media Live Button shows when the stream is live via an indicator (red dot, b
 <media-live-button mediatimeislive></media-live-button>
 
 ```html
-<media-live-button media-time-is-live></media-live-button>
+<media-live-button mediatimeislive></media-live-button>
 ```
 
 <h3>Alternate text</h3>
