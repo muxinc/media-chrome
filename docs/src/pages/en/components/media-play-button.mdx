@@ -1,0 +1,62 @@
+---
+title: <media-play-button>
+description: Media Play Button
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-play-button.js
+---
+
+import ComponentSandpack from "../../../components/ComponentSandpack";
+
+The `<media-play-button>` component is used to toggle your media playback state.  
+In simpler terms, it is used to both play and pause your media content.
+
+The contents and behavior of the `<media-play-button>` will update automatically 
+once your media playback state changes.
+  - When your media begins to play, the component will switch to show the contents of its `pause` slot.
+  - When your media is paused, the component will display the contents of its `play` slot.
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  html={`<media-controller>
+  <video slot="media" src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"></video>
+  <media-play-button></media-play-button>
+</media-controller>`}
+/>
+
+## Customize icons
+
+You can modify the contents of the `<media-play-button>` component using slots. 
+This is useful if you'd like to use your own custom play button instead of 
+the default one provided by media-chrome.
+
+Here's an example of how you can replace the default play and pause icons with 
+the literal words "Play" and "Pause":  
+
+<ComponentSandpack
+  client:load
+  html={`<media-controller>
+  <video slot="media" src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"></video>
+  <media-play-button>
+    <span slot="play">Play</span>
+    <span slot="pause">Pause</span>
+  </media-play-button>
+</media-controller>`}
+/>
+
+
+## Styling with attributes
+
+The `<media-play-button>` does not expose any configuration attributes.  
+However, it will be updated with **media state** attributes any time 
+your media playback state changes.
+
+You can use these attributes to apply custom styles to 
+your `<media-play-button>` element under different state conditions:
+
+```css
+media-play-button[media-paused] {
+  animation: glow 2s;
+}
+```
