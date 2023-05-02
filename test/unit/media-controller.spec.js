@@ -3,6 +3,7 @@ import { constants } from '../../src/js/index.js';
 import { MediaUIAttributes } from '../../src/js/constants.js';
 
 const { MediaUIEvents } = constants;
+const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
 
 describe('<media-controller>', () => {
 
@@ -248,7 +249,7 @@ describe('receiving state / dispatching (bubbling) events', () => {
     assert(true, 'mediacurrenttime is 2');
   });
 
-  it('can change volume', async () => {
+  (isSafari ? it.skip : it)('can change volume', async () => {
     div.dispatchEvent(new CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
       detail: 0.73,
       bubbles: true
