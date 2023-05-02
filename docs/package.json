@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "format": "prettier --write .",
-    "dev": "(cd .. && yarn build:esm --watch=forever) & astro dev",
+    "esm-build": "(cd .. && yarn build:esm --watch=forever) &",
+    "manifest": "(cd .. && yarn manifest --watch) &",
+    "dev": "run-s esm-build manifest start",
     "start": "astro dev",
     "check": "astro check && tsc",
     "prebuild": "cd .. && yarn && yarn manifest && yarn build",
@@ -28,6 +30,7 @@
     "html-escaper": "^3.0.3",
     "media-chrome": "link:..",
     "mux-embed": "^4.14.0",
+    "npm-run-all": "^4.1.5",
     "preact": "^10.11.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -52,13 +52,15 @@ export function generateCssVars() {
     },
     packageLinkPhase({ customElementsManifest: manifest }) {
 
+      console.log(manifest);
+
       // Add the css properties from the super class if they are not set yet.
       for (let cls of getClasses(manifest)) {
 
         if (cls.superclass?.name) {
           const SuperClass = getClasses(manifest).find(({ name }) => cls.superclass.name === name);
 
-          for (let cssProp of SuperClass.cssProperties ?? []) {
+          for (let cssProp of SuperClass?.cssProperties ?? []) {
             if (!cls.cssProperties) cls.cssProperties = [];
             if (!cls.cssProperties.find(p => p.name === cssProp.name)) {
               cls.cssProperties.push(cssProp);
