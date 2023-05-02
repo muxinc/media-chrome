@@ -1,0 +1,12 @@
+---
+import { KNOWN_LANGUAGE_CODES } from '../../config';
+export function getStaticPaths() {
+  return KNOWN_LANGUAGE_CODES.map(lang => ({params: { lang }}));
+}
+
+const { lang } = Astro.params;
+// get-started is the "default" page right now via convention
+const htmlString = `<meta http-equiv="refresh" content="0; URL=/${lang}/get-started" />`;
+---
+<Fragment set:html={htmlString} />
+
