@@ -32,7 +32,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   // NOTE: Adding for TypeScript Errors. Followup should add correct getter/setter & private var (CJP)
   /** @type number[] | undefined */
-  _rates;
+  _rates = DEFAULT_RATES;
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });

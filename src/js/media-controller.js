@@ -7,6 +7,7 @@
   * Position controls at the bottom
   * Auto-hide controls on inactivity while playing
 */
+import MediaController from './controller.js';
 import MediaContainer from './media-container.js';
 import { window } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
@@ -18,7 +19,6 @@ import {
   MediaStateReceiverAttributes,
   AttributeToStateChangeEventMap,
 } from './constants.js';
-import { MediaUIRequestHandlers, MediaUIStates, volumeSupportPromise } from './controller.js';
 
 const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;
@@ -48,7 +48,7 @@ export const Attributes = {
  * @attr {string} liveedgeoffset
  * @attr {boolean} noautoseektolive
  */
-class MediaController extends MediaContainer {
+class MediaControllerElement extends MediaContainer {
   static get observedAttributes() {
     return super.observedAttributes.concat(
       Attributes.NO_HOTKEYS,
@@ -58,25 +58,13 @@ class MediaController extends MediaContainer {
     );
   }
 
+  #controller = new MediaController();
   #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
-  #fullscreenElement;
 
   constructor() {
     super();
 
-    // Update volume support ASAP
-    if (MediaUIStates.MEDIA_VOLUME_UNAVAILABLE.get(this) === undefined) {
-      // NOTE: In order to propagate ASAP, we currently need to ensure that
-      // the volume support promise has resolved. Given the async nature of
-      // some of these environment state values, we may want to model this
-      // a bit better (CJP).
-      volumeSupportPromise.then(() => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE,
-          MediaUIStates.MEDIA_VOLUME_UNAVAILABLE.get(this)
-        );
-      });
-    }
+    this.#controller.fullscreenElement = this;
 
     // Track externally associated control elements
     this.mediaStateReceivers = [];
@@ -85,7 +73,7 @@ class MediaController extends MediaContainer {
 
     // Apply ui event listeners to self
     // Should apply to any UI container, not just controller
-    Object.keys(MediaUIRequestHandlers).forEach((key) => {
+    Object.keys(MediaUIEvents).forEach((key) => {
       const handlerName = `_handle${constToCamel(key, true)}`;
 
       // TODO: Move to map, not obj root property
@@ -94,35 +82,39 @@ class MediaController extends MediaContainer {
         e.stopPropagation();
 
         if (!this.media) {
-          console.warn('MediaController: No media available.');
+          console.warn('MediaControllerElement: No media available.');
           return;
         }
 
-        MediaUIRequestHandlers[key](this.media, e, this);
+        this.#controller.dispatchEvent(
+          new CustomEvent(MediaUIEvents[key], { detail: e.detail })
+        );
       };
       this.addEventListener(MediaUIEvents[key], this[handlerName]);
     });
 
-    // Build event listeners for media states
-    this._mediaStatePropagators = {};
-    Object.keys(MediaUIStates).forEach((key)=>{
-      this._mediaStatePropagators[key] = e => {
-        this.propagateMediaState(MediaUIAttributes[key], MediaUIStates[key].get(this, e));
-      };
+    // Listen to all media events and propagate state.
+    this.#controller.addEventListener('mediachange', () => {
+
+      const changedState = this.#controller.getChangedState();
+
+      for (let prop in changedState) {
+        this.propagateMediaState(prop.toLowerCase(), changedState[prop]);
+      }
     });
 
     this.enableHotkeys();
   }
 
   get fullscreenElement() {
-    return this.#fullscreenElement ?? this;
+    return this.#controller.fullscreenElement;
   }
 
   set fullscreenElement(element) {
     if (this.hasAttribute(Attributes.FULLSCREEN_ELEMENT)) {
       this.removeAttribute(Attributes.FULLSCREEN_ELEMENT);
     }
-    this.#fullscreenElement = element;
+    this.#controller.fullscreenElement = element;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -156,7 +148,7 @@ class MediaController extends MediaContainer {
         : undefined;
       // NOTE: Setting the internal private prop here to not
       // clear the attribute that was just set (CJP).
-      this.#fullscreenElement = el;
+      this.#controller.fullscreenElement = el;
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -170,65 +162,13 @@ class MediaController extends MediaContainer {
       media.tabIndex = -1;
     }
 
-    // Listen for media state changes and propagate them to children and associated els
-    Object.keys(MediaUIStates).forEach((key) => {
-      const {
-        mediaEvents,
-        rootEvents,
-        trackListEvents
-      } = MediaUIStates[key];
-
-      const handler = this._mediaStatePropagators[key];
-
-      mediaEvents?.forEach((eventName)=>{
-        media.addEventListener(eventName, handler);
-      });
-
-      rootEvents?.forEach((eventName)=>{
-        this.getRootNode().addEventListener(eventName, handler);
-      });
-
-      trackListEvents?.forEach((eventName)=>{
-        media.textTracks?.addEventListener(eventName, handler);
-      });
-    });
-
-    // Update the media with the last set volume preference
-    // This would preferably live with the media element,
-    // not a control.
-    try {
-      const volPref = window.localStorage.getItem('media-chrome-pref-volume');
-      if (volPref !== null) media.volume = volPref;
-    } catch (e) {
-      console.debug('Error getting volume pref', e);
-    }
+    this.#controller.media = media;
   }
 
   mediaUnsetCallback(media) {
     super.mediaUnsetCallback(media);
 
-    // Remove all state change propagators
-    Object.keys(MediaUIStates).forEach((key) => {
-      const {
-        mediaEvents,
-        rootEvents,
-        trackListEvents
-      } = MediaUIStates[key];
-
-      const handler = this._mediaStatePropagators[key];
-
-      mediaEvents?.forEach((eventName)=>{
-        media.removeEventListener(eventName, handler);
-      });
-
-      rootEvents?.forEach((eventName)=>{
-        this.getRootNode().removeEventListener(eventName, handler);
-      });
-
-      trackListEvents?.forEach((eventName)=>{
-        media.textTracks?.removeEventListener(eventName, handler);
-      });
-    });
+    this.#controller.media = null;
 
     // Reset to paused state
     // TODO: Can we just reset all state here?
@@ -308,15 +248,11 @@ class MediaController extends MediaContainer {
 
     els.push(el);
 
-    Object.keys(MediaUIStates).forEach((stateConstName)=>{
-      const stateDetails = MediaUIStates[stateConstName];
+    const state = this.#controller.getState();
 
-      propagateMediaState(
-        [el],
-        MediaUIAttributes[stateConstName],
-        stateDetails.get(this)
-      );
-    });
+    for (let prop in state) {
+      propagateMediaState([el], prop.toLowerCase(), state[prop]);
+    }
   }
 
   unregisterMediaStateReceiver(el) {
@@ -685,7 +621,7 @@ const monitorForMediaStateReceivers = (
 };
 
 if (!window.customElements.get('media-controller')) {
-  window.customElements.define('media-controller', MediaController);
+  window.customElements.define('media-controller', MediaControllerElement);
 }
 
-export default MediaController;
+export default MediaControllerElement;

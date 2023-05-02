@@ -2,6 +2,7 @@ import { window, document } from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreenApi.js';
 import { containsComposedNode } from './utils/element-utils.js';
 import { serializeTimeRanges } from './utils/time.js';
+import { constToCamel } from './utils/utils.js';
 import {
   hasVolumeSupportAsync,
   fullscreenSupported,
@@ -10,6 +11,7 @@ import {
   castSupported
 } from './utils/platform-tests.js';
 import {
+  MediaUIEvents,
   MediaUIAttributes,
   TextTrackKinds,
   TextTrackModes,
@@ -24,7 +26,7 @@ import {
 } from './utils/captions.js';
 
 let volumeSupported;
-export const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
+const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {
   volumeSupported = supported;
   return volumeSupported;
 });
@@ -44,7 +46,7 @@ const getShowingSubtitleTracks = (controller) => {
   });
 };
 
-export const MediaUIStates = {
+const MediaUIStates = {
   MEDIA_PAUSED: {
     get: function (controller) {
       const { media } = controller;
@@ -197,7 +199,7 @@ export const MediaUIStates = {
         // if set (CJP)
         if (streamType === StreamTypes.UNKNOWN) {
           /** @TODO Move to non attr state and consider adding as a part of a separate "default state" model (CJP) */
-          const defaultType = controller.getAttribute('defaultstreamtype');
+          const defaultType = controller.defaultStreamType;
           if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
             return defaultType;
           }
@@ -213,7 +215,7 @@ export const MediaUIStates = {
         return StreamTypes.ON_DEMAND;
       } else {
           /** @TODO Move to non attr state and consider adding as a part of a separate "default state" model (CJP) */
-        const defaultType = controller.getAttribute('defaultstreamtype');
+        const defaultType = controller.defaultStreamType;
 
         if ([StreamTypes.LIVE, StreamTypes.ON_DEMAND].includes(defaultType)) {
           return defaultType;
@@ -279,9 +281,9 @@ export const MediaUIStates = {
 
       // Default to 10 seconds
       // Assuming seekable range already accounts for appropriate buffer room
-      const liveEdgeStartOffset = controller.hasAttribute('liveedgeoffset')
+      const liveEdgeStartOffset = controller.liveEdgeOffset
         ? // TODO: Move to no attr value
-          Number(controller.getAttribute('liveedgeoffset'))
+          Number(controller.liveEdgeOffset)
         : 10;
       const liveEdgeStart =
         seekable.end(seekable.length - 1) - liveEdgeStartOffset;
@@ -313,8 +315,9 @@ export const MediaUIStates = {
       } else {
         const pipElement =
           // Might need to use the root of media-container
+          // todo: confirm media is ok to pull the root node from!!
           // @ts-ignore
-          controller.getRootNode().pictureInPictureElement ??
+          media.getRootNode().pictureInPictureElement ??
           document.pictureInPictureElement;
         return containsComposedNode(media, pipElement);
       }
@@ -436,11 +439,11 @@ export const MediaUIStates = {
 };
 
 // Capture request events from UI elements and tranlate to actions
-export const MediaUIRequestHandlers = {
+const MediaUIRequestHandlers = {
   MEDIA_PLAY_REQUEST: (media, e, controller) => {
     const streamType = MediaUIStates.MEDIA_STREAM_TYPE.get(controller);
     // TODO: Move to not attr value
-    const autoSeekToLive = controller.getAttribute('noautoseektolive') === null;
+    const autoSeekToLive = controller.noAutoSeekToLive === null;
 
     if (streamType == StreamTypes.LIVE && autoSeekToLive) {
       MediaUIRequestHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](media);
@@ -508,7 +511,7 @@ export const MediaUIRequestHandlers = {
     }
 
     // TODO: Moved from super to just controller, verify that works
-    if (controller[fullscreenApi.enter]) {
+    if (controller.fullscreenElement[fullscreenApi.enter]) {
       // Media chrome container fullscreen
       controller.fullscreenElement[fullscreenApi.enter]();
     } else if (media.webkitEnterFullscreen) {
@@ -628,6 +631,10 @@ export const MediaUIRequestHandlers = {
     // No media (yet), so bail early
     if (!media) return;
 
+    // TODO: these propagateMediaState have to replaced with event dispatch
+    // and retrieving state. return early for this POC to hide type errors.
+    if (!controller.propagateMediaState) return;
+
     const time = e.detail;
 
     // if time is null, then we're done previewing and want to remove the attributes
@@ -728,3 +735,163 @@ export const MediaUIRequestHandlers = {
     media.currentTime = seekable.end(seekable.length - 1);
   },
 };
+
+const mediaUIEventToKeyMap =
+  Object.fromEntries(Object.entries(MediaUIEvents)
+    .map(([key, value]) => [value, key]))
+
+const mediaStateEventToKeyMap = {};
+for (let stateKey in MediaUIStates) {
+  const { rootEvents = [], mediaEvents = [], trackListEvents = [] } = MediaUIStates[stateKey];
+  const allEvents = [...rootEvents, ...mediaEvents, ...trackListEvents];
+  for (let event of allEvents) {
+    if (!mediaStateEventToKeyMap[event]) mediaStateEventToKeyMap[event] = [];
+    mediaStateEventToKeyMap[event].push(stateKey);
+  }
+}
+
+export default class MediaController extends EventTarget {
+
+  /** @type {HTMLVideoElement} */
+  #media;
+  #changedState = {};
+
+  // todo set these from MediaChromeElement!!
+  fullscreenElement;
+  liveEdgeOffset;
+  defaultStreamType;
+  noAutoSeekToLive;
+
+  constructor(media) {
+    super();
+    this.media = media;
+
+    Object.keys(MediaUIEvents)
+      .forEach(key => this.addEventListener(MediaUIEvents[key], this));
+
+    // Update volume support ASAP
+    if (MediaUIStates.MEDIA_VOLUME_UNAVAILABLE.get(this) === undefined) {
+      // NOTE: In order to propagate ASAP, we currently need to ensure that
+      // the volume support promise has resolved. Given the async nature of
+      // some of these environment state values, we may want to model this
+      // a bit better (CJP).
+      volumeSupportPromise.then(() => {
+        // TODO: dispatch an event here to initiate a state propagation
+        // in the media controller element
+
+        // this.propagateMediaState(
+        //   MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE,
+        //   MediaUIStates.MEDIA_VOLUME_UNAVAILABLE.get(this)
+        // );
+      });
+    }
+  }
+
+  get media() {
+    return this.#media;
+  }
+
+  set media(media) {
+
+    if (!media) {
+
+      // Remove all state change propagators
+      Object.keys(MediaUIStates).forEach((key) => {
+        const {
+          mediaEvents,
+          rootEvents,
+          trackListEvents
+        } = MediaUIStates[key];
+
+        mediaEvents?.forEach((eventName) => {
+          this.media?.removeEventListener(eventName, this);
+        });
+
+        rootEvents?.forEach((eventName) => {
+          // todo: confirm media is ok to pull the root node from
+          this.media?.getRootNode().removeEventListener(eventName, this);
+        });
+
+        trackListEvents?.forEach((eventName) => {
+          this.media?.textTracks?.removeEventListener(eventName, this);
+        });
+      });
+
+      this.#media = null;
+      return;
+    }
+
+    this.#media = media;
+
+    // Listen for media state changes and propagate them to children and associated els
+    Object.keys(MediaUIStates).forEach((key) => {
+      const {
+        mediaEvents,
+        rootEvents,
+        trackListEvents
+      } = MediaUIStates[key];
+
+      mediaEvents?.forEach((eventName) => {
+        this.media.addEventListener(eventName, this);
+      });
+
+      rootEvents?.forEach((eventName) => {
+        // todo: confirm media is ok to pull the root node from
+        this.media.getRootNode().addEventListener(eventName, this);
+      });
+
+      trackListEvents?.forEach((eventName) => {
+        this.media.textTracks?.addEventListener(eventName, this);
+      });
+    });
+
+    // Update the media with the last set volume preference
+    // This would preferably live with the media element,
+    // not a control.
+    try {
+      const volPref = window.localStorage.getItem('media-chrome-pref-volume');
+      if (volPref !== null) media.volume = volPref;
+    } catch (e) {
+      console.debug('Error getting volume pref', e);
+    }
+  }
+
+  handleEvent(event) {
+    console.log(event);
+
+    // handle incoming request events
+    const mediaUIEventKey = mediaUIEventToKeyMap[event.type];
+
+    if (mediaUIEventKey) {
+      MediaUIRequestHandlers[mediaUIEventKey](this.media, event, this);
+      return;
+    }
+
+    this.#changedState = {};
+    for (let stateKey of mediaStateEventToKeyMap[event.type]) {
+      this.#changedState[constToCamel(stateKey)] = MediaUIStates[stateKey].get(this, event);
+    }
+
+    console.log(this.#changedState);
+
+    // forward media change events
+    this.dispatchEvent(new CustomEvent('mediachange'));
+    this.dispatchEvent(new CustomEvent(event.type));
+  }
+
+  getChangedState() {
+    return Object.freeze(this.#changedState);
+  }
+
+  getState() {
+    let state = {};
+    for (let key in MediaUIStates) {
+      state[constToCamel(key)] = MediaUIStates[key].get(this);
+    }
+    return Object.freeze(state);
+  }
+
+  toJSON() {
+    return this.getState();
+  }
+}
