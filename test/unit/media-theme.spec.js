@@ -95,7 +95,7 @@ describe('<media-theme>', () => {
       theme2.shadowRoot
         .querySelector('media-controller')
         .hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME),
-      'should have a media-current-time attribute on mediaSetCallback'
+      'should have a mediacurrenttime attribute on mediaSetCallback'
     );
   });
 
