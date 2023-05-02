@@ -521,10 +521,7 @@ class MediaContainer extends window.HTMLElement {
   }
 }
 
-// Aliasing media-controller to media-container in main index until we know
-// we're not breaking people with the change.
-if (!window.customElements.get('media-container-temp')) {
-  window.customElements.define('media-container-temp', MediaContainer);
-}
+// NOTE: Since MediaContainer is not currently designed to be used directly as
+// a custom element, unlike other components, we do not `define()` it.
 
 export default MediaContainer;

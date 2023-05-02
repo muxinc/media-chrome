@@ -8,7 +8,6 @@ import MediaGestureReceiver from './media-gesture-receiver.js';
 import MediaController from './media-controller.js';
 import MediaChromeRange from './media-chrome-range.js';
 import MediaControlBar from './media-control-bar.js';
-import MediaCurrentTimeDisplay from './media-current-time-display.js';
 import MediaDurationDisplay from './media-duration-display.js';
 import MediaTimeDisplay from './media-time-display.js';
 import MediaCaptionsButton from './media-captions-button.js';
@@ -26,40 +25,15 @@ import MediaPreviewThumbnail from './media-preview-thumbnail.js';
 import MediaTimeRange from './media-time-range.js';
 import MediaLoadingIndicator from './media-loading-indicator.js';
 import MediaVolumeRange from './media-volume-range.js';
-import { window } from './utils/server-safe-globals.js';
-
-// Alias <media-controller> as <media-chrome>
-// Might move MediaChrome to include default controls
-class MediaChrome extends MediaController {}
-if (!window.customElements.get('media-chrome')) {
-  window.customElements.define('media-chrome', MediaChrome);
-}
-
-// Alias <media-controller> as <media-container>
-// to not break existing installs in transition.
-// Eventually expose media-container as unique element
-class MediaContainer extends MediaController {
-  constructor() {
-    super();
-    console.warn(
-      'MediaChrome: <media-container> is deprecated. Use <media-controller>.'
-    );
-  }
-}
-if (!window.customElements.get('media-container')) {
-  window.customElements.define('media-container', MediaContainer);
-}
 
 export {
   MediaAirplayButton,
   MediaCastButton,
   MediaChromeButton,
   MediaGestureReceiver,
-  MediaContainer,
   MediaController,
   MediaChromeRange,
   MediaControlBar,
-  MediaCurrentTimeDisplay,
   MediaDurationDisplay,
   MediaTimeDisplay,
   MediaCaptionsButton,
