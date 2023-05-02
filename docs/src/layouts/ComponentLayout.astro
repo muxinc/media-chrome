@@ -16,18 +16,21 @@ let mediaUIAttributes = cls?.attributes.filter(a => a.description?.startsWith('(
 
 const notEmpty = (obj) => !(obj == null || obj?.length === 0);
 
-cls?.slots && headings.push({ depth: 2, slug: 'slots', text: 'Slots' });
-notEmpty(attributes) && headings.push({ depth: 2, slug: 'attributes', text: 'Attributes' });
-notEmpty(mediaUIAttributes) && headings.push({ depth: 2, slug: 'media-ui-attributes', text: 'Media UI Attributes' });
-cls?.cssParts && headings.push({ depth: 2, slug: 'css-parts', text: 'CSS Parts' });
-cls?.cssProperties && headings.push({ depth: 2, slug: 'css-custom-properties', text: 'CSS Custom Properties' });
+headings.push({ depth: 2, slug: 'reference', text: 'Reference' });
+cls?.slots && headings.push({ depth: 3, slug: 'slots', text: 'Slots' });
+notEmpty(attributes) && headings.push({ depth: 3, slug: 'attributes', text: 'Attributes' });
+notEmpty(mediaUIAttributes) && headings.push({ depth: 3, slug: 'media-ui-attributes', text: 'Media UI Attributes' });
+cls?.cssParts && headings.push({ depth: 3, slug: 'css-parts', text: 'CSS Parts' });
+cls?.cssProperties && headings.push({ depth: 3, slug: 'css-custom-properties', text: 'CSS Custom Properties' });
 
 ---
 <MainLayout frontmatter={frontmatter} headings={headings}>
   <slot />
 
+  <Markdown of={`## Reference`} />
+
   {cls?.slots &&
-    <Markdown of={`## Slots`} />
+    <Markdown of={`### Slots`} />
     <table>
       <thead>
         <tr>
@@ -50,7 +53,7 @@ cls?.cssProperties && headings.push({ depth: 2, slug: 'css-custom-properties', t
     </table>}
 
   {notEmpty(attributes) &&
-    <Markdown of={`## Attributes`} />
+    <Markdown of={`### Attributes`} />
     <table>
       <thead>
         <tr>
@@ -74,7 +77,7 @@ cls?.cssProperties && headings.push({ depth: 2, slug: 'css-custom-properties', t
     </table>}
 
   {notEmpty(mediaUIAttributes) &&
-    <Markdown of={`## Media UI Attributes`} />
+    <Markdown of={`### Media UI Attributes`} />
     <p>
       The media UI attributes will be set automatically by the controller if they are
       connected via nesting or the <code>mediacontroller</code> attribute.
@@ -103,7 +106,7 @@ cls?.cssProperties && headings.push({ depth: 2, slug: 'css-custom-properties', t
     </table>}
 
   {cls?.cssParts &&
-    <Markdown of={`## CSS Parts`} />
+    <Markdown of={`### CSS Parts`} />
     <table>
       <thead>
         <tr>
@@ -126,7 +129,7 @@ cls?.cssProperties && headings.push({ depth: 2, slug: 'css-custom-properties', t
     </table>}
 
   {cls?.cssProperties &&
-    <Markdown of={`## CSS Custom Properties`} />
+    <Markdown of={`### CSS Custom Properties`} />
     <table>
       <thead>
         <tr>
