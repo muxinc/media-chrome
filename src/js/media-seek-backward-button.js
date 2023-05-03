@@ -19,6 +19,9 @@ slotTemplate.innerHTML = `
 
 const DEFAULT_TIME = 0;
 
+/**
+ * @param {HTMLElement} el
+ */
 const updateAriaLabel = (el) => {
   // NOTE: seek direction is described via text, so always use positive numeric representation
   const seekOffset = Math.abs(+el.getAttribute(Attributes.SEEK_OFFSET));
@@ -26,6 +29,9 @@ const updateAriaLabel = (el) => {
   el.setAttribute('aria-label', label);
 };
 
+/**
+ * @param {HTMLElement} el
+ */
 const updateSeekIconValue = (el) => {
   const svg = getSlotted(el, 'backward');
   const value = el.getAttribute(Attributes.SEEK_OFFSET);
