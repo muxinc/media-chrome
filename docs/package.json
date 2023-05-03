@@ -19,6 +19,7 @@
     "@astrojs/react": "^1.2.1",
     "@astrojs/tailwind": "^2.1.1",
     "@astropub/md": "^0.2.0",
+    "@codesandbox/sandpack-react": "^2.6.2",
     "@docsearch/css": "^3.3.0",
     "@docsearch/react": "^3.3.0",
     "@types/react": "^18.0.23",

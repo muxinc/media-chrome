@@ -14,7 +14,7 @@
 
 @media (min-width: 58em) {
   :root {
-    --max-width: 56em;
+    --max-width: 62rem; /* center column = 896px */
   }
 }
 
@@ -181,6 +181,7 @@ p {
 
 p,
 .content ul {
+  max-width: 75ch;
   color: var(--theme-text-light);
 }
 

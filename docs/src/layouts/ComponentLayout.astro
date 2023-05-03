@@ -21,7 +21,7 @@ cls?.slots && headings.push({ depth: 3, slug: 'slots', text: 'Slots' });
 notEmpty(attributes) && headings.push({ depth: 3, slug: 'attributes', text: 'Attributes' });
 notEmpty(mediaUIAttributes) && headings.push({ depth: 3, slug: 'media-ui-attributes', text: 'Media UI Attributes' });
 cls?.cssParts && headings.push({ depth: 3, slug: 'css-parts', text: 'CSS Parts' });
-cls?.cssProperties && headings.push({ depth: 3, slug: 'css-custom-properties', text: 'CSS Custom Properties' });
+cls?.cssProperties && headings.push({ depth: 3, slug: 'css-variables', text: 'CSS Variables' });
 
 ---
 <MainLayout frontmatter={frontmatter} headings={headings}>
@@ -129,7 +129,7 @@ cls?.cssProperties && headings.push({ depth: 3, slug: 'css-custom-properties', t
     </table>}
 
   {cls?.cssProperties &&
-    <Markdown of={`### CSS Custom Properties`} />
+    <Markdown of={`### CSS Variables`} />
     <table>
       <thead>
         <tr>
