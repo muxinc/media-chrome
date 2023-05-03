@@ -67,7 +67,7 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
 
       #grid-left {
         position: fixed;
-        background-color: var(--theme-bg);
+        background-color: var(--theme-navbar-bg);
         z-index: 10;
         display: none;
       }
@@ -87,7 +87,7 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
       @media (min-width: 50em) {
         .layout {
           overflow: initial;
-          grid-template-columns: 20rem minmax(0, var(--max-width));
+          grid-template-columns: 18rem minmax(0, var(--max-width));
           gap: 3%;
         }
 
@@ -101,10 +101,9 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
 
       @media (min-width: 72em) {
         .layout {
-          grid-template-columns: 20rem minmax(0, var(--max-width)) 18rem;
+          grid-template-columns: 18rem minmax(0, var(--max-width)) 18rem;
           padding-left: 0;
           padding-right: 0;
-          margin: 0 auto;
         }
 
         #grid-right {
