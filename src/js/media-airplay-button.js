@@ -53,7 +53,7 @@ class MediaAirplayButton extends MediaChromeButton {
     // avoid triggering a set if no change
     if (this.mediaAirplayUnavailable === value) return;
 
-    if (value === undefined) {
+    if (value == null) {
       this.removeAttribute(MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE);
       return;
     }
