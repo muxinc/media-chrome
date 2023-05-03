@@ -81,6 +81,36 @@ class MediaSeekBackwardButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, _oldValue, newValue);
   }
 
+  // Own props
+
+  /**
+   * @type {number} Seek amount in seconds
+   */
+  get seekOffset() {
+    return +this.getAttribute(Attributes.SEEK_OFFSET);
+  }
+
+  set seekOffset(value) {
+    // avoid triggeting a set if no change
+    if (value === this.seekOffset) return;
+    this.setAttribute(Attributes.SEEK_OFFSET, value.toString(10));
+  }
+
+  // Props derived from Media UI Attributes
+
+  /**
+   * The current time
+   * @type {number | undefined} In seconds
+   */
+  get mediaCurrentTime() {
+    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+    return attrVal != null ? +attrVal : undefined;
+  }
+
+  set mediaCurrentTime(time) {
+    this.setAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME, time.toString(10));
+  }
+
   handleClick() {
     const currentTimeStr = this.getAttribute(
       MediaUIAttributes.MEDIA_CURRENT_TIME
