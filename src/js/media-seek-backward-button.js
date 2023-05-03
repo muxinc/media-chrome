@@ -76,7 +76,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
       this.removeAttribute(Attributes.SEEK_OFFSET);
       return;
     }
-    this.setAttribute(Attributes.SEEK_OFFSET, value.toString(10));
+    this.setAttribute(Attributes.SEEK_OFFSET, `${value}`);
   }
 
   // Props derived from Media UI Attributes
