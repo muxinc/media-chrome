@@ -81,7 +81,10 @@ class MediaSeekForwardButton extends MediaChromeButton {
 }
 
 if (!window.customElements.get('media-seek-forward-button')) {
-  window.customElements.define('media-seek-forward-button', MediaSeekForwardButton);
+  window.customElements.define(
+    'media-seek-forward-button',
+    MediaSeekForwardButton
+  );
 }
 
 export default MediaSeekForwardButton;
