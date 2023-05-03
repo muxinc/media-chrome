@@ -1,16 +1,19 @@
 /** @jsxImportSource react */
 import { Sandpack } from "@codesandbox/sandpack-react";
 
-export default function ComponentSandpack({ html }) {
-
+export default function ComponentSandpack({
+  html,
+  height = 230,
+  ...props
+}) {
   return (
-    <div style={{ marginTop: '1rem' }}>
+    <div style={{ marginTop: '1rem', height }}>
       <Sandpack
         template="vanilla"
         theme="auto"
         options={{
-          editorHeight: 200,
-          editorWidthPercentage: 60,
+          editorHeight: height,
+          editorWidthPercentage: 50,
         }}
         customSetup={{
           dependencies: {
@@ -37,6 +40,7 @@ video {
             hidden: true,
           }
         }}
+        {...props}
       />
     </div>
   )

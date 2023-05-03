@@ -20,7 +20,12 @@ once your media playback state changes.
 <ComponentSandpack
   client:load
   html={`<media-controller>
-  <video slot="media" src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"></video>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
   <media-play-button></media-play-button>
 </media-controller>`}
 />
@@ -36,8 +41,14 @@ the literal words "Play" and "Pause":
 
 <ComponentSandpack
   client:load
+  height={270}
   html={`<media-controller>
-  <video slot="media" src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"></video>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
   <media-play-button>
     <span slot="play">Play</span>
     <span slot="pause">Pause</span>
