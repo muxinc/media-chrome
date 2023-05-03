@@ -19,7 +19,7 @@ export default function ComponentSandpack({
         }}
         customSetup={{
           dependencies: {
-            'media-chrome': 'latest',
+            'media-chrome': 'canary',
           },
         }}
         files={{
