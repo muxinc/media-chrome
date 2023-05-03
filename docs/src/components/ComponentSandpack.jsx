@@ -3,7 +3,9 @@ import { Sandpack } from "@codesandbox/sandpack-react";
 
 export default function ComponentSandpack({
   html,
+  css,
   height = 230,
+  files = {},
   ...props
 }) {
   return (
@@ -26,7 +28,7 @@ export default function ComponentSandpack({
             code: `${html}`
           },
           '/index.js': {
-            code: `import './styles.css'; import 'media-chrome'`,
+            code: `import './styles.css'; import 'media-chrome';${css ? "import './custom-styles.css';" : ""}`,
             hidden: true,
           },
           '/styles.css': {
@@ -38,7 +40,11 @@ video {
 }
       `,
             hidden: true,
-          }
+          },
+          ...(css ? {'/custom-styles.css': {
+            code: `${css}`
+          }} : {}),
+          ...files
         }}
         {...props}
       />
