@@ -39,6 +39,28 @@ class MediaAirplayButton extends MediaChromeButton {
     super.connectedCallback();
   }
 
+  /**
+   * @type {string | undefined} Airplay unavailability state
+   */
+  get mediaAirplayUnavailable() {
+    return (
+      this.getAttribute(MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE) ??
+      undefined
+    );
+  }
+
+  set mediaAirplayUnavailable(value) {
+    // avoid triggering a set if no change
+    if (this.mediaAirplayUnavailable === value) return;
+
+    if (value === undefined) {
+      this.removeAttribute(MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE);
+      return;
+    }
+
+    this.setAttribute(MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE, value);
+  }
+
   handleClick() {
     const evt = new window.CustomEvent(MediaUIEvents.MEDIA_AIRPLAY_REQUEST, {
       composed: true,
