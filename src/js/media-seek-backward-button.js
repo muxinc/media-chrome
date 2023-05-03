@@ -5,13 +5,12 @@ import { verbs } from './labels/labels.js';
 import { getSlotted, updateIconText } from './utils/element-utils.js';
 
 export const Attributes = {
-  SEEK_OFFSET: 'seekoffset'
+  SEEK_OFFSET: 'seekoffset',
 };
 
 const DEFAULT_SEEK_OFFSET = '30';
 
-const backwardIcon =
-  `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(2.18 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3L4.37 7 10 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 10 6Z"/></svg>`;
+const backwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(2.18 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3L4.37 7 10 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 10 6Z"/></svg>`;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
@@ -96,7 +95,10 @@ class MediaSeekBackwardButton extends MediaChromeButton {
 }
 
 if (!window.customElements.get('media-seek-backward-button')) {
-  window.customElements.define('media-seek-backward-button', MediaSeekBackwardButton);
+  window.customElements.define(
+    'media-seek-backward-button',
+    MediaSeekBackwardButton
+  );
 }
 
 export default MediaSeekBackwardButton;
