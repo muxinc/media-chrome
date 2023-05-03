@@ -1,0 +1,76 @@
+---
+title: <media-captions-button>
+description: Media Captions Button
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-captions-button.js
+---
+
+import ComponentSandpack from "../../../components/ComponentSandpack";
+
+The `<media-captions-button>` component is used to toggle captions and subtitles on and off. When turning on captions and subtitles, captions tracks will be preferred over subtitles tracks, but either type will be used.
+
+The contents and behavior of the `<media-captions-button>` will update automatically based on the text track media state.
+- When any captions or subtitles track is shown, the component will switch to display the contents of the `on` slot.
+- When all captions and subtitles track are disabled, the component will switch to display the content of the `off` slot.
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  height={250}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+    <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
+  </video>
+  <media-captions-button></media-captions-button>
+</media-controller>`}
+/>
+
+## Customize icons
+
+You can modify the contents of the `<media-captions-button>` component using slots.
+This is useful if you'd like to use your own custom captions button instead of the default one provided by media-chrome.
+
+Here's an example of how you can replace the default CC on and CC off icons with
+<b><u>CC</u></b> CC, respectively. Media Controller is also set up to enable 
+
+<ComponentSandpack
+  client:load
+  height={310}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+    <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
+  </video>
+  <media-captions-button>
+    <span slot="on"><b><u>CC</u></b></span>
+    <span slot="off">CC</span>
+  </media-captions-button>
+</media-controller>`}
+/>
+
+## Styling with attributes
+
+The `<media-captions-button>` doesn't expose any configuration attributes.
+However, it will be updated with [Media UI Attributes](#media-ui-attributes) any time the selected caption or subtitle changes.
+
+You can use these attributes to style the button. For example, if there aren't any subtitles, hide the button
+
+```css
+media-captions-button:not([mediasubtitleslist]) {
+  display: none;
+}
+```
+Or make the background blue if a captions is showing.
+```css
+media-captions-button[mediasubtitlesshowing] {
+  --media-control-background: blue;
+}
+```
