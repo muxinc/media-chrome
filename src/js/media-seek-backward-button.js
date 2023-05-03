@@ -1,8 +1,7 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
-import { getSlotted, updateIconText } from './utils/element-utils.js';
+import { updateAriaLabel, updateSeekIconValue } from './utils/seek';
 
 export const Attributes = {
   SEEK_OFFSET: 'seekoffset',
@@ -18,25 +17,6 @@ slotTemplate.innerHTML = `
 `;
 
 const DEFAULT_TIME = 0;
-
-/**
- * @param {HTMLElement} el
- */
-const updateAriaLabel = (el) => {
-  // NOTE: seek direction is described via text, so always use positive numeric representation
-  const seekOffset = Math.abs(+el.getAttribute(Attributes.SEEK_OFFSET));
-  const label = verbs.SEEK_BACK_N_SECS({ seekOffset });
-  el.setAttribute('aria-label', label);
-};
-
-/**
- * @param {HTMLElement} el
- */
-const updateSeekIconValue = (el) => {
-  const svg = getSlotted(el, 'backward');
-  const value = el.getAttribute(Attributes.SEEK_OFFSET);
-  updateIconText(svg, value);
-};
 
 /**
  * @slot backward - The element shown for the seek backward button’s display.

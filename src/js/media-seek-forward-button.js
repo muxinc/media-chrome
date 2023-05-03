@@ -1,17 +1,15 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
-import { getSlotted, updateIconText } from './utils/element-utils.js';
+import { updateAriaLabel, updateSeekIconValue } from './utils/seek';
 
 export const Attributes = {
-  SEEK_OFFSET: 'seekoffset'
+  SEEK_OFFSET: 'seekoffset',
 };
 
 const DEFAULT_SEEK_OFFSET = '30';
 
-const forwardIcon =
-  `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(8.9 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3l5.61 4L10 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 10 6Z"/></svg>`;
+const forwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(8.9 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3l5.61 4L10 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 10 6Z"/></svg>`;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
@@ -19,19 +17,6 @@ slotTemplate.innerHTML = `
 `;
 
 const DEFAULT_TIME = 0;
-
-const updateAriaLabel = (el) => {
-  // NOTE: seek direction is described via text, so always use positive numeric representation
-  const seekOffset = Math.abs(+el.getAttribute(Attributes.SEEK_OFFSET));
-  const label = verbs.SEEK_FORWARD_N_SECS({ seekOffset });
-  el.setAttribute('aria-label', label);
-};
-
-const updateSeekIconValue = (el) => {
-  const svg = getSlotted(el, 'forward');
-  const value = el.getAttribute(Attributes.SEEK_OFFSET);
-  updateIconText(svg, value);
-};
 
 /**
  * @slot forward - The element shown for the seek forward button’s display.
