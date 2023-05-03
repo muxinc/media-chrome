@@ -1,7 +1,7 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { updateAriaLabel, updateSeekIconValue } from './utils/seek';
+import { updateAriaLabel, updateSeekIconValue } from './utils/seek.js';
 
 export const Attributes = {
   SEEK_OFFSET: 'seekoffset',
@@ -44,7 +44,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
       this.setAttribute(Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
     }
     updateAriaLabel(this);
-    updateSeekIconValue(this);
+    updateSeekIconValue(this, 'backward');
     super.connectedCallback();
   }
 
@@ -53,7 +53,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
       if (newValue == undefined) {
         this.setAttribute(Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
       }
-      updateSeekIconValue(this);
+      updateSeekIconValue(this, 'backward');
       updateAriaLabel(this);
     }
 

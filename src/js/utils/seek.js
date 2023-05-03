@@ -15,9 +15,10 @@ export const updateAriaLabel = (el) => {
 
 /**
  * @param {HTMLElement} el
+ * @param {"backward" | "forward"} direction
  */
-export const updateSeekIconValue = (el) => {
-  const svg = getSlotted(el, 'backward');
+export const updateSeekIconValue = (el, direction) => {
+  const svg = getSlotted(el, direction);
   const value = el.getAttribute(Attributes.SEEK_OFFSET);
   updateIconText(svg, value);
 };
