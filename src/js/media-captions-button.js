@@ -121,7 +121,7 @@ class MediaCaptionsButton extends MediaChromeButton {
       return;
     }
 
-    this.setAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, value);
+    this.setAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, `${value}`);
   }
 
   handleClick() {

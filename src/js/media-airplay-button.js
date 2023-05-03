@@ -58,7 +58,7 @@ class MediaAirplayButton extends MediaChromeButton {
       return;
     }
 
-    this.setAttribute(MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE, value);
+    this.setAttribute(MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE, `${value}`);
   }
 
   handleClick() {
