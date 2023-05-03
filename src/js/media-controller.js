@@ -94,7 +94,7 @@ class MediaControllerElement extends MediaContainer {
     });
 
     // Listen to all media events and propagate state.
-    this.#controller.addEventListener('mediachange', () => {
+    this.#controller.addEventListener('mediastate', () => {
 
       const changedState = this.#controller.getChangedState();
 

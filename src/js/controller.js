@@ -766,6 +766,10 @@ export default class MediaController extends EventTarget {
     super();
     this.media = media;
 
+    this.addEventListener('mediaelementchangerequest', (event) => {
+      this.media = /** @type CustomEvent */ (event).detail;
+    });
+
     Object.keys(MediaUIEvents)
       .forEach(key => this.addEventListener(MediaUIEvents[key], this));
 
@@ -874,16 +878,15 @@ export default class MediaController extends EventTarget {
 
     console.log(this.#changedState);
 
-    // forward media change events
-    this.dispatchEvent(new CustomEvent('mediachange'));
-    this.dispatchEvent(new CustomEvent(event.type));
+    // fire a mediastate event for any changes
+    this.dispatchEvent(new CustomEvent('mediastate'));
   }
 
-  getChangedState() {
+  getChangedState = () => {
     return Object.freeze(this.#changedState);
   }
 
-  getState() {
+  getState = () => {
     let state = {};
     for (let key in MediaUIStates) {
       state[constToCamel(key)] = MediaUIStates[key].get(this);
