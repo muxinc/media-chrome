@@ -72,6 +72,10 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   set seekOffset(value) {
     // avoid triggeting a set if no change
     if (value === this.seekOffset) return;
+    if (value == null) {
+      this.removeAttribute(Attributes.SEEK_OFFSET);
+      return;
+    }
     this.setAttribute(Attributes.SEEK_OFFSET, value.toString(10));
   }
 
@@ -87,7 +91,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   }
 
   set mediaCurrentTime(time) {
-    if (time === undefined) {
+    if (time == null) {
       this.removeAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
       return;
     }
