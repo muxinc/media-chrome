@@ -84,10 +84,17 @@ class MediaCaptionsButton extends MediaChromeButton {
    */
   get mediaSubtitlesList() {
     const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST);
+    // an empty string can return an array with an empty string as an item
+    // e.g. splitTextTracksStr('') will return [""]
+    // so we explicitly return an empty array for falsy values
     return attrVal ? splitTextTracksStr(attrVal) : [];
   }
 
   set mediaSubtitlesList(list) {
+    if (list == null) {
+      this.removeAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST);
+      return;
+    }
     const newVal = list.join(' ');
     // avoid triggering a set if no change
     if (newVal === this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST)) {
@@ -108,10 +115,12 @@ class MediaCaptionsButton extends MediaChromeButton {
   set mediaSubtitlesShowing(value) {
     // avoid triggering a set if no change
     if (value === this.mediaSubtitlesShowing) return;
-    if (value === undefined) {
+
+    if (value == null) {
       this.removeAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
       return;
     }
+
     this.setAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, value);
   }
 
