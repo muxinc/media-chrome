@@ -87,6 +87,10 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   }
 
   set mediaCurrentTime(time) {
+    if (time === undefined) {
+      this.removeAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+      return;
+    }
     this.setAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME, time.toString(10));
   }
 
