@@ -95,7 +95,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
       this.removeAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
       return;
     }
-    this.setAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME, time.toString(10));
+    this.setAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME, `${+time}`);
   }
 
   handleClick() {
