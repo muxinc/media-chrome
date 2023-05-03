@@ -40,7 +40,6 @@ class MediaSeekForwardButton extends MediaChromeButton {
   }
 
   connectedCallback() {
-    // NOTE: currently don't support changing the seek value, so only need to set this once on initialization.
     if (!this.hasAttribute(Attributes.SEEK_OFFSET)) {
       this.setAttribute(Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
     }
