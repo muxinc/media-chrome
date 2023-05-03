@@ -71,7 +71,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
 
   set seekOffset(value) {
     // avoid triggeting a set if no change
-    if (value === this.seekOffset) return;
+    if (value == this.seekOffset) return;
     if (value == null) {
       this.removeAttribute(Attributes.SEEK_OFFSET);
       return;
