@@ -69,6 +69,38 @@ class MediaCastButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
+  /**
+   * @type {boolean} Are we currently casting
+   */
+  get mediaIsCasting() {
+    return this.hasAttribute(MediaUIAttributes.MEDIA_IS_CASTING);
+  }
+
+  set mediaIsCasting(value) {
+    this.toggleAttribute(MediaUIAttributes.MEDIA_IS_CASTING, !!value);
+  }
+
+  /**
+   * @type {string | undefined} Cast unavailability state
+   */
+  get mediaCastUnavailable() {
+    return (
+      this.getAttribute(MediaUIAttributes.MEDIA_CAST_UNAVAILABLE) ?? undefined
+    );
+  }
+
+  set mediaCastUnavailable(value) {
+    // avoid triggering a set if no change
+    if (this.mediaCastUnavailable === value) return;
+
+    if (value == null) {
+      this.removeAttribute(MediaUIAttributes.MEDIA_CAST_UNAVAILABLE);
+      return;
+    }
+
+    this.setAttribute(MediaUIAttributes.MEDIA_CAST_UNAVAILABLE, `${value}`);
+  }
+
   handleClick() {
     const eventName =
       this.getAttribute(MediaUIAttributes.MEDIA_IS_CASTING) != null
