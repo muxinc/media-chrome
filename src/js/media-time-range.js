@@ -121,12 +121,15 @@ template.innerHTML = /*html*/`
   <div id="current-rail">
     <slot name="current" part="box current-box">
       ${/* Example: add the current time to the playhead
-        <media-current-time-display></media-current-time-display> */''}
+        <media-time-display></media-time-display> */''}
     </slot>
   </div>
 `;
 
 /**
+ * @slot preview - An element that slides along the timeline to the position of the pointer hovering.
+ * @slot current - An element that slides along the timeline to the position of the current time.
+ *
  * @attr {string} mediabuffered - (read-only) Set to the buffered time ranges.
  * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
  * @attr {string} mediaduration - (read-only) Set to the media duration.
@@ -136,6 +139,10 @@ template.innerHTML = /*html*/`
  * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
  * @attr {string} mediapreviewimage - (read-only) Set to the timeline preview image URL.
  * @attr {string} mediapreviewcoords - (read-only) Set to the active preview image coordinates.
+ *
+ * @csspart box - A CSS part that selects both the preview and current box elements.
+ * @csspart preview-box - A CSS part that selects the preview box element.
+ * @csspart current-box - A CSS part that selects the current box element.
  *
  * @cssproperty [--media-time-range-display = inline-block] - `display` property of range.
  *

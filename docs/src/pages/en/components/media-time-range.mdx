@@ -1,0 +1,165 @@
+---
+title: <media-time-range>
+description: Media Time Range
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-time-range.js
+---
+
+import ComponentSandpack from "../../../components/ComponentSandpack";
+
+The `<media-time-range>` component is used to indicate the current time position 
+in the timeline of the media, and provides controls to seek to a new time in the media.
+
+Hovering over the time range will show a preview time code by default, and if
+a track with a thumbnails VTT file is configured 
+a [preview thumbnail](#preview-thumbnails) will be shown.
+
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  height={250}
+  html={`<media-controller>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-control-bar>
+    <media-time-range></media-time-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+
+
+## Preview thumbnails
+
+Adding the `<track default label="thumbnails" kind="metadata" src="">` 
+with a valid VTT file as `src` will enable the preview thumbnails on hover functionality.
+
+<ComponentSandpack
+  client:load
+  height={330}
+  html={`<media-controller>
+  <video 
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+    <track
+      default label="thumbnails" kind="metadata"
+      src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"
+    >
+  </video>
+  <media-control-bar>
+    <media-time-range></media-time-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+
+
+## Custom current slot
+
+Add a time display component in the current slot that will slide along 
+the timeline as the video progresses.
+
+<ComponentSandpack
+  client:load
+  height={270}
+  html={`<media-controller>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-control-bar>
+    <media-time-range>
+      <media-time-display slot="current"></media-time-display>
+    </media-time-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+
+
+## Remove preview elements
+
+Set the `preview` slot to an empty element to remove the default preview elements.
+
+<ComponentSandpack
+  client:load
+  height={270}
+  html={`<media-controller>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-control-bar>
+    <media-time-range>
+      <span slot="preview"></span>
+    </media-time-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+
+
+## Styling
+
+### Using CSS variables
+
+The `<media-time-range>` consists of several elements including an 
+[`<input type="range">`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/range) 
+element which can be tricky to style across browsers but the `<media-time-range>` component
+comes with targeted CSS variables that make this a breeze.
+
+<ComponentSandpack
+  client:load
+  height={270}
+  html={`<style>
+  media-time-range {
+    --media-control-background: transparent;
+    --media-control-hover-background: transparent;
+    --media-range-track-border-radius: 3px;
+    --media-range-thumb-opacity: .7;
+    --media-preview-time-margin: 0 0 -15px;
+  }
+</style>
+<media-controller>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-control-bar>
+    <media-time-range></media-time-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+
+Discover all the available [CSS variables](#css-variables).
+
+### Using attributes
+
+The `<media-time-range>` will be updated with **media state** attributes any time 
+your media playback state changes. You can use these attributes to apply 
+custom styles to your `<media-time-range>` element under different state conditions.
+
+```css
+/* Make the background color yellow when paused */
+media-time-range[media-paused] {
+  --media-control-background: yellow;
+}
+
+/* Make the background color red when loading (buffering) */
+media-time-range[media-loading] {
+  --media-control-background: red;
+}
+```
+
+Discover all the available [media state attributes](#media-ui-attributes).
