@@ -7,7 +7,7 @@ export const Attributes = {
   SEEK_OFFSET: 'seekoffset',
 };
 
-const DEFAULT_SEEK_OFFSET = '30';
+const DEFAULT_SEEK_OFFSET = 30;
 
 const forwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(8.9 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3l5.61 4L10 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 10 6Z"/></svg>`;
 
@@ -40,9 +40,6 @@ class MediaSeekForwardButton extends MediaChromeButton {
   }
 
   connectedCallback() {
-    if (!this.hasAttribute(Attributes.SEEK_OFFSET)) {
-      this.setAttribute(Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
-    }
     updateAriaLabel(this);
     updateSeekIconValue(this, 'forward');
     super.connectedCallback();
@@ -50,9 +47,6 @@ class MediaSeekForwardButton extends MediaChromeButton {
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
     if (attrName === Attributes.SEEK_OFFSET) {
-      if (newValue == undefined) {
-        this.setAttribute(Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
-      }
       updateSeekIconValue(this, 'forward');
       updateAriaLabel(this);
     }
@@ -66,7 +60,8 @@ class MediaSeekForwardButton extends MediaChromeButton {
    * @type {number} Seek amount in seconds
    */
   get seekOffset() {
-    return +this.getAttribute(Attributes.SEEK_OFFSET);
+    const attrVal = this.getAttribute(Attributes.SEEK_OFFSET);
+    return attrVal ? +attrVal : DEFAULT_SEEK_OFFSET;
   }
 
   set seekOffset(value) {
