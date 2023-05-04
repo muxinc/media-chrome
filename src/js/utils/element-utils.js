@@ -50,7 +50,11 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
     //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
     //   Not allowed to access cross-origin stylesheet
     let cssRules;
-    try { cssRules = style.sheet?.cssRules; } catch { continue; }
+    try {
+      cssRules = style.sheet?.cssRules;
+    } catch {
+      continue;
+    }
     for (let rule of cssRules ?? [])
       if (rule.selectorText === selectorText) return rule;
   }
@@ -59,8 +63,8 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
     return {
       style: {
         setProperty: () => {},
-        removeProperty: () => {}
-      }
+        removeProperty: () => {},
+      },
     };
   }
 
