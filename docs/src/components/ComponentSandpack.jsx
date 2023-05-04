@@ -1,11 +1,17 @@
 /** @jsxImportSource react */
 import { Sandpack } from "@codesandbox/sandpack-react";
 
+export const Active = {
+  HTML: 'html',
+  CSS: 'css',
+};
+
 export default function ComponentSandpack({
   html,
   css,
   height = 230,
   files = {},
+  active = Active.HTML,
   ...props
 }) {
   return (
@@ -24,7 +30,7 @@ export default function ComponentSandpack({
         }}
         files={{
           "/index.html": {
-            active: true,
+            active: active === Active.HTML,
             code: `${html}`
           },
           '/index.js': {
@@ -42,6 +48,7 @@ video {
             hidden: true,
           },
           ...(css ? {'/custom-styles.css': {
+            active: active === Active.CSS,
             code: `${css}`
           }} : {}),
           ...files
