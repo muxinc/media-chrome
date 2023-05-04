@@ -14,7 +14,7 @@
 
 @media (min-width: 58em) {
   :root {
-    --max-width: 62rem; /* center column = 896px */
+    --max-width: 57rem; /* center column = 896px */
   }
 }
 
