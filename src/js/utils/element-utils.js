@@ -74,7 +74,7 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
 
 /**
  * Gets the number represented by the attribute
- * @param {HTMLElement} el
+ * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
  * @param {string} attrName
  * @returns {number | undefined} Will return undefined if no attribute set
  */
@@ -84,7 +84,7 @@ export function getNumericAttr(el, attrName) {
 }
 
 /**
- * @param {HTMLElement} el
+ * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
  * @param {string} attrName
  * @param {number} value
  */
@@ -103,7 +103,7 @@ export function setNumericAttr(el, attrName, value) {
 }
 
 /**
- * @param {HTMLElement} el
+ * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
  * @param {string} attrName
  * @returns {boolean}
  */
@@ -113,7 +113,7 @@ export function getBooleanAttr(el, attrName) {
 
 /**
  *
- * @param {HTMLElement} el
+ * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
  * @param {string} attrName
  * @param {boolean} show
  */
