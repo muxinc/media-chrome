@@ -193,14 +193,16 @@ class MediaController extends MediaContainer {
       });
     });
 
-    // Update the media with the last set volume preference
-    // This would preferably live with the media element,
-    // not a control.
-    try {
-      const volPref = window.localStorage.getItem('media-chrome-pref-volume');
-      if (volPref !== null) media.volume = volPref;
-    } catch (e) {
-      console.debug('Error getting volume pref', e);
+    // don't get from localStorage if novolumepref attribute is set
+    if (!this.hasAttribute('novolumepref')) {
+      // Update the media with the last set volume preference
+      // This would preferably live with the media element, not a control.
+      try {
+        const volPref = window.localStorage.getItem('media-chrome-pref-volume');
+        if (volPref !== null) media.volume = volPref;
+      } catch (e) {
+        console.debug('Error getting volume pref', e);
+      }
     }
   }
 
