@@ -44,7 +44,7 @@ const updateAriaChecked = (el) => {
  * @slot off - An element that will be shown while closed captions or subtitles are off.
  *
  * @attr {string} mediasubtitleslist - (read-only) A list of all subtitles and captions.
- * @attr {boolean} mediasubtitlesshowing - (read-only) A list of the showing subtitles and captions.
+ * @attr {string} mediasubtitlesshowing - (read-only) A list of the showing subtitles and captions.
  *
  * @cssproperty [--media-captions-button-display = inline-flex] - `display` property of button.
  */
