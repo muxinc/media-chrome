@@ -1,0 +1,70 @@
+---
+title: <media-fullscreen-button>
+description: Media Fullscreen Button
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-fullscreen-button.js
+---
+
+import ComponentSandpack from "../../../components/ComponentSandpack";
+
+The `<media-fullscreen-button>` component is used to toggle fullscreen viewing.
+
+The contents and behavior of the `<media-fullscreen-button>` will update automatically based on the fullscreen state and availability.
+- When the media is not fullscreen, the component will switch to display the contents of the `enter` slot.
+- When the media is fullscreen, the component will switch to display the contents of the `exit` slot.
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-fullscreen-button></media-fullscreen-button>
+</media-controller>`}
+/>
+
+## Customize icons
+
+You can modify the contents of the `<media-fullscreen-button>` component using slots.
+This is useful if you'd like to use your own custom fullscreen button instead of the default one provided by media-chrome.
+
+Here's an example of how you can replace the default fullscreen icons with the words "Enter" and "Exit"
+
+<ComponentSandpack
+  client:load
+  height={250}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-fullscreen-button>
+    <span slot="enter">Enter</span>
+    <span slot="exit">Exit</span>
+  </media-fullscreen-button>
+</media-controller>`}
+/>
+
+## Styling with attributes
+
+The `<media-fullscreen-button>` doesn't expose any configuration attributes.
+However, it will be updated with [Media UI Attributes](#media-ui-attributes) any time the fullscreen state and availability changes.
+
+You can use these attributes to style the button. For example, hide the button if fullscreen is unavailable:
+
+```css
+media-fullscreen-button:not([mediafullscreenunavailable]) {
+  display: none;
+}
+```
+Or make the background blue if the media is fullscreen.
+```css
+media-fullscreen-button[mediaisfullscreen] {
+  --media-control-background: blue;
+}
+```

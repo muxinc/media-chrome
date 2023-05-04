@@ -1,0 +1,70 @@
+---
+title: <media-pip-button>
+description: Media PiP Button
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-pip-button.js
+---
+
+import ComponentSandpack from "../../../components/ComponentSandpack";
+
+The `<media-pip-button>` component is used to toggle the picture-in-picture mode of the video.
+
+The contents and behavior of the `<media-pip-button>` will update automatically based on the PiP state and availability.
+- When the media is not in PiP mode, the component will switch to display the contents of the `enter` slot.
+- When the media is PiP mode, the component will switch to display the contents of the `exit` slot.
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-pip-button></media-pip-button>
+</media-controller>`}
+/>
+
+## Customize icons
+
+You can modify the contents of the `<media-pip-button>` component using slots.
+This is useful if you'd like to use your own custom PiP button instead of the default one provided by media-chrome.
+
+Here's an example of how you can replace the default PiP icons with the words "Enter" and "Exit"
+
+<ComponentSandpack
+  client:load
+  height={250}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-pip-button>
+    <span slot="enter">Enter</span>
+    <span slot="exit">Exit</span>
+  </media-pip-button>
+</media-controller>`}
+/>
+
+## Styling with attributes
+
+The `<media-pip-button>` doesn't expose any configuration attributes.
+However, it will be updated with [Media UI Attributes](#media-ui-attributes) any time the PiP state and availability changes.
+
+You can use these attributes to style the button. For example, hide the button if PiP is unavailable:
+
+```css
+media-pip-button:not([mediapipunavailable]) {
+  display: none;
+}
+```
+Or make the background blue if the media is in PiP mode.
+```css
+media-pip-button[mediaispip] {
+  --media-control-background: blue;
+}
+```
