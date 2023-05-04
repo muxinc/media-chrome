@@ -19,14 +19,14 @@ const lang = getLanguageFromURL(currentPage);
 <header>
   <SkipToContent />
   <nav class="nav-wrapper" title="Top Navigation">
+    <div class="logo flex">
+      <a href="/">
+        <AstroLogo size={40} />
+        <h1>media-chrome</h1>
+      </a>
+    </div>
     <div class="menu-toggle">
       <SidebarToggle client:idle />
-    </div>
-    <div class="logo">
-      <a href="/">
-        <AstroLogo size={38} />
-        <h1>&lt;media-chrome&gt;</h1>
-      </a>
     </div>
     <div class="menu">
       <a href="/en/get-started" aria-current={currentPage === '/en/get-started'}>Basics</a>
@@ -34,15 +34,15 @@ const lang = getLanguageFromURL(currentPage);
       <a href="/en/showcase" aria-current={currentPage === '/en/showcase'}>Showcase</a>
       <a href="https://github.com/muxinc/media-chrome" target="_blank">GitHub</a>
     </div>
+    <div class="search-item">
+      <Search client:idle />
+    </div>
     <ThemeToggleButton client:visible />
     {
       KNOWN_LANGUAGE_CODES.length > 1 && (
         <LanguageSelect lang={lang} client:idle />
       )
     }
-    <div class="search-item">
-      <Search client:idle />
-    </div>
   </nav>
 </header>
 
@@ -55,38 +55,40 @@ const lang = getLanguageFromURL(currentPage);
     backdrop-filter: saturate(180%) blur(5px);
     border-bottom: 1px solid var(--theme-divider);
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
     overflow: hidden;
     position: sticky;
     top: 0;
   }
 
+  .nav-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    padding: 0 1rem;
+  }
+
   .logo {
+    display: flex;
+    align-self: stretch;
     overflow: hidden;
-    width: 40px;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     font-weight: 600;
     line-height: 1;
     color: hsla(var(--color-base-white), 100%, 1);
-    gap: 0.25em;
     z-index: -1;
   }
 
   .logo a {
-    display: block;
-    padding: 0.5em 0.25em;
-    margin: -0.5em -0.25em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5em;
     text-decoration: none;
-  }
-
-  :is(.logo, .menu) a {
-    transition: color 100ms ease-out;
+    font-weight: 600;
     color: var(--theme-text);
-  }
-
-  :is(.logo, .menu) :is(a:hover, a:focus) {
-    color: var(--theme-text-accent);
   }
 
   .logo h1 {
@@ -98,47 +100,35 @@ const lang = getLanguageFromURL(currentPage);
   }
 
   .menu {
-    flex: 1;
-    font-family: var(--font-mono);
-    margin-left: 1rem;
+    display: flex;
+    align-self: stretch;
+    align-items: stretch;
   }
 
   .menu a {
+    display: flex;
     display: none;
-    font-size: 0.9em;
-    line-height: 1.4;
+    font-size: 0.95em;
     text-decoration: none;
-    padding: 0.4em 0.7em;
-    margin-left: -.8em;
-    border-radius: 5px;
-    transition: background-color 100ms ease-out;
-    text-transform: uppercase;
-    vertical-align: middle;
-    font-weight: 700;
+    padding: 1.75rem 1.75rem;
+    color: var(--theme-text);
+    border-right: 1px solid var(--theme-divider);
   }
 
   .menu :is(a:hover, a:focus) {
-    background-color: var(--theme-bg-accent);
-  }
-
-  .nav-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1em;
-    width: 100%;
-    padding: 0 1.7rem;
+    background-color: var(--theme-accent);
+    color: var(--theme-text-invert);
   }
 
   @media (min-width: 50em) {
-    header {
-      padding: 2rem 0rem;
+    .nav-wrapper {
+      padding: 0 2.5rem;
     }
 
     .logo {
-      width: auto;
-      margin: 0;
+      flex: 0 0 248px;
       z-index: 0;
+      border-right: 1px solid var(--theme-divider);
     }
 
     .logo h1 {
@@ -161,18 +151,19 @@ const lang = getLanguageFromURL(currentPage);
   }
 
   .search-item {
-    display: none;
+    display: flex;
+    align-self: stretch;
+    align-items: center;
     position: relative;
     z-index: 10;
-    flex-grow: 1;
-    padding-right: 0.7rem;
-    display: flex;
-    max-width: 200px;
+    flex-grow: 2;
+    padding: 0 .75rem;
   }
 
   @media (min-width: 50em) {
     .search-item {
-      max-width: 400px;
+      max-width: none;
+      padding: 0 1.75rem;
     }
   }
 </style>

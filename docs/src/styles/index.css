@@ -237,6 +237,11 @@ article > section iframe {
 article > section :where(ul, ol) {
   list-style: initial;
 }
+
+nav :is(ul, ol) {
+  list-style: none;
+}
+
 a > code {
   position: relative;
   color: var(--theme-text-accent);
