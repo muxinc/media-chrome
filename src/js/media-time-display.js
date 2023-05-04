@@ -98,9 +98,14 @@ class MediaTimeDisplay extends MediaTextDisplay {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('cursor', 'pointer');
 
-    const { style: hoverStyle } = getOrInsertCSSRule(this.shadowRoot, ':host(:hover)');
-    hoverStyle.setProperty('background', 'var(--media-control-hover-background, rgba(50 50 70 / .7))');
-
+    const { style: hoverStyle } = getOrInsertCSSRule(
+      this.shadowRoot,
+      ':host(:hover)'
+    );
+    hoverStyle.setProperty(
+      'background',
+      'var(--media-control-hover-background, rgba(50 50 70 / .7))'
+    );
   }
 
   connectedCallback() {
