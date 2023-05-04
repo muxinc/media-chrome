@@ -202,11 +202,15 @@ class MediaTimeDisplay extends MediaTextDisplay {
    */
   get mediaDuration() {
     const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
-    return attrVal != null ? +attrVal : undefined;
+    return attrVal ? +attrVal : undefined;
   }
 
   set mediaDuration(time) {
-    this.setAttribute(MediaUIAttributes.MEDIA_DURATION, time.toString(10));
+    if (time == null) {
+      this.removeAttribute(MediaUIAttributes.MEDIA_DURATION);
+      return;
+    }
+    this.setAttribute(MediaUIAttributes.MEDIA_DURATION, `${+time}`);
   }
 
   /**
