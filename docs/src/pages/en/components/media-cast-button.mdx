@@ -1,0 +1,74 @@
+---
+title: <media-cast-button>
+description: Media Cast Button
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-cast-button.js
+---
+
+import ComponentSandpack from "../../../components/ComponentSandpack";
+
+The `<media-cast-button>` component is used to bring up the Cast menu and select playback on a Chromecast-enabled device and to stop casting once started.
+
+
+The contents and behavior of the `<media-cast-button>` will update automatically based on the availability of casting support and current casting state.
+- When the media is not currently casting, the `enter` slot will be shown.
+- When the media is currently casting, the `exit` slot will be shown.
+
+> NOTE: Casting support isn't available in all browsers
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  height={190}
+  html={`<media-controller>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-cast-button></media-cast-button>
+</media-controller>`}
+/>
+
+## Customize icons
+
+You can modify the contents of the `<media-cast-button>` component using slots.
+This is useful if you'd like to use your own custom Cast button instead of the default one provided by media-chrome.
+
+Here's an example of how you can replace the default icons with the words "Cast" and "Exit".
+
+<ComponentSandpack
+  client:load
+  height={250}
+  html={`<media-controller>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-cast-button>
+    <span slot="enter">Cast</span>
+    <span slot="exit">Exit</span>
+  </media-cast-button>
+</media-controller>`}
+/>
+
+## Styling with attributes
+
+The `<media-cast-button>` doesn't expose any configuration attributes.
+However, it will be updated with [Media UI Attributes](#media-ui-attributes) any time the availability state changes.
+
+You can use these attributes to style the button. For example, if casting is unavailable, hide the button:
+
+```css
+media-cast-button[mediacastunavailable] {
+  display: none;
+}
+```
+
+Or set the background to blue, if the media is now casting:
+```css
+media-cast-button[mediaiscasting] {
+  --media-control-background: blue;
+}
