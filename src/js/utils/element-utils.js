@@ -67,3 +67,61 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
   style.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
   return style.sheet.cssRules[style.sheet.cssRules.length - 1];
 }
+
+/**
+ * Gets the number represented by the attribute
+ * @param {HTMLElement} el
+ * @param {string} attrName
+ * @returns {number | undefined} Will return undefined if no attribute set
+ */
+export function getNumericAttr(el, attrName) {
+  const attrVal = el.getAttribute(attrName);
+  return attrVal != null ? +attrVal : undefined;
+}
+
+/**
+ * @param {HTMLElement} el
+ * @param {string} attrName
+ * @param {number} value
+ */
+export function setNumericAttr(el, attrName, value) {
+  // avoid setting a value that hasn't changed
+  if (getNumericAttr(el, attrName) == value) return;
+
+  // also handles undefined
+  if (value == null) {
+    el.removeAttribute(attrName);
+    return;
+  }
+
+  // force to a numberic value before setting as a string
+  el.setAttribute(attrName, `${+value}`);
+}
+
+/**
+ * @param {HTMLElement} el
+ * @param {string} attrName
+ * @returns {boolean}
+ */
+export function getBooleanAttr(el, attrName) {
+  return el.hasAttribute(attrName);
+}
+
+/**
+ *
+ * @param {HTMLElement} el
+ * @param {string} attrName
+ * @param {boolean} show
+ */
+export function setBooleanAttr(el, attrName, show) {
+  // avoid setting a value that hasn't changed
+  if (getBooleanAttr(el, attrName) == show) return;
+
+  // also handles undefined
+  if (show == null) {
+    el.removeAttribute(attrName);
+    return;
+  }
+
+  el.toggleAttribute(attrName, show);
+}

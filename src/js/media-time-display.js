@@ -1,5 +1,11 @@
 import MediaTextDisplay from './media-text-display.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
+import {
+  getBooleanAttr,
+  getNumericAttr,
+  getOrInsertCSSRule,
+  setBooleanAttr,
+  setNumericAttr,
+} from './utils/element-utils.js';
 import { window } from './utils/server-safe-globals.js';
 import { formatAsTimePhrase, formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
@@ -171,13 +177,11 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * @type {boolean}
    */
   get remaining() {
-    return this.hasAttribute(Attributes.REMAINING);
+    return getBooleanAttr(this, Attributes.REMAINING);
   }
 
   set remaining(show) {
-    // don't set unless needed, could trigger an attr change event
-    if (show === this.remaining) return;
-    this.toggleAttribute(Attributes.REMAINING, show);
+    setBooleanAttr(this, Attributes.REMAINING, show);
   }
 
   /**
@@ -185,13 +189,11 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * @type {boolean}
    */
   get showDuration() {
-    return this.hasAttribute(Attributes.SHOW_DURATION);
+    return getBooleanAttr(this, Attributes.SHOW_DURATION);
   }
 
   set showDuration(show) {
-    // don't set unless needed, could trigger an attr change event
-    if (show === this.showDuration) return;
-    this.toggleAttribute(Attributes.SHOW_DURATION, show);
+    setBooleanAttr(this, Attributes.SHOW_DURATION, show);
   }
 
   // Props derived from media UI attributes
@@ -201,16 +203,11 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * @type {number | undefined} In seconds
    */
   get mediaDuration() {
-    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
-    return attrVal ? +attrVal : undefined;
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_DURATION);
   }
 
   set mediaDuration(time) {
-    if (time == null) {
-      this.removeAttribute(MediaUIAttributes.MEDIA_DURATION);
-      return;
-    }
-    this.setAttribute(MediaUIAttributes.MEDIA_DURATION, `${+time}`);
+    setNumericAttr(this, MediaUIAttributes.MEDIA_DURATION, time);
   }
 
   /**
@@ -218,16 +215,11 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * @type {number | undefined} In seconds
    */
   get mediaCurrentTime() {
-    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
-    return attrVal ? +attrVal : undefined;
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME);
   }
 
   set mediaCurrentTime(time) {
-    if (time == null) {
-      this.removeAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
-      return;
-    }
-    this.setAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME, `${+time}`);
+    setNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, time);
   }
 
   /**
@@ -242,11 +234,11 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   set mediaSeekable(range) {
-    if (range === undefined) {
+    if (range == null) {
       this.removeAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
       return;
     }
-    this.setAttribute(range.join(':'));
+    this.setAttribute(MediaUIAttributes.MEDIA_SEEKABLE, range.join(':'));
   }
 
   update() {
