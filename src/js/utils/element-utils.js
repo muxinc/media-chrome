@@ -115,17 +115,17 @@ export function getBooleanAttr(el, attrName) {
  *
  * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
  * @param {string} attrName
- * @param {boolean} show
+ * @param {boolean} value
  */
-export function setBooleanAttr(el, attrName, show) {
+export function setBooleanAttr(el, attrName, value) {
   // avoid setting a value that hasn't changed
-  if (getBooleanAttr(el, attrName) == show) return;
+  if (getBooleanAttr(el, attrName) == value) return;
 
   // also handles undefined
-  if (show == null) {
+  if (value == null) {
     el.removeAttribute(attrName);
     return;
   }
 
-  el.toggleAttribute(attrName, show);
+  el.toggleAttribute(attrName, value);
 }
