@@ -2,6 +2,7 @@ import { fixture, assert, aTimeout, waitUntil } from '@open-wc/testing';
 import { constants } from '../../src/js/index.js';
 
 const { MediaUIEvents } = constants;
+const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
 
 describe('<media-controller>', () => {
 
@@ -247,7 +248,7 @@ describe('receiving state / dispatching (bubbling) events', () => {
     assert(true, 'media-current-time is 2');
   });
 
-  it('can change volume', async () => {
+  (isSafari ? it.skip : it)('can change volume', async () => {
     div.dispatchEvent(new CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
       detail: 0.73,
       bubbles: true

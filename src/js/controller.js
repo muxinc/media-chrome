@@ -486,7 +486,7 @@ export const MediaUIRequestHandlers = {
       media.volume = 0.25;
     }
   },
-  MEDIA_VOLUME_REQUEST: (media, e) => {
+  MEDIA_VOLUME_REQUEST: (media, e, mediaController) => {
     const volume = e.detail;
 
     media.volume = volume;
@@ -496,14 +496,17 @@ export const MediaUIRequestHandlers = {
       media.muted = false;
     }
 
-    // Store the last set volume as a local preference, if ls is supported
-    try {
-      window.localStorage.setItem(
-        'media-chrome-pref-volume',
-        volume.toString()
-      );
-    } catch (err) {
-      // ignore
+    // don't set to localStorage if novolumepref attribute is set
+    if (!mediaController.hasAttribute('novolumepref')) {
+      // Store the last set volume as a local preference, if ls is supported
+      try {
+        window.localStorage.setItem(
+          'media-chrome-pref-volume',
+          volume.toString()
+        );
+      } catch (err) {
+        // ignore
+      }
     }
   },
 
