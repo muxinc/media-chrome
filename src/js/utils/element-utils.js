@@ -98,7 +98,7 @@ export function setNumericAttr(el, attrName, value) {
     return;
   }
 
-  // force to a numberic value before setting as a string
+  // force to a numeric value before setting as a string
   el.setAttribute(attrName, `${+value}`);
 }
 
