@@ -40,6 +40,43 @@ const updateAriaChecked = (el) => {
 };
 
 /**
+ * @param {any} el Should be HTMLElement but issues with window shim
+ * @param {string} attrName
+ * @returns {Array<string>}
+ */
+const getCaptionListAttr = (el, attrName) => {
+  const attrVal = el.getAttribute(attrName);
+
+  // an empty attribute can return an array with an empty string as an item
+  // e.g. splitTextTracksStr('') will return [""]
+  // so we explicitly return an empty array for falsy values
+  return attrVal ? splitTextTracksStr(attrVal) : [];
+};
+
+/**
+ *
+ * @param {any} el Should be HTMLElement but issues with window shim
+ * @param {string} attrName
+ * @param {Array<string>} list
+ */
+const setCaptionListAttr = (el, attrName, list) => {
+  // null, undefined, and empty arrays are treated as "no value" here
+  if (!list) {
+    el.removeAttribute(attrName);
+    return;
+  }
+
+  const newVal = list.join(' ');
+
+  // don't set if the new value is the same as existing
+  const oldList = getCaptionListAttr(el, attrName);
+  const oldVal = oldList.join(' ');
+  if (oldVal === newVal) return;
+
+  el.setAttribute(attrName, newVal);
+};
+
+/**
  * @slot on - An element that will be shown while closed captions or subtitles are on.
  * @slot off - An element that will be shown while closed captions or subtitles are off.
  *
@@ -83,45 +120,22 @@ class MediaCaptionsButton extends MediaChromeButton {
    * @type {Array<string>} An array of string serialised text tracks
    */
   get mediaSubtitlesList() {
-    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST);
-    // an empty string can return an array with an empty string as an item
-    // e.g. splitTextTracksStr('') will return [""]
-    // so we explicitly return an empty array for falsy values
-    return attrVal ? splitTextTracksStr(attrVal) : [];
+    return getCaptionListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
   }
 
   set mediaSubtitlesList(list) {
-    if (list == null) {
-      this.removeAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST);
-      return;
-    }
-    const newVal = list.join(' ');
-    // avoid triggering a set if no change
-    if (newVal === this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST)) {
-      return;
-    }
-    this.setAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST, newVal);
+    setCaptionListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST, list);
   }
 
   /**
-   * @type {string | undefined} A text track represented as a string
+   * @type {Array<string>} An array of string serialised text tracks
    */
   get mediaSubtitlesShowing() {
-    return (
-      this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) ?? undefined
-    );
+    return getCaptionListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
   }
 
-  set mediaSubtitlesShowing(value) {
-    // avoid triggering a set if no change
-    if (value === this.mediaSubtitlesShowing) return;
-
-    if (value == null) {
-      this.removeAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
-      return;
-    }
-
-    this.setAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, `${value}`);
+  set mediaSubtitlesShowing(list) {
+    setCaptionListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
   }
 
   handleClick() {
