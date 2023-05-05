@@ -1,3 +1,17 @@
+## [0.21.1](https://github.com/muxinc/media-chrome/compare/v0.21.0...v0.21.1) (2023-05-05)
+
+
+### Bug Fixes
+
+* seek-offset attr in seek back button, playback rate listbox css var,  ([#553](https://github.com/muxinc/media-chrome/issues/553)) ([2811934](https://github.com/muxinc/media-chrome/commit/2811934744407680369beda8640e1a52be145e74))
+
+
+### Features
+
+* add novolumepref attribute to prefer writing to localStorage ([#574](https://github.com/muxinc/media-chrome/issues/574)) ([2acd292](https://github.com/muxinc/media-chrome/commit/2acd292974046b387d53e7d10852509d2c28b5b8))
+
+
+
 # [0.21.0](https://github.com/muxinc/media-chrome/compare/v0.20.4...v0.21.0) (2023-04-17)
 
 
