@@ -3,7 +3,11 @@ import { Markdown } from '@astropub/md';
 import MainLayout from '../../layouts/MainLayout.astro';
 import manifest from '../../../../dist/custom-elements.json';
 
-const { frontmatter = {}, headings = [], url } = Astro.props as Props;
+const frontmatter = {
+  title: 'Styling Reference'
+};
+
+const headings = [];
 const components = await Astro.glob('./components/*');
 
 function hasLink(tagName) {
@@ -51,14 +55,14 @@ function capitalizeFirstLetter(str) {
 }
 
 function backticksToMdnLinks(str) {
-  return str.replace(/`([^`]+)`/, '<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/$1" target="_blank">$1</a>');
+  return str.replace(
+    /`([^`]+)`/g,
+    '<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/$1" target="_blank"><code>$1</code></a>'
+  );
 }
 
 ---
-
 <MainLayout frontmatter={frontmatter} headings={headings}>
-  <h1>Styling Reference</h1>
-
   {groups.map(group => (
     <Markdown of={`## ${capitalizeFirstLetter(group)}s`} />
 
