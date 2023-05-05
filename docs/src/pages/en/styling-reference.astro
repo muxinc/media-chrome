@@ -68,6 +68,7 @@ function backticksToMdnLinks(str) {
 
     <ul style="list-style: none; padding: 0;">
       {getClasses(manifest)
+        .sort((a, b) => (b.tagName?.startsWith('media-chrome') ? -1 : b.tagName - a.tagName))
         .filter(cls => cls.tagName?.endsWith(group))
         .map(cls => (
           <li>
