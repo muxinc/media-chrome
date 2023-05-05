@@ -301,7 +301,6 @@ pre {
   margin-right: calc(var(--padding-inline) * -1);
   margin-top: 2.5rem;
   font-family: var(--font-mono);
-
   line-height: 1.5;
   font-size: 0.85em;
   overflow-y: hidden;
@@ -309,6 +308,7 @@ pre {
 }
 
 table {
+  font-family: var(--font-body);
   width: 100%;
   padding: var(--padding-block) 0;
   margin: 0;
@@ -318,9 +318,24 @@ table {
 td,
 th {
   border-top: 1px solid var(--theme-bg-offset);
+  border-right: 1px solid var(--theme-bg-offset);
   padding: .875rem;
   height: 3.5rem;
   text-align: left;
+}
+
+tr:last-child td {
+  border-bottom: 1px solid var(--theme-bg-offset);
+}
+
+:is(th, td):first-child {
+  padding-left: 0;
+  width: 27%;
+}
+
+:is(th, td):last-child {
+  padding-right: 0;
+  border-right: none;
 }
 
 td:first-child,
@@ -328,9 +343,7 @@ td:first-child,
   white-space: nowrap;
 }
 
-
 th {
-  background: var(--theme-bg-offset);
   font-weight: bold;
 }
 
