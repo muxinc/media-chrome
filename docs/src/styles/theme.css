@@ -7,6 +7,11 @@
     'Bitstream Vera Sans Mono', 'Liberation Mono', 'Nimbus Mono L', Monaco,
     'Courier New', Courier, monospace;
 
+  /* Mux colors */
+  --color-charcoal: 210, 5%, 15%;
+  --color-border-putty: 77, 11%, 88%;
+  --color-bg-putty: 60, 9%, 98%;
+
   /*
    * Variables with --color-base prefix define
    * the hue, and saturation values to be used for
@@ -20,7 +25,7 @@
 
   --color-base-white: 0, 0%;
   --color-base-black: 240, 100%;
-  --color-base-gray: 215, 14%;
+  --color-base-gray: 60, 3%;
   --color-base-blue: 212, 100%;
   --color-base-blue-dark: 212, 72%;
   --color-base-green: 141, 100%;
@@ -50,6 +55,7 @@
   --color-gray-90: var(--color-base-gray), 90%;
   --color-gray-95: var(--color-base-gray), 95%;
 
+  --color-white: var(--color-base-white), 100%;
   --color-black: var(--color-base-black), 0%;
   --color-blue: var(--color-base-blue), 61%;
   --color-blue-dark: var(--color-base-blue-dark), 39%;
@@ -60,11 +66,6 @@
   --color-yellow: var(--color-base-yellow), 59%;
   --color-magenta: var(--color-base-magenta), 59%;
   --color-white-pointer: var(--color-base-white-pointer), 98%;
-
-  /* Mux colors */
-  --color-charcoal: 210, 5%, 15%;
-  --color-border-putty: 77, 11%, 88%;
-  --color-bg-putty: 60, 9%, 98%;
 }
 
 :root {
@@ -73,16 +74,18 @@
   --theme-accent: hsla(var(--color-green), 1);
   --theme-text-accent: hsla(var(--color-green), 1);
   --theme-divider: hsla(var(--color-border-putty), 1);
+  --theme-link-text: rgb(12 100 188);
   --theme-text: hsla(var(--color-black), 1);
   --theme-text-light: hsla(var(--color-charcoal), 1);
   --theme-text-lighter: hsla(var(--color-gray-80), 1);
   --theme-text-invert: hsla(var(--color-bg-putty), 1);
-  --theme-bg: hsla(var(--color-base-white), 100%, 1);
+  --theme-bg: hsla(var(--color-white), 1);
   --theme-bg-hover: hsla(var(--color-green), var(--theme-accent-opacity));
   --theme-bg-offset: hsla(var(--color-gray-95), 1);
   --theme-bg-accent: hsla(var(--color-green), var(--theme-accent-opacity));
-  --theme-code-inline-bg: hsla(var(--color-gray-95), 1);
-  --theme-code-inline-text: var(--theme-text);
+  --theme-toggle-bg: hsla(var(--color-gray-95), 1);
+  --theme-code-inline-bg: rgb(28 160 253 / .1);
+  --theme-code-inline-text: rgb(7 83 137);
   --theme-code-bg: hsla(217, 19%, 27%, 1);
   --theme-code-text: hsla(var(--color-gray-95), 1);
   --theme-navbar-bg: hsla(var(--color-bg-putty), 1);
@@ -103,18 +106,20 @@ body {
   --theme-accent: hsla(var(--color-green), 1);
   --theme-text-accent: hsla(var(--color-green), 1);
   --theme-divider: hsla(var(--color-gray-10), 1);
-  --theme-text: hsla(var(--color-gray-90), 1);
+  --theme-link-text: rgb(0 145 255);
+  --theme-text: hsla(var(--color-white), 1);
   --theme-text-light: hsla(var(--color-gray-80), 1);
   --theme-text-lighter: hsla(var(--color-gray-40), 1);
-  --theme-bg: hsla(211, 29%, 14%, 1);
+  --theme-bg: rgb(50 50 50);
   --theme-bg-hover: hsla(var(--color-green), var(--theme-accent-opacity));
   --theme-bg-offset: hsla(var(--color-gray-5), 1);
   --theme-bg-accent: hsla(var(--color-green), var(--theme-accent-opacity));
-  --theme-code-inline-bg: hsla(var(--color-gray-10), 1);
-  --theme-code-inline-text: hsla(var(--color-base-white), 100%, 1);
+  --theme-toggle-bg: hsla(var(--color-gray-10), 1);
+  --theme-code-inline-bg: rgb(28 160 253 / .1);
+  --theme-code-inline-text: rgb(229 244 255);
   --theme-code-bg: hsla(var(--color-gray-5), 1);
   --theme-code-text: hsla(var(--color-base-white), 100%, 1);
-  --theme-navbar-bg: hsla(211, 29%, 14%, .8);
+  --theme-navbar-bg: rgb(56 56 56);
   --theme-selection-color: hsla(var(--color-green), 100%, 1);
   --theme-selection-bg: hsla(var(--color-green), var(--theme-accent-opacity));
   --theme-footer-bg: hsla(211, 29%, 14%, 1);
