@@ -50,6 +50,10 @@ function capitalizeFirstLetter(str) {
   return str[0].toUpperCase() + str.slice(1);
 }
 
+function backticksToMdnLinks(str) {
+  return str.replace(/`([^`]+)`/, '<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/$1" target="_blank">$1</a>');
+}
+
 ---
 
 <MainLayout frontmatter={frontmatter} headings={headings}>
@@ -87,7 +91,7 @@ function capitalizeFirstLetter(str) {
               return <tr>
                   <td class="nowrap"><code>{cssProp.name}</code></td>
                   <td style="max-width: 20rem;">{cssProp.default && <code>{cssProp.default}</code>}</td>
-                  <td>{cssProp.description}</td>
+                  <td set:html={backticksToMdnLinks(cssProp.description)}></td>
                 </tr>
             })
         }
@@ -117,13 +121,12 @@ function capitalizeFirstLetter(str) {
                 return (<tr>
                     <td class="nowrap"><code>{cssProp.name}</code></td>
                     <td style="max-width: 20rem;">{cssProp.default && <code>{cssProp.default}</code>}</td>
-                    <td>{cssProp.description}</td>
+                    <td set:html={backticksToMdnLinks(cssProp.description)}></td>
                   </tr>)
               })
           }
         </tbody>
       </table>
-      <br>
     ))
   }
 
