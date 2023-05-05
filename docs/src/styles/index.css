@@ -14,7 +14,7 @@
 
 @media (min-width: 58em) {
   :root {
-    --max-width: 62rem; /* center column = 896px */
+    --max-width: 57rem; /* center column = 896px */
   }
 }
 
@@ -191,7 +191,7 @@ small,
 }
 
 a {
-  color: var(--theme-text-accent);
+  color: var(--theme-link-text);
   font-weight: 400;
   text-underline-offset: 0.08em;
   align-items: center;
@@ -237,24 +237,16 @@ article > section iframe {
 article > section :where(ul, ol) {
   list-style: initial;
 }
-a > code {
-  position: relative;
-  color: var(--theme-text-accent);
-  background: transparent;
-  text-underline-offset: var(--padding-block);
+
+nav :is(ul, ol) {
+  list-style: none;
 }
 
-a > code::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  display: block;
-  background: var(--theme-accent);
-  opacity: var(--theme-accent-opacity);
-  border-radius: var(--border-radius);
+a > code {
+  position: relative;
+  color: var(--theme-link-text);
+  text-decoration: underline;
+  text-underline-offset: var(--padding-block);
 }
 
 a:hover,
@@ -275,16 +267,17 @@ strong {
 /* Supporting Content */
 
 code {
-  --border-radius: 3px;
-  --padding-block: 0.2rem;
-  --padding-inline: 0.33rem;
+  --border-radius: 0;
+  --padding-block: .125rem;
+  --padding-inline: .25rem;
 
   font-family: var(--font-mono);
-  font-size: 0.85em;
-  color: inherit;
+  font-size: .85em;
+  color: var(--theme-code-inline-text);
+  line-height: 1.5;
   background-color: var(--theme-code-inline-bg);
   padding: var(--padding-block) var(--padding-inline);
-  margin: calc(var(--padding-block) * -1) - 0.125em;
+  margin: calc(var(--padding-block) * -1) - .125em;
   border-radius: var(--border-radius);
   word-break: break-word;
 }
@@ -308,7 +301,6 @@ pre {
   margin-right: calc(var(--padding-inline) * -1);
   margin-top: 2.5rem;
   font-family: var(--font-mono);
-
   line-height: 1.5;
   font-size: 0.85em;
   overflow-y: hidden;
@@ -316,6 +308,7 @@ pre {
 }
 
 table {
+  font-family: var(--font-body);
   width: 100%;
   padding: var(--padding-block) 0;
   margin: 0;
@@ -325,9 +318,24 @@ table {
 td,
 th {
   border-top: 1px solid var(--theme-bg-offset);
+  border-right: 1px solid var(--theme-bg-offset);
   padding: .875rem;
   height: 3.5rem;
   text-align: left;
+}
+
+tr:last-child td {
+  border-bottom: 1px solid var(--theme-bg-offset);
+}
+
+:is(th, td):first-child {
+  padding-left: 0;
+  width: 27%;
+}
+
+:is(th, td):last-child {
+  padding-right: 0;
+  border-right: none;
 }
 
 td:first-child,
@@ -335,9 +343,7 @@ td:first-child,
   white-space: nowrap;
 }
 
-
 th {
-  background: var(--theme-bg-offset);
   font-weight: bold;
 }
 
