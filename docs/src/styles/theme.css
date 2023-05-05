@@ -73,6 +73,7 @@
   --theme-accent-opacity: 0.1;
   --theme-accent: hsla(var(--color-green), 1);
   --theme-text-accent: hsla(var(--color-green), 1);
+  --theme-text-accent-contrast: hsla(var(--color-base-green), 24%, 1);
   --theme-divider: hsla(var(--color-border-putty), 1);
   --theme-link-text: rgb(12 100 188);
   --theme-text: hsla(var(--color-black), 1);
@@ -103,6 +104,7 @@ body {
   --theme-accent-opacity: 0.15;
   --theme-accent: hsla(var(--color-green), 1);
   --theme-text-accent: hsla(var(--color-green), 1);
+  --theme-text-accent-contrast: hsla(var(--color-base-green), 40%, 1);
   --theme-divider: hsla(var(--color-gray-10), 1);
   --theme-link-text: rgb(0 145 255);
   --theme-text: hsla(var(--color-white), 1);
