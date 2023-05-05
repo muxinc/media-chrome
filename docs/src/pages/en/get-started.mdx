@@ -24,7 +24,7 @@ Media Chrome is a collection of fully customizable media player controls and com
 
 ## Install
 
-`<media-chrome>` is packaged as an ES6 JavaScript module which is supported by all evergreen browsers and Node v12+.
+Media Chrome is packaged as an ES6 JavaScript module which is supported by all evergreen browsers and Node v12+.
 
 ### Option 1: Hosted
 
@@ -42,11 +42,19 @@ Load the module in the `<head>` of your HTML page. Note the `type="module"`, tha
 
 Install via NPM (you could also use Yarn)
 
-<CopyToClipboard>```bash npm install media-chrome --save ```</CopyToClipboard>
+<CopyToClipboard>
+```bash
+npm install media-chrome --save
+```
+</CopyToClipboard>
 
 Import into your app.
 
-<CopyToClipboard>```js import 'media-chrome'; ```</CopyToClipboard>
+<CopyToClipboard>
+```js
+import 'media-chrome';
+```
+</CopyToClipboard>
 
 Importing the package like this will automatically register all of the available components in the browser. This means you can add a control like `<media-play-button></media-play-button>` to your page.
 
@@ -65,7 +73,7 @@ The `<media-controller>` component handles all of the communication between cont
 ```
 </CopyToClipboard>
 
-> We're using a standard HTML `<video>` element here, but you could use any other [compatible media element](#compatible-players).
+> We're using a standard HTML `<video>` element here, but you could use any other [compatible media element](#compatible-media-elements).
 
 After that, each control element can be used independently.
 
