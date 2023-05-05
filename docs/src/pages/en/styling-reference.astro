@@ -15,12 +15,13 @@ const groups = [
   'range',
   'display',
   'indicator',
-  'other',
 ];
 
 for (let group of groups) {
   headings.push({ depth: 2, slug: `${group}s`, text: `${capitalizeFirstLetter(group)}s` });
 }
+
+headings.push({ depth: 2, slug: `others`, text: `Others` });
 
 let allCssProps = {};
 for (let cls of getClasses(manifest)) {
@@ -57,18 +58,13 @@ function capitalizeFirstLetter(str) {
   {groups.map(group => (
     <Markdown of={`## ${capitalizeFirstLetter(group)}s`} />
 
-    <ul>
+    <ul style="list-style: none; padding: 0;">
       {getClasses(manifest)
-        .filter(cls => {
-          if (group !== 'other') {
-            return cls.tagName?.endsWith(group);
-          }
-          return cls.tagName && groups.every(group => !cls.tagName?.endsWith(group));
-        })
+        .filter(cls => cls.tagName?.endsWith(group))
         .map(cls => (
           <li>
             <code>{cls.tagName}</code>
-            {hasLink(cls.tagName) && <>(<a href={`./components/${cls.tagName}`}>docs</a>)</>}
+            {hasLink(cls.tagName) && (<>(<a href={`./components/${cls.tagName}`}>docs</a>)</>)}
           </li>
         ))
       }
@@ -85,12 +81,7 @@ function capitalizeFirstLetter(str) {
       <tbody>
         {
           sortedCssProps
-            .filter((key) => {
-              if (group !== 'other') {
-                return allCssProps[key].groups.has(group);
-              }
-              return groups.every(group => !allCssProps[key].groups.has(group));
-            })
+            .filter((key) => allCssProps[key].groups.has(group))
             .map((key) => {
               const cssProp = allCssProps[key];
               return <tr>
@@ -103,5 +94,37 @@ function capitalizeFirstLetter(str) {
       </tbody>
     </table>
   ))}
+
+  <Markdown of="## Others" />
+
+  {getClasses(manifest)
+    .filter(cls => cls.tagName && cls.cssProperties && groups.every(group => !cls.tagName?.endsWith(group)))
+    .map(cls => (
+      <Markdown of={`#### \`${cls.tagName}\` ${hasLink(cls.tagName) ? `([docs](./components/${cls.tagName}))` : ''}`} />
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            cls.cssProperties
+              .map(cssProp => {
+                return (<tr>
+                    <td class="nowrap"><code>{cssProp.name}</code></td>
+                    <td style="max-width: 20rem;">{cssProp.default && <code>{cssProp.default}</code>}</td>
+                    <td>{cssProp.description}</td>
+                  </tr>)
+              })
+          }
+        </tbody>
+      </table>
+      <br>
+    ))
+  }
 
 </MainLayout>
