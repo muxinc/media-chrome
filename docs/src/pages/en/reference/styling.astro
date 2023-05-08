@@ -1,14 +1,14 @@
 ---
 import { Markdown } from '@astropub/md';
-import MainLayout from '../../layouts/MainLayout.astro';
-import manifest from '../../../../dist/custom-elements.json';
+import MainLayout from '../../../layouts/MainLayout.astro';
+import manifest from '../../../../../dist/custom-elements.json';
 
 const frontmatter = {
   title: 'Styling Reference'
 };
 
 const headings = [];
-const components = await Astro.glob('./components/*');
+const components = await Astro.glob('../components/*');
 
 function hasLink(tagName) {
   return components.some(c => c.file.includes(tagName));
@@ -63,6 +63,13 @@ function backticksToMdnLinks(str) {
 
 ---
 <MainLayout frontmatter={frontmatter} headings={headings}>
+  <p>
+    This page shows a list of all the available
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties" target="_blank">CSS variables</a>
+    grouped by the main UI element types and an "other" section that includes
+    the CSS vars of the remaining elements.
+  </p>
+
   {groups.map(group => (
     <Markdown of={`## ${capitalizeFirstLetter(group)}s`} />
 
