@@ -21,11 +21,11 @@ The `<media-seek-forward-button>` component is used to allow seeking forward a c
     playsinline
     muted
   ></video>
-  <div>
-    <media-play-button></media-play-button
-    ><media-time-display></media-time-display
-    ><media-seek-forward-button></media-seek-forward-button>
-  </div>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-forward-button></media-seek-forward-button>
+  </media-control-bar>
 </media-controller>`}
 />
 
@@ -43,11 +43,11 @@ The seeking amount can be configured with the `seekoffset` attribute.
     playsinline
     muted
   ></video>
-  <div>
-    <media-play-button></media-play-button
-    ><media-time-display></media-time-display
-    ><media-seek-forward-button seekoffset="10"></media-seek-forward-button>
-  </div>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-forward-button seekoffset="10"></media-seek-forward-button>
+  </media-control-bar>
 </media-controller>`}
 />
 
@@ -69,12 +69,12 @@ Here's an example of how you can replace the default icon with the word "Forward
     playsinline
     muted
   ></video>
-  <div>
-    <media-play-button></media-play-button
-    ><media-time-display></media-time-display
-    ><media-seek-forward-button>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-forward-button>
       <span slot="forward">Forward</span>
     </media-seek-forward-button>
-  </div>
+  </media-control-bar>
 </media-controller>`}
 />

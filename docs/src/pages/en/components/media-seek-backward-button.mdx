@@ -21,11 +21,11 @@ The `<media-seek-backward-button>` component is used to allow seeking back a con
     playsinline
     muted
   ></video>
-  <div>
-    <media-play-button></media-play-button
-    ><media-time-display></media-time-display
-    ><media-seek-backward-button></media-seek-backward-button>
-  </div>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-backward-button></media-seek-backward-button>
+  </media-control-bar>
 </media-controller>`}
 />
 
@@ -43,11 +43,11 @@ The seeking amount can be configured with the `seekoffset` attribute.
     playsinline
     muted
   ></video>
-  <div>
-    <media-play-button></media-play-button
-    ><media-time-display></media-time-display
-    ><media-seek-backward-button seekoffset="10"></media-seek-backward-button>
-  </div>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-backward-button seekoffset="10"></media-seek-backward-button>
+  </media-control-bar>
 </media-controller>`}
 />
 
@@ -69,12 +69,12 @@ Here's an example of how you can replace the default icon with the word "Back":
     playsinline
     muted
   ></video>
-  <div>
-    <media-play-button></media-play-button
-    ><media-time-display></media-time-display
-    ><media-seek-backward-button>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-backward-button>
       <span slot="backward">Back</span>
     </media-seek-backward-button>
-  </div>
+  </media-control-bar>
 </media-controller>`}
 />
