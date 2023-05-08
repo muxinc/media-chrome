@@ -5,102 +5,75 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-mute-button.js
 ---
 
-Button to toggle the sound. The icon responds to volume changes and acts as part of the typical volume control.
+import ComponentSandpack from "../../../components/ComponentSandpack";
 
-<style>
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  grid-gap: 1rem;
+The `<media-mute-button>` component is used to toggle the sound the media. The icon will display whether sound is enabled and the general volume level.
+
+The contents and behavior of the `<media-mute-button>` will update automatically based on the media state.
+- When the volume is off, the component will display the contents of the `off` slot.
+- When the volume is low, 0-50%, the component will display the contents of the `low` slot.
+- When the volume is medium, 50-75%, the component will display the contents of the `medium` slot.
+- When the volume is high, 75-100%, the component will display the contents of the `hight` slot.
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  height={285}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+  </video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Customize icons
+
+You can modify the contents of the `<media-mute-button>` componnt using slots.
+This is useful if you'd like to use your own custom mute button instead of the default one provided by media-chrome.
+
+Here's an example of how you can replace the volume levels with the words that correspond to the level.
+
+<ComponentSandpack
+  client:load
+  height={385}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+  </video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-volume-range></media-volume-range>
+    <media-mute-button>
+      <span slot="high">High</span>
+      <span slot="medium">Medium</span>
+      <span slot="low">Low</span>
+      <span slot="off">Off</span>
+    </media-mute-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Styling with attributes
+
+The `<media-mute-button>` doesn't expose any configuration attributes.
+However, it will be updated with [Media UI Attributes](#media-ui-attributes) any time the volume level changes.
+
+You can use these attributes to style the button. For example, turn the background color red when the media is muted.
+
+```css
+media-mute-button[mediavolumelevel="off"] {
+  --media-control-background: red;
 }
-.grid p {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-inline: 1rem;
-}
-.grid pre {
-  margin-top: 0 !important;
-}
-</style>
-
-<div class="grid">
-
-**Default**
-<media-mute-button></media-mute-button>
-
-```html
-<media-mute-button></media-mute-button>
 ```
-
-**Volume Off / Muted**
-<media-mute-button mediavolumelevel="off"></media-mute-button>
-
-```html
-<media-mute-button mediavolumelevel="off"></media-mute-button>
-```
-
-**Volume Low**
-<media-mute-button mediavolumelevel="low"></media-mute-button>
-
-```html
-<media-mute-button mediavolumelevel="low"></media-mute-button>
-```
-
-**Volume Medium**
-<media-mute-button mediavolumelevel="medium"></media-mute-button>
-
-```html
-<media-mute-button mediavolumelevel="medium"></media-mute-button>
-```
-
-**Volume High**
-<media-mute-button mediavolumelevel="high"></media-mute-button>
-
-```html
-<media-mute-button mediavolumelevel="high"></media-mute-button>
-```
-
-</div>
-
-
-<h3>Alternate content</h3>
-
-<div class="grid">
-
-**Default**
-<media-mute-button><span slot="high">High</span></media-mute-button>
-
-```html
-<media-mute-button><span slot="high">High</span></media-mute-button>
-```
-
-**Volume Off / Muted**
-<media-mute-button mediavolumelevel="off"><span slot="off">Off</span></media-mute-button>
-
-```html
-<media-mute-button mediavolumelevel="off"><span slot="off">Off</span></media-mute-button>
-```
-
-**Volume Low**
-<media-mute-button mediavolumelevel="low"><span slot="low">Low</span></media-mute-button>
-
-```html
-<media-mute-button mediavolumelevel="low"><span slot="low">Low</span></media-mute-button>
-```
-
-**Volume Medium**
-<media-mute-button mediavolumelevel="medium"><span slot="medium">Med</span></media-mute-button>
-
-```html
-<media-mute-button mediavolumelevel="medium"><span slot="medium">Med</span></media-mute-button>
-```
-
-**Volume High**
-<media-mute-button mediavolumelevel="high"><span slot="high">High</span></media-mute-button>
-
-```html
-<media-mute-button mediavolumelevel="high"><span slot="high">High</span></media-mute-button>
-```
-
-</div>
