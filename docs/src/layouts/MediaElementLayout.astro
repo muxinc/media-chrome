@@ -1,0 +1,37 @@
+---
+import { Markdown } from '@astropub/md';
+import MainLayout from './MainLayout.astro';
+import ComponentSandpack from "../components/ComponentSandpack";
+
+const { frontmatter, headings, url } = Astro.props as Props;
+---
+
+<MainLayout frontmatter={frontmatter} headings={headings}>
+  <slot />
+
+  <ComponentSandpack
+    client:load
+    className="sp-always-stack"
+    height="auto"
+    dependencies={frontmatter.dependencies}
+    html={`<media-controller>
+  <${frontmatter.tagName}
+    src="${frontmatter.src}"
+    slot="media"
+    crossorigin
+    muted
+  ></${frontmatter.tagName}>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-range></media-time-range>
+    <media-time-display show-duration remaining></media-time-display>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-controller>`}
+  />
+
+  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+</MainLayout>

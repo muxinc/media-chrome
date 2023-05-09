@@ -65,6 +65,9 @@ export const SIDEBAR: Sidebar = {
       { text: 'Design Principles', link: 'en/design-principles' },
       { text: 'Architecture', link: 'en/architecture' },
     ],
+    'Media Elements': [
+      { text: 'HLS Video', link: 'en/media-elements/hls-video' },
+    ],
     Components: [
       { text: 'Airplay button', link: 'en/components/media-airplay-button' },
       { text: 'Captions button', link: 'en/components/media-captions-button' },
