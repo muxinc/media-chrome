@@ -182,16 +182,30 @@ const resizeCallback = (entries) => {
     const ranges = createBreakpointMap(breakpoints);
     const activeBreakpoints = getBreakpoints(ranges, entry.contentRect);
 
+    let changed = false;
+
     Object.keys(ranges).forEach((name) => {
       if (activeBreakpoints.includes(name)) {
         if (!container.hasAttribute(`breakpoint${name}`)) {
           container.setAttribute(`breakpoint${name}`, '');
+          changed = true;
         }
         return;
       }
 
-      container.removeAttribute(`breakpoint${name}`);
+      if (container.hasAttribute(`breakpoint${name}`)) {
+        container.removeAttribute(`breakpoint${name}`);
+        changed = true;
+      }
     });
+
+    if (changed) {
+      const evt = new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_CHANGE, {
+        detail: activeBreakpoints
+      });
+
+      container.dispatchEvent(evt)
+    }
   }
 };
 
