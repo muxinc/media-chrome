@@ -45,6 +45,7 @@ export const MediaStateChangeEvents = {
   MEDIA_PREVIEW_COORDS: 'mediapreviewcoordschange',
   MEDIA_LOADING: 'medialoadingchange',
   USER_INACTIVE: 'userinactivechange',
+  BREAKPOINTS_CHANGE: 'breakpointschange',
 };
 
 export const MediaStateReceiverAttributes = {

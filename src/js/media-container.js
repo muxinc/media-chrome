@@ -200,7 +200,7 @@ const resizeCallback = (entries) => {
     });
 
     if (changed) {
-      const evt = new CustomEvent('breakpointschange', {
+      const evt = new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_CHANGE, {
         detail: activeBreakpoints
       });
 
