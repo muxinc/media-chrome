@@ -1,0 +1,52 @@
+---
+title: <media-volume-range>
+description: Media Volume Range
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-volume-range.js
+---
+
+import ComponentSandpack from "../../../components/ComponentSandpack";
+
+The `<media-volume-range>` component is used to indicate the current volume level of the media and provide a control to change the volume level.
+
+The component will be updated automatically based on the volume level and volume availability. 
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  height={265}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+  </video>
+  <media-control-bar>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Styling with attributes
+
+The `<media-volume-range>` doesn't expose any configuration attributes.
+However, it will be updated with [Media UI Attributes](#media-ui-attributes) any time the volume changes or volume availability is updated.
+
+You can use these attributes to style the button. For example, if volume is unavailable, perhaps on an iPhone, hide the volume range:
+
+```css
+media-volume-range[mediavolumeunavailable] {
+  display: none;
+}
+```
+
+Or, set the background color to red if the media is muted:
+
+```css
+media-volume-range[mediamuted] {
+  --media-control-background: red;
+ }
+```
