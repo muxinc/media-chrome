@@ -314,7 +314,6 @@ Since we know this is typically how most folks would want to build a responsive 
   --media-primary-color: lightpink;
   --media-secondary-color: rgb(135 206 250 / 0.7);
   --media-control-hover-background: rgb(32 178 170 / 0.7);
-
 }
 
 /* Since our breakpoints implementation is a "mobile-first" approach, we'll hide the "desktop only" items by default */
@@ -426,22 +425,28 @@ media-captions-button:not([mediasubtitleslist]) {
 
 ## More complex component CSS
 
-!!!WORDS!!!
 
 
 <ComponentSandpack
   client:load
   active="css"
-  css={`media-play-button {
-  --media-icon-color: lightpink;
-  --media-control-background: rgb(135 206 250 / 0.7);
-  --media-control-hover-background: rgb(32 178 170 / 0.7);
+  css={`media-time-range {
+    --media-primary-color: lightpink;
+    --media-secondary-color: rgb(135 206 250 / 0.7);
+    --media-control-hover-background: rgb(32 178 170 / 0.7);
+}
+
+media-time-range::part(preview-box) {
+    --media-primary-color: lightseagreen;
+    --media-secondary-color: rgb(135 206 250);
+    --media-control-hover-background: rgb(32 178 170);
+    --media-preview-time-text-shadow: initial;
 }`}
   html={`<media-controller>
   <video
     slot="media"
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
-    cross-origin
+    crossorigin
     muted
   >
     <track
