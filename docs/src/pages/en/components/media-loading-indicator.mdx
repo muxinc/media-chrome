@@ -1,0 +1,30 @@
+---
+title: <media-loading-indicator>
+description: Media Loading Indicator
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-loading-indicator.js
+---
+
+import ComponentSandpack from "../../../components/ComponentSandpack";
+
+The `<media-loading-indicator>` component indicates when the media is buffering.
+
+The component will be updated automatically based on media state and the functionality can be configured.
+- The `loadingdelay` attribute to have the loading indicator wait the provided amount of milliseconds before showing.
+- What is being displayed can be configured via the `loading` slot.
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  height={290}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-loading-indicator isloading></media-loading-indicator>
+</media-controller>`}
+/>
