@@ -19,6 +19,7 @@ export default function ComponentSandpack({
   const importPaths = [
     'media-chrome',
     './styles.css',
+    ...Object.keys(dependencies),
     ...Object.keys(files).reduce((importPaths, fileAbsPath) => {
       // Only automatically import .css or .js files for now
       if (fileAbsPath.endsWith('.css') | fileAbsPath.endsWith('.js')) {
