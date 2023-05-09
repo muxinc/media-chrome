@@ -1,5 +1,11 @@
 import MediaTextDisplay from './media-text-display.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
+import {
+  getBooleanAttr,
+  getNumericAttr,
+  getOrInsertCSSRule,
+  setBooleanAttr,
+  setNumericAttr,
+} from './utils/element-utils.js';
 import { window } from './utils/server-safe-globals.js';
 import { formatAsTimePhrase, formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
@@ -10,9 +16,14 @@ export const Attributes = {
   SHOW_DURATION: 'showduration',
 };
 
+const CombinedAttributes = [
+  ...Object.values(Attributes),
+  MediaUIAttributes.MEDIA_CURRENT_TIME,
+  MediaUIAttributes.MEDIA_DURATION,
+  MediaUIAttributes.MEDIA_SEEKABLE,
+];
 
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
-//
 
 const ButtonPressedKeys = ['Enter', ' '];
 
@@ -22,7 +33,8 @@ const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
   const showRemaining = el.hasAttribute(Attributes.REMAINING);
   const showDuration = el.hasAttribute(Attributes.SHOW_DURATION);
   const currentTime = el.mediaCurrentTime ?? 0;
-  const endTime = el.mediaDuration ?? el.mediaSeekableEnd ?? 0;
+  const [, seekableEnd] = el.mediaSeekable ?? [];
+  const endTime = el.mediaDuration ?? seekableEnd ?? 0;
 
   const timeLabel = showRemaining
     ? formatTime(0 - (endTime - currentTime))
@@ -36,7 +48,8 @@ const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
 const updateAriaValueText = (el) => {
   const currentTime = el.mediaCurrentTime;
-  const endTime = el.mediaDuration || el.mediaSeekableEnd;
+  const [, seekableEnd] = el.mediaSeekable ?? [];
+  const endTime = el.mediaDuration || seekableEnd;
   if (currentTime == null || endTime == null) {
     el.setAttribute('aria-valuetext', DEFAULT_MISSING_TIME_PHRASE);
     return;
@@ -69,18 +82,11 @@ const updateAriaValueText = (el) => {
  * @cssproperty --media-control-hover-background - `background` of control hover state.
  */
 class MediaTimeDisplay extends MediaTextDisplay {
+  /** @type {HTMLSlotElement} */
   #slot;
 
   static get observedAttributes() {
-    return [
-      ...super.observedAttributes,
-      MediaUIAttributes.MEDIA_CURRENT_TIME,
-      MediaUIAttributes.MEDIA_DURATION,
-      MediaUIAttributes.MEDIA_SEEKABLE,
-      Attributes.REMAINING,
-      Attributes.SHOW_DURATION,
-      'disabled',
-    ];
+    return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
   }
 
   constructor() {
@@ -92,9 +98,14 @@ class MediaTimeDisplay extends MediaTextDisplay {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('cursor', 'pointer');
 
-    const { style: hoverStyle } = getOrInsertCSSRule(this.shadowRoot, ':host(:hover)');
-    hoverStyle.setProperty('background', 'var(--media-control-hover-background, rgba(50 50 70 / .7))');
-
+    const { style: hoverStyle } = getOrInsertCSSRule(
+      this.shadowRoot,
+      ':host(:hover)'
+    );
+    hoverStyle.setProperty(
+      'background',
+      'var(--media-control-hover-background, rgba(50 50 70 / .7))'
+    );
   }
 
   connectedCallback() {
@@ -143,15 +154,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (
-      [
-        Attributes.SHOW_DURATION,
-        Attributes.REMAINING,
-        MediaUIAttributes.MEDIA_CURRENT_TIME,
-        MediaUIAttributes.MEDIA_DURATION,
-        MediaUIAttributes.MEDIA_SEEKABLE,
-      ].includes(attrName)
-    ) {
+    if (CombinedAttributes.includes(attrName)) {
       this.update();
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
@@ -172,16 +175,62 @@ class MediaTimeDisplay extends MediaTextDisplay {
     this.tabIndex = -1;
   }
 
+  // Own props
+
+  /**
+   * Whether to show the remaining time
+   * @type {boolean}
+   */
+  get remaining() {
+    return getBooleanAttr(this, Attributes.REMAINING);
+  }
+
+  set remaining(show) {
+    setBooleanAttr(this, Attributes.REMAINING, show);
+  }
+
+  /**
+   * Whether to show the duration
+   * @type {boolean}
+   */
+  get showDuration() {
+    return getBooleanAttr(this, Attributes.SHOW_DURATION);
+  }
+
+  set showDuration(show) {
+    setBooleanAttr(this, Attributes.SHOW_DURATION, show);
+  }
+
+  // Props derived from media UI attributes
+
+  /**
+   * Get the duration
+   * @type {number | undefined} In seconds
+   */
   get mediaDuration() {
-    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
-    return attrVal != null ? +attrVal : undefined;
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_DURATION);
   }
 
+  set mediaDuration(time) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_DURATION, time);
+  }
+
+  /**
+   * The current time
+   * @type {number | undefined} In seconds
+   */
   get mediaCurrentTime() {
-    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
-    return attrVal != null ? +attrVal : undefined;
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME);
   }
 
+  set mediaCurrentTime(time) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, time);
+  }
+
+  /**
+   * Range of values that can be seeked to
+   * @type {[number, number] | undefined} An array of two numbers [start, end]
+   */
   get mediaSeekable() {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
     if (!seekable) return undefined;
@@ -189,14 +238,12 @@ class MediaTimeDisplay extends MediaTextDisplay {
     return seekable.split(':').map((time) => +time);
   }
 
-  get mediaSeekableEnd() {
-    const [, end] = this.mediaSeekable ?? [];
-    return end;
-  }
-
-  get mediaSeekableStart() {
-    const [start] = this.mediaSeekable ?? [];
-    return start;
+  set mediaSeekable(range) {
+    if (range == null) {
+      this.removeAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
+      return;
+    }
+    this.setAttribute(MediaUIAttributes.MEDIA_SEEKABLE, range.join(':'));
   }
 
   update() {

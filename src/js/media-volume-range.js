@@ -18,7 +18,7 @@ const formatAsPercentString = ({ value, max }) =>
 
 /**
  * @attr {string} mediavolume - (read-only) Set to the media volume.
- * @attr {string} mediamuted - (read-only) Set to the media muted state.
+ * @attr {boolean} mediamuted - (read-only) Set to the media muted state.
  * @attr {string} mediavolumeunavailable - (read-only) Set if changing volume is unavailable.
  *
  * @cssproperty [--media-volume-range-display = inline-block] - `display` property of range.

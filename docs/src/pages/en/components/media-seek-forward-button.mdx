@@ -1,0 +1,80 @@
+---
+title: <media-seek-forward-button>
+description: Media Seek Forward Button
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-seek-forward-button.js
+---
+
+import ComponentSandpack from "../../../components/ComponentSandpack";
+
+The `<media-seek-forward-button>` component is used to allow seeking forward a configurable amount of time, defaulting to 30 seconds.
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  height={290}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-forward-button></media-seek-forward-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Customize seek offset
+
+The seeking amount can be configured with the `seekoffset` attribute.
+
+<ComponentSandpack
+  client:load
+  height={290}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-forward-button seekoffset="10"></media-seek-forward-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Customize icons
+
+You can modify the contents of the `<media-seek-forward-button>` component using slots. This is useful if you'd like to use your own custom button instead of the default one provided by media-chrome.
+
+The slot for `<media-seek-forward-button>` the slot is named `forward`.
+
+Here's an example of how you can replace the default icon with the word "Forward":
+
+<ComponentSandpack
+  client:load
+  height={330}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-forward-button>
+      <span slot="forward">Forward</span>
+    </media-seek-forward-button>
+  </media-control-bar>
+</media-controller>`}
+/>

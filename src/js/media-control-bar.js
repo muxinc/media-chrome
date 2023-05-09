@@ -20,9 +20,16 @@ template.innerHTML = /*html*/`
 
     media-time-range,
     ::slotted(media-time-range),
-    ::slotted(media-progress-range),
     ::slotted(media-clip-selector) {
       flex-grow: 1;
+    }
+
+    media-time-range,
+    ::slotted(media-time-range),
+    ::slotted(media-clip-selector),
+    media-volume-range,
+    ::slotted(media-volume-range) {
+      height: initial;
     }
   </style>
 

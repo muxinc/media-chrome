@@ -1,0 +1,77 @@
+---
+title: <media-mute-button>
+description: Media Mute Button
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-mute-button.js
+---
+
+import ComponentSandpack from "../../../components/ComponentSandpack";
+
+The `<media-mute-button>` component is used to toggle the sound the media. The icon will display whether sound is enabled and the general volume level.
+
+The contents and behavior of the `<media-mute-button>` will update automatically based on the media state.
+- When the volume is off, the component will display the contents of the `off` slot.
+- When the volume is low, 0-50%, the component will display the contents of the `low` slot.
+- When the volume is medium, 50-75%, the component will display the contents of the `medium` slot.
+- When the volume is high, 75-100%, the component will display the contents of the `hight` slot.
+
+## Default usage
+
+<ComponentSandpack
+  client:load
+  height={265}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+  </video>
+  <media-control-bar>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Customize icons
+
+You can modify the contents of the `<media-mute-button>` componnt using slots.
+This is useful if you'd like to use your own custom mute button instead of the default one provided by media-chrome.
+
+Here's an example of how you can replace the volume levels with the words that correspond to the level.
+
+<ComponentSandpack
+  client:load
+  height={365}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+  </video>
+  <media-control-bar>
+    <media-volume-range></media-volume-range>
+    <media-mute-button>
+      <span slot="high">High</span>
+      <span slot="medium">Medium</span>
+      <span slot="low">Low</span>
+      <span slot="off">Off</span>
+    </media-mute-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Styling with attributes
+
+The `<media-mute-button>` doesn't expose any configuration attributes.
+However, it will be updated with [Media UI Attributes](#media-ui-attributes) any time the volume level changes.
+
+You can use these attributes to style the button. For example, turn the background color red when the media is muted.
+
+```css
+media-mute-button[mediavolumelevel="off"] {
+  --media-control-background: red;
+}
+```
