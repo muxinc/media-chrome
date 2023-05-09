@@ -2,6 +2,7 @@ import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { updateAriaLabel, updateSeekIconValue } from './utils/seek.js';
+import { getNumericAttr, setNumericAttr } from './utils/element-utils';
 
 export const Attributes = {
   SEEK_OFFSET: 'seekoffset',
@@ -57,21 +58,14 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   // Own props
 
   /**
-   * @type {number} Seek amount in seconds
+   * @type {number | undefined} Seek amount in seconds
    */
   get seekOffset() {
-    const attrVal = this.getAttribute(Attributes.SEEK_OFFSET);
-    return attrVal ? +attrVal : DEFAULT_SEEK_OFFSET;
+    return getNumericAttr(this, Attributes.SEEK_OFFSET);
   }
 
   set seekOffset(value) {
-    // avoid triggeting a set if no change
-    if (value == this.seekOffset) return;
-    if (value == null) {
-      this.removeAttribute(Attributes.SEEK_OFFSET);
-      return;
-    }
-    this.setAttribute(Attributes.SEEK_OFFSET, `${+value}`);
+    setNumericAttr(this, Attributes.SEEK_OFFSET, value);
   }
 
   // Props derived from Media UI Attributes
@@ -81,16 +75,11 @@ class MediaSeekBackwardButton extends MediaChromeButton {
    * @type {number | undefined} In seconds
    */
   get mediaCurrentTime() {
-    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
-    return attrVal ? +attrVal : undefined;
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME);
   }
 
   set mediaCurrentTime(time) {
-    if (time == null) {
-      this.removeAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
-      return;
-    }
-    this.setAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME, `${+time}`);
+    setNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, time);
   }
 
   handleClick() {
