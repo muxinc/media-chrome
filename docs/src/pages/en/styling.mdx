@@ -425,6 +425,7 @@ media-captions-button:not([mediasubtitleslist]) {
 
 ## More complex component CSS
 
+For the majority of our components
 
 
 <ComponentSandpack
@@ -441,7 +442,12 @@ media-time-range::part(preview-box) {
     --media-secondary-color: rgb(135 206 250);
     --media-control-hover-background: rgb(32 178 170);
     --media-preview-time-text-shadow: initial;
-}`}
+}
+
+media-controller:not([userinactive])::part(gesture-layer) {
+  background-color: rgb(0 0 0 / 0.2);
+}
+`}
   html={`<media-controller>
   <video
     slot="media"
