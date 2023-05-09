@@ -112,7 +112,6 @@ export function getBooleanAttr(el, attrName) {
 }
 
 /**
- *
  * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
  * @param {string} attrName
  * @param {boolean} value
@@ -128,4 +127,30 @@ export function setBooleanAttr(el, attrName, value) {
   }
 
   el.toggleAttribute(attrName, value);
+}
+
+/**
+ * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
+ * @param {string} attrName
+ */
+export function getStringAttr(el, attrName) {
+  return el.getAttribute(attrName) ?? undefined;
+}
+
+/**
+ * @param {*} el (Should be an HTMLElement, but need any for SSR cases)
+ * @param {string} attrName
+ * @param {string} value
+ */
+export function setStringAttr(el, attrName, value) {
+  // avoid triggering a set if no change
+  if (getStringAttr(el, attrName) == value) return;
+
+  // also handles undefined
+  if (value == null) {
+    el.removeAttribute(attrName);
+    return;
+  }
+
+  el.setAttribute(attrName, `${value}`);
 }
