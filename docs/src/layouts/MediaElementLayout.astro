@@ -1,7 +1,7 @@
 ---
 import { Markdown } from '@astropub/md';
 import MainLayout from './MainLayout.astro';
-import ComponentSandpack from "../components/ComponentSandpack";
+import SandpackContainer from "../components/SandpackContainer.astro";
 
 const { frontmatter, headings, url } = Astro.props as Props;
 ---
@@ -9,10 +9,11 @@ const { frontmatter, headings, url } = Astro.props as Props;
 <MainLayout frontmatter={frontmatter} headings={headings}>
   <slot />
 
-  <ComponentSandpack
-    client:load
-    className="sp-always-stack"
-    height="auto"
+  <SandpackContainer
+    stacked
+    reversed
+    height={730}
+    editorHeight={300}
     dependencies={frontmatter.dependencies}
     html={`<media-controller>
   <${frontmatter.tagName}
