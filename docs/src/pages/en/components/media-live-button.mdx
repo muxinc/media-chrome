@@ -20,6 +20,9 @@ The behavior of the button will update automatically based on the state of the m
   client:load
   includeMuxVideo
   height={265}
+  dependencies={{
+    '@mux/mux-video': 'latest'
+  }}
   html={`<media-controller defaultsubtitles>
   <mux-video
     playsinline muted crossorigin
@@ -45,6 +48,9 @@ Here's an example of how you can replace the default indicator with a custom SVG
   client:load
   includeMuxVideo
   height={265}
+  dependencies={{
+    '@mux/mux-video': 'latest'
+  }}
   html={`<media-controller defaultsubtitles>
   <mux-video
     playsinline muted crossorigin
