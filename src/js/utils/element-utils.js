@@ -50,7 +50,11 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
     //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
     //   Not allowed to access cross-origin stylesheet
     let cssRules;
-    try { cssRules = style.sheet?.cssRules; } catch { continue; }
+    try {
+      cssRules = style.sheet?.cssRules;
+    } catch {
+      continue;
+    }
     for (let rule of cssRules ?? [])
       if (rule.selectorText === selectorText) return rule;
   }
@@ -59,11 +63,69 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
     return {
       style: {
         setProperty: () => {},
-        removeProperty: () => {}
-      }
+        removeProperty: () => {},
+      },
     };
   }
 
   style.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
   return style.sheet.cssRules[style.sheet.cssRules.length - 1];
+}
+
+/**
+ * Gets the number represented by the attribute
+ * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
+ * @param {string} attrName
+ * @returns {number | undefined} Will return undefined if no attribute set
+ */
+export function getNumericAttr(el, attrName) {
+  const attrVal = el.getAttribute(attrName);
+  return attrVal != null ? +attrVal : undefined;
+}
+
+/**
+ * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
+ * @param {string} attrName
+ * @param {number} value
+ */
+export function setNumericAttr(el, attrName, value) {
+  // avoid setting a value that hasn't changed
+  if (getNumericAttr(el, attrName) == value) return;
+
+  // also handles undefined
+  if (value == null) {
+    el.removeAttribute(attrName);
+    return;
+  }
+
+  // force to a numeric value before setting as a string
+  el.setAttribute(attrName, `${+value}`);
+}
+
+/**
+ * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
+ * @param {string} attrName
+ * @returns {boolean}
+ */
+export function getBooleanAttr(el, attrName) {
+  return el.hasAttribute(attrName);
+}
+
+/**
+ *
+ * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
+ * @param {string} attrName
+ * @param {boolean} value
+ */
+export function setBooleanAttr(el, attrName, value) {
+  // avoid setting a value that hasn't changed
+  if (getBooleanAttr(el, attrName) == value) return;
+
+  // also handles undefined
+  if (value == null) {
+    el.removeAttribute(attrName);
+    return;
+  }
+
+  el.toggleAttribute(attrName, value);
 }
