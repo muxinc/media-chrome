@@ -19,7 +19,7 @@ The contents and behavior of the `<media-mute-button>` will update automatically
 
 <ComponentSandpack
   client:load
-  height={285}
+  height={265}
   html={`<media-controller defaultsubtitles>
   <video
     playsinline muted crossorigin
@@ -28,7 +28,6 @@ The contents and behavior of the `<media-mute-button>` will update automatically
   >
   </video>
   <media-control-bar>
-    <media-play-button></media-play-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
   </media-control-bar>
@@ -44,7 +43,7 @@ Here's an example of how you can replace the volume levels with the words that c
 
 <ComponentSandpack
   client:load
-  height={385}
+  height={365}
   html={`<media-controller defaultsubtitles>
   <video
     playsinline muted crossorigin
@@ -53,7 +52,6 @@ Here's an example of how you can replace the volume levels with the words that c
   >
   </video>
   <media-control-bar>
-    <media-play-button></media-play-button>
     <media-volume-range></media-volume-range>
     <media-mute-button>
       <span slot="high">High</span>
