@@ -1,0 +1,95 @@
+---
+title: Responsive controls
+description: Learn how to make controls responsive with Media Chrome
+layout: ../../layouts/MainLayout.astro
+---
+
+import ComponentSandpack from "../../components/ComponentSandpack";
+
+To provide the best user experience across the myriad of devices available in today's world, it's a good idea to modify your video player UI to adapt to different screen sizes.
+
+Smaller screens have less available space to display your UI, and cannot effectively use all of the controls that Media Chrome provides.
+
+Media Chrome helps you to make changes to your video player layout at different screen sizes by providing **breakpoints** for common device screen widths. Let's take a look at how you can use these breakpoints to style your video player at different widths.
+
+<ComponentSandpack
+  client:load
+  className="sp-always-stack"
+  height="auto"
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-play-button></media-play-button>
+</media-controller>`}
+  css={`
+media-controller {
+  --media-primary-color: red;
+}
+media-controller[breakpointsm] {
+  --media-primary-color: orange;
+}
+media-controller[breakpointmd] {
+  --media-primary-color: yellow;
+}
+media-controller[breakpointlg] {
+  --media-primary-color: green;
+}
+media-controller[breakpointxl] {
+  --media-primary-color: blue;
+}
+  `}
+/>
+
+## Default breakpoint values
+
+We've chosen a set of sensible default breakpoint values that consider many common screen sizes available in today's market. As your video play width grows or shrinks, the different attribute values listed below will be applied to the `media-controller` element.
+
+| Size | Value | Attribute      |
+| ---- | ----- | -------------- |
+| sm   | 384px | `breakpointsm` |
+| md   | 576px | `breakpointmd` |
+| lg   | 768px | `breakpointlg` |
+| xl   | 960px | `breakpointxl` |
+
+## Overriding with your own custom breakpoint values
+
+It's possible to override the default breakpoint values with your own values if the defaults do not meet your needs. To do this, set the `breakpoints` attribute on your `media-controller` element and pass a set of breakpoint definitions in the following format:
+
+`{breakpointName}:{breakpointValue}`
+
+<ComponentSandpack
+  client:load
+  className="sp-always-stack"
+  height="auto"
+  html={`<media-controller breakpoints="sm:288 md:480 lg:768 xl:1056">
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-play-button></media-play-button>
+</media-controller>`}
+/>
+
+Note that even if you only want to override _one_ of the default values that Media Chrome defines, you should still pass the entire set of breakpoint definitions. This is because Media Chrome will override _all_ of its internal breakpoints with your custom breakpoints if it detects that the `breakpoints` attribute is being used.
+
+<ComponentSandpack
+  client:load
+  className="sp-always-stack"
+  height="auto"
+  html={`<!-- Overriding only the 'xl' breakpoint -->
+  <media-controller breakpoints="sm:384 md:576 lg:768 xl:1056">
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-play-button></media-play-button>
+</media-controller>`}
+/>
