@@ -5,7 +5,7 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-live-button.js
 ---
 
-import ComponentSandpack from "../../../components/ComponentSandpack";
+import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-live-button>` component shows, via a red dot by default, whether the stream is live. It also allows viewers to seek to the most current part of the stream when clicking on the button ("seek to live").
 
@@ -16,8 +16,7 @@ The behavior of the button will update automatically based on the state of the m
 
 ## Default usage
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   includeMuxVideo
   height={265}
   dependencies={{
@@ -44,8 +43,7 @@ This is useful if you'd like to use your own custom indicators and text instead 
 
 Here's an example of how you can replace the default indicator with a custom SVG and the text with the words "Live Button"
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   includeMuxVideo
   height={265}
   dependencies={{

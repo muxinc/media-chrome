@@ -1,0 +1,76 @@
+---
+import Sandpack from "./Sandpack";
+
+let {
+  height = 230,
+  editorHeight = height,
+  previewHeight,
+  stacked,
+  reversed,
+  ...props
+} = Astro.props as Props;
+
+const minWidth = stacked ? '100%' : 'none';
+const flexWrap = reversed ? 'wrap-reverse' : 'wrap';
+
+if (!previewHeight) {
+  previewHeight = stacked ? height - editorHeight - 1 : editorHeight;
+}
+
+// Account for the 1px border and make it a CSS px string value
+if (typeof height === 'number') height = `${height + 2}px`;
+if (typeof editorHeight === 'number') editorHeight = `${editorHeight}px`;
+if (typeof previewHeight === 'number') previewHeight = `${previewHeight}px`;
+---
+
+<style is:global define:vars={{ flexWrap, minWidth, height, editorHeight, previewHeight }}>
+  .sp-container {
+    overflow: hidden;
+    margin-top: 1rem;
+    height: var(--height);
+  }
+
+  @media (max-width: 768px) {
+    .sp-container {
+      height: auto !important;
+    }
+  }
+
+  .sp-pre-placeholder {
+    margin-top: 0;
+    font-family: var(--font-mono) !important;
+    font-size: 13px !important;
+    line-height: 20px !important;
+    background-color: hsla(var(--color-white), 1);
+    color: hsla(var(--color-charcoal), 1);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sp-wrapper {
+    height: 100% !important;
+  }
+
+  .sp-layout {
+    display: flex;
+    flex-wrap: var(--flexWrap) !important;
+    background-color: hsla(var(--color-white), 1);
+    border: 1px solid #f3f3f3;
+    border-radius: 4px;
+  }
+
+  .sp-editor {
+    min-width: var(--minWidth);
+    height: var(--editorHeight) !important;
+  }
+
+  .sp-preview {
+    height: var(--previewHeight) !important;
+  }
+</style>
+
+<div class="sp-container">
+  <Sandpack
+    client:load
+    {...props}
+  />
+</div>

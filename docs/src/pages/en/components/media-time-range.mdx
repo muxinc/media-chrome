@@ -5,7 +5,7 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-time-range.js
 ---
 
-import ComponentSandpack from "../../../components/ComponentSandpack";
+import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-time-range>` component is used to indicate the current time position 
 in the timeline of the media, and provides controls to seek to a new time in the media.
@@ -17,8 +17,7 @@ a [preview thumbnail](#preview-thumbnails) will be shown.
 
 ## Default usage
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={250}
   html={`<media-controller>
   <video
@@ -39,8 +38,7 @@ a [preview thumbnail](#preview-thumbnails) will be shown.
 Adding a metadata text track labelled "thumbnails" (`<track default label="thumbnails" kind="metadata" src="">`) 
 with a valid VTT file as `src` will enable the preview thumbnails on hover functionality.
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={330}
   html={`<media-controller>
   <video 
@@ -66,8 +64,7 @@ with a valid VTT file as `src` will enable the preview thumbnails on hover funct
 Add a time display component in the current slot that will slide along 
 the timeline as the video progresses.
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={270}
   html={`<media-controller>
   <video
@@ -89,8 +86,7 @@ the timeline as the video progresses.
 
 Set the `preview` slot to an empty element to remove the default preview elements.
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={270}
   html={`<media-controller>
   <video
@@ -117,8 +113,7 @@ The `<media-time-range>` consists of several elements including an
 element which can be tricky to style across browsers but the `<media-time-range>` component
 comes with targeted CSS variables that make this a breeze.
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={270}
   html={`<style>
   media-time-range {

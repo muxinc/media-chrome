@@ -5,7 +5,7 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-volume-range.js
 ---
 
-import ComponentSandpack from "../../../components/ComponentSandpack";
+import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-volume-range>` component is used to indicate the current volume level of the media and provide a control to change the volume level.
 
@@ -13,8 +13,7 @@ The component will be updated automatically based on the volume level and volume
 
 ## Default usage
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={265}
   html={`<media-controller defaultsubtitles>
   <video
