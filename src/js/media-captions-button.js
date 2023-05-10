@@ -44,7 +44,7 @@ const updateAriaChecked = (el) => {
  * @param {string} attrName
  * @returns {Array<string>}
  */
-const getCaptionListAttr = (el, attrName) => {
+const getSubtitlesListAttr = (el, attrName) => {
   const attrVal = el.getAttribute(attrName);
 
   // an empty attribute can return an array with an empty string as an item
@@ -59,7 +59,7 @@ const getCaptionListAttr = (el, attrName) => {
  * @param {string} attrName
  * @param {Array<string>} list
  */
-const setCaptionListAttr = (el, attrName, list) => {
+const setSubtitlesListAttr = (el, attrName, list) => {
   // null, undefined, and empty arrays are treated as "no value" here
   if (!list) {
     el.removeAttribute(attrName);
@@ -69,7 +69,7 @@ const setCaptionListAttr = (el, attrName, list) => {
   const newVal = list.join(' ');
 
   // don't set if the new value is the same as existing
-  const oldList = getCaptionListAttr(el, attrName);
+  const oldList = getSubtitlesListAttr(el, attrName);
   const oldVal = oldList.join(' ');
   if (oldVal === newVal) return;
 
@@ -121,11 +121,11 @@ class MediaCaptionsButton extends MediaChromeButton {
    * e.g. ["cc:en:English"]
    */
   get mediaSubtitlesList() {
-    return getCaptionListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
+    return getSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
   }
 
   set mediaSubtitlesList(list) {
-    setCaptionListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST, list);
+    setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST, list);
   }
 
   /**
@@ -133,11 +133,14 @@ class MediaCaptionsButton extends MediaChromeButton {
    * * e.g. ["cc:en:English"]
    */
   get mediaSubtitlesShowing() {
-    return getCaptionListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
+    return getSubtitlesListAttr(
+      this,
+      MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
+    );
   }
 
   set mediaSubtitlesShowing(list) {
-    setCaptionListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
+    setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
   }
 
   handleClick() {
