@@ -123,8 +123,7 @@ class MediaLoadingIndicator extends window.HTMLElement {
   set delay(delay) {
     this.#delay = delay;
 
-    this.
-    style.setProperty(
+    this.#style.setProperty(
       '--_loading-indicator-delay',
       `var(--media-loading-indicator-delay, ${delay}ms)`
     );
