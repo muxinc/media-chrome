@@ -113,7 +113,7 @@ that apply depending on the size of an element itself, which is exactly what we 
 for a responsive video player, where the dimensions of the player itself are what matters
 rather than the dimensions of the page that the player is on.
 
-### Browser Support
+### Browser support
 
 Since CQ is quite new, it's not available everywhere yet.
 Depending on the browsers that you need to support, that may not be an issue.
@@ -121,10 +121,10 @@ However, to support the most users, it's recommended to write your styles in a p
 which we will go over, and consider including the
 [Containuer Queries Polyfill](https://github.com/GoogleChromeLabs/container-query-polyfill) as well.
 
-## Example: Building a simple responsive layout
+## Example: Building a simple responsive layout with CQ
 
 Let's make a [simple responsive layout](https://media-chrome-mux.vercel.app/examples/vanilla/responsive.html).
-In addition to the media-control-bar above, we want to add some center controls.
+In addition to the `<media-control-bar>` above, we want to add some center controls.
 ```html
 <div class="center" slot="centered-chrome">
     <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
@@ -138,8 +138,11 @@ When the player is medium sized, we can keep the control bar but hide the button
 In a large player size, we can show just the control bar.
 
 The combined HTML for the player should look like this:
-```html
-<media-controller>
+<ComponentSandpack
+  client:load
+  className="sp-always-stack"
+  height="auto"
+  html={`<media-controller>
   <video
     playsinline
     slot="media"
@@ -163,8 +166,8 @@ The combined HTML for the player should look like this:
     <media-playback-rate-button></media-playback-rate-button>
     <media-fullscreen-button></media-fullscreen-button>
   </media-control-bar>
-</media-controller>
-```
+</media-controller>`}
+/>
 
 ### Default behavior
 
@@ -192,7 +195,7 @@ have multiple containers that we need to refer to by name. We also tell CQ that
 we only care about the inline-size of this element, in this case it's the width
 of the player.
 
-### The small player size
+### Styling the small player size
 
 For the smaller player, we want to show the center controls,
 since they are hidden by default, and then hide the control bar.
@@ -222,7 +225,7 @@ We can use `max-width` instead, like so:
 ```
 This isn't a big difference yet, but the new syntax will be especially nice in the medium player size.
 
-### The medium player size
+### Styling the medium player size
 
 For the medium player, we want to show the center controls and control bar.
 However, because space is a bit cramped, we'll hide the controls available
@@ -260,7 +263,7 @@ you can use `min-width`, `max-width`, and `and`, but it's not quite as nice as t
 }
 ```
 
-### The large player size
+### Styling the large player size
 Now, since we already have a default that hides the center controls in the cases where
 the player isn't small or medium, we don't strictly need another container query,
 but let's add one for the sake of completeness.
@@ -275,7 +278,7 @@ but let's add one for the sake of completeness.
 }
 ```
 
-#### Responsive Player using Container Queries
+### The final result
 Together, it'll give you a player like this.
 You can resize the page and see how the player responds to the page width.
 Or select a width with the following radio buttons.
