@@ -1,7 +1,8 @@
 ---
 title: <media-controller>
 description: Media Controller
-layout: ../../layouts/MainLayout.astro
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-controller.js
 ---
 
 The `<media-controller>` manages communication of state and state change requests between a `media` element and control elements. It also provides some built in sizing and layout to make styling your player as easy as possible.
