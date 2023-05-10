@@ -19,17 +19,9 @@ Media Chrome helps you to make changes to your video player layout at different 
   active="css"
   options={{ showConsole: true }}
   files={{
-    "/console.js": `const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    if (mutation.type === "attributes" && mutation.attributeName.includes('breakpoint')) {
-      console.info('media-controller breakpoint set to ' + mutation.attributeName);
-    }
-  });
-});
-
-observer.observe(document.querySelector('media-controller'), {
-  attributes: true
-});
+    "/console.js": `document.querySelector('media-controller').addEventListener('breakpointchange', (e) => {
+      console.log('active breakpoint is ' + e.detail[e.detail.length - 1]);
+    });
     `
   }}
   html={`<media-controller>
