@@ -1,17 +1,16 @@
 import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
-import { getSlotted, updateIconText } from './utils/element-utils.js';
+import { updateAriaLabel, updateSeekIconValue } from './utils/seek.js';
+import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
 
 export const Attributes = {
-  SEEK_OFFSET: 'seekoffset'
+  SEEK_OFFSET: 'seekoffset',
 };
 
-const DEFAULT_SEEK_OFFSET = '30';
+const DEFAULT_SEEK_OFFSET = 30;
 
-const backwardIcon =
-  `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(2.18 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3L4.37 7 10 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 10 6Z"/></svg>`;
+const backwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(2.18 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3L4.37 7 10 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 10 6Z"/></svg>`;
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
@@ -19,19 +18,6 @@ slotTemplate.innerHTML = `
 `;
 
 const DEFAULT_TIME = 0;
-
-const updateAriaLabel = (el) => {
-  // NOTE: seek direction is described via text, so always use positive numeric representation
-  const seekOffset = Math.abs(+el.getAttribute(Attributes.SEEK_OFFSET));
-  const label = verbs.SEEK_BACK_N_SECS({ seekOffset });
-  el.setAttribute('aria-label', label);
-};
-
-const updateSeekIconValue = (el) => {
-  const svg = getSlotted(el, 'backward');
-  const value = el.getAttribute(Attributes.SEEK_OFFSET);
-  updateIconText(svg, value);
-};
 
 /**
  * @slot backward - The element shown for the seek backward button’s display.
@@ -55,25 +41,45 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   }
 
   connectedCallback() {
-    // NOTE: currently don't support changing the seek value, so only need to set this once on initialization.
-    if (!this.hasAttribute(Attributes.SEEK_OFFSET)) {
-      this.setAttribute(Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
-    }
     updateAriaLabel(this);
-    updateSeekIconValue(this);
+    updateSeekIconValue(this, 'backward');
     super.connectedCallback();
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
     if (attrName === Attributes.SEEK_OFFSET) {
-      if (newValue == undefined) {
-        this.setAttribute(Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
-      }
-      updateSeekIconValue(this);
+      updateSeekIconValue(this, 'backward');
       updateAriaLabel(this);
     }
 
     super.attributeChangedCallback(attrName, _oldValue, newValue);
+  }
+
+  // Own props
+
+  /**
+   * @type {number | undefined} Seek amount in seconds
+   */
+  get seekOffset() {
+    return getNumericAttr(this, Attributes.SEEK_OFFSET);
+  }
+
+  set seekOffset(value) {
+    setNumericAttr(this, Attributes.SEEK_OFFSET, value);
+  }
+
+  // Props derived from Media UI Attributes
+
+  /**
+   * The current time
+   * @type {number | undefined} In seconds
+   */
+  get mediaCurrentTime() {
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME);
+  }
+
+  set mediaCurrentTime(time) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, time);
   }
 
   handleClick() {
@@ -96,7 +102,10 @@ class MediaSeekBackwardButton extends MediaChromeButton {
 }
 
 if (!window.customElements.get('media-seek-backward-button')) {
-  window.customElements.define('media-seek-backward-button', MediaSeekBackwardButton);
+  window.customElements.define(
+    'media-seek-backward-button',
+    MediaSeekBackwardButton
+  );
 }
 
 export default MediaSeekBackwardButton;
