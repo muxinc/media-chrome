@@ -48,6 +48,9 @@ export default function ComponentSandpack({
           'media-chrome': 'canary',
           ...dependencies
         },
+        devDependencies: {
+            "@babel/core": "7.2.0"
+        },
       }}
       files={{
         "/index.html": {
