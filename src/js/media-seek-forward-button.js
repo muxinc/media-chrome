@@ -61,7 +61,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
    * @type {number | undefined} Seek amount in seconds
    */
   get seekOffset() {
-    return getNumericAttr(this, Attributes.SEEK_OFFSET);
+    return getNumericAttr(this, Attributes.SEEK_OFFSET) ?? DEFAULT_SEEK_OFFSET;
   }
 
   set seekOffset(value) {
@@ -75,7 +75,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
    * @type {number | undefined} In seconds
    */
   get mediaCurrentTime() {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME);
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME) ?? DEFAULT_TIME;
   }
 
   set mediaCurrentTime(time) {
@@ -83,15 +83,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const currentTimeStr = this.getAttribute(
-      MediaUIAttributes.MEDIA_CURRENT_TIME
-    );
-    const seekOffset = +this.getAttribute(Attributes.SEEK_OFFSET);
-    const currentTime =
-      currentTimeStr && !Number.isNaN(+currentTimeStr)
-        ? +currentTimeStr
-        : DEFAULT_TIME;
-    const detail = currentTime + seekOffset;
+    const detail = this.mediaCurrentTime - this.seekOffset;
     const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
       composed: true,
       bubbles: true,
