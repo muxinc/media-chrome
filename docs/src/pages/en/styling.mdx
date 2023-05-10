@@ -5,7 +5,13 @@ layout: ../../layouts/MainLayout.astro
 ---
 import ComponentSandpack from "../../components/ComponentSandpack";
 
-Arguably the primary purpose—the raison d'etre—of Media Chrome is creating custom media player user interfaces and experiences. It should come as no surprise that we provide a whole lot of ways to easily change its look and feel. In this guide, we'll go over some of the central ways to style your Media Chrome UI. From CSS variables and parts, to custom slottable icons, to built in styles in Media Chrome's container components, to out of the box breakpoints support for responsive design, Media Chrome makes it easy to customize the look and feel of a player UI that works best for your use case.
+Media Chrome provides a lot of ways to easily customize the look and feel of your media player UI. In this guide, we'll go over some of the core features available including:
+
+* Updating default styles with CSS variables
+* Using component slots to customize icons
+* Taking advantage of container components' built in styles
+* Using breakpoints for mobile-first, responsive design
+* Using CSS `:part()` for complex component styling
 
 ## The Basics
 
@@ -53,7 +59,7 @@ Each Media Chrome component has a pretty wide set of useful variables, including
 
 ## Media Chrome + Custom Icons
 
-Being able to easily customize a variety of CSS properties is great, but that's not where custom styling stops with Media Chrome. For example, for any of our components with icons, you can override the defaults by passing in your version as a child element with the expected `slot` attribute, which identifies which state the icon is for. In our case, the `<media-play-button>` has both a `play` and a `pause` slot to customize what's shown when pressing the button will play or pause the media, respectively. Slots are actually a well defined [part of Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_templates_and_slots#adding_flexibility_with_slots), but for most use cases you don't need to worry about that. All you need to know is that adding the `slot` attribute with the expected name will ensure the element's use. Here's an example of adding custom play and pause SVG icons to our previous example. Notice that these SVGs still inherit our custom icon color.
+Being able to easily customize a variety of CSS properties is great, but that's not where custom styling stops with Media Chrome. For example, for any of our components with icons, you can override the defaults by passing in your version as a child element with the expected [`slot` attribute](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_templates_and_slots#adding_flexibility_with_slots), which identifies which state the icon is for. Here's an example of adding custom `play` and `pause` SVG icons to our previous example. Notice that these SVGs still inherit our custom icon color.
 
 <ComponentSandpack
   client:load
@@ -79,9 +85,6 @@ Being able to easily customize a variety of CSS properties is great, but that's 
   </media-play-button>
 </media-controller>`}
 />
-
-{/* Should this be broken into a "Protip" or similar callout box? */}
-There are a few things that we typically recommend when using custom icon images. First, while you can slot anything, we recommend SVGs, since they tend to be an efficient and scalable (hence the name) image format that is also easier to do things like tweak the dimensions of. Second, note that there is no `height`, `width`, or `fill` color defined on the SVGs. While not required, this is the best way to ensure that the sizing and coloring styles will be inherited by Media Chrome components. Additionally, note that these icons have both been constructed with a `viewBox="0 0 24 24"`. You can always use CSS to tweak these details, but this will help ensure that you won't have things like unintended whitespace or have to muck around with the padding of things like your button components.
 
 Earlier, I mentioned that you can use whatever you want for your "icons". This includes other images, a `<span>` with some text, or whatever makes sense for your use case. Here's an example of using [Font Awesome Web Font icons](https://fontawesome.com/docs/web/setup/host-yourself/webfonts). If you take a look at the `custom-styles.css` file, you'll notice that I'm using slightly different CSS variables here (since the "icons" are actually font glyphs) and I also needed to apply some additional styles to the `<i>` element to make sure the sizes and layouts are consistent when toggling between "play" and "pause".
 
@@ -163,7 +166,7 @@ To demonstrate this, here's an example with several more components, including a
 
 In the previous example, we added several components, including a captions button and an airplay button. But what if your video doesn't have any closed captions or subtitles? What if you're in a browser that doesn't support AirPlay? As you may already know, Media Chrome works by passing around different media state to its components, including the Media Controller component itself. Because this state will show up as attributes on the relevant components, we can use standard [CSS attribute selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors) to change styles based on those attributes.
 
-Though not the only use of this strategy, one of the most common use cases is hiding or disabling components. In the example below, I've added some attribute selectors to hide the captions and airplay button based on the relevant state. Additionally, I've added a toy "banner" that uses `<media-text-display>` (to automatically get our Media Chrome CSS variable styles!) that should hide once the video has started playing (even if it's subsequently paused). For details on these attributes, check out the components in question. Just like our CSS variables, you can find out what media attributes will be passed to a particular component by checking the reference section of the component's docs. For example, the list of the airplay button's media attributes can be found [here](./components/media-airplay-button#media-ui-attributes).
+Below is an example of how you can hide specific components using media state attributes. Check the component's docs to see a list of all media state attributes it will receive.
 
 <ComponentSandpack
   client:load
@@ -258,7 +261,6 @@ media-captions-button:not([mediasubtitleslist]) {
   ></video>
   <media-text-display slot="top-chrome">My Video Trailer</media-text-display>
   <media-play-button slot="centered-chrome"></media-play-button>
-  <!-- Adjust the "page" width to see how <media-time-range> and the buttons scale -->
   <media-control-bar>
     <media-play-button></media-play-button>
     <media-seek-backward-button></media-seek-backward-button>
@@ -286,7 +288,6 @@ media-captions-button:not([mediasubtitleslist]) {
     <media-airplay-button></media-airplay-button>
   </div>
   -->
-
 </media-controller>`}
   hiddenCss={"div { font-size: 0; }"}
 />
@@ -330,9 +331,9 @@ media-controller[breakpointmd] .mobile-only {
 
 /* Lastly, we can make our components sizing bigger when media-controller and the UI is particularly large */
 /* NOTE: To see this in action, you'll likely need to open in Code Sandbox and then open the "app"/page in a new window. */
-media-controller[breakpointxl] {
+media-controller[breakpointxl] > media-controller {
+  height: 50px;
   --media-control-padding: 20px;
-  --media-control-height: 36px;
   --media-font-size: 36px;
 }
 
@@ -482,5 +483,13 @@ media-controller:not([mediapaused])[userinactive]::part(centered-layer) {
 </media-controller>`}
 />
 
-{/* Add a second about WCAG / A11Y + Styling. */}
+## Advanced - Recommendations for custom icons
+
+There are a few things that we typically recommend when using custom icon images to make them work as smoothly as possible with Media Chrome.
+
+1. While you can slot anything, we recommend SVGs, since they tend to be an efficient and scalable (hence the name) image format that is also easier to do things like tweak the dimensions of.
+2. Avoid hardcoding `height`, `width`, or `fill` color in the SVGs. While not required, this is the best way to ensure that the sizing and coloring styles will be inherited by Media Chrome components and CSS variables.
+3. When possible, define the SVG as `viewBox="0 0 24 24"`. You can always use CSS to tweak these details, but this will help ensure that you won't have things like unintended whitespace or have to muck around with the padding of things like your button components.
+
+{/* Add a second advanced section about WCAG / A11Y + Styling. */}
 
