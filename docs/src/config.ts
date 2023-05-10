@@ -67,6 +67,7 @@ export const SIDEBAR: Sidebar = {
     ],
     'Media Elements': [
       { text: 'HLS Video', link: 'en/media-elements/hls-video' },
+      { text: 'Mux Video', link: 'en/media-elements/mux-video' },
     ],
     Components: [
       { text: 'Airplay button', link: 'en/components/media-airplay-button' },

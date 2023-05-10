@@ -26,7 +26,7 @@ headings.push({ depth: 2, slug: 'installing', text: 'Installing' });
     dependencies={frontmatter.dependencies}
     html={`<media-controller>
   <${frontmatter.tagName}
-    src="${frontmatter.src}"
+    ${frontmatter.src}
     slot="media"
     crossorigin
     muted
@@ -44,9 +44,6 @@ headings.push({ depth: 2, slug: 'installing', text: 'Installing' });
 
   <Markdown of={`
 ## Installing
-
-\`<${frontmatter.tagName}>\` is packaged as an ESM only, which is supported
-by all evergreen browsers and Node v12+.
 
 First install the NPM package:
 
