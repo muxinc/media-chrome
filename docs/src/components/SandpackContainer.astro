@@ -1,20 +1,41 @@
 ---
 import Sandpack from "./Sandpack";
 
-const {
+let {
   height = 230,
-  aspectRatio = 'auto',
+  editorHeight = height,
+  previewHeight,
+  stacked,
+  reversed,
   ...props
 } = Astro.props as Props;
 
-let containerHeight = height;
-if (typeof height === 'number') {
-  // Account for the 1px border and make it a CSS px string value
-  containerHeight = `${height + 2}px`;
+const minWidth = stacked ? '100%' : 'none';
+const flexWrap = reversed ? 'wrap-reverse' : 'wrap';
+
+if (!previewHeight) {
+  previewHeight = stacked ? height - editorHeight - 1 : editorHeight;
 }
+
+// Account for the 1px border and make it a CSS px string value
+if (typeof height === 'number') height = `${height + 2}px`;
+if (typeof editorHeight === 'number') editorHeight = `${editorHeight}px`;
+if (typeof previewHeight === 'number') previewHeight = `${previewHeight}px`;
 ---
 
-<style is:global>
+<style is:global define:vars={{ flexWrap, minWidth, height, editorHeight, previewHeight }}>
+  .sp-container {
+    overflow: hidden;
+    margin-top: 1rem;
+    height: var(--height);
+  }
+
+  @media (max-width: 768px) {
+    .sp-container {
+      height: auto !important;
+    }
+  }
+
   .sp-pre-placeholder {
     margin-top: 0;
     font-family: var(--font-mono) !important;
@@ -26,36 +47,30 @@ if (typeof height === 'number') {
   }
 
   .sp-wrapper {
-    height: 100%;
+    height: 100% !important;
   }
 
   .sp-layout {
+    display: flex;
+    flex-wrap: var(--flexWrap) !important;
     background-color: hsla(var(--color-white), 1);
     border: 1px solid #f3f3f3;
     border-radius: 4px;
-    height: 100%;
+  }
+
+  .sp-editor {
+    min-width: var(--minWidth);
+    height: var(--editorHeight) !important;
+  }
+
+  .sp-preview {
+    height: var(--previewHeight) !important;
   }
 </style>
 
-<style>
-  .sp-container {
-    margin-top: 1rem;
-  }
-
-  @media (max-width: 768px) {
-    .sp-container {
-      height: auto !important;
-    }
-  }
-</style>
-
-<div class="sp-container" style={{
-  height: containerHeight,
-  aspectRatio
-}}>
+<div class="sp-container">
   <Sandpack
     client:load
-    height={height}
     {...props}
   />
 </div>
