@@ -1,6 +1,5 @@
 import { verbs } from '../labels/labels.js';
 import { getSlotted, updateIconText } from './element-utils.js';
-import { Attributes } from '../media-seek-backward-button.js';
 
 /**
  * @param {HTMLElement & { seekOffset: number; }} el
