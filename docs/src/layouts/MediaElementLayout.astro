@@ -4,15 +4,24 @@ import MainLayout from './MainLayout.astro';
 import SandpackContainer from "../components/SandpackContainer.astro";
 
 const { frontmatter, headings, url } = Astro.props as Props;
+const minorVersion = frontmatter.version.split('.').slice(0, 2).join('.');
+
+headings.push({ depth: 2, slug: 'installing', text: 'Installing' });
 ---
 
 <MainLayout frontmatter={frontmatter} headings={headings}>
   <slot />
 
+  <p>
+    The element API matches the HTML5 <code>&lt;video&gt;</video></code> tag, so it can be easily swapped
+    with other media, and be compatible with other UI components that work with
+    the video tag.
+  </p>
+
   <SandpackContainer
     stacked
     reversed
-    height={730}
+    height={720}
     editorHeight={300}
     dependencies={frontmatter.dependencies}
     html={`<media-controller>
@@ -33,6 +42,35 @@ const { frontmatter, headings, url } = Astro.props as Props;
 </media-controller>`}
   />
 
-  <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+  <Markdown of={`
+## Installing
+
+\`<${frontmatter.tagName}>\` is packaged as an ESM only, which is supported
+by all evergreen browsers and Node v12+.
+
+First install the NPM package:
+
+\`\`\`bash
+npm install ${frontmatter.package}
+\`\`\`
+
+Import in your app javascript (e.g. src/App.js):
+
+\`\`\`js
+import '${frontmatter.package}';
+\`\`\`
+
+Optionally, you can load the script directly from a CDN using
+[jsDelivr](https://www.jsdelivr.com/):
+
+\`\`\`html
+<script type="module" src="https://cdn.jsdelivr.net/npm/${frontmatter.package}@${minorVersion}/+esm"></script>
+\`\`\`
+
+This will register the custom elements with the browser so they can be used as HTML.
+
+`} />
+
+
 
 </MainLayout>
