@@ -118,6 +118,7 @@ class MediaCaptionsButton extends MediaChromeButton {
 
   /**
    * @type {Array<string>} An array of string serialised text tracks
+   * e.g. ["cc:en:English"]
    */
   get mediaSubtitlesList() {
     return getCaptionListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
@@ -129,6 +130,7 @@ class MediaCaptionsButton extends MediaChromeButton {
 
   /**
    * @type {Array<string>} An array of string serialised text tracks
+   * * e.g. ["cc:en:English"]
    */
   get mediaSubtitlesShowing() {
     return getCaptionListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
