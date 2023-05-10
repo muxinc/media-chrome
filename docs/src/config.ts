@@ -59,7 +59,6 @@ export const SIDEBAR: Sidebar = {
       { text: 'Audio player', link: 'en/audio-player' },
     ],
     'Core Concepts': [
-      { text: 'Media controller', link: 'en/media-controller' },
       { text: 'Design Principles', link: 'en/design-principles' },
       { text: 'Architecture', link: 'en/architecture' },
     ],
@@ -71,6 +70,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Fullscreen button', link: 'en/components/media-fullscreen-button' },
       { text: 'Live indicator / button', link: 'en/components/media-live-button' },
       { text: 'Loading indicator', link: 'en/components/media-loading-indicator' },
+      { text: 'Media controller', link: 'en/components/media-controller' },
       { text: 'Mute button', link: 'en/components/media-mute-button' },
       { text: 'PiP button', link: 'en/components/media-pip-button' },
       { text: 'Play button', link: 'en/components/media-play-button' },
