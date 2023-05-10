@@ -118,15 +118,12 @@ Earlier, I mentioned that you can use whatever you want for your "icons". This i
 {/* !!!UPDATE URLS BEFORE FINAL MERGE!!! */}
 <ComponentSandpack
   client:load
-  height={550}
-  html={`<style>
-  media-play-button {
-    --media-control-background: lightskyblue;
-    --media-icon-color: mistyrose;
-    --media-control-hover-background: lightseagreen;
-  }
-</style>
-<media-controller>
+  css={`media-play-button {
+  --media-icon-color: mistyrose;
+  --media-control-background: rgb(27 54 93 / 0.85);
+  --media-control-hover-background: rgb(128 0 0 / 0.85);
+}`}
+  html={`<media-controller>
   <video
     slot="media"
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
