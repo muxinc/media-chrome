@@ -1,0 +1,61 @@
+---
+import Sandpack from "./Sandpack";
+
+const {
+  height = 230,
+  aspectRatio = 'auto',
+  ...props
+} = Astro.props as Props;
+
+let containerHeight = height;
+if (typeof height === 'number') {
+  // Account for the 1px border and make it a CSS px string value
+  containerHeight = `${height + 2}px`;
+}
+---
+
+<style is:global>
+  .sp-pre-placeholder {
+    margin-top: 0;
+    font-family: var(--font-mono) !important;
+    font-size: 13px !important;
+    line-height: 20px !important;
+    background-color: hsla(var(--color-white), 1);
+    color: hsla(var(--color-charcoal), 1);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .sp-wrapper {
+    height: 100%;
+  }
+
+  .sp-layout {
+    background-color: hsla(var(--color-white), 1);
+    border: 1px solid #f3f3f3;
+    border-radius: 4px;
+    height: 100%;
+  }
+</style>
+
+<style>
+  .sp-container {
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .sp-container {
+      height: auto !important;
+    }
+  }
+</style>
+
+<div class="sp-container" style={{
+  height: containerHeight,
+  aspectRatio
+}}>
+  <Sandpack
+    client:load
+    height={height}
+    {...props}
+  />
+</div>
