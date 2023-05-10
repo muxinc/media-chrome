@@ -4,8 +4,7 @@ import { window, document } from './utils/server-safe-globals.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
 
 export const Attributes = {
-  LOADING_DELAY: 'loadingdelay',
-  IS_LOADING: 'isloading',
+  LOADING_DELAY: 'loadingdelay'
 };
 
 const DEFAULT_LOADING_DELAY = 500;
@@ -33,7 +32,7 @@ template.innerHTML = /*html*/`
   display: var(--media-control-display, var(--media-loading-indicator-display, inline-block));
   vertical-align: middle;
   box-sizing: border-box;
-  --_loading-indicator-delay: var(--media-loading-indicator-delay, ${DEFAULT_LOADING_DELAY}ms);
+  --_loading-indicator-delay: var(--media-loading-indicator-transition-delay, ${DEFAULT_LOADING_DELAY}ms);
 }
 
 #status {
@@ -44,18 +43,24 @@ template.innerHTML = /*html*/`
 
 :host slot[name=loading] > *,
 :host ::slotted([slot=loading]) {
-  opacity: 0;
+  opacity: var(--media-loading-indicator-opacity, 0);
   transition: opacity 0.15s;
 }
 
 :host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=loading] > *,
 :host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) ::slotted([slot=loading]) {
-  opacity: 1;
+  opacity: var(--media-loading-indicator-opacity, 1);
   transition: opacity 0.15s var(--_loading-indicator-delay);
 }
 
-:host(:not([${MediaUIAttributes.MEDIA_LOADING}])) #status {
-  display: none;
+:host #status {
+  visibility: var(--media-loading-indicator-opacity, hidden);
+  transition: visibility 0.15s;
+}
+
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) #status {
+  visibility: var(--media-loading-indicator-opacity, visible);
+  transition: visibility 0.15s var(--_loading-indicator-delay);
 }
 
 svg, img, ::slotted(svg), ::slotted(img) {
@@ -74,7 +79,6 @@ svg, img, ::slotted(svg), ::slotted(img) {
  * @slot loading - The element shown for when the media is in a buffering state.
  *
  * @attr {string} loadingdelay - Set the delay in ms before the loading animation is shown.
- * @attr {boolean} isloading - For the element to display the contents of the loading slot.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  * @attr {boolean} mediapaused - (read-only) Present if the media is paused.
  * @attr {boolean} medialoading - (read-only) Present if the media is loading.
@@ -85,6 +89,8 @@ svg, img, ::slotted(svg), ::slotted(img) {
  * @cssproperty --media-control-display - `display` property of control.
  *
  * @cssproperty --media-loading-indicator-display - `display` property of loading indicator.
+ * @cssproperty --media-loading-indicator-opacity - `opacity` property of loading indicator. Set to 1 to force it to be visible.
+ * @cssproperty --media-loading-indicator-transition-delay - `transition-delay` property of loading indicator. Defaults to 500ms; make sure to include units.
  * @cssproperty --media-loading-icon-width - `width` of loading icon.
  * @cssproperty --media-loading-icon-height - `height` of loading icon.
  */
@@ -116,16 +122,16 @@ class MediaLoadingIndicator extends window.HTMLElement {
     this.#style = style;
   }
 
-  get delay() {
+  get loadingDelay() {
     return this.#delay;
   }
 
-  set delay(delay) {
+  set loadingDelay(delay) {
     this.#delay = delay;
 
     this.#style.setProperty(
       '--_loading-indicator-delay',
-      `var(--media-loading-indicator-delay, ${delay}ms)`
+      `var(--media-loading-indicator-transition-delay, ${delay}ms)`
     );
   }
 
