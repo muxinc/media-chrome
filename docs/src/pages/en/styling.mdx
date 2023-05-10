@@ -113,29 +113,6 @@ Earlier, I mentioned that you can use whatever you want for your "icons". This i
 </media-controller>`}
 />
 
-!!!WORDS ABOUT REMOTE SVG!!!
-
-{/* !!!UPDATE URLS BEFORE FINAL MERGE!!! */}
-<ComponentSandpack
-  client:load
-  css={`media-play-button {
-  --media-icon-color: mistyrose;
-  --media-control-background: rgb(27 54 93 / 0.85);
-  --media-control-hover-background: rgb(128 0 0 / 0.85);
-}`}
-  html={`<media-controller>
-  <video
-    slot="media"
-    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
-    muted
-  ></video>
-  <media-play-button>
-    <svg slot="play"><use href="https://media-chrome-docs-git-fork-cjpillsbury-docs-styling-guide-mux.vercel.app/assets/play.svg#play"/></svg>
-    <svg slot="pause"><use href="https://media-chrome-docs-git-fork-cjpillsbury-docs-styling-guide-mux.vercel.app/assets/play.svg/pause.svg#pause"/></svg>
-  </media-play-button>
-</media-controller>`}
-/>
-
 ## Styling Multiple Components
 
 In the previous example, I ended up using different CSS variables for my font-based icons vs. the SVG-based ones. This also applies for other color styles used in Media Chrome components. Since folks will typically want a consistent palette for their media player, Media Chrome has a couple of "color palette" CSS variables that work as defaults for some of the CSS variables used above: `--media-primary-color`, which you can think of as a "foreground" color, and `--media-secondary-color`, which you can think of as a "background" color. This makes styling multiple Media Chrome components easier with just a few CSS variables.
