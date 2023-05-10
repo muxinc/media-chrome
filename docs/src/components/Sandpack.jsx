@@ -12,7 +12,6 @@ export default function ComponentSandpack({
   css,
   hiddenCss = '',
   height = 230,
-  editorHeight,
   files = {},
   dependencies = {},
   active = Active.HTML,
