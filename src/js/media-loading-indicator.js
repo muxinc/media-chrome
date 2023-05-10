@@ -1,11 +1,14 @@
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { window, document } from './utils/server-safe-globals.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
 
 export const Attributes = {
   LOADING_DELAY: 'loadingdelay',
   IS_LOADING: 'isloading',
 };
+
+const DEFAULT_LOADING_DELAY = 500;
 
 const template = document.createElement('template');
 
@@ -30,6 +33,7 @@ template.innerHTML = /*html*/`
   display: var(--media-control-display, var(--media-loading-indicator-display, inline-block));
   vertical-align: middle;
   box-sizing: border-box;
+  --_loading-indicator-delay: var(--media-loading-indicator-delay, ${DEFAULT_LOADING_DELAY}ms);
 }
 
 #status {
@@ -40,16 +44,17 @@ template.innerHTML = /*html*/`
 
 :host slot[name=loading] > *,
 :host ::slotted([slot=loading]) {
-  opacity: 1;
+  opacity: 0;
   transition: opacity 0.15s;
 }
 
-:host(:not([${Attributes.IS_LOADING}])) slot[name=loading] > *,
-:host(:not([${Attributes.IS_LOADING}])) ::slotted([slot=loading]) {
-  opacity: 0;
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=loading] > *,
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) ::slotted([slot=loading]) {
+  opacity: 1;
+  transition: opacity 0.15s var(--_loading-indicator-delay);
 }
 
-:host(:not([${Attributes.IS_LOADING}])) #status {
+:host(:not([${MediaUIAttributes.MEDIA_LOADING}])) #status {
   display: none;
 }
 
@@ -64,8 +69,6 @@ svg, img, ::slotted(svg), ::slotted(img) {
 <slot name="loading">${loadingIndicatorIcon}</slot>
 <div id="status" role="status" aria-live="polite">${nouns.MEDIA_LOADING()}</div>
 `;
-
-const DEFAULT_LOADING_DELAY = 500;
 
 /**
  * @slot loading - The element shown for when the media is in a buffering state.
@@ -87,6 +90,8 @@ const DEFAULT_LOADING_DELAY = 500;
  */
 class MediaLoadingIndicator extends window.HTMLElement {
   #mediaController;
+  #delay = DEFAULT_LOADING_DELAY;
+  #style;
 
   static get observedAttributes() {
     return [
@@ -106,34 +111,27 @@ class MediaLoadingIndicator extends window.HTMLElement {
       const indicatorHTML = template.content.cloneNode(true);
       shadow.appendChild(indicatorHTML);
     }
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    this.#style = style;
+  }
+
+  get delay() {
+    return this.#delay;
+  }
+
+  set delay(delay) {
+    this.#delay = delay;
+
+    this.
+    style.setProperty(
+      '--_loading-indicator-delay',
+      `var(--media-loading-indicator-delay, ${delay}ms)`
+    );
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (
-      attrName === MediaUIAttributes.MEDIA_LOADING ||
-      attrName === MediaUIAttributes.MEDIA_PAUSED
-    ) {
-      const isPaused =
-        this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != undefined;
-      const isMediaLoading =
-        this.getAttribute(MediaUIAttributes.MEDIA_LOADING) != undefined;
-      const isLoading = !isPaused && isMediaLoading;
-      if (!isLoading) {
-        if (this.loadingDelayHandle) {
-          clearTimeout(this.loadingDelayHandle);
-          this.loadingDelayHandle = undefined;
-        }
-        this.removeAttribute(Attributes.IS_LOADING);
-      } else if (!this.loadingDelayHandle && isLoading) {
-        const loadingDelay = +(
-          this.getAttribute(Attributes.LOADING_DELAY) ?? DEFAULT_LOADING_DELAY
-        );
-        this.loadingDelayHandle = setTimeout(() => {
-          this.setAttribute(Attributes.IS_LOADING, '');
-          this.loadingDelayHandle = undefined;
-        }, loadingDelay);
-      }
-    } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
+    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
         this.#mediaController = null;
@@ -158,11 +156,6 @@ class MediaLoadingIndicator extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    if (this.loadingDelayHandle) {
-      clearTimeout(this.loadingDelayHandle);
-      this.loadingDelayHandle = undefined;
-    }
-
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
