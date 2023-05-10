@@ -4,6 +4,7 @@
   Auto position contorls in a line and set some base colors
 */
 import { MediaStateReceiverAttributes } from './constants.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
 import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
@@ -29,7 +30,7 @@ template.innerHTML = /*html*/`
     ::slotted(media-clip-selector),
     media-volume-range,
     ::slotted(media-volume-range) {
-      height: initial;
+      height: var(--_range-auto-size, calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
     }
   </style>
 
@@ -61,6 +62,14 @@ class MediaControlBar extends window.HTMLElement {
       this.attachShadow({ mode: 'open' });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
+
+    this.shadowRoot.querySelector('slot').addEventListener('slotchange', ({ target }) => {
+      const onlyRanges = target.assignedElements({flatten: true})
+        .every(el => ['media-time-range', 'media-volume-range'].includes(el.nodeName.toLowerCase()));
+      const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+      const autoSizeHeight = onlyRanges ? 'unset' : 'initial';
+      style.setProperty('--_range-auto-size', autoSizeHeight);
+    });
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
