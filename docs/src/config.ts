@@ -58,6 +58,9 @@ export const SIDEBAR: Sidebar = {
       { text: 'Keyboard shortcuts', link: 'en/keyboard-shortcuts' },
       { text: 'Audio player', link: 'en/audio-player' },
     ],
+    Reference: [
+      { text: 'Styling', link: 'en/reference/styling' },
+    ],
     'Core Concepts': [
       { text: 'Media controller', link: 'en/media-controller' },
       { text: 'Design Principles', link: 'en/design-principles' },

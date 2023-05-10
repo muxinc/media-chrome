@@ -23,6 +23,13 @@ notEmpty(mediaUIAttributes) && headings.push({ depth: 3, slug: 'media-ui-attribu
 cls?.cssParts && headings.push({ depth: 3, slug: 'css-parts', text: 'CSS Parts' });
 cls?.cssProperties && headings.push({ depth: 3, slug: 'css-variables', text: 'CSS Variables' });
 
+function backticksToMdnLinks(str) {
+  return str.replace(
+    /`([^`]+)`/g,
+    '<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/$1" target="_blank"><code>$1</code></a>'
+  );
+}
+
 ---
 <MainLayout frontmatter={frontmatter} headings={headings}>
   <slot />
@@ -146,7 +153,7 @@ cls?.cssProperties && headings.push({ depth: 3, slug: 'css-variables', text: 'CS
               return <tr>
                   <td class="nowrap"><code>{cssProp.name}</code></td>
                   <td style="max-width: 20rem;">{cssProp.default && <code>{cssProp.default}</code>}</td>
-                  <td>{cssProp.description}</td>
+                  <td set:html={backticksToMdnLinks(cssProp.description)}></td>
                 </tr>
             })
         }
