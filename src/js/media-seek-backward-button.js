@@ -2,7 +2,7 @@ import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { updateAriaLabel, updateSeekIconValue } from './utils/seek.js';
-import { getNumericAttr, setNumericAttr } from './utils/element-utils';
+import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
 
 export const Attributes = {
   SEEK_OFFSET: 'seekoffset',
