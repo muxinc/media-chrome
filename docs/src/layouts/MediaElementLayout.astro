@@ -21,9 +21,15 @@ headings.push({ depth: 2, slug: 'installing', text: 'Installing' });
   <SandpackContainer
     stacked
     reversed
-    height={720}
+    height={800}
     editorHeight={300}
     dependencies={frontmatter.dependencies}
+    hiddenCss={`
+      media-controller,
+      ${frontmatter.tagName} {
+        aspect-ratio: 16 / 9;
+      }`
+    }
     html={`<media-controller>
   <${frontmatter.tagName}
     ${frontmatter.src}

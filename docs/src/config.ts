@@ -67,9 +67,14 @@ export const SIDEBAR: Sidebar = {
     ],
     'Media Elements': [
       { text: 'HLS Video', link: 'en/media-elements/hls-video' },
+      { text: 'DASH Video', link: 'en/media-elements/dash-video' },
       { text: 'Mux Video', link: 'en/media-elements/mux-video' },
       { text: 'Shaka Video', link: 'en/media-elements/shaka-video' },
+      { text: 'VideoJS Video', link: 'en/media-elements/videojs-video' },
       { text: 'YouTube Video', link: 'en/media-elements/youtube-video' },
+      { text: 'Vimeo Video', link: 'en/media-elements/vimeo-video' },
+      { text: 'Wistia Video', link: 'en/media-elements/wistia-video' },
+      { text: 'JW Player Video', link: 'en/media-elements/jwplayer-video' },
     ],
     Components: [
       { text: 'Airplay button', link: 'en/components/media-airplay-button' },
