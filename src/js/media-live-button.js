@@ -5,6 +5,7 @@ import {
 } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
+import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
 
 const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
@@ -71,7 +72,7 @@ class MediaLiveButton extends MediaChromeButton {
   attributeChangedCallback(attrName, oldValue, newValue) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (this.hasAttribute(MEDIA_PAUSED) || !this.hasAttribute(MEDIA_TIME_IS_LIVE)) {
+    if (this.mediaPaused || !this.mediaTimeIsLive) {
       this.setAttribute('aria-label', verbs.SEEK_LIVE());
       this.removeAttribute('aria-disabled');
     } else {
@@ -80,18 +81,46 @@ class MediaLiveButton extends MediaChromeButton {
     }
   }
 
+  /**
+   * @type {boolean} Is the media paused
+   */
+  get mediaPaused() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
+  }
+
+  set mediaPaused(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
+  }
+
+  /**
+   * @type {boolean} Is the media playback currently live
+   */
+  get mediaTimeIsLive() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_TIME_IS_LIVE);
+  }
+
+  set mediaTimeIsLive(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_TIME_IS_LIVE, value);
+  }
+
   handleClick() {
     // If we're live and not paused, don't allow seek to live
-    if (!this.hasAttribute(MEDIA_PAUSED) && this.hasAttribute(MEDIA_TIME_IS_LIVE)) return;
+    if (!this.mediaPaused && this.mediaTimeIsLive) return;
 
     this.dispatchEvent(
-      new window.CustomEvent(MEDIA_SEEK_TO_LIVE_REQUEST, { composed: true, bubbles: true })
+      new window.CustomEvent(MEDIA_SEEK_TO_LIVE_REQUEST, {
+        composed: true,
+        bubbles: true,
+      })
     );
 
     // If we're paused, also automatically play
     if (this.hasAttribute(MEDIA_PAUSED)) {
       this.dispatchEvent(
-        new window.CustomEvent(MEDIA_PLAY_REQUEST, { composed: true, bubbles: true })
+        new window.CustomEvent(MEDIA_PLAY_REQUEST, {
+          composed: true,
+          bubbles: true,
+        })
       );
     }
   }
