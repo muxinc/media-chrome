@@ -8,7 +8,7 @@ const pipIcon = `<svg aria-hidden="true" viewBox="0 0 28 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${MediaUIAttributes.MEDIA_IS_PIP}]) slot:not([name=exit]) > *, 
   :host([${MediaUIAttributes.MEDIA_IS_PIP}]) ::slotted(:not([slot=exit])) {
@@ -17,7 +17,9 @@ slotTemplate.innerHTML = /*html*/`
 
   ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
   :host(:not([${MediaUIAttributes.MEDIA_IS_PIP}])) slot:not([name=enter]) > *, 
-  :host(:not([${MediaUIAttributes.MEDIA_IS_PIP}])) ::slotted(:not([slot=enter])) {
+  :host(:not([${
+    MediaUIAttributes.MEDIA_IS_PIP
+  }])) ::slotted(:not([slot=enter])) {
     display: none !important;
   }
   </style>
@@ -43,7 +45,11 @@ const updateAriaLabel = (el) => {
  */
 class MediaPipButton extends MediaChromeButton {
   static get observedAttributes() {
-    return [...super.observedAttributes, MediaUIAttributes.MEDIA_IS_PIP, MediaUIAttributes.MEDIA_PIP_UNAVAILABLE];
+    return [
+      ...super.observedAttributes,
+      MediaUIAttributes.MEDIA_IS_PIP,
+      MediaUIAttributes.MEDIA_PIP_UNAVAILABLE,
+    ];
   }
 
   constructor(options = {}) {
