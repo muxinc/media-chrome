@@ -108,7 +108,7 @@ Earlier, I mentioned that you can use whatever you want for your "icons". This i
 </media-controller>`}
 />
 
-## Advanced - Recommendations for custom icons
+### Recommendations for custom icons
 
 There are a few things that we typically recommend when using custom icon images to make them work as smoothly as possible with Media Chrome.
 
@@ -116,7 +116,7 @@ There are a few things that we typically recommend when using custom icon images
 2. Avoid hardcoding `height`, `width`, or `fill` color in the SVGs. While not required, this is the best way to ensure that the sizing and coloring styles will be inherited by Media Chrome components and CSS variables.
 3. When possible, define the SVG as `viewBox="0 0 24 24"`. You can always use CSS to tweak these details, but this will help ensure that you won't have things like unintended whitespace or have to muck around with the padding of things like your button components.
 
-## Styling Multiple Components
+## Styling multiple components
 
 In the previous example, I ended up using different CSS variables for my font-based icons vs. the SVG-based ones. This also applies for other color styles used in Media Chrome components. Since folks will typically want a consistent palette for their media player, Media Chrome has a couple of "color palette" CSS variables that work as defaults for some of the CSS variables used above: `--media-primary-color`, which you can think of as a "foreground" color, and `--media-secondary-color`, which you can think of as a "background" color. This makes styling multiple Media Chrome components easier with just a few CSS variables.
 
