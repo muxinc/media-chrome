@@ -2,6 +2,12 @@ import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
+import {
+  getBooleanAttr,
+  getStringAttr,
+  setBooleanAttr,
+  setStringAttr,
+} from './utils/element-utils';
 
 const pipIcon = `<svg aria-hidden="true" viewBox="0 0 28 24">
   <path d="M24 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h20a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Zm-1 16H5V5h18v14Zm-3-8h-7v5h7v-5Z"/>
@@ -29,8 +35,7 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const updateAriaLabel = (el) => {
-  const isPip = el.getAttribute(MediaUIAttributes.MEDIA_IS_PIP) != null;
-  const label = isPip ? verbs.EXIT_PIP() : verbs.ENTER_PIP();
+  const label = el.mediaIsPip ? verbs.EXIT_PIP() : verbs.ENTER_PIP();
   el.setAttribute('aria-label', label);
 };
 
@@ -68,11 +73,32 @@ class MediaPipButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
+  /**
+   * @type {string | undefined} Pip unavailability state
+   */
+  get mediaPipUnavailable() {
+    return getStringAttr(this, MediaUIAttributes.MEDIA_PIP_UNAVAILABLE);
+  }
+
+  set mediaPipUnavailable(value) {
+    setStringAttr(this, MediaUIAttributes.MEDIA_PIP_UNAVAILABLE, value);
+  }
+
+  /**
+   * @type {boolean} Is the media currently playing picture-in-picture
+   */
+  get mediaIsPip() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_IS_PIP);
+  }
+
+  set mediaIsPip(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_IS_PIP, value);
+  }
+
   handleClick() {
-    const eventName =
-      this.getAttribute(MediaUIAttributes.MEDIA_IS_PIP) != null
-        ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
-        : MediaUIEvents.MEDIA_ENTER_PIP_REQUEST;
+    const eventName = this.mediaIsPip
+      ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
+      : MediaUIEvents.MEDIA_ENTER_PIP_REQUEST;
     this.dispatchEvent(
       new window.CustomEvent(eventName, { composed: true, bubbles: true })
     );
