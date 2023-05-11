@@ -7,7 +7,7 @@ source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-loading-in
 
 import SandpackContainer from "../../../components/SandpackContainer.astro";
 
-The `<media-loading-indicator>` component indicates when the media is buffering.
+The `<media-loading-indicator>` component indicates when the media is buffering. By default, this element is hidden and will only be shown when media loading is stalled.
 
 The component will be updated automatically based on media state and the functionality can be configured.
 - The `loadingdelay` attribute to have the loading indicator wait the provided amount of milliseconds before showing.
@@ -16,6 +16,16 @@ The component will be updated automatically based on media state and the functio
 ## Default usage
 
 <SandpackContainer
+  css={`/*
+ * Force the loading indicator to be visisble.
+ * By default, the indicator is hidden and only
+ * shown when media loading is stalled.
+ * But we wanted this component to be visible
+ * for the examples, so, we're forcing it here.
+ */
+media-loading-indicator {
+ --media-loading-indicator-opacity: 1;
+}`}
   html={`<media-controller>
   <video
     slot="media"
@@ -36,6 +46,16 @@ Here is an example with custom SVGs:
 
 <SandpackContainer
   height={280}
+  css={`/*
+ * Force the loading indicator to be visisble.
+ * By default, the indicator is hidden and only
+ * shown when media loading is stalled.
+ * But we wanted this component to be visible
+ * for the examples, so, we're forcing it here.
+ */
+media-loading-indicator {
+ --media-loading-indicator-opacity: 1;
+}`}
   html={`<media-controller>
   <video
     slot="media"
@@ -43,7 +63,7 @@ Here is an example with custom SVGs:
     playsinline
     muted
   ></video>
-  <media-loading-indicator slot="centered-chrome" style="--media-loading-indicator-opacity: 1">
+  <media-loading-indicator slot="centered-chrome">
     <svg slot="loading" viewBox="-12 -15 48 60">
       <path d="M0 0h4v10H0z">
         <animateTransform
