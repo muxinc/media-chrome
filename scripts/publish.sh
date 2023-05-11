@@ -31,7 +31,11 @@ function processCommandLineArgs {
   do
     case $arg in
       canary)
-        canary_run=true
+        if [ -z "$tag" ]; then
+          tag=$arg
+        else
+          canary_run=true
+        fi
         ;;
       --help|help)
         echo "Commands:"
@@ -42,20 +46,23 @@ function processCommandLineArgs {
         echo "  $0 major        Publish a major release."
         echo "  $0 <version>    Publish a release with a specific version."
         echo
-        echo "  $0 --tag|t      In non-canary mode, publish to this npm tag. Default is latest."
-        echo "  $0 --dry-run|n  Run the release as a dry-run."
+        echo "  $0 --tag     | -t  In non-canary mode, publish to this npm tag. Default is latest."
+        echo "  $0 --dry-run | -n  Run the release as a dry-run."
         exit 0
         ;;
-      --dry-run|n)
+      --dry-run|-n)
         dry_run=true
         ;;
       patch|minor|major)
         release_type=$arg
         ;;
-      --tag|t)
-        tag=$arg
+      --tag|-t)
+        tag=""
         ;;
       *)
+        if [ -z "$tag" ]; then
+          tag=$arg
+        fi
         ;;
     esac
   done
@@ -67,7 +74,7 @@ function release {
 
   if "$dry_run"; then
     echo
-    echo "In non-dry-mode, we would do a release to version $VERSION."
+    echo "In non-dry-mode, we would do a release to version *$VERSION* on the *$tag* release channel."
     if [ -z "$release_type" ]; then
       echo "Conventional release was used to do *$BUMP* update"
     else
