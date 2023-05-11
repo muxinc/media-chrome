@@ -111,9 +111,10 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   handleClick() {
+    const availableRates = this._rates ?? DEFAULT_RATES;
     const detail =
-      this._rates.find((r) => r > this.mediaPlaybackRate) ??
-      this._rates[0] ??
+      availableRates.find((r) => r > this.mediaPlaybackRate) ??
+      availableRates[0] ??
       DEFAULT_RATE;
     const evt = new window.CustomEvent(
       MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST,
