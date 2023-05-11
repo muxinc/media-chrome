@@ -2,6 +2,7 @@ import MediaTextDisplay from './media-text-display.js';
 import { window } from './utils/server-safe-globals.js';
 import { formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
+import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 /**
@@ -10,6 +11,7 @@ import { MediaUIAttributes } from './constants.js';
  * @cssproperty [--media-preview-time-display-display = inline-flex] - `display` property of display.
  */
 class MediaPreviewTimeDisplay extends MediaTextDisplay {
+  /** @type {HTMLSlotElement} */
   #slot;
 
   static get observedAttributes() {
@@ -27,6 +29,17 @@ class MediaPreviewTimeDisplay extends MediaTextDisplay {
       this.#slot.textContent = formatTime(newValue);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
+  }
+
+  /**
+   * @type {number | undefined} Timeline preview time
+   */
+  get mediaPreviewTime() {
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_PREVIEW_TIME);
+  }
+
+  set mediaPreviewTime(value) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_PREVIEW_TIME, value);
   }
 }
 
