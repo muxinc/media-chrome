@@ -1,4 +1,7 @@
-import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
+import {
+  MediaUIAttributes,
+  MediaStateReceiverAttributes,
+} from './constants.js';
 import { nouns } from './labels/labels.js';
 import { window, document } from './utils/server-safe-globals.js';
 
@@ -24,7 +27,7 @@ const loadingIndicatorIcon = `
 </svg>
 `;
 
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
 <style>
 :host {
   display: var(--media-control-display, var(--media-loading-indicator-display, inline-block));
@@ -151,7 +154,8 @@ class MediaLoadingIndicator extends window.HTMLElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController =
+        this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }
@@ -169,7 +173,10 @@ class MediaLoadingIndicator extends window.HTMLElement {
 }
 
 if (!window.customElements.get('media-loading-indicator')) {
-  window.customElements.define('media-loading-indicator', MediaLoadingIndicator);
+  window.customElements.define(
+    'media-loading-indicator',
+    MediaLoadingIndicator
+  );
 }
 
 export default MediaLoadingIndicator;
