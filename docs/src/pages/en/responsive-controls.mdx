@@ -4,7 +4,7 @@ description: Learn how to make controls responsive with Media Chrome
 layout: ../../layouts/MainLayout.astro
 ---
 
-import ComponentSandpack from "../../components/ComponentSandpack";
+import SandpackContainer from "../../components/SandpackContainer.astro";
 
 To provide the best user experience across the myriad of devices available in today's world, it's a good idea to modify your video player UI to adapt to different screen sizes.
 
@@ -14,18 +14,17 @@ For example, smaller screens have less available space to display your UI, and c
 
 Media Chrome helps you to make changes to your video player layout at different screen sizes by providing **breakpoints** for common device screen widths. Let's take a look at how you can use these breakpoints to style your video player at different widths.
 
-<ComponentSandpack
-  client:load
-  className="sp-always-stack"
-  height="auto"
+<SandpackContainer
+  stacked
+  reversed
+  height={770}
+  editorHeight={300}
+  hiddenCss={`
+    media-controller {
+      aspect-ratio: 16 / 9;
+    }`
+  }
   active="css"
-  options={{ showConsole: true }}
-  files={{
-    "/console.js": `document.querySelector('media-controller').addEventListener('breakpointchange', (e) => {
-      console.log('active breakpoint is ' + e.detail[e.detail.length - 1]);
-    });
-    `
-  }}
   html={`<media-controller>
   <video
     slot="media"
@@ -34,7 +33,9 @@ Media Chrome helps you to make changes to your video player layout at different 
     muted
   ></video>
   <media-play-button></media-play-button>
-</media-controller>`}
+  <div id="log"></div>
+</media-controller>
+`}
   css={`media-controller {
   --media-primary-color: red;
 }
@@ -49,6 +50,38 @@ media-controller[breakpointlg] {
 }
 media-controller[breakpointxl] {
   --media-primary-color: blue;
+}
+media-controller #log::before {
+  content: 'none';
+  display: flex;
+  color: #666;
+  width: 24px;
+  height: 24px;
+  border-radius: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 1em;
+  background-color: red;
+  font-family: sans-serif;
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+}
+media-controller[breakpointsm] #log::before {
+  content: 'sm';
+  background-color: orange;
+}
+media-controller[breakpointmd] #log::before {
+  content: 'md';
+  background-color: yellow;
+}
+media-controller[breakpointlg] #log::before {
+  content: 'lg';
+  background-color: green;
+}
+media-controller[breakpointxl] #log::before {
+  content: 'xl';
+  background-color: blue;
 }
   `}
 />
@@ -70,10 +103,16 @@ It's possible to override the default breakpoint values with your own values if 
 
 `{breakpointName}:{breakpointValue}`
 
-<ComponentSandpack
-  client:load
-  className="sp-always-stack"
-  height="auto"
+<SandpackContainer
+  stacked
+  reversed
+  height={850}
+  editorHeight={300}
+  hiddenCss={`
+    media-controller {
+      aspect-ratio: 16 / 9;
+    }`
+  }
   html={`<media-controller breakpoints="sm:288 md:480 lg:768 xl:1056">
   <video
     slot="media"
@@ -87,10 +126,16 @@ It's possible to override the default breakpoint values with your own values if 
 
 Note that even if you only want to override _one_ of the default values that Media Chrome defines, you should still pass the entire set of breakpoint definitions. This is because Media Chrome will override _all_ of its internal breakpoints with your custom breakpoints if it detects that the `breakpoints` attribute is being used.
 
-<ComponentSandpack
-  client:load
-  className="sp-always-stack"
-  height="auto"
+<SandpackContainer
+  stacked
+  reversed
+  height={850}
+  editorHeight={300}
+  hiddenCss={`
+    media-controller {
+      aspect-ratio: 16 / 9;
+    }`
+  }
   html={`<!-- Overriding only the 'xl' breakpoint -->
   <media-controller breakpoints="sm:384 md:576 lg:768 xl:1056">
   <video
@@ -102,6 +147,20 @@ Note that even if you only want to override _one_ of the default values that Med
   <media-play-button></media-play-button>
 </media-controller>`}
 />
+
+### Listening for breakpoint changes
+
+Whenever a breakpoint change is detected, the `<media-controller>` element will receive a `breakpointchange` event with an array of the new breakpoint values in the event's `detail` payload.
+
+```javascript
+document.querySelector('media-controller')
+  .addEventListener('breakpointchange', (e) => {
+    // e.detail might look like this: [sm, md, lg]
+    // this line would log `lg`
+    console.log('active breakpoint is ' + e.detail[e.detail.length - 1]);
+  }
+);
+```
 
 ## Using container queries
 
@@ -138,10 +197,16 @@ When the player is medium sized, we can keep the control bar but hide the button
 In a large player size, we can show just the control bar.
 
 The combined HTML for the player should look like this:
-<ComponentSandpack
-  client:load
-  className="sp-always-stack"
-  height="auto"
+<SandpackContainer
+  stacked
+  reversed
+  height={850}
+  editorHeight={300}
+  hiddenCss={`
+    media-controller {
+      aspect-ratio: 16 / 9;
+    }`
+  }
   html={`<media-controller>
   <video
     playsinline
@@ -283,10 +348,16 @@ Together, it'll give you a player like this.
 You can resize the page and see how the player responds to the page width.
 Or select a width with the following radio buttons.
 
-<ComponentSandpack
-  client:load
-  className="sp-always-stack"
-  height="auto"
+<SandpackContainer
+  stacked
+  reversed
+  height={850}
+  editorHeight={300}
+  hiddenCss={`
+    media-controller {
+      aspect-ratio: 16 / 9;
+    }`
+  }
   active="css"
   options={{ showConsole: true }}
   files={{
