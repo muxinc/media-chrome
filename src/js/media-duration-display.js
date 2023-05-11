@@ -11,6 +11,7 @@ import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
  * @cssproperty [--media-duration-display-display = inline-flex] - `display` property of display.
  */
 class MediaDurationDisplay extends MediaTextDisplay {
+  /** @type {HTMLSlotElement} */
   #slot;
 
   static get observedAttributes() {
