@@ -1,11 +1,18 @@
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { window, document } from './utils/server-safe-globals.js';
+import {
+  getBooleanAttr,
+  setBooleanAttr,
+  getOrInsertCSSRule
+} from './utils/element-utils.js';
+
 
 export const Attributes = {
-  LOADING_DELAY: 'loadingdelay',
-  IS_LOADING: 'isloading',
+  LOADING_DELAY: 'loadingdelay'
 };
+
+const DEFAULT_LOADING_DELAY = 500;
 
 const template = document.createElement('template');
 
@@ -30,6 +37,7 @@ template.innerHTML = /*html*/`
   display: var(--media-control-display, var(--media-loading-indicator-display, inline-block));
   vertical-align: middle;
   box-sizing: border-box;
+  --_loading-indicator-delay: var(--media-loading-indicator-transition-delay, ${DEFAULT_LOADING_DELAY}ms);
 }
 
 #status {
@@ -40,17 +48,24 @@ template.innerHTML = /*html*/`
 
 :host slot[name=loading] > *,
 :host ::slotted([slot=loading]) {
-  opacity: 1;
+  opacity: var(--media-loading-indicator-opacity, 0);
   transition: opacity 0.15s;
 }
 
-:host(:not([${Attributes.IS_LOADING}])) slot[name=loading] > *,
-:host(:not([${Attributes.IS_LOADING}])) ::slotted([slot=loading]) {
-  opacity: 0;
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=loading] > *,
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) ::slotted([slot=loading]) {
+  opacity: var(--media-loading-indicator-opacity, 1);
+  transition: opacity 0.15s var(--_loading-indicator-delay);
 }
 
-:host(:not([${Attributes.IS_LOADING}])) #status {
-  display: none;
+:host #status {
+  visibility: var(--media-loading-indicator-opacity, hidden);
+  transition: visibility 0.15s;
+}
+
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) #status {
+  visibility: var(--media-loading-indicator-opacity, visible);
+  transition: visibility 0.15s var(--_loading-indicator-delay);
 }
 
 svg, img, ::slotted(svg), ::slotted(img) {
@@ -64,8 +79,6 @@ svg, img, ::slotted(svg), ::slotted(img) {
 <slot name="loading">${loadingIndicatorIcon}</slot>
 <div id="status" role="status" aria-live="polite">${nouns.MEDIA_LOADING()}</div>
 `;
-
-const DEFAULT_LOADING_DELAY = 500;
 
 /**
  * @slot loading - The element shown for when the media is in a buffering state.
@@ -81,11 +94,15 @@ const DEFAULT_LOADING_DELAY = 500;
  * @cssproperty --media-control-display - `display` property of control.
  *
  * @cssproperty --media-loading-indicator-display - `display` property of loading indicator.
+ * @cssproperty [ --media-loading-indicator-opacity = 0 ] - `opacity` property of loading indicator. Set to 1 to force it to be visible.
+ * @cssproperty [ --media-loading-indicator-transition-delay = 500ms ] - `transition-delay` property of loading indicator. Make sure to include units.
  * @cssproperty --media-loading-icon-width - `width` of loading icon.
  * @cssproperty --media-loading-icon-height - `height` of loading icon.
  */
 class MediaLoadingIndicator extends window.HTMLElement {
   #mediaController;
+  #delay = DEFAULT_LOADING_DELAY;
+  #style;
 
   static get observedAttributes() {
     return [
@@ -105,33 +122,14 @@ class MediaLoadingIndicator extends window.HTMLElement {
       const indicatorHTML = template.content.cloneNode(true);
       shadow.appendChild(indicatorHTML);
     }
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    this.#style = style;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (
-      attrName === MediaUIAttributes.MEDIA_LOADING ||
-      attrName === MediaUIAttributes.MEDIA_PAUSED
-    ) {
-      const isPaused =
-        this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != undefined;
-      const isMediaLoading =
-        this.getAttribute(MediaUIAttributes.MEDIA_LOADING) != undefined;
-      const isLoading = !isPaused && isMediaLoading;
-      if (!isLoading) {
-        if (this.loadingDelayHandle) {
-          clearTimeout(this.loadingDelayHandle);
-          this.loadingDelayHandle = undefined;
-        }
-        this.removeAttribute(Attributes.IS_LOADING);
-      } else if (!this.loadingDelayHandle && isLoading) {
-        const loadingDelay = +(
-          this.getAttribute(Attributes.LOADING_DELAY) ?? DEFAULT_LOADING_DELAY
-        );
-        this.loadingDelayHandle = setTimeout(() => {
-          this.setAttribute(Attributes.IS_LOADING, '');
-          this.loadingDelayHandle = undefined;
-        }, loadingDelay);
-      }
+    if (attrName === Attributes.LOADING_DELAY && oldValue !== newValue) {
+      this.loadingDelay = Number(newValue);
     } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -157,14 +155,46 @@ class MediaLoadingIndicator extends window.HTMLElement {
   }
 
   disconnectedCallback() {
-    if (this.loadingDelayHandle) {
-      clearTimeout(this.loadingDelayHandle);
-      this.loadingDelayHandle = undefined;
-    }
-
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
+  }
+
+  /**
+   * @type {number} Delay in ms
+   */
+  get loadingDelay() {
+    return this.#delay;
+  }
+
+  set loadingDelay(delay) {
+    this.#delay = delay;
+
+    this.#style.setProperty(
+      '--_loading-indicator-delay',
+      `var(--media-loading-indicator-transition-delay, ${delay}ms)`
+    );
+  }
+
+  /**
+   * @type {boolean} Is the media paused
+   */
+  get mediaPaused() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
+  }
+
+  set mediaPaused(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
+  }
+  /**
+   * @type {boolean} Is the media loading
+   */
+  get mediaLoading() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING);
+  }
+
+  set mediaLoading(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING, value);
   }
 }
 
