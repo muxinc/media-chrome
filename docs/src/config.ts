@@ -70,7 +70,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'DASH Video', link: 'en/media-elements/dash-video' },
       { text: 'Mux Video', link: 'en/media-elements/mux-video' },
       // { text: 'Shaka Video', link: 'en/media-elements/shaka-video' }, remove until fixed
-      { text: 'VideoJS Video', link: 'en/media-elements/videojs-video' },
+      { text: 'Video.js Video', link: 'en/media-elements/videojs-video' },
       { text: 'YouTube Video', link: 'en/media-elements/youtube-video' },
       { text: 'Vimeo Video', link: 'en/media-elements/vimeo-video' },
       { text: 'Wistia Video', link: 'en/media-elements/wistia-video' },
