@@ -106,7 +106,7 @@ It's possible to override the default breakpoint values with your own values if 
 <SandpackContainer
   stacked
   reversed
-  height={850}
+  height={770}
   editorHeight={300}
   hiddenCss={`
     media-controller {
@@ -129,14 +129,14 @@ Note that even if you only want to override _one_ of the default values that Med
 <SandpackContainer
   stacked
   reversed
-  height={850}
+  height={770}
   editorHeight={300}
   hiddenCss={`
     media-controller {
       aspect-ratio: 16 / 9;
     }`
   }
-  html={`<!-- Overriding only the 'xl' breakpoint -->
+  html={`<!-- Overriding only the 'xl' breakpoint, but still passing all breakpoints -->
   <media-controller breakpoints="sm:384 md:576 lg:768 xl:1056">
   <video
     slot="media"
@@ -200,7 +200,7 @@ The combined HTML for the player should look like this:
 <SandpackContainer
   stacked
   reversed
-  height={850}
+  height={770}
   editorHeight={300}
   hiddenCss={`
     media-controller {
@@ -351,7 +351,7 @@ Or select a width with the following radio buttons.
 <SandpackContainer
   stacked
   reversed
-  height={850}
+  height={770}
   editorHeight={300}
   hiddenCss={`
     media-controller {
@@ -359,28 +359,7 @@ Or select a width with the following radio buttons.
     }`
   }
   active="css"
-  options={{ showConsole: true }}
-  files={{
-    "/switcher.js": `document.querySelectorAll('[name=width]').forEach(radio => {
-  radio.addEventListener('click', function(e) {
-    const responsivePlayer = document.querySelector('#res-final');
-    const value = e.target.value;
-    responsivePlayer.style.width = value;
-  });
-});`
-  }}
-  html={`<div class="width-controls">
-  <input name="width" id="auto-width" type="radio" value checked>
-  <label for="auto-width">auto (default)</label>
-  <input name="width" id="small-width" type="radio" value="400px">
-  <label for="small-width">small</label>
-  <input name="width" id="medium-width" type="radio" value="500px">
-  <label for="medium-width">medium</label>
-  <input name="width" id="large-width" type="radio" value="600px">
-  <label for="large-width">large</label>
-</div>
-
-<media-controller id="res-final">
+  html={`<media-controller id="res-final">
   <video
     playsinline
     slot="media"
@@ -415,7 +394,6 @@ Or select a width with the following radio buttons.
   display: none;
 }
 
-/* declare media-controller as a container for CQ */
 #res-final {
   display: block;
   aspect-ratio: 16 / 9;
