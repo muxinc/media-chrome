@@ -1,4 +1,5 @@
 import { window, document } from './utils/server-safe-globals.js';
+import { getStringAttr, setStringAttr } from './utils/element-utils.js';
 
 export const Attributes = {
   PLACEHOLDER_SRC: 'placeholdersrc',
@@ -81,6 +82,28 @@ class MediaPosterImage extends window.HTMLElement {
         setBackgroundImage(this.image, newValue);
       }
     }
+  }
+
+  /**
+   * @type {string | undefined}
+   */
+  get placeholderSrc() {
+    return getStringAttr(this, Attributes.PLACEHOLDER_SRC);
+  }
+
+  set placeholderSrc(value) {
+    setStringAttr(this, Attributes.SRC, value);
+  }
+
+  /**
+   * @type {string | undefined}
+   */
+  get src() {
+    return getStringAttr(this, Attributes.SRC);
+  }
+
+  set src(value) {
+    setStringAttr(this, Attributes.SRC, value);
   }
 }
 
