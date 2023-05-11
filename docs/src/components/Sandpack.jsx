@@ -1,6 +1,7 @@
 /** @jsxImportSource react */
 import { Sandpack } from "@codesandbox/sandpack-react";
 import { githubLight } from "@codesandbox/sandpack-themes";
+import mediaChromeRaw from "../../node_modules/media-chrome/dist/iife/index.js?raw";
 
 export const Active = {
   HTML: 'html',
@@ -18,7 +19,7 @@ export default function ComponentSandpack({
   ...props
 }) {
   const importPaths = [
-    'media-chrome',
+    '@internals/media-chrome',
     './styles.css',
     ...Object.keys(dependencies),
     ...Object.keys(files).reduce((importPaths, fileAbsPath) => {
@@ -45,14 +46,24 @@ export default function ComponentSandpack({
       }}
       customSetup={{
         dependencies: {
-          'media-chrome': 'canary',
           ...dependencies
         },
         devDependencies: {
-            "@babel/core": "7.2.0"
+          "@babel/core": "7.2.0"
         },
       }}
       files={{
+        "/node_modules/@internals/media-chrome/package.json": {
+          hidden: true,
+          code: JSON.stringify({
+            name: "@media-chrome",
+            main: "./index.js",
+          }),
+        },
+        "/node_modules/@internals/media-chrome/index.js": {
+          hidden: true,
+          code: mediaChromeRaw,
+        },
         "/index.html": {
           active: active === Active.HTML,
           code: `${html}`
