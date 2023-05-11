@@ -90,7 +90,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
  *
  * @cssproperty --media-loading-indicator-display - `display` property of loading indicator.
  * @cssproperty [ --media-loading-indicator-opacity = 0 ] - `opacity` property of loading indicator. Set to 1 to force it to be visible.
- * @cssproperty [ --media-loading-indicator-transition-delay = 500ms ] - `transition-delay` property of loading indicator. Defaults to 500ms; make sure to include units.
+ * @cssproperty [ --media-loading-indicator-transition-delay = 500ms ] - `transition-delay` property of loading indicator. Make sure to include units.
  * @cssproperty --media-loading-icon-width - `width` of loading icon.
  * @cssproperty --media-loading-icon-height - `height` of loading icon.
  */
