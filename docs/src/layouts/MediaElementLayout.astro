@@ -12,25 +12,19 @@ headings.push({ depth: 2, slug: 'installing', text: 'Installing' });
 <MainLayout frontmatter={frontmatter} headings={headings}>
   <slot />
 
-  <p>
-    The element API matches the HTML5 <code>&lt;video&gt;</video></code> tag, so it can be easily swapped
-    with other media, and be compatible with other UI components that work with
-    the video tag.
-  </p>
-
   <SandpackContainer
     stacked
     reversed
-    height={850}
+    height={frontmatter.height ?? 850}
     editorHeight={300}
     dependencies={frontmatter.dependencies}
     hiddenCss={`
       media-controller,
       ${frontmatter.tagName} {
-        aspect-ratio: 16 / 9;
+        aspect-ratio: ${frontmatter.aspectRatio ?? '16 / 9'};
       }`
     }
-    html={`<media-controller>
+    html={frontmatter.html ?? `<media-controller>
   <${frontmatter.tagName}
     ${frontmatter.src}
     slot="media"

@@ -1,0 +1,31 @@
+---
+title: <spotify-audio>
+description: Play audio hosted by Spotify
+layout: ../../../layouts/MediaElementLayout.astro
+
+height: 400
+aspectRatio: auto
+html: |
+  <media-controller audio>
+    <spotify-audio
+      src="https://open.spotify.com/artist/246dkjvS1zLTtiykXe5h60"
+      slot="media"
+      crossorigin
+      muted
+    ></spotify-audio>
+    <media-control-bar style="width: 100%">
+      <media-play-button></media-play-button>
+      <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
+      <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+      <media-time-range></media-time-range>
+      <media-time-display show-duration remaining></media-time-display>
+    </media-control-bar>
+  </media-controller>
+dependencies: { 'spotify-audio-element': 'latest' }
+package: 'spotify-audio-element'
+version: 0.1.1
+tagName: spotify-audio
+github: https://github.com/luwes/spotify-audio-element
+---
+
+A custom element for the Spotify player with an API that aims to match the `<audio>` API.
