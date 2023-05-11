@@ -2,15 +2,21 @@ import { window } from './utils/server-safe-globals.js';
 import MediaChromeRange from './media-chrome-range.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
+import {
+  getBooleanAttr,
+  getNumericAttr,
+  getStringAttr,
+  setBooleanAttr,
+  setNumericAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
 
 const DEFAULT_MAX_VOLUME = 100;
+const DEFAULT_VOLUME = 1;
 
 const toVolume = (el) => {
-  const muted = el.getAttribute(MediaUIAttributes.MEDIA_MUTED) != null;
-  if (muted) return 0;
-
-  const volume = +(el.getAttribute(MediaUIAttributes.MEDIA_VOLUME) ?? 1);
-  return Math.round(volume * el.range.max);
+  if (el.mediaMuted) return 0;
+  return Math.round(el.mediaVolume * el.range.max);
 };
 
 const formatAsPercentString = ({ value, max }) =>
@@ -69,6 +75,41 @@ class MediaVolumeRange extends MediaChromeRange {
       this.updateBar();
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
+  }
+
+  /**
+   * @type {number}
+   */
+  get mediaVolume() {
+    return (
+      getNumericAttr(this, MediaUIAttributes.MEDIA_VOLUME) ?? DEFAULT_VOLUME
+    );
+  }
+
+  set mediaVolume(value) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_VOLUME, value);
+  }
+
+  /**
+   * @type {boolean} Is the media currently muted
+   */
+  get mediaMuted() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_MUTED);
+  }
+
+  set mediaMuted(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_MUTED, value);
+  }
+
+  /**
+   * @type {string | undefined} The volume unavailability state
+   */
+  get mediaVolumeUnavailable() {
+    return getStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE);
+  }
+
+  set mediaVolumeUnavailable(value) {
+    setStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, value);
   }
 }
 
