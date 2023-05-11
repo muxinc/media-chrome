@@ -61,10 +61,6 @@ export const SIDEBAR: Sidebar = {
     Reference: [
       { text: 'Styling', link: 'en/reference/styling' },
     ],
-    'Core Concepts': [
-      { text: 'Design Principles', link: 'en/design-principles' },
-      { text: 'Architecture', link: 'en/architecture' },
-    ],
     'Media Elements': [
       { text: 'Cloudflare Video', link: 'en/media-elements/cloudflare-video' },
       { text: 'DASH Video', link: 'en/media-elements/dash-video' },
@@ -109,6 +105,8 @@ export const SIDEBAR: Sidebar = {
     ],
     "Learn More": [
       { text: 'Showcase', link: 'en/showcase' },
+      { text: 'Design Principles', link: 'en/design-principles' },
+      { text: 'Architecture', link: 'en/architecture' },
     ],
     'Media States': [
       { text: 'Stream Type', link: 'en/stream-type' },
