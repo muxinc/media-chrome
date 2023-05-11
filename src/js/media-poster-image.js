@@ -1,13 +1,14 @@
 import { window, document } from './utils/server-safe-globals.js';
+import { getStringAttr, setStringAttr } from './utils/element-utils.js';
 
 export const Attributes = {
   PLACEHOLDER_SRC: 'placeholdersrc',
   SRC: 'src',
-}
+};
 
 const template = document.createElement('template');
 
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       pointer-events: none;
@@ -33,10 +34,10 @@ template.innerHTML = /*html*/`
 
 const unsetBackgroundImage = (el) => {
   el.style.removeProperty('background-image');
-}
+};
 const setBackgroundImage = (el, image) => {
   el.style['background-image'] = `url('${image}')`;
-}
+};
 
 /**
  * @attr {string} placeholdersrc - Placeholder image source URL, often a blurhash data URL.
@@ -81,6 +82,28 @@ class MediaPosterImage extends window.HTMLElement {
         setBackgroundImage(this.image, newValue);
       }
     }
+  }
+
+  /**
+   * @type {string | undefined}
+   */
+  get placeholderSrc() {
+    return getStringAttr(this, Attributes.PLACEHOLDER_SRC);
+  }
+
+  set placeholderSrc(value) {
+    setStringAttr(this, Attributes.SRC, value);
+  }
+
+  /**
+   * @type {string | undefined}
+   */
+  get src() {
+    return getStringAttr(this, Attributes.SRC);
+  }
+
+  set src(value) {
+    setStringAttr(this, Attributes.SRC, value);
   }
 }
 

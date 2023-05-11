@@ -1,9 +1,16 @@
 import { window, document } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
+import {
+  MediaUIAttributes,
+  MediaStateReceiverAttributes,
+} from './constants.js';
+import {
+  getOrInsertCSSRule,
+  getStringAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       box-sizing: border-box;
@@ -55,8 +62,9 @@ class MediaPreviewThumbnail extends window.HTMLElement {
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
-      // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController =
+        // @ts-ignore
+        this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }
@@ -89,19 +97,45 @@ class MediaPreviewThumbnail extends window.HTMLElement {
     }
   }
 
-  update() {
-    const mediaPreviewCoordsStr = this.getAttribute(
-      MediaUIAttributes.MEDIA_PREVIEW_COORDS
-    );
-    const mediaPreviewImage = this.getAttribute(
-      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
-    );
-    if (!(mediaPreviewCoordsStr && mediaPreviewImage)) return;
+  /**
+   * @type {string | undefined} The url of the preview image
+   */
+  get mediaPreviewImage() {
+    return getStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_IMAGE);
+  }
 
-    const [x, y, w, h] = mediaPreviewCoordsStr
-      .split(/\s+/)
-      .map((coord) => +coord);
-    const src = mediaPreviewImage.split('#')[0];
+  set mediaPreviewImage(value) {
+    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_IMAGE, value);
+  }
+
+  /**
+   * @type {Array<number> | undefined} Fixed length array [x, y, width, height] or undefined
+   */
+  get mediaPreviewCoords() {
+    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_PREVIEW_COORDS);
+
+    if (!attrVal) return undefined;
+
+    return attrVal.split(/\s+/).map((coord) => +coord);
+  }
+
+  set mediaPreviewCoords(value) {
+    if (!value) {
+      this.removeAttribute(MediaUIAttributes.MEDIA_PREVIEW_COORDS);
+      return;
+    }
+
+    this.setAttribute(MediaUIAttributes.MEDIA_PREVIEW_COORDS, value.join(' '));
+  }
+
+  update() {
+    const coords = this.mediaPreviewCoords;
+    const previewImage = this.mediaPreviewImage;
+
+    if (!(coords && previewImage)) return;
+
+    const [x, y, w, h] = coords;
+    const src = previewImage.split('#')[0];
 
     const computedStyle = getComputedStyle(this);
     const { maxWidth, maxHeight, minWidth, minHeight } = computedStyle;
@@ -145,7 +179,10 @@ class MediaPreviewThumbnail extends window.HTMLElement {
 }
 
 if (!window.customElements.get('media-preview-thumbnail')) {
-  window.customElements.define('media-preview-thumbnail', MediaPreviewThumbnail);
+  window.customElements.define(
+    'media-preview-thumbnail',
+    MediaPreviewThumbnail
+  );
 }
 
 export default MediaPreviewThumbnail;
