@@ -6,6 +6,12 @@ import { formatAsTimePhrase } from './utils/time.js';
 import {
   getOrInsertCSSRule,
   closestComposedNode,
+  getBooleanAttr,
+  setBooleanAttr,
+  getNumericAttr,
+  setNumericAttr,
+  getStringAttr,
+  setStringAttr,
 } from './utils/element-utils.js';
 
 const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
@@ -161,7 +167,7 @@ template.innerHTML = /*html*/ `
  * @attr {boolean} medialoading - (read-only) Present if the media is loading.
  * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
  * @attr {string} mediapreviewimage - (read-only) Set to the timeline preview image URL.
- * @attr {string} mediapreviewcoords - (read-only) Set to the active preview image coordinates.
+ * @attr {string} mediapreviewtime - (read-only) Set to the timeline preview time.
  *
  * @csspart box - A CSS part that selects both the preview and current box elements.
  * @csspart preview-box - A CSS part that selects the preview box element.
@@ -290,14 +296,14 @@ class MediaTimeRange extends MediaChromeRange {
       }
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
-      this.range.max = this.mediaSeekableEnd ?? this.mediaDuration ?? 1000;
+      this.range.max = this.#mediaSeekableEnd ?? this.mediaDuration ?? 1000;
       updateAriaValueText(this);
       this.updateBar();
       this.updateCurrentBox();
     }
     if (attrName === MediaUIAttributes.MEDIA_SEEKABLE) {
-      this.range.min = this.mediaSeekableStart ?? 0;
-      this.range.max = this.mediaSeekableEnd ?? this.mediaDuration ?? 1000;
+      this.range.min = this.#mediaSeekableStart ?? 0;
+      this.range.max = this.#mediaSeekableEnd ?? this.mediaDuration ?? 1000;
       updateAriaValueText(this);
       this.updateBar();
     }
@@ -314,29 +320,65 @@ class MediaTimeRange extends MediaChromeRange {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
+  /**
+   * @type {boolean} Is the media paused
+   */
   get mediaPaused() {
-    return this.hasAttribute(MediaUIAttributes.MEDIA_PAUSED);
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
   }
 
+  set mediaPaused(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
+  }
+
+  /**
+   * @type {boolean} Is the media loading
+   */
   get mediaLoading() {
-    return this.hasAttribute(MediaUIAttributes.MEDIA_LOADING);
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING);
   }
 
+  set mediaLoading(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING, value);
+  }
+
+  /**
+   * @type {number | undefined}
+   */
   get mediaDuration() {
-    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
-    return attrVal != null ? +attrVal : undefined;
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_DURATION);
   }
 
+  set mediaDuration(value) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_DURATION, value);
+  }
+
+  /**
+   * @type {number | undefined}
+   */
   get mediaCurrentTime() {
-    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
-    return attrVal != null ? +attrVal : undefined;
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME);
   }
 
+  set mediaCurrentTime(value) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, value);
+  }
+
+  /**
+   * @type {number}
+   */
   get mediaPlaybackRate() {
-    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_PLAYBACK_RATE);
-    return attrVal != null ? +attrVal : 1;
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE) ?? 1;
   }
 
+  set mediaPlaybackrate(value) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, value);
+  }
+
+  /**
+   * @type {Array<Array<number>>} An array of ranges, each range being an array of two numbers.
+   * e.g. [[1, 2], [3, 4]]
+   */
   get mediaBuffered() {
     const buffered = this.getAttribute(MediaUIAttributes.MEDIA_BUFFERED);
     if (!buffered) return [];
@@ -345,6 +387,19 @@ class MediaTimeRange extends MediaChromeRange {
       .map((timePair) => timePair.split(':').map((timeStr) => +timeStr));
   }
 
+  set mediaBuffered(list) {
+    if (!list) {
+      this.removeAttribute(MediaUIAttributes.MEDIA_BUFFERED);
+      return;
+    }
+    const strVal = list.map((n1, n2) => `${n1}:${n2}`).join(' ');
+    this.setAttribute(MediaUIAttributes.MEDIA_BUFFERED, strVal);
+  }
+
+  /**
+   * Range of values that can be seeked to
+   * @type {Array<number> | undefined} An array of two numbers [start, end]
+   */
   get mediaSeekable() {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
     if (!seekable) return undefined;
@@ -352,14 +407,47 @@ class MediaTimeRange extends MediaChromeRange {
     return seekable.split(':').map((time) => +time);
   }
 
-  get mediaSeekableEnd() {
+  set mediaSeekable(range) {
+    if (range == null) {
+      this.removeAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
+      return;
+    }
+    this.setAttribute(MediaUIAttributes.MEDIA_SEEKABLE, range.join(':'));
+  }
+
+  /**
+   * @type {number | undefined}
+   */
+  get #mediaSeekableEnd() {
     const [, end] = this.mediaSeekable ?? [];
     return end;
   }
 
-  get mediaSeekableStart() {
+  get #mediaSeekableStart() {
     const [start] = this.mediaSeekable ?? [];
     return start;
+  }
+
+  /**
+   * @type {string | undefined} The url of the preview image
+   */
+  get mediaPreviewImage() {
+    return getStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_IMAGE);
+  }
+
+  set mediaPreviewImage(value) {
+    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_IMAGE, value);
+  }
+
+  /**
+   * @type {number | undefined}
+   */
+  get mediaPreviewTime() {
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_PREVIEW_TIME);
+  }
+
+  set mediaPreviewTime(value) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_PREVIEW_TIME, value);
   }
 
   /* Add a buffered progress bar */
@@ -443,7 +531,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.updatePointerBar(evt);
 
-    const duration = +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+    const duration = this.mediaDuration;
     // If no duration we can't calculate which time to show
     if (!duration) return;
 
