@@ -31,7 +31,10 @@ class MediaPreviewTimeDisplay extends MediaTextDisplay {
 }
 
 if (!window.customElements.get('media-preview-time-display')) {
-  window.customElements.define('media-preview-time-display', MediaPreviewTimeDisplay);
+  window.customElements.define(
+    'media-preview-time-display',
+    MediaPreviewTimeDisplay
+  );
 }
 
 export default MediaPreviewTimeDisplay;

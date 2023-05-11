@@ -3,11 +3,11 @@ import { window, document } from './utils/server-safe-globals.js';
 export const Attributes = {
   PLACEHOLDER_SRC: 'placeholdersrc',
   SRC: 'src',
-}
+};
 
 const template = document.createElement('template');
 
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       pointer-events: none;
@@ -33,10 +33,10 @@ template.innerHTML = /*html*/`
 
 const unsetBackgroundImage = (el) => {
   el.style.removeProperty('background-image');
-}
+};
 const setBackgroundImage = (el, image) => {
   el.style['background-image'] = `url('${image}')`;
-}
+};
 
 /**
  * @attr {string} placeholdersrc - Placeholder image source URL, often a blurhash data URL.

@@ -1,9 +1,12 @@
 import { window, document } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
+import {
+  MediaUIAttributes,
+  MediaStateReceiverAttributes,
+} from './constants.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       box-sizing: border-box;
@@ -56,7 +59,8 @@ class MediaPreviewThumbnail extends window.HTMLElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController =
+        this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }
@@ -145,7 +149,10 @@ class MediaPreviewThumbnail extends window.HTMLElement {
 }
 
 if (!window.customElements.get('media-preview-thumbnail')) {
-  window.customElements.define('media-preview-thumbnail', MediaPreviewThumbnail);
+  window.customElements.define(
+    'media-preview-thumbnail',
+    MediaPreviewThumbnail
+  );
 }
 
 export default MediaPreviewThumbnail;
