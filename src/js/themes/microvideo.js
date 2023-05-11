@@ -427,7 +427,7 @@ template.innerHTML = /*html*/`
   <slot name="poster" slot="poster"></slot>
   <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
 
-  <template if="streamType == 'on-demand'">
+  <template if="streamtype == 'on-demand'">
 
     <media-control-bar slot="centered-chrome">
       <div class="control-group">
@@ -449,9 +449,9 @@ template.innerHTML = /*html*/`
 
   </template>
 
-  <template if="streamType == 'live'">
+  <template if="streamtype == 'live'">
 
-    <template if="!targetLiveWindow">
+    <template if="!targetlivewindow">
 
       <media-control-bar slot="centered-chrome">
         {{>LiveButton}}
@@ -470,7 +470,7 @@ template.innerHTML = /*html*/`
 
     </template>
 
-    <template if="targetLiveWindow > 0">
+    <template if="targetlivewindow > 0">
 
       <media-control-bar slot="centered-chrome">
         {{>LiveButton}}

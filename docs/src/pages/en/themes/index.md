@@ -178,7 +178,7 @@ A conditional is also defined by an inner template with an `if` attribute.
 The value of this `if` attribute can be a simple equality check or just an empty check.
 
 ```html
-<template if="streamType == 'on-demand'">
+<template if="streamtype == 'on-demand'">
   <media-text-display>{{title}}</media-text-display>
 </template>
 ```

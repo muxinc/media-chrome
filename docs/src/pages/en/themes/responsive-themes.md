@@ -32,7 +32,7 @@ Let's take a look at how a theme might look like with these conditions in place.
   <media-controller breakpoints="sm:384 md:576" audio="{{audio}}">
     <slot name="media" slot="media"></slot>
     <template if="audio">
-      <template if="streamType == 'on-demand'">
+      <template if="streamtype == 'on-demand'">
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-time-display show-duration></media-time-display>
@@ -44,8 +44,8 @@ Let's take a look at how a theme might look like with these conditions in place.
       </template>
     </template>
     <template if="audio == null">
-      <template if="streamType == 'on-demand'">
-        <template if="breakpointSm == null">
+      <template if="streamtype == 'on-demand'">
+        <template if="!breakpointsm">
           <media-control-bar>
             <media-play-button></media-play-button>
             <media-mute-button></media-mute-button>
@@ -55,8 +55,8 @@ Let's take a look at how a theme might look like with these conditions in place.
             <media-fullscreen-button></media-fullscreen-button>
           </media-control-bar>
         </template>
-        <template if="breakpointSm">
-          <template if="breakpointMd == null">
+        <template if="breakpointsm">
+          <template if="!breakpointmd">
             <div slot="centered-chrome">
               <media-play-button></media-play-button>
             </div>
@@ -70,7 +70,7 @@ Let's take a look at how a theme might look like with these conditions in place.
             </media-control-bar>
           </template>
         </template>
-        <template if="breakpointMd">
+        <template if="breakpointmd">
           <media-control-bar>
             <media-play-button></media-play-button>
             <media-mute-button></media-mute-button>
@@ -101,7 +101,7 @@ Let's take a look at how a theme might look like with these conditions in place.
   <media-controller breakpoints="sm:384 md:576" audio="{{audio}}">
     <slot name="media" slot="media"></slot>
     <template if="audio">
-      <template if="streamType == 'on-demand'">
+      <template if="streamtype == 'on-demand'">
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-time-display show-duration></media-time-display>
@@ -113,8 +113,8 @@ Let's take a look at how a theme might look like with these conditions in place.
       </template>
     </template>
     <template if="audio == null">
-      <template if="streamType == 'on-demand'">
-        <template if="breakpointSm == null">
+      <template if="streamtype == 'on-demand'">
+        <template if="!breakpointsm">
           <media-control-bar>
             <media-play-button></media-play-button>
             <media-mute-button></media-mute-button>
@@ -124,8 +124,8 @@ Let's take a look at how a theme might look like with these conditions in place.
             <media-fullscreen-button></media-fullscreen-button>
           </media-control-bar>
         </template>
-        <template if="breakpointSm">
-          <template if="breakpointMd == null">
+        <template if="breakpointsm">
+          <template if="!breakpointmd">
             <div slot="centered-chrome">
               <media-play-button></media-play-button>
             </div>
@@ -139,7 +139,7 @@ Let's take a look at how a theme might look like with these conditions in place.
             </media-control-bar>
           </template>
         </template>
-        <template if="breakpointMd">
+        <template if="breakpointmd">
           <media-control-bar>
             <media-play-button></media-play-button>
             <media-mute-button></media-mute-button>

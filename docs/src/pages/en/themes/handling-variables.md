@@ -77,13 +77,13 @@ There are a few special template variables that are available by default.
 These are derived from the media state that the [media controller](./media-controller) 
 collects.
 
-- `streamType` - The media type that is loaded, either `on-demand` or `live`.
-- `targetLiveWindow` - The duration of the live window that can be seeked.  
+- `streamtype` - The media type that is loaded, either `on-demand` or `live`.
+- `targetlivewindow` - The duration of the live window that can be seeked.  
   For regular live this value is `0`, for DVR this is greater than `0`.
-- `breakpointSm` - The value is `true` when the small breakpoint is activated.
-- `breakpointMd` - The value is `true` when the medium breakpoint is activated.
-- `breakpointLg` - The value is `true` when the large breakpoint is activated.
-- `breakpointXl` - The value is `true` when the extra-large breakpoint is activated.
+- `breakpointsm` - The value is `true` when the small breakpoint is activated.
+- `breakpointmd` - The value is `true` when the medium breakpoint is activated.
+- `breakpointlg` - The value is `true` when the large breakpoint is activated.
+- `breakpointxl` - The value is `true` when the extra-large breakpoint is activated.
 
 Breakpoint variables stack so that each size will include the current size plus 
 all the smaller sizes below it. Learn more about building 

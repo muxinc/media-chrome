@@ -339,8 +339,8 @@ template.innerHTML = /*html*/`
       </div>
     </template>
 
-    <template if="streamType == 'on-demand'">
-      <template if="breakpointsm == null">
+    <template if="streamtype == 'on-demand'">
+      <template if="!breakpointsm">
         <media-control-bar>
           {{>PlayButton}}
           {{>TimeRange}}
@@ -370,21 +370,21 @@ template.innerHTML = /*html*/`
       </template>
     </template>
 
-    <template if="streamType == 'live'">
+    <template if="streamtype == 'live'">
       <media-control-bar>
         <div class="live-controls-left">
           {{>LiveButton}}
-          <template if="!targetLiveWindow">
+          <template if="!targetlivewindow">
             <template if="breakpointsm">
               <media-time-display></media-time-display>
             </template>
           </template>
         </div>
-        <template if="targetLiveWindow > 0">
+        <template if="targetlivewindow > 0">
           <template if="breakpointsm">{{>TimeRange}}</template>
         </template>
         <div class="live-controls-right">
-          <template if="targetLiveWindow > 0">
+          <template if="targetlivewindow > 0">
             {{>SeekBackwardButton}}
             {{>SeekForwardButton}}
           </template>
