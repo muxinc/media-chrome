@@ -1,5 +1,10 @@
 * {
   box-sizing: border-box;
+  margin: 0;
+}
+
+iframe {
+  border: 0;
 }
 
 /* Global focus outline reset */
