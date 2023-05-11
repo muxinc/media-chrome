@@ -1,7 +1,12 @@
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { window, document } from './utils/server-safe-globals.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
+import {
+  getBooleanAttr,
+  setBooleanAttr,
+  getOrInsertCSSRule
+} from './utils/element-utils.js';
+
 
 export const Attributes = {
   LOADING_DELAY: 'loadingdelay'
@@ -122,19 +127,6 @@ class MediaLoadingIndicator extends window.HTMLElement {
     this.#style = style;
   }
 
-  get loadingDelay() {
-    return this.#delay;
-  }
-
-  set loadingDelay(delay) {
-    this.#delay = delay;
-
-    this.#style.setProperty(
-      '--_loading-indicator-delay',
-      `var(--media-loading-indicator-transition-delay, ${delay}ms)`
-    );
-  }
-
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === Attributes.LOADING_DELAY && oldValue !== newValue) {
       this.loadingDelay = Number(newValue);
@@ -166,6 +158,43 @@ class MediaLoadingIndicator extends window.HTMLElement {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
+  }
+
+  /**
+   * @type {number} Delay in ms
+   */
+  get loadingDelay() {
+    return this.#delay;
+  }
+
+  set loadingDelay(delay) {
+    this.#delay = delay;
+
+    this.#style.setProperty(
+      '--_loading-indicator-delay',
+      `var(--media-loading-indicator-transition-delay, ${delay}ms)`
+    );
+  }
+
+  /**
+   * @type {boolean} Is the media paused
+   */
+  get mediaPaused() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
+  }
+
+  set mediaPaused(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
+  }
+  /**
+   * @type {boolean} Is the media loading
+   */
+  get mediaLoading() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING);
+  }
+
+  set mediaLoading(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING, value);
   }
 }
 
