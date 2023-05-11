@@ -45,10 +45,6 @@ export class AttributeTokenList {
     return this.#tokens.values();
   }
 
-  keys() {
-    return this.#tokens.keys();
-  }
-
   forEach(callback) {
     this.#tokens.forEach(callback);
   }
