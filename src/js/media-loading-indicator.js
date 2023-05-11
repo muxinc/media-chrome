@@ -3,6 +3,12 @@ import {
   MediaStateReceiverAttributes,
 } from './constants.js';
 import { nouns } from './labels/labels.js';
+import {
+  getBooleanAttr,
+  setBooleanAttr,
+  getNumericAttr,
+  setNumericAttr,
+} from './utils/element-utils.js';
 import { window, document } from './utils/server-safe-globals.js';
 
 export const Attributes = {
@@ -115,25 +121,18 @@ class MediaLoadingIndicator extends window.HTMLElement {
       attrName === MediaUIAttributes.MEDIA_LOADING ||
       attrName === MediaUIAttributes.MEDIA_PAUSED
     ) {
-      const isPaused =
-        this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != undefined;
-      const isMediaLoading =
-        this.getAttribute(MediaUIAttributes.MEDIA_LOADING) != undefined;
-      const isLoading = !isPaused && isMediaLoading;
+      const isLoading = !this.mediaPaused && this.mediaLoading;
       if (!isLoading) {
         if (this.loadingDelayHandle) {
           clearTimeout(this.loadingDelayHandle);
           this.loadingDelayHandle = undefined;
         }
-        this.removeAttribute(Attributes.IS_LOADING);
+        this.isLoading = false;
       } else if (!this.loadingDelayHandle && isLoading) {
-        const loadingDelay = +(
-          this.getAttribute(Attributes.LOADING_DELAY) ?? DEFAULT_LOADING_DELAY
-        );
         this.loadingDelayHandle = setTimeout(() => {
-          this.setAttribute(Attributes.IS_LOADING, '');
+          this.isLoading = true;
           this.loadingDelayHandle = undefined;
-        }, loadingDelay);
+        }, this.loadingDelay);
       }
     } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
@@ -169,6 +168,52 @@ class MediaLoadingIndicator extends window.HTMLElement {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
+  }
+
+  /**
+   * @type {number} Delay in ms
+   */
+  get loadingDelay() {
+    return (
+      getNumericAttr(this, Attributes.LOADING_DELAY) ?? DEFAULT_LOADING_DELAY
+    );
+  }
+
+  set loadingDelay(value) {
+    setNumericAttr(this, Attributes.LOADING_DELAY, value);
+  }
+
+  /**
+   * @type {boolean} Are we loading
+   */
+  get isLoading() {
+    return getBooleanAttr(this, Attributes.IS_LOADING);
+  }
+
+  set isLoading(value) {
+    setBooleanAttr(this, Attributes.IS_LOADING, value);
+  }
+
+  /**
+   * @type {boolean} Is the media paused
+   */
+  get mediaPaused() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
+  }
+
+  set mediaPaused(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
+  }
+
+  /**
+   * @type {boolean} Is the media loading
+   */
+  get mediaLoading() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING);
+  }
+
+  set mediaLoading(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING, value);
   }
 }
 
