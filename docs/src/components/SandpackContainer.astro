@@ -58,6 +58,10 @@ if (typeof previewHeight === 'number') previewHeight = `${previewHeight}px`;
     -webkit-font-smoothing: antialiased;
   }
 
+  div:where(.sp-preview-actions) {
+    display: none; /* hide until Sandpack JS styles are loaded */
+  }
+
   .sp-wrapper {
     height: 100% !important;
   }
@@ -68,6 +72,7 @@ if (typeof previewHeight === 'number') previewHeight = `${previewHeight}px`;
     background-color: hsla(var(--color-white), 1);
     border: 1px solid #f3f3f3;
     border-radius: 4px;
+    height: 100% !important;
   }
 
   .sp-editor {
