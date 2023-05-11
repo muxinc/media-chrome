@@ -20,16 +20,22 @@ const exitFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot:not([name=exit]) > *,
-  :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) ::slotted(:not([slot=exit])) {
+  :host([${
+    MediaUIAttributes.MEDIA_IS_FULLSCREEN
+  }]) ::slotted(:not([slot=exit])) {
     display: none !important;
   }
 
   ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) slot:not([name=enter]) > *,
-  :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) ::slotted(:not([slot=enter])) {
+  :host(:not([${
+    MediaUIAttributes.MEDIA_IS_FULLSCREEN
+  }])) slot:not([name=enter]) > *,
+  :host(:not([${
+    MediaUIAttributes.MEDIA_IS_FULLSCREEN
+  }])) ::slotted(:not([slot=enter])) {
     display: none !important;
   }
   </style>
@@ -61,7 +67,7 @@ class MediaFullscreenButton extends MediaChromeButton {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_IS_FULLSCREEN,
-      MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE
+      MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE,
     ];
   }
 
@@ -93,7 +99,10 @@ class MediaFullscreenButton extends MediaChromeButton {
 }
 
 if (!window.customElements.get('media-fullscreen-button')) {
-  window.customElements.define('media-fullscreen-button', MediaFullscreenButton);
+  window.customElements.define(
+    'media-fullscreen-button',
+    MediaFullscreenButton
+  );
 }
 
 export default MediaFullscreenButton;
