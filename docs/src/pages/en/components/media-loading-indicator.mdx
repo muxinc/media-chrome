@@ -5,7 +5,7 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-loading-indicator.js
 ---
 
-import ComponentSandpack from "../../../components/ComponentSandpack";
+import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-loading-indicator>` component indicates when the media is buffering.
 
@@ -15,9 +15,7 @@ The component will be updated automatically based on media state and the functio
 
 ## Default usage
 
-<ComponentSandpack
-  client:load
-  height={290}
+<SandpackContainer
   html={`<media-controller>
   <video
     slot="media"
@@ -25,6 +23,6 @@ The component will be updated automatically based on media state and the functio
     playsinline
     muted
   ></video>
-  <media-loading-indicator isloading></media-loading-indicator>
+  <media-loading-indicator></media-loading-indicator>
 </media-controller>`}
 />
