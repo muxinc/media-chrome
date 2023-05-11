@@ -2,6 +2,7 @@ import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
+import { getStringAttr, setStringAttr } from './utils/element-utils.js';
 
 const offIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M16.5 12A4.5 4.5 0 0 0 14 8v2.18l2.45 2.45a4.22 4.22 0 0 0 .05-.63Zm2.5 0a6.84 6.84 0 0 1-.54 2.64L20 16.15A8.8 8.8 0 0 0 21 12a9 9 0 0 0-7-8.77v2.06A7 7 0 0 1 19 12ZM4.27 3 3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25A6.92 6.92 0 0 1 14 18.7v2.06A9 9 0 0 0 17.69 19l2 2.05L21 19.73l-9-9L4.27 3ZM12 4 9.91 6.09 12 8.18V4Z"/>
@@ -49,7 +50,7 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 const updateAriaLabel = (el) => {
-  const muted = el.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off';
+  const muted = el.mediaVolumeLevel === 'off';
   const label = muted ? verbs.UNMUTE() : verbs.MUTE();
   el.setAttribute('aria-label', label);
 };
@@ -85,9 +86,20 @@ class MediaMuteButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
+  /**
+   * @type {string | undefined}
+   */
+  get mediaVolumeLevel() {
+    return getStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_LEVEL);
+  }
+
+  set mediaVolumeLevel(value) {
+    setStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_LEVEL, value);
+  }
+
   handleClick() {
     const eventName =
-      this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off'
+      this.mediaVolumeLevel === 'off'
         ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
         : MediaUIEvents.MEDIA_MUTE_REQUEST;
     this.dispatchEvent(
