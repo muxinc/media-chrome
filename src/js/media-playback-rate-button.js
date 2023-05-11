@@ -42,10 +42,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === Attributes.RATES) {
-      if (!newValue) {
-        this.#rates.value = DEFAULT_RATES.join(' ');
-      }
-      return;
+      this.#rates.value = newValue;
     }
     if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
       const newPlaybackRate = newValue ? +newValue : Number.NaN;
@@ -90,7 +87,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const availableRates = Array.from(this.rates.values(), str => +str);
+    const availableRates = Array.from(this.rates.values(), str => +str).sort();
     const detail =
       availableRates.find((r) => r > this.mediaPlaybackRate) ??
       availableRates[0] ??
