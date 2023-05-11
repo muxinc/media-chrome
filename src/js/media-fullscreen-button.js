@@ -10,6 +10,12 @@ import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
+import {
+  getBooleanAttr,
+  getStringAttr,
+  setBooleanAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
 
 const enterFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
   <path d="M16 3v2.5h3.5V9H22V3h-6ZM4 9h2.5V5.5H10V3H4v6Zm15.5 9.5H16V21h6v-6h-2.5v3.5ZM6.5 15H4v6h6v-2.5H6.5V15Z"/>
@@ -87,11 +93,32 @@ class MediaFullscreenButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
+  /**
+   * @type {string | undefined} Fullscreen unavailability state
+   */
+  get mediaFullscreenUnavailable() {
+    return getStringAttr(this, MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE);
+  }
+
+  set mediaFullscreenUnavailable(value) {
+    setStringAttr(this, MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE, value);
+  }
+
+  /**
+   * @type {boolean} Whether fullscreen is available
+   */
+  get mediaIsFullscreen() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_IS_FULLSCREEN);
+  }
+
+  set mediaIsFullscreen(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_IS_FULLSCREEN, value);
+  }
+
   handleClick() {
-    const eventName =
-      this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null
-        ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
-        : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
+    const eventName = this.mediaIsFullscreen
+      ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
+      : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
     this.dispatchEvent(
       new window.CustomEvent(eventName, { composed: true, bubbles: true })
     );
