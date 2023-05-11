@@ -65,8 +65,8 @@ const setSubtitlesListAttr = (el, attrName, list) => {
 
   // don't set if the new value is the same as existing
   const newValStr = stringifyTextTrackList(list);
-  const oldValStr = stringifyTextTrackList(el.getAttribute(attrName) ?? '');
-  if (oldValStr === newValStr) return;
+  const oldVal = el.getAttribute(attrName);
+  if (oldVal === newValStr) return;
 
   el.setAttribute(attrName, newValStr);
 };
