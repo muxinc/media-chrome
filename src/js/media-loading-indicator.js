@@ -136,7 +136,9 @@ class MediaLoadingIndicator extends window.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
+    if (attrName === Attributes.LOADING_DELAY && oldValue !== newValue) {
+      this.loadingDelay = Number(newValue);
+    } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
         this.#mediaController = null;
