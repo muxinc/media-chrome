@@ -1,0 +1,489 @@
+---
+title: Styling
+description: Styling Media Chrome
+layout: ../../layouts/MainLayout.astro
+---
+import SandpackContainer from "../../components/SandpackContainer.astro";
+
+Media Chrome provides a lot of ways to easily customize the look and feel of your media player UI. In this guide, we'll go over some of the core features available including:
+
+* Updating default styles with CSS variables
+* Using component slots to customize icons
+* Taking advantage of container components' built in styles
+* Using breakpoints for mobile-first, responsive design
+* Using CSS `:part()` for complex component styling
+
+Just to have a baseline, let's start with a simple player UI built with Media Chrome that uses `<media-play-button>`.
+
+<SandpackContainer
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+    muted
+  ></video>
+  <media-play-button></media-play-button>
+</media-controller>`}
+/>
+
+## Styling with CSS variables
+
+While the component looks pretty good out of the box, maybe you want a slightly different color palette. To help make these styling cases easier, Media Chrome provides a set of well defined [CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/--*) (also known as "CSS Variables"). Here's an example where we've changed the default color of the `<media-play-button>`'s icon, background, and hover background.
+
+<SandpackContainer
+  active="css"
+  css={`media-play-button {
+  --media-icon-color: mistyrose;
+  --media-control-background: rgb(27 54 93 / 0.85);
+  --media-control-hover-background: rgb(128 0 0 / 0.85);
+}`}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+    muted
+  ></video>
+  <media-play-button></media-play-button>
+</media-controller>`}
+/>
+
+You may have noticed that the names of these variables make no specific mention of play buttons or even buttons at all. That's intentional. Many of our CSS variables are shared across many of our components, and we've intentionally named them to account for the scope of where they apply. If you only want them to apply to a particular component, you can use standard CSS selectors to scope them, like the the example above.
+
+Each Media Chrome component has a pretty wide set of useful variables, including the color-related styles you see, font related styles, padding and sizing styles, and several others, which you can find in the reference section of each component's documentation. For example, you can find a full list of `<media-play-button>` CSS Variables [here](./components/media-play-button#css-variables). For a complete list of Media Chrome CSS variables, check out our [styling reference](./reference/styling).
+
+## Using custom icons
+
+Being able to easily customize a variety of CSS properties is great, but that's not where custom styling stops with Media Chrome. For example, for any of our components with icons, you can override the defaults by passing in your version as a child element with the expected [`slot` attribute](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_templates_and_slots#adding_flexibility_with_slots), which identifies which state the icon is for. Here's an example of adding custom `play` and `pause` SVG icons to our previous example. Notice that these SVGs still inherit our custom icon color.
+
+<SandpackContainer
+  css={`media-play-button {
+  --media-icon-color: mistyrose;
+  --media-control-background: rgb(27 54 93 / 0.85);
+  --media-control-hover-background: rgb(128 0 0 / 0.85);
+}`}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+    muted
+  ></video>
+  <media-play-button>
+    <svg slot="play" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M 21.457031 9.773438 L 5.109375 0.335938 C 4.328125 -0.113281 3.320312 -0.113281 2.546875 0.335938 C 1.753906 0.792969 1.261719 1.644531 1.261719 2.558594 L 1.261719 21.433594 C 1.261719 22.347656 1.753906 23.199219 2.539062 23.652344 C 2.929688 23.878906 3.375 24 3.828125 24 C 4.277344 24 4.722656 23.878906 5.109375 23.65625 L 21.457031 14.21875 C 22.246094 13.761719 22.738281 12.910156 22.738281 11.996094 C 22.738281 11.085938 22.246094 10.234375 21.457031 9.773438 Z M 20.230469 12.097656 L 3.882812 21.535156 C 3.847656 21.554688 3.808594 21.554688 3.769531 21.53125 C 3.734375 21.511719 3.710938 21.472656 3.710938 21.433594 L 3.710938 2.558594 C 3.710938 2.515625 3.734375 2.480469 3.769531 2.460938 C 3.785156 2.449219 3.804688 2.445312 3.828125 2.445312 C 3.847656 2.445312 3.867188 2.449219 3.882812 2.460938 L 20.226562 11.894531 C 20.265625 11.914062 20.289062 11.953125 20.289062 11.996094 C 20.289062 12.039062 20.265625 12.074219 20.230469 12.097656 Z M 20.230469 12.097656 "/>
+    </svg>
+    <svg slot="pause" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+      <path d="M 8.75 0 L 1.847656 0 C 1.265625 0 0.796875 0.46875 0.796875 1.046875 L 0.796875 22.949219 C 0.796875 23.53125 1.265625 24 1.847656 24 L 8.75 24 C 9.332031 24 9.800781 23.53125 9.800781 22.949219 L 9.800781 1.046875 C 9.800781 0.46875 9.332031 0 8.75 0 Z M 7.703125 21.902344 L 2.894531 21.902344 L 2.894531 2.097656 L 7.703125 2.097656 Z M 7.703125 21.902344 "/>
+      <path d="M 22.152344 0 L 15.25 0 C 14.671875 0 14.199219 0.46875 14.199219 1.046875 L 14.199219 22.949219 C 14.199219 23.53125 14.671875 24 15.25 24 L 22.152344 24 C 22.730469 24 23.203125 23.53125 23.203125 22.949219 L 23.203125 1.046875 C 23.203125 0.46875 22.730469 0 22.152344 0 Z M 21.105469 21.902344 L 16.296875 21.902344 L 16.296875 2.097656 L 21.105469 2.097656 Z M 21.105469 21.902344 "/>
+    </svg>
+  </media-play-button>
+</media-controller>`}
+/>
+
+Earlier, I mentioned that you can use whatever you want for your "icons". This includes other images, a `<span>` with some text, or whatever makes sense for your use case. Here's an example of using [Font Awesome Web Font icons](https://fontawesome.com/docs/web/setup/host-yourself/webfonts). If you take a look at the `custom-styles.css` file, you'll notice that I'm using slightly different CSS variables here (since the "icons" are actually font glyphs) and I also needed to apply some additional styles to the `<i>` element to make sure the sizes and layouts are consistent when toggling between "play" and "pause".
+
+<SandpackContainer
+  css={`media-play-button {
+  --media-text-color: mistyrose;
+  --media-control-background: rgb(27 54 93 / 0.85);
+  --media-control-hover-background: rgb(128 0 0 / 0.85);
+  --media-font-size: 24px;
+}
+
+.mc-font-icon {
+  width: 24px;
+  text-align: center;
+}
+`}
+  html={`<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+    muted
+  ></video>
+  <media-play-button>
+    <i slot="play" class="mc-font-icon fa-solid fa-play"></i>
+    <i slot="pause" class="mc-font-icon fa-solid fa-pause"></i>
+  </media-play-button>
+</media-controller>`}
+/>
+
+### Recommendations for custom icons
+
+There are a few things that we typically recommend when using custom icon images to make them work as smoothly as possible with Media Chrome.
+
+1. While you can slot anything, we recommend SVGs, since they tend to be an efficient and scalable (hence the name) image format that is also easier to do things like tweak the dimensions of.
+2. Avoid hardcoding `height`, `width`, or `fill` color in the SVGs. While not required, this is the best way to ensure that the sizing and coloring styles will be inherited by Media Chrome components and CSS variables.
+3. When possible, define the SVG as `viewBox="0 0 24 24"`. You can always use CSS to tweak these details, but this will help ensure that you won't have things like unintended whitespace or have to muck around with the padding of things like your button components.
+
+## Styling multiple components
+
+In the previous example, I ended up using different CSS variables for my font-based icons vs. the SVG-based ones. This also applies for other color styles used in Media Chrome components. Since folks will typically want a consistent palette for their media player, Media Chrome has a couple of "color palette" CSS variables that work as defaults for some of the CSS variables used above: `--media-primary-color`, which you can think of as a "foreground" color, and `--media-secondary-color`, which you can think of as a "background" color. This makes styling multiple Media Chrome components easier with just a few CSS variables.
+
+To demonstrate this, here's an example with several more components, including a range component (`<media-time-range>`), a text-based button component (`<media-playback-rate-button>`), and a text-based display component (`<media-time-display>`). All of these are styled using just 3 CSS variables. If you look at the `custom-styles.css`, you'll also see some of the related CSS variables commented out so you can experiment with their relationships.
+
+<SandpackContainer
+  stacked
+  active="css"
+  height={900}
+  editorHeight={450}
+  css={`media-controller {
+  --media-primary-color: mistyrose;
+  --media-secondary-color: rgb(27 54 93 / 0.85);
+  /* Unfortunately, we currently still need to specifically apply the hover color :( */
+  --media-control-hover-background: rgb(128 0 0 / 0.85);
+  /* Uncomment any of these to see how the more specific CSS variables relate to primary & secondary */
+  /* These are CSS variables that will default to the primary color if they are unset but take precedence if they are set */
+  /*
+  --media-icon-color: lightyellow;
+  --media-text-color: lightgreen;
+  --media-range-thumb-background: hotpink;
+  --media-range-bar-color: indianred;
+  */
+  /* These are CSS variables that will default to the secondary color if they are unset but take precedence if they are set */
+  /*
+  --media-control-background: lightslategray;
+  --media-preview-background: mediumslateblue;
+  */
+}`}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+    muted
+  ></video>
+  <div>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-time-range></media-time-range>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-captions-button></media-captions-button>
+    <media-airplay-button></media-airplay-button>
+  </div>
+</media-controller>`}
+  hiddenCss={"div { font-size: 0; }"}
+/>
+
+## Conditional styling with media attributes
+
+In the previous example, we added several components, including a captions button and an airplay button. But what if your video doesn't have any closed captions or subtitles? What if you're in a browser that doesn't support AirPlay? As you may already know, Media Chrome works by passing around different media state to its components, including the Media Controller component itself. Because this state will show up as attributes on the relevant components, we can use standard [CSS attribute selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors) to change styles based on those attributes.
+
+Below is an example of how you can hide specific components using media state attributes. Check the component's docs to see a list of all media state attributes it will receive.
+
+<SandpackContainer
+  active="css"
+  css={`media-controller {
+  --media-primary-color: mistyrose;
+  --media-secondary-color: rgb(27 54 93 / 0.85);
+  --media-control-hover-background: rgb(128 0 0 / 0.85);
+}
+
+/* This just lets us still "click to play", even when clicking where the banner is. */
+.banner {
+  pointer-events: none;
+}
+
+/*
+  Stop showing the banner once playback has begun. Since <media-text-display> doesn't
+  receive the "mediahasplayed" attribute, we can simply target <media-controller>, which
+  will get all media state updates.
+*/
+media-controller[mediahasplayed] .banner {
+  display: none;
+}
+
+/* Do not show the airplay button unless AirPlay is available */
+media-airplay-button[mediaairplayunavailable] {
+  display: none;
+}
+
+/* Do not show the captions button if there are no captions for the media */
+media-captions-button:not([mediasubtitleslist]) {
+  display: none;
+}`}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+    muted
+  ></video>
+  <media-text-display class="banner">I am a banner</media-text-display>
+  <div>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-time-range></media-time-range>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-captions-button></media-captions-button>
+    <media-airplay-button></media-airplay-button>
+  </div>
+</media-controller>`}
+  hiddenCss={"div { font-size: 0; }"}
+/>
+
+## Built in container styling
+
+We've already seen a number of ways to customize the look and feel of things in Media Chrome. But one easy way to get a lot of reasonable styles "out of the box" is by using Media Chrome's container components. This next example uses `<media-control-bar>` with `<media-controller>` to show some of these super powers.
+
+<SandpackContainer
+  stacked
+  active="css"
+  height={900}
+  editorHeight={450}
+  css={`media-controller {
+  --media-primary-color: mistyrose;
+  --media-secondary-color: rgb(27 54 93 / 0.85);
+  --media-control-hover-background: rgb(128 0 0 / 0.85);
+}
+
+/* This is how to style the "top-chrome" components differently */
+media-controller [slot="top-chrome"] {
+  --media-control-padding: 5px;
+}
+
+/* This is how to style the "centered-chrome" components differently */
+media-controller [slot="centered-chrome"] {
+  border-radius: 50%;
+  /* You could also use standard CSS properties for several of these */
+  --media-control-padding: 2px;
+  --media-control-height: 40px;
+}
+
+/* Do not show the airplay button unless AirPlay is available */
+media-airplay-button[mediaairplayunavailable] {
+  display: none;
+}
+
+/* Do not show the captions button if there are no captions for the media */
+media-captions-button:not([mediasubtitleslist]) {
+  display: none;
+}`}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+    muted
+  ></video>
+  <media-text-display slot="top-chrome">My Video Trailer</media-text-display>
+  <media-play-button slot="centered-chrome"></media-play-button>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-seek-backward-button></media-seek-backward-button>
+    <media-seek-forward-button></media-seek-forward-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-display></media-time-display>
+    <media-time-range></media-time-range>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-captions-button></media-captions-button>
+    <media-airplay-button></media-airplay-button>
+  </media-control-bar>
+  <!-- Uncomment to see how a <div> would render the components instead -->
+  <!--
+  <div>
+    <media-play-button></media-play-button>
+    <media-seek-backward-button></media-seek-backward-button>
+    <media-seek-forward-button></media-seek-forward-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-display></media-time-display>
+    <media-time-range></media-time-range>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-captions-button></media-captions-button>
+    <media-airplay-button></media-airplay-button>
+  </div>
+  -->
+</media-controller>`}
+  hiddenCss={"div { font-size: 0; }"}
+/>
+
+When it comes to our container components, you've actually been working with one of them from the beginning, albeit a special one: `<media-controller>`. Just like our button icon slots, the Media Controller container component has some well defined slots that will position components in different "regions" above the video. In this example, we're using the `slot="top-chrome"` and `slot="centered-chrome"` to add a title and "big play button", respectively. Note that our `slot="top-chrome"` component is positioned at the top left (similar to the other components we've been using, which were positioned at the bottom left), whereas our `slot="centered-chrome"` component is (shockingly) centered over the video. If you take a look at the `custom-styles.css`, you can also see how we're using some attribute selectors and CSS variables to apply some general styles and then tweak or override them for the components in each slotted region.
+
+{/* Add a link to the Media Controller slots once that's updated */}
+
+In the example, we've also replaced the `<div>` we were using to lay out our Media Chrome components with a second container component, `<media-control-bar>`. This gives us a few things automatically:
+
+1. If you either resize the "page" or remove some of the components, you'll see that the `<media-time-range>` will automatically grow to take up as much real estate is available to make seeking easier.
+2. You can see how the components will automatically scale down based on the available real estate.
+3. By using `<media-control-bar>` with the `<media-controller>`, it will automatically grow to fill the entire width of controller, as most folks would expect for a standard player UI.
+
+## Responsive CSS design with Media Controller breakpoints
+
+In order to make responsive design easy, we've built in a concept of "breakpoints" for `<media-controller>`, which allows you to build UIs based on the player's size (and not just the page size). In the example below, you can see a basic implementation of a "mobile first" responsive design, where we apply the most generic styles for the smallest, "mobile" UI and then override them as the player UI gets larger. Like earlier examples, we can take advantage of attribute selectors, this time using `breakpointmd` for our standard "desktop" UI cutoff. I've also included a simple "extra large" (`breakpointxl`) example that makes all of the controls larger (**_NOTE_**: For this XL example, you'll probably need to open the example in Code Sandbox).
+
+<SandpackContainer
+  active="css"
+  height={300}
+  css={`media-controller {
+  --media-primary-color: mistyrose;
+  --media-secondary-color: rgb(27 54 93 / 0.85);
+  --media-control-hover-background: rgb(128 0 0 / 0.85);
+}
+
+/* Since our breakpoints implementation is a "mobile-first" approach, we'll hide the "desktop only" items by default */
+media-controller .desktop-only {
+  --media-control-display: none;
+}
+
+/* Then, when the <media-controller> size is larger, we'll show the "desktop only" components and hide the "mobile only" ones */
+/* NOTE: Here, we're using breakpointmd for "desktop" for demonstration purposes, but you may want to consider using breakpointlg instead. */
+media-controller[breakpointmd] .desktop-only {
+  --media-control-display: unset;
+}
+
+media-controller[breakpointmd] .mobile-only {
+  --media-control-display: none;
+}
+
+/* Lastly, we can make our components sizing bigger when media-controller and the UI is particularly large */
+/* NOTE: To see this in action, you'll likely need to open in Code Sandbox and then open the "app"/page in a new window. */
+media-controller[breakpointxl] > media-controller {
+  height: 50px;
+  --media-control-padding: 20px;
+  --media-font-size: 36px;
+}
+
+/*
+  Uncomment these if you want a quick visual indicator of the breakpoints as you resize the page. You can think of no breakpoint as "xs",
+  which is part of our "mobile first responsive design" approach. Related to this "mobile first" approach, breakpoint attributess are
+  "additive" from smaller to larger, so e.g. media-controller[breakpointmd] is the same as media-controller[breakpointsm][breakpointmd],
+  since both attributes will be present on the media controller. This allows you to apply styles to smaller sizes and then override them
+  as the size increases.
+*/
+/*
+media-controller {
+  --media-primary-color: red;
+}
+media-controller[breakpointsm] {
+  --media-primary-color: orange;
+}
+media-controller[breakpointmd] {
+  --media-primary-color: yellow;
+}
+media-controller[breakpointlg] {
+  --media-primary-color: green;
+}
+media-controller[breakpointxl] {
+  --media-primary-color: blue;
+}
+*/
+
+media-controller [slot="centered-chrome"] {
+  border-radius: 10px;
+  --media-control-padding: 2px;
+  --media-control-height: 40px;
+  background: var(--media-secondary-color);
+}
+
+media-controller [slot="centered-chrome"] > * {
+  --media-secondary-color: none;
+}
+
+media-controller [slot="centered-chrome"] > :first-child {
+  border-radius: 10px 0px 0px 10px;
+}
+
+media-controller [slot="centered-chrome"] > :last-child {
+  border-radius: 0px 10px 10px 0px;
+}
+
+/* Do not show the airplay button unless AirPlay is available */
+media-airplay-button[mediaairplayunavailable] {
+  display: none;
+}
+
+/* Do not show the volume range unless volume control is available (e.g. many mobile devices require device-level control for volume) */
+media-volume-range[mediavolumeunavailable] {
+  display: none;
+}
+
+/* Do not show the captions button if there are no captions for the media */
+media-captions-button:not([mediasubtitleslist]) {
+  display: none;
+}`}
+  html={`<!-- Add the breakpoints="" below to see an example of changing the small breakpoint cutoff -->
+<!-- <media-controller breakpoints="sm:412"> -->
+<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+    playsinline
+    muted
+    crossorigin
+  >
+    <track
+      label="thumbnails"
+      default
+      kind="metadata"
+      src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"
+    />
+  </video>
+  <div class="mobile-only" slot="centered-chrome">
+    <media-seek-backward-button></media-seek-backward-button>
+    <media-play-button></media-play-button>
+    <media-seek-forward-button></media-seek-forward-button>
+  </div>
+  <media-control-bar>
+    <media-play-button class="desktop-only"></media-play-button>
+    <media-seek-backward-button class="desktop-only"></media-seek-backward-button>
+    <media-seek-forward-button class="desktop-only"></media-seek-forward-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-display></media-time-display>
+    <media-time-range></media-time-range>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-captions-button></media-captions-button>
+    <media-airplay-button></media-airplay-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+Like many features in Media Chrome, while we have some reasonable default values, you may define your own breakpoint cutoffs for more advanced customization. For a more in depth look at responsive design, check out [our guide](./responsive-controls).
+
+## More complex component CSS
+
+Most of our components are simple enough to style in the fairly simple ways we've covered thus far. However, a few of our components are made up of some more complex parts. For these, you can directly style these "sub-components" or "sub-sections" by using [CSS `::part()` pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::part), which are similar to [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements). Below is an example where we've customized some styles on the `<media-time-range>`'s thumbnail and time preview box part (visible when hovering over the component). We've also added a transluscent overlay using one of the `<media-controller>` parts that fades in/fades out just like the control components. You can find the list of `<media-time-range>` parts [here](./components/media-time-range#css-parts).
+
+<SandpackContainer
+  active="css"
+  css={`media-time-range {
+    --media-primary-color: mistyrose;
+    --media-secondary-color: rgb(27 54 93 / 0.85);
+    --media-control-hover-background: rgb(128 0 0 / 0.85);
+    width: 100%;
+}
+
+media-time-range::part(preview-box) {
+    --media-primary-color: lightseagreen;
+    --media-secondary-color: black;
+}
+
+media-controller::part(centered-layer) {
+  background: rgb(27 54 93 / 0.25);
+  opacity: 1;
+  transition: opacity 0.25s;
+}
+
+media-controller:not([mediapaused])[userinactive]::part(centered-layer) {
+  opacity: 0;
+  transition: opacity 1s;
+}`}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+    crossorigin
+    muted
+  >
+    <track
+      label="thumbnails"
+      default
+      kind="metadata"
+      src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"
+    />
+  </video>
+  <media-time-range></media-time-range>
+</media-controller>`}
+/>
+
+{/* Add a second advanced section about WCAG / A11Y + Styling. */}
+
