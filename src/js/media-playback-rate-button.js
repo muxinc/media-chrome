@@ -3,6 +3,7 @@ import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
+import { AttributeTokenList } from './utils/attribute-token-list.js';
 
 export const Attributes = {
   RATES: 'rates',
@@ -51,9 +52,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     ];
   }
 
-  // NOTE: Adding for TypeScript Errors. Followup should add correct getter/setter & private var (CJP)
-  /** @type number[] | undefined */
-  _rates;
+  #rates = new AttributeTokenList(this, Attributes.RATES);
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
@@ -61,10 +60,17 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }
 
+  connectedCallback() {
+    if (!this.hasAttribute(Attributes.RATES)) {
+      this.#rates.value = DEFAULT_RATES.join(' ');
+    }
+  }
+
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === Attributes.RATES) {
-      const newRates = ratesStrToArray(newValue ?? '');
-      this._rates = newRates.length ? newRates : DEFAULT_RATES;
+      if (!newValue) {
+        this.#rates.value = DEFAULT_RATES.join(' ');
+      }
       return;
     }
     if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
@@ -80,20 +86,22 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   /**
-   * @type {Array<number>} The possible playback rates
+   * @type {DOMTokenList | Array<number>} Will return a DOMTokenList.
+   * Setting a value will accept an array of numbers.
    */
   get rates() {
-    const list = ratesStrToArray(this.getAttribute(Attributes.RATES) ?? '');
-    return list.length ? list : DEFAULT_RATES;
+    // @ts-ignore
+    return this.#rates;
   }
 
   set rates(value) {
     if (!value) {
-      this.removeAttribute(Attributes.RATES);
+      this.#rates.value = DEFAULT_RATES.join(' ');
       return;
     }
 
-    this.setAttribute(Attributes.RATES, value.join(' '));
+    // @ts-ignore
+    this.#rates.value = value.join(' ');
   }
 
   /**
@@ -111,7 +119,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const availableRates = this._rates ?? DEFAULT_RATES;
+    const availableRates = ratesStrToArray(this.#rates.value);
     const detail =
       availableRates.find((r) => r > this.mediaPlaybackRate) ??
       availableRates[0] ??
