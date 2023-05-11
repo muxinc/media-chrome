@@ -1,14 +1,5 @@
-import {
-  MediaUIAttributes,
-  MediaStateReceiverAttributes,
-} from './constants.js';
+import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
-import {
-  getBooleanAttr,
-  setBooleanAttr,
-  getNumericAttr,
-  setNumericAttr,
-} from './utils/element-utils.js';
 import { window, document } from './utils/server-safe-globals.js';
 
 export const Attributes = {
@@ -33,7 +24,7 @@ const loadingIndicatorIcon = `
 </svg>
 `;
 
-template.innerHTML = /*html*/ `
+template.innerHTML = /*html*/`
 <style>
 :host {
   display: var(--media-control-display, var(--media-loading-indicator-display, inline-block));
@@ -121,18 +112,25 @@ class MediaLoadingIndicator extends window.HTMLElement {
       attrName === MediaUIAttributes.MEDIA_LOADING ||
       attrName === MediaUIAttributes.MEDIA_PAUSED
     ) {
-      const isLoading = !this.mediaPaused && this.mediaLoading;
+      const isPaused =
+        this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != undefined;
+      const isMediaLoading =
+        this.getAttribute(MediaUIAttributes.MEDIA_LOADING) != undefined;
+      const isLoading = !isPaused && isMediaLoading;
       if (!isLoading) {
         if (this.loadingDelayHandle) {
           clearTimeout(this.loadingDelayHandle);
           this.loadingDelayHandle = undefined;
         }
-        this.isLoading = false;
+        this.removeAttribute(Attributes.IS_LOADING);
       } else if (!this.loadingDelayHandle && isLoading) {
+        const loadingDelay = +(
+          this.getAttribute(Attributes.LOADING_DELAY) ?? DEFAULT_LOADING_DELAY
+        );
         this.loadingDelayHandle = setTimeout(() => {
-          this.isLoading = true;
+          this.setAttribute(Attributes.IS_LOADING, '');
           this.loadingDelayHandle = undefined;
-        }, this.loadingDelay);
+        }, loadingDelay);
       }
     } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
@@ -153,8 +151,7 @@ class MediaLoadingIndicator extends window.HTMLElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController =
-        this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }
@@ -169,59 +166,10 @@ class MediaLoadingIndicator extends window.HTMLElement {
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
   }
-
-  /**
-   * @type {number} Delay in ms
-   */
-  get loadingDelay() {
-    return (
-      getNumericAttr(this, Attributes.LOADING_DELAY) ?? DEFAULT_LOADING_DELAY
-    );
-  }
-
-  set loadingDelay(value) {
-    setNumericAttr(this, Attributes.LOADING_DELAY, value);
-  }
-
-  /**
-   * @type {boolean} Are we loading
-   */
-  get isLoading() {
-    return getBooleanAttr(this, Attributes.IS_LOADING);
-  }
-
-  set isLoading(value) {
-    setBooleanAttr(this, Attributes.IS_LOADING, value);
-  }
-
-  /**
-   * @type {boolean} Is the media paused
-   */
-  get mediaPaused() {
-    return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
-  }
-
-  set mediaPaused(value) {
-    setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
-  }
-
-  /**
-   * @type {boolean} Is the media loading
-   */
-  get mediaLoading() {
-    return getBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING);
-  }
-
-  set mediaLoading(value) {
-    setBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING, value);
-  }
 }
 
 if (!window.customElements.get('media-loading-indicator')) {
-  window.customElements.define(
-    'media-loading-indicator',
-    MediaLoadingIndicator
-  );
+  window.customElements.define('media-loading-indicator', MediaLoadingIndicator);
 }
 
 export default MediaLoadingIndicator;
