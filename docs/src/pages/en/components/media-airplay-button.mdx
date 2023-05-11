@@ -5,7 +5,7 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-airplay-button.js
 ---
 
-import ComponentSandpack from "../../../components/ComponentSandpack";
+import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-airplay-button>` component is used to bring up the AirPlay menu and select AirPlay playback. The behavior of the `<media-airplay-button>` will update automatically based on the availability of AirPlay support.
 
@@ -16,8 +16,7 @@ The button will display the contents of the `airplay` slot, if provided.
 
 ## Default usage
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   html={`<media-controller>
   <video
     playsinline muted crossorigin
@@ -35,8 +34,7 @@ This is useful if you'd like to use your own custom AirPlay button instead of th
 
 Here's an example of how you can replace the default icon with the string "AIRPLAY".
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   html={`<media-controller>
   <video
     playsinline muted crossorigin

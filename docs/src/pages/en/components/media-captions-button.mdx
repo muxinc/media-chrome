@@ -5,7 +5,7 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-captions-button.js
 ---
 
-import ComponentSandpack from "../../../components/ComponentSandpack";
+import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-captions-button>` component is used to toggle captions and subtitles on and off. When turning on captions and subtitles, captions tracks will be preferred over subtitles tracks, but either type will be used.
 
@@ -15,8 +15,7 @@ The contents and behavior of the `<media-captions-button>` will update automatic
 
 ## Default usage
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={250}
   html={`<media-controller defaultsubtitles>
   <video
@@ -38,8 +37,7 @@ This is useful if you'd like to use your own custom captions button instead of t
 Here's an example of how you can replace the default CC on and CC off icons with
 <b><u>CC</u></b> CC, respectively. Media Controller is also set up to enable captions and subtitles by default.
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={310}
   html={`<media-controller defaultsubtitles>
   <video
