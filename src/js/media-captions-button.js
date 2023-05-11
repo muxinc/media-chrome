@@ -4,7 +4,8 @@ import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import {
   areSubsOn,
-  splitTextTracksStr,
+  parseTextTracksStr,
+  stringifyTextTrackList,
   toggleSubsCaps,
 } from './utils/captions.js';
 
@@ -42,22 +43,18 @@ const updateAriaChecked = (el) => {
 /**
  * @param {any} el Should be HTMLElement but issues with window shim
  * @param {string} attrName
- * @returns {Array<string>}
+ * @returns {Array<Object>} An array of TextTrack-like objects.
  */
 const getSubtitlesListAttr = (el, attrName) => {
   const attrVal = el.getAttribute(attrName);
-
-  // an empty attribute can return an array with an empty string as an item
-  // e.g. splitTextTracksStr('') will return [""]
-  // so we explicitly return an empty array for falsy values
-  return attrVal ? splitTextTracksStr(attrVal) : [];
+  return attrVal ? parseTextTracksStr(attrVal) : [];
 };
 
 /**
  *
  * @param {any} el Should be HTMLElement but issues with window shim
  * @param {string} attrName
- * @param {Array<string>} list
+ * @param {Array<Object>} list An array of TextTrack-like objects
  */
 const setSubtitlesListAttr = (el, attrName, list) => {
   // null, undefined, and empty arrays are treated as "no value" here
@@ -66,14 +63,12 @@ const setSubtitlesListAttr = (el, attrName, list) => {
     return;
   }
 
-  const newVal = list.join(' ');
-
   // don't set if the new value is the same as existing
-  const oldList = getSubtitlesListAttr(el, attrName);
-  const oldVal = oldList.join(' ');
-  if (oldVal === newVal) return;
+  const newValStr = stringifyTextTrackList(list);
+  const oldValStr = stringifyTextTrackList(el.getAttribute(attrName) ?? '');
+  if (oldValStr === newValStr) return;
 
-  el.setAttribute(attrName, newVal);
+  el.setAttribute(attrName, newValStr);
 };
 
 /**
@@ -117,8 +112,8 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   /**
-   * @type {Array<string>} An array of string serialised text tracks
-   * e.g. ["cc:en:English"]
+   * @type {Array<object>} An array of TextTrack-like objects.
+   * Objects must have the properties: kind, language, and label.
    */
   get mediaSubtitlesList() {
     return getSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
@@ -129,8 +124,8 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   /**
-   * @type {Array<string>} An array of string serialised text tracks
-   * * e.g. ["cc:en:English"]
+   * @type {Array<object>} An array of TextTrack-like objects.
+   * Objects must have the properties: kind, language, and label.
    */
   get mediaSubtitlesShowing() {
     return getSubtitlesListAttr(
