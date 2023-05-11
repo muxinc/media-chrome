@@ -1,15 +1,22 @@
+/** @implements {Pick<DOMTokenList, 'length' | 'value' | 'toString' | 'item' | 'add' | 'remove' | 'contains' | 'toggle' | 'replace'>} */
 export class AttributeTokenList {
   #el;
   #attr;
-  #tokens = new Set();
+  #defaultSet;
+  #tokenSet = new Set();
 
-  constructor(el, attr) {
+  constructor(el, attr, { defaultValue } = { defaultValue: undefined }) {
     this.#el = el;
     this.#attr = attr;
+    this.#defaultSet = new Set(defaultValue);
   }
 
   [Symbol.iterator]() {
     return this.#tokens.values();
+  }
+
+  get #tokens() {
+    return this.#tokenSet.size ? this.#tokenSet : this.#defaultSet;
   }
 
   get length() {
@@ -22,7 +29,7 @@ export class AttributeTokenList {
 
   set value(val) {
     if (val === this.value) return;
-    this.#tokens = new Set();
+    this.#tokenSet = new Set();
     this.add(...(val?.split(' ') ?? []));
   }
 
@@ -38,16 +45,12 @@ export class AttributeTokenList {
     return this.#tokens.values();
   }
 
-  keys() {
-    return this.#tokens.keys();
-  }
-
   forEach(callback) {
     this.#tokens.forEach(callback);
   }
 
   add(...tokens) {
-    tokens.forEach((t) => this.#tokens.add(t));
+    tokens.forEach((t) => this.#tokenSet.add(t));
     // if the attribute was removed don't try to add it again.
     if (this.value === '' && !this.#el?.hasAttribute(`${this.#attr}`)) {
       return;
@@ -56,7 +59,7 @@ export class AttributeTokenList {
   }
 
   remove(...tokens) {
-    tokens.forEach((t) => this.#tokens.delete(t));
+    tokens.forEach((t) => this.#tokenSet.delete(t));
     this.#el?.setAttribute(`${this.#attr}`, `${this.value}`);
   }
 
@@ -87,5 +90,6 @@ export class AttributeTokenList {
   replace(oldToken, newToken) {
     this.remove(oldToken);
     this.add(newToken);
+    return oldToken === newToken;
   }
 }

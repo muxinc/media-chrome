@@ -2,6 +2,8 @@ import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
+import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
+import { AttributeTokenList } from './utils/attribute-token-list.js';
 
 export const Attributes = {
   RATES: 'rates',
@@ -30,9 +32,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     ];
   }
 
-  // NOTE: Adding for TypeScript Errors. Followup should add correct getter/setter & private var (CJP)
-  /** @type number[] | undefined */
-  _rates;
+  #rates = new AttributeTokenList(this, Attributes.RATES, { defaultValue: DEFAULT_RATES });
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
@@ -42,20 +42,9 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === Attributes.RATES) {
-      // This will:
-      // 1. parse the space-separated attribute string (standard for representing lists as HTML/CSS values) into an array (of strings)
-      //   The current regex allows for commas to be present between numbers to preserve legacy behavior
-      // 2. convert that list into numbers (including potentially NaN)
-      // 3. filter out all NaNs for invalid values
-      // 4. sort the array of numbers to ensure the expected toggle-through order for playback rate.
-      /** @type number[] */
-      const newRates = (newValue ?? '')
-        .trim()
-        .split(/\s*,?\s+/)
-        .map((str) => Number(str))
-        .filter((num) => !Number.isNaN(num))
-        .sort((a, b) => a - b);
-      this._rates = newRates.length ? newRates : DEFAULT_RATES;
+      if (!newValue) {
+        this.#rates.value = DEFAULT_RATES.join(' ');
+      }
       return;
     }
     if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
@@ -70,12 +59,41 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
+  /**
+   * @type { AttributeTokenList | Array<number> | undefined} Will return a DOMTokenList.
+   * Setting a value will accept an array of numbers.
+   */
+  get rates() {
+    return this.#rates;
+  }
+
+  set rates(value) {
+    if (!value) {
+      this.#rates.value = '';
+    } else if (Array.isArray(value)) {
+      this.#rates.value = value.join(' ');
+    }
+  }
+
+  /**
+   * @type {number} The current playback rate
+   */
+  get mediaPlaybackRate() {
+    return (
+      getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE) ??
+      DEFAULT_RATE
+    );
+  }
+
+  set mediaPlaybackRate(value) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, value);
+  }
+
   handleClick() {
-    const currentRate =
-      +this.getAttribute(MediaUIAttributes.MEDIA_PLAYBACK_RATE) || DEFAULT_RATE;
+    const availableRates = Array.from(this.rates.values(), str => +str);
     const detail =
-      this._rates.find((r) => r > currentRate) ??
-      this._rates[0] ??
+      availableRates.find((r) => r > this.mediaPlaybackRate) ??
+      availableRates[0] ??
       DEFAULT_RATE;
     const evt = new window.CustomEvent(
       MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST,
@@ -86,7 +104,10 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 }
 
 if (!window.customElements.get('media-playback-rate-button')) {
-  window.customElements.define('media-playback-rate-button', MediaPlaybackRateButton);
+  window.customElements.define(
+    'media-playback-rate-button',
+    MediaPlaybackRateButton
+  );
 }
 
 export default MediaPlaybackRateButton;

@@ -2,6 +2,7 @@ import MediaChromeButton from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
+import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
 
 const playIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="m6 21 15-9L6 3v18Z"/>
@@ -12,7 +13,7 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] > *, 
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) ::slotted([slot=pause]) {
@@ -30,8 +31,7 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 const updateAriaLabel = (el) => {
-  const paused = el.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null;
-  const label = paused ? verbs.PLAY() : verbs.PAUSE();
+  const label = el.mediaPaused ? verbs.PLAY() : verbs.PAUSE();
   el.setAttribute('aria-label', label);
 };
 
@@ -64,11 +64,21 @@ class MediaPlayButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
+  /**
+   * @type {boolean} Is the media paused
+   */
+  get mediaPaused() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
+  }
+
+  set mediaPaused(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
+  }
+
   handleClick() {
-    const eventName =
-      this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
-        ? MediaUIEvents.MEDIA_PLAY_REQUEST
-        : MediaUIEvents.MEDIA_PAUSE_REQUEST;
+    const eventName = this.mediaPaused
+      ? MediaUIEvents.MEDIA_PLAY_REQUEST
+      : MediaUIEvents.MEDIA_PAUSE_REQUEST;
     this.dispatchEvent(
       new window.CustomEvent(eventName, { composed: true, bubbles: true })
     );
