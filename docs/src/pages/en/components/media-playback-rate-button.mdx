@@ -65,7 +65,7 @@ media-playback-rate-button[mediaplaybackrate^="0."] {
     --media-primary-color: yellow;
 }
 
-:is(media-playback-rate-button[mediaplaybackrate^="2"], media-playback-rate-button[mediaplaybackrate^="1."]) {
+media-playback-rate-button:is([mediaplaybackrate^="2"], [mediaplaybackrate^="1."]) {
     --media-primary-color: green;
 }`}
   html={`<media-controller>
