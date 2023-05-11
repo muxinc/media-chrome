@@ -9,15 +9,16 @@ import { verbs } from './labels/labels.js';
 const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
 
-const indicatorSVG = '<svg viewBox="0 0 6 12"><circle cx="3" cy="6" r="2"></circle></svg>';
+const indicatorSVG =
+  '<svg viewBox="0 0 6 12"><circle cx="3" cy="6" r="2"></circle></svg>';
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
 
   slot[name=indicator] > *,
   :host ::slotted([slot=indicator]) {
-    ${/* Override styles for icon-only buttons */''}
+    ${/* Override styles for icon-only buttons */ ''}
     min-width: auto;
     fill: var(--media-live-button-icon-color, rgb(140, 140, 140));
     color: var(--media-live-button-icon-color, rgb(140, 140, 140));
@@ -36,10 +37,12 @@ slotTemplate.innerHTML = /*html*/`
   </style>
 
   <slot name="indicator">${indicatorSVG}</slot>
-  ${/*
+  ${
+    /*
     A new line between spacer and text creates inconsistent spacing
     between slotted items and default slots.
-  */''}
+  */ ''
+  }
   <slot name="spacer">&nbsp;</slot><slot name="text">LIVE</slot>
 `;
 
@@ -57,11 +60,7 @@ slotTemplate.innerHTML = /*html*/`
  */
 class MediaLiveButton extends MediaChromeButton {
   static get observedAttributes() {
-    return [
-      ...super.observedAttributes,
-      MEDIA_PAUSED,
-      MEDIA_TIME_IS_LIVE
-    ];
+    return [...super.observedAttributes, MEDIA_PAUSED, MEDIA_TIME_IS_LIVE];
   }
 
   constructor(options = {}) {
