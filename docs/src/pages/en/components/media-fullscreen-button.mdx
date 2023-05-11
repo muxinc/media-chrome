@@ -5,7 +5,7 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-fullscreen-button.js
 ---
 
-import ComponentSandpack from "../../../components/ComponentSandpack";
+import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-fullscreen-button>` component is used to toggle fullscreen viewing.
 
@@ -15,8 +15,7 @@ The contents and behavior of the `<media-fullscreen-button>` will update automat
 
 ## Default usage
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   html={`<media-controller defaultsubtitles>
   <video
     playsinline muted crossorigin
@@ -34,8 +33,7 @@ This is useful if you'd like to use your own custom fullscreen button instead of
 
 Here's an example of how you can replace the default fullscreen icons with the words "Enter" and "Exit"
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={250}
   html={`<media-controller defaultsubtitles>
   <video

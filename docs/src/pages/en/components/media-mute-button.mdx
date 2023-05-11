@@ -5,7 +5,7 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-mute-button.js
 ---
 
-import ComponentSandpack from "../../../components/ComponentSandpack";
+import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-mute-button>` component is used to toggle the sound the media. The icon will display whether sound is enabled and the general volume level.
 
@@ -17,8 +17,7 @@ The contents and behavior of the `<media-mute-button>` will update automatically
 
 ## Default usage
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={265}
   html={`<media-controller defaultsubtitles>
   <video
@@ -41,8 +40,7 @@ This is useful if you'd like to use your own custom mute button instead of the d
 
 Here's an example of how you can replace the volume levels with the words that correspond to the level.
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={365}
   html={`<media-controller defaultsubtitles>
   <video

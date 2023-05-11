@@ -5,14 +5,13 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-seek-forward-button.js
 ---
 
-import ComponentSandpack from "../../../components/ComponentSandpack";
+import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-seek-forward-button>` component is used to allow seeking forward a configurable amount of time, defaulting to 30 seconds.
 
 ## Default usage
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={290}
   html={`<media-controller>
   <video
@@ -33,8 +32,7 @@ The `<media-seek-forward-button>` component is used to allow seeking forward a c
 
 The seeking amount can be configured with the `seekoffset` attribute.
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={290}
   html={`<media-controller>
   <video
@@ -59,8 +57,7 @@ The slot for `<media-seek-forward-button>` the slot is named `forward`.
 
 Here's an example of how you can replace the default icon with the word "Forward":
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={330}
   html={`<media-controller>
   <video

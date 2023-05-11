@@ -5,7 +5,7 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-cast-button.js
 ---
 
-import ComponentSandpack from "../../../components/ComponentSandpack";
+import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-cast-button>` component is used to bring up the Cast menu and select playback on a Chromecast-enabled device and to stop casting once started.
 
@@ -18,8 +18,7 @@ The contents and behavior of the `<media-cast-button>` will update automatically
 
 ## Default usage
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={190}
   html={`<media-controller>
   <video
@@ -38,8 +37,7 @@ This is useful if you'd like to use your own custom Cast button instead of the d
 
 Here's an example of how you can replace the default icons with the words "Cast" and "Exit".
 
-<ComponentSandpack
-  client:load
+<SandpackContainer
   height={250}
   html={`<media-controller>
   <video

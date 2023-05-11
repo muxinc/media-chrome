@@ -679,6 +679,11 @@
     react-devtools-inline "4.4.0"
     react-is "^17.0.2"
 
+"@codesandbox/sandpack-themes@^2.0.21":
+  version "2.0.21"
+  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-themes/-/sandpack-themes-2.0.21.tgz#f1970f03537434fff008e9c9c3f6581b0e5940c2"
+  integrity sha512-CMH/MO/dh6foPYb/3eSn2Cu/J3+1+/81Fsaj7VggICkCrmRk0qG5dmgjGAearPTnRkOGORIPHuRqwNXgw0E6YQ==
+
 "@docsearch/css@3.3.0", "@docsearch/css@^3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@docsearch/css/-/css-3.3.0.tgz#d698e48302d12240d7c2f7452ccb2d2239a8cd80"
