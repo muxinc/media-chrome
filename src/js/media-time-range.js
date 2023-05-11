@@ -3,7 +3,10 @@ import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
-import { getOrInsertCSSRule, closestComposedNode } from './utils/element-utils.js';
+import {
+  getOrInsertCSSRule,
+  closestComposedNode,
+} from './utils/element-utils.js';
 
 const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
@@ -18,7 +21,7 @@ const updateAriaValueText = (el) => {
 };
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       --media-preview-border-radius: 3px;
@@ -28,7 +31,7 @@ template.innerHTML = /*html*/`
 
     #preview-rail,
     #current-rail {
-      ${/* 1% of parent element and upscale by 100 in the translateX() */''}
+      ${/* 1% of parent element and upscale by 100 in the translateX() */ ''}
       width: 1%;
       position: absolute;
       left: 0;
@@ -37,7 +40,9 @@ template.innerHTML = /*html*/`
     }
 
     [part~="box"] {
-      ${/* absolute position is needed here so the box doesn't overflow the bounds */''}
+      ${
+        /* absolute position is needed here so the box doesn't overflow the bounds */ ''
+      }
       position: absolute;
       bottom: 100%;
       display: flex;
@@ -54,8 +59,12 @@ template.innerHTML = /*html*/`
       opacity: 0;
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~="preview-box"],
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) [part~="preview-box"] {
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]:hover) [part~="preview-box"],
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_TIME
+    }]:hover) [part~="preview-box"] {
       transition-duration: var(--media-preview-transition-duration-in, .5s);
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
@@ -65,7 +74,9 @@ template.innerHTML = /*html*/`
     media-preview-thumbnail,
     ::slotted(media-preview-thumbnail) {
       visibility: hidden;
-      ${/* delay changing these CSS props until the preview box transition is ended */''}
+      ${
+        /* delay changing these CSS props until the preview box transition is ended */ ''
+      }
       transition: visibility 0s .25s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-thumbnail-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
@@ -79,8 +90,12 @@ template.innerHTML = /*html*/`
         var(--media-preview-border-radius) var(--media-preview-border-radius) 0 0);
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) media-preview-thumbnail,
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) ::slotted(media-preview-thumbnail) {
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]:hover) media-preview-thumbnail,
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]:hover) ::slotted(media-preview-thumbnail) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
     }
@@ -88,7 +103,9 @@ template.innerHTML = /*html*/`
     media-preview-time-display,
     ::slotted(media-preview-time-display) {
       min-width: 0;
-      ${/* delay changing these CSS props until the preview box transition is ended */''}
+      ${
+        /* delay changing these CSS props until the preview box transition is ended */ ''
+      }
       transition: min-width 0s, border-radius 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-time-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
@@ -100,8 +117,12 @@ template.innerHTML = /*html*/`
       text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / .75));
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-time-display,
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) ::slotted(media-preview-time-display) {
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]) media-preview-time-display,
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]) ::slotted(media-preview-time-display) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       min-width: 100%;
       border-radius: var(--media-preview-time-border-radius,
@@ -120,8 +141,10 @@ template.innerHTML = /*html*/`
   </div>
   <div id="current-rail">
     <slot name="current" part="box current-box">
-      ${/* Example: add the current time to the playhead
-        <media-time-display></media-time-display> */''}
+      ${
+        /* Example: add the current time to the playhead
+        <media-time-display></media-time-display> */ ''
+      }
     </slot>
   </div>
 `;
@@ -376,10 +399,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     const boxRatio = this.range.value / (this.range.max - this.range.min);
     const boxPos = this.#getBoxPosition(this.#currentBox, boxRatio);
-    const { style } = getOrInsertCSSRule(
-      this.shadowRoot,
-      '#current-rail'
-    );
+    const { style } = getOrInsertCSSRule(this.shadowRoot, '#current-rail');
     style.transform = `translateX(${boxPos})`;
   }
 
@@ -398,8 +418,18 @@ class MediaTimeRange extends MediaChromeRange {
 
     const rangeRect = this.range.getBoundingClientRect();
     const mediaBoundsRect = bounds.getBoundingClientRect();
-    const boxMin = (this.#boxPaddingLeft - (rangeRect.left - mediaBoundsRect.left - boxWidth / 2)) / rangeRect.width * 100;
-    const boxMax = (mediaBoundsRect.right - rangeRect.left - boxWidth / 2 - this.#boxPaddingRight) / rangeRect.width * 100;
+    const boxMin =
+      ((this.#boxPaddingLeft -
+        (rangeRect.left - mediaBoundsRect.left - boxWidth / 2)) /
+        rangeRect.width) *
+      100;
+    const boxMax =
+      ((mediaBoundsRect.right -
+        rangeRect.left -
+        boxWidth / 2 -
+        this.#boxPaddingRight) /
+        rangeRect.width) *
+      100;
 
     if (!Number.isNaN(boxMin)) position = `max(${boxMin * 100}%, ${position})`;
     if (!Number.isNaN(boxMax)) position = `min(${position}, ${boxMax * 100}%)`;
@@ -424,10 +454,7 @@ class MediaTimeRange extends MediaChromeRange {
     mouseRatio = Math.max(0, Math.min(1, mouseRatio));
 
     const boxPos = this.#getBoxPosition(this.#previewBox, mouseRatio);
-    const { style } = getOrInsertCSSRule(
-      this.shadowRoot,
-      '#preview-rail'
-    );
+    const { style } = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
     style.transform = `translateX(${boxPos})`;
 
     const detail = mouseRatio * duration;
@@ -436,10 +463,10 @@ class MediaTimeRange extends MediaChromeRange {
       { composed: true, bubbles: true, detail }
     );
     this.dispatchEvent(mediaPreviewEvt);
-  }
+  };
 
   // Trigger when the mouse moves over the range
-  #rangeEntered = false
+  #rangeEntered = false;
 
   #offRangeHandler = (evt) => {
     if (
@@ -451,20 +478,21 @@ class MediaTimeRange extends MediaChromeRange {
       this.#rangeEntered = false;
       this.#stopTrackingMouse();
     }
-  }
+  };
 
   #trackMouse = () => {
     window.addEventListener('pointermove', this.#pointermoveHandler, false);
-  }
+  };
 
   #stopTrackingMouse = () => {
     window.removeEventListener('pointermove', this.#pointermoveHandler);
-    const endEvt = new window.CustomEvent(
-      MediaUIEvents.MEDIA_PREVIEW_REQUEST,
-      { composed: true, bubbles: true, detail: null }
-    );
+    const endEvt = new window.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
+      composed: true,
+      bubbles: true,
+      detail: null,
+    });
     this.dispatchEvent(endEvt);
-  }
+  };
 
   #rangepointermoveHandler = () => {
     const mediaDurationStr = this.getAttribute(
@@ -476,7 +504,7 @@ class MediaTimeRange extends MediaChromeRange {
 
       window.addEventListener('pointermove', this.#offRangeHandler, false);
     }
-  }
+  };
 
   #enableBoxes() {
     this.addEventListener('pointermove', this.#rangepointermoveHandler, false);
