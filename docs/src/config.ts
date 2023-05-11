@@ -69,6 +69,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Airplay button', link: 'en/components/media-airplay-button' },
       { text: 'Captions button', link: 'en/components/media-captions-button' },
       { text: 'Cast button', link: 'en/components/media-cast-button' },
+      { text: 'Control bar', link: 'en/components/media-control-bar' },
       { text: 'Duration display', link: 'en/components/media-duration-display' },
       { text: 'Fullscreen button', link: 'en/components/media-fullscreen-button' },
       { text: 'Live indicator / button', link: 'en/components/media-live-button' },
