@@ -83,7 +83,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const detail = this.mediaCurrentTime - this.seekOffset;
+    const detail = this.mediaCurrentTime + this.seekOffset;
     const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
       composed: true,
       bubbles: true,
