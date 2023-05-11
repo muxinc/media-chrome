@@ -8,7 +8,7 @@ Cumulative Layout Shift is when content on your page shifts. It's a sub-optimal 
 
 Video players are notorious for causing CLS. Use this guide to make sure your Media Chrome player is not causing CLS in your web application.
 
-# Set aspect-ratio
+## Set aspect-ratio
 
 The best way is to set an aspect ratio on `<media-controller>`
 
