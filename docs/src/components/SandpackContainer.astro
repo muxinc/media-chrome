@@ -23,6 +23,18 @@ if (typeof editorHeight === 'number') editorHeight = `${editorHeight}px`;
 if (typeof previewHeight === 'number') previewHeight = `${previewHeight}px`;
 ---
 
+<script>
+  // Allow autoplay and fullscreen in Sandpack previews
+  const observer = new MutationObserver((mutationList) => {
+    const iframe = mutationList[0].target;
+    if (!iframe.allow.includes(' autoplay; fullscreen;')) {
+      iframe.allow += ' autoplay; fullscreen;';
+      iframe.src = iframe.src;
+    }
+  });
+  observer.observe(document, { subtree: true, attributes: true, attributeFilter: ['allow'] });
+</script>
+
 <style is:global define:vars={{ flexWrap, minWidth, height, editorHeight, previewHeight }}>
   .sp-container {
     overflow: hidden;

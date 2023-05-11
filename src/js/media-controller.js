@@ -182,14 +182,17 @@ class MediaController extends MediaContainer {
 
       mediaEvents?.forEach((eventName)=>{
         media.addEventListener(eventName, handler);
+        handler();
       });
 
       rootEvents?.forEach((eventName)=>{
         this.getRootNode().addEventListener(eventName, handler);
+        handler();
       });
 
       trackListEvents?.forEach((eventName)=>{
         media.textTracks?.addEventListener(eventName, handler);
+        handler();
       });
     });
 

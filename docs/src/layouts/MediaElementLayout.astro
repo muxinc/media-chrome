@@ -1,0 +1,73 @@
+---
+import { Markdown } from '@astropub/md';
+import MainLayout from './MainLayout.astro';
+import SandpackContainer from "../components/SandpackContainer.astro";
+
+const { frontmatter, headings, url } = Astro.props as Props;
+const minorVersion = frontmatter.version.split('.').slice(0, 2).join('.');
+
+headings.push({ depth: 2, slug: 'installing', text: 'Installing' });
+---
+
+<MainLayout frontmatter={frontmatter} headings={headings}>
+  <slot />
+
+  <SandpackContainer
+    stacked
+    reversed
+    height={frontmatter.height ?? 850}
+    editorHeight={300}
+    dependencies={frontmatter.dependencies}
+    hiddenCss={`
+      media-controller,
+      ${frontmatter.tagName} {
+        aspect-ratio: ${frontmatter.aspectRatio ?? '16 / 9'};
+      }`
+    }
+    html={frontmatter.html ?? `<media-controller>
+  <${frontmatter.tagName}
+    ${frontmatter.src}
+    slot="media"
+    crossorigin
+    muted
+  ></${frontmatter.tagName}>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-range></media-time-range>
+    <media-time-display show-duration remaining></media-time-display>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-controller>`}
+  />
+
+  <Markdown of={`
+## Installing
+
+First install the NPM package:
+
+\`\`\`bash
+npm install ${frontmatter.package}
+\`\`\`
+
+Import in your app javascript (e.g. src/App.js):
+
+\`\`\`js
+import '${frontmatter.package}';
+\`\`\`
+
+Optionally, you can load the script directly from a CDN using
+[jsDelivr](https://www.jsdelivr.com/):
+
+\`\`\`html
+<script type="module" src="https://cdn.jsdelivr.net/npm/${frontmatter.package}@${minorVersion}/+esm"></script>
+\`\`\`
+
+This will register the custom elements with the browser so they can be used as HTML.
+
+`} />
+
+
+
+</MainLayout>

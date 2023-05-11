@@ -65,6 +65,19 @@ export const SIDEBAR: Sidebar = {
       { text: 'Design Principles', link: 'en/design-principles' },
       { text: 'Architecture', link: 'en/architecture' },
     ],
+    'Media Elements': [
+      { text: 'Cloudflare Video', link: 'en/media-elements/cloudflare-video' },
+      { text: 'DASH Video', link: 'en/media-elements/dash-video' },
+      { text: 'HLS Video', link: 'en/media-elements/hls-video' },
+      { text: 'JW Player Video', link: 'en/media-elements/jwplayer-video' },
+      { text: 'Mux Video', link: 'en/media-elements/mux-video' },
+      // { text: 'Shaka Video', link: 'en/media-elements/shaka-video' }, // remove until fixed
+      { text: 'Spotify Audio', link: 'en/media-elements/spotify-audio' },
+      { text: 'Video.js Video', link: 'en/media-elements/videojs-video' },
+      { text: 'Vimeo Video', link: 'en/media-elements/vimeo-video' },
+      { text: 'Wistia Video', link: 'en/media-elements/wistia-video' },
+      { text: 'YouTube Video', link: 'en/media-elements/youtube-video' },
+    ],
     Components: [
       { text: 'Airplay button', link: 'en/components/media-airplay-button' },
       { text: 'Captions button', link: 'en/components/media-captions-button' },
