@@ -2,14 +2,18 @@ import {
   MediaUIAttributes,
   MediaUIEvents,
   MediaStateReceiverAttributes,
-  PointerTypes
+  PointerTypes,
 } from './constants.js';
-import { closestComposedNode } from './utils/element-utils.js';
+import {
+  closestComposedNode,
+  getBooleanAttr,
+  setBooleanAttr,
+} from './utils/element-utils.js';
 import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
 <style>
   :host {
     display: var(--media-control-display, var(--media-gesture-receiver-display, inline-block));
@@ -33,7 +37,10 @@ class MediaGestureReceiver extends window.HTMLElement {
   // NOTE: Currently "baking in" actions + attrs until we come up with
   // a more robust architecture (CJP)
   static get observedAttributes() {
-    return [MediaStateReceiverAttributes.MEDIA_CONTROLLER, MediaUIAttributes.MEDIA_PAUSED];
+    return [
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+      MediaUIAttributes.MEDIA_PAUSED,
+    ];
   }
 
   constructor(options = {}) {
@@ -142,6 +149,17 @@ class MediaGestureReceiver extends window.HTMLElement {
     }
   }
 
+  /**
+   * @type {boolean} Is the media paused
+   */
+  get mediaPaused() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
+  }
+
+  set mediaPaused(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
+  }
+
   // NOTE: Currently "baking in" actions + attrs until we come up with
   // a more robust architecture (CJP)
   /**
@@ -150,11 +168,11 @@ class MediaGestureReceiver extends window.HTMLElement {
    */
   handleTap(e) {} // eslint-disable-line
 
-  handleMouseClick(e) { // eslint-disable-line
-    const eventName =
-      this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
-        ? MediaUIEvents.MEDIA_PLAY_REQUEST
-        : MediaUIEvents.MEDIA_PAUSE_REQUEST;
+  handleMouseClick(e) {
+    // eslint-disable-line
+    const eventName = this.mediaPaused
+      ? MediaUIEvents.MEDIA_PLAY_REQUEST
+      : MediaUIEvents.MEDIA_PAUSE_REQUEST;
     this.dispatchEvent(
       new window.CustomEvent(eventName, { composed: true, bubbles: true })
     );
