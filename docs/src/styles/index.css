@@ -320,6 +320,11 @@ table {
   border-collapse: collapse;
 }
 
+pre {
+  -webkit-font-smoothing: antialiased;
+  font-size: .8125em; /* 13px */
+}
+
 td,
 th {
   border-top: 1px solid var(--theme-bg-offset);
