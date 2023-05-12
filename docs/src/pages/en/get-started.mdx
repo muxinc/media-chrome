@@ -4,36 +4,57 @@ description: Docs intro
 layout: ../../layouts/MainLayout.astro
 ---
 
-import CopyToClipboard from "../../components/PageContent/CopyToClipboard.astro"
+import CopyToClipboard from "../../components/PageContent/CopyToClipboard.astro";
+import SandpackContainer from "../../components/SandpackContainer.astro";
 
-<h2>What is Media Chrome?</h2>
+Media Chrome is a collection of fully customizable media player controls and components. You can use these components to build a media player from scratch.
 
-Media Chrome provides **fully customizable media player controls** using **web components**.
+A key focus of Media Chrome is to seperate the UI from media playback. This means that the underlying playback engine can be swapped out while leaving the UI intact.
 
 ## Key Features
 
-- **Web Components:** Compatible with any Javascript framework (React, Angular, Svelte, etc.)
-- **Unified API:** Compatible with the `<video>` and `<audio>` elements and a lot of other players
-- **HTML first:** Write plain HTML to add and remove controls
-- **Easy styling:** Simple CSS to style the controls
+- **Web Components:** Use with or without a JavaScript framework, compatible with: React, Angular, VueJS, Svelte, and more.
+- **Styling:** Use simple CSS to style components
+- **Theming:** Build custom themes that group together controls and style
+- **Accessible:** All controls express their state in an accessible way
+- **Unified API:** Compatible with standard `<video>` and `<audio>` elements and many other media elements
 
-## _Quick_ Demo
+## Example usage
 
-### Adding controls to a video element
+This example demonstrates combining controls, captions, poster image, and a timeline with thumbnails on hover. This is a live sandbox so you can edit the code and see it update in real-time. Try adding `<media-volume-range></media-volume-range>` to the control bar.
 
-Just HTML. No javascripting required.
-
-[![Add controls to the media](https://image.mux.com/fbrV01YkyMrnp01BItrdWL029IurCj2gxlS/animated.gif?width=640&end=10&fps=15)](https://stream.new/v/fhRqeSkHntHb2IZ3AyduTK02l3b9j1EyZTjGHdyERg018)
+<SandpackContainer
+  height={710}
+  editorHeight={290}
+  stacked
+  reversed
+  html={`<media-controller defaultsubtitles>
+    <video slot="media" src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" muted crossorigin playsinline>
+      <track label="thumbnails" default kind="metadata" src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"/>
+      <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
+    </video>
+    <media-poster-image slot="poster" src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg" placeholdersrc="data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAUADADASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAECBAP/xAAdEAEBAAEEAwAAAAAAAAAAAAAAARECAxITFCFR/8QAGQEAAwADAAAAAAAAAAAAAAAAAAEDAgQF/8QAGBEBAQEBAQAAAAAAAAAAAAAAAAETERL/2gAMAwEAAhEDEQA/ANeC4ldyI1b2EtIzzrrIqYZLvl5FGkGdbfQzGPvo76WsPxXLlfqbaA5va2iVJADgPELACsD/2Q=="></media-poster-image>
+    <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+    <media-control-bar>
+      <media-play-button></media-play-button>
+      <media-seek-backward-button></media-seek-backward-button>
+      <media-seek-forward-button ></media-seek-forward-button>
+      <media-mute-button></media-mute-button>
+      <media-time-range></media-time-range>
+      <media-time-display></media-time-display>
+      <media-captions-button></media-captions-button>
+      <media-fullscreen-button></media-fullscreen-button>
+    </media-control-bar>
+  </media-controller>`}
+/>
 
 ## Install
 
-`<media-chrome>` is only packaged as a javascript module (es6), which is supported by all evergreen browsers and Node v12+. The package includes all of the existing media controls.
+Media Chrome is packaged as an ES6 JavaScript module which is supported by all evergreen browsers and Node v12+.
 
 ### Option 1: Hosted
 
 Load the module in the `<head>` of your HTML page. Note the `type="module"`, that's important.
-
-> Modules are always loaded asynchronously by the browser, so it's ok to load them in the head 👍
 
 <CopyToClipboard>
 ```html
@@ -41,7 +62,11 @@ Load the module in the `<head>` of your HTML page. Note the `type="module"`, tha
 ```
 </CopyToClipboard>
 
+> Modules are always loaded asynchronously by the browser, so it's ok to load them in the head 👍
+
 ### Option 2: Bundled via npm
+
+Install via npm (you could also use Yarn or your favorite package manager)
 
 <CopyToClipboard>
 ```bash
@@ -49,18 +74,19 @@ npm install media-chrome --save
 ```
 </CopyToClipboard>
 
+Import into your app.
+
 <CopyToClipboard>
 ```js
 import 'media-chrome';
 ```
 </CopyToClipboard>
 
-Include in your app javascript (e.g. src/App.js)
-This will register the custom elements with the browser so they can be used as HTML.
+Importing the package like this will automatically register all of the core Media Chrome components in the browser. This means you can add a control like `<media-play-button>` to your page.
 
 ## Using in your HTML
 
-The `<media-controller>` is the star of the show. It handles the communication between control elements and the media. Start by wrapping your media element with a `<media-controller>`, and adding `slot="media"` to your video or audio tag, or other [compatible player](#compatible-players).
+The `<media-controller>` component handles all of the communication between controls and the media being presented. To use it, wrap your media element with a `<media-controller>`, and add `slot="media"` to it.
 
 <CopyToClipboard>
 ```html
@@ -73,25 +99,13 @@ The `<media-controller>` is the star of the show. It handles the communication b
 ```
 </CopyToClipboard>
 
-After that, each control element can be used independently. When using outside of a `<media-controller>` element, a control needs to be told which media controller it's associated with via the `media-controller` attribute or property.
+> We're using a standard HTML `<video>` element here, but you could use any other [compatible media element](#compatible-media-elements).
 
-<CopyToClipboard>
-```html
-<media-controller id="myController">
-  <video
-    slot="media"
-    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-  ></video>
-  <media-play-button></media-play-button>
-</media-controller>
+Slots are a feature of HTML Web Components that allow you choose where an element should be placed. In this instance, we're telling media controller to place our video tag where media elements should go. Some Media Chrome components will define multiple slots and other none at all. You can find out which slots are available on each components documentation page.
 
-<media-play-button mediacontroller="myController"></media-play-button>
-```
-</CopyToClipboard>
+## Adding controls
 
-## Customizing the controls
-
-Use HTML to add or remove any of the controls. Then you can use CSS to style the controls as you would other HTML elements.
+You can add controls to your player by placing them inside of a `<media-control-bar>`. By default, this control bar will appear at the bottom of the player.
 
 <CopyToClipboard>
 ```html
@@ -112,30 +126,34 @@ Use HTML to add or remove any of the controls. Then you can use CSS to style the
 ```
 </CopyToClipboard>
 
-### Included elements
+> Unlike the video element we didn't specify a "slot". This means that the control bar will be placed into the default slot, which is reserved for controls.
 
-| Element                        | Description                                                                                                                                                                                                                                                                    |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `<media-controller>`           | Wraps controls and the media element, and handles communication between them. ([docs](./media-controller))                                                                                                                                                             |
-| `<media-control-bar>`          | Optional controls container to help align the controls in the standard fashion.                                                                                                                                                                                                |
-| `<media-play-button>`          | Toggle media playback. ([docs](./components/media-play-button))                                                                                                                                                                                                                   |
-| `<media-mute-button>`          | Toggle the sound. The icon responds to volume changes and acts as part of the typical volume control. ([docs](./components/media-mute-button))                                                                                                                                    |
-| `<media-volume-range>`         | Change the volume of the sound. ([docs](./components/media-volume-range))                                                                                                                                                                                                         |
-| `<media-time-range>`           | See how far the playhead is through the media duration, and seek to new times. ([docs](./components/media-time-range))                                                                                                                                                            |
-| `<media-time-display>`         | Show the time of the playhead.<br/><br/>Options: <br/>`<media-time-display remaining>` Show as remaining time <br/>`<media-time-display showduration>` Also show the duration after a slash. Ex: `1:00 / 2:00`. ([docs](./components/media-time-display))                            |
-| `<media-duration-display>`     | Show the duration of the media                                                                                                                                                                                                                                                 |
-| `<media-fullscreen-button>`    | Toggle fullscreen viewing. ([docs](./components/media-fullscreen-button))                                                                                                                                                                                                         |
-| `<media-pip-button>`           | Toggle picture-in-picture mode of the video. ([docs](./components/media-pip-button))                                                                                                                                                                                              |
-| `<media-playback-rate-button>` | Change the speed of playback. ([docs](./components/media-playback-rate-button))                                                                                                                                                                                                   |
-| `<media-seek-backward-button>` | Jump back `n` seconds in the media (default 30). ([docs](./components/media-seek-backward-button))                                                                                                                                                                                |
-| `<media-seek-forward-button>`  | Jump ahead `n` seconds in the media (default 30). ([docs](./components/media-seek-forward-button))                                                                                                                                                                                |
-| `<media-captions-button>`      | Show/disable captions (if no captions are available, will fallback to subtitles by default unless `nosubtitlesfallback` attribute is set). ([docs](./components/media-captions-button))                                                                                         |
-| `<media-poster-image>`         | Show a poster image that's displayed until media begins playing for the first time. Optionally also accepts a `placeholdersrc` attribute that can be used for content that immediately loads, such as an inlined, low-resolution image. ([docs](./components/media-poster-image) |
-| `<media-airplay-button>`       | Bring up the AirPlay menu to select/deselect AirPlay playback (Safari only). ([docs](./components/media-airplay-button))                                                                                                                                                          |
-| `<media-loading-indicator>`    | Show when your media content is loading/buffering. ([docs](./components/media-loading-indicator))                                                                                                                                                                                 |
-| More to come                   | Requests and contributions welcome                                                                                                                                                                                                                                             |
+When using controls outside of a `<media-controller>` wrapper element; the control, or the surrounding control bar, needs to specify which media controller it should be associated with. To do this you can set the `mediacontroller` attribute.
 
+<SandpackContainer
+  html={`<media-controller id="myController">
+    <video slot="media" src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" muted playsinline></video>
+</media-controller>
 
-## Compatible players
+<media-control-bar mediacontroller="myController">
+  <media-play-button></media-play-button>
+  <media-time-range></media-time-range>
+</media-control-bar>`}
+/>
 
-Media Chrome will work with any HTML element that exposes the same API as HTML media elements (`<video>` and `<audio>`). See the guide for the [media slot](/en/media-slot) to learn more about how media elements work with the media slot.
+> You could also set the `mediaController` property of the element with JavaScript
+
+## Taking it further
+
+That's all it takes to build a custom media player. If you'd like to dive deeper into customization you can check out these resources.
+
+- [Styling](/en/styling)
+- [Theming](/en/themes)
+
+## Compatible media elements
+
+Media elements are in charge of controlling the playback of media and present no UI on their own. The `<media-controller>` component mediates events between the controls and the media element for you.
+
+Media Chrome will work with any element that exposes the same API as the HTML media elements (`<video>` and `<audio>`). This means that you can replace these elements with your own if they conform to the same API. You can read more about the [HTMLMediaElement API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement).
+
+There are many compatible media elements available that you can replace the standard `<video>` element with. Check out the media elements section in the main menu.

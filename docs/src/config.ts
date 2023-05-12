@@ -48,7 +48,6 @@ export const SIDEBAR: Sidebar = {
     Basics: [
       { text: 'Get started', link: 'en/get-started' },
       { text: 'Styling', link: 'en/styling' },
-      { text: 'Media slot', link: 'en/media-slot' },
     ],
     Guides: [
       { text: 'React usage', link: 'en/react' },
