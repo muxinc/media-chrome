@@ -5,8 +5,9 @@ layout: ../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-preview-thumbnail.js
 ---
 
-The preview thumbnail shows an image while the user hovers over the time range.
-There is no need to add this element yourself, it's automatically included by `<media-time-range>`.
+> This component is automatically rendered internally by [`<media-time-range>`](media-time-range). While the default implementation covers most use cases, the documentation below describes how the component works for applications with advanced use cases.
+
+The `<media-preview-thumbnail>` component displays an image while the user hovers over the media time range.
 
 <style>
   media-preview-thumbnail {
