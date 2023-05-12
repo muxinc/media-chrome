@@ -445,8 +445,8 @@ export const MediaUIRequestHandlers = {
     if (streamType == StreamTypes.LIVE && autoSeekToLive) {
       MediaUIRequestHandlers['MEDIA_SEEK_TO_LIVE_REQUEST'](media);
     }
-
-    media.play().catch(() => {});
+    // Not all media's play() returns a Promise, e.g. castable-video
+    media.play()?.catch(() => {});
   },
   MEDIA_PAUSE_REQUEST: (media) => media.pause(),
   MEDIA_MUTE_REQUEST: (media) => (media.muted = true),
