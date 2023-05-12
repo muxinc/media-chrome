@@ -102,14 +102,15 @@ export const SIDEBAR: Sidebar = {
       { text: 'Responsive themes', link: 'en/themes/responsive-themes' },
       { text: 'Custom slots', link: 'en/themes/custom-slots' },
       { text: 'Share themes', link: 'en/themes/share' },
+      
     ],
-    "Learn More": [
-      { text: 'Showcase', link: 'en/showcase' },
+    Advanced: [
+      { text: 'Stream Type', link: 'en/stream-type' },
       { text: 'Design Principles', link: 'en/design-principles' },
       { text: 'Architecture', link: 'en/architecture' },
     ],
-    'Media States': [
-      { text: 'Stream Type', link: 'en/stream-type' },
+    "Learn More": [
+      { text: 'Showcase', link: 'en/showcase' },
     ],
   },
 };
