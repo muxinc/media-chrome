@@ -128,15 +128,18 @@ You can add controls to your player by placing them inside of a `<media-control-
 
 > Unlike the video element we didn't specify a "slot". This means that the control bar will be placed into the default slot, which is reserved for controls.
 
-When using a control outside of a `<media-controller>` wrapper element, the control needs to specify which media controller it should be associated with. To do this you can set the `mediacontroller` attribute.
+When using controls outside of a `<media-controller>` wrapper element; the control, or the surrounding control bar, needs to specify which media controller it should be associated with. To do this you can set the `mediacontroller` attribute.
 
-<CopyToClipboard>
-```html
-<media-controller id="myController"></media-controller>
-<!-- The play button could be somewhere else in the page -->
-<media-play-button mediacontroller="myController"></media-play-button>
-```
-</CopyToClipboard>
+<SandpackContainer
+  html={`<media-controller id="myController">
+    <video slot="media" src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" muted playsinline></video>
+</media-controller>
+
+<media-control-bar mediacontroller="myController">
+  <media-play-button></media-play-button>
+  <media-time-range></media-time-range>
+</media-control-bar>`}
+/>
 
 > You could also set the `mediaController` property of the element with JavaScript
 
