@@ -1,3 +1,54 @@
+# [1.0.0-rc.0](https://github.com/muxinc/media-chrome/compare/v0.21.0...v1.0.0-rc.0) (2023-05-12)
+
+
+### Bug Fixes
+
+* add default unavailable CSS to themes ([#539](https://github.com/muxinc/media-chrome/issues/539)) ([f9c5a9e](https://github.com/muxinc/media-chrome/commit/f9c5a9e921cca14a4e8858fcbdd234de4286c64a))
+* Better color contrast on breakpoint docs ([#614](https://github.com/muxinc/media-chrome/issues/614)) ([d869d73](https://github.com/muxinc/media-chrome/commit/d869d73a407fd5620fc2bf16f31665d0bd0f6553))
+* buffered attr ([#544](https://github.com/muxinc/media-chrome/issues/544)) ([7efe18a](https://github.com/muxinc/media-chrome/commit/7efe18ac00fc84648e417d23ebcaf643b2c4fae3))
+* casting ([#618](https://github.com/muxinc/media-chrome/issues/618)) ([106e3dd](https://github.com/muxinc/media-chrome/commit/106e3ddb1ab3c12619b09b2d240a2691745aeea3))
+* Comparison of text track lists ([#600](https://github.com/muxinc/media-chrome/issues/600)) ([87daf00](https://github.com/muxinc/media-chrome/commit/87daf00d5c1fabf0c66cf97ef63beae328d8986c))
+* css variables consistency updates ([#554](https://github.com/muxinc/media-chrome/issues/554)) ([f2876db](https://github.com/muxinc/media-chrome/commit/f2876db9b864256fa7419d5ab595ad026ef69161))
+* dash in breakpoint attr ([#540](https://github.com/muxinc/media-chrome/issues/540)) ([23c2de9](https://github.com/muxinc/media-chrome/commit/23c2de9dbf8fb07c609af23ba06d3a11f76f390a))
+* don't auto-size ranges in media-control-bar if they're all alone. ([#591](https://github.com/muxinc/media-chrome/issues/591)) ([276b96d](https://github.com/muxinc/media-chrome/commit/276b96de8fbf3ad1e4ea4384253e57f08395067a))
+* forward button ([#605](https://github.com/muxinc/media-chrome/issues/605)) ([4c81eed](https://github.com/muxinc/media-chrome/commit/4c81eed5b1562a2af0008baeeffeff778186313c))
+* Let media-control-bar size (height) range components like it doe… ([#582](https://github.com/muxinc/media-chrome/issues/582)) ([d1a65da](https://github.com/muxinc/media-chrome/commit/d1a65da3afdc94b6e19da68f3298d1e26b0b60e6))
+* selectmenu mediacontroller and missed examples from first pass. ([#541](https://github.com/muxinc/media-chrome/issues/541)) ([2ab9032](https://github.com/muxinc/media-chrome/commit/2ab90323a1bd20f3456e95e1567b379e5e7373b4))
+* show chrome on pointermove for custom video ([#604](https://github.com/muxinc/media-chrome/issues/604)) ([de8035b](https://github.com/muxinc/media-chrome/commit/de8035bc5cf44c83192d0d6ad0eaef1bfa406648)), closes [#451](https://github.com/muxinc/media-chrome/issues/451) [#298](https://github.com/muxinc/media-chrome/issues/298)
+* show pointer for theme toggle icons ([#611](https://github.com/muxinc/media-chrome/issues/611)) ([71358ce](https://github.com/muxinc/media-chrome/commit/71358ceb2f2d1e3a0300d1bfe7628820e5e1764d))
+* use default values in new prop getters for seek btns. Use props … ([#592](https://github.com/muxinc/media-chrome/issues/592)) ([c843a5e](https://github.com/muxinc/media-chrome/commit/c843a5e3ea7da70becb9b0516cb51c4c2b51bc30))
+
+
+### Features
+
+* add defaultsubtitles to media-controller ([#551](https://github.com/muxinc/media-chrome/issues/551)) ([fdbc8c7](https://github.com/muxinc/media-chrome/commit/fdbc8c7719b5e54086ae12954b6d59fbd1c33021))
+* add novolumepref attribute to prefer writing to localStorage ([#575](https://github.com/muxinc/media-chrome/issues/575)) ([31bdb11](https://github.com/muxinc/media-chrome/commit/31bdb1188236e0411e15f284554604f03d2b1a4b))
+* Add props and types to seek forwards and backwards elements ([#566](https://github.com/muxinc/media-chrome/issues/566)) ([0259c3a](https://github.com/muxinc/media-chrome/commit/0259c3abaa578444456e62f391d8e5a7a586d0e1))
+* Adding custom event for breakingpoint changing ([#584](https://github.com/muxinc/media-chrome/issues/584)) ([1cf3579](https://github.com/muxinc/media-chrome/commit/1cf3579123ba4de59a5a70fed4d89637d7652a09))
+* Airplay, Captions, and Cast button props ([#587](https://github.com/muxinc/media-chrome/issues/587)) ([14156f7](https://github.com/muxinc/media-chrome/commit/14156f77e9de73884cb23f9e748227a9f1659157))
+* combine MEDIA_CAPTIONS_LIST into MEDIA_SUBTITLES_LIST ([#546](https://github.com/muxinc/media-chrome/issues/546)) ([03e62e6](https://github.com/muxinc/media-chrome/commit/03e62e616b2f7bef46b1331079421fa5f17736d1))
+* Drop all deprecated or redundant components. Update tests, examples, docs, etc. based on changes. ([#560](https://github.com/muxinc/media-chrome/issues/560)) ([20fca8c](https://github.com/muxinc/media-chrome/commit/20fca8cf4253482d93608b1c6edc728aa6819375))
+* Duration, Fullscreen, and Gesture props ([#595](https://github.com/muxinc/media-chrome/issues/595)) ([748c013](https://github.com/muxinc/media-chrome/commit/748c01315f5654eb21487418c9cf216f8d53eee3))
+* fix casing in attributes and vars ([#606](https://github.com/muxinc/media-chrome/issues/606)) ([502fff5](https://github.com/muxinc/media-chrome/commit/502fff531df28da43451e166ba710c59d7f43a5b))
+* Live Button and Mute button props ([#596](https://github.com/muxinc/media-chrome/issues/596)) ([d6b5ad6](https://github.com/muxinc/media-chrome/commit/d6b5ad6b7f61cc60d989f4ea591707dbc8433683))
+* Media Time Range and Volume Range props ([#599](https://github.com/muxinc/media-chrome/issues/599)) ([61d6ddd](https://github.com/muxinc/media-chrome/commit/61d6dddf5dc140cb91007c80713b44aa39c3d352))
+* Migrate all attributes to lowercase ('smushedcase'). ([#537](https://github.com/muxinc/media-chrome/issues/537)) ([fe9eadc](https://github.com/muxinc/media-chrome/commit/fe9eadc98af47752cc7b362379cd3fc4f24e5a14))
+* move loading-indicator visibility to be done in CSS only ([#586](https://github.com/muxinc/media-chrome/issues/586)) ([0d989b3](https://github.com/muxinc/media-chrome/commit/0d989b34e46f36af3fb2fe017b026932eec13f95))
+* Pip button, Play button, and Playback Rates props ([#597](https://github.com/muxinc/media-chrome/issues/597)) ([3d96b16](https://github.com/muxinc/media-chrome/commit/3d96b16deeb90b9961582b811025ce00401b67e9))
+* Poster Image, Preview Thumbnail, and Time Display props ([#598](https://github.com/muxinc/media-chrome/issues/598)) ([7126ddf](https://github.com/muxinc/media-chrome/commit/7126ddffcda160a2c7186d1447be1493caed0bd2))
+
+
+### BREAKING CHANGES
+
+* removed keys() from AttributeTokenList
+* remove `isloading` attribute from media-loading-indicator.
+* Change `--media-live-indicator-color` to `--media-live-button-indicator-color`, `--media-time-buffered-color` to `--media-time-range-buffered-color`, `--media-background-position` to `--media-poster-image-background-position`, and `--media-background-size` to `--media-poster-image-background-size`.
+* remove defaultshowing attribute from
+media-captions-button and media-captions-selectmenu.
+* remove MEDIA_CAPTIONS_LIST, MEDIA_CAPTIONS_SHOWING, no-subtitles-fallback, MEDIA_SHOW_CAPTIONS_REQUEST, MEDIA_DISABLE_CAPTIONS_REQUEST, and MEDIA_CAPTIONS_LIST & MEDIA_CAPTIONS_SHOWING change events.
+
+
+
 # [0.21.0](https://github.com/muxinc/media-chrome/compare/v0.20.4...v0.21.0) (2023-04-17)
 
 
