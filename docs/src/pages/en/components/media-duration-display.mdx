@@ -1,0 +1,45 @@
+---
+title: <media-duration-display>
+description: Media Duration Display
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-duration-display.js
+---
+import SandpackContainer from "../../../components/SandpackContainer.astro";
+
+The `<media-duration-display>` component keeps your viewers informed about the duration of the current media loaded in the player.
+
+This component's primary use is intended to be display-only. Its time value will update automatically from any linked `media-controller` element.
+
+## Default appearance
+
+<SandpackContainer
+  html={`<media-controller>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-duration-display></media-duration-display>
+</media-controller>`}
+  hiddenCss={"div { font-size: 0; }"}
+/>
+
+## Manually setting the duration
+
+If you have a use case where setting the duration manually makes sense, you can do that with the `mediaduration` attribute:
+
+### Current time of 2 minutes
+
+<media-duration-display mediaduration="120.0"></media-duration-display>
+
+```html
+<media-duration-display mediaduration="120.0"></media-duration-display>
+```
+
+### Current time of one hour
+
+<media-duration-display mediaduration="3600.0"></media-duration-display>
+
+```html
+<media-duration-display mediaduration="3600.0"></media-duration-display>
+```
