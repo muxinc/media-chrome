@@ -92,6 +92,18 @@
   --theme-navbar-bg: hsla(var(--color-bg-putty), 1);
   --theme-navbar-height: 5rem;
   --theme-footer-bg: hsla(var(--color-black), 1);
+
+  --astro-code-color-text: #24292e;
+  --astro-code-color-background: #ffffff;
+  --astro-code-token-constant: #005cc5;
+  --astro-code-token-string: ##032f62;
+  --astro-code-token-comment: #6a737d;
+  --astro-code-token-keyword: #d73a49;
+  --astro-code-token-parameter: #032f62;
+  --astro-code-token-function: #005cc5;
+  --astro-code-token-string-expression: #6f42c1;
+  --astro-code-token-punctuation: #24292e;
+  --astro-code-token-link: #22863a;
 }
 
 body {
@@ -132,4 +144,16 @@ body {
   --docsearch-hit-color: var(--theme-text);
   --docsearch-footer-shadow: inset 0 2px 10px #000;
   --docsearch-modal-shadow: inset 0 0 8px #000;
+
+  --astro-code-color-text: #24292e;
+  --astro-code-color-background: #ffffff;
+  --astro-code-token-constant: #005cc5;
+  --astro-code-token-string: ##032f62;
+  --astro-code-token-comment: #6a737d;
+  --astro-code-token-keyword: #d73a49;
+  --astro-code-token-parameter: #032f62;
+  --astro-code-token-function: #005cc5;
+  --astro-code-token-string-expression: #6f42c1;
+  --astro-code-token-punctuation: #24292e;
+  --astro-code-token-link: #22863a;
 }

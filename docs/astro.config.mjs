@@ -47,6 +47,7 @@ export default defineConfig({
     markdownIntegration(),
   ],
   markdown: {
+    shikiConfig: { theme: 'css-variables' },
     remarkPlugins: [
       // These are here because setting custom plugins disables the default plugins
       remarkGfm,

@@ -12,6 +12,8 @@ iframe {
   outline: none;
 }
 
+
+
 :root {
   --user-font-scale: 1rem - 16px;
   --max-width: calc(100% - 1rem);
@@ -306,10 +308,15 @@ pre {
   margin-right: calc(var(--padding-inline) * -1);
   margin-top: 2.5rem;
   font-family: var(--font-mono);
+  -webkit-font-smoothing: antialiased;
   line-height: 1.5;
-  font-size: 0.85em;
+  font-size: .8125em; /* 13px */
   overflow-y: hidden;
   overflow-x: auto;
+}
+
+pre {
+  border: 1px solid #f3f3f3;
 }
 
 table {
