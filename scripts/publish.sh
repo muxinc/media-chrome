@@ -10,6 +10,7 @@ dry_run=false
 canary_run=false
 tag=latest
 release_type=
+preid=
 
 function main {
   processCommandLineArgs "$@"
@@ -27,6 +28,8 @@ function main {
 }
 
 function processCommandLineArgs {
+  collect_preid=false
+
   for arg in "$@"
   do
     case $arg in
@@ -44,8 +47,15 @@ function processCommandLineArgs {
         echo "  $0 patch        Publish a patch release."
         echo "  $0 minor        Publish a minor release."
         echo "  $0 major        Publish a major release."
+        echo "  $0 prepatch     Publish a prepatch release."
+        echo "  $0 preminor     Publish a preminor release."
+        echo "  $0 premajor     Publish a premajor release."
+        echo "  $0 prerelease   Publish a prerelease release."
         echo "  $0 <version>    Publish a release with a specific version."
         echo
+        echo "  $0 --preid   | -p  In non-canary mode, use the provided preid."
+        echo "      This is only applied if a pre-version release is used."
+        echo "      A value of 'none' is explicitly ignored."
         echo "  $0 --tag     | -t  In non-canary mode, publish to this npm tag. Default is latest."
         echo "  $0 --dry-run | -n  Run the release as a dry-run."
         exit 0
@@ -53,7 +63,10 @@ function processCommandLineArgs {
       --dry-run|-n)
         dry_run=true
         ;;
-      patch|minor|major)
+      --preid|-p)
+        collect_preid=true
+        ;;
+      patch|minor|major|prepatch|preminor|premajor|prerelease)
         release_type=$arg
         ;;
       --tag|-t)
@@ -63,6 +76,12 @@ function processCommandLineArgs {
         if [ -z "$tag" ]; then
           tag=$arg
         fi
+        if "$collect_preid"; then
+          if [ "$arg" != "none" ]; then
+            preid=$arg
+            collect_preid=false
+          fi
+        fi
         ;;
     esac
   done
@@ -70,7 +89,7 @@ function processCommandLineArgs {
 
 function release {
   BUMP=$(npx -p conventional-changelog-angular -p conventional-recommended-bump -c 'conventional-recommended-bump -p angular')
-  VERSION=$(npm --no-git-tag-version version "${release_type:-$BUMP}")
+  VERSION=$(npm --no-git-tag-version version "${release_type:-$BUMP}" --preid "$preid")
 
   if "$dry_run"; then
     echo
@@ -78,7 +97,10 @@ function release {
     if [ -z "$release_type" ]; then
       echo "Conventional release was used to do *$BUMP* update"
     else
-      echo "A release type of *$release_type* was provided and used"
+      echo "A release type of *$release_type* was provided and used."
+    fi
+    if [ -n "$preid" ]; then
+      echo "A preid of *$preid* was provided."
     fi
     echo "The version in package.json may have changed. Please revert it manually."
     echo
