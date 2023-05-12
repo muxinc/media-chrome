@@ -94,7 +94,7 @@
   --theme-footer-bg: hsla(var(--color-black), 1);
 
   --astro-code-color-text: #24292e;
-  --astro-code-color-background: #ffffff;
+  --astro-code-color-background: transparent;
   --astro-code-token-constant: #005cc5;
   --astro-code-token-string: ##032f62;
   --astro-code-token-comment: #6a737d;
@@ -132,7 +132,7 @@ body {
   --theme-code-bg: hsla(var(--color-gray-5), 1);
   --theme-code-text: hsla(var(--color-base-white), 100%, 1);
   --theme-navbar-bg: rgb(56 56 56);
-  --theme-footer-bg: hsla(211, 29%, 14%, 1);
+  --theme-footer-bg: rgb(56 56 56);
 
   /* DocSearch [Algolia] */
   --docsearch-modal-background: var(--theme-bg);
@@ -145,15 +145,15 @@ body {
   --docsearch-footer-shadow: inset 0 2px 10px #000;
   --docsearch-modal-shadow: inset 0 0 8px #000;
 
-  --astro-code-color-text: #24292e;
-  --astro-code-color-background: #ffffff;
-  --astro-code-token-constant: #005cc5;
+  --astro-code-color-text: #E1E8EE;
+  --astro-code-color-background: #0D1117;
+  --astro-code-token-constant: #7EE787;
   --astro-code-token-string: ##032f62;
   --astro-code-token-comment: #6a737d;
-  --astro-code-token-keyword: #d73a49;
+  --astro-code-token-keyword: #E1E8EE;
   --astro-code-token-parameter: #032f62;
-  --astro-code-token-function: #005cc5;
-  --astro-code-token-string-expression: #6f42c1;
+  --astro-code-token-function: #78BFFD;
+  --astro-code-token-string-expression: #7EE787;
   --astro-code-token-punctuation: #24292e;
   --astro-code-token-link: #22863a;
 }
