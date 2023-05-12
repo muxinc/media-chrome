@@ -1,0 +1,72 @@
+---
+title: <media-time-display>
+description: Media Time Display
+layout: ../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-time-display.js
+---
+
+import SandpackContainer from "../../../components/SandpackContainer.astro";
+
+The `<media-time-display>` component is used to show the current or remaining time of media playback, optionally showing the media duration as well. Clicking the component will toggle between showing the current vs. the remaining time.
+
+## Default usage
+
+<SandpackContainer
+  height={265}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  >
+  </video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Show the duration
+
+Showing the duration can be configured with the `showduration` attribute.
+
+<SandpackContainer
+  height={265}
+  html={`<media-controller defaultsubtitles>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  >
+  </video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display showduration></media-time-display>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Show the remaining time by default
+
+Showing the remaining time by default can be configured with the `remaining` attribute.
+
+<SandpackContainer
+  height={265}
+  html={`<media-controller defaultsubtitles>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  >
+  </video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display remaining></media-time-display>
+  </media-control-bar>
+</media-controller>`}
+/>
+
