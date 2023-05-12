@@ -100,7 +100,7 @@ class MediaCastButton extends MediaChromeButton {
 
   handleClick() {
     const eventName =
-      this.mediaIsCasting != null
+      this.mediaIsCasting
         ? MediaUIEvents.MEDIA_EXIT_CAST_REQUEST
         : MediaUIEvents.MEDIA_ENTER_CAST_REQUEST;
     this.dispatchEvent(
