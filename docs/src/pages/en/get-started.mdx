@@ -10,6 +10,8 @@ import CopyToClipboard from "../../components/PageContent/CopyToClipboard.astro"
 
 Media Chrome is a collection of fully customizable media player controls and components. You can use these components to build a media player from scratch.
 
+A key focus of Media Chrome is to seperate the UI from media playback. This means that the underlying playback engine can be swapped out while leaving the UI intact.
+
 ## Key Features
 
 - **Web Components:** Use with or without a JavaScript framework, compatible with: React, Angular, VueJS, Svelte, and more.
@@ -56,7 +58,7 @@ import 'media-chrome';
 ```
 </CopyToClipboard>
 
-Importing the package like this will automatically register all of the available components in the browser. This means you can add a control like `<media-play-button></media-play-button>` to your page.
+Importing the package like this will automatically register all of the available components in the browser. This means you can add a control like `<media-play-button>` to your page.
 
 ## Using in your HTML
 
@@ -75,29 +77,7 @@ The `<media-controller>` component handles all of the communication between cont
 
 > We're using a standard HTML `<video>` element here, but you could use any other [compatible media element](#compatible-media-elements).
 
-After that, each control element can be used independently.
-
-<CopyToClipboard>
-```html
-<media-controller id="myController">
-  <video
-    slot="media"
-    src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-  ></video>
-  <media-play-button></media-play-button>
-</media-controller>
-````
-</CopyToClipboard>
-
-When using a control outside of a `<media-controller>` wrapper element, the control needs to specify which media controller it should be associated with. To do this you can set the `media-controller` attribute.
-
-<CopyToClipboard>
-```html
-<media-play-button mediacontroller="myController"></media-play-button>
-```
-</CopyToClipboard>
-
-> You could also set the `mediaController` property of the element with JavaScript
+Slots are a feature of HTML Web Components that allow you choose where an element should be placed. In this instance, we're telling media controller to place our video tag where media elements should go. Some Media Chrome components will define multiple slots and other none at all. You can find out which slots are available on each components documentation page.
 
 ## Adding controls
 
@@ -122,17 +102,31 @@ You can add controls to your player by placing them inside of a `<media-control-
 ```
 </CopyToClipboard>
 
-> Unlike the video element we didn't specify a "slot". This just means that the control will be placed into the default slot, which is reserved for controls.
+> Unlike the video element we didn't specify a "slot". This means that the control bar will be placed into the default slot, which is reserved for controls.
+
+When using a control outside of a `<media-controller>` wrapper element, the control needs to specify which media controller it should be associated with. To do this you can set the `mediacontroller` attribute.
+
+<CopyToClipboard>
+```html
+<media-controller id="myController"></media-controller>
+<!-- The play button could be somewhere else in the page -->
+<media-play-button mediacontroller="myController"></media-play-button>
+```
+</CopyToClipboard>
+
+> You could also set the `mediaController` property of the element with JavaScript
 
 ## Taking it further
 
-That's all it takes to start building a custom media player. If you'd like to dive deeper into customization you can check out these resources
+That's all it takes to build a custom media player. If you'd like to dive deeper into customization you can check out these resources.
 
 - [Styling](/en/styling)
 - [Theming](/en/themes)
 
 ## Compatible media elements
 
-Media Chrome will work with any element that exposes the same API as the HTML media elements (`<video>` and `<audio>`). This means that you can replace these elements with your own if they conform to the same API. You can read more about the [HTMLMediaElement API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement)
+Media elements are in charge of controlling the playback of media and present no UI on their own. The `<media-controller>` component mediates events between the controls and the media element for you.
 
-See the [media slot](/en/media-slot) guide to learn more about how media elements work with the media slot.
+Media Chrome will work with any element that exposes the same API as the HTML media elements (`<video>` and `<audio>`). This means that you can replace these elements with your own if they conform to the same API. You can read more about the [HTMLMediaElement API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement).
+
+There are many compatible media elements available that you can replace the standard `<video>` element with. Check out the media elements section in the main menu.
