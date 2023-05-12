@@ -30,7 +30,7 @@ template.innerHTML = /*html*/`
     --media-range-thumb-height: 14px;
   }
 
-  :host([stream-type="live"]) media-time-range, :host([stream-type="live"]) media-time-display {
+  :host([streamtype="live"]) media-time-range, :host([streamtype="live"]) media-time-display {
     opacity: 0;
   }
 
@@ -354,7 +354,7 @@ template.innerHTML = /*html*/`
 class MediaThemeDemuxed extends MediaThemeElement {
   static template = template;
   static get observedAttributes() {
-    return ["stream-type"];
+    return ["streamtype"];
   }
   #breakpoints = { xs: 360, sm: 600, md: 760, lg: 960, xl: 1100 };
 
@@ -377,7 +377,7 @@ class MediaThemeDemuxed extends MediaThemeElement {
   }
 
   attributeChangedCallback(name, _oldValue, newValue) {
-    if(name === "stream-type" && newValue === "live") {
+    if(name === "streamtype" && newValue === "live") {
       /** @type {HTMLMediaElement} */
       const media = this.querySelector('[slot="media"]');
       media.muted = true;

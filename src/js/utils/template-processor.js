@@ -156,10 +156,10 @@ export function tokenizeExpression(expr) {
 //   >PlayButton section="center"
 //   section ?? 'bottom'
 //   value | string
-//   streamType == 'on-demand'
-//   streamType != 'live'
+//   streamtype == 'on-demand'
+//   streamtype != 'live'
 //   breakpointmd
-//   !targetLiveWindow
+//   !targetlivewindow
 export function evaluateExpression(expr, state = {}) {
   const tokens = tokenizeExpression(expr);
 
@@ -199,7 +199,7 @@ export function evaluateExpression(expr, state = {}) {
     return getParamValue(tokens[0].token, state);
   }
 
-  // e.g. {{!targetLiveWindow}} or {{!!lengthInBoolean}}
+  // e.g. {{!targetlivewindow}} or {{!!lengthInBoolean}}
   if (tokens.length === 2) {
     const operator = tokens[0]?.token;
     const run = operators[operator];
@@ -212,7 +212,7 @@ export function evaluateExpression(expr, state = {}) {
     return run(a);
   }
 
-  // e.g. {{streamType == 'on-demand'}}, {{val | string}}, {{section ?? 'bottom'}}
+  // e.g. {{streamtype == 'on-demand'}}, {{val | string}}, {{section ?? 'bottom'}}
   if (tokens.length === 3) {
     const operator = tokens[1]?.token;
     const run = operators[operator];
