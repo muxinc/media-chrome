@@ -5,6 +5,7 @@ layout: ../../layouts/MainLayout.astro
 ---
 
 import CopyToClipboard from "../../components/PageContent/CopyToClipboard.astro";
+import SandpackContainer from "../../components/SandpackContainer.astro";
 
 Media Chrome is a collection of fully customizable media player controls and components. You can use these components to build a media player from scratch.
 
@@ -20,7 +21,22 @@ A key focus of Media Chrome is to seperate the UI from media playback. This mean
 
 ## Example usage
 
-[placeholder: code embed example of a simple player using video element]
+<SandpackContainer
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+ <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-mute-button></media-mute-button>
+    <media-time-range></media-time-range>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-controller>`}
+/>
 
 ## Install
 
