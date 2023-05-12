@@ -21,21 +21,31 @@ A key focus of Media Chrome is to seperate the UI from media playback. This mean
 
 ## Example usage
 
+This example demonstrates combining controls, captions, poster image, and a timeline with thumbnails on hover. This is a live sandbox so you can edit the code and see it update in real-time. Try adding `<media-volume-range></media-volume-range>` to the control bar.
+
 <SandpackContainer
-  html={`<media-controller>
-  <video
-    slot="media"
-    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
-    playsinline
-    muted
-  ></video>
- <media-control-bar>
-    <media-play-button></media-play-button>
-    <media-mute-button></media-mute-button>
-    <media-time-range></media-time-range>
-    <media-fullscreen-button></media-fullscreen-button>
-  </media-control-bar>
-</media-controller>`}
+  height={680}
+  editorHeight={300}
+  stacked
+  reversed
+  html={`<media-controller defaultsubtitles>
+    <video slot="media" src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" muted crossorigin playsinline>
+      <track label="thumbnails" default kind="metadata" src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"/>
+      <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
+    </video>
+    <media-poster-image slot="poster" src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg" placeholdersrc="data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAUADADASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAECBAP/xAAdEAEBAAEEAwAAAAAAAAAAAAAAARECAxITFCFR/8QAGQEAAwADAAAAAAAAAAAAAAAAAAEDAgQF/8QAGBEBAQEBAQAAAAAAAAAAAAAAAAETERL/2gAMAwEAAhEDEQA/ANeC4ldyI1b2EtIzzrrIqYZLvl5FGkGdbfQzGPvo76WsPxXLlfqbaA5va2iVJADgPELACsD/2Q=="></media-poster-image>
+    <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+    <media-control-bar>
+      <media-play-button></media-play-button>
+      <media-seek-backward-button></media-seek-backward-button>
+      <media-seek-forward-button ></media-seek-forward-button>
+      <media-mute-button></media-mute-button>
+      <media-time-range></media-time-range>
+      <media-time-display></media-time-display>
+      <media-captions-button></media-captions-button>
+      <media-fullscreen-button></media-fullscreen-button>
+    </media-control-bar>
+  </media-controller>`}
 />
 
 ## Install
