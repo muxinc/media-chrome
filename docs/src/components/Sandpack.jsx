@@ -35,6 +35,10 @@ export default function ComponentSandpack({
       template="vanilla"
       theme={{
         ...githubLight,
+        syntax: {
+          ...githubLight.syntax,
+          definition: '#22863a'
+        },
         font: {
           ...githubLight.font,
           mono: 'var(--font-mono)',

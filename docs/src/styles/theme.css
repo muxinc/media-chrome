@@ -120,7 +120,7 @@ body {
   --theme-code-bg: hsla(var(--color-gray-5), 1);
   --theme-code-text: hsla(var(--color-base-white), 100%, 1);
   --theme-navbar-bg: rgb(56 56 56);
-  --theme-footer-bg: hsla(211, 29%, 14%, 1);
+  --theme-footer-bg: rgb(56 56 56);
 
   /* DocSearch [Algolia] */
   --docsearch-modal-background: var(--theme-bg);
