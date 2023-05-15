@@ -1,0 +1,108 @@
+---
+title: Media Element
+description: Learn how to create a custom media element that works with Media Chrome
+layout: ../../layouts/MainLayout.astro
+---
+
+import SandpackContainer from "../../components/SandpackContainer.astro";
+
+Media Chrome intentionally is not concerned with the media playback engine, 
+Media Chrome supports any element that exposes the same API as the HTML media
+elements (`<video>` and `<audio>`).
+
+This means that you can replace these elements with your own if they conform 
+to the same API. You can read more about the 
+[HTMLMediaElement API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement).
+
+## Media Slot
+
+The simplest media slot is the browser's native `<video>` tag. For example:
+
+```html
+<media-controller>
+  <video slot="media" src="https://....mp4" >
+</media-controller>
+```
+
+In this example, Media controller will:
+
+* Listen for events emitted from the `<video>` element
+* Understand the current state of the `<video>` element by using the known props
+* Call methods on the `<video>` element like `play()`, `pause()`, etc.
+
+## Minimal media element
+
+The minimal requirements to create your own custom media element are:
+
+- Provide a `play()` and `pause()` method
+- Fire `play` and `pause` events
+- Provide a `paused` getter
+
+Here's an example of how such a custom element could look like:
+
+<SandpackContainer
+  height={1400}
+  editorHeight={980}
+  stacked
+  reversed
+  active={false}
+  files={{
+    '/play-pause-element.js': {
+      active: true,
+      code: `class PlayPauseElement extends HTMLElement {
+
+  constructor() {
+    super();
+
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = \`
+      <style>
+        :host {
+          pointer-events: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+        }
+
+        :host::before {
+          content: 'Paused';
+        }
+
+        :host([unpaused])::before {
+          content: 'Playing';
+        }
+      </style>
+    \`;
+  }
+
+  get paused() {
+    return !this.hasAttribute('unpaused');
+  }
+
+  play() {
+    this.toggleAttribute('unpaused', true);
+    this.dispatchEvent(new Event('play'));
+  }
+
+  pause() {
+    this.toggleAttribute('unpaused', false);
+    this.dispatchEvent(new Event('pause'));
+  }
+}
+
+if (!customElements.get('play-pause')) {
+  customElements.define('play-pause', PlayPauseElement);
+}`
+    }
+  }}
+  html={`<media-controller>
+  <play-pause slot="media"></play-pause>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+
+## Custom media element
