@@ -106,8 +106,9 @@ class MediaGestureReceiver extends window.HTMLElement {
 
   handleEvent(event) {
     const composedTarget = event.composedPath()?.[0];
-    const allowList = ['video', 'media-controller'];
-    if (!allowList.includes(composedTarget?.localName)) return;
+    const { slot, localName } = composedTarget ?? {};
+
+    if (!(slot === 'media' || localName === 'media-controller')) return;
 
     if (event.type === 'pointerdown') {
       // Since not all browsers have updated to be spec compliant, where 'click' events should be PointerEvents,
