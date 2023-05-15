@@ -1,7 +1,29 @@
 /** @jsxImportSource react */
 import { Sandpack } from "@codesandbox/sandpack-react";
-import { githubLight } from "@codesandbox/sandpack-themes";
+import { githubLight, sandpackDark } from "@codesandbox/sandpack-themes";
 import mediaChromeRaw from "../../node_modules/media-chrome/dist/iife/index.js?raw";
+import { useState, useEffect } from 'react';
+
+const light = {
+  ...githubLight,
+  syntax: {
+    ...githubLight.syntax,
+    definition: '#22863a'
+  },
+  font: {
+    ...githubLight.font,
+    mono: 'var(--font-mono)',
+  }
+};
+
+const dark = {
+  ...sandpackDark,
+  font: {
+    ...sandpackDark.font,
+    mono: 'var(--font-mono)',
+  }
+};
+
 
 export const Active = {
   HTML: 'html',
@@ -18,6 +40,53 @@ export default function ComponentSandpack({
   active = Active.HTML,
   ...props
 }) {
+
+  const [theme, setTheme] = useState(light);
+
+  useEffect(() => {
+    if (typeof localStorage !== undefined && localStorage.getItem('theme')) {
+      if (localStorage.getItem('theme') === 'dark') {
+        setTheme(dark);
+        return;
+      }
+      setTheme(light);
+      return;
+    }
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme(dark);
+      return;
+    }
+    setTheme(light);
+  }, []);
+
+  // watch for the theme updating on a live page
+  useEffect(() => {
+    const darkModeObserver = new MutationObserver((mutationList) => {
+      mutationList.forEach((mutationRecord) => {
+        const {
+          type,
+          target,
+          attributeName,
+        } = mutationRecord;
+        if (
+          type === 'attributes' &&
+          attributeName === 'class'
+        ) {
+          if (target.classList.contains('theme-dark')) {
+            setTheme(dark);
+          } else {
+            setTheme(light);
+          }
+        }
+      });
+    });
+    darkModeObserver.observe(document.documentElement, {
+      childList: false,
+      attributes: true,
+      subtree: false,
+    });
+  }, [theme]);
+
   const importPaths = [
     '@internals/media-chrome',
     './styles.css',
@@ -30,20 +99,11 @@ export default function ComponentSandpack({
       return importPaths;
     }, css ? ['./custom-styles.css'] : [])
   ];
+
   return (
     <Sandpack
       template="vanilla"
-      theme={{
-        ...githubLight,
-        syntax: {
-          ...githubLight.syntax,
-          definition: '#22863a'
-        },
-        font: {
-          ...githubLight.font,
-          mono: 'var(--font-mono)',
-        }
-      }}
+      theme={theme}
       options={{
         editorHeight: 'auto',
         editorWidthPercentage: 50,
