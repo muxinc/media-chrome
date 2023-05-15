@@ -9,7 +9,7 @@ template.innerHTML = `
 
     --media-range-track-height: 1px;
     --media-range-track-background: transparent;
-  
+
     --media-preview-time-background: transparent;
     --media-preview-time-margin: 0;
     --media-preview-time-padding: 0;
@@ -331,37 +331,37 @@ template.innerHTML = `
 
 <div class="wrapper">
   <div class="controls">
-    <media-seek-backward-button media-controller="controller">
+    <media-seek-backward-button mediacontroller="controller">
       <div slot="backward"></div>
     </media-seek-backward-button>
-    <media-play-button class="play" media-controller="controller">
+    <media-play-button class="play" mediacontroller="controller">
       <div slot="play"></div>
       <div slot="pause"></div>
     </media-play-button>
-    <media-play-button class="pause" media-controller="controller">
+    <media-play-button class="pause" mediacontroller="controller">
       <div slot="play"></div>
       <div slot="pause"></div>
     </media-play-button>
-    <media-play-button class="stop" media-controller="controller">
+    <media-play-button class="stop" mediacontroller="controller">
       <div slot="play"></div>
       <div slot="pause"></div>
     </media-play-button>
-    <media-seek-forward-button media-controller="controller">
+    <media-seek-forward-button mediacontroller="controller">
       <div slot="forward"></div>
     </media-seek-forward-button>
-    <media-fullscreen-button media-controller="controller">
+    <media-fullscreen-button mediacontroller="controller">
       <div slot="enter"></div>
     </media-fullscreen-button>
   </div>
-  <media-time-display media-controller="controller"></media-time-display>
-  <media-time-range media-controller="controller"></media-time-range>
-  <media-volume-range media-controller="controller"></media-volume-range>
+  <media-time-display mediacontroller="controller"></media-time-display>
+  <media-time-range mediacontroller="controller"></media-time-range>
+  <media-volume-range mediacontroller="controller"></media-volume-range>
   <img class="header" src="./winamp-theme/HEADER.png">
   <img class="display" src="./winamp-theme/DISPLAY.png">
   <div class="eq"></div>
   <div class="pl"></div>
   <div class="loop"></div>
-  <media-captions-button media-controller="controller">
+  <media-captions-button mediacontroller="controller">
     <div slot="on"></div>
     <div slot="off"></div>
   </media-captions-button>
@@ -373,11 +373,11 @@ template.innerHTML = `
   <marquee scrolldelay="200">Media Chrome, it really whips the llama's ass!</marquee>
   <div class="kbps">192</div>
   <div class="khz">44</div>
-  <media-play-button media-controller="controller" class="play-pause-indicator">
+  <media-play-button mediacontroller="controller" class="play-pause-indicator">
     <div slot="play"></div>
     <div slot="pause"></div>
   </media-play-button>
-  <media-play-button media-controller="controller" class="vu-meter">
+  <media-play-button mediacontroller="controller" class="vu-meter">
     <div slot="play"></div>
     <div slot="pause"></div>
   </media-play-button>

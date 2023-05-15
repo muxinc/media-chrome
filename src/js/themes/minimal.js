@@ -70,7 +70,7 @@ template.innerHTML = /*html*/`
       color: inherit;
     }
 
-    [disabled] {
+    [disabled]:not(media-live-button) {
       opacity: 60%;
       cursor: not-allowed;
     }
@@ -216,7 +216,7 @@ template.innerHTML = /*html*/`
 
   <template partial="SeekBackwardButton">
     <media-seek-backward-button
-      seek-offset="{{backwardSeekOffset ?? 10}}"
+      seekoffset="{{backwardseekoffset ?? 10}}"
       part="seek-backward button"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
@@ -230,7 +230,7 @@ template.innerHTML = /*html*/`
           transform="translate(2.5 21)"
           style="font-size: 8px; font-family: 'ArialMT', 'Arial'"
         >
-          {{backwardSeekOffset ?? 10}}
+          {{backwardseekoffset ?? 10}}
         </text>
       </svg>
     </media-seek-backward-button>
@@ -238,7 +238,7 @@ template.innerHTML = /*html*/`
 
   <template partial="SeekForwardButton">
     <media-seek-forward-button
-      seek-offset="{{forwardSeekOffset ?? 10}}"
+      seekoffset="{{forwardseekoffset ?? 10}}"
       part="seek-forward button"
       disabled="{{disabled}}"
       aria-disabled="{{disabled}}"
@@ -252,7 +252,7 @@ template.innerHTML = /*html*/`
           transform="translate(10 21)"
           style="font-size: 8px; font-family: 'ArialMT', 'Arial'"
         >
-          {{forwardSeekOffset ?? 10}}
+          {{forwardseekoffset ?? 10}}
         </text>
       </svg>
     </media-seek-forward-button>
@@ -323,7 +323,7 @@ template.innerHTML = /*html*/`
 
   <media-controller
     defaultsubtitles="{{defaultsubtitles}}"
-    gestures-disabled="{{disabled}}"
+    gesturesdisabled="{{disabled}}"
     hotkeys="{{hotkeys}}"
     nohotkeys="{{nohotkeys}}"
     audio="{{audio}}"
@@ -331,11 +331,11 @@ template.innerHTML = /*html*/`
   >
     <slot name="media" slot="media"></slot>
     <slot name="poster" slot="poster"></slot>
-    <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
+    <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
 
     <template if="title">
       <div slot="top-chrome">
-        <media-text-display>{{ title }}</media-text-display>
+        <media-text-display>{{title}}</media-text-display>
       </div>
     </template>
 
