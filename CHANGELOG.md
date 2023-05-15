@@ -1,3 +1,12 @@
+# [1.0.0-rc.1](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.0...v1.0.0-rc.1) (2023-05-15)
+
+
+### Bug Fixes
+
+* Update official themes to use lowercase attrs consistently. ([#623](https://github.com/muxinc/media-chrome/issues/623)) ([5d62f93](https://github.com/muxinc/media-chrome/commit/5d62f93b2d78dcb1eba5fb7b1e83434d73e3ce11))
+
+
+
 # [1.0.0-rc.0](https://github.com/muxinc/media-chrome/compare/v0.21.0...v1.0.0-rc.0) (2023-05-12)
 
 
