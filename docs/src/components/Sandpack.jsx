@@ -42,21 +42,22 @@ export default function ComponentSandpack({
 }) {
 
   const [theme, setTheme] = useState(light);
-  // const [theme, setTheme] = useState(() => {
-  //   if (import.meta.env.SSR) {
-  //     return themes.githubLight;
-  //   }
-  //   if (typeof localStorage !== undefined && localStorage.getItem('theme')) {
-  //     if (localStorage.getItem('theme') === 'dark') {
-  //       return themes.sandpackDark;
-  //     }
-  //     return themes.githubLight;
-  //   }
-  //   if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-  //     return themes.sandpackDark;
-  //   }
-  //   return themes.githubLight;
-  // });
+
+  useEffect(() => {
+    if (typeof localStorage !== undefined && localStorage.getItem('theme')) {
+      if (localStorage.getItem('theme') === 'dark') {
+        setTheme(dark);
+        return;
+      }
+      setTheme(light);
+      return;
+    }
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme(dark);
+      return;
+    }
+    setTheme(light);
+  }, []);
 
   // watch for the theme updating on a live page
   useEffect(() => {
@@ -84,7 +85,7 @@ export default function ComponentSandpack({
       attributes: true,
       subtree: false,
     });
-  }, [theme])
+  }, [theme]);
 
   const importPaths = [
     '@internals/media-chrome',
