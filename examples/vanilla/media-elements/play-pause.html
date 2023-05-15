@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Play / Pause element</title>
+    <script type="module" src="../../../dist/index.js"></script>
+    <style>
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 960px;       /* allows the container to shrink if small */
+        aspect-ratio: 2.4;   /* set container aspect ratio if preload=none */
+      }
+
+      play-pause {
+        width: 100%;      /* prevents video to expand beyond its container */
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+    <script>
+      class PlayPause extends HTMLElement {
+
+        constructor() {
+          super();
+
+          this.attachShadow({ mode: 'open' });
+          this.shadowRoot.innerHTML = /* html */ `
+            <style>
+              :host {
+                pointer-events: none;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                color: white;
+              }
+
+              :host::before {
+                content: 'Paused';
+              }
+
+              :host([unpaused])::before {
+                content: 'Playing';
+              }
+            </style>
+          `;
+        }
+
+        get paused() {
+          return !this.hasAttribute('unpaused');
+        }
+
+        play() {
+          this.toggleAttribute('unpaused', true);
+          this.dispatchEvent(new Event('play'));
+        }
+
+        pause() {
+          this.toggleAttribute('unpaused', false);
+          this.dispatchEvent(new Event('pause'));
+        }
+      }
+
+      customElements.define('play-pause', PlayPause);
+    </script>
+  </head>
+  <body>
+    <main>
+      <title>Media Chrome Play / Pause element</title>
+
+      <media-controller>
+        <play-pause
+          slot="media"
+        ></play-pause>
+       <media-control-bar>
+          <media-play-button></media-play-button>
+        </media-control-bar>
+      </media-controller>
+
+      <div class="examples">
+        <a href="./">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>
