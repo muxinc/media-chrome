@@ -84,7 +84,7 @@ template.innerHTML = /*html*/`
   }
 </style>
 
-<media-controller audio="{{audio}}">
+<media-controller defaultsubtitles audio="{{audio}}">
   <slot name="media" slot="media"></slot>
   <slot name="poster" slot="poster"></slot>
 
@@ -103,22 +103,22 @@ template.innerHTML = /*html*/`
   </template>
 
   <template if="audio == null">
-    <media-loading-indicator slot="centered-chrome" no-auto-hide></media-loading-indicator>
+    <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
 
     <div slot="centered-chrome" class="centered-controls-overlay">
-      <media-seek-backward-button></media-seek-backward-button>
+      <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
       <media-play-button></media-play-button>
-      <media-seek-forward-button></media-seek-forward-button>
+      <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
     </div>
     <media-control-bar>
       <media-play-button></media-play-button>
-      <media-seek-backward-button seek-offset="15"></media-seek-backward-button>
-      <media-seek-forward-button seek-offset="15"></media-seek-forward-button>
+      <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+      <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
       <media-mute-button></media-mute-button>
       <media-volume-range></media-volume-range>
       <media-time-range></media-time-range>
-      <media-time-display show-duration remaining></media-time-display>
-      <media-captions-button default-showing></media-captions-button>
+      <media-time-display showduration remaining></media-time-display>
+      <media-captions-button></media-captions-button>
       <media-playback-rate-button></media-playback-rate-button>
       <media-pip-button></media-pip-button>
       <media-fullscreen-button></media-fullscreen-button>
