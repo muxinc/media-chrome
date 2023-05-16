@@ -17,11 +17,11 @@
   <body>
     <main>
       <h1>Media Chrome <code>&lt;mux-video/&gt;</code> Example</h1>
-      <media-controller>
+      <media-controller defaultsubtitles>
         <mux-video
           slot="media"
           preload="auto"
-          playback-id="DS00Spx1CV902MCtPj5WknGlR102V5HFkDe"
+          playback-id="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
           metadata-video-id="video-id-12345"
           metadata-video-title="Mad Max: Fury Road Trailer"
           metadata-viewer-user-id="user-id-6789"
@@ -32,7 +32,7 @@
             label="thumbnails"
             default
             kind="metadata"
-            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+            src="https://image.mux.com/ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s/storyboard.vtt"
           />
         </mux-video>
         <media-control-bar>
@@ -42,7 +42,8 @@
           <media-mute-button></media-mute-button>
           <media-volume-range></media-volume-range>
           <media-time-range></media-time-range>
-          <media-time-display show-duration remaining></media-time-display>
+          <media-time-display showduration remaining></media-time-display>
+          <media-captions-button></media-captions-button>
           <media-playback-rate-button></media-playback-rate-button>
           <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>

@@ -21,6 +21,7 @@ import {
   stringifyTextTrackList,
   getTextTracksList,
   updateTracksModeTo,
+  toggleSubsCaps,
 } from './utils/captions.js';
 
 let volumeSupported;
@@ -424,7 +425,15 @@ export const MediaUIStates = {
   },
   MEDIA_SUBTITLES_SHOWING: {
     get: function (controller) {
-      // TODO: Move to non attr specific values
+      // NOTE: A bit hacky, but this ensures that HAS-style textTracks (e.g. from mux-video)
+      // will also respect `defaultsubtitles` (CJP)
+      if (
+        controller.hasAttribute('defaultsubtitles') &&
+        !controller.hasAttribute(MediaUIAttributes.MEDIA_HAS_PLAYED) &&
+        !controller.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING)
+      ) {
+        toggleSubsCaps(controller, true);
+      }
       return (
         stringifyTextTrackList(getShowingSubtitleTracks(controller)) ||
         undefined
