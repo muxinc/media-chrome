@@ -50,11 +50,13 @@ if (typeof previewHeight === 'number') previewHeight = `${previewHeight}px`;
 
   .sp-pre-placeholder {
     margin-top: 0;
+    border-radius: 0;
+    height: var(--editorHeight) !important;
+    background: var(--theme-code-bg) !important;
+    color: var(--theme-code-text) !important;
     font-family: var(--font-mono) !important;
     font-size: 13px !important;
     line-height: 20px !important;
-    background-color: hsla(var(--color-white), 1);
-    color: hsla(var(--color-charcoal), 1);
     -webkit-font-smoothing: antialiased;
   }
 
@@ -69,9 +71,9 @@ if (typeof previewHeight === 'number') previewHeight = `${previewHeight}px`;
   .sp-layout {
     display: flex;
     flex-wrap: var(--flexWrap) !important;
-    background-color: hsla(var(--color-white), 1);
-    border: 1px solid #f3f3f3;
-    border-radius: 4px;
+    background-color: var(--theme-bg) !important;
+    border-radius: 0 !important;
+    border: none !important;
     height: 100% !important;
   }
 
@@ -81,7 +83,17 @@ if (typeof previewHeight === 'number') previewHeight = `${previewHeight}px`;
   }
 
   .sp-preview {
+    --sp-colors-surface1: var(--theme-bg);
+    --sp-colors-surface2: var(--theme-bg);
     height: var(--previewHeight) !important;
+  }
+
+  .sp-preview-container {
+    background: none !important;
+  }
+
+  .sp-preview-iframe {
+    color-scheme: initial !important;
   }
 </style>
 

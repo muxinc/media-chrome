@@ -6,6 +6,11 @@ import { useState, useEffect } from 'react';
 
 const light = {
   ...githubLight,
+  colors: {
+    ...githubLight.colors,
+    accent: 'var(--theme-text)',
+    surface1: 'var(--theme-code-bg)',
+  },
   syntax: {
     ...githubLight.syntax,
     definition: '#22863a'
@@ -16,8 +21,23 @@ const light = {
   }
 };
 
+// Make more like GitHub dark to complement the Markdown code blocks.
 const dark = {
   ...sandpackDark,
+  colors: {
+    ...sandpackDark.colors,
+    accent: 'var(--theme-text)',
+    surface1: 'var(--theme-code-bg)',
+  },
+  syntax: {
+    ...sandpackDark.syntax,
+    definition: '#7EE787',
+    property: '#79C0FF',
+    plain: '#79C0FF',
+    static: '#79C0FF',
+    string: '#A5D6FF',
+    keyword: '#FF7B72',
+  },
   font: {
     ...sandpackDark.font,
     mono: 'var(--font-mono)',
@@ -137,10 +157,13 @@ export default function ComponentSandpack({
           hidden: true,
         },
         '/styles.css': {
-          code: `media-controller,
+          code: `body {
+  margin: 0;
+}
+media-controller,
 video {
-width: 100%;
-aspect-ratio: 2.4;
+  width: 100%;
+  aspect-ratio: 2.4;
 }
 ${hiddenCss}`,
           hidden: true,
