@@ -30,7 +30,7 @@ template.innerHTML = /*html*/`
     ::slotted(media-clip-selector),
     media-volume-range,
     ::slotted(media-volume-range) {
-      height: var(--_range-auto-size, calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
+      height: var(--_range-auto-size, calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding)));
     }
   </style>
 
