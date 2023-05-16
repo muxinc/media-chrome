@@ -1,3 +1,12 @@
+# [1.0.0-rc.2](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.1...v1.0.0-rc.2) (2023-05-16)
+
+
+### Bug Fixes
+
+* Missing parenthesis in control bar style ([#626](https://github.com/muxinc/media-chrome/issues/626)) ([76a1c8f](https://github.com/muxinc/media-chrome/commit/76a1c8fadc90ab11dae14f27f3cc61eb87e53cef))
+
+
+
 # [1.0.0-rc.1](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.0...v1.0.0-rc.1) (2023-05-15)
 
 
