@@ -1,3 +1,8 @@
+/* The integration's default injected base.css file */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 .switch {
   position: relative;
   display: inline-block;
