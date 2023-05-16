@@ -54,7 +54,6 @@ export default function ComponentSandpack({
   html,
   css,
   hiddenCss = '',
-  height = 230,
   files = {},
   dependencies = {},
   active = Active.HTML,
