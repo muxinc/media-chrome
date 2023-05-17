@@ -52,7 +52,7 @@ export const MediaUIStates = {
 
       return media ? media.paused : true;
     },
-    mediaEvents: ['play', 'pause', 'emptied'],
+    mediaEvents: ['play', 'playing', 'pause', 'emptied'],
   },
   MEDIA_HAS_PLAYED: {
     // We want to let the user know that the media started playing at any point (`media-has-played`).
