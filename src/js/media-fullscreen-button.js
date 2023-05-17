@@ -57,6 +57,32 @@ const updateAriaLabel = (el) => {
   el.setAttribute('aria-label', label);
 };
 
+/** @param {HTMLElement} el */
+const isMediaControllerFullscreen = (el) => {
+  const shadowRoot = el.getRootNode();
+
+  if (shadowRoot instanceof ShadowRoot) {
+    const mediaController = shadowRoot.querySelector("media-controller");
+    const isFullscreen = mediaController?.hasAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN);
+    return isFullscreen;
+  }
+
+  return false;
+};
+
+/** @param {HTMLElement} el */
+const setInitialAttributes = (el) => {
+  if (isMediaControllerFullscreen(el)) {
+    /* setTimeout is required, as attributes can't be defined in an HTMLElement constructor. This is
+     * a temporary solution that should be replaced at some point. See Custom Element specification:
+     * https://html.spec.whatwg.org/multipage/custom-elements.html#custom-element-conformance. */
+    setTimeout(() => {
+      el.setAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN, "");
+      updateAriaLabel(el);
+    }, 0);
+  }
+};
+
 /**
  * @slot enter - An element shown when the media is not in fullscreen and pressing the button will trigger entering fullscreen.
  * @slot exit - An element shown when the media is in fullscreen and pressing the button will trigger exiting fullscreen.
@@ -77,6 +103,7 @@ class MediaFullscreenButton extends MediaChromeButton {
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
+    setInitialAttributes(this);
   }
 
   connectedCallback() {
