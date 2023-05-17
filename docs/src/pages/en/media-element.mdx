@@ -6,13 +6,12 @@ layout: ../../layouts/MainLayout.astro
 
 import SandpackContainer from "../../components/SandpackContainer.astro";
 
-Media Chrome intentionally is not concerned with the media playback engine, 
-Media Chrome supports any element that exposes the same API as the HTML media
-elements (`<video>` and `<audio>`).
-
-This means that you can replace these elements with your own if they conform 
-to the same API. You can read more about the 
+Media Chrome will work with any element that exposes the same API as the
+HTML media elements (`<video>` and `<audio>`). This means that you can replace
+these elements with your own if they conform to the same API.
+You can read more about the
 [HTMLMediaElement API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement).
+
 
 ## Media Slot
 
@@ -30,11 +29,12 @@ In this example, Media controller will:
 * Understand the current state of the `<video>` element by using the known props
 * Call methods on the `<video>` element like `play()`, `pause()`, etc.
 
+
 ## Minimal media element
 
-A custom media element is not required to support the complete `HTMLMediaElement` API.
+The slotted media element is not required to support the complete `HTMLMediaElement` API.
 Each Media Chrome component requires different API's, for example to get the play
-button to work properly the media element requirements might be:
+button working the media element requirements might be:
 
 - Provide a `play()` and `pause()` method
 - Fire `play`, `playing` and `pause` events
@@ -113,7 +113,7 @@ if (globalThis.customElements && !globalThis.customElements.get('play-pause')) {
 
 If you'd like to add some extra behavior to the native `<video>` element,
 have a look at [custom-video-element](https://github.com/muxinc/custom-video-element).
-The `HTMLVideoElement` API will be automatically added to any child element that
+The `HTMLVideoElement` API will be automatically added to any custom element that
 extends from `CustomVideoElement`.
 
 <SandpackContainer
