@@ -3,13 +3,17 @@
   margin: 0;
 }
 
-iframe {
-  border: 0;
-}
-
 /* Global focus outline reset */
 *:focus:not(:focus-visible) {
   outline: none;
+}
+
+::selection {
+  background: hsla(var(--color-marked), 0.4) !important;
+}
+
+::-moz-selection {
+  background: hsla(var(--color-marked), 0.5) !important;
 }
 
 :root {
@@ -32,6 +36,10 @@ body {
   font-size: clamp(0.9rem, 0.75rem + 0.375vw + var(--user-font-scale), 1rem);
   line-height: 1.5;
   max-width: 100vw;
+}
+
+iframe {
+  border: 0;
 }
 
 nav ul {
