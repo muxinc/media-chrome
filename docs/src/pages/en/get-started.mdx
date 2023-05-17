@@ -24,7 +24,6 @@ A key focus of Media Chrome is to seperate the UI from media playback. This mean
 This example demonstrates combining controls, captions, poster image, and a timeline with thumbnails on hover. This is a live sandbox so you can edit the code and see it update in real-time. Try adding `<media-volume-range></media-volume-range>` to the control bar.
 
 <SandpackContainer
-  height={710}
   previewAspectRatio={2.4}
   editorHeight={290}
   stacked
@@ -132,7 +131,7 @@ You can add controls to your player by placing them inside of a `<media-control-
 When using controls outside of a `<media-controller>` wrapper element; the control, or the surrounding control bar, needs to specify which media controller it should be associated with. To do this you can set the `mediacontroller` attribute.
 
 <SandpackContainer
-  height={244}
+  editorHeight={244}
   html={`<media-controller id="myController">
   <video slot="media" src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" muted playsinline></video>
 </media-controller>

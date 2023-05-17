@@ -194,10 +194,10 @@ When the player is medium sized, we can keep the control bar but hide the button
 In a large player size, we can show just the control bar.
 
 The combined HTML for the player should look like this:
+
 <SandpackContainer
   stacked
   reversed
-  height={850}
   editorHeight={300}
   hiddenCss={`
     media-controller {
@@ -341,6 +341,7 @@ but let's add one for the sake of completeness.
 ```
 
 ### The final result
+
 Together, it'll give you a player like this.
 You can resize the page and see how the player responds to the page width.
 Or select a width with the following radio buttons.
@@ -348,7 +349,6 @@ Or select a width with the following radio buttons.
 <SandpackContainer
   stacked
   reversed
-  height={850}
   editorHeight={300}
   hiddenCss={`
     media-controller {
