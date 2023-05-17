@@ -10,12 +10,19 @@ headings.push({ depth: 2, slug: 'installing', text: 'Installing' });
 ---
 
 <MainLayout frontmatter={frontmatter} headings={headings}>
+
+  <p>
+    <a class="github-link" href={frontmatter.github} target="_blank">
+      {frontmatter.github}
+    </a>
+  </p>
+
   <slot />
 
   <SandpackContainer
     stacked
     reversed
-    editorHeight={300}
+    editorHeight={360}
     previewAspectRatio={frontmatter.previewAspectRatio ?? frontmatter.aspectRatio}
     dependencies={frontmatter.dependencies}
     hiddenCss={`
