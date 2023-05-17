@@ -18,7 +18,7 @@ a [preview thumbnail](#preview-thumbnails) will be shown.
 ## Default usage
 
 <SandpackContainer
-  height={250}
+  editorHeight={250}
   html={`<media-controller>
   <video
     playsinline muted crossorigin
@@ -39,7 +39,7 @@ Adding a metadata text track labelled "thumbnails" (`<track default label="thumb
 with a valid VTT file as `src` will enable the preview thumbnails on hover functionality.
 
 <SandpackContainer
-  height={330}
+  editorHeight={330}
   html={`<media-controller>
   <video 
     playsinline muted crossorigin
@@ -65,7 +65,7 @@ Add a time display component in the current slot that will slide along
 the timeline as the video progresses.
 
 <SandpackContainer
-  height={270}
+  editorHeight={270}
   html={`<media-controller>
   <video
     playsinline muted crossorigin
@@ -87,7 +87,7 @@ the timeline as the video progresses.
 Set the `preview` slot to an empty element to remove the default preview elements.
 
 <SandpackContainer
-  height={270}
+  editorHeight={270}
   html={`<media-controller>
   <video
     playsinline muted crossorigin
@@ -114,7 +114,7 @@ element which can be tricky to style across browsers but the `<media-time-range>
 comes with targeted CSS variables that make this a breeze.
 
 <SandpackContainer
-  height={270}
+  editorHeight={270}
   html={`<style>
   media-time-range {
     --media-control-background: transparent;
