@@ -6,10 +6,11 @@ source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-mute-butto
 ---
 
 import SandpackContainer from "../../../components/SandpackContainer.astro";
+import CopyToClipboard from "../../../components/PageContent/CopyToClipboard.astro";
 
-The `<media-mute-button>` component is used to toggle the sound the media. The icon will display whether sound is enabled and the general volume level.
+The `<media-mute-button>` component is used to toggle the sound of the media. The icon will display whether sound is enabled and the general volume level.
 
-The contents and behavior of the `<media-mute-button>` will update automatically based on the media state.
+The content of the `<media-mute-button>` will update based on the audio volume.
 - When the volume is off, the component will display the contents of the `off` slot.
 - When the volume is low, 0-50%, the component will display the contents of the `low` slot.
 - When the volume is medium, 50-75%, the component will display the contents of the `medium` slot.
@@ -60,6 +61,18 @@ Here's an example of how you can replace the volume levels with the words that c
   </media-control-bar>
 </media-controller>`}
 />
+
+Alternatively, if you would like to represent all of the volume levels using a single element you could use the `icon` slot instead.
+
+<CopyToClipboard>
+```html
+<media-mute-button>
+  <span slot="icon"></span>
+</media-mute-button>
+```
+</CopyToClipboard>
+
+The `mediavolumelevel` attribute that is set for you on the `<media-mute-button>` component is useful for writing CSS that is based on the current volume.
 
 ## Styling with attributes
 
