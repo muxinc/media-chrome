@@ -23,13 +23,8 @@ Media Chrome helps you to make changes to your video player layout at different 
 <SandpackContainer
   stacked
   reversed
-  height={850}
+  previewAspectRatio={2.4}
   editorHeight={300}
-  hiddenCss={`
-    media-controller {
-      aspect-ratio: 16 / 9;
-    }`
-  }
   active="css"
   html={`<media-controller>
   <video
@@ -116,13 +111,8 @@ It's possible to override the default breakpoint values with your own values if 
 <SandpackContainer
   stacked
   reversed
-  height={850}
-  editorHeight={300}
-  hiddenCss={`
-    media-controller {
-      aspect-ratio: 16 / 9;
-    }`
-  }
+  previewAspectRatio={2.4}
+  editorHeight={220}
   html={`<media-controller breakpoints="sm:288 md:480 lg:768 xl:1056">
   <video
     slot="media"
@@ -139,15 +129,10 @@ Note that even if you only want to override _one_ of the default values that Med
 <SandpackContainer
   stacked
   reversed
-  height={850}
-  editorHeight={300}
-  hiddenCss={`
-    media-controller {
-      aspect-ratio: 16 / 9;
-    }`
-  }
+  previewAspectRatio={2.4}
+  editorHeight={235}
   html={`<!-- Overriding only the 'xl' breakpoint, but still passing all breakpoints -->
-  <media-controller breakpoints="sm:384 md:576 lg:768 xl:1056">
+<media-controller breakpoints="sm:384 md:576 lg:768 xl:1056">
   <video
     slot="media"
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
@@ -198,9 +183,9 @@ Let's make a [simple responsive layout](https://media-chrome-mux.vercel.app/exam
 In addition to the `<media-control-bar>` above, we want to add some center controls.
 ```html
 <div class="center" slot="centered-chrome">
-    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
-    <media-play-button></media-play-button>
-    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+  <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+  <media-play-button></media-play-button>
+  <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
 </div>
 ```
 

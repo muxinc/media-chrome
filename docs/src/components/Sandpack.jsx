@@ -54,6 +54,7 @@ export default function ComponentSandpack({
   html,
   css,
   hiddenCss = '',
+  editorHeight,
   files = {},
   dependencies = {},
   active = Active.HTML,
@@ -124,7 +125,7 @@ export default function ComponentSandpack({
       template="vanilla"
       theme={theme}
       options={{
-        editorHeight: 'auto',
+        editorHeight,
         editorWidthPercentage: 50,
       }}
       customSetup={{
