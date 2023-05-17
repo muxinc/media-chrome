@@ -16,7 +16,7 @@ headings.push({ depth: 2, slug: 'installing', text: 'Installing' });
     stacked
     reversed
     editorHeight={300}
-    previewAspectRatio={frontmatter.aspectRatio}
+    previewAspectRatio={frontmatter.previewAspectRatio ?? frontmatter.aspectRatio}
     dependencies={frontmatter.dependencies}
     hiddenCss={`
       media-controller,
