@@ -5,6 +5,7 @@ layout: ../../layouts/MainLayout.astro
 ---
 
 import SandpackContainer from "../../components/SandpackContainer.astro";
+import MediaElementsList from "../../components/MediaElementsList.astro";
 
 Media Chrome will work with any element that exposes the same API as the
 HTML media elements (`<video>` and `<audio>`). This means that you can replace
@@ -169,5 +170,11 @@ export default MyCustomVideoElement;`
 />
 
 
-[hls-video-element](https://github.com/muxinc/hls-video-element) is a good example
+[hls-video-element](./media-elements/hls-video) is a good example
 making use of this library.
+
+## Compatible media elements
+
+Here are some of the custom media elements that have been built that are compatible with Media Chrome.
+
+<MediaElementsList/>
