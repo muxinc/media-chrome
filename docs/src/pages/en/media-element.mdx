@@ -32,16 +32,18 @@ In this example, Media controller will:
 
 ## Minimal media element
 
-The minimal requirements to create your own custom media element are:
+A custom media element is not required to support the complete `HTMLMediaElement` API.
+Each Media Chrome component requires different API's, for example to get the play
+button to work properly the media element requirements might be:
 
 - Provide a `play()` and `pause()` method
 - Fire `play` and `pause` events
 - Provide a `paused` getter
 
-Here's an example of how such a custom element could look like:
+Here's an example of how such a custom media element could look like:
 
 <SandpackContainer
-  height={1400}
+  previewAspectRatio={2.4}
   editorHeight={980}
   stacked
   reversed
@@ -49,7 +51,7 @@ Here's an example of how such a custom element could look like:
   files={{
     '/play-pause-element.js': {
       active: true,
-      code: `class PlayPauseElement extends HTMLElement {
+      code: `class PlayPauseElement extends globalThis.HTMLElement {
 
   constructor() {
     super();
@@ -91,8 +93,8 @@ Here's an example of how such a custom element could look like:
   }
 }
 
-if (!customElements.get('play-pause')) {
-  customElements.define('play-pause', PlayPauseElement);
+if (globalThis.customElements && !globalThis.customElements.get('play-pause')) {
+  globalThis.customElements.define('play-pause', PlayPauseElement);
 }`
     }
   }}
@@ -106,3 +108,64 @@ if (!customElements.get('play-pause')) {
 
 
 ## Custom media element
+
+If you'd like to add some extra behavior to the native `<video>` element,
+have a look at [custom-video-element](https://github.com/muxinc/custom-video-element).
+The `HTMLVideoElement` API will be automatically added to any child element that
+extends from `CustomVideoElement`.
+
+<SandpackContainer
+  previewAspectRatio={2.4}
+  editorHeight={620}
+  stacked
+  reversed
+  active={false}
+  dependencies={{
+    'custom-video-element': 'latest'
+  }}
+  files={{
+    '/custom-video-element.js': {
+      active: true,
+      code: `import CustomVideoElement from 'custom-video-element';
+
+class MyCustomVideoElement extends globalThis.CustomVideoElement {
+  constructor() {
+    super();
+  }
+
+  // Override the play method.
+  play() {
+    return super.play()
+  }
+
+  // Override the src getter & setter.
+  get src() {
+    return super.src;
+  }
+
+  set src(src) {
+    super.src = src;
+  }
+}
+
+if (globalThis.customElements && !globalThis.customElements.get('my-custom-video')) {
+  globalThis.customElements.define('my-custom-video', MyCustomVideoElement);
+}
+
+export default MyCustomVideoElement;`
+    }
+  }}
+  html={`<media-controller>
+  <my-custom-video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></my-custom-video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+
+[hls-video-element](https://github.com/muxinc/hls-video-element) is a good example
+making use of this library.
