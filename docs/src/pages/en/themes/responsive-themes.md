@@ -35,7 +35,7 @@ Let's take a look at how a theme might look like with these conditions in place.
       <template if="streamtype == 'on-demand'">
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-time-display show-duration></media-time-display>
+          <media-time-display showduration></media-time-display>
           <media-time-range></media-time-range>
           <media-playback-rate-button></media-playback-rate-button>
           <media-mute-button></media-mute-button>
@@ -104,7 +104,7 @@ Let's take a look at how a theme might look like with these conditions in place.
       <template if="streamtype == 'on-demand'">
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-time-display show-duration></media-time-display>
+          <media-time-display showduration></media-time-display>
           <media-time-range></media-time-range>
           <media-playback-rate-button></media-playback-rate-button>
           <media-mute-button></media-mute-button>

@@ -72,7 +72,7 @@ You can find the [current release candidate documentation here.](https://v1.medi
   ></audio>
   <media-control-bar>
     <media-play-button></media-play-button>
-    <media-time-display show-duration></media-time-display>
+    <media-time-display showduration></media-time-display>
     <media-time-range></media-time-range>
     <media-playback-rate-button></media-playback-rate-button>
     <media-mute-button></media-mute-button>
