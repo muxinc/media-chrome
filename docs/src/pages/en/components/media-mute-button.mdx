@@ -62,17 +62,43 @@ Here's an example of how you can replace the volume levels with the words that c
 </media-controller>`}
 />
 
-Alternatively, if you would like to represent all of the volume levels using a single element you could use the `icon` slot instead.
+Alternatively, if you would like to represent all of the volume levels using a single element you could use the `icon` slot instead. This is useful for creating an animated icon that transitions between states. Here's a basic example that uses CSS to change an element based on the volume level.
 
-<CopyToClipboard>
-```html
-<media-mute-button>
-  <span slot="icon"></span>
-</media-mute-button>
-```
-</CopyToClipboard>
-
-The `mediavolumelevel` attribute that is set for you on the `<media-mute-button>` component is useful for writing CSS that is based on the current volume.
+<SandpackContainer
+  height={365}
+  active="css"
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-control-bar>
+    <media-mute-button>
+      <span class="my-icon" slot="icon"></span>
+    </media-mute-button>
+    <media-volume-range></media-volume-range>
+  </media-control-bar>
+</media-controller>`}
+css={`.my-icon {
+  border-radius: 50%;
+  height: 100%;
+  width: 24px;
+  background: red;
+  transition: background .4s;
+}
+media-mute-button[mediavolumelevel='low'] .my-icon {
+  background: lightyellow;
+}
+media-mute-button[mediavolumelevel='medium'] .my-icon {
+  background: lightblue;
+}
+media-mute-button[mediavolumelevel='high'] .my-icon {
+  background: lightgreen;
+}
+`}
+/>
 
 ## Styling with attributes
 
