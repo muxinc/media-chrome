@@ -106,16 +106,13 @@ class MediaGestureReceiver extends window.HTMLElement {
 
   handleEvent(event) {
     const composedTarget = event.composedPath()?.[0];
-    const localName = composedTarget?.localName;
-    const mediaSlotContained = closestComposedNode(composedTarget, '[slot=media]');
-
-    if (!(mediaSlotContained || localName === 'media-controller')) return;
+    const allowList = ['video', 'media-controller'];
+    if (!allowList.includes(composedTarget?.localName)) return;
 
     if (event.type === 'pointerdown') {
       // Since not all browsers have updated to be spec compliant, where 'click' events should be PointerEvents,
       // we can use use 'pointerdown' to reliably determine the pointer type. (CJP).
       this._pointerType = event.pointerType;
-
     } else if (event.type === 'click') {
       // Cannot use composedPath or target because this is a layer on top and pointer events are disabled.
       // Attach to window and check if click is in this element's bounding box to keep <video> right-click menu.
