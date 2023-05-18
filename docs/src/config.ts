@@ -67,7 +67,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'HLS Video', link: 'en/media-elements/hls-video' },
       { text: 'JW Player Video', link: 'en/media-elements/jwplayer-video' },
       { text: 'Mux Video', link: 'en/media-elements/mux-video' },
-      // { text: 'Shaka Video', link: 'en/media-elements/shaka-video' }, // remove until fixed
+      { text: 'Shaka Video', link: 'en/media-elements/shaka-video' },
       { text: 'Spotify Audio', link: 'en/media-elements/spotify-audio' },
       { text: 'Video.js Video', link: 'en/media-elements/videojs-video' },
       { text: 'Vimeo Video', link: 'en/media-elements/vimeo-video' },
