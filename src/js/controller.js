@@ -70,6 +70,14 @@ export const MediaUIStates = {
     },
     mediaEvents: ['playing', 'emptied'],
   },
+  MEDIA_ENDED: {
+    get: function (controller) {
+      const { media } = controller;
+
+      return media ? media.ended : false;
+    },
+    mediaEvents: ['seeked', 'ended', 'emptied'],
+  },
   MEDIA_PLAYBACK_RATE: {
     get: function (controller) {
       const { media } = controller;
