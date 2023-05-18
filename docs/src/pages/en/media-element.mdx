@@ -1,0 +1,180 @@
+---
+title: Media Element
+description: Learn how to create a custom media element that works with Media Chrome
+layout: ../../layouts/MainLayout.astro
+---
+
+import SandpackContainer from "../../components/SandpackContainer.astro";
+import MediaElementsList from "../../components/MediaElementsList.astro";
+
+Media Chrome will work with any element that exposes the same API as the
+HTML media elements (`<video>` and `<audio>`). This means that you can replace
+these elements with your own if they conform to the same API.
+You can read more about the
+[HTMLMediaElement API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement).
+
+
+## Media Slot
+
+The simplest media slot is the browser's native `<video>` tag. For example:
+
+```html
+<media-controller>
+  <video slot="media" src="https://....mp4" >
+</media-controller>
+```
+
+In this example, Media controller will:
+
+* Listen for events emitted from the `<video>` element
+* Understand the current state of the `<video>` element by using the known props
+* Call methods on the `<video>` element like `play()`, `pause()`, etc.
+
+
+## Minimal media element
+
+The slotted media element is not required to support the complete `HTMLMediaElement` API.
+Each Media Chrome component requires different API's, for example to get the play
+button working the media element requirements might be:
+
+- Provide a `play()` and `pause()` method
+- Fire `play`, `playing` and `pause` events
+- Provide a `paused` getter
+
+Here's an example of how such a custom media element could look like:
+
+<SandpackContainer
+  previewAspectRatio={2.4}
+  editorHeight={1020}
+  stacked
+  reversed
+  active={false}
+  files={{
+    '/play-pause-element.js': {
+      active: true,
+      code: `class PlayPauseElement extends globalThis.HTMLElement {
+
+  constructor() {
+    super();
+
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = \`
+      <style>
+        :host {
+          pointer-events: none;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: white;
+        }
+
+        :host::before {
+          content: 'Paused';
+        }
+
+        :host([unpaused])::before {
+          content: 'Playing';
+        }
+      </style>
+    \`;
+  }
+
+  get paused() {
+    return !this.hasAttribute('unpaused');
+  }
+
+  play() {
+    this.toggleAttribute('unpaused', true);
+    this.dispatchEvent(new Event('play'));
+    this.dispatchEvent(new Event('playing'));
+    return Promise.resolve();
+  }
+
+  pause() {
+    this.toggleAttribute('unpaused', false);
+    this.dispatchEvent(new Event('pause'));
+  }
+}
+
+if (globalThis.customElements && !globalThis.customElements.get('play-pause')) {
+  globalThis.customElements.define('play-pause', PlayPauseElement);
+}`
+    }
+  }}
+  html={`<media-controller>
+  <play-pause slot="media"></play-pause>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+
+## Custom media element
+
+If you'd like to add some extra behavior to the native `<video>` element,
+have a look at [custom-video-element](https://github.com/muxinc/custom-video-element).
+The `HTMLVideoElement` API will be automatically added to any custom element that
+extends from `CustomVideoElement`.
+
+<SandpackContainer
+  previewAspectRatio={2.4}
+  editorHeight={620}
+  stacked
+  reversed
+  active={false}
+  dependencies={{
+    'custom-video-element': 'latest'
+  }}
+  files={{
+    '/custom-video-element.js': {
+      active: true,
+      code: `import CustomVideoElement from 'custom-video-element';
+
+class MyCustomVideoElement extends globalThis.CustomVideoElement {
+  constructor() {
+    super();
+  }
+
+  // Override the play method.
+  play() {
+    return super.play()
+  }
+
+  // Override the src getter & setter.
+  get src() {
+    return super.src;
+  }
+
+  set src(src) {
+    super.src = src;
+  }
+}
+
+if (globalThis.customElements && !globalThis.customElements.get('my-custom-video')) {
+  globalThis.customElements.define('my-custom-video', MyCustomVideoElement);
+}
+
+export default MyCustomVideoElement;`
+    }
+  }}
+  html={`<media-controller>
+  <my-custom-video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></my-custom-video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+
+[hls-video-element](./media-elements/hls-video) is a good example
+making use of this library.
+
+## Compatible media elements
+
+Here are some of the custom media elements that have been built that are compatible with Media Chrome.
+
+<MediaElementsList/>

@@ -126,7 +126,7 @@ template.innerHTML = `
     <media-play-button></media-play-button>
     <media-mute-button></media-mute-button>
     <media-volume-range></media-volume-range>
-    <media-time-display show-duration></media-time-display>
+    <media-time-display showduration></media-time-display>
     <span class="control-spacer"></span>
     <media-playback-rate-button></media-playback-rate-button>
     <media-pip-button></media-pip-button>
