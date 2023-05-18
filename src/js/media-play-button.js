@@ -45,7 +45,11 @@ const updateAriaLabel = (el) => {
  */
 class MediaPlayButton extends MediaChromeButton {
   static get observedAttributes() {
-    return [...super.observedAttributes, MediaUIAttributes.MEDIA_PAUSED];
+    return [
+      ...super.observedAttributes,
+      MediaUIAttributes.MEDIA_PAUSED,
+      MediaUIAttributes.MEDIA_ENDED,
+    ];
   }
 
   constructor(options = {}) {

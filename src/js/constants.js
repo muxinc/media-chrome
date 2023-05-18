@@ -60,6 +60,7 @@ export const MediaUIAttributes = {
   MEDIA_CAST_UNAVAILABLE: 'mediacastunavailable',
   MEDIA_PAUSED: 'mediapaused',
   MEDIA_HAS_PLAYED: 'mediahasplayed',
+  MEDIA_ENDED: 'mediaended',
   MEDIA_MUTED: 'mediamuted',
   MEDIA_VOLUME_LEVEL: 'mediavolumelevel',
   MEDIA_VOLUME: 'mediavolume',
