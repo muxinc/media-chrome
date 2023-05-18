@@ -24,7 +24,7 @@
     "build:types": "tsc",
     "build:esm": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=esm --outdir=dist",
     "build:cjs": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=cjs --outdir=dist/cjs",
-    "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome && yarn size",
+    "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --global-name=MediaChrome",
     "build:react": "node ./scripts/react/build.js",
     "build": "run-s build:types build:esm build:cjs build:iife build:react",
     "watch": "run-p watch:types watch:esbuild",
@@ -33,8 +33,7 @@
     "dev": "yarn watch",
     "start": "yarn dev",
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
-    "publish-release": "./scripts/publish.sh",
-    "size": "echo \"\\n  dist/\\033[1miife/index.js\\033[0m     \\033[0;32m$(($(cat dist/iife/index.js | gzip -c9 | wc -c)))B gzip\\033[0m\\n\""
+    "publish-release": "./scripts/publish.sh"
   },
   "repository": {
     "type": "git",
