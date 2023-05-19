@@ -29,8 +29,9 @@
     "build": "run-s build:types build:esm build:cjs build:iife build:react",
     "watch": "run-p watch:types watch:esbuild",
     "watch:types": "yarn build:types -w",
-    "watch:esbuild": "node ./scripts/esbuild.js",
-    "dev": "yarn watch",
+    "watch:esbuild": "yarn build:esm --watch=forever",
+    "serve": "npx serve . --config vercel.json --cors",
+    "dev": "run-p serve watch",
     "start": "yarn dev",
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
     "publish-release": "./scripts/publish.sh"
