@@ -57,9 +57,6 @@ export const SIDEBAR: Sidebar = {
       { text: 'Keyboard shortcuts', link: 'en/keyboard-shortcuts' },
       { text: 'Audio player', link: 'en/audio-player' },
     ],
-    Reference: [
-      { text: 'Styling', link: 'en/reference/styling' },
-    ],
     'Media Elements': [
       { text: 'Cloudflare Video', link: 'en/media-elements/cloudflare-video' },
       { text: 'DASH Video', link: 'en/media-elements/dash-video' },
@@ -101,14 +98,16 @@ export const SIDEBAR: Sidebar = {
       { text: 'Responsive themes', link: 'en/themes/responsive-themes' },
       { text: 'Custom slots', link: 'en/themes/custom-slots' },
       { text: 'Share themes', link: 'en/themes/share' },
-      
+
     ],
     Advanced: [
       { text: 'Stream Type', link: 'en/stream-type' },
       { text: 'Design Principles', link: 'en/design-principles' },
       { text: 'Architecture', link: 'en/architecture' },
     ],
-    "Learn More": [
+    "Resources": [
+      { text: 'Styling Reference', link: 'en/reference/styling' },
+      { text: 'Migrating to 1.0', link: 'en/migration/from-0.x-to-1.0' },
       { text: 'Showcase', link: 'en/showcase' },
     ],
   },
