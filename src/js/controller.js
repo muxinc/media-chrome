@@ -299,13 +299,32 @@ export const MediaUIStates = {
     mediaEvents: ['playing', 'timeupdate', 'progress', 'waiting', 'emptied'],
   },
   MEDIA_IS_FULLSCREEN: {
-    get: function (controller, e) {
-      // iOS has a specialized fullscreen API on the video element, so fall back to that just in case.
+    get: function (controller, event) {
+      const media = controller.media;
+
+      // iOS has a specialized fullscreen API on the video element.
       // https://developer.apple.com/documentation/webkitjs/htmlvideoelement/1630493-webkitdisplayingfullscreen
-      const isSomeElementFullscreen = !!(document[fullscreenApi.element] ?? e?.target?. webkitDisplayingFullscreen);
-      // Safari doesn't support ShadowRoot.fullscreenElement and document.fullscreenElement
-      // could be several ancestors up the tree. Use event.target instead.
-      const fullscreenEl = isSomeElementFullscreen && e?.target;
+      if (media && document[fullscreenApi.element] === undefined && 'webkitDisplayingFullscreen' in media) {
+        // For some reason webkitDisplayingFullscreen is true when in PiP,
+        // add an extra presentation mode is fullscreen check.
+        return media.webkitDisplayingFullscreen && media.webkitPresentationMode === 'fullscreen';
+      }
+
+      let fullscreenEl;
+
+      if (event) {
+        // Safari < 16.4 doesn't support ShadowRoot.fullscreenElement.
+        // document.fullscreenElement could be several ancestors up the tree.
+        // Use event.target instead.
+        const isSomeElementFullscreen = document[fullscreenApi.element];
+        fullscreenEl = isSomeElementFullscreen ? event.target : null;
+      } else {
+        // If the getter was called w/o an event use the root's fullscreenElement.
+        fullscreenEl =
+          controller.getRootNode().fullscreenElement ??
+          document[fullscreenApi.element];
+      }
+
       return containsComposedNode(controller.fullscreenElement, fullscreenEl);
     },
     rootEvents: fullscreenApi.rootEvents,
