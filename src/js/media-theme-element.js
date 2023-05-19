@@ -25,8 +25,8 @@ prependTemplate.innerHTML = /*html*/`
       height: 100%;
     }
 
-    media-controller:not(:where([mediacaptionslist], [mediasubtitleslist])) media-captions-selectmenu,
-    media-captions-button:not(:where([mediacaptionslist], [mediasubtitleslist])),
+    media-controller:not([mediasubtitleslist]) media-captions-selectmenu,
+    media-captions-button:not([mediasubtitleslist]),
     media-volume-range[mediavolumeunavailable],
     media-airplay-button[mediaairplayunavailable],
     media-fullscreen-button[mediafullscreenunavailable],
