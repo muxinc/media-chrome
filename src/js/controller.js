@@ -300,14 +300,11 @@ export const MediaUIStates = {
   },
   MEDIA_IS_FULLSCREEN: {
     get: function (controller, e) {
-      // iOS has a specialized fullscreen API on the video element.
+      // iOS has a specialized fullscreen API on the video element, so fall back to that just in case.
       // https://developer.apple.com/documentation/webkitjs/htmlvideoelement/1630493-webkitdisplayingfullscreen
-      const isFullscreenOnIOS = e?.target?.webkitDisplayingFullscreen;
-      if (isFullscreenOnIOS) return true;
-
+      const isSomeElementFullscreen = !!(document[fullscreenApi.element] ?? e?.target?. webkitDisplayingFullscreen);
       // Safari doesn't support ShadowRoot.fullscreenElement and document.fullscreenElement
       // could be several ancestors up the tree. Use event.target instead.
-      const isSomeElementFullscreen = !!document[fullscreenApi.element];
       const fullscreenEl = isSomeElementFullscreen && e?.target;
       return containsComposedNode(controller.fullscreenElement, fullscreenEl);
     },
