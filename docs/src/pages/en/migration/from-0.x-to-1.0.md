@@ -160,6 +160,16 @@ media-controller[breakpointmd] .mobile-only {
 
 ### Updating CSS variables
 
+We've updated some of our CSS variable names based on how and where they will be applied, prefering clarity and predictability over e.g. brevity in our names.
+
+**Renamed CSS Variables**
+- `--media-live-indicator-color` -> `--media-live-button-indicator-color`
+- `--media-time-buffered-color` -> `--media-time-range-buffered-color`
+- `--media-background-position` -> `--media-poster-image-background-position`
+- `--media-background-size` -> `--media-poster-image-background-size`
+
+(**NOTE:** Just prior to v1.0, we also added several CSS variables, added more consistent defaulting, applied the pre-existing variables more consistently, and added a better "inheritance" chain of CSS variable values and defaults. For a list of all CSS variables currently in v1.0 and where they apply, check out our [Styling Reference](../reference/styling). For all of the aforementioned changes, check out [this PR](https://github.com/muxinc/media-chrome/pull/528).)
+
 ## Working with captions and subtitles
 
 Before Media Chrome v1.0, our captions and subtitles were a bit more complicated than they needed to be, both with the public-facing API and "under the hood." We've simplified things in a few ways:
@@ -281,7 +291,7 @@ This was already just an alias for `<media-controller>`, so it should also be si
 
 ## Working with themes
 
-All of the prior callotus about component attribute names, CSS variables, and the like, will need to be updated on any corresponding themes usage. In addition, just like our other components, all of our "official" themes that come with Media Chrome have been updated to have `lowercase` attribute names instead of `kebab-case`. For example,
+All of the prior callouts about component attribute names, CSS variables, and the like, will need to be updated on any corresponding themes usage. In addition, just like our other components, all of our "official" themes that come with Media Chrome have been updated to have `lowercase` attribute names instead of `kebab-case`. For example,
 
 **Before**
 
