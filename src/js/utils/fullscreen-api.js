@@ -3,7 +3,8 @@ import { document } from './server-safe-globals.js';
 export const fullscreenApi = {
   enter: 'requestFullscreen',
   exit: 'exitFullscreen',
-  event: 'fullscreenchange',
+  rootEvents: ['fullscreenchange'],
+  mediaEvents: [],
   element: 'fullscreenElement',
   error: 'fullscreenerror',
   enabled: 'fullscreenEnabled',
@@ -15,7 +16,8 @@ if (document.fullscreenElement === undefined) {
     document.webkitExitFullscreen != null
       ? 'webkitExitFullscreen'
       : 'webkitCancelFullScreen';
-  fullscreenApi.event = 'webkitfullscreenchange';
+  fullscreenApi.rootEvents = ['webkitfullscreenchange'];
+  fullscreenApi.mediaEvents = ['webkitbeginfullscreen', 'webkitendfullscreen'],
   fullscreenApi.element = 'webkitFullscreenElement';
   fullscreenApi.error = 'webkitfullscreenerror';
   fullscreenApi.enabled = 'webkitFullscreenEnabled';
