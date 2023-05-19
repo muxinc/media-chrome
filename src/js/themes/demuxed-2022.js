@@ -194,10 +194,6 @@ template.innerHTML = /*html*/`
     display: none;
   }
 
-  media-captions-button[mediacaptionslist].small-button {
-    display: flex;
-  }
-
   media-captions-button[mediasubtitleslist].small-button {
     display: flex;
   }
