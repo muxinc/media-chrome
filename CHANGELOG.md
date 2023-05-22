@@ -1,3 +1,18 @@
+# [1.0.0-rc.3](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.2...v1.0.0-rc.3) (2023-05-22)
+
+
+### Bug Fixes
+
+* iOS fullscreen state bug ([#633](https://github.com/muxinc/media-chrome/issues/633)) ([505e0d1](https://github.com/muxinc/media-chrome/commit/505e0d15bffbe2bc63691f163c0538b879cd43e8)), closes [#593](https://github.com/muxinc/media-chrome/issues/593)
+
+
+### Features
+
+* add icon slot to mute button ([#629](https://github.com/muxinc/media-chrome/issues/629)) ([41169a0](https://github.com/muxinc/media-chrome/commit/41169a065742379e28152b6a32a795e2db47dd4d))
+* add mediaended attr to play button ([#630](https://github.com/muxinc/media-chrome/issues/630)) ([3141864](https://github.com/muxinc/media-chrome/commit/3141864deeb651fcbcbd2cc1bfe133e356efb1f6))
+
+
+
 # [1.0.0-rc.2](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.1...v1.0.0-rc.2) (2023-05-16)
 
 
