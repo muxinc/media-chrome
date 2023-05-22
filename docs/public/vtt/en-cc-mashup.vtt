@@ -1,0 +1,41 @@
+WEBVTT
+
+STYLE
+::cue(v[voice=Proog]) {
+  color: #FFE5C6
+}
+::cue(v[voice=Djenghis]) {
+  color: #FCF3FF
+}
+
+1
+00:00:00.424 --> 00:00:01.756 line:12
+(screaming)
+
+2
+00:00:01.756 --> 00:00:04.506 line:12
+[<i>♪dramatic music♪</i>]
+
+3
+00:00:08.092 --> 00:00:10.842 line:12
+[<i>♪intense music♪</i>]
+
+4
+00:00:15.480 --> 00:00:18.790 line:12
+<v Proog>The machine is like clockwork,</v>
+
+5
+00:00:18.790 --> 00:00:20.540 line:12
+<v Proog>one move out of place,</v>
+
+6
+00:00:20.540 --> 00:00:22.287 line:12
+<v Proog>and you're ground to a pulp.</v>
+
+7
+00:00:23.687 --> 00:00:26.604 line:12
+(machine whirring)
+
+8
+00:00:30.893 --> 00:00:31.726 line:12
+<v Djenghis>Abort!</v>
