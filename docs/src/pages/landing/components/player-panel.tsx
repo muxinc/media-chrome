@@ -73,7 +73,6 @@ export const PlayerPanel: React.FC<{
       )}
       style={{
         aspectRatio: "16/9",
-        overflow: "hidden"
       }}
     >
       <video
