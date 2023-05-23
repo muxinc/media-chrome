@@ -1,3 +1,13 @@
+# [1.0.0-rc.4](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.3...v1.0.0-rc.4) (2023-05-23)
+
+
+### Bug Fixes
+
+* fullscreen state getter w/o event ([#634](https://github.com/muxinc/media-chrome/issues/634)) ([2dba034](https://github.com/muxinc/media-chrome/commit/2dba03418341988b56ba7c433b81142e6d1d2141)), closes [#627](https://github.com/muxinc/media-chrome/issues/627)
+* Make sure we monitor slotchange on slots for media state receive… ([#639](https://github.com/muxinc/media-chrome/issues/639)) ([6710381](https://github.com/muxinc/media-chrome/commit/671038123e629ddbac79f17d99a3c80728568eab))
+
+
+
 # [1.0.0-rc.3](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.2...v1.0.0-rc.3) (2023-05-22)
 
 
