@@ -20,20 +20,20 @@ const ccIconOff = `<svg aria-hidden="true" viewBox="0 0 26 24">
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([aria-checked="true"]) slot:not([name=on]) > *,
-  :host([aria-checked="true"]) ::slotted(:not([slot=on])) {
-    display: none !important;
-  }
+    :host([aria-checked="true"]) slot[name=off] {
+      display: none !important;
+    }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([aria-checked="true"])) slot:not([name=off]) > *,
-  :host(:not([aria-checked="true"])) ::slotted(:not([slot=off])) {
-    display: none !important;
-  }
+    ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+    :host(:not([aria-checked="true"])) slot[name=on] {
+      display: none !important;
+    }
   </style>
-
-  <slot name="on">${ccIconOn}</slot>
-  <slot name="off">${ccIconOff}</slot>
+  
+  <slot name="icon">
+    <slot name="on">${ccIconOn}</slot>
+    <slot name="off">${ccIconOff}</slot>
+  </slot>
 `;
 
 const updateAriaChecked = (el) => {
@@ -74,6 +74,7 @@ const setSubtitlesListAttr = (el, attrName, list) => {
 /**
  * @slot on - An element that will be shown while closed captions or subtitles are on.
  * @slot off - An element that will be shown while closed captions or subtitles are off.
+ * @slot icon - An element for representing on and off states in a single icon
  *
  * @attr {string} mediasubtitleslist - (read-only) A list of all subtitles and captions.
  * @attr {string} mediasubtitlesshowing - (read-only) A list of the showing subtitles and captions.

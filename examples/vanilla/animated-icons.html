@@ -15,13 +15,6 @@
         width: 100%;
       }
 
-      media-airplay-button[mediaairplayunavailable],
-      media-fullscreen-button[mediafullscreenunavailable],
-      media-volume-range[mediavolumeunavailable],
-      media-pip-button[mediapipunavailable] {
-        display: none;
-      }
-
       .examples {
         margin-top: 20px;
       }
@@ -52,19 +45,33 @@
       media-mute-button[mediavolumelevel='off'] .muted {
         opacity: 1;
       }
+
+      .captions-icon {
+        transition: all .5s;
+        font-weight: 400;
+        border-radius: 5px;
+      }
+
+      media-captions-button[aria-checked=true] .captions-icon {
+        font-weight: 700;
+        text-decoration: underline;
+        color: red;
+      }
     </style>
   </head>
   <body>
     <main>
       <h1>Media Chrome Animated Icons Usage Example</h1>
-      <media-controller>
+      <media-controller defaultsubtitles>
         <video
           slot="media"
           src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
           muted
           crossorigin
           playsinline
-        ></video>
+        >
+          <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
+        </video>
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-seek-backward-button></media-seek-backward-button>
@@ -94,11 +101,11 @@
           <media-volume-range></media-volume-range>
           <media-time-range></media-time-range>
           <media-time-display showduration remaining></media-time-display>
-          <media-captions-button></media-captions-button>
-          <media-playback-rate-button></media-playback-rate-button>
+          <media-captions-button>
+            <span class="captions-icon" slot="icon">CC</span>
+          </media-captions-button>
           <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>
-          <media-airplay-button></media-airplay-button>
         </media-control-bar>
       </media-controller>
       <div class="examples">
