@@ -63,6 +63,10 @@ template.innerHTML = /*html*/`
       background: none;
     }
 
+    ::slotted([slot=media]) {
+      display: var(--media-element-display);
+    }
+
     ${
       /*
        * when in audio mode, hide the slotted media element by default
@@ -123,7 +127,6 @@ template.innerHTML = /*html*/`
     ${/* Position the media and poster elements to fill the container */ ''}
     ::slotted([slot=media]),
     ::slotted([slot=poster]) {
-      display: var(--media-element-display);
       width: 100%;
       height: 100%;
     }
