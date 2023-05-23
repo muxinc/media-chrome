@@ -63,6 +63,19 @@ template.innerHTML = /*html*/`
       background: none;
     }
 
+    ::slotted([slot=media]) {
+      display: var(--media-element-display);
+    }
+
+    ${
+      /*
+       * when in audio mode, hide the slotted media element by default
+       */ ''
+    }
+    :host([${Attributes.AUDIO}]) ::slotted([slot=media]) {
+      display: var(--media-element-display, none);
+    }
+
     ${
       /*
        * when in audio mode, hide the gesture-layer which causes media-controller to be taller than the control bar
@@ -232,6 +245,7 @@ function getBreakpoints(breakpoints, rect) {
  * @attr {boolean} userinactive
  *
  * @cssprop --media-background-color - `background-color` of container.
+ * @cssprop --media-element-display - `display` of the slotted media element (default none for [audio] usage).
  */
 class MediaContainer extends window.HTMLElement {
   constructor() {

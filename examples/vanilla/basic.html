@@ -39,6 +39,23 @@
         </media-control-bar>
       </media-controller>
 
+      <!-- Using a video tag for audio-only -->
+      <media-controller audio>
+        <video
+          playsinline
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+        ></video>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-time-display showduration></media-time-display>
+          <media-time-range></media-time-range>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-mute-button></media-mute-button>
+          <media-volume-range></media-volume-range>
+        </media-control-bar>
+      </media-controller>
+
       <br /><br />
 
       <media-controller>
