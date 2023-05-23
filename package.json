@@ -8,7 +8,6 @@
   "bugs": {
     "url": "https://github.com/muxinc/media-chrome/issues"
   },
-  "type": "module",
   "main": "dist/index.js",
   "customElements": "dist/custom-elements.json",
   "files": [
@@ -23,8 +22,7 @@
     "manifest": "npx @custom-elements-manifest/analyzer analyze --config scripts/custom-elements-manifest.config.js",
     "build:types": "tsc",
     "build:esm": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=esm --outdir=dist",
-    "build:cjs": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=cjs --outdir=dist/cjs --out-extension:.js=.cjs",
-    "postbuild:cjs": "find dist\/cjs\/**\/*.cjs -type f -name '*.cjs' -exec sed -i \"\" -r \"s_(require\\(\\\")(.+).js(\\\"\\))_\\1\\2.cjs\\3_\" {} +",
+    "build:cjs": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=cjs --outdir=dist/cjs",
     "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome && yarn size",
     "build:react": "node ./scripts/react/build.js",
     "build": "run-s build:types build:esm build:cjs build:iife",
