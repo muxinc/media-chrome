@@ -69,8 +69,8 @@ template.innerHTML = /*html*/`
 }
 
 svg, img, ::slotted(svg), ::slotted(img) {
-  width: var(--media-loading-icon-width, 100px);
-  height: var(--media-loading-icon-height);
+  width: var(--media-loading-indicator-icon-width);
+  height: var(--media-loading-indicator-icon-height, 100px);
   fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
   vertical-align: middle;
 }
@@ -96,8 +96,8 @@ svg, img, ::slotted(svg), ::slotted(img) {
  * @cssproperty --media-loading-indicator-display - `display` property of loading indicator.
  * @cssproperty [ --media-loading-indicator-opacity = 0 ] - `opacity` property of loading indicator. Set to 1 to force it to be visible.
  * @cssproperty [ --media-loading-indicator-transition-delay = 500ms ] - `transition-delay` property of loading indicator. Make sure to include units.
- * @cssproperty --media-loading-icon-width - `width` of loading icon.
- * @cssproperty --media-loading-icon-height - `height` of loading icon.
+ * @cssproperty --media-loading-indicator-icon-width - `width` of loading icon.
+ * @cssproperty [ --media-loading-indicator-icon-height = 100px ] - `height` of loading icon.
  */
 class MediaLoadingIndicator extends window.HTMLElement {
   #mediaController;
