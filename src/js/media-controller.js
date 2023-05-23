@@ -664,24 +664,19 @@ const monitorForMediaStateReceivers = (
   };
 
   // Storing refs & handlers here so we can remove on unsubscribe
-  const slotAndChangeHandlers = [];
-  // Need to monitor slotted elements being added/removed as well (e.g. for themes usage, among others)
-  (rootNode.querySelectorAll('slot:not([slot=media])') /** @type {HTMLSlotElement} */).forEach(el => {
-    const slotEl = /** @type {HTMLSlotElement} */ (el);
-    /** @type {HTMLElement[]} */
-    let prevSlotted= [];
-    const eventHandler =  () => {
-      prevSlotted.forEach((node) =>
-        traverseForMediaStateReceivers(node, unregisterMediaStateReceiver)
-      );
-      prevSlotted = /** @type {HTMLElement[]} */ ([...slotEl.assignedElements({ flatten: true })]);
-      prevSlotted.forEach((node) =>
-        traverseForMediaStateReceivers(node, registerMediaStateReceiver)
-      );
-    };
-    slotEl.addEventListener('slotchange', eventHandler);
-    slotAndChangeHandlers.push([slotEl, eventHandler]);
-  });
+  let prevSlotted = [];
+  const slotChangeHandler = (event) => {
+    const slotEl = /** @type {HTMLSlotElement} */ event.target;
+    if (slotEl.name === "media") return;
+    prevSlotted.forEach((node) =>
+      traverseForMediaStateReceivers(node, unregisterMediaStateReceiver)
+    );
+    prevSlotted = /** @type {HTMLElement[]} */ ([...slotEl.assignedElements({ flatten: true })]);
+    prevSlotted.forEach((node) =>
+      traverseForMediaStateReceivers(node, registerMediaStateReceiver)
+    );
+  };
+  rootNode.addEventListener('slotchange', slotChangeHandler);
 
   const observer = new MutationObserver(mutationCallback);
   observer.observe(rootNode, {
@@ -693,8 +688,8 @@ const monitorForMediaStateReceivers = (
   const unsubscribe = () => {
     // Unregister any Media State Receiver descendants (including ourselves)
     traverseForMediaStateReceivers(rootNode, unregisterMediaStateReceiver);
-    // Make sure we remove all slotchange event listeners
-    slotAndChangeHandlers.forEach(([slotEl, eventHandler]) => slotEl.removeEventListener(eventHandler));
+    // Make sure we remove the slotchange event listener
+    rootNode.removeEventListener('slotchange', slotChangeHandler);
     // Stop observing for Media State Receivers
     observer.disconnect();
     // Stop listening for Media State Receiver events.
