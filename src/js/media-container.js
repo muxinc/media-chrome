@@ -65,6 +65,15 @@ template.innerHTML = /*html*/`
 
     ${
       /*
+       * when in audio mode, hide the slotted media element by default
+       */ ''
+    }
+    :host([${Attributes.AUDIO}]) ::slotted([slot=media]) {
+      display: var(--media-element-display, none);
+    }
+
+    ${
+      /*
        * when in audio mode, hide the gesture-layer which causes media-controller to be taller than the control bar
        */ ''
     }
@@ -114,6 +123,7 @@ template.innerHTML = /*html*/`
     ${/* Position the media and poster elements to fill the container */ ''}
     ::slotted([slot=media]),
     ::slotted([slot=poster]) {
+      display: var(--media-element-display);
       width: 100%;
       height: 100%;
     }
