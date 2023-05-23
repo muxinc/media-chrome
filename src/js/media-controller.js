@@ -663,7 +663,7 @@ const monitorForMediaStateReceivers = (
     });
   };
 
-  // Storing refs & handlers here so we can remove on unsubscribe
+  // Storing prevSlotted elements so we can cleanup if slotted elements change over time.
   let prevSlotted = [];
   const slotChangeHandler = (event) => {
     const slotEl = /** @type {HTMLSlotElement} */ event.target;
