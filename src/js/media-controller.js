@@ -663,6 +663,21 @@ const monitorForMediaStateReceivers = (
     });
   };
 
+  // Storing prevSlotted elements so we can cleanup if slotted elements change over time.
+  let prevSlotted = [];
+  const slotChangeHandler = (event) => {
+    const slotEl = /** @type {HTMLSlotElement} */ event.target;
+    if (slotEl.name === "media") return;
+    prevSlotted.forEach((node) =>
+      traverseForMediaStateReceivers(node, unregisterMediaStateReceiver)
+    );
+    prevSlotted = /** @type {HTMLElement[]} */ ([...slotEl.assignedElements({ flatten: true })]);
+    prevSlotted.forEach((node) =>
+      traverseForMediaStateReceivers(node, registerMediaStateReceiver)
+    );
+  };
+  rootNode.addEventListener('slotchange', slotChangeHandler);
+
   const observer = new MutationObserver(mutationCallback);
   observer.observe(rootNode, {
     childList: true,
@@ -673,6 +688,8 @@ const monitorForMediaStateReceivers = (
   const unsubscribe = () => {
     // Unregister any Media State Receiver descendants (including ourselves)
     traverseForMediaStateReceivers(rootNode, unregisterMediaStateReceiver);
+    // Make sure we remove the slotchange event listener
+    rootNode.removeEventListener('slotchange', slotChangeHandler);
     // Stop observing for Media State Receivers
     observer.disconnect();
     // Stop listening for Media State Receiver events.
