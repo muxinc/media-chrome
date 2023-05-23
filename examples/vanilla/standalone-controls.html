@@ -16,6 +16,10 @@
         width: 100%;      /* prevents video to expand beyond its container */
       }
 
+      media-loading-indicator {
+        --media-loading-indicator-opacity: 1;
+      }
+
       .examples {
         margin-top: 20px;
       }
@@ -72,6 +76,7 @@
       <media-fullscreen-button
         mediacontroller="controller"
       ></media-fullscreen-button>
+      <media-loading-indicator mediacontroller="controller"></media-loading-indicator>
 
       <h2>Inside the control-bar element</h2>
       <p>
@@ -93,6 +98,7 @@
         <media-playback-rate-button></media-playback-rate-button>
         <media-pip-button></media-pip-button>
         <media-fullscreen-button></media-fullscreen-button>
+        <media-loading-indicator></media-loading-indicator>
       </media-control-bar>
 
       <div class="examples">

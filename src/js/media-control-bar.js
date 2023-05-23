@@ -16,7 +16,7 @@ template.innerHTML = /*html*/`
       box-sizing: border-box;
       display: var(--media-control-display, var(--media-control-bar-display, inline-flex));
       color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-      --media-loading-icon-width: 44px;
+      --media-loading-indicator-icon-height: 44px;
     }
 
     media-time-range,
