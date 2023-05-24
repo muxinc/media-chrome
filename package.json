@@ -38,6 +38,7 @@
     "postbuild:cjs": "shx sed -i \"s/\\.js\\\"\\)/\\.cjs\\\")/g\" dist/cjs/*.cjs dist/cjs/**/*.cjs ",
     "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome && yarn size",
     "build:react": "node ./scripts/react/build.mjs",
+    "postbuild:react": "esbuild dist/react/*.mjs dist/react/common/*.js --target=es2019 --format=cjs --outdir=dist/react/cjs --out-extension:.js=.cjs",
     "build": "run-s build:types build:esm build:cjs build:iife build:react",
     "watch": "run-p watch:types watch:esbuild",
     "watch:types": "yarn build:types -w",
