@@ -2,7 +2,7 @@
 title: <media-captions-selectmenu> (Experimental)
 description: Experimental Media Captions Selectmenu
 layout: ../../../layouts/ComponentLayout.astro
-source: https://github.com/muxinc/media-chrome/tree/main/src/js/experimental/media-captions-selectmenu.js
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/experimental/media-captions-selectmenu.mjs
 ---
 
 A menu-button for subtitles and captions.
