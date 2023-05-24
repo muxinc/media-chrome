@@ -1,9 +1,9 @@
-import MediaChromeButton from './media-chrome-button.js';
-import { window, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
-import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
-import { AttributeTokenList } from './utils/attribute-token-list.js';
+import MediaChromeButton from './media-chrome-button.mjs';
+import { window, document } from './utils/server-safe-globals.mjs';
+import { MediaUIEvents, MediaUIAttributes } from './constants.mjs';
+import { nouns } from './labels/labels.mjs';
+import { getNumericAttr, setNumericAttr } from './utils/element-utils.mjs';
+import { AttributeTokenList } from './utils/attribute-token-list.mjs';
 
 export const Attributes = {
   RATES: 'rates',

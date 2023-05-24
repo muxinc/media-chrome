@@ -7,8 +7,8 @@
 </media-theme-responsive>
 */
 
-import { window, document } from '../utils/server-safe-globals.js';
-import { MediaThemeElement } from '../media-theme-element.js';
+import { window, document } from '../utils/server-safe-globals.mjs';
+import { MediaThemeElement } from '../media-theme-element.mjs';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/`

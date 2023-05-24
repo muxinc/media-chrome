@@ -1,4 +1,4 @@
-import { isValidNumber } from './utils.js';
+import { isValidNumber } from './utils.mjs';
 
 const UnitLabels = [
   {

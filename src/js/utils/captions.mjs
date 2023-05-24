@@ -1,4 +1,4 @@
-import { MediaUIEvents, MediaUIAttributes } from '../constants.js';
+import { MediaUIEvents, MediaUIAttributes } from '../constants.mjs';
 
 // NOTE: This is generic for any CSS/html list representation. Consider renaming and moving to generic module.
 /**

@@ -3,13 +3,13 @@ import {
   MediaUIEvents,
   MediaStateReceiverAttributes,
   PointerTypes,
-} from './constants.js';
+} from './constants.mjs';
 import {
   closestComposedNode,
   getBooleanAttr,
   setBooleanAttr,
-} from './utils/element-utils.js';
-import { window, document } from './utils/server-safe-globals.js';
+} from './utils/element-utils.mjs';
+import { window, document } from './utils/server-safe-globals.mjs';
 
 const template = document.createElement('template');
 

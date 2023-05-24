@@ -1,13 +1,13 @@
-import MediaChromeButton from './media-chrome-button.js';
-import { window, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
+import MediaChromeButton from './media-chrome-button.mjs';
+import { window, document } from './utils/server-safe-globals.mjs';
+import { MediaUIEvents, MediaUIAttributes } from './constants.mjs';
+import { verbs } from './labels/labels.mjs';
 import {
   getBooleanAttr,
   setBooleanAttr,
   getStringAttr,
   setStringAttr,
-} from './utils/element-utils.js';
+} from './utils/element-utils.mjs';
 
 const enterIcon = `<svg aria-hidden="true" viewBox="0 0 24 24"><g><path class="cast_caf_icon_arch0" d="M1,18 L1,21 L4,21 C4,19.3 2.66,18 1,18 L1,18 Z"/><path class="cast_caf_icon_arch1" d="M1,14 L1,16 C3.76,16 6,18.2 6,21 L8,21 C8,17.13 4.87,14 1,14 L1,14 Z"/><path class="cast_caf_icon_arch2" d="M1,10 L1,12 C5.97,12 10,16.0 10,21 L12,21 C12,14.92 7.07,10 1,10 L1,10 Z"/><path class="cast_caf_icon_box" d="M21,3 L3,3 C1.9,3 1,3.9 1,5 L1,8 L3,8 L3,5 L21,5 L21,19 L14,19 L14,21 L21,21 C22.1,21 23,20.1 23,19 L23,5 C23,3.9 22.1,3 21,3 L21,3 Z"/></g></svg>`;
 

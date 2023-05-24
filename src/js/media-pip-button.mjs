@@ -1,13 +1,13 @@
-import MediaChromeButton from './media-chrome-button.js';
-import { window, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
+import MediaChromeButton from './media-chrome-button.mjs';
+import { window, document } from './utils/server-safe-globals.mjs';
+import { MediaUIEvents, MediaUIAttributes } from './constants.mjs';
+import { verbs } from './labels/labels.mjs';
 import {
   getBooleanAttr,
   getStringAttr,
   setBooleanAttr,
   setStringAttr,
-} from './utils/element-utils.js';
+} from './utils/element-utils.mjs';
 
 const pipIcon = `<svg aria-hidden="true" viewBox="0 0 28 24">
   <path d="M24 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h20a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Zm-1 16H5V5h18v14Zm-3-8h-7v5h7v-5Z"/>

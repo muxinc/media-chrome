@@ -1,28 +1,28 @@
-import { window, document } from './utils/server-safe-globals.js';
-import { fullscreenApi } from './utils/fullscreen-api.js';
-import { containsComposedNode } from './utils/element-utils.js';
-import { serializeTimeRanges } from './utils/time.js';
+import { window, document } from './utils/server-safe-globals.mjs';
+import { fullscreenApi } from './utils/fullscreen-api.mjs';
+import { containsComposedNode } from './utils/element-utils.mjs';
+import { serializeTimeRanges } from './utils/time.mjs';
 import {
   hasVolumeSupportAsync,
   fullscreenSupported,
   pipSupported,
   airplaySupported,
   castSupported
-} from './utils/platform-tests.js';
+} from './utils/platform-tests.mjs';
 import {
   MediaUIAttributes,
   TextTrackKinds,
   TextTrackModes,
   AvailabilityStates,
   StreamTypes,
-} from './constants.js';
+} from './constants.mjs';
 
 import {
   stringifyTextTrackList,
   getTextTracksList,
   updateTracksModeTo,
   toggleSubsCaps,
-} from './utils/captions.js';
+} from './utils/captions.mjs';
 
 let volumeSupported;
 export const volumeSupportPromise = hasVolumeSupportAsync().then((supported) => {

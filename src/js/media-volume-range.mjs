@@ -1,7 +1,7 @@
-import { window } from './utils/server-safe-globals.js';
-import MediaChromeRange from './media-chrome-range.js';
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { nouns } from './labels/labels.js';
+import { window } from './utils/server-safe-globals.mjs';
+import MediaChromeRange from './media-chrome-range.mjs';
+import { MediaUIAttributes, MediaUIEvents } from './constants.mjs';
+import { nouns } from './labels/labels.mjs';
 import {
   getBooleanAttr,
   getNumericAttr,
@@ -9,7 +9,7 @@ import {
   setBooleanAttr,
   setNumericAttr,
   setStringAttr,
-} from './utils/element-utils.js';
+} from './utils/element-utils.mjs';
 
 const DEFAULT_MAX_VOLUME = 100;
 const DEFAULT_VOLUME = 1;

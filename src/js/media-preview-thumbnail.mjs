@@ -1,13 +1,13 @@
-import { window, document } from './utils/server-safe-globals.js';
+import { window, document } from './utils/server-safe-globals.mjs';
 import {
   MediaUIAttributes,
   MediaStateReceiverAttributes,
-} from './constants.js';
+} from './constants.mjs';
 import {
   getOrInsertCSSRule,
   getStringAttr,
   setStringAttr,
-} from './utils/element-utils.js';
+} from './utils/element-utils.mjs';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/ `

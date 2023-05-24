@@ -2,8 +2,8 @@ import {
   InnerTemplatePart,
   TemplateInstance,
   AttrPart,
-} from './template-parts.js';
-import { isNumericString } from './utils.js';
+} from './template-parts.mjs';
+import { isNumericString } from './utils.mjs';
 
 // Filters concept like Nunjucks or Liquid.
 const pipeModifiers = {

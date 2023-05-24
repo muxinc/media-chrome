@@ -1,6 +1,6 @@
-import { MediaStateReceiverAttributes } from './constants.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { MediaStateReceiverAttributes } from './constants.mjs';
+import { getOrInsertCSSRule } from './utils/element-utils.mjs';
+import { window, document } from './utils/server-safe-globals.mjs';
 
 const template = document.createElement('template');
 
