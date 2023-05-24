@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { generateCustomData } from "cem-plugin-vs-code-custom-data-generator";
-import { generateCssVars } from './cem-plugin-css-vars.js';
+import { generateCssVars } from './cem-plugin-css-vars.mjs';
 
 const packageData = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
 const { name, description, version, author, homepage, license } = packageData;
