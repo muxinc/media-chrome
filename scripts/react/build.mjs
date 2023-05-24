@@ -117,7 +117,7 @@ const entryPointsToReactModulesIterable = (
           const modulePathAbs = path.format({
             dir: distRoot,
             name: importPathObj.name,
-            ext: '.js',
+            ext: '.mjs',
           });
           const tsDeclPathAbs = path.format({
             dir: distRoot,
@@ -238,10 +238,10 @@ export { toCustomElementReactWrapperModule };
 // EXTERNALIZEABLE/CONFIG CODE BEGIN
 const projectRoot = path.join(__dirname, '..', '..');
 const distRoot = path.join(projectRoot, 'dist', 'react');
-const entryPoints = [path.join(projectRoot, 'dist', 'index.js')];
+const entryPoints = [path.join(projectRoot, 'dist', 'index.mjs')];
 const setupGlobalsAsync = async () => {
   const customElementNames = await import(
-    path.join(projectRoot, 'dist', 'utils', 'server-safe-globals.js')
+    path.join(projectRoot, 'dist', 'utils', 'server-safe-globals.mjs')
   ).then((exports) => {
     globalThis.window = exports.Window;
     globalThis.document = exports.Document;
