@@ -28,7 +28,7 @@
   "scripts": {
     "format": "prettier --write .",
     "clean": "rimraf dist",
-    "lint": "eslint src/js",
+    "lint": "eslint --ext .js,.mjs src/js",
     "premanifest": "cp -R src/js/ dist/",
     "manifest": "npx @custom-elements-manifest/analyzer analyze --config scripts/custom-elements-manifest.config.mjs",
     "build:types": "tsc",
