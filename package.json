@@ -10,9 +10,9 @@
   },
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/cjs/index.js",
-      "default": "./dist/index.js"
+      "import": "./dist/index.mjs",
+      "require": "./dist/cjs/index.cjs",
+      "default": "./dist/index.mjs"
     },
     "./dist/cjs/*": "./dist/cjs/*",
     "./dist/*": "./dist/*",
@@ -32,9 +32,9 @@
     "premanifest": "cp -R src/js/ dist/",
     "manifest": "npx @custom-elements-manifest/analyzer analyze --config scripts/custom-elements-manifest.config.mjs",
     "build:types": "tsc",
-    "build:esm": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=esm --outdir=dist",
-    "build:cjs": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=cjs --outdir=dist/cjs",
-    "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome && yarn size",
+    "build:esm": "esbuild src/js/*.mjs src/js/*/*.mjs src/js/*/*/*.mjs --target=es2019 --format=esm --outdir=dist --out-extension:.js=.mjs",
+    "build:cjs": "esbuild src/js/*.mjs src/js/*/*.mjs src/js/*/*/*.mjs --target=es2019 --format=cjs --outdir=dist/cjs --out-extension:.js=.cjs",
+    "build:iife": "esbuild src/js/index.mjs --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome && yarn size",
     "build:react": "node ./scripts/react/build.mjs",
     "build": "run-s build:types build:esm build:cjs build:iife",
     "watch": "run-p watch:types watch:esbuild",
