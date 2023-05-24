@@ -2,7 +2,7 @@
 title: <media-preview-thumbnail>
 description: Media Preview Thumbnail
 layout: ../../../layouts/ComponentLayout.astro
-source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-preview-thumbnail.mjs
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-preview-thumbnail.js
 ---
 
 > This component is automatically rendered internally by [`<media-time-range>`](media-time-range). While the default implementation covers most use cases, the documentation below describes how the component works for applications with advanced use cases.
