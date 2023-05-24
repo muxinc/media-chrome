@@ -41,7 +41,7 @@ const updateAriaLabel = (el) => {
 /**
  * @slot enter - An element shown when the media is not in casting mode and pressing the button will open the Cast menu.
  * @slot exit - An element shown when the media is in casting mode and pressing the button will trigger exiting casting mode.
- * @slot icon - An element for representing enter and exist states in a single icon
+ * @slot icon - An element for representing enter and exit states in a single icon
  *
  * @attr {(unavailable|unsupported)} mediacastunavailable - (read-only) Set if casting is unavailable.
  * @attr {boolean} mediaiscasting - (read-only) Present if the media is casting.
