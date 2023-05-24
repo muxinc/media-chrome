@@ -17,7 +17,7 @@ the introduction this is how the Javascript theme file would look like.
 
 ```js
 // media-theme-tiny.js
-import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.js';
+import { MediaThemeElement } from 'media-chrome/dist/media-theme-element.mjs';
 
 const template = document.createElement('template');
 template.innerHTML = `

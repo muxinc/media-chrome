@@ -8,7 +8,7 @@ Any control element can _send_ user input to the [`MediaController`](https://git
 
 ### Sending
 
-The `MediaController` receives user input via [`MediaUIEvents`](https://github.com/muxinc/media-chrome/blob/main/src/js/constants.js#L1) like `MediaUIEvents.MEDIA_PLAY_REQUEST` or `MediaUIEvents.MEDIA_SEEK_REQUEST`. The `MediaController` may receive these events in one of two ways:
+The `MediaController` receives user input via [`MediaUIEvents`](https://github.com/muxinc/media-chrome/blob/8d7e741102d402a20675949c168142bcd3338b63/src/js/constants.js#L1) like `MediaUIEvents.MEDIA_PLAY_REQUEST` or `MediaUIEvents.MEDIA_SEEK_REQUEST`. The `MediaController` may receive these events in one of two ways:
 
 - From a control element that is nested under the `<media-controller>` element (see [diagram 1](#1-by-media-controller-nesting)).
   The DOM element that will receive bubbling up events from the control element is the `<media-controller>` element, it's also called an **associated element** in the codebase.

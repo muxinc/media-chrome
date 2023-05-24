@@ -112,8 +112,8 @@ export default function ComponentSandpack({
     './styles.css',
     ...Object.keys(dependencies),
     ...Object.keys(files).reduce((importPaths, fileAbsPath) => {
-      // Only automatically import .css or .js files for now
-      if (fileAbsPath.endsWith('.css') | fileAbsPath.endsWith('.js')) {
+      // Only automatically import .css, .js, or .mjs files for now
+      if (fileAbsPath.endsWith('.css') | fileAbsPath.endsWith('.js') | fileAbsPath.endsWith('.mjs')) {
         importPaths.push(`.${fileAbsPath}`);
       }
       return importPaths;
@@ -144,7 +144,7 @@ export default function ComponentSandpack({
             main: "./index.js",
           }),
         },
-        "/node_modules/@internals/media-chrome/index.js": {
+        "/node_modules/@internals/media-chrome/index.mjs": {
           hidden: true,
           code: mediaChromeRaw,
         },

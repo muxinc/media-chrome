@@ -14,7 +14,7 @@ import {
   MediaPipButton,
   MediaFullscreenButton,
   MediaPreviewThumbnail,
-} from "media-chrome/dist/react/index.js";
+} from "media-chrome/react";
 import { MediaChromeListItem } from "../../../types/index";
 // @ts-ignore
 import { labels, timeUtils } from "media-chrome";

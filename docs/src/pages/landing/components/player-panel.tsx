@@ -17,7 +17,7 @@ import {
   MediaPlaybackRateButton,
   MediaPipButton,
   MediaFullscreenButton,
-} from "media-chrome/dist/react/index.js";
+} from "media-chrome/react";
 
 const hasSelectedAncestor = (...ancestors: any) => {
   return (self: any, selectedItem?: MediaChromeListItem) =>
