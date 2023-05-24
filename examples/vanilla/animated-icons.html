@@ -77,6 +77,17 @@
       media-fullscreen-button[mediaisfullscreen] .fullscreen-icon span:first-child {
         display: none;
       }
+
+      .pip-icon {
+        background: darkcyan;
+        border-radius: 50%;
+        width: 24px;
+        transition: all .5s;
+      }
+
+      media-pip-button[mediaispip] .pip-icon {
+        background: maroon;
+      }
     </style>
   </head>
   <body>
@@ -125,7 +136,9 @@
           <media-cast-button>
             <span class="cast-icon" slot="icon">[ ]</span>
           </media-cast-button>
-          <media-pip-button></media-pip-button>
+          <media-pip-button>
+            <span class="pip-icon" slot="icon">PiP</span>
+          </media-pip-button>
           <media-fullscreen-button>
             <span class="fullscreen-icon" slot="icon">
               <span>+</span>

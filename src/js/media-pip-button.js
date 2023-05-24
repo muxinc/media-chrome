@@ -16,22 +16,20 @@ const pipIcon = `<svg aria-hidden="true" viewBox="0 0 28 24">
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${MediaUIAttributes.MEDIA_IS_PIP}]) slot:not([name=exit]) > *, 
-  :host([${MediaUIAttributes.MEDIA_IS_PIP}]) ::slotted(:not([slot=exit])) {
+  :host([${MediaUIAttributes.MEDIA_IS_PIP}]) slot:not([name=exit]):not([name=icon]) {
     display: none !important;
   }
 
   ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([${MediaUIAttributes.MEDIA_IS_PIP}])) slot:not([name=enter]) > *, 
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_PIP
-  }])) ::slotted(:not([slot=enter])) {
+  :host(:not([${MediaUIAttributes.MEDIA_IS_PIP}])) slot:not([name=enter]):not([name=icon]) {
     display: none !important;
   }
   </style>
 
-  <slot name="enter">${pipIcon}</slot>
-  <slot name="exit">${pipIcon}</slot>
+  <slot name="icon">
+    <slot name="enter">${pipIcon}</slot>
+    <slot name="exit">${pipIcon}</slot>
+  </slot>
 `;
 
 const updateAriaLabel = (el) => {
@@ -42,6 +40,7 @@ const updateAriaLabel = (el) => {
 /**
  * @slot enter - An element shown when the media is not in PIP mode and pressing the button will trigger entering PIP mode.
  * @slot exit - An element shown when the media is in PIP and pressing the button will trigger exiting PIP mode.
+ * @slot icon - An element for representing enter and exist states in a single icon
  *
  * @attr {(unavailable|unsupported)} mediapipunavailable - (read-only) Set if picture-in-picture is unavailable.
  * @attr {boolean} mediaispip - (read-only) Present if the media is playing in picture-in-picture.
