@@ -1,5 +1,5 @@
-import { window, document } from '../../utils/server-safe-globals.mjs';
-import { MediaUIEvents, MediaUIAttributes } from '../../constants.mjs';
+import { window, document } from '../../utils/server-safe-globals.js';
+import { MediaUIEvents, MediaUIAttributes } from '../../constants.js';
 
 const template = document.createElement('template');
 

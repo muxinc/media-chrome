@@ -1,15 +1,15 @@
-import MediaTextDisplay from './media-text-display.mjs';
+import MediaTextDisplay from './media-text-display.js';
 import {
   getBooleanAttr,
   getNumericAttr,
   getOrInsertCSSRule,
   setBooleanAttr,
   setNumericAttr,
-} from './utils/element-utils.mjs';
-import { window } from './utils/server-safe-globals.mjs';
-import { formatAsTimePhrase, formatTime } from './utils/time.mjs';
-import { MediaUIAttributes } from './constants.mjs';
-import { nouns } from './labels/labels.mjs';
+} from './utils/element-utils.js';
+import { window } from './utils/server-safe-globals.js';
+import { formatAsTimePhrase, formatTime } from './utils/time.js';
+import { MediaUIAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
 
 export const Attributes = {
   REMAINING: 'remaining',

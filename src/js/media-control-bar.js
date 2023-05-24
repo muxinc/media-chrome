@@ -3,9 +3,9 @@
 
   Auto position contorls in a line and set some base colors
 */
-import { MediaStateReceiverAttributes } from './constants.mjs';
-import { getOrInsertCSSRule } from './utils/element-utils.mjs';
-import { window, document } from './utils/server-safe-globals.mjs';
+import { MediaStateReceiverAttributes } from './constants.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
+import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 

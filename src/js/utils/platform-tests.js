@@ -1,6 +1,6 @@
-import { window, document } from './server-safe-globals.mjs';
-import { delay } from './utils.mjs';
-import { fullscreenApi } from './fullscreen-api.mjs';
+import { window, document } from './server-safe-globals.js';
+import { delay } from './utils.js';
+import { fullscreenApi } from './fullscreen-api.js';
 
 /**
  * Test element

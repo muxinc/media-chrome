@@ -1,6 +1,6 @@
 import { assert } from '@open-wc/testing';
-import { evaluateExpression, getParamValue, processor } from '../../src/js/utils/template-processor.mjs';
-import { TemplateInstance } from '../../src/js/utils/template-parts.mjs';
+import { evaluateExpression, getParamValue, processor } from '../../src/js/utils/template-processor.js';
+import { TemplateInstance } from '../../src/js/utils/template-parts.js';
 
 describe('evaluateExpression', () => {
   it('can evaluate a simple boolean condition', () => {

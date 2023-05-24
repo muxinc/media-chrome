@@ -1,9 +1,9 @@
-import MediaChromeListbox from './media-chrome-listbox.mjs';
-import './media-chrome-listitem.mjs';
-import { window, document } from '../utils/server-safe-globals.mjs';
-import { MediaUIAttributes, MediaUIEvents } from '../constants.mjs';
-import { parseTextTracksStr, formatTextTrackObj } from '../utils/captions.mjs';
-import { toggleSubsCaps } from '../utils/captions.mjs';
+import MediaChromeListbox from './media-chrome-listbox.js';
+import './media-chrome-listitem.js';
+import { window, document } from '../utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
+import { parseTextTracksStr, formatTextTrackObj } from '../utils/captions.js';
+import { toggleSubsCaps } from '../utils/captions.js';
 
 const captionsIndicatorInlineStyle = `
   fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));

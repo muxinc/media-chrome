@@ -1,11 +1,11 @@
-import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.mjs';
-import { nouns } from './labels/labels.mjs';
-import { window, document } from './utils/server-safe-globals.mjs';
+import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
+import { window, document } from './utils/server-safe-globals.js';
 import {
   getBooleanAttr,
   setBooleanAttr,
   getOrInsertCSSRule
-} from './utils/element-utils.mjs';
+} from './utils/element-utils.js';
 
 
 export const Attributes = {

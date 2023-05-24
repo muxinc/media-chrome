@@ -1,6 +1,6 @@
-import MediaChromeListbox from './media-chrome-listbox.mjs';
-import { window, document } from '../utils/server-safe-globals.mjs';
-import { MediaUIAttributes, MediaUIEvents } from '../constants.mjs';
+import MediaChromeListbox from './media-chrome-listbox.js';
+import { window, document } from '../utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/`

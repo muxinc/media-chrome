@@ -1,6 +1,6 @@
 // Work in progress
 
-import { window, document } from '../utils/server-safe-globals.mjs';
+import { window, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 

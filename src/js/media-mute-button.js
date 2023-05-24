@@ -1,8 +1,8 @@
-import MediaChromeButton from './media-chrome-button.mjs';
-import { window, document } from './utils/server-safe-globals.mjs';
-import { MediaUIEvents, MediaUIAttributes } from './constants.mjs';
-import { verbs } from './labels/labels.mjs';
-import { getStringAttr, setStringAttr } from './utils/element-utils.mjs';
+import MediaChromeButton from './media-chrome-button.js';
+import { window, document } from './utils/server-safe-globals.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { verbs } from './labels/labels.js';
+import { getStringAttr, setStringAttr } from './utils/element-utils.js';
 
 const { MEDIA_VOLUME_LEVEL } = MediaUIAttributes;
 

@@ -1,10 +1,10 @@
-import { window, document } from './utils/server-safe-globals.mjs';
-import { TemplateInstance } from './utils/template-parts.mjs';
-import { processor } from './utils/template-processor.mjs';
-import { camelCase, isNumericString } from './utils/utils.mjs';
+import { window, document } from './utils/server-safe-globals.js';
+import { TemplateInstance } from './utils/template-parts.js';
+import { processor } from './utils/template-processor.js';
+import { camelCase, isNumericString } from './utils/utils.js';
 
 // Export Template parts for players.
-export * from './utils/template-parts.mjs';
+export * from './utils/template-parts.js';
 
 const observedMediaAttributes = {
   mediatargetlivewindow: 'targetlivewindow',

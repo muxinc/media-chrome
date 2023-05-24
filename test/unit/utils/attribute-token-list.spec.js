@@ -1,5 +1,5 @@
 import { assert } from '@open-wc/testing';
-import { AttributeTokenList } from '../../../src/js/utils/attribute-token-list.mjs';
+import { AttributeTokenList } from '../../../src/js/utils/attribute-token-list.js';
 
 describe('AttributeTokenList', () => {
   it('Add single token', function () {

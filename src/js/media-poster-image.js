@@ -1,5 +1,5 @@
-import { window, document } from './utils/server-safe-globals.mjs';
-import { getStringAttr, setStringAttr } from './utils/element-utils.mjs';
+import { window, document } from './utils/server-safe-globals.js';
+import { getStringAttr, setStringAttr } from './utils/element-utils.js';
 
 export const Attributes = {
   PLACEHOLDER_SRC: 'placeholdersrc',

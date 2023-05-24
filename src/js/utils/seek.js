@@ -1,5 +1,5 @@
-import { verbs } from '../labels/labels.mjs';
-import { getSlotted, updateIconText } from './element-utils.mjs';
+import { verbs } from '../labels/labels.js';
+import { getSlotted, updateIconText } from './element-utils.js';
 
 /**
  * @param {HTMLElement & { seekOffset: number; }} el

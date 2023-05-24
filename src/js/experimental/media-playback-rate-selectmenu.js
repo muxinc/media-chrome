@@ -1,8 +1,8 @@
-import MediaChromeSelectMenu from './media-chrome-selectmenu.mjs';
-import './media-chrome-listitem.mjs';
-import { DEFAULT_RATES } from '../media-playback-rate-button.mjs';
-import './media-playback-rate-listbox.mjs';
-import { window, document, } from '../utils/server-safe-globals.mjs';
+import MediaChromeSelectMenu from './media-chrome-selectmenu.js';
+import './media-chrome-listitem.js';
+import { DEFAULT_RATES } from '../media-playback-rate-button.js';
+import './media-playback-rate-listbox.js';
+import { window, document, } from '../utils/server-safe-globals.js';
 
 const createItem = (rate) => {
   const item = document.createElement('media-chrome-listitem');

@@ -1,11 +1,11 @@
-import MediaChromeButton from './media-chrome-button.mjs';
+import MediaChromeButton from './media-chrome-button.js';
 import {
   Window as window,
   Document as document,
-} from './utils/server-safe-globals.mjs';
-import { MediaUIEvents, MediaUIAttributes } from './constants.mjs';
-import { verbs } from './labels/labels.mjs';
-import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.mjs';
+} from './utils/server-safe-globals.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { verbs } from './labels/labels.js';
+import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
 
 const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;

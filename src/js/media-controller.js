@@ -7,18 +7,18 @@
   * Position controls at the bottom
   * Auto-hide controls on inactivity while playing
 */
-import MediaContainer from './media-container.mjs';
-import { window } from './utils/server-safe-globals.mjs';
-import { AttributeTokenList } from './utils/attribute-token-list.mjs';
-import { constToCamel, delay } from './utils/utils.mjs';
-import { toggleSubsCaps } from './utils/captions.mjs';
+import MediaContainer from './media-container.js';
+import { window } from './utils/server-safe-globals.js';
+import { AttributeTokenList } from './utils/attribute-token-list.js';
+import { constToCamel, delay } from './utils/utils.js';
+import { toggleSubsCaps } from './utils/captions.js';
 import {
   MediaUIEvents,
   MediaUIAttributes,
   MediaStateReceiverAttributes,
   AttributeToStateChangeEventMap,
-} from './constants.mjs';
-import { MediaUIRequestHandlers, MediaUIStates, volumeSupportPromise } from './controller.mjs';
+} from './constants.js';
+import { MediaUIRequestHandlers, MediaUIStates, volumeSupportPromise } from './controller.js';
 
 const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;

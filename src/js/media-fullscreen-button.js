@@ -6,16 +6,16 @@
   If none, the button will look for the closest media-container element to the media.
   If none, the button will make the media fullscreen.
 */
-import MediaChromeButton from './media-chrome-button.mjs';
-import { window, document } from './utils/server-safe-globals.mjs';
-import { MediaUIEvents, MediaUIAttributes } from './constants.mjs';
-import { verbs } from './labels/labels.mjs';
+import MediaChromeButton from './media-chrome-button.js';
+import { window, document } from './utils/server-safe-globals.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { verbs } from './labels/labels.js';
 import {
   getBooleanAttr,
   getStringAttr,
   setBooleanAttr,
   setStringAttr,
-} from './utils/element-utils.mjs';
+} from './utils/element-utils.js';
 
 const enterFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
   <path d="M16 3v2.5h3.5V9H22V3h-6ZM4 9h2.5V5.5H10V3H4v6Zm15.5 9.5H16V21h6v-6h-2.5v3.5ZM6.5 15H4v6h6v-2.5H6.5V15Z"/>

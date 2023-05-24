@@ -1,4 +1,4 @@
-import { window } from '../utils/server-safe-globals.mjs';
+import { window } from '../utils/server-safe-globals.js';
 
 /* Adapted from https://github.com/dy/template-parts - ISC - Dmitry Iv. */
 

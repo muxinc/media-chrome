@@ -1,8 +1,8 @@
-import MediaChromeRange from './media-chrome-range.mjs';
-import { window, document } from './utils/server-safe-globals.mjs';
-import { MediaUIEvents, MediaUIAttributes } from './constants.mjs';
-import { nouns } from './labels/labels.mjs';
-import { formatAsTimePhrase } from './utils/time.mjs';
+import MediaChromeRange from './media-chrome-range.js';
+import { window, document } from './utils/server-safe-globals.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
+import { formatAsTimePhrase } from './utils/time.js';
 import {
   getOrInsertCSSRule,
   closestComposedNode,
@@ -12,7 +12,7 @@ import {
   setNumericAttr,
   getStringAttr,
   setStringAttr,
-} from './utils/element-utils.mjs';
+} from './utils/element-utils.js';
 
 const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 

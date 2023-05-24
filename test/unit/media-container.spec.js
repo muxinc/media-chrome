@@ -1,6 +1,6 @@
 import { spy } from 'sinon';
 import { fixture, assert, aTimeout } from '@open-wc/testing';
-import MediaContainer from '../../src/js/media-container.mjs';
+import MediaContainer from '../../src/js/media-container.js';
 
 describe('<media-container>', () => {
   // NOTE: Although MediaContainer isn't designed for independent use, registering it

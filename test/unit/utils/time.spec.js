@@ -1,5 +1,5 @@
 import { assert } from '@open-wc/testing';
-import { formatAsTimePhrase, formatTime } from '../../../src/js/utils/time.mjs';
+import { formatAsTimePhrase, formatTime } from '../../../src/js/utils/time.js';
 
 describe('formatAsTimePhrase', () => {
   it('formats time in seconds as a phrase', () => {

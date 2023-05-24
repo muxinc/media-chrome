@@ -7,15 +7,15 @@
   * Position controls at the bottom
   * Auto-hide controls on inactivity while playing
 */
-import { window, document } from './utils/server-safe-globals.mjs';
+import { window, document } from './utils/server-safe-globals.js';
 import {
   MediaUIEvents,
   MediaUIAttributes,
   MediaStateChangeEvents,
-} from './constants.mjs';
-import { nouns } from './labels/labels.mjs';
+} from './constants.js';
+import { nouns } from './labels/labels.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
-import './media-gesture-receiver.mjs';
+import './media-gesture-receiver.js';
 
 export const Attributes = {
   AUDIO: 'audio',

@@ -1,4 +1,4 @@
-import { document } from './server-safe-globals.mjs';
+import { document } from './server-safe-globals.js';
 
 export const fullscreenApi = {
   enter: 'requestFullscreen',
