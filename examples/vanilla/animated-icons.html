@@ -61,6 +61,7 @@
         border-radius: 4px;
         outline: 2px solid #fff;
         padding: 0 6px;
+        transition: all .4s;
       }
 
       media-cast-button[mediaiscasting] .cast-icon {
@@ -71,11 +72,16 @@
       .fullscreen-icon {
         font-size: 16px;
         font-weight: 700;
+        transition: color .4s;
       }
 
       media-fullscreen-button:not([mediaisfullscreen]) .fullscreen-icon span:last-child,
       media-fullscreen-button[mediaisfullscreen] .fullscreen-icon span:first-child {
         display: none;
+      }
+
+      media-fullscreen-button[mediaisfullscreen] .fullscreen-icon {
+        color: coral;
       }
 
       .pip-icon {
@@ -98,7 +104,7 @@
         display: none;
       }
 
-      media-play-button:not([mediapaused]) .my-icon {
+      media-play-button:not([mediapaused]) .play-icon {
         color: purple;
       }
     </style>
