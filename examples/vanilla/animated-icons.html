@@ -67,6 +67,16 @@
         outline: 2px solid green;
         color: green;
       }
+
+      .fullscreen-icon {
+        font-size: 16px;
+        font-weight: 700;
+      }
+
+      media-fullscreen-button:not([mediaisfullscreen]) .fullscreen-icon span:last-child,
+      media-fullscreen-button[mediaisfullscreen] .fullscreen-icon span:first-child {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -116,7 +126,12 @@
             <span class="cast-icon" slot="icon">[ ]</span>
           </media-cast-button>
           <media-pip-button></media-pip-button>
-          <media-fullscreen-button></media-fullscreen-button>
+          <media-fullscreen-button>
+            <span class="fullscreen-icon" slot="icon">
+              <span>+</span>
+              <span>-</span>
+            </span>
+          </media-fullscreen-button>
         </media-control-bar>
       </media-controller>
       <div class="examples">

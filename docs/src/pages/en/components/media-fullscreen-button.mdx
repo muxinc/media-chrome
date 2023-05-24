@@ -9,7 +9,7 @@ import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-fullscreen-button>` component is used to toggle fullscreen viewing.
 
-The contents and behavior of the `<media-fullscreen-button>` will update automatically based on the fullscreen state and availability.
+The contents of the `<media-fullscreen-button>` will update based on the fullscreen state and availability.
 - When the media is not fullscreen, the component will switch to display the contents of the `enter` slot.
 - When the media is fullscreen, the component will switch to display the contents of the `exit` slot.
 
@@ -28,8 +28,7 @@ The contents and behavior of the `<media-fullscreen-button>` will update automat
 
 ## Customize icons
 
-You can modify the contents of the `<media-fullscreen-button>` component using slots.
-This is useful if you'd like to use your own custom fullscreen button instead of the default one provided by media-chrome.
+You can modify the contents of the `<media-fullscreen-button>` component using slots. This is useful if you'd like to use your own custom fullscreen icon instead of the default one provided by media-chrome.
 
 Here's an example of how you can replace the default fullscreen icons with the words "Enter" and "Exit"
 
@@ -46,6 +45,37 @@ Here's an example of how you can replace the default fullscreen icons with the w
     <span slot="exit">Exit</span>
   </media-fullscreen-button>
 </media-controller>`}
+/>
+
+Alternatively, if you would like to represent both states using a single element you could use the `icon` slot instead. This is useful for creating an animated icon that transitions between states. Here's a basic example that uses CSS to change an element based on the fullscreen state.
+
+<SandpackContainer
+  height={365}
+  active="css"
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-fullscreen-button>
+    <span class="my-icon" slot="icon">
+      <span>Enter</span>
+      <span>Exit</span>
+    </span>
+  </media-fullscreen-button>
+</media-controller>`}
+css={`.my-icon {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+media-fullscreen-button:not([mediaisfullscreen]) .my-icon span:last-child,
+media-fullscreen-button[mediaisfullscreen] .my-icon span:first-child {
+  display: none;
+}
+`}
 />
 
 ## Styling with attributes

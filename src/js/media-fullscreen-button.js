@@ -28,26 +28,20 @@ const exitFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot:not([name=exit]) > *,
-  :host([${
-    MediaUIAttributes.MEDIA_IS_FULLSCREEN
-  }]) ::slotted(:not([slot=exit])) {
+  :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot:not([name=exit]):not([name=icon]) {
     display: none !important;
   }
 
   ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_FULLSCREEN
-  }])) slot:not([name=enter]) > *,
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_FULLSCREEN
-  }])) ::slotted(:not([slot=enter])) {
+  :host(:not([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}])) slot:not([name=enter]):not([name=icon]) {
     display: none !important;
   }
   </style>
 
-  <slot name="enter">${enterFullscreenIcon}</slot>
-  <slot name="exit">${exitFullscreenIcon}</slot>
+  <slot name="icon">
+    <slot name="enter">${enterFullscreenIcon}</slot>
+    <slot name="exit">${exitFullscreenIcon}</slot>
+  </slot>
 `;
 
 const updateAriaLabel = (el) => {
@@ -60,6 +54,7 @@ const updateAriaLabel = (el) => {
 /**
  * @slot enter - An element shown when the media is not in fullscreen and pressing the button will trigger entering fullscreen.
  * @slot exit - An element shown when the media is in fullscreen and pressing the button will trigger exiting fullscreen.
+ * @slot icon - An element for representing enter and exist states in a single icon
  *
  * @attr {(unavailable|unsupported)} mediafullscreenunavailable - (read-only) Set if fullscreen is unavailable.
  * @attr {boolean} mediaisfullscreen - (read-only) Present if the media is fullscreen.
