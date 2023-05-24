@@ -11,7 +11,7 @@
 
       <p>This is an example of making Media Chrome responsive using the <code>breakpoint</code> attributes.</p>
 
-      <media-controller breakpoints="sm:384 md:576 lg:768 xl:960">
+      <media-controller breakpoints="sm:384 md:576 lg:768 xl:960" defaultsubtitles>
         <video
           slot="media"
           src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
@@ -51,7 +51,7 @@
           <media-volume-range></media-volume-range>
           <media-time-range></media-time-range>
           <media-time-display showduration remaining></media-time-display>
-          <media-captions-button defaultshowing></media-captions-button>
+          <media-captions-button></media-captions-button>
           <media-playback-rate-button></media-playback-rate-button>
           <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>
