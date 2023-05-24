@@ -15,19 +15,19 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] > *, 
-  :host([${MediaUIAttributes.MEDIA_PAUSED}]) ::slotted([slot=pause]) {
+  :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] {
     display: none !important;
   }
 
-  :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=play] > *, 
-  :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) ::slotted([slot=play]) {
+  :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=play] {
     display: none !important;
   }
   </style>
 
-  <slot name="play">${playIcon}</slot>
-  <slot name="pause">${pauseIcon}</slot>
+  <slot name="icon">
+    <slot name="play">${playIcon}</slot>
+    <slot name="pause">${pauseIcon}</slot>
+  </slot>
 `;
 
 const updateAriaLabel = (el) => {
@@ -38,6 +38,7 @@ const updateAriaLabel = (el) => {
 /**
  * @slot play - An element shown when the media is paused and pressing the button will start media playback.
  * @slot pause - An element shown when the media is playing and pressing the button will pause media playback.
+ * @slot icon - An element for representing play and pause states in a single icon
  *
  * @attr {boolean} mediapaused - (read-only) Present if the media is paused.
  *

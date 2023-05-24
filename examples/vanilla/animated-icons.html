@@ -88,6 +88,19 @@
       media-pip-button[mediaispip] .pip-icon {
         background: maroon;
       }
+
+      .play-icon {
+        font-weight: bold;
+      }
+
+      media-play-button:not([mediapaused]) .play-icon span:first-child,
+      media-play-button[mediapaused] .play-icon span:last-child {
+        display: none;
+      }
+
+      media-play-button:not([mediapaused]) .my-icon {
+        color: purple;
+      }
     </style>
   </head>
   <body>
@@ -104,7 +117,12 @@
           <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
         </video>
         <media-control-bar>
-          <media-play-button></media-play-button>
+          <media-play-button>
+            <span class="play-icon" slot="icon">
+              <span>play</span>
+              <span>pause</span>
+            </span>
+          </media-play-button>
           <media-mute-button>
             <svg viewBox="0 0 18 14" slot="icon" class="mute-icon">
               <g class="unmuted">
