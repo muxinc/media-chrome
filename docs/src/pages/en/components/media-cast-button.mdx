@@ -10,11 +10,11 @@ import SandpackContainer from "../../../components/SandpackContainer.astro";
 The `<media-cast-button>` component is used to bring up the Cast menu and select playback on a Chromecast-enabled device and to stop casting once started.
 
 
-The contents and behavior of the `<media-cast-button>` will update automatically based on the availability of casting support and current casting state.
+The contents of the `<media-cast-button>` will update based on the availability of casting support and current casting state.
 - When the media is not currently casting, the `enter` slot will be shown.
 - When the media is currently casting, the `exit` slot will be shown.
 
-> NOTE: Casting support isn't available in all browsers
+> NOTE: Casting support isn't available in all browsers. Interacting with these examples may not do anything when support isn't available.
 
 ## Default usage
 
@@ -32,8 +32,7 @@ The contents and behavior of the `<media-cast-button>` will update automatically
 
 ## Customize icons
 
-You can modify the contents of the `<media-cast-button>` component using slots.
-This is useful if you'd like to use your own custom Cast button instead of the default one provided by media-chrome.
+You can modify the contents of the `<media-cast-button>` component using slots. This is useful if you'd like to use your own custom icons instead of the default ones provided by media-chrome.
 
 Here's an example of how you can replace the default icons with the words "Cast" and "Exit".
 
@@ -50,6 +49,35 @@ Here's an example of how you can replace the default icons with the words "Cast"
     <span slot="exit">Exit</span>
   </media-cast-button>
 </media-controller>`}
+/>
+
+Alternatively, if you would like to represent both states using a single element you could use the `icon` slot instead. This is useful for creating an animated icon that transitions between states. Here's a basic example that uses CSS to change an element based on the casting state.
+
+<SandpackContainer
+  height={365}
+  active="css"
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-cast-button>
+    <span class="my-icon" slot="icon">[ ]</span>
+  </media-cast-button>
+</media-controller>`}
+css={`.my-icon {
+  border-radius: 4px;
+  outline: 2px solid #fff;
+  padding: 0 6px;
+}
+
+media-cast-button[mediaiscasting] .cast-icon {
+  outline: 2px solid green;
+  color: green;
+}
+`}
 />
 
 ## Styling with attributes

@@ -19,7 +19,6 @@
         margin-top: 20px;
       }
 
-      /* Mute icon simple animation */
       .mute-icon {
         display: inline-block;
         
@@ -57,6 +56,17 @@
         text-decoration: underline;
         color: red;
       }
+
+      .cast-icon {
+        border-radius: 4px;
+        outline: 2px solid #fff;
+        padding: 0 6px;
+      }
+
+      media-cast-button[mediaiscasting] .cast-icon {
+        outline: 2px solid green;
+        color: green;
+      }
     </style>
   </head>
   <body>
@@ -74,8 +84,6 @@
         </video>
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-seek-backward-button></media-seek-backward-button>
-          <media-seek-forward-button></media-seek-forward-button>
           <media-mute-button>
             <svg viewBox="0 0 18 14" slot="icon" class="mute-icon">
               <g class="unmuted">
@@ -104,6 +112,9 @@
           <media-captions-button>
             <span class="captions-icon" slot="icon">CC</span>
           </media-captions-button>
+          <media-cast-button>
+            <span class="cast-icon" slot="icon">[ ]</span>
+          </media-cast-button>
           <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>
         </media-control-bar>
