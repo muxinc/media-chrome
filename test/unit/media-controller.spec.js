@@ -1,6 +1,6 @@
 import { fixture, assert, aTimeout, waitUntil } from '@open-wc/testing';
-import { constants } from '../../src/js/index.js';
-import { MediaUIAttributes } from '../../src/js/constants.js';
+import { constants } from '../../src/js/index.mjs';
+import { MediaUIAttributes } from '../../src/js/constants.mjs';
 
 const { MediaUIEvents } = constants;
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);

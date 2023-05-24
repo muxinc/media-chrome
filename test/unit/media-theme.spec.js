@@ -1,7 +1,7 @@
 import { fixture, assert, waitUntil } from '@open-wc/testing';
-import '../../src/js/media-theme-element.js';
-import '../../src/js/index.js';
-import { MediaUIAttributes } from '../../src/js/constants.js';
+import '../../src/js/media-theme-element.mjs';
+import '../../src/js/index.mjs';
+import { MediaUIAttributes } from '../../src/js/constants.mjs';
 
 describe('<media-theme>', () => {
   it(`<media-theme> with template attribute works w/ delayed document append`, async () => {
