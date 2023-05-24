@@ -17,7 +17,7 @@
     "./dist/cjs/*": "./dist/cjs/*",
     "./dist/*": "./dist/*",
     "./react": {
-      "import": "./dist/react/index.js"
+      "import": "./dist/react/index.mjs"
     }
   },
   "customElements": "dist/custom-elements.json",
