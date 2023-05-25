@@ -387,4 +387,5 @@ if (!window.customElements.get('media-chrome-range')) {
   window.customElements.define('media-chrome-range', MediaChromeRange);
 }
 
+export { MediaChromeRange };
 export default MediaChromeRange;

@@ -7,7 +7,7 @@
   * Position controls at the bottom
   * Auto-hide controls on inactivity while playing
 */
-import MediaContainer from './media-container.js';
+import { MediaContainer } from './media-container.js';
 import { window } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { constToCamel, delay } from './utils/utils.js';

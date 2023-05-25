@@ -121,4 +121,5 @@ if (!window.customElements.get('media-text-display')) {
   window.customElements.define('media-text-display', MediaTextDisplay);
 }
 
+export { MediaTextDisplay };
 export default MediaTextDisplay;

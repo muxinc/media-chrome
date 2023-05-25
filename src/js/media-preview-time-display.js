@@ -1,4 +1,4 @@
-import MediaTextDisplay from './media-text-display.js';
+import { MediaTextDisplay } from './media-text-display.js';
 import { window } from './utils/server-safe-globals.js';
 import { formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';

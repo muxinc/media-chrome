@@ -1,4 +1,4 @@
-import MediaChromeButton from './media-chrome-button.js';
+import { MediaChromeButton } from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
