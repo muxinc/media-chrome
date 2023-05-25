@@ -42,13 +42,13 @@ class MediaSeekBackwardButton extends MediaChromeButton {
 
   connectedCallback() {
     updateAriaLabel(this);
-    updateSeekIconValue(this, 'backward');
+    updateSeekIconValue(this);
     super.connectedCallback();
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
     if (attrName === Attributes.SEEK_OFFSET) {
-      updateSeekIconValue(this, 'backward');
+      updateSeekIconValue(this);
       updateAriaLabel(this);
     }
 

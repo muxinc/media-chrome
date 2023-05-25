@@ -14,10 +14,9 @@ export function updateAriaLabel(el) {
 
 /**
  * @param {HTMLElement & { seekOffset: number; }} el
- * @param {"backward" | "forward"} direction
  */
-export function updateSeekIconValue(el, direction) {
-  const svg = getSlotted(el, direction);
+export function updateSeekIconValue(el) {
+  const svg = getSlotted(el, 'icon');
   const value = el.seekOffset;
   updateIconText(svg, value);
 }
