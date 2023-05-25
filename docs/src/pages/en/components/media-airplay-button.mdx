@@ -9,10 +9,9 @@ import SandpackContainer from "../../../components/SandpackContainer.astro";
 
 The `<media-airplay-button>` component is used to bring up the AirPlay menu and select AirPlay playback. The behavior of the `<media-airplay-button>` will update automatically based on the availability of AirPlay support.
 
-The button will display the contents of the `airplay` slot, if provided.
+The button will display the contents of the `icon` slot, if provided.
 
 > NOTE: AirPlay is only available in Safari browsers.
-
 
 ## Default usage
 
@@ -42,7 +41,7 @@ Here's an example of how you can replace the default icon with the string "AIRPL
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
   ></video>
   <media-airplay-button>
-    <span slot="airplay">AIRPLAY</span>
+    <span slot="icon">AIRPLAY</span>
   </media-airplay-button>
 </media-controller>`}
 />
