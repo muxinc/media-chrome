@@ -42,13 +42,13 @@ class MediaSeekForwardButton extends MediaChromeButton {
 
   connectedCallback() {
     updateAriaLabel(this);
-    updateSeekIconValue(this, 'icon');
+    updateSeekIconValue(this);
     super.connectedCallback();
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
     if (attrName === Attributes.SEEK_OFFSET) {
-      updateSeekIconValue(this, 'icon');
+      updateSeekIconValue(this);
       updateAriaLabel(this);
     }
 
