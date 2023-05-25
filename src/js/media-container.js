@@ -69,7 +69,7 @@ template.innerHTML = /*html*/`
        */ ''
     }
     :host([${Attributes.AUDIO}]) ::slotted([slot=media]) {
-      display: none;
+      display: var(--audio-element-display, none);
     }
 
     ${
@@ -241,6 +241,7 @@ function getBreakpoints(breakpoints, rect) {
  * @attr {boolean} userinactive
  *
  * @cssprop --media-background-color - `background-color` of container.
+ * @cssprop --audio-element-display - `display` of the slotted media element when the audio attribute is present.
  */
 class MediaContainer extends window.HTMLElement {
   constructor() {
