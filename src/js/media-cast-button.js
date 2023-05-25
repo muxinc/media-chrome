@@ -16,24 +16,20 @@ const exitIcon = `<svg aria-hidden="true" viewBox="0 0 24 24"><g><path class="ca
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${MediaUIAttributes.MEDIA_IS_CASTING}]) slot:not([name=exit]) > *,
-  :host([${MediaUIAttributes.MEDIA_IS_CASTING}]) ::slotted(:not([slot=exit])) {
+  :host([${MediaUIAttributes.MEDIA_IS_CASTING}]) slot:not([name=exit]):not([name=icon]) {
     display: none !important;
   }
 
   ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_CASTING
-  }])) slot:not([name=enter]) > *,
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_CASTING
-  }])) ::slotted(:not([slot=enter])) {
+  :host(:not([${MediaUIAttributes.MEDIA_IS_CASTING}])) slot:not([name=enter]):not([name=icon]) {
     display: none !important;
   }
   </style>
 
-  <slot name="enter">${enterIcon}</slot>
-  <slot name="exit">${exitIcon}</slot>
+  <slot name="icon">
+    <slot name="enter">${enterIcon}</slot>
+    <slot name="exit">${exitIcon}</slot>
+  </slot>
 `;
 
 const updateAriaLabel = (el) => {
@@ -45,6 +41,7 @@ const updateAriaLabel = (el) => {
 /**
  * @slot enter - An element shown when the media is not in casting mode and pressing the button will open the Cast menu.
  * @slot exit - An element shown when the media is in casting mode and pressing the button will trigger exiting casting mode.
+ * @slot icon - An element for representing enter and exit states in a single icon
  *
  * @attr {(unavailable|unsupported)} mediacastunavailable - (read-only) Set if casting is unavailable.
  * @attr {boolean} mediaiscasting - (read-only) Present if the media is casting.

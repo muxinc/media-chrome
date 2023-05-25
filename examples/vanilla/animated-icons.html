@@ -15,18 +15,10 @@
         width: 100%;
       }
 
-      media-airplay-button[mediaairplayunavailable],
-      media-fullscreen-button[mediafullscreenunavailable],
-      media-volume-range[mediavolumeunavailable],
-      media-pip-button[mediapipunavailable] {
-        display: none;
-      }
-
       .examples {
         margin-top: 20px;
       }
 
-      /* Mute icon simple animation */
       .mute-icon {
         display: inline-block;
         
@@ -52,23 +44,91 @@
       media-mute-button[mediavolumelevel='off'] .muted {
         opacity: 1;
       }
+
+      .captions-icon {
+        transition: all .5s;
+        font-weight: 400;
+        border-radius: 5px;
+      }
+
+      media-captions-button[aria-checked=true] .captions-icon {
+        font-weight: 700;
+        text-decoration: underline;
+        color: red;
+      }
+
+      .cast-icon {
+        border-radius: 4px;
+        outline: 2px solid #fff;
+        padding: 0 6px;
+        transition: all .4s;
+      }
+
+      media-cast-button[mediaiscasting] .cast-icon {
+        outline: 2px solid green;
+        color: green;
+      }
+
+      .fullscreen-icon {
+        font-size: 16px;
+        font-weight: 700;
+        transition: color .4s;
+      }
+
+      media-fullscreen-button:not([mediaisfullscreen]) .fullscreen-icon span:last-child,
+      media-fullscreen-button[mediaisfullscreen] .fullscreen-icon span:first-child {
+        display: none;
+      }
+
+      media-fullscreen-button[mediaisfullscreen] .fullscreen-icon {
+        color: coral;
+      }
+
+      .pip-icon {
+        background: darkcyan;
+        border-radius: 50%;
+        width: 24px;
+        transition: all .5s;
+      }
+
+      media-pip-button[mediaispip] .pip-icon {
+        background: maroon;
+      }
+
+      .play-icon {
+        font-weight: bold;
+      }
+
+      media-play-button:not([mediapaused]) .play-icon span:first-child,
+      media-play-button[mediapaused] .play-icon span:last-child {
+        display: none;
+      }
+
+      media-play-button:not([mediapaused]) .play-icon {
+        color: purple;
+      }
     </style>
   </head>
   <body>
     <main>
       <h1>Media Chrome Animated Icons Usage Example</h1>
-      <media-controller>
+      <media-controller defaultsubtitles>
         <video
           slot="media"
           src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
           muted
           crossorigin
           playsinline
-        ></video>
+        >
+          <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
+        </video>
         <media-control-bar>
-          <media-play-button></media-play-button>
-          <media-seek-backward-button></media-seek-backward-button>
-          <media-seek-forward-button></media-seek-forward-button>
+          <media-play-button>
+            <span class="play-icon" slot="icon">
+              <span>play</span>
+              <span>pause</span>
+            </span>
+          </media-play-button>
           <media-mute-button>
             <svg viewBox="0 0 18 14" slot="icon" class="mute-icon">
               <g class="unmuted">
@@ -94,11 +154,21 @@
           <media-volume-range></media-volume-range>
           <media-time-range></media-time-range>
           <media-time-display showduration remaining></media-time-display>
-          <media-captions-button></media-captions-button>
-          <media-playback-rate-button></media-playback-rate-button>
-          <media-pip-button></media-pip-button>
-          <media-fullscreen-button></media-fullscreen-button>
-          <media-airplay-button></media-airplay-button>
+          <media-captions-button>
+            <span class="captions-icon" slot="icon">CC</span>
+          </media-captions-button>
+          <media-cast-button>
+            <span class="cast-icon" slot="icon">[ ]</span>
+          </media-cast-button>
+          <media-pip-button>
+            <span class="pip-icon" slot="icon">PiP</span>
+          </media-pip-button>
+          <media-fullscreen-button>
+            <span class="fullscreen-icon" slot="icon">
+              <span>+</span>
+              <span>-</span>
+            </span>
+          </media-fullscreen-button>
         </media-control-bar>
       </media-controller>
       <div class="examples">

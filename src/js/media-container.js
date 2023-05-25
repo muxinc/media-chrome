@@ -63,8 +63,8 @@ template.innerHTML = /*html*/`
       background: none;
     }
 
-    ::slotted([slot=media]) {
-      display: var(--media-element-display);
+    slot[name=media] {
+      display: var(--media-slot-display, contents);
     }
 
     ${
@@ -72,8 +72,8 @@ template.innerHTML = /*html*/`
        * when in audio mode, hide the slotted media element by default
        */ ''
     }
-    :host([${Attributes.AUDIO}]) ::slotted([slot=media]) {
-      display: var(--media-element-display, none);
+    :host([${Attributes.AUDIO}]) slot[name=media] {
+      display: var(--media-slot-display, none);
     }
 
     ${
@@ -245,7 +245,7 @@ function getBreakpoints(breakpoints, rect) {
  * @attr {boolean} userinactive
  *
  * @cssprop --media-background-color - `background-color` of container.
- * @cssprop --media-element-display - `display` of the slotted media element (default none for [audio] usage).
+ * @cssprop --media-slot-display - `display` of the media slot (default none for [audio] usage).
  */
 class MediaContainer extends window.HTMLElement {
   constructor() {
