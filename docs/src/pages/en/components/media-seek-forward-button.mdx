@@ -51,9 +51,7 @@ The seeking amount can be configured with the `seekoffset` attribute.
 
 ## Customize icons
 
-You can modify the contents of the `<media-seek-forward-button>` component using slots. This is useful if you'd like to use your own custom button instead of the default one provided by media-chrome.
-
-The slot for `<media-seek-forward-button>` the slot is named `forward`.
+You can modify the contents of the `<media-seek-forward-button>` using the `icon` slot. This is useful if you'd like to use your own custom icon instead of the default one provided by media-chrome.
 
 Here's an example of how you can replace the default icon with the word "Forward":
 
@@ -70,7 +68,7 @@ Here's an example of how you can replace the default icon with the word "Forward
     <media-play-button></media-play-button>
     <media-time-display></media-time-display>
     <media-seek-forward-button>
-      <span slot="forward">Forward</span>
+      <span slot="icon">Forward</span>
     </media-seek-forward-button>
   </media-control-bar>
 </media-controller>`}

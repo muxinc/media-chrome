@@ -51,9 +51,7 @@ The seeking amount can be configured with the `seekoffset` attribute.
 
 ## Customize icons
 
-You can modify the contents of the `<media-seek-backward-button>` component using slots. This is useful if you'd like to use your own custom button instead of the default one provided by media-chrome.
-
-The slot for `<media-seek-backward-button>` the slot is named `backward`.
+You can modify the contents of the `<media-seek-backward-button>` using the `icon` slot. This is useful if you'd like to use your own custom icon instead of the default one provided by media-chrome.
 
 Here's an example of how you can replace the default icon with the word "Back":
 
@@ -70,7 +68,7 @@ Here's an example of how you can replace the default icon with the word "Back":
     <media-play-button></media-play-button>
     <media-time-display></media-time-display>
     <media-seek-backward-button>
-      <span slot="backward">Back</span>
+      <span slot="icon">Back</span>
     </media-seek-backward-button>
   </media-control-bar>
 </media-controller>`}

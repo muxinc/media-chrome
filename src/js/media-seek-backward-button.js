@@ -14,13 +14,13 @@ const backwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
-  <slot name="backward">${backwardIcon}</slot>
+  <slot name="icon">${backwardIcon}</slot>
 `;
 
 const DEFAULT_TIME = 0;
 
 /**
- * @slot backward - The element shown for the seek backward button’s display.
+ * @slot icon - The element shown for the seek backward button’s display.
  *
  * @attr {string} seekoffset - Adjusts how much time (in seconds) the playhead should seek backward.
  * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
