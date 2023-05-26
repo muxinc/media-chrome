@@ -1,0 +1,80 @@
+---
+title: <media-live-button>
+description: Media Live Button
+layout: ../../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-live-button.js
+---
+
+import SandpackContainer from "../../../../components/SandpackContainer.astro";
+
+The `<media-live-button>` component shows, via a red dot by default, whether the stream is live. It also allows viewers to seek to the most current part of the stream when clicking on the button ("seek to live").
+
+The behavior of the button will update automatically based on the state of the media.
+- The indicator can be configured via the `indicator` slot.
+- The text can be configured via the `text` slot.
+- A spacer between the indicator and the text can be configured via the `spacer` slot.
+
+## Default usage
+
+<SandpackContainer
+  includeMuxVideo
+  editorHeight={265}
+  dependencies={{
+    '@mux/mux-video': 'latest'
+  }}
+  html={`<media-controller defaultsubtitles>
+  <mux-video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM.m3u8"
+  >
+  </mux-video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-live-button></media-live-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Customize the live button
+
+You can modify the contents of the `<media-live-button>` component using slots.
+This is useful if you'd like to use your own custom indicators and text instead of the default one provided by media-chrome.
+
+Here's an example of how you can replace the default indicator with a custom SVG and the text with the words "Live Button"
+
+<SandpackContainer
+  includeMuxVideo
+  editorHeight={265}
+  dependencies={{
+    '@mux/mux-video': 'latest'
+  }}
+  html={`<media-controller defaultsubtitles>
+  <mux-video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM.m3u8"
+  >
+  </mux-video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-live-button>
+      <svg slot="indicator" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="8"></circle></svg>
+      <span slot="text">Live Button</span>
+    </media-live-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Styling with attributes
+
+The `<media-live-button>` doesn't expose any configuration attributes.
+However, it will be updated with [Media UI Attributes](#media-ui-attributes) any time the paused state or the live state of the media changes.
+
+You can use these attributes to style the button. For example, if the media is live, set the color to green instead of red:
+
+```css
+media-live-button[mediatimeislive] {
+  --media-live-button-indicator-color: green;
+}
+```

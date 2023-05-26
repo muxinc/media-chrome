@@ -7,7 +7,7 @@ const Cta = () => {
     <h3 className="text-4xl flex flex-wrap">
       <span className="whitespace-pre-wrap">{" "}</span>
       <a
-        href="/en/get-started"
+        href="/docs/en/get-started"
         className="flex items-center"
       >
         <span className="border-current border-b">Docs</span>

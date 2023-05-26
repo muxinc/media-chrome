@@ -1,0 +1,56 @@
+---
+title: <media-poster-image>
+description: Media Poster Image
+layout: ../../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-poster-image.js
+---
+import SandpackContainer from "../../../../components/SandpackContainer.astro";
+
+**Poster images** give your viewers an idea of the contents of the video you're displaying _before_ they view the video. These images can be something as simple as a specific frame from your video, or, a completely custom designed composition of your choice.
+
+The `<media-poster-image>` component will show your poster image in place of your media _before_ the media has been played. You can also optionally show a _secondary_ placeholder image before the poster has loaded. This is generally useful to prevent layout shifts.
+
+For example, you can show a blurhash that mirrors the colors that will appear within your poster image while your _actual_ poster image loads.
+
+You can either use the `<media-poster-image>` component as a static image on its own, or, add the `slot="poster"` attribute to associate it with the underlying video element for click-to-play.
+
+## With `src`
+
+<SandpackContainer
+  editorHeight={290}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-poster-image
+    slot="poster"
+    src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg?time=20">
+  </media-poster-image>
+</media-controller>`}
+/>
+
+## With `placeholdersrc` and `src`
+
+<SandpackContainer
+  editorHeight={290}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-poster-image
+    slot="poster"
+    src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg?time=20"
+    placeholdersrc="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAcADIDASIAAhEBAxEB/8QAGwAAAQUBAQAAAAAAAAAAAAAABQABAgQGBwP/xAAtEAABBAECBAUEAgMAAAAAAAABAgMEEQUAIQYSMXETIkFRYQcjgZEUFRYy4f/EABcBAQEBAQAAAAAAAAAAAAAAAAQDBQD/xAArEQACAQIDBAsBAAAAAAAAAAABAgADEQQSMQUTkfAUISJBQlFhcaGx4fH/2gAMAwEAAhEDEQA/ABbGBzcOGqRNxL6KTzONFs2D13Hqe13oRNwLC0uSUyFofuywpsharF7X31oMdh3YrjoOXnSpKgQmQ62Qtnb/AGFrNdzv7au4HFQWkxMvNcfXElNEMusoDaC2gkFayokqWaPv10GnXa9h8fskmzF3RNRu16TluVkSocJtt2K4lBcUtpZ2JWmht2sXoR/fSXnluzCp0qVZsmtG0ZkSs8+hhK5r/iKbajODmHKSQAN7J6VyjvrX8X4TC4qHEfkCKh9LaFSoy6SkOCuZBIFK9jRG96Xi3CNkPX7TqGzxUW/3OcSZ8Z0K8JSkE+gG2malhSfM46VdLKTR/wC6sPMNRsuiPFX4CJCylt9y+QJJomgkmiPzo0/ORiHGHWop8BaPtTHwpKFOJVXlKxRqtx1G+hZSXCAawzYfLpPaPwjlnWG3QyulpCt6HUfJ0tQ/r4yt3ONMZzndX2nDv671vpad0en5SWUQNA4tlGVIjCaWo7gNtyLcJ+LHQ/PxrRP5rO5FiNFbkunEtAR48cfbShNUkUAf3vrc5r6ecJrxLTzWMTHKGXF00a5iOarJs+g9dZE4qFDREnxW1NOjFMyCkLPKpwrAJI/OsZcQgAKDW44fya1DEeA6k6x8RjOHcdnYklcBMRaUh+U6mYlxQ5DzKVSVbJ2GxF7aGZudgcpxE/KxqnFwaSlQW4Qh1V9CSdwAPjc6OZLh/G/5hiogQ6kT47a3XEuEKBULITWwHxWofUdjHcPyEsxcNjX+Qp5lvsWXLTvzUQP0Bq1PEqQARcmMeky3I7pWeLDmPUXGsehYtLchHmVZ9rI7UB31DE4Oc2+Jq3HnWikK8LwkOtvUTy7b11Pp+tCk42I1BjyWWy0t5XmCSaHa+mjWTyM3H8PRJQe/klThTyPpBSK9RQBv86qaTMLqeMNvEDAMITREHIL4QwyjW5Ug2e/zpasR8xJLDZLTG6R6H276Wi2bkmJzryBP/9k=">
+  </media-poster-image>
+</media-controller>`}
+/>
+
+## Hiding the poster image on play
+
+When your media begins to play back, `media-controller` will be assigned the `mediahasplayed` attribute. Media Chrome default styling will ensure that any `media-poster-image` elements that are a child of `media-controller` are hidden when this attribute is present.
