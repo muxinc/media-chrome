@@ -149,7 +149,7 @@ supporting a custom variable `username`
 In the example above the `username` attribute is provided to the `<media-theme>` 
 element and this is then rendered in the template.
 
-Learn more about [Handling variables in Themes here](/en/themes/handling-variables), 
+Learn more about [Handling variables in Themes here](/docs/en/themes/handling-variables), 
 including special variables that are already available in your theme.
 
 ## Partials
@@ -168,7 +168,7 @@ like so `{{>PlayButton}}`. They can also accept parameters by adding them after
 the var name `{{>PlayButton section="center"}}`.
 
 Learn more about partials and how you can use them to create 
-a [Responsive Theme](/en/themes/responsive-themes).
+a [Responsive Theme](/docs/en/themes/responsive-themes).
 
 ## Conditionals
 
@@ -186,5 +186,5 @@ The value of this `if` attribute can be a simple equality check or just an empty
 [![Edit Media Chrome Multi-layout Theme](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/media-chrome-multi-layout-theme-gwlon8?fontsize=14&hidenavigation=1&theme=dark)
 
 Learn more about conditionals and how you can use them to create 
-a [Responsive Theme](/en/themes/responsive-themes).
+a [Responsive Theme](/docs/en/themes/responsive-themes).
 

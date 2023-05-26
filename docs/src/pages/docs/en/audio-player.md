@@ -4,7 +4,7 @@ description: Build an audio player with Media Chrome
 layout: ../../../layouts/MainLayout.astro
 ---
 
-Specify the `audio` attribute on `<media-controller>` in order to use the default layout. Using the `audio` attribute will remove the standard [positioning slots](/en/position-controls) from your player (eg: `"top-chrome"`, `"centered-chrome"`, etc.). There is only one default slot that all your markup can go into.
+Specify the `audio` attribute on `<media-controller>` in order to use the default layout. Using the `audio` attribute will remove the standard [positioning slots](/docs/en/position-controls) from your player (eg: `"top-chrome"`, `"centered-chrome"`, etc.). There is only one default slot that all your markup can go into.
 
 <media-controller audio>
   <audio
