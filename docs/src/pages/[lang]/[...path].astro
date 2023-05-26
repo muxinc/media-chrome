@@ -18,7 +18,5 @@ export function getStaticPaths() {
 }
 
 const { lang, path } = Astro.params;
-// get-started is the "default" page right now via convention
-const htmlString = `<meta http-equiv="refresh" content="0; URL=/docs/${lang}/${path}" />`;
 ---
-<Fragment set:html={htmlString} />
+<meta http-equiv="refresh" content={`0; URL=/docs/${lang}/${path}`} />
