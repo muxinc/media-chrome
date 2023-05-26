@@ -1,4 +1,4 @@
-import MediaChromeButton from './media-chrome-button.js';
+import { MediaChromeButton } from './media-chrome-button.js';
 import {
   Window as window,
   Document as document,

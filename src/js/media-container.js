@@ -550,4 +550,5 @@ class MediaContainer extends window.HTMLElement {
 // NOTE: Since MediaContainer is not currently designed to be used directly as
 // a custom element, unlike other components, we do not `define()` it.
 
+export { MediaContainer };
 export default MediaContainer;
