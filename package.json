@@ -8,8 +8,35 @@
   "bugs": {
     "url": "https://github.com/muxinc/media-chrome/issues"
   },
-  "type": "module",
   "main": "dist/index.js",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/cjs/index.js",
+      "default": "./dist/index.js"
+    },
+    "./react": {
+      "import": "./dist/react/index.js",
+      "require": "./dist/react/cjs/index.js",
+      "default": "./dist/react/index.js"
+    },
+    "./dist/react/*": {
+      "import": "./dist/react/*",
+      "require": "./dist/react/cjs/*",
+      "default": "./dist/react/*"
+    },
+    "./dist/*": {
+      "import": "./dist/*",
+      "require": "./dist/cjs/*",
+      "default": "./dist/*"
+    },
+    "./*": {
+      "import": "./dist/*",
+      "require": "./dist/cjs/*",
+      "default": "./dist/*"
+    }
+  },
   "customElements": "dist/custom-elements.json",
   "files": [
     "src",
@@ -24,8 +51,10 @@
     "build:types": "tsc",
     "build:esm": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=esm --outdir=dist",
     "build:cjs": "esbuild src/js/*.js src/js/*/*.js src/js/*/*/*.js --target=es2019 --format=cjs --outdir=dist/cjs",
+    "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
     "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome && yarn size",
     "build:react": "node ./scripts/react/build.js",
+    "postbuild:react": "esbuild dist/react/*.js dist/react/common/*.js --target=es2019 --format=cjs --outdir=dist/react/cjs && echo '{\"type\": \"commonjs\"}' > ./dist/react/cjs/package.json",
     "build": "run-s build:types build:esm build:cjs build:iife build:react",
     "watch": "run-p watch:types watch:esbuild",
     "watch:types": "yarn build:types -w",
