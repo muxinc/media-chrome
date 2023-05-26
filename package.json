@@ -18,12 +18,13 @@
     },
     "./react": {
       "import": "./dist/react/index.js",
-      "require": "./dist/react/cjs/index.js",
+      "require": "./dist/cjs/react/index.js",
       "default": "./dist/react/index.js"
     },
+    "./dist/cjs/*": "./dist/cjs/*",
     "./dist/react/*": {
       "import": "./dist/react/*",
-      "require": "./dist/react/cjs/*",
+      "require": "./dist/cjs/react/*",
       "default": "./dist/react/*"
     },
     "./dist/*": {
@@ -49,7 +50,7 @@
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
     "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome && yarn size",
     "build:react": "node ./scripts/react/build.js",
-    "postbuild:react": "esbuild dist/react/*.js dist/react/common/*.js --target=es2019 --format=cjs --outdir=dist/react/cjs && echo '{\"type\": \"commonjs\"}' > ./dist/react/cjs/package.json",
+    "postbuild:react": "esbuild dist/react/*.js dist/react/common/*.js --target=es2019 --format=cjs --outdir=dist/cjs/react",
     "build": "run-s build:types build:esm build:cjs build:iife build:react",
     "watch": "run-p watch:types watch:esbuild",
     "watch:types": "yarn build:types -w",
