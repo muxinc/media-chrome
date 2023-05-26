@@ -1,0 +1,22 @@
+---
+import { KNOWN_LANGUAGE_CODES, SIDEBAR } from '../../config';
+export function getStaticPaths() {
+  const ret = KNOWN_LANGUAGE_CODES.flatMap(lang => {
+    const perLangSidebar = SIDEBAR[lang];
+
+    return Object.values(perLangSidebar).flat().map(({link}) => {
+      return {
+        params: {
+          lang,
+          path: link.slice(5 + lang.length + 1)
+        }
+      };
+    });
+  });
+
+  return ret;
+}
+
+const { lang, path } = Astro.params;
+---
+<meta http-equiv="refresh" content={`0; URL=/docs/${lang}/${path}`} />

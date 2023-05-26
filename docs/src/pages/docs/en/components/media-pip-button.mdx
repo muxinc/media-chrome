@@ -1,0 +1,105 @@
+---
+title: <media-pip-button>
+description: Media PiP Button
+layout: ../../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-pip-button.js
+---
+
+import SandpackContainer from "../../../../components/SandpackContainer.astro";
+
+The `<media-pip-button>` component is used to toggle the picture-in-picture mode of the video.
+
+The contents of `<media-pip-button>` will update based on the PiP state and availability.
+- When the media is not in PiP mode, the component will display the contents of the `enter` slot.
+- When the media is PiP mode, the component will display the contents of the `exit` slot.
+
+> NOTE: picture-in-picture support isn't available in all browsers. Interacting with these examples may not do anything when support isn't available.
+
+## Default usage
+
+<SandpackContainer
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-pip-button></media-pip-button>
+</media-controller>`}
+/>
+
+## Customize icons
+
+You can modify the contents of the `<media-pip-button>` component using slots. This is useful if you'd like to use your own custom PiP icon instead of the default one provided by media-chrome.
+
+Here's an example of how you can replace the default PiP icons with the words "Enter" and "Exit"
+
+<SandpackContainer
+  editorHeight={250}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-pip-button>
+    <span slot="enter">Enter</span>
+    <span slot="exit">Exit</span>
+  </media-pip-button>
+</media-controller>`}
+/>
+
+Alternatively, if you would like to represent both states using a single element you could use the `icon` slot instead. This is useful for creating an animated icon that transitions between states. Here's a basic example that uses CSS to change an element based on the picture-in-picture state.
+
+<SandpackContainer
+  height={365}
+  active="css"
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-pip-button>
+    <span class="my-icon" slot="icon">
+      <span>Enter</span>
+      <span>Exit</span>
+    </span>
+  </media-pip-button>
+</media-controller>`}
+css={`.my-icon {
+  font-size: 16px;
+  font-weight: 700;
+  transition: color .4s;
+}
+
+media-pip-button:not([mediaispip]) .my-icon span:last-child,
+media-pip-button[mediaispip] .my-icon span:first-child {
+  display: none;
+}
+
+media-pip-button[mediaispip] .my-icon {
+  color: coral;
+}
+`}
+/>
+
+## Styling with attributes
+
+The `<media-pip-button>` doesn't expose any configuration attributes.
+However, it will be updated with [Media UI Attributes](#media-ui-attributes) any time the PiP state and availability changes.
+
+You can use these attributes to style the button. For example, hide the button if PiP is unavailable:
+
+```css
+media-pip-button:not([mediapipunavailable]) {
+  display: none;
+}
+```
+Or make the background blue if the media is in PiP mode.
+```css
+media-pip-button[mediaispip] {
+  --media-control-background: blue;
+}
+```
