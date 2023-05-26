@@ -92,5 +92,5 @@ all the smaller sizes below it. Learn more about building
 ## Variables with dashes
 
 If you add an attribute with a dash like `song-title` the variable name inside the template
-will be the camcelCase version: `songTitle`.
+will be the camelCase version: `songTitle`.
 
