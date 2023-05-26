@@ -30,11 +30,6 @@
       "import": "./dist/*",
       "require": "./dist/cjs/*",
       "default": "./dist/*"
-    },
-    "./*": {
-      "import": "./dist/*",
-      "require": "./dist/cjs/*",
-      "default": "./dist/*"
     }
   },
   "customElements": "dist/custom-elements.json",
