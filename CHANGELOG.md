@@ -1,3 +1,17 @@
+# [1.0.0-rc.5](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.4...v1.0.0-rc.5) (2023-05-26)
+
+
+### Bug Fixes
+
+* media display override issue ([#648](https://github.com/muxinc/media-chrome/issues/648)) ([dfc6a13](https://github.com/muxinc/media-chrome/commit/dfc6a13e46c2beb9f54511581e5ad5c281e592c0))
+
+
+### Features
+
+* Icon slots for buttons with multiple slots ([#643](https://github.com/muxinc/media-chrome/issues/643)) ([53e7aad](https://github.com/muxinc/media-chrome/commit/53e7aade3e2eb99481529e75b5e12e9f3cc0d0fa))
+
+
+
 # [1.0.0-rc.4](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.3...v1.0.0-rc.4) (2023-05-23)
 
 
