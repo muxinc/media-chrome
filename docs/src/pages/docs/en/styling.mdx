@@ -79,6 +79,45 @@ Being able to easily customize a variety of CSS properties is great, but that's 
 </media-controller>`}
 />
 
+### Custom icon animation / transitions
+
+Components with multiple icon slots, like the play button, allow you to optionally provide a single combined element that represents multiple states. This is useful for creating custom transitions between states.
+
+Here's a basic example of using CSS transitions with the optional `icon` slot, replacing the icons with some simple text for demonstration purposes. You could also provide an SVG with multiple icon shapes inside controlled via CSS.
+
+<SandpackContainer
+  height={365}
+  active="css"
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-play-button>
+    <span class="my-icon" slot="icon">
+      <span>Play</span>
+      <span>Pause</span>
+    </span>
+  </media-play-button>
+</media-controller>`}
+css={`.my-icon {
+  font-weight: bold;
+  transition: color .4s;
+}
+
+media-play-button:not([mediapaused]) .my-icon span:first-child,
+media-play-button[mediapaused] .my-icon span:last-child {
+  display: none;
+}
+
+media-play-button:not([mediapaused]) .my-icon {
+  color: coral;
+}
+`}
+/>
+
 Earlier, I mentioned that you can use whatever you want for your "icons". This includes other images, a `<span>` with some text, or whatever makes sense for your use case. Here's an example of using [Font Awesome Web Font icons](https://fontawesome.com/docs/web/setup/host-yourself/webfonts). If you take a look at the `custom-styles.css` file, you'll notice that I'm using slightly different CSS variables here (since the "icons" are actually font glyphs) and I also needed to apply some additional styles to the `<i>` element to make sure the sizes and layouts are consistent when toggling between "play" and "pause".
 
 <SandpackContainer
