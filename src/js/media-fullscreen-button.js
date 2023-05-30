@@ -6,7 +6,7 @@
   If none, the button will look for the closest media-container element to the media.
   If none, the button will make the media fullscreen.
 */
-import MediaChromeButton from './media-chrome-button.js';
+import { MediaChromeButton } from './media-chrome-button.js';
 import { window, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';

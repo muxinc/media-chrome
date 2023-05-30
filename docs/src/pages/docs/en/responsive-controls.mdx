@@ -1,0 +1,438 @@
+---
+title: Responsive controls
+description: Learn how to make controls responsive with Media Chrome
+layout: ../../../layouts/MainLayout.astro
+---
+
+import SandpackContainer from "../../../components/SandpackContainer.astro";
+
+To provide the best user experience across the myriad of device screen sizes and website layouts available in today's world, it's a good idea to modify your video player UI to adapt to different sizes.
+
+[`@media` queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries) are great, but they don't always address the styling requirements that video players face. For example, you might be using a large screen, but if your media player is appearing in a confined layout like a fixed-width sidebar, you'll still want the media player to present its compact view and limit the number of controls that appear.
+
+There are two ways you can address responsive styling using Media Chrome: using breakpoints, or using container queries.
+
+> [Container queries](https://caniuse.com/css-container-queries) are a recent development just starting to make their way in evergreen browsers. If you need styling support for older browser versions, consider using breakpoints until container query support becomes more commonplace.
+
+## Using breakpoints
+
+Media Chrome helps you to make changes to your video player layout at different screen sizes by providing **breakpoints** for common device screen widths. Let's take a look at how you can use these breakpoints to style your video player at different widths.
+
+> Use your browser resizing controls throughout this guide to apply the responsive design changes to each example video layout.
+
+<SandpackContainer
+  stacked
+  reversed
+  previewAspectRatio={2.4}
+  editorHeight={300}
+  active="css"
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-play-button></media-play-button>
+  <div id="log"></div>
+</media-controller>
+`}
+  css={`media-controller {
+  --media-primary-color: red;
+}
+media-controller[breakpointsm] {
+  --media-primary-color: orange;
+}
+media-controller[breakpointmd] {
+  --media-primary-color: yellow;
+}
+media-controller[breakpointlg] {
+  --media-primary-color: green;
+}
+media-controller[breakpointxl] {
+  --media-primary-color: blue;
+}
+media-controller #log::before {
+  content: 'none';
+  display: flex;
+  color: white;
+  width: 24px;
+  height: 24px;
+  border-radius: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 1em;
+  background-color: red;
+  font-family: sans-serif;
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+}
+media-controller[breakpointsm] #log::before {
+  content: 'sm';
+  background-color: orange;
+  color: black;
+}
+media-controller[breakpointmd] #log::before {
+  content: 'md';
+  background-color: yellow;
+  color: black;
+}
+media-controller[breakpointlg] #log::before {
+  content: 'lg';
+  background-color: green;
+  color: white;
+}
+media-controller[breakpointxl] #log::before {
+  content: 'xl';
+  background-color: blue;
+  color: white;
+}
+  `}
+/>
+
+### Default breakpoint values
+
+We've chosen a set of sensible default breakpoint values that consider many common screen sizes available in today's market. As your video play width grows or shrinks, the different attribute values listed below will be applied to the `media-controller` element.
+
+| Size | Value | Attribute      |
+| ---- | ----- | -------------- |
+| sm   | 384px | `breakpointsm` |
+| md   | 576px | `breakpointmd` |
+| lg   | 768px | `breakpointlg` |
+| xl   | 960px | `breakpointxl` |
+
+### Overriding with your own custom breakpoint values
+
+It's possible to override the default breakpoint values with your own values if the defaults do not meet your needs. To do this, set the `breakpoints` attribute on your `media-controller` element and pass a set of breakpoint definitions in the following format:
+
+`{breakpointName}:{breakpointValue}`
+
+<SandpackContainer
+  stacked
+  reversed
+  previewAspectRatio={2.4}
+  editorHeight={220}
+  html={`<media-controller breakpoints="sm:288 md:480 lg:768 xl:1056">
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-play-button></media-play-button>
+</media-controller>`}
+/>
+
+Note that even if you only want to override _one_ of the default values that Media Chrome defines, you should still pass the entire set of breakpoint definitions. This is because Media Chrome will override _all_ of its internal breakpoints with your custom breakpoints if it detects that the `breakpoints` attribute is being used.
+
+<SandpackContainer
+  stacked
+  reversed
+  previewAspectRatio={2.4}
+  editorHeight={235}
+  html={`<!-- Overriding only the 'xl' breakpoint, but still passing all breakpoints -->
+<media-controller breakpoints="sm:384 md:576 lg:768 xl:1056">
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-play-button></media-play-button>
+</media-controller>`}
+/>
+
+### Listening for breakpoint changes
+
+Whenever a breakpoint change is detected, the `<media-controller>` element will receive a `breakpointchange` event with an array of the new breakpoint values in the event's `detail` payload.
+
+```javascript
+document.querySelector('media-controller')
+  .addEventListener('breakpointchange', (e) => {
+    // e.detail might look like this: [sm, md, lg]
+    // this line would log `lg`
+    console.log('active breakpoint is ' + e.detail[e.detail.length - 1]);
+  }
+);
+```
+
+## Using container queries
+
+You might already be familiar with [Media Queries](https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries)
+in CSS. They allow you to have different CSS selectors depending on the size of the page itself.
+However, since we're building a video player, that doesn't help us much.
+
+Depending on which browsers you need to support, [Container Queries](https://caniuse.com/css-container-queries) can be a better choice for styling responsive video player. These allow us to create CSS selectors
+that apply depending on the size of an element itself.
+
+That's a great use case for a responsive video player, where the dimensions of the player itself are what matters
+rather than the dimensions of the page that the player is on.
+
+### Browser support
+
+Since CQ is quite new, it's not available everywhere yet.
+Depending on the browsers that you need to support, that may not be an issue.
+However, to support the most users, it's recommended to write your styles in a progressive enhancement approach,
+which we will go over, and consider including the
+[Container Queries Polyfill](https://github.com/GoogleChromeLabs/container-query-polyfill) as well.
+
+## Example: Building a simple responsive layout with CQ
+
+Let's make a [simple responsive layout](https://media-chrome-mux.vercel.app/examples/vanilla/responsive.html).
+In addition to the `<media-control-bar>` above, we want to add some center controls.
+```html
+<div class="center" slot="centered-chrome">
+  <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+  <media-play-button></media-play-button>
+  <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+</div>
+```
+
+When the player dimensions are small, we can hide the control bar and only show these center controls.
+When the player is medium sized, we can keep the control bar but hide the buttons that are available in the center controls.
+In a large player size, we can show just the control bar.
+
+The combined HTML for the player should look like this:
+
+<SandpackContainer
+  stacked
+  reversed
+  editorHeight={300}
+  hiddenCss={`
+    media-controller {
+      aspect-ratio: 16 / 9;
+    }`
+  }
+  html={`<media-controller>
+  <video
+    playsinline
+    slot="media"
+    src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+    poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
+  ></video>
+  <div class="center" slot="centered-chrome">
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+    <media-play-button></media-play-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+  </div>
+  <media-control-bar class="bottom">
+    <media-play-button></media-play-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-display></media-time-display>
+    <media-time-range></media-time-range>
+    <media-duration-display></media-duration-display>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+### Default behavior
+
+Now, we have a working player, but the center controls are always showing up.
+We only want them to show up in some specific cases, so, let's hide them by default.
+```css
+.center {
+  display: none;
+}
+```
+This would also help for progressive enhancement, because then on browsers without CQ,
+we'll have a player that only has the bottom control bar, which looks better.
+
+### Making it responsive
+Now, let's make it responsive with container queries.
+
+First, we need to declare the `media-controller` as a `container`
+```css
+media-controller {
+  container: media-chrome / inline-size;
+}
+```
+This marks `media-controller` as a container named `media-chrome` should we
+have multiple containers that we need to refer to by name. We also tell CQ that
+we only care about the inline-size of this element, in this case it's the width
+of the player.
+
+### Styling the small player size
+
+For the smaller player, we want to show the center controls,
+since they are hidden by default, and then hide the control bar.
+```css
+@container (inline-size < 420px) {
+  .center {
+    display: block;
+  }
+  media-control-bar {
+    display: none;
+  }
+}
+```
+This tells CSS that apply `display: block` to the `.center` class if the `inline-size`,
+aka the width player, is less than `420px`.
+This range syntax is brand new and may not be supported everywhere yet.
+We can use `max-width` instead, like so:
+```css
+@container (max-width: 420px) {
+  .center {
+    display: block;
+  }
+  media-control-bar {
+    display: none;
+  }
+}
+```
+This isn't a big difference yet, but the new syntax will be especially nice in the medium player size.
+
+### Styling the medium player size
+
+For the medium player, we want to show the center controls and control bar.
+However, because space is a bit cramped, we'll hide the controls available
+in the center controls from the control bar.
+```css
+@container (420px <= inline-size <= 590px) {
+  .center {
+    display: block;
+  }
+  media-control-bar {
+    display: flex;
+  }
+  media-control-bar media-play-button,
+  media-control-bar media-seek-backward-button,
+  media-control-bar media-seek-forward-button {
+    display: none;
+  }
+}
+```
+Once again, since the new range syntax isn't available yet,
+you can use `min-width`, `max-width`, and `and`, but it's not quite as nice as the range syntax.
+```css
+@container (min-width: 420px) and (max-width: 590px) {
+  .center {
+    display: block;
+  }
+  media-control-bar {
+    display: flex;
+  }
+  media-control-bar media-play-button,
+  media-control-bar media-seek-backward-button,
+  media-control-bar media-seek-forward-button {
+    display: none;
+  }
+}
+```
+
+### Styling the large player size
+Now, since we already have a default that hides the center controls in the cases where
+the player isn't small or medium, we don't strictly need another container query,
+but let's add one for the sake of completeness.
+```css
+@container (inline-size > 590px) {
+  .center {
+    display: none;
+  }
+  media-control-bar {
+    display: flex;
+  }
+}
+```
+
+### The final result
+
+Together, it'll give you a player like this.
+You can resize the page and see how the player responds to the page width.
+Or select a width with the following radio buttons.
+
+<SandpackContainer
+  stacked
+  reversed
+  editorHeight={300}
+  hiddenCss={`
+    media-controller {
+      aspect-ratio: 16 / 9;
+    }`
+  }
+  active="css"
+  html={`<media-controller id="res-final">
+  <video
+    playsinline
+    slot="media"
+    src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+    poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
+  ></video>
+  <div class="center" slot="centered-chrome">
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+    <media-play-button></media-play-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+  </div>
+  <media-control-bar class="bottom">
+    <media-play-button></media-play-button>
+    <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+    <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+    <media-mute-button></media-mute-button>
+    <media-volume-range></media-volume-range>
+    <media-time-display></media-time-display>
+    <media-time-range></media-time-range>
+    <media-duration-display></media-duration-display>
+    <media-playback-rate-button></media-playback-rate-button>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-controller>`}
+  css={`.width-controls {
+  padding-block: 1rem;
+}
+.width-controls label {
+  padding-inline: 0.5rem 1rem;
+}
+.center {
+  display: none;
+}
+
+#res-final {
+  display: block;
+  aspect-ratio: 16 / 9;
+  container: media-chrome / inline-size;
+}
+#res-final video {
+  width: 100%;
+}
+
+/* small player size */
+@container (inline-size < 420px) {
+  #res-final .center {
+    display: block;
+  }
+  #res-final media-control-bar {
+    display: none;
+  }
+}
+
+/* medium player size */
+@container (420px <= inline-size <= 590px) {
+  #res-final .center {
+    display: block;
+  }
+  #res-final media-control-bar {
+    display: flex;
+  }
+  #res-final media-control-bar media-play-button,
+  #res-final media-control-bar media-seek-backward-button,
+  #res-final media-control-bar media-seek-forward-button {
+    display: none;
+  }
+}
+
+/* large (default) player size */
+@container (inline-size > 590px) {
+  #res-final .center {
+    display: none;
+  }
+  #res-final media-control-bar {
+    display: flex;
+  }
+}
+  `}
+/>

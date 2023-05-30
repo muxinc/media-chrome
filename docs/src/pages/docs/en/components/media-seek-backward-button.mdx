@@ -1,0 +1,75 @@
+---
+title: <media-seek-backward-button>
+description: Media Seek Backward Button
+layout: ../../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-seek-backward-button.js
+---
+
+import SandpackContainer from "../../../../components/SandpackContainer.astro";
+
+The `<media-seek-backward-button>` component is used to allow seeking back a configurable amount of time, defaulting to 30 seconds.
+
+## Default usage
+
+<SandpackContainer
+  editorHeight={290}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-backward-button></media-seek-backward-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Customize seek offset
+
+The seeking amount can be configured with the `seekoffset` attribute.
+
+<SandpackContainer
+  editorHeight={290}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-backward-button seekoffset="10"></media-seek-backward-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Customize icons
+
+You can modify the contents of the `<media-seek-backward-button>` using the `icon` slot. This is useful if you'd like to use your own custom icon instead of the default one provided by media-chrome.
+
+Here's an example of how you can replace the default icon with the word "Back":
+
+<SandpackContainer
+  editorHeight={330}
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-display></media-time-display>
+    <media-seek-backward-button>
+      <span slot="icon">Back</span>
+    </media-seek-backward-button>
+  </media-control-bar>
+</media-controller>`}
+/>

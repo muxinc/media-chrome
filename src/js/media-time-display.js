@@ -1,4 +1,4 @@
-import MediaTextDisplay from './media-text-display.js';
+import { MediaTextDisplay } from './media-text-display.js';
 import {
   getBooleanAttr,
   getNumericAttr,

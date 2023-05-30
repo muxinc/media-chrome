@@ -1,0 +1,145 @@
+---
+import { Markdown } from '@astropub/md';
+import MainLayout from '../../../../layouts/MainLayout.astro';
+import manifest from '../../../../../../dist/custom-elements.json';
+
+const frontmatter = {
+  title: 'Styling Reference'
+};
+
+const headings = [];
+const components = await Astro.glob('../components/*');
+
+function hasLink(tagName) {
+  return components.some(c => c.file.includes(tagName));
+}
+
+const groups = [
+  'button',
+  'range',
+  'display',
+  'indicator',
+];
+
+for (let group of groups) {
+  headings.push({ depth: 2, slug: `${group}s`, text: `${capitalizeFirstLetter(group)}s` });
+}
+
+headings.push({ depth: 2, slug: `others`, text: `Others` });
+
+let allCssProps = {};
+for (let cls of getClasses(manifest)) {
+  for (let cssProp of cls.cssProperties ?? []) {
+    if (!allCssProps[cssProp.name]) {
+      allCssProps[cssProp.name] = cssProp;
+      cssProp.groups = new Set();
+    }
+    if (cls.tagName) {
+      allCssProps[cssProp.name].groups.add(cls.tagName.split('-').pop());
+    }
+  }
+}
+
+let sortedCssProps = [...Object.keys(allCssProps)].sort();
+
+function getClasses(manifest) {
+  let classes = [];
+  for (let moduleDoc of manifest.modules) {
+    classes.push(...moduleDoc.declarations.filter(d => d.kind === 'class'));
+  }
+  return classes;
+}
+
+function capitalizeFirstLetter(str) {
+  return str[0].toUpperCase() + str.slice(1);
+}
+
+function backticksToMdnLinks(str) {
+  return str.replace(
+    /`([^`]+)`/g,
+    '<a href="https://developer.mozilla.org/en-US/docs/Web/CSS/$1" target="_blank"><code>$1</code></a>'
+  );
+}
+
+---
+<MainLayout frontmatter={frontmatter} headings={headings}>
+  <p>
+    This page shows a list of all the available
+    <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties" target="_blank">CSS variables</a>
+    grouped by the main UI element types and an "other" section that includes
+    the CSS vars of the remaining elements.
+  </p>
+
+  {groups.map(group => (
+    <Markdown of={`## ${capitalizeFirstLetter(group)}s`} />
+
+    <ul style="list-style: none; padding: 0;">
+      {getClasses(manifest)
+        .sort((a, b) => (b.tagName?.startsWith('media-chrome') ? -1 : b.tagName - a.tagName))
+        .filter(cls => cls.tagName?.endsWith(group))
+        .map(cls => (
+          <li>
+            <code>{cls.tagName}</code>
+            {hasLink(cls.tagName) && (<>(<a href={`./components/${cls.tagName}`}>docs</a>)</>)}
+          </li>
+        ))
+      }
+    </ul>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Default</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          sortedCssProps
+            .filter((key) => allCssProps[key].groups.has(group))
+            .map((key) => {
+              const cssProp = allCssProps[key];
+              return <tr>
+                  <td class="nowrap"><code>{cssProp.name}</code></td>
+                  <td style="max-width: 20rem;">{cssProp.default && <code>{cssProp.default}</code>}</td>
+                  <td set:html={backticksToMdnLinks(cssProp.description)}></td>
+                </tr>
+            })
+        }
+      </tbody>
+    </table>
+  ))}
+
+  <Markdown of="## Others" />
+
+  {getClasses(manifest)
+    .filter(cls => cls.tagName && cls.cssProperties && groups.every(group => !cls.tagName?.endsWith(group)))
+    .map(cls => (
+      <Markdown of={`#### \`${cls.tagName}\` ${hasLink(cls.tagName) ? `([docs](./components/${cls.tagName}))` : ''}`} />
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            cls.cssProperties
+              .map(cssProp => {
+                return (<tr>
+                    <td class="nowrap"><code>{cssProp.name}</code></td>
+                    <td style="max-width: 20rem;">{cssProp.default && <code>{cssProp.default}</code>}</td>
+                    <td set:html={backticksToMdnLinks(cssProp.description)}></td>
+                  </tr>)
+              })
+          }
+        </tbody>
+      </table>
+    ))
+  }
+
+</MainLayout>

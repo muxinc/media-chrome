@@ -223,4 +223,5 @@ if (!window.customElements.get('media-chrome-button')) {
   window.customElements.define('media-chrome-button', MediaChromeButton);
 }
 
+export { MediaChromeButton };
 export default MediaChromeButton;
