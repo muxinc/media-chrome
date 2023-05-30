@@ -46,14 +46,14 @@ template.innerHTML = /*html*/`
   height: 0px;
 }
 
-:host slot[name=loading] > *,
-:host ::slotted([slot=loading]) {
+:host slot[name=icon] > *,
+:host ::slotted([slot=icon]) {
   opacity: var(--media-loading-indicator-opacity, 0);
   transition: opacity 0.15s;
 }
 
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=loading] > *,
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) ::slotted([slot=loading]) {
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=icon] > *,
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) ::slotted([slot=icon]) {
   opacity: var(--media-loading-indicator-opacity, 1);
   transition: opacity 0.15s var(--_loading-indicator-delay);
 }
@@ -76,12 +76,12 @@ svg, img, ::slotted(svg), ::slotted(img) {
 }
 </style>
 
-<slot name="loading">${loadingIndicatorIcon}</slot>
+<slot name="icon">${loadingIndicatorIcon}</slot>
 <div id="status" role="status" aria-live="polite">${nouns.MEDIA_LOADING()}</div>
 `;
 
 /**
- * @slot loading - The element shown for when the media is in a buffering state.
+ * @slot icon - The element shown for when the media is in a buffering state.
  *
  * @attr {string} loadingdelay - Set the delay in ms before the loading animation is shown.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
