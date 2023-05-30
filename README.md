@@ -1,4 +1,12 @@
-# [`<media-chrome>`](https://media-chrome.org) 
+<h1>
+  <a href="https://media-chrome.org" target="_blank">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/muxinc/media-chrome/assets/360826/55332ebe-aca2-4db8-9743-09f1e15682f4">
+      <source media="(prefers-color-scheme: light)" srcset="https://github.com/muxinc/media-chrome/assets/360826/a012ae18-1060-44d2-977f-ae1e639024f5">
+      <img alt="Media Chrome Logo" src="https://github.com/muxinc/media-chrome/assets/360826/a012ae18-1060-44d2-977f-ae1e639024f5">
+    </picture>
+  </a>
+</h1>
 
 [![npm version](https://img.shields.io/npm/v/media-chrome?style=flat-square&color=success)](http://npmjs.org/media-chrome) 
 [![size](https://img.shields.io/bundlephobia/minzip/media-chrome?label=size&style=flat-square)](https://bundlephobia.com/result?p=media-chrome) 
