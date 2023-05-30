@@ -28,6 +28,10 @@ While there were some sweeping changes to Media Chrome, most of these should be 
 **Themes**
 - Because of the attribute renaming, all theme template variables have changed from `camelCase` to `lowercase` (aka "`smushedcase`")
 
+**Icons**
+- Components with customizable icons now support a generic `icon` slot instead of each one having a different name for where to place a custom icon
+- For components with multiple icons (like `<media-play-button>`) you can either provide seperate icons into named slots like before or combine your icons into a single element and place them into the new `icon` slot. This makes it easier to animate between different states using css transitions; like a play and pause icon fading between each other.
+
 ### New features
 
 - Added several new CSS variables for consistency and ease of use
@@ -341,4 +345,54 @@ Also, for any custom themes you may have created, as a result of moving from `ke
     </template>
   </template>
 </template>
+```
+
+## Using the new `icon` slot
+
+All components with a single icon now expose a slot called `icon` instead of a different named slot for each component. e.g:
+
+**Before**
+```html
+<media-airplay-button>
+  <svg slot="airplay"></svg>
+</media-airplay-button>
+```
+
+**After**
+```html
+<media-airplay-button>
+  <svg slot="icon"></svg>
+</media-airplay-button>
+```
+
+For components with multiple icon slots you can now optionally provide a single combined element that represents multiple states. This means animations and transitions that weren't previously possible are now much easier with CSS.
+
+Here's a basic example of using CSS transitions with the new `icon` slot for a component with multiple states:
+
+```html
+<media-play-button>
+  <span class="my-icon" slot="icon">
+    <span>Play</span>
+    <span>Pause</span>
+  </span>
+</media-play-button>
+```
+
+Combined with some CSS for enabling a transition of the text color
+
+```css
+.my-icon {
+  font-weight: bold;
+  transition: color .4s;
+}
+
+/* Show and hide the correct text depending on play state */
+media-play-button:not([mediapaused]) .my-icon span:first-child,
+media-play-button[mediapaused] .my-icon span:last-child {
+  display: none;
+}
+
+media-play-button:not([mediapaused]) .my-icon {
+  color: coral;
+}
 ```
