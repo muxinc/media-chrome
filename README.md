@@ -17,7 +17,7 @@ Your media player's dancing suit. :man_dancing:
 Fully customizable media player controls using web components (native custom elements).
 
 - [x] Compatible with any javascript framework (React, Angular, Svelte, etc.)
-- [x] Compatible with the `<video>` and `<audio>` elements and [a lot of players](https://media-chrome.org/en/media-slot) (YouTube, HLS.js, and more)
+- [x] Compatible with the `<video>` and `<audio>` elements and [a lot of players](https://www.media-chrome.org/docs/en/media-element#compatible-media-elements) (YouTube, HLS.js, and more)
 - [x] Simple HTML to add/remove controls
 - [x] Simple CSS to style the controls
 
@@ -25,9 +25,9 @@ _From [Mux](https://mux.com?utm_source=github&utm_medium=social&utm_campaign=med
 
 ## Documentation
 
-Visit the [official documentation for Media Chrome](https://media-chrome.org/en/get-started) for the latest up-to-date usage instructions.
+Visit the [official documentation for Media Chrome](https://media-chrome.org/docs) for the latest up-to-date usage instructions.
 
-You can find the [current release candidate documentation here.](https://v1.media-chrome.org/en/get-started)
+You can find the [documentation for v0.x of media-chrome here.](https://v0.media-chrome.org/en/get-started)
 
 ## Examples
 
@@ -36,7 +36,7 @@ You can find the [current release candidate documentation here.](https://v1.medi
 ### Video Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.21/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@1/+esm"></script>
 
 <media-controller>
   <video
@@ -71,7 +71,7 @@ You can find the [current release candidate documentation here.](https://v1.medi
 ### Audio Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.20/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@1/+esm"></script>
 
 <media-controller audio>
   <audio
@@ -97,7 +97,7 @@ You can find the [current release candidate documentation here.](https://v1.medi
 
 ## Use with React
 
-While you technically can use Media Chrome elements directly with React, it can sometimes be a bit clunky to work with Web Components in React, and some things just don't feel idiomatic to the framework (for example: having to use `class=` instead of `className=`, see [React's official docs regarding web components](https://reactjs.org/docs/web-components.html) for more details). To help with this, we've published some React wrapper components for all of our core Elements. You can read up on using them [here](https://media-chrome.org/en/react).
+While you technically can use Media Chrome elements directly with React, it can sometimes be a bit clunky to work with Web Components in React, and some things just don't feel idiomatic to the framework (for example: having to use `class=` instead of `className=`, see [React's official docs regarding web components](https://reactjs.org/docs/web-components.html) for more details). To help with this, we've published some React wrapper components for all of our core Elements. You can read up on using them [here](https://www.media-chrome.org/docs/en/react).
 
 ## Why?
 
@@ -119,5 +119,5 @@ Web components. @heff spoke about [the potential of web components for video](ht
 
 ## Core Concepts
 
-- [Design Principles](https://media-chrome.org/en/design-principles)
-- [Architecture](https://media-chrome.org/en/architecture)
+- [Design Principles](https://www.media-chrome.org/docs/en/design-principles)
+- [Architecture](https://www.media-chrome.org/docs/en/architecture)

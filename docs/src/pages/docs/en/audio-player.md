@@ -22,7 +22,7 @@ Specify the `audio` attribute on `<media-controller>` in order to use the defaul
 </media-controller>
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@0.20/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@1/+esm"></script>
 
 <media-controller audio>
   <audio
