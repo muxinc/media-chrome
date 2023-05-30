@@ -363,3 +363,9 @@ All components with a single icon now expose a slot called `icon` instead of a d
   <svg slot="icon"></svg>
 </media-airplay-button>
 ```
+
+**Affected components**
+- `<media-airplay-button>`
+- `<media-seek-forward-button>`
+- `<media-seek-backward-button>`
+- `<media-loading-indicator>`
