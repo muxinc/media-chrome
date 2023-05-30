@@ -1,3 +1,17 @@
+# [1.0.0](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.5...v1.0.0) (2023-05-30)
+
+
+### Features
+
+* icon slots for single slot controls ([#645](https://github.com/muxinc/media-chrome/issues/645)) ([17869cb](https://github.com/muxinc/media-chrome/commit/17869cb1172ee646f1219b6a403361101a281de8))
+
+
+### BREAKING CHANGES
+
+* Icon slots have been renamed to "icon" for Airplay, Seek Forward, Seek Backward, and Loading Indicator controls.
+
+
+
 # [1.0.0-rc.5](https://github.com/muxinc/media-chrome/compare/v1.0.0-rc.4...v1.0.0-rc.5) (2023-05-26)
 
 
