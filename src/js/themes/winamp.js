@@ -56,11 +56,11 @@ template.innerHTML = `
     display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;
   }
 
-  media-seek-backward-button div[slot="backward"] {
+  media-seek-backward-button div[slot="icon"] {
     width: 23px; height: 18px; background: 136px 0 url(./winamp-theme/CBUTTONS.BMP);
   }
 
-  media-seek-backward-button:active div[slot="backward"] {
+  media-seek-backward-button:active div[slot="icon"] {
     width: 23px; height: 18px; background: 136px 18px url(./winamp-theme/CBUTTONS.BMP);
   }
 
@@ -120,11 +120,11 @@ template.innerHTML = `
     display: block; overflow: hidden; padding: 0; width: 23px; height: 18px;
   }
 
-  media-seek-forward-button div[slot="forward"] {
+  media-seek-forward-button div[slot="icon"] {
     width: 23px; height: 18px; background: 45px 0 url(./winamp-theme/CBUTTONS.BMP);
   }
 
-  media-seek-forward-button:active div[slot="forward"] {
+  media-seek-forward-button:active div[slot="icon"] {
     width: 23px; height: 18px; background: 45px 18px url(./winamp-theme/CBUTTONS.BMP);
   }
 
@@ -332,7 +332,7 @@ template.innerHTML = `
 <div class="wrapper">
   <div class="controls">
     <media-seek-backward-button mediacontroller="controller">
-      <div slot="backward"></div>
+      <div slot="icon"></div>
     </media-seek-backward-button>
     <media-play-button class="play" mediacontroller="controller">
       <div slot="play"></div>
@@ -347,7 +347,7 @@ template.innerHTML = `
       <div slot="pause"></div>
     </media-play-button>
     <media-seek-forward-button mediacontroller="controller">
-      <div slot="forward"></div>
+      <div slot="icon"></div>
     </media-seek-forward-button>
     <media-fullscreen-button mediacontroller="controller">
       <div slot="enter"></div>

@@ -250,7 +250,7 @@ template.innerHTML = /*html*/`
     disabled="{{disabled}}"
     aria-disabled="{{disabled}}"
   >
-    <svg aria-hidden="true" viewBox="0 0 22 24" slot="backward">
+    <svg aria-hidden="true" viewBox="0 0 22 24" slot="icon">
       <path d="M11 6V3L5.37 7 11 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 11 6Z" />
       <text class="value" transform="translate(2.5 21)" style="font-size: 8px; font-family: 'ArialMT', 'Arial'">
         {{backwardseekoffset ?? 10}}
@@ -266,7 +266,7 @@ template.innerHTML = /*html*/`
     disabled="{{disabled}}"
     aria-disabled="{{disabled}}"
   >
-    <svg aria-hidden="true" viewBox="0 0 22 24" slot="forward">
+    <svg aria-hidden="true" viewBox="0 0 22 24" slot="icon">
       <path d="M11 6V3l5.61 4L11 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 11 6Z" />
       <text class="value" transform="translate(10 21)" style="font-size: 8px; font-family: 'ArialMT', 'Arial'">
         {{forwardseekoffset ?? 10}}
@@ -336,7 +336,7 @@ template.innerHTML = /*html*/`
 
 <template partial="AirplayButton">
   <media-airplay-button part="airplay button" disabled="{{disabled}}" aria-disabled="{{disabled}}">
-    <svg aria-hidden="true" viewBox="0 0 26 24" slot="airplay">
+    <svg aria-hidden="true" viewBox="0 0 26 24" slot="icon">
       <path
         d="M13.19 14.22a.25.25 0 0 0-.38 0l-5.46 6.37a.25.25 0 0 0 .19.41h10.92a.25.25 0 0 0 .19-.41l-5.46-6.37Z"
       />
