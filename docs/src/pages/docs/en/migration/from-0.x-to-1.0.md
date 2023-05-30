@@ -29,7 +29,7 @@ While there were some sweeping changes to Media Chrome, most of these should be 
 - Because of the attribute renaming, all theme template variables have changed from `camelCase` to `lowercase` (aka "`smushedcase`")
 
 **Icons**
-- Components with customizable icons now support a generic `icon` slot instead of each one having a different name for where to place a custom icon
+- All components with customizable icons now have a generic `icon` slot. For components with a single icon (e.g. `<media-seek-forward-button>`), these have simply been renamed `icon`.
 
 ### New features
 
