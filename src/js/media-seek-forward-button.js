@@ -14,13 +14,13 @@ const forwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.t
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
-  <slot name="forward">${forwardIcon}</slot>
+  <slot name="icon">${forwardIcon}</slot>
 `;
 
 const DEFAULT_TIME = 0;
 
 /**
- * @slot forward - The element shown for the seek forward button’s display.
+ * @slot icon - The element shown for the seek forward button’s display.
  *
  * @attr {string} seekoffset - Adjusts how much time (in seconds) the playhead should seek forward.
  * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
@@ -42,13 +42,13 @@ class MediaSeekForwardButton extends MediaChromeButton {
 
   connectedCallback() {
     updateAriaLabel(this);
-    updateSeekIconValue(this, 'forward');
+    updateSeekIconValue(this);
     super.connectedCallback();
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
     if (attrName === Attributes.SEEK_OFFSET) {
-      updateSeekIconValue(this, 'forward');
+      updateSeekIconValue(this);
       updateAriaLabel(this);
     }
 

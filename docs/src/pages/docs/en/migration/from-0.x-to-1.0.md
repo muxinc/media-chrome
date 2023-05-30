@@ -28,6 +28,9 @@ While there were some sweeping changes to Media Chrome, most of these should be 
 **Themes**
 - Because of the attribute renaming, all theme template variables have changed from `camelCase` to `lowercase` (aka "`smushedcase`")
 
+**Icons**
+- All components with customizable icons now have a generic `icon` slot. For components with a single icon (e.g. `<media-seek-forward-button>`), these have simply been renamed `icon`.
+
 ### New features
 
 - Added several new CSS variables for consistency and ease of use
@@ -342,3 +345,27 @@ Also, for any custom themes you may have created, as a result of moving from `ke
   </template>
 </template>
 ```
+
+## Using the new `icon` slot
+
+All components with a single icon now expose a slot called `icon` instead of a different named slot for each component. e.g:
+
+**Before**
+```html
+<media-airplay-button>
+  <svg slot="airplay"></svg>
+</media-airplay-button>
+```
+
+**After**
+```html
+<media-airplay-button>
+  <svg slot="icon"></svg>
+</media-airplay-button>
+```
+
+**Affected components**
+- `<media-airplay-button>`
+- `<media-seek-forward-button>`
+- `<media-seek-backward-button>`
+- `<media-loading-indicator>`

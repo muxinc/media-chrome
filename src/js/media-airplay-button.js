@@ -11,11 +11,11 @@ const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = `
-  <slot name="airplay">${airplayIcon}</slot>
+  <slot name="icon">${airplayIcon}</slot>
 `;
 
 /**
- * @slot airplay - The element shown for the AirPlay button’s display.
+ * @slot icon - The element shown for the AirPlay button’s display.
  *
  * @attr {(unavailable|unsupported)} mediaairplayunavailable - (read-only) Set if airplay is unavailable.
  *
