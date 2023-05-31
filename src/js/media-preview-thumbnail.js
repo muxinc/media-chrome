@@ -10,7 +10,7 @@ import {
 } from './utils/element-utils.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/ `
+template.innerHTML = /*html*/`
   <style>
     :host {
       box-sizing: border-box;

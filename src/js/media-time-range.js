@@ -27,7 +27,7 @@ const updateAriaValueText = (el) => {
 };
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/ `
+template.innerHTML = /*html*/`
   <style>
     :host {
       --media-preview-border-radius: 3px;

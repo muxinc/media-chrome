@@ -11,7 +11,7 @@ import { window, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
-template.innerHTML = `
+template.innerHTML = /*html*/`
 <style>
   media-controller {
     --media-range-thumb-background: rgba(255, 0, 0, 1);

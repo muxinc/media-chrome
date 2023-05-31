@@ -13,7 +13,7 @@ import { window, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = /*html*/ `
+template.innerHTML = /*html*/`
 <style>
   :host {
     display: var(--media-control-display, var(--media-gesture-receiver-display, inline-block));
