@@ -7,17 +7,11 @@ layout: ../../../layouts/MainLayout.astro
 import CopyToClipboard from "../../../components/PageContent/CopyToClipboard.astro";
 import SandpackContainer from "../../../components/SandpackContainer.astro";
 
-Media Chrome is a collection of fully customizable media player controls and components. You can use these components to build a media player from scratch.
+Media Chrome is a collection of fully customizable media player controls and components.
+You can use these components to build a media player from scratch.
 
-A key focus of Media Chrome is to separate the UI from media playback. This means that the underlying playback engine can be swapped out while leaving the UI intact.
-
-## Key Features
-
-- **Web Components:** Use with or without a JavaScript framework, compatible with: React, Angular, VueJS, Svelte, and more.
-- **Styling:** Use simple CSS to style components
-- **Theming:** Build custom themes that group together controls and style
-- **Accessible:** All controls express their state in an accessible way
-- **Unified API:** Compatible with standard `<video>` and `<audio>` elements and many other media elements
+A key focus of Media Chrome is to separate the UI from media playback.
+This means that the underlying playback engine can be swapped out while leaving the UI intact.
 
 ## Example usage
 
@@ -25,7 +19,7 @@ This example demonstrates combining controls, captions, poster image, and a time
 
 <SandpackContainer
   previewAspectRatio={2.4}
-  editorHeight={290}
+  editorHeight={390}
   stacked
   reversed
   html={`<media-controller defaultsubtitles>
@@ -47,6 +41,14 @@ This example demonstrates combining controls, captions, poster image, and a time
   </media-control-bar>
 </media-controller>`}
 />
+
+## Key Features
+
+- **Web Components:** Use with or without a JavaScript framework, compatible with: React, Angular, VueJS, Svelte, and more.
+- **Styling:** Use simple CSS to style components
+- **Theming:** Build custom themes that group together controls and style
+- **Accessible:** All controls express their state in an accessible way
+- **Unified API:** Compatible with standard `<video>` and `<audio>` elements and many other media elements
 
 ## Install
 
