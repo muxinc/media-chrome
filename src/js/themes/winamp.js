@@ -2,7 +2,7 @@ import { window, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
-template.innerHTML = `
+template.innerHTML = /*html*/`
 <style>
   :host {
     --media-range-background: transparent;

@@ -26,7 +26,7 @@ const exitFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
+slotTemplate.innerHTML = /*html*/`
   <style>
   :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot:not([name=exit]):not([name=icon]) {
     display: none !important;

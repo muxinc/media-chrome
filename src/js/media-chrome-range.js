@@ -27,6 +27,7 @@ const trackStyles = `
   outline-offset: var(--media-range-track-outline-offset);
   border-radius: var(--media-range-track-border-radius, 1px);
   background: var(--media-range-track-progress-internal, var(--media-range-track-background, rgb(255 255 255 / .2)));
+  backdrop-filter: var(--media-range-track-backdrop-filter);
   box-shadow: var(--media-range-track-box-shadow, none);
   transition: var(--media-range-track-transition, none);
   transform: translate(var(--media-range-track-translate-x, 0), var(--media-range-track-translate-y, 0));
@@ -118,18 +119,21 @@ template.innerHTML = /*html*/`
 
     #background,
     #pointer {
-      min-width: 40px;
       width: var(--media-range-track-width, 100%);
       height: var(--track-height);
       border-radius: var(--media-range-track-border-radius, 1px);
       position: absolute;
       top: 50%;
       transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px) - 50%));
+    }
+
+    #background {
+      min-width: 40px;
       background: var(--media-range-track-background, rgb(255 255 255 / .2));
+      backdrop-filter: var(--media-range-track-background-backdrop-filter);
     }
 
     #pointer {
-      min-width: auto;
       background: var(--media-range-track-pointer-background);
       border-right: var(--media-range-track-pointer-border-right);
       transition: visibility .25s, opacity .25s;
@@ -181,7 +185,7 @@ template.innerHTML = /*html*/`
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  *
- * @cssproperty --media-primary-color - Default color of range track.
+ * @cssproperty --media-primary-color - Default color of range bar.
  * @cssproperty --media-secondary-color - Default color of range background.
  *
  * @cssproperty [--media-control-display = inline-block] - `display` property of control.
@@ -204,7 +208,9 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-range-thumb-transform - `transform` of range thumb.
  * @cssproperty --media-range-thumb-opacity - `opacity` of range thumb.
  *
- * @cssproperty --media-range-track-background - `background` of range track.
+ * @cssproperty [--media-range-bar-color = var(--media-primary-color, rgb(238 238 238))] - `color_value` of range bar (elapsed progress).
+ * @cssproperty [--media-range-track-color = transparent] - `color_value` of range track (remaining progress).
+ * @cssproperty --media-range-track-backdrop-filter - `backdrop-filter` of range track.
  * @cssproperty --media-range-track-width - `width` of range track.
  * @cssproperty --media-range-track-height - `height` of range track.
  * @cssproperty --media-range-track-border - `border` of range track.
@@ -215,6 +221,9 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-range-track-transition - `transition` of range track.
  * @cssproperty --media-range-track-translate-x - `translate` x-coordinate of range track.
  * @cssproperty --media-range-track-translate-y - `translate` y-coordinate of range track.
+ *
+ * @cssproperty --media-range-track-background - `background` of range track background.
+ * @cssproperty --media-range-track-background-backdrop-filter - `backdrop-filter` of range track background.
  *
  * @cssproperty --media-time-range-hover-display - `display` of range hover zone.
  * @cssproperty --media-time-range-hover-bottom - `bottom` of range hover zone.
