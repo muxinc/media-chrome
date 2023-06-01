@@ -150,17 +150,24 @@ When using controls outside of a `<media-controller>` wrapper element; the contr
 
 > You could also set the `mediaController` property of the element with JavaScript
 
+## Compatible media elements
+
+Media elements are in charge of controlling the playback of media and present no UI on their own.
+The `<media-controller>` component mediates events between the controls and the media element for you.
+
+Media Chrome will work with any element that exposes the same API as
+the HTML media elements (`<video>` and `<audio>`). This means that you can
+replace these elements with your own if they conform to the same API.
+You can read more about the
+[HTMLMediaElement API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement).
+
+There are many compatible media elements available that
+you can replace the standard `<video>` element with.
+Check out the media elements section in the left sidebar menu.
+
 ## Taking it further
 
 If you'd like to dive deeper into customization you can check out these resources.
 
 - [Styling](/docs/en/styling)
 - [Theming](/docs/en/themes)
-
-## Compatible media elements
-
-Media elements are in charge of controlling the playback of media and present no UI on their own. The `<media-controller>` component mediates events between the controls and the media element for you.
-
-Media Chrome will work with any element that exposes the same API as the HTML media elements (`<video>` and `<audio>`). This means that you can replace these elements with your own if they conform to the same API. You can read more about the [HTMLMediaElement API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement).
-
-There are many compatible media elements available that you can replace the standard `<video>` element with. Check out the media elements section in the main menu.
