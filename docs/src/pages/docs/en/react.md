@@ -4,7 +4,9 @@ description: Media Chrome in React
 layout: ../../../layouts/MainLayout.astro
 ---
 
-Since there are still some complexities with using Web Components in React, we've published a set of React Component wrappers to make using Media Chrome in your React app easy and idiomatic. These are included in our standard [npm package](https://www.npmjs.com/package/media-chrome).
+Media Chrome provides a React version of every component to make using Media Chrome 
+in your React app easy and idiomatic. 
+These are included in our standard [npm package](https://www.npmjs.com/package/media-chrome).
 
 To use, simply import any components from `"media-chrome/dist/react"`.
 
