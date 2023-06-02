@@ -112,8 +112,8 @@ if (globalThis.customElements && !globalThis.customElements.get('play-pause')) {
 
 ## Custom media element
 
-If you'd like to add some extra behavior to the native `<video>` element,
-have a look at [custom-video-element](https://github.com/muxinc/custom-video-element).
+If you'd like to add some extra behavior to the native `<video>` or `<audio>` element,
+have a look at [custom-media-element](https://github.com/muxinc/custom-media-element).
 The `HTMLVideoElement` API will be automatically added to any custom element that
 extends from `CustomVideoElement`.
 
@@ -124,14 +124,14 @@ extends from `CustomVideoElement`.
   reversed
   active={false}
   dependencies={{
-    'custom-video-element': 'latest'
+    'custom-media-element': 'latest'
   }}
   files={{
     '/custom-video-element.js': {
       active: true,
-      code: `import CustomVideoElement from 'custom-video-element';
+      code: `import { CustomVideoElement } from 'custom-media-element';
 
-class MyCustomVideoElement extends globalThis.CustomVideoElement {
+class MyCustomVideoElement extends CustomVideoElement {
   constructor() {
     super();
   }
