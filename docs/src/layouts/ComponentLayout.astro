@@ -3,7 +3,7 @@ import { Markdown } from '@astropub/md';
 import MainLayout from './MainLayout.astro';
 import cem from '../../../dist/custom-elements.json';
 
-const { frontmatter, headings, url } = Astro.props as Props;
+const { headings, url } = Astro.props as Props;
 const componentName = url.split('/').pop();
 
 const cls = cem.modules
@@ -31,7 +31,7 @@ function backticksToMdnLinks(str) {
 }
 
 ---
-<MainLayout frontmatter={frontmatter} headings={headings}>
+<MainLayout {...Astro.props}>
   <slot />
 
   <Markdown of={`## Reference`} />

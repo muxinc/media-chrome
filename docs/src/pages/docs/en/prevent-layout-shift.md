@@ -4,9 +4,9 @@ description: Learn how to prevent media chrome players from causing cumulative l
 layout: ../../../layouts/MainLayout.astro
 ---
 
-Cumulative Layout Shift is when content on your page shifts. It's a sub-optimal user experience and it negatively impacts performance measurements like [Lighthouse](https://web.dev/performance-scoring/). Learn more about [CLS](https://web.dev/cls/).
+Cumulative Layout Shift is when content on your page shifts. The site visitor could lose track of what they are looking at or reading as the page loads. It's a sub-optimal user experience and it negatively impacts performance measurements like [Lighthouse](https://web.dev/performance-scoring/). Learn more about [CLS](https://web.dev/cls/).
 
-Video players are notorious for causing CLS. Use this guide to make sure your Media Chrome player is not causing CLS in your web application.
+Video players are notorious for causing CLS because the dimensions/metadata of the media file are unknown until sufficient data is loaded. Use this guide to make sure your Media Chrome player is not causing CLS in your web application.
 
 ## Set aspect-ratio
 

@@ -7,6 +7,7 @@ const frontmatter = {
   title: 'Styling Reference'
 };
 
+const file = `${Astro.url.path}.astro`;
 const headings = [];
 const components = await Astro.glob('../components/*');
 
@@ -62,7 +63,8 @@ function backticksToMdnLinks(str) {
 }
 
 ---
-<MainLayout frontmatter={frontmatter} headings={headings}>
+
+<MainLayout file={file} frontmatter={frontmatter} headings={headings}>
   <p>
     This page shows a list of all the available
     <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Using_CSS_custom_properties" target="_blank">CSS variables</a>

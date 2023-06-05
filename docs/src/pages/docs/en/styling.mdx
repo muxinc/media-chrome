@@ -1,5 +1,5 @@
 ---
-title: Styling
+title: Player Styling
 description: Styling Media Chrome
 layout: ../../../layouts/MainLayout.astro
 ---
@@ -33,7 +33,7 @@ While the component looks pretty good out of the box, maybe you want a slightly 
 <SandpackContainer
   active="css"
   css={`media-play-button {
-  --media-icon-color: mistyrose;
+  --media-icon-color: lightpink;
   --media-control-background: rgb(27 54 93 / 0.85);
   --media-control-hover-background: rgb(128 0 0 / 0.85);
 }`}
@@ -57,7 +57,7 @@ Being able to easily customize a variety of CSS properties is great, but that's 
 
 <SandpackContainer
   css={`media-play-button {
-  --media-icon-color: mistyrose;
+  --media-icon-color: lightpink;
   --media-control-background: rgb(27 54 93 / 0.85);
   --media-control-hover-background: rgb(128 0 0 / 0.85);
 }`}
@@ -122,7 +122,7 @@ Earlier, I mentioned that you can use whatever you want for your "icons". This i
 
 <SandpackContainer
   css={`media-play-button {
-  --media-text-color: mistyrose;
+  --media-text-color: lightpink;
   --media-control-background: rgb(27 54 93 / 0.85);
   --media-control-hover-background: rgb(128 0 0 / 0.85);
   --media-font-size: 24px;
@@ -167,7 +167,7 @@ To demonstrate this, here's an example with several more components, including a
   previewAspectRatio={2.4}
   editorHeight={450}
   css={`media-controller {
-  --media-primary-color: mistyrose;
+  --media-primary-color: lightpink;
   --media-secondary-color: rgb(27 54 93 / 0.85);
   /* Unfortunately, we currently still need to specifically apply the hover color :( */
   --media-control-hover-background: rgb(128 0 0 / 0.85);
@@ -212,7 +212,7 @@ Below is an example of how you can hide specific components using media state at
 <SandpackContainer
   active="css"
   css={`media-controller {
-  --media-primary-color: mistyrose;
+  --media-primary-color: lightpink;
   --media-secondary-color: rgb(27 54 93 / 0.85);
   --media-control-hover-background: rgb(128 0 0 / 0.85);
 }
@@ -269,7 +269,7 @@ We've already seen a number of ways to customize the look and feel of things in 
   previewAspectRatio={2.4}
   editorHeight={450}
   css={`media-controller {
-  --media-primary-color: mistyrose;
+  --media-primary-color: lightpink;
   --media-secondary-color: rgb(27 54 93 / 0.85);
   --media-control-hover-background: rgb(128 0 0 / 0.85);
 }
@@ -353,7 +353,7 @@ In order to make responsive design easy, we've built in a concept of "breakpoint
   active="css"
   editorHeight={300}
   css={`media-controller {
-  --media-primary-color: mistyrose;
+  --media-primary-color: lightpink;
   --media-secondary-color: rgb(27 54 93 / 0.85);
   --media-control-hover-background: rgb(128 0 0 / 0.85);
 }
@@ -485,7 +485,7 @@ Most of our components are simple enough to style in the fairly simple ways we'v
 <SandpackContainer
   active="css"
   css={`media-time-range {
-    --media-primary-color: mistyrose;
+    --media-primary-color: lightpink;
     --media-secondary-color: rgb(27 54 93 / 0.85);
     --media-control-hover-background: rgb(128 0 0 / 0.85);
     width: 100%;
@@ -526,3 +526,8 @@ media-controller:not([mediapaused])[userinactive]::part(centered-layer) {
 
 {/* Add a second advanced section about WCAG / A11Y + Styling. */}
 
+## What's next?
+
+- Find out how to [position your player controls](./position-controls).
+- Learn how to create [responsive player controls](./responsive-controls).
+- For a complete list of Media Chrome CSS variables, check out our [styling reference](./reference/styling).

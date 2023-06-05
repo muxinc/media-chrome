@@ -4,10 +4,9 @@ description: Understand how keyboard shortcuts work with Media Chrome
 layout: ../../../layouts/MainLayout.astro
 ---
 
-### Keyboard Shortcuts
-
 By default, Media Controller has keyboard shortcuts that will trigger behavior when specific keys are pressed when the focus is inside the Media Controller.
 The following controls are supported:
+
 | Key     | Name to turn off | Behavior |
 |---------|------------------|----------|
 | `Space` | `nospace`        | Toggle Playback |
@@ -15,10 +14,10 @@ The following controls are supported:
 | `m`     | `nom`            | Toggle mute |
 | `f`     | `nof`            | Toggle fullscreen |
 | `c`     | `noc`            | Toggle captions or subtitles, if available |
-| ⬅️       | `noarrowleft`    | Seek back 10s |
-| ➡️       | `noarrowright`   | Seek forward 10s |
+| `ArrowLeft`       | `noarrowleft`    | Seek back 10s |
+| `ArrowRight`       | `noarrowright`   | Seek forward 10s |
 
-If you are implementing an interactive element that uses any of these keys, you can stopPropagation in your `keyup` handler. Alternatively, you can add a `keysUsed` property on the element or a `keysused` attribute. The values are those that match the `key` property on the KeyboardEvent. You can find a list of those values [on mdn](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values). Additionally, since the DOM list can't have the Space key represented as `" "`, we will accept `Space` as an alternative name for it.
+If you are implementing an interactive element that uses any of these keys, you can `stopPropagation` in your `keyup` handler. Alternatively, you can add a `keysUsed` property on the element or a `keysused` attribute. The values are those that match the `key` property on the KeyboardEvent. You can find a list of those values [on mdn](https://developer.mozilla.org/en-US/docs/Web/API/UI_Events/Keyboard_event_key_values). Additionally, since the DOM list can't have the Space key represented as `" "`, we will accept `Space` as an alternative name for it.
 Example (`keysused` attribute):
 
 ```html
@@ -35,7 +34,7 @@ class MyInteractiveElement extends window.HTMLElement {
 }
 ```
 
-#### hotkeys property
+## hotkeys property
 
 A `hotkeys` property is available on the Media Controller. It is an [AttributeTokenList](https://github.com/muxinc/media-chrome/tree/main/src/js/utils/attribute-token-list.js), which is based on the [DOMTokenList API](https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList) (like `classList`). This allows you to add and remove which shortcuts are allowed.
 

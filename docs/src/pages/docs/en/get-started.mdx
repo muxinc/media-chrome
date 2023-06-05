@@ -11,6 +11,31 @@ Media Chrome is a collection of fully customizable media player controls and com
 
 A key focus of Media Chrome is to separate the UI from media playback. This means that the underlying playback engine can be swapped out while leaving the UI intact.
 
+## Example usage
+
+This example demonstrates combining controls, captions, poster image, and a timeline with thumbnails on hover. This is a live sandbox so you can edit the code and see it update in real-time. Try adding `<media-volume-range></media-volume-range>` to the control bar.
+
+<SandpackContainer
+  previewAspectRatio={2.4}
+  editorHeight={320}
+  stacked
+  reversed
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+    poster="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg"
+  ></video>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-mute-button></media-mute-button>
+    <media-time-range></media-time-range>
+    <media-time-display></media-time-display>
+    <media-fullscreen-button></media-fullscreen-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
 ## Key Features
 
 - **Web Components:** Use with or without a JavaScript framework, compatible with: React, Angular, VueJS, Svelte, and more.
@@ -18,35 +43,6 @@ A key focus of Media Chrome is to separate the UI from media playback. This mean
 - **Theming:** Build custom themes that group together controls and style
 - **Accessible:** All controls express their state in an accessible way
 - **Unified API:** Compatible with standard `<video>` and `<audio>` elements and many other media elements
-
-## Example usage
-
-This example demonstrates combining controls, captions, poster image, and a timeline with thumbnails on hover. This is a live sandbox so you can edit the code and see it update in real-time. Try adding `<media-volume-range></media-volume-range>` to the control bar.
-
-<SandpackContainer
-  previewAspectRatio={2.4}
-  editorHeight={290}
-  stacked
-  reversed
-  html={`<media-controller defaultsubtitles>
-  <video slot="media" src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4" muted crossorigin playsinline>
-    <track label="thumbnails" default kind="metadata" src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"/>
-    <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
-  </video>
-  <media-poster-image slot="poster" src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg" placeholdersrc="data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAUADADASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAECBAP/xAAdEAEBAAEEAwAAAAAAAAAAAAAAARECAxITFCFR/8QAGQEAAwADAAAAAAAAAAAAAAAAAAEDAgQF/8QAGBEBAQEBAQAAAAAAAAAAAAAAAAETERL/2gAMAwEAAhEDEQA/ANeC4ldyI1b2EtIzzrrIqYZLvl5FGkGdbfQzGPvo76WsPxXLlfqbaA5va2iVJADgPELACsD/2Q=="></media-poster-image>
-  <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
-  <media-control-bar>
-    <media-play-button></media-play-button>
-    <media-seek-backward-button></media-seek-backward-button>
-    <media-seek-forward-button ></media-seek-forward-button>
-    <media-mute-button></media-mute-button>
-    <media-time-range></media-time-range>
-    <media-time-display></media-time-display>
-    <media-captions-button></media-captions-button>
-    <media-fullscreen-button></media-fullscreen-button>
-  </media-control-bar>
-</media-controller>`}
-/>
 
 ## Install
 
@@ -101,7 +97,8 @@ The `<media-controller>` component handles all of the communication between cont
 
 > We're using a standard HTML `<video>` element here, but you could use any other [compatible media element](#compatible-media-elements).
 
-Slots are a feature of HTML Web Components that allow you choose where an element should be placed. In this instance, we're telling media controller to place our video tag where media elements should go. Some Media Chrome components will define multiple slots and other none at all. You can find out which slots are available on each components documentation page.
+[Slots](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot) are a feature of [Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components) that allow you choose where an element should be placed. In this instance, we're telling media controller to place our video tag where
+media elements should go. Some Media Chrome components will define multiple slots and other none at all. You can find out which slots are available on each components documentation page.
 
 ## Adding controls
 
@@ -144,17 +141,17 @@ When using controls outside of a `<media-controller>` wrapper element; the contr
 
 > You could also set the `mediaController` property of the element with JavaScript
 
-## Taking it further
-
-If you'd like to dive deeper into customization you can check out these resources.
-
-- [Styling](/docs/en/styling)
-- [Theming](/docs/en/themes)
-
 ## Compatible media elements
 
 Media elements are in charge of controlling the playback of media and present no UI on their own. The `<media-controller>` component mediates events between the controls and the media element for you.
 
 Media Chrome will work with any element that exposes the same API as the HTML media elements (`<video>` and `<audio>`). This means that you can replace these elements with your own if they conform to the same API. You can read more about the [HTMLMediaElement API on MDN](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement).
 
-There are many compatible media elements available that you can replace the standard `<video>` element with. Check out the media elements section in the main menu.
+There are many compatible media elements available that you can replace the standard `<video>` element with. Check out the media elements section in the left sidebar menu.
+
+## Taking it further
+
+If you'd like to dive deeper into customization you can check out these resources.
+
+- [Styling](/docs/en/styling)
+- [Theming](/docs/en/themes)

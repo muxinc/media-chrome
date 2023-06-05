@@ -4,7 +4,7 @@ description: Media Chrome in React
 layout: ../../../layouts/MainLayout.astro
 ---
 
-Since there are still some complexities with using Web Components in React, we've published a set of React Component wrappers to make using Media Chrome in your React app easy and idiomatic. These are included in our standard [npm package](https://www.npmjs.com/package/media-chrome).
+Media Chrome provides a React version of every component to make using Media Chrome in your React app easy and idiomatic. These are included in our standard [npm package](https://www.npmjs.com/package/media-chrome).
 
 To use, simply import any components from `"media-chrome/dist/react"`.
 
@@ -18,18 +18,14 @@ To follow React conventions, the wrapper components use PascalCase for the compo
 
 and so on. For a complete list of components, see the left sidebar.
 
-## Property Names
+## Properties
 
 Also, to keep things "idiomatically React", the wrapper components use camelCase prop names for lowercase attribute names, so
 
 - `seekoffset` becomes `seekOffset`
 - `showduration` becomes `showDuration`
 
-and so on. Additionally, we'll automatically translate "special" React attributes like [`className`](https://reactjs.org/docs/dom-elements.html#classname).
-
-## Property Values
-
-You should be able to use property values just like you would in React, passing in numbers for numeric values, `true` or `false` for booleans, and the like. We'll automatically handle things like turning `true` into an empty string and `false` into an attribute removal.
+and so on.
 
 ## Putting it all together, a simple example:
 
