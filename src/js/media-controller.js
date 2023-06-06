@@ -17,6 +17,7 @@ import {
   MediaUIAttributes,
   MediaStateReceiverAttributes,
   AttributeToStateChangeEventMap,
+  MediaUIProps,
 } from './constants.js';
 import { MediaUIRequestHandlers, MediaUIStates, volumeSupportPromise } from './controller.js';
 
@@ -107,7 +108,7 @@ class MediaController extends MediaContainer {
     this._mediaStatePropagators = {};
     Object.keys(MediaUIStates).forEach((key)=>{
       this._mediaStatePropagators[key] = e => {
-        this.propagateMediaState(MediaUIAttributes[key], MediaUIStates[key].get(this, e));
+        this.propagateMediaState(MediaUIProps[key], MediaUIStates[key].get(this, e));
       };
     });
 
@@ -147,7 +148,7 @@ class MediaController extends MediaContainer {
       toggleSubsCaps(this, true);
 
     } else if (attrName === Attributes.DEFAULT_STREAM_TYPE) {
-      this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
+      this.propagateMediaState(MediaUIProps.MEDIA_STREAM_TYPE);
 
     } else if (attrName === Attributes.FULLSCREEN_ELEMENT) {
       const el = newValue
@@ -239,7 +240,7 @@ class MediaController extends MediaContainer {
     // TODO: Can we just reset all state here?
     // Should hasPlayed refer to the media element or the controller?
     // i.e. the poster might re-show if not handled by the poster el
-    this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, true);
+    this.propagateMediaState(MediaUIProps.MEDIA_PAUSED, true);
   }
 
   propagateMediaState(stateName, state) {
@@ -318,7 +319,7 @@ class MediaController extends MediaContainer {
 
       propagateMediaState(
         [el],
-        MediaUIAttributes[stateConstName],
+        MediaUIProps[stateConstName],
         stateDetails.get(this)
       );
     });
@@ -475,6 +476,7 @@ class MediaController extends MediaContainer {
 }
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
+const MEDIA_UI_PROP_NAMES = Object.values(MediaUIProps);
 
 const getMediaUIAttributesFrom = (child) => {
   let { observedAttributes } = child.constructor;
@@ -496,8 +498,19 @@ const getMediaUIAttributesFrom = (child) => {
   );
 };
 
+const hasMediaUIProps = (mediaStateReceiverCandidate) => {
+  if (
+    mediaStateReceiverCandidate.nodeName?.includes('-')
+    && !!window.customElements.get(mediaStateReceiverCandidate.nodeName?.toLowerCase())
+    && !(mediaStateReceiverCandidate instanceof window.customElements.get(mediaStateReceiverCandidate.nodeName.toLowerCase()))
+  ) {
+    window.customElements.upgrade(mediaStateReceiverCandidate);
+  }
+  return MEDIA_UI_PROP_NAMES.some(propName => propName in mediaStateReceiverCandidate);
+};
+
 const isMediaStateReceiver = (child) => {
-  return !!getMediaUIAttributesFrom(child).length;
+  return hasMediaUIProps(child) || !!getMediaUIAttributesFrom(child).length;
 };
 
 const setAttr = async (child, attrName, attrValue) => {
@@ -582,8 +595,12 @@ const traverseForMediaStateReceivers = (
 
 const propagateMediaState = (els, stateName, val) => {
   els.forEach((el) => {
+    if (stateName in el) {
+      el[stateName] = val;
+      return;
+    }
     const relevantAttrs = getMediaUIAttributesFrom(el);
-    if (!relevantAttrs.includes(stateName)) return;
+    if (!relevantAttrs.includes(stateName.toLowerCase())) return;
     setAttr(el, stateName, val);
   });
 };
