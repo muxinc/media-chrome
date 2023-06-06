@@ -90,7 +90,7 @@ export const MediaUIProps = {
   MEDIA_STREAM_TYPE: 'mediaStreamType',
   MEDIA_TARGET_LIVE_WINDOW: 'mediaTargetLiveWindow',
   MEDIA_TIME_IS_LIVE: 'mediaTimeIsLive',
-}
+};
 
 export const MediaUIAttributes = {
   MEDIA_AIRPLAY_UNAVAILABLE: 'mediaairplayunavailable',
