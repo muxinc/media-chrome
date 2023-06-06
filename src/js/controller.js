@@ -1,7 +1,6 @@
 import { window, document } from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreen-api.js';
 import { containsComposedNode } from './utils/element-utils.js';
-import { serializeTimeRanges } from './utils/time.js';
 import {
   hasVolumeSupportAsync,
   fullscreenSupported,
@@ -18,7 +17,6 @@ import {
 } from './constants.js';
 
 import {
-  stringifyTextTrackList,
   getTextTracksList,
   updateTracksModeTo,
   toggleSubsCaps,
@@ -175,7 +173,6 @@ export const MediaUIStates = {
 
       // Account for cases where metadata from slotted media has an "empty" seekable (CJP)
       if (!start && !end) return undefined;
-      // return [Number(start.toFixed(3)), Number(end.toFixed(3))].join(':');
       return [Number(start.toFixed(3)), Number(end.toFixed(3))];
     },
     mediaEvents: ['loadedmetadata', 'emptied', 'progress'],
@@ -188,12 +185,11 @@ export const MediaUIStates = {
   },
   MEDIA_BUFFERED: {
     get: function (controller) {
-      // return serializeTimeRanges(controller.media?.buffered);
       const timeRanges = controller.media?.buffered;
       return Array.from(controller.media?.buffered ?? [])
         .map((_, i) => [
-          Number(timeRanges.start(i)),
-          Number(timeRanges.end(i)),
+          Number(timeRanges.start(i)).toFixed(3),
+          Number(timeRanges.end(i)).toFixed(3),
         ]);
     },
     mediaEvents: ['progress', 'emptied'],
@@ -455,8 +451,6 @@ export const MediaUIStates = {
   MEDIA_SUBTITLES_LIST: {
     get: function (controller) {
       // TODO: Move to non attr specific values
-      console.log('getting mediaSubtitlesList!');
-      // return stringifyTextTrackList(getSubtitleTracks(controller)) || undefined;
       return getSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language })) || undefined;
     },
     mediaEvents: ['loadstart'],
@@ -474,7 +468,6 @@ export const MediaUIStates = {
         toggleSubsCaps(controller, true);
       }
       return (
-        // stringifyTextTrackList(getShowingSubtitleTracks(controller)) ||
         getShowingSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language })) ||
         undefined
       );
@@ -733,7 +726,7 @@ export const MediaUIRequestHandlers = {
     );
     controller.propagateMediaState(
       MediaUIAttributes.MEDIA_PREVIEW_COORDS,
-      previewCoordsStr.split(',').join(' ')
+      previewCoordsStr.split(',')
     );
   },
   MEDIA_SHOW_SUBTITLES_REQUEST: (media, e, controller) => {

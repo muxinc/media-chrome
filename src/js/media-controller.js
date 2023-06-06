@@ -11,7 +11,7 @@ import { MediaContainer } from './media-container.js';
 import { window } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { constToCamel, delay } from './utils/utils.js';
-import { toggleSubsCaps } from './utils/captions.js';
+import { stringifyTextTrackList, toggleSubsCaps } from './utils/captions.js';
 import {
   MediaUIEvents,
   MediaUIAttributes,
@@ -513,6 +513,16 @@ const isMediaStateReceiver = (child) => {
   return hasMediaUIProps(child) || !!getMediaUIAttributesFrom(child).length;
 };
 
+const serializeTuple = (tuple) => tuple?.join?.(':');
+
+const CustomAttrSerializer = {
+  [MediaUIAttributes.MEDIA_SUBTITLES_LIST]: stringifyTextTrackList,
+  [MediaUIAttributes.MEDIA_SUBTITLES_SHOWING]: stringifyTextTrackList,
+  [MediaUIAttributes.MEDIA_SEEKABLE]: serializeTuple,
+  [MediaUIAttributes.MEDIA_BUFFERED]: (tuples) => tuples?.map(serializeTuple).join(' '),
+  [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords) => coords?.join(' '),
+};
+
 const setAttr = async (child, attrName, attrValue) => {
   // If the node is not connected to the DOM yet wait on macrotask. Fix for:
   //   Uncaught DOMException: Failed to construct 'CustomElement':
@@ -521,7 +531,7 @@ const setAttr = async (child, attrName, attrValue) => {
     await delay(0);
   }
 
-  if (attrValue == undefined) {
+  if (attrValue == undefined || (Array.isArray(attrValue) && !attrValue.length)) {
     return child.removeAttribute(attrName);
   }
   if (typeof attrValue === 'boolean') {
@@ -531,7 +541,9 @@ const setAttr = async (child, attrName, attrValue) => {
   if (Number.isNaN(attrValue)) {
     return child.removeAttribute(attrName);
   }
-  return child.setAttribute(attrName, attrValue);
+
+  const val = CustomAttrSerializer[attrName]?.(attrValue) ?? attrValue;
+  return child.setAttribute(attrName, val);
 };
 
 const isMediaSlotElementDescendant = (el) => !!el.closest?.('*[slot="media"]');
@@ -600,8 +612,9 @@ const propagateMediaState = (els, stateName, val) => {
       return;
     }
     const relevantAttrs = getMediaUIAttributesFrom(el);
-    if (!relevantAttrs.includes(stateName.toLowerCase())) return;
-    setAttr(el, stateName, val);
+    const attrName = stateName.toLowerCase();
+    if (!relevantAttrs.includes(attrName)) return;
+    setAttr(el, attrName, val);
   });
 };
 
