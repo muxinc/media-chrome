@@ -61,6 +61,37 @@ export const MediaStateReceiverAttributes = {
   MEDIA_CONTROLLER: 'mediacontroller',
 };
 
+export const MediaUIProps = {
+  MEDIA_AIRPLAY_UNAVAILABLE: 'mediaAirplayUnavailable',
+  MEDIA_FULLSCREEN_UNAVAILABLE: 'mediaFullscreenUnavailable',
+  MEDIA_PIP_UNAVAILABLE: 'mediaPipUnavailable',
+  MEDIA_CAST_UNAVAILABLE: 'mediaCastUnavailable',
+  MEDIA_PAUSED: 'mediaPaused',
+  MEDIA_HAS_PLAYED: 'mediaHasPlayed',
+  MEDIA_ENDED: 'mediaEnded',
+  MEDIA_MUTED: 'mediaMuted',
+  MEDIA_VOLUME_LEVEL: 'mediaVolumeLevel',
+  MEDIA_VOLUME: 'mediaVolume',
+  MEDIA_VOLUME_UNAVAILABLE: 'mediaVolumeUnavailable',
+  MEDIA_IS_PIP: 'mediaIsPip',
+  MEDIA_IS_CASTING: 'mediaIsCasting',
+  MEDIA_SUBTITLES_LIST: 'mediaSubtitlesList',
+  MEDIA_SUBTITLES_SHOWING: 'mediaSubtitlesShowing',
+  MEDIA_IS_FULLSCREEN: 'mediaIsFullscreen',
+  MEDIA_PLAYBACK_RATE: 'mediaPlaybackRate',
+  MEDIA_CURRENT_TIME: 'mediaCurrentTime',
+  MEDIA_DURATION: 'mediaDuration',
+  MEDIA_SEEKABLE: 'mediaSeekable',
+  MEDIA_PREVIEW_TIME: 'mediaPreviewTime',
+  MEDIA_PREVIEW_IMAGE: 'mediaPreviewImage',
+  MEDIA_PREVIEW_COORDS: 'mediaPreviewCoords',
+  MEDIA_LOADING: 'mediaLoading',
+  MEDIA_BUFFERED: 'mediaBuffered',
+  MEDIA_STREAM_TYPE: 'mediaStreamType',
+  MEDIA_TARGET_LIVE_WINDOW: 'mediaTargetLiveWindow',
+  MEDIA_TIME_IS_LIVE: 'mediaTimeIsLive',
+}
+
 export const MediaUIAttributes = {
   MEDIA_AIRPLAY_UNAVAILABLE: 'mediaairplayunavailable',
   MEDIA_FULLSCREEN_UNAVAILABLE: 'mediafullscreenunavailable',
