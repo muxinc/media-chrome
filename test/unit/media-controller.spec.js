@@ -1,8 +1,7 @@
 import { fixture, assert, aTimeout, waitUntil } from '@open-wc/testing';
 import { constants } from '../../src/js/index.js';
-import { MediaUIAttributes } from '../../src/js/constants.js';
 
-const { MediaUIEvents } = constants;
+const { MediaUIEvents, MediaUIAttributes, MediaStateChangeEvents } = constants;
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
 
 describe('<media-controller>', () => {
@@ -259,4 +258,30 @@ describe('receiving state / dispatching (bubbling) events', () => {
     assert(true, 'mediavolume is 0.73');
   });
 
+});
+
+describe('state propagation behaviors', () => {
+  let mediaController;
+
+  beforeEach(async () => {
+    mediaController = await fixture(`
+      <media-controller>
+      </media-controller>
+    `);
+  });
+
+  afterEach(() => {
+    mediaController = undefined;
+  });
+
+  Object.entries(MediaUIAttributes).forEach(([key, attrName]) => {
+    const eventType = MediaStateChangeEvents[key];
+
+    it(`should dispatch event ${eventType} when ${attrName} changes`, async (done) => {
+      const nextState = mediaController.hasAttribute(attrName) ? undefined : true;
+      assert.exists(eventType);
+      mediaController.addEventListener(eventType, () => done());
+      mediaController.propagateMediaState(attrName, nextState);
+    });
+  });
 });

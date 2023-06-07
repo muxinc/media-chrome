@@ -25,7 +25,9 @@ export const MediaUIEvents = {
 
 export const MediaStateChangeEvents = {
   MEDIA_AIRPLAY_UNAVAILABLE: 'mediaairplayunavailablechange',
+  MEDIA_FULLSCREEN_UNAVAILABLE: 'mediafullscreenunavailablechange',
   MEDIA_PIP_UNAVAILABLE: 'mediapipunavailablechange',
+  MEDIA_CAST_UNAVAILABLE: 'mediacastunavailablechange',
   MEDIA_PAUSED: 'mediapausedchange',
   MEDIA_HAS_PLAYED: 'mediahasplayedchange',
   MEDIA_ENDED: 'mediaendedchange',
@@ -42,9 +44,14 @@ export const MediaStateChangeEvents = {
   MEDIA_CURRENT_TIME: 'mediacurrenttimechange',
   MEDIA_DURATION: 'mediadurationchange',
   MEDIA_SEEKABLE: 'mediaseekablechange',
+  MEDIA_PREVIEW_TIME: 'mediapreviewtimechange',
   MEDIA_PREVIEW_IMAGE: 'mediapreviewimagechange',
   MEDIA_PREVIEW_COORDS: 'mediapreviewcoordschange',
   MEDIA_LOADING: 'medialoadingchange',
+  MEDIA_BUFFERED: 'mediabufferedchange',
+  MEDIA_STREAM_TYPE: 'mediastreamtypechange',
+  MEDIA_TARGET_LIVE_WINDOW: 'mediatargetlivewindowchange',
+  MEDIA_TIME_IS_LIVE: 'mediatimeislivechange',
   USER_INACTIVE: 'userinactivechange',
   BREAKPOINTS_CHANGE: 'breakpointchange',
 };
