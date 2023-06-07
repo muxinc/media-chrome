@@ -28,6 +28,7 @@ export const MediaStateChangeEvents = {
   MEDIA_PIP_UNAVAILABLE: 'mediapipunavailablechange',
   MEDIA_PAUSED: 'mediapausedchange',
   MEDIA_HAS_PLAYED: 'mediahasplayedchange',
+  MEDIA_ENDED: 'mediaendedchange',
   MEDIA_MUTED: 'mediamutedchange',
   MEDIA_VOLUME_LEVEL: 'mediavolumelevelchange',
   MEDIA_VOLUME: 'mediavolumechange',
