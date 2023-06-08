@@ -244,15 +244,16 @@ class MediaController extends MediaContainer {
   }
 
   propagateMediaState(stateName, state) {
-    const previousState = this.getAttribute(stateName);
+    const attrName = stateName.toLowerCase();
+    const previousState = this.getAttribute(attrName);
 
     propagateMediaState(this.mediaStateReceivers, stateName, state);
 
-    if (previousState === this.getAttribute(stateName)) return;
+    if (previousState === this.getAttribute(attrName)) return;
 
     // TODO: I don't think we want these events to bubble? Video element states don't. (heff)
     const evt = new window.CustomEvent(
-      AttributeToStateChangeEventMap[stateName],
+      AttributeToStateChangeEventMap[attrName],
       { composed: true, bubbles: true, detail: state }
     );
     this.dispatchEvent(evt);
