@@ -360,21 +360,31 @@ class MediaChromeRange extends window.HTMLElement {
     style.setProperty('--media-range-track-progress-internal', gradientStr);
   }
 
+  getRelativeValues() {
+    const { range } = this;
+    return {
+      relativeValue: range.value - range.min,
+      relativeMax: range.max - range.min,
+    };
+  }
+
   /*
     Build the color gradient for the range bar.
     Creating an array so progress-bar can insert the buffered bar.
   */
   getBarColors() {
     const range = this.range;
-    const relativeValue = range.value - range.min;
-    const relativeMax = range.max - range.min;
+    const {
+      relativeValue,
+      relativeMax,
+    } = this.getRelativeValues();
     const rangePercent = (relativeValue / relativeMax) * 100;
 
     let thumbPercent = 0;
     // If the range thumb is at min or max don't correct the time range.
     // Ideally the thumb center would go all the way to min and max values
     // but input[type=range] doesn't play like that.
-    if (range.value > range.min && range.value < range.max) {
+    if (!!relativeValue && relativeValue < relativeMax) {
       const thumbOffset = this.#thumbWidth * (0.5 - rangePercent / 100);
       thumbPercent = (thumbOffset / range.offsetWidth) * 100;
     }
