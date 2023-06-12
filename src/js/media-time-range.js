@@ -189,6 +189,7 @@ class MediaTimeRange extends MediaChromeRange {
       MediaUIAttributes.MEDIA_BUFFERED,
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
       MediaUIAttributes.MEDIA_LOADING,
+      MediaUIAttributes.MEDIA_ENDED,
     ];
   }
 
@@ -262,6 +263,7 @@ class MediaTimeRange extends MediaChromeRange {
     if (
       attrName === MediaUIAttributes.MEDIA_CURRENT_TIME ||
       attrName === MediaUIAttributes.MEDIA_PAUSED ||
+      attrName === MediaUIAttributes.MEDIA_ENDED ||
       attrName === MediaUIAttributes.MEDIA_LOADING
     ) {
       this._updateTimestamp = performance.now();
@@ -430,6 +432,26 @@ class MediaTimeRange extends MediaChromeRange {
     setNumericAttr(this, MediaUIAttributes.MEDIA_PREVIEW_TIME, value);
   }
 
+  /**
+   * @type {boolean | undefined}
+   */
+  get mediaEnded() {
+    return getBooleanAttr(this, MediaUIAttributes.MEDIA_ENDED);
+  }
+
+  set mediaEnded(value) {
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_ENDED, value);
+  }
+
+  getRelativeValues() {
+    const defaultRelativeValues = super.getRelativeValues();
+    if (!this.mediaEnded) return defaultRelativeValues;
+    return {
+      ...defaultRelativeValues,
+      relativeValue: defaultRelativeValues.relativeMax,
+    };
+  }
+
   /* Add a buffered progress bar */
   getBarColors() {
     let colorsArray = super.getBarColors();
@@ -444,13 +466,19 @@ class MediaTimeRange extends MediaChromeRange {
     // Find the buffered range that "contains" the current time and get its end.
     // If none, just assume the start of the media timeline/range.min for
     // visualization purposes.
-    // Use mediaCurrentTime instead of range.value for precision (CJP)
-    const currentTime = this.mediaCurrentTime;
-    const [, bufferedEnd = range.min] =
-      buffered.find(
+    let relativeBufferedEnd;
+    if (!this.mediaEnded) {
+      const currentTime = this.mediaCurrentTime;
+      const [, bufferedEnd = range.min] = buffered.find(
         ([start, end]) => start <= currentTime && currentTime <= end
       ) ?? [];
-    const relativeBufferedEnd = bufferedEnd - range.min;
+      relativeBufferedEnd = bufferedEnd - range.min;
+    } else {
+      // If we've ended, there may be some discrepancies between seekable end, duration, and current time.
+      // In this case, just presume `relativeBufferedEnd` is the maximum possible value for visualization
+      // purposes (CJP.)
+      relativeBufferedEnd = relativeMax;
+    }
 
     const buffPercent = (relativeBufferedEnd / relativeMax) * 100;
     colorsArray.splice(1, 0, [
