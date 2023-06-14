@@ -14,6 +14,7 @@ import { nouns } from './labels/labels.js';
 export const Attributes = {
   REMAINING: 'remaining',
   SHOW_DURATION: 'showduration',
+  NO_TOGGLE: 'notoggle',
 };
 
 const CombinedAttributes = [
@@ -87,7 +88,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
   #slot;
 
   static get observedAttributes() {
-    return [...super.observedAttributes, ...CombinedAttributes, 'disabled', 'notoggle'];
+    return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
   }
 
   constructor() {
@@ -107,6 +108,9 @@ class MediaTimeDisplay extends MediaTextDisplay {
       'background',
       'var(--media-control-hover-background, rgba(50 50 70 / .7))'
     );
+    const { style: noToggle } = getOrInsertCSSRule(this.shadowRoot, ':host([notoggle])');
+    noToggle.setProperty('cursor', 'default');
+    noToggle.setProperty('background', 'var(--media-text-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7))))');
   }
 
   connectedCallback() {
@@ -142,7 +146,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   toggleTimeDisplay() {
-    if (this.hasAttribute('notoggle')) {
+    if (this.noToggle) {
       return;
     }
     if (this.hasAttribute('remaining')) {
@@ -203,6 +207,18 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   set showDuration(show) {
     setBooleanAttr(this, Attributes.SHOW_DURATION, show);
+  }
+
+  /**
+   * Disable the default behavior that toggles between current and remaining time
+   * @type {boolean}
+   */
+  get noToggle() {
+    return getBooleanAttr(this, Attributes.NO_TOGGLE);
+  }
+
+  set noToggle(notoggle) {
+    setBooleanAttr(this, Attributes.NO_TOGGLE, notoggle);
   }
 
   // Props derived from media UI attributes
