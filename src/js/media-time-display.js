@@ -74,6 +74,7 @@ const updateAriaValueText = (el) => {
  * @attr {boolean} remaining - Toggle on to show the remaining time instead of elapsed time.
  * @attr {boolean} showduration - Toggle on to show the duration.
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
+ * @attr {boolean} notoggle - Set this to disable click or tap behavior that toggles between remaining and current time.
  * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
  * @attr {string} mediaduration - (read-only) Set to the media duration.
  * @attr {string} mediaseekable - (read-only) Set to the seekable time ranges.
@@ -86,7 +87,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
   #slot;
 
   static get observedAttributes() {
-    return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
+    return [...super.observedAttributes, ...CombinedAttributes, 'disabled', 'notoggle'];
   }
 
   constructor() {
@@ -141,6 +142,9 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   toggleTimeDisplay() {
+    if (this.hasAttribute('notoggle')) {
+      return;
+    }
     if (this.hasAttribute('remaining')) {
       this.removeAttribute('remaining');
     } else {
