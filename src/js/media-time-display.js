@@ -14,6 +14,7 @@ import { nouns } from './labels/labels.js';
 export const Attributes = {
   REMAINING: 'remaining',
   SHOW_DURATION: 'showduration',
+  NO_TOGGLE: 'notoggle',
 };
 
 const CombinedAttributes = [
@@ -74,6 +75,7 @@ const updateAriaValueText = (el) => {
  * @attr {boolean} remaining - Toggle on to show the remaining time instead of elapsed time.
  * @attr {boolean} showduration - Toggle on to show the duration.
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
+ * @attr {boolean} notoggle - Set this to disable click or tap behavior that toggles between remaining and current time.
  * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
  * @attr {string} mediaduration - (read-only) Set to the media duration.
  * @attr {string} mediaseekable - (read-only) Set to the seekable time ranges.
@@ -95,12 +97,12 @@ class MediaTimeDisplay extends MediaTextDisplay {
     this.#slot = this.shadowRoot.querySelector('slot');
     this.#slot.innerHTML = `${formatTimesLabel(this)}`;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host:not([notoggle])');
     style.setProperty('cursor', 'pointer');
 
     const { style: hoverStyle } = getOrInsertCSSRule(
       this.shadowRoot,
-      ':host(:hover)'
+      ':host(:hover:not([notoggle]))'
     );
     hoverStyle.setProperty(
       'background',
@@ -141,6 +143,9 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   toggleTimeDisplay() {
+    if (this.noToggle) {
+      return;
+    }
     if (this.hasAttribute('remaining')) {
       this.removeAttribute('remaining');
     } else {
@@ -199,6 +204,18 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   set showDuration(show) {
     setBooleanAttr(this, Attributes.SHOW_DURATION, show);
+  }
+
+  /**
+   * Disable the default behavior that toggles between current and remaining time
+   * @type {boolean}
+   */
+  get noToggle() {
+    return getBooleanAttr(this, Attributes.NO_TOGGLE);
+  }
+
+  set noToggle(notoggle) {
+    setBooleanAttr(this, Attributes.NO_TOGGLE, notoggle);
   }
 
   // Props derived from media UI attributes
