@@ -97,20 +97,17 @@ class MediaTimeDisplay extends MediaTextDisplay {
     this.#slot = this.shadowRoot.querySelector('slot');
     this.#slot.innerHTML = `${formatTimesLabel(this)}`;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host:not([notoggle])');
     style.setProperty('cursor', 'pointer');
 
     const { style: hoverStyle } = getOrInsertCSSRule(
       this.shadowRoot,
-      ':host(:hover)'
+      ':host(:hover:not([notoggle]))'
     );
     hoverStyle.setProperty(
       'background',
       'var(--media-control-hover-background, rgba(50 50 70 / .7))'
     );
-    const { style: noToggle } = getOrInsertCSSRule(this.shadowRoot, ':host([notoggle])');
-    noToggle.setProperty('cursor', 'default');
-    noToggle.setProperty('background', 'var(--media-text-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7))))');
   }
 
   connectedCallback() {
