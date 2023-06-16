@@ -535,7 +535,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     // Get mouse position percent
     const rangeRect = this.range.getBoundingClientRect();
-    let mouseRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
+    let mouseRatio = (evt.clientX - rangeRect.left - this.thumbWidth / 2) / (rangeRect.width - this.thumbWidth);
     // Lock between 0 and 1
     mouseRatio = Math.max(0, Math.min(1, mouseRatio));
 
