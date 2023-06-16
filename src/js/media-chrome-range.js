@@ -233,7 +233,7 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-range-track-pointer-border-right - `border-right` of range track pointer.
  */
 class MediaChromeRange extends window.HTMLElement {
-  #thumbWidth;
+  thumbWidth;
   #mediaController;
 
   static get observedAttributes() {
@@ -261,7 +261,7 @@ class MediaChromeRange extends window.HTMLElement {
     this.range = this.shadowRoot.querySelector('#range');
     this.range.addEventListener('input', this.updateBar.bind(this));
 
-    this.#thumbWidth = parseInt(getComputedStyle(this).getPropertyValue('--media-range-thumb-width') || '10', 10);
+    this.thumbWidth = parseInt(getComputedStyle(this).getPropertyValue('--media-range-thumb-width') || '10', 10);
   }
 
   #onFocusIn = () => {
@@ -385,7 +385,7 @@ class MediaChromeRange extends window.HTMLElement {
     // Ideally the thumb center would go all the way to min and max values
     // but input[type=range] doesn't play like that.
     if (!!relativeValue && relativeValue < relativeMax) {
-      const thumbOffset = this.#thumbWidth * (0.5 - rangePercent / 100);
+      const thumbOffset = this.thumbWidth * (0.5 - rangePercent / 100);
       thumbPercent = (thumbOffset / range.offsetWidth) * 100;
     }
 
