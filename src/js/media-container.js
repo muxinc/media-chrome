@@ -7,7 +7,7 @@
   * Position controls at the bottom
   * Auto-hide controls on inactivity while playing
 */
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import {
   MediaUIEvents,
   MediaUIAttributes,
@@ -247,7 +247,7 @@ function getBreakpoints(breakpoints, rect) {
  * @cssprop --media-background-color - `background-color` of container.
  * @cssprop --media-slot-display - `display` of the media slot (default none for [audio] usage).
  */
-class MediaContainer extends window.HTMLElement {
+class MediaContainer extends globalThis.HTMLElement {
   constructor() {
     super();
 
@@ -392,7 +392,7 @@ class MediaContainer extends window.HTMLElement {
         ? MediaUIEvents.MEDIA_PLAY_REQUEST
         : MediaUIEvents.MEDIA_PAUSE_REQUEST;
       this.dispatchEvent(
-        new window.CustomEvent(eventName, { composed: true, bubbles: true })
+        new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
       );
     };
   }
@@ -420,7 +420,7 @@ class MediaContainer extends window.HTMLElement {
     const mediaName = media.nodeName.toLowerCase();
     // Custom element. Wait until it's defined before resolving
     if (mediaName.includes('-')) {
-      return window.customElements.whenDefined(mediaName).then(() => {
+      return globalThis.customElements.whenDefined(mediaName).then(() => {
         return resolveMediaPromise(media);
       });
     }
@@ -459,7 +459,7 @@ class MediaContainer extends window.HTMLElement {
 
       this.setAttribute(Attributes.USER_INACTIVE, '');
 
-      const evt = new window.CustomEvent(
+      const evt = new globalThis.CustomEvent(
         MediaStateChangeEvents.USER_INACTIVE,
         { composed: true, bubbles: true, detail: true }
       );
@@ -471,7 +471,7 @@ class MediaContainer extends window.HTMLElement {
 
       this.removeAttribute(Attributes.USER_INACTIVE);
 
-      const evt = new window.CustomEvent(
+      const evt = new globalThis.CustomEvent(
         MediaStateChangeEvents.USER_INACTIVE,
         { composed: true, bubbles: true, detail: false }
       );
@@ -481,12 +481,12 @@ class MediaContainer extends window.HTMLElement {
     const scheduleInactive = () => {
       setActive();
 
-      window.clearTimeout(this._inactiveTimeout);
+      globalThis.clearTimeout(this._inactiveTimeout);
 
       // Setting autohide to -1 turns off autohide
       if (this.autohide < 0) return;
 
-      this._inactiveTimeout = window.setTimeout(() => {
+      this._inactiveTimeout = globalThis.setTimeout(() => {
         setInactive();
       }, this.autohide * 1000);
     };
@@ -527,7 +527,7 @@ class MediaContainer extends window.HTMLElement {
 
       setActive();
       // Stay visible if hovered over control bar
-      window.clearTimeout(this._inactiveTimeout);
+      globalThis.clearTimeout(this._inactiveTimeout);
 
       // If hovering over something other than controls, we're free to make inactive
       // @ts-ignore
@@ -545,7 +545,7 @@ class MediaContainer extends window.HTMLElement {
     this.addEventListener('keyup', () => {
       this.setAttribute(Attributes.KEYBOARD_CONTROL, '');
     });
-    window.addEventListener('mouseup', () => {
+    globalThis.window?.addEventListener('mouseup', () => {
       this.removeAttribute(Attributes.KEYBOARD_CONTROL);
     });
   }

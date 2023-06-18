@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { updateAriaLabel, updateSeekIconValue } from './utils/seek.js';
 import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
@@ -84,7 +84,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
 
   handleClick() {
     const detail = Math.max(this.mediaCurrentTime - this.seekOffset, 0);
-    const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+    const evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
       composed: true,
       bubbles: true,
       detail,
@@ -93,8 +93,8 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   }
 }
 
-if (!window.customElements.get('media-seek-backward-button')) {
-  window.customElements.define(
+if (!globalThis.customElements.get('media-seek-backward-button')) {
+  globalThis.customElements.define(
     'media-seek-backward-button',
     MediaSeekBackwardButton
   );

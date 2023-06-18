@@ -1,6 +1,6 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -87,7 +87,7 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-button-icon-transform - `transform` of button icon.
  * @cssproperty --media-button-icon-transition - `transition` of button icon.
  */
-class MediaChromeButton extends window.HTMLElement {
+class MediaChromeButton extends globalThis.HTMLElement {
   #mediaController;
   preventClick = false;
 
@@ -219,8 +219,8 @@ class MediaChromeButton extends window.HTMLElement {
   handleClick(e) {} // eslint-disable-line
 }
 
-if (!window.customElements.get('media-chrome-button')) {
-  window.customElements.define('media-chrome-button', MediaChromeButton);
+if (!globalThis.customElements.get('media-chrome-button')) {
+  globalThis.customElements.define('media-chrome-button', MediaChromeButton);
 }
 
 export { MediaChromeButton };

@@ -2,7 +2,7 @@ import MediaChromeSelectMenu from './media-chrome-selectmenu.js';
 import './media-chrome-listitem.js';
 import { DEFAULT_RATES } from '../media-playback-rate-button.js';
 import './media-playback-rate-listbox.js';
-import { window, document, } from '../utils/server-safe-globals.js';
+import { globalThis, document, } from '../utils/server-safe-globals.js';
 
 const createItem = (rate) => {
   const item = document.createElement('media-chrome-listitem');
@@ -74,8 +74,8 @@ class MediaPlaybackrateSelectMenu extends MediaChromeSelectMenu {
   }
 }
 
-if (!window.customElements.get('media-playback-rate-selectmenu')) {
-  window.customElements.define('media-playback-rate-selectmenu', MediaPlaybackrateSelectMenu);
+if (!globalThis.customElements.get('media-playback-rate-selectmenu')) {
+  globalThis.customElements.define('media-playback-rate-selectmenu', MediaPlaybackrateSelectMenu);
 }
 
 export default MediaPlaybackrateSelectMenu;

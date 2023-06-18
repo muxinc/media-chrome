@@ -10,7 +10,7 @@ class ResizeObserver {
   observe() {}
 }
 
-const windowShim = {
+const globalThisShim = {
   ResizeObserver,
   HTMLElement: class HTMLElement extends EventTarget {},
   DocumentFragment: class DocumentFragment extends EventTarget {},
@@ -32,7 +32,7 @@ const windowShim = {
 
 const documentShim = {
   createElement: function () {
-    return new windowShim.HTMLElement();
+    return new globalThisShim.HTMLElement();
   },
   addEventListener() {},
   removeEventListener() {},
@@ -43,10 +43,12 @@ export const isServer =
   typeof window.customElements === 'undefined';
 
 /**
-  * @type { window & { WebKitPlaybackTargetAvailabilityEvent?,
+  * @type { globalThis & {
+  *   WebKitPlaybackTargetAvailabilityEvent?,
   *   chrome?,
   *   DocumentFragment?,
   *   getComputedStyle,
+  *   CastableVideoElement?
   * } |
   * {HTMLElement,
   * customElements,
@@ -58,15 +60,18 @@ export const isServer =
   * clearTimeout?,
   * localStorage?,
   * WebKitPlaybackTargetAvailabilityEvent?,
+  * window?,
   * document?,
   * chrome?,
   * DocumentFragment?,
   * ResizeObserver?,
   * requestAnimationFrame,
   * queueMicrotask,
+  * CastableVideoElement?
   * } }
   * */
-export const Window = isServer ? windowShim : window;
+export const GlobalThis = isServer ? globalThisShim : globalThis;
+
 /**
   * @type { document & { webkitExitFullscreen? } |
   * {createElement,
@@ -83,4 +88,7 @@ export const Window = isServer ? windowShim : window;
   */
 export const Document = isServer ? documentShim : window.document;
 
-export { Window as window, Document as document };
+export {
+  GlobalThis as globalThis,
+  Document as document
+};

@@ -1,4 +1,4 @@
-import { window } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaChromeRange } from './media-chrome-range.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
@@ -47,7 +47,7 @@ class MediaVolumeRange extends MediaChromeRange {
     this.range.addEventListener('input', () => {
       const newVolume = this.range.value / this.range.max;
       const detail = newVolume;
-      const evt = new window.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
+      const evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
         composed: true,
         bubbles: true,
         detail,
@@ -111,8 +111,8 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 }
 
-if (!window.customElements.get('media-volume-range')) {
-  window.customElements.define('media-volume-range', MediaVolumeRange);
+if (!globalThis.customElements.get('media-volume-range')) {
+  globalThis.customElements.define('media-volume-range', MediaVolumeRange);
 }
 
 export default MediaVolumeRange;

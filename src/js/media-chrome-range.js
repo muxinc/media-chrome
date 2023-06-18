@@ -1,5 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
 
 const template = document.createElement('template');
@@ -232,7 +232,7 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-range-track-pointer-background - `background` of range track pointer.
  * @cssproperty --media-range-track-pointer-border-right - `border-right` of range track pointer.
  */
-class MediaChromeRange extends window.HTMLElement {
+class MediaChromeRange extends globalThis.HTMLElement {
   thumbWidth;
   #mediaController;
 
@@ -402,8 +402,8 @@ class MediaChromeRange extends window.HTMLElement {
   }
 }
 
-if (!window.customElements.get('media-chrome-range')) {
-  window.customElements.define('media-chrome-range', MediaChromeRange);
+if (!globalThis.customElements.get('media-chrome-range')) {
+  globalThis.customElements.define('media-chrome-range', MediaChromeRange);
 }
 
 export { MediaChromeRange };

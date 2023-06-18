@@ -243,15 +243,13 @@ const setupGlobalsAsync = async () => {
   const customElementNames = await import(
     path.join(projectRoot, 'dist', 'utils', 'server-safe-globals.js')
   ).then((exports) => {
-    globalThis.window = exports.Window;
-    globalThis.document = exports.Document;
-    globalThis.window.document = globalThis.document;
-    window.customElementNames = [];
-    window.customElements.define = (name, _classRef) =>
-      window.customElementNames.push(name);
+    Object.assign(globalThis, exports.globalThis);
+    globalThis.customElementNames = [];
+    globalThis.customElements.define = (name, _classRef) =>
+      globalThis.customElementNames.push(name);
     // NOTE: The current implementation relies on the fact that `customElementNames` will be mutated
     // to add the Custom Element html name for every element that's defined as a result of loading/importing the entryPoints modules (CJP).
-    return window.customElementNames;
+    return globalThis.customElementNames;
   });
   return customElementNames;
 };

@@ -8,7 +8,7 @@
   * Auto-hide controls on inactivity while playing
 */
 import { MediaContainer } from './media-container.js';
-import { window } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { constToCamel, delay } from './utils/utils.js';
 import { stringifyTextTrackList, toggleSubsCaps } from './utils/captions.js';
@@ -203,7 +203,7 @@ class MediaController extends MediaContainer {
       // Update the media with the last set volume preference
       // This would preferably live with the media element, not a control.
       try {
-        const volPref = window.localStorage.getItem('media-chrome-pref-volume');
+        const volPref = globalThis.localStorage.getItem('media-chrome-pref-volume');
         if (volPref !== null) media.volume = volPref;
       } catch (e) {
         console.debug('Error getting volume pref', e);
@@ -253,7 +253,7 @@ class MediaController extends MediaContainer {
     if (previousState === this.getAttribute(attrName)) return;
 
     // TODO: I don't think we want these events to bubble? Video element states don't. (heff)
-    const evt = new window.CustomEvent(
+    const evt = new globalThis.CustomEvent(
       AttributeToStateChangeEventMap[attrName],
       { composed: true, bubbles: true, detail: state }
     );
@@ -409,7 +409,7 @@ class MediaController extends MediaContainer {
             ? MediaUIEvents.MEDIA_PLAY_REQUEST
             : MediaUIEvents.MEDIA_PAUSE_REQUEST;
         this.dispatchEvent(
-          new window.CustomEvent(eventName, { composed: true, bubbles: true })
+          new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
         );
         break;
 
@@ -419,7 +419,7 @@ class MediaController extends MediaContainer {
             ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
             : MediaUIEvents.MEDIA_MUTE_REQUEST;
         this.dispatchEvent(
-          new window.CustomEvent(eventName, { composed: true, bubbles: true })
+          new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
         );
         break;
 
@@ -429,7 +429,7 @@ class MediaController extends MediaContainer {
             ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
             : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
         this.dispatchEvent(
-          new window.CustomEvent(eventName, { composed: true, bubbles: true })
+          new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
         );
         break;
 
@@ -446,7 +446,7 @@ class MediaController extends MediaContainer {
             ? +currentTimeStr
             : DEFAULT_TIME;
         detail = Math.max(currentTime - seekOffset, 0);
-        evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+        evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
           composed: true,
           bubbles: true,
           detail,
@@ -463,7 +463,7 @@ class MediaController extends MediaContainer {
             ? +currentTimeStr
             : DEFAULT_TIME;
         detail = Math.max(currentTime + seekOffset, 0);
-        evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+        evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
           composed: true,
           bubbles: true,
           detail,
@@ -486,7 +486,7 @@ const getMediaUIAttributesFrom = (child) => {
   // observedAttributes are only available if the custom element was upgraded.
   // example: media-gesture-receiver in the shadow DOM requires an upgrade.
   if (!observedAttributes && child.nodeName?.includes('-')) {
-    window.customElements.upgrade(child);
+    globalThis.customElements.upgrade(child);
     ({ observedAttributes } = child.constructor);
   }
 
@@ -597,12 +597,12 @@ const traverseForMediaStateReceivers = (
   // a custom element (aka has a hyphen in its name), wait until it's defined before attempting traversal to determine
   // whether or not it or its descendants are Media State Receivers.
   // IMPORTANT NOTE: We're intentionally *always* waiting for the `whenDefined()` Promise to resolve here
-  // (instead of using `window.customElements.get(name)` to check if a custom element is already defined/registered)
+  // (instead of using `globalThis.customElements.get(name)` to check if a custom element is already defined/registered)
   // because we encountered some reliability issues with the custom element instances not being fully "ready", even if/when
-  // they are available in the registry via `window.customElements.get(name)`.
+  // they are available in the registry via `globalThis.customElements.get(name)`.
   const name = rootNode?.nodeName.toLowerCase();
   if (name.includes('-') && !isMediaStateReceiver(rootNode)) {
-    window.customElements.whenDefined(name).then(() => {
+    globalThis.customElements.whenDefined(name).then(() => {
       // Try/traverse again once the custom element is defined
       traverseForMediaStateReceiversSync(rootNode, mediaStateReceiverCallback);
     });
@@ -743,8 +743,8 @@ const monitorForMediaStateReceivers = (
   return unsubscribe;
 };
 
-if (!window.customElements.get('media-controller')) {
-  window.customElements.define('media-controller', MediaController);
+if (!globalThis.customElements.get('media-controller')) {
+  globalThis.customElements.define('media-controller', MediaController);
 }
 
 export default MediaController;

@@ -1,6 +1,6 @@
 import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import {
   getBooleanAttr,
   setBooleanAttr,
@@ -99,7 +99,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
  * @cssproperty --media-loading-indicator-icon-width - `width` of loading icon.
  * @cssproperty [ --media-loading-indicator-icon-height = 100px ] - `height` of loading icon.
  */
-class MediaLoadingIndicator extends window.HTMLElement {
+class MediaLoadingIndicator extends globalThis.HTMLElement {
   #mediaController;
   #delay = DEFAULT_LOADING_DELAY;
   #style;
@@ -198,8 +198,8 @@ class MediaLoadingIndicator extends window.HTMLElement {
   }
 }
 
-if (!window.customElements.get('media-loading-indicator')) {
-  window.customElements.define('media-loading-indicator', MediaLoadingIndicator);
+if (!globalThis.customElements.get('media-loading-indicator')) {
+  globalThis.customElements.define('media-loading-indicator', MediaLoadingIndicator);
 }
 
 export default MediaLoadingIndicator;

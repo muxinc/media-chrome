@@ -1,5 +1,5 @@
 import { MediaTextDisplay } from './media-text-display.js';
-import { window } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
 import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
@@ -43,8 +43,8 @@ class MediaPreviewTimeDisplay extends MediaTextDisplay {
   }
 }
 
-if (!window.customElements.get('media-preview-time-display')) {
-  window.customElements.define(
+if (!globalThis.customElements.get('media-preview-time-display')) {
+  globalThis.customElements.define(
     'media-preview-time-display',
     MediaPreviewTimeDisplay
   );

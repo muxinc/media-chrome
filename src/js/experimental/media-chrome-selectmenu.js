@@ -1,6 +1,6 @@
 import '../media-chrome-button.js';
 import './media-chrome-listbox.js';
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 import { closestComposedNode, getOrInsertCSSRule } from '../utils/element-utils.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
 
@@ -45,7 +45,7 @@ template.innerHTML = /*html*/`
  * @csspart button - The default button that's in the shadow DOM.
  * @csspart listbox - The default listbox that's in the shadow DOM.
  */
-class MediaChromeSelectMenu extends window.HTMLElement {
+class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #handleClick;
   #handleChange;
   #enabledState = true;
@@ -302,8 +302,8 @@ class MediaChromeSelectMenu extends window.HTMLElement {
 
 }
 
-if (!window.customElements.get('media-chrome-selectmenu')) {
-  window.customElements.define('media-chrome-selectmenu', MediaChromeSelectMenu);
+if (!globalThis.customElements.get('media-chrome-selectmenu')) {
+  globalThis.customElements.define('media-chrome-selectmenu', MediaChromeSelectMenu);
 }
 
 export default MediaChromeSelectMenu;

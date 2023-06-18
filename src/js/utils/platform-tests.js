@@ -1,4 +1,4 @@
-import { window, document } from './server-safe-globals.js';
+import { globalThis, document } from './server-safe-globals.js';
 import { delay } from './utils.js';
 import { fullscreenApi } from './fullscreen-api.js';
 
@@ -59,5 +59,5 @@ export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {
 
 export const fullscreenSupported = hasFullscreenSupport();
 export const pipSupported = hasPipSupport();
-export const airplaySupported = !!window.WebKitPlaybackTargetAvailabilityEvent;
-export const castSupported = !!window.chrome;
+export const airplaySupported = !!globalThis.WebKitPlaybackTargetAvailabilityEvent;
+export const castSupported = !!globalThis.chrome;

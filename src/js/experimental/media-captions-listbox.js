@@ -1,6 +1,6 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
 import './media-chrome-listitem.js';
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 import { parseTextTracksStr, formatTextTrackObj } from '../utils/captions.js';
 import { toggleSubsCaps } from '../utils/captions.js';
@@ -224,7 +224,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
 
     if (!selectedOption) return;
 
-    const event = new window.CustomEvent(
+    const event = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,
       {
         composed: true,
@@ -236,8 +236,8 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 }
 
-if (!window.customElements.get('media-captions-listbox')) {
-  window.customElements.define('media-captions-listbox', MediaCaptionsListbox);
+if (!globalThis.customElements.get('media-captions-listbox')) {
+  globalThis.customElements.define('media-captions-listbox', MediaCaptionsListbox);
 }
 
 export default MediaCaptionsListbox;

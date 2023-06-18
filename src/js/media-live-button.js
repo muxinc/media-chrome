@@ -1,8 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import {
-  Window as window,
-  Document as document,
-} from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
@@ -108,7 +105,7 @@ class MediaLiveButton extends MediaChromeButton {
     if (!this.mediaPaused && this.mediaTimeIsLive) return;
 
     this.dispatchEvent(
-      new window.CustomEvent(MEDIA_SEEK_TO_LIVE_REQUEST, {
+      new globalThis.CustomEvent(MEDIA_SEEK_TO_LIVE_REQUEST, {
         composed: true,
         bubbles: true,
       })
@@ -117,7 +114,7 @@ class MediaLiveButton extends MediaChromeButton {
     // If we're paused, also automatically play
     if (this.hasAttribute(MEDIA_PAUSED)) {
       this.dispatchEvent(
-        new window.CustomEvent(MEDIA_PLAY_REQUEST, {
+        new globalThis.CustomEvent(MEDIA_PLAY_REQUEST, {
           composed: true,
           bubbles: true,
         })
@@ -126,8 +123,8 @@ class MediaLiveButton extends MediaChromeButton {
   }
 }
 
-if (!window.customElements.get('media-live-button')) {
-  window.customElements.define('media-live-button', MediaLiveButton);
+if (!globalThis.customElements.get('media-live-button')) {
+  globalThis.customElements.define('media-live-button', MediaLiveButton);
 }
 
 export default MediaLiveButton;
