@@ -10,8 +10,17 @@ class ResizeObserver {
   observe() {}
 }
 
+const documentShim = {
+  createElement: function () {
+    return new globalThisShim.HTMLElement();
+  },
+  addEventListener() {},
+  removeEventListener() {},
+};
+
 const globalThisShim = {
   ResizeObserver,
+  document: documentShim,
   HTMLElement: class HTMLElement extends EventTarget {},
   DocumentFragment: class DocumentFragment extends EventTarget {},
   customElements: {
@@ -30,17 +39,12 @@ const globalThisShim = {
   },
 };
 
-const documentShim = {
-  createElement: function () {
-    return new globalThisShim.HTMLElement();
-  },
-  addEventListener() {},
-  removeEventListener() {},
-};
-
 export const isServer =
   typeof window === 'undefined' ||
   typeof window.customElements === 'undefined';
+
+const isShimmed = Object.keys(globalThisShim)
+  .every(key => key in globalThis);
 
 /**
   * @type { globalThis & {
@@ -70,7 +74,7 @@ export const isServer =
   * CastableVideoElement?
   * } }
   * */
-export const GlobalThis = isServer ? globalThisShim : globalThis;
+export const GlobalThis = isServer && !isShimmed ? globalThisShim : globalThis;
 
 /**
   * @type { document & { webkitExitFullscreen? } |
@@ -86,7 +90,7 @@ export const GlobalThis = isServer ? globalThisShim : globalThis;
   * removeEventListener?,
   * } }
   */
-export const Document = isServer ? documentShim : window.document;
+export const Document = isServer && !isShimmed ? documentShim : globalThis.document;
 
 export {
   GlobalThis as globalThis,

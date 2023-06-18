@@ -1,3 +1,4 @@
+import { globalThis } from './server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from '../constants.js';
 
 // NOTE: This is generic for any CSS/html list representation. Consider renaming and moving to generic module.
@@ -263,7 +264,7 @@ export const toggleSubsCaps = (el, force) => {
     );
     // If we have currently showing subtitles track(s), request for them to be disabled.
     if (subtitlesShowingStr) {
-      const evt = new window.CustomEvent(
+      const evt = new globalThis.CustomEvent(
         MediaUIEvents.MEDIA_DISABLE_SUBTITLES_REQUEST,
         { composed: true, bubbles: true, detail: subtitlesShowingStr }
       );
@@ -277,7 +278,7 @@ export const toggleSubsCaps = (el, force) => {
       ) ?? [];
     if (subTrackStr) {
       // If we have at least one subtitles track (and didn't have any captions tracks), request for the first one to be showing as a fallback for captions.
-      const evt = new window.CustomEvent(
+      const evt = new globalThis.CustomEvent(
         MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,
         { composed: true, bubbles: true, detail: subTrackStr }
       );

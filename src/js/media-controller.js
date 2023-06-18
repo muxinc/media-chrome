@@ -503,10 +503,10 @@ const getMediaUIAttributesFrom = (child) => {
 const hasMediaUIProps = (mediaStateReceiverCandidate) => {
   if (
     mediaStateReceiverCandidate.nodeName?.includes('-')
-    && !!window.customElements.get(mediaStateReceiverCandidate.nodeName?.toLowerCase())
-    && !(mediaStateReceiverCandidate instanceof window.customElements.get(mediaStateReceiverCandidate.nodeName.toLowerCase()))
+    && !!globalThis.customElements.get(mediaStateReceiverCandidate.nodeName?.toLowerCase())
+    && !(mediaStateReceiverCandidate instanceof globalThis.customElements.get(mediaStateReceiverCandidate.nodeName.toLowerCase()))
   ) {
-    window.customElements.upgrade(mediaStateReceiverCandidate);
+    globalThis.customElements.upgrade(mediaStateReceiverCandidate);
   }
   return MEDIA_UI_PROP_NAMES.some(propName => propName in mediaStateReceiverCandidate);
 };
