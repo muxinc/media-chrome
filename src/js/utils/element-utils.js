@@ -76,11 +76,12 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
  * Gets the number represented by the attribute
  * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
  * @param {string} attrName
+ * @param {number} [defaultValue = Number.NaN]
  * @returns {number | undefined} Will return undefined if no attribute set
  */
-export function getNumericAttr(el, attrName) {
+export function getNumericAttr(el, attrName, defaultValue = Number.NaN) {
   const attrVal = el.getAttribute(attrName);
-  return attrVal != null ? +attrVal : undefined;
+  return attrVal != null ? +attrVal : defaultValue;
 }
 
 /**
@@ -89,17 +90,21 @@ export function getNumericAttr(el, attrName) {
  * @param {number} value
  */
 export function setNumericAttr(el, attrName, value) {
-  // avoid setting a value that hasn't changed
-  if (getNumericAttr(el, attrName) == value) return;
+  // Simple cast to number
+  const nextNumericValue = +value;
 
-  // also handles undefined
-  if (value == null) {
-    el.removeAttribute(attrName);
+  // Treat null, undefined, and NaN as "nothing values", so unset if value is currently set.
+  if (value == null || Number.isNaN(nextNumericValue)) {
+    if (el.hasAttribute(attrName)) {
+      el.removeAttribute(attrName);
+    }
     return;
   }
 
-  // force to a numeric value before setting as a string
-  el.setAttribute(attrName, `${+value}`);
+  // Avoid resetting a value that hasn't changed
+  if (getNumericAttr(el, attrName, undefined) === nextNumericValue) return;
+
+  el.setAttribute(attrName, `${nextNumericValue}`);
 }
 
 /**
@@ -117,14 +122,17 @@ export function getBooleanAttr(el, attrName) {
  * @param {boolean} value
  */
 export function setBooleanAttr(el, attrName, value) {
-  // avoid setting a value that hasn't changed
-  if (getBooleanAttr(el, attrName) == value) return;
-
   // also handles undefined
   if (value == null) {
-    el.removeAttribute(attrName);
+    if (el.hasAttribute(attrName)) {
+      el.removeAttribute(attrName);
+    }
     return;
   }
+
+  // avoid setting a value that hasn't changed
+  // NOTE: For booleans, we can rely on a loose equality check
+  if (getBooleanAttr(el, attrName) == value) return;
 
   el.toggleAttribute(attrName, value);
 }
@@ -133,8 +141,8 @@ export function setBooleanAttr(el, attrName, value) {
  * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
  * @param {string} attrName
  */
-export function getStringAttr(el, attrName) {
-  return el.getAttribute(attrName) ?? undefined;
+export function getStringAttr(el, attrName, defaultValue = null) {
+  return el.getAttribute(attrName) ?? defaultValue;
 }
 
 /**
@@ -143,14 +151,17 @@ export function getStringAttr(el, attrName) {
  * @param {string} value
  */
 export function setStringAttr(el, attrName, value) {
-  // avoid triggering a set if no change
-  if (getStringAttr(el, attrName) == value) return;
-
   // also handles undefined
   if (value == null) {
-    el.removeAttribute(attrName);
+    if (el.hasAttribute(attrName)) {
+      el.removeAttribute(attrName);
+    }
     return;
   }
 
-  el.setAttribute(attrName, `${value}`);
+  const nextValue = `${value}`;
+  // avoid triggering a set if no change
+  if (getStringAttr(el, attrName, undefined) === nextValue) return;
+
+  el.setAttribute(attrName, nextValue);
 }

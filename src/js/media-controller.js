@@ -20,6 +20,7 @@ import {
   MediaUIProps,
 } from './constants.js';
 import { MediaUIRequestHandlers, MediaUIStates, volumeSupportPromise } from './controller.js';
+import { setBooleanAttr, setNumericAttr, setStringAttr } from './utils/element-utils.js';
 
 const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;
@@ -532,17 +533,22 @@ const setAttr = async (child, attrName, attrValue) => {
     await delay(0);
   }
 
-  if (attrValue == undefined || (Array.isArray(attrValue) && !attrValue.length)) {
-    return child.removeAttribute(attrName);
+  // NOTE: For "nullish" (null/undefined), can use any setter
+  if (typeof attrValue === 'boolean' || attrValue == null) {
+    return setBooleanAttr(child, attrName, attrValue);
   }
-  if (typeof attrValue === 'boolean') {
-    if (attrValue) return child.setAttribute(attrName, '');
-    return child.removeAttribute(attrName);
+  if (typeof attrValue === 'number') {
+    return setNumericAttr(child, attrName, attrValue)
   }
-  if (Number.isNaN(attrValue)) {
+  if (typeof attrValue === 'string') {
+    return setStringAttr(child, attrName, attrValue);
+  }
+  // Treat empty arrays as "nothing" values
+  if (Array.isArray(attrValue) && !attrValue.length) {
     return child.removeAttribute(attrName);
   }
 
+  // For "special" values with custom serializers or all other values
   const val = CustomAttrSerializer[attrName]?.(attrValue) ?? attrValue;
   return child.setAttribute(attrName, val);
 };

@@ -451,7 +451,7 @@ export const MediaUIStates = {
   MEDIA_SUBTITLES_LIST: {
     get: function (controller) {
       // TODO: Move to non attr specific values
-      return getSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language })) || undefined;
+      return getSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language }));
     },
     mediaEvents: ['loadstart'],
     trackListEvents: ['addtrack', 'removetrack'],
@@ -467,10 +467,7 @@ export const MediaUIStates = {
       ) {
         toggleSubsCaps(controller, true);
       }
-      return (
-        getShowingSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language })) ||
-        undefined
-      );
+      return getShowingSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language }));
     },
     mediaEvents: ['loadstart'],
     trackListEvents: ['addtrack', 'removetrack', 'change'],

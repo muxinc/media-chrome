@@ -61,7 +61,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
    * @type {number | undefined} Seek amount in seconds
    */
   get seekOffset() {
-    return getNumericAttr(this, Attributes.SEEK_OFFSET) ?? DEFAULT_SEEK_OFFSET;
+    return getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
   }
 
   set seekOffset(value) {
@@ -75,7 +75,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
    * @type {number | undefined} In seconds
    */
   get mediaCurrentTime() {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME) ?? DEFAULT_TIME;
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, DEFAULT_TIME);
   }
 
   set mediaCurrentTime(time) {
