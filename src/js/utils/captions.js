@@ -96,7 +96,7 @@ export const parseTracks = (trackOrTracks) => {
  * @param {string} [obj.language] - The BCP-47 compliant string representing the language code of the track
  * @returns {string} A string representing a TextTrack with the format: "language[:label]"
  */
-export const formatTextTrackObj = ({ kind, label, language } = {kind: 'subtitles'}) => {
+export const formatTextTrackObj = ({ kind, label, language } = { kind: 'subtitles' }) => {
   if (!label) return language;
   return `${kind === 'captions' ? 'cc': 'sb'}:${language}:${encodeURIComponent(label)}`;
 };

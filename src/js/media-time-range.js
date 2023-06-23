@@ -350,10 +350,10 @@ class MediaTimeRange extends MediaChromeRange {
    * @type {number}
    */
   get mediaPlaybackRate() {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE) ?? 1;
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, 1);
   }
 
-  set mediaPlaybackrate(value) {
+  set mediaPlaybackRate(value) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, value);
   }
 

@@ -29,7 +29,7 @@ slotTemplate.innerHTML = /*html*/`
       display: none !important;
     }
   </style>
-  
+
   <slot name="icon">
     <slot name="on">${ccIconOn}</slot>
     <slot name="off">${ccIconOff}</slot>
@@ -58,7 +58,7 @@ const getSubtitlesListAttr = (el, attrName) => {
  */
 const setSubtitlesListAttr = (el, attrName, list) => {
   // null, undefined, and empty arrays are treated as "no value" here
-  if (!list) {
+  if (!list?.length) {
     el.removeAttribute(attrName);
     return;
   }

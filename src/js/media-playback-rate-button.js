@@ -76,10 +76,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
    * @type {number} The current playback rate
    */
   get mediaPlaybackRate() {
-    return (
-      getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE) ??
-      DEFAULT_RATE
-    );
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, DEFAULT_RATE);
   }
 
   set mediaPlaybackRate(value) {

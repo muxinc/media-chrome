@@ -11,14 +11,16 @@ import { MediaContainer } from './media-container.js';
 import { window } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { constToCamel, delay } from './utils/utils.js';
-import { toggleSubsCaps } from './utils/captions.js';
+import { stringifyTextTrackList, toggleSubsCaps } from './utils/captions.js';
 import {
   MediaUIEvents,
   MediaUIAttributes,
   MediaStateReceiverAttributes,
   AttributeToStateChangeEventMap,
+  MediaUIProps,
 } from './constants.js';
 import { MediaUIRequestHandlers, MediaUIStates, volumeSupportPromise } from './controller.js';
+import { setBooleanAttr, setNumericAttr, setStringAttr } from './utils/element-utils.js';
 
 const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;
@@ -107,7 +109,7 @@ class MediaController extends MediaContainer {
     this._mediaStatePropagators = {};
     Object.keys(MediaUIStates).forEach((key)=>{
       this._mediaStatePropagators[key] = e => {
-        this.propagateMediaState(MediaUIAttributes[key], MediaUIStates[key].get(this, e));
+        this.propagateMediaState(MediaUIProps[key], MediaUIStates[key].get(this, e));
       };
     });
 
@@ -147,7 +149,7 @@ class MediaController extends MediaContainer {
       toggleSubsCaps(this, true);
 
     } else if (attrName === Attributes.DEFAULT_STREAM_TYPE) {
-      this.propagateMediaState(MediaUIAttributes.MEDIA_STREAM_TYPE);
+      this.propagateMediaState(MediaUIProps.MEDIA_STREAM_TYPE);
 
     } else if (attrName === Attributes.FULLSCREEN_ELEMENT) {
       const el = newValue
@@ -239,19 +241,20 @@ class MediaController extends MediaContainer {
     // TODO: Can we just reset all state here?
     // Should hasPlayed refer to the media element or the controller?
     // i.e. the poster might re-show if not handled by the poster el
-    this.propagateMediaState(MediaUIAttributes.MEDIA_PAUSED, true);
+    this.propagateMediaState(MediaUIProps.MEDIA_PAUSED, true);
   }
 
   propagateMediaState(stateName, state) {
-    const previousState = this.getAttribute(stateName);
+    const attrName = stateName.toLowerCase();
+    const previousState = this.getAttribute(attrName);
 
     propagateMediaState(this.mediaStateReceivers, stateName, state);
 
-    if (previousState === this.getAttribute(stateName)) return;
+    if (previousState === this.getAttribute(attrName)) return;
 
     // TODO: I don't think we want these events to bubble? Video element states don't. (heff)
     const evt = new window.CustomEvent(
-      AttributeToStateChangeEventMap[stateName],
+      AttributeToStateChangeEventMap[attrName],
       { composed: true, bubbles: true, detail: state }
     );
     this.dispatchEvent(evt);
@@ -318,7 +321,7 @@ class MediaController extends MediaContainer {
 
       propagateMediaState(
         [el],
-        MediaUIAttributes[stateConstName],
+        MediaUIProps[stateConstName],
         stateDetails.get(this)
       );
     });
@@ -475,6 +478,7 @@ class MediaController extends MediaContainer {
 }
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
+const MEDIA_UI_PROP_NAMES = Object.values(MediaUIProps);
 
 const getMediaUIAttributesFrom = (child) => {
   let { observedAttributes } = child.constructor;
@@ -496,8 +500,29 @@ const getMediaUIAttributesFrom = (child) => {
   );
 };
 
+const hasMediaUIProps = (mediaStateReceiverCandidate) => {
+  if (
+    mediaStateReceiverCandidate.nodeName?.includes('-')
+    && !!window.customElements.get(mediaStateReceiverCandidate.nodeName?.toLowerCase())
+    && !(mediaStateReceiverCandidate instanceof window.customElements.get(mediaStateReceiverCandidate.nodeName.toLowerCase()))
+  ) {
+    window.customElements.upgrade(mediaStateReceiverCandidate);
+  }
+  return MEDIA_UI_PROP_NAMES.some(propName => propName in mediaStateReceiverCandidate);
+};
+
 const isMediaStateReceiver = (child) => {
-  return !!getMediaUIAttributesFrom(child).length;
+  return hasMediaUIProps(child) || !!getMediaUIAttributesFrom(child).length;
+};
+
+const serializeTuple = (tuple) => tuple?.join?.(':');
+
+const CustomAttrSerializer = {
+  [MediaUIAttributes.MEDIA_SUBTITLES_LIST]: stringifyTextTrackList,
+  [MediaUIAttributes.MEDIA_SUBTITLES_SHOWING]: stringifyTextTrackList,
+  [MediaUIAttributes.MEDIA_SEEKABLE]: serializeTuple,
+  [MediaUIAttributes.MEDIA_BUFFERED]: (tuples) => tuples?.map(serializeTuple).join(' '),
+  [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords) => coords?.join(' '),
 };
 
 const setAttr = async (child, attrName, attrValue) => {
@@ -508,17 +533,24 @@ const setAttr = async (child, attrName, attrValue) => {
     await delay(0);
   }
 
-  if (attrValue == undefined) {
+  // NOTE: For "nullish" (null/undefined), can use any setter
+  if (typeof attrValue === 'boolean' || attrValue == null) {
+    return setBooleanAttr(child, attrName, attrValue);
+  }
+  if (typeof attrValue === 'number') {
+    return setNumericAttr(child, attrName, attrValue)
+  }
+  if (typeof attrValue === 'string') {
+    return setStringAttr(child, attrName, attrValue);
+  }
+  // Treat empty arrays as "nothing" values
+  if (Array.isArray(attrValue) && !attrValue.length) {
     return child.removeAttribute(attrName);
   }
-  if (typeof attrValue === 'boolean') {
-    if (attrValue) return child.setAttribute(attrName, '');
-    return child.removeAttribute(attrName);
-  }
-  if (Number.isNaN(attrValue)) {
-    return child.removeAttribute(attrName);
-  }
-  return child.setAttribute(attrName, attrValue);
+
+  // For "special" values with custom serializers or all other values
+  const val = CustomAttrSerializer[attrName]?.(attrValue) ?? attrValue;
+  return child.setAttribute(attrName, val);
 };
 
 const isMediaSlotElementDescendant = (el) => !!el.closest?.('*[slot="media"]');
@@ -582,9 +614,14 @@ const traverseForMediaStateReceivers = (
 
 const propagateMediaState = (els, stateName, val) => {
   els.forEach((el) => {
+    if (stateName in el) {
+      el[stateName] = val;
+      return;
+    }
     const relevantAttrs = getMediaUIAttributesFrom(el);
-    if (!relevantAttrs.includes(stateName)) return;
-    setAttr(el, stateName, val);
+    const attrName = stateName.toLowerCase();
+    if (!relevantAttrs.includes(attrName)) return;
+    setAttr(el, attrName, val);
   });
 };
 

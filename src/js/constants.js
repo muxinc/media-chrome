@@ -23,74 +23,67 @@ export const MediaUIEvents = {
   UNREGISTER_MEDIA_STATE_RECEIVER: 'unregistermediastatereceiver',
 };
 
-export const MediaStateChangeEvents = {
-  MEDIA_AIRPLAY_UNAVAILABLE: 'mediaairplayunavailablechange',
-  MEDIA_FULLSCREEN_UNAVAILABLE: 'mediafullscreenunavailablechange',
-  MEDIA_PIP_UNAVAILABLE: 'mediapipunavailablechange',
-  MEDIA_CAST_UNAVAILABLE: 'mediacastunavailablechange',
-  MEDIA_PAUSED: 'mediapausedchange',
-  MEDIA_HAS_PLAYED: 'mediahasplayedchange',
-  MEDIA_ENDED: 'mediaendedchange',
-  MEDIA_MUTED: 'mediamutedchange',
-  MEDIA_VOLUME_LEVEL: 'mediavolumelevelchange',
-  MEDIA_VOLUME: 'mediavolumechange',
-  MEDIA_VOLUME_UNAVAILABLE: 'mediavolumeunavailablechange',
-  MEDIA_IS_PIP: 'mediaispipchange',
-  MEDIA_IS_CASTING: 'mediaiscastingchange',
-  MEDIA_SUBTITLES_LIST: 'mediasubtitleslistchange',
-  MEDIA_SUBTITLES_SHOWING: 'mediasubtitlesshowingchange',
-  MEDIA_IS_FULLSCREEN: 'mediaisfullscreenchange',
-  MEDIA_PLAYBACK_RATE: 'mediaplaybackratechange',
-  MEDIA_CURRENT_TIME: 'mediacurrenttimechange',
-  MEDIA_DURATION: 'mediadurationchange',
-  MEDIA_SEEKABLE: 'mediaseekablechange',
-  MEDIA_PREVIEW_TIME: 'mediapreviewtimechange',
-  MEDIA_PREVIEW_IMAGE: 'mediapreviewimagechange',
-  MEDIA_PREVIEW_COORDS: 'mediapreviewcoordschange',
-  MEDIA_LOADING: 'medialoadingchange',
-  MEDIA_BUFFERED: 'mediabufferedchange',
-  MEDIA_STREAM_TYPE: 'mediastreamtypechange',
-  MEDIA_TARGET_LIVE_WINDOW: 'mediatargetlivewindowchange',
-  MEDIA_TIME_IS_LIVE: 'mediatimeislivechange',
-  USER_INACTIVE: 'userinactivechange',
-  BREAKPOINTS_CHANGE: 'breakpointchange',
-};
-
 export const MediaStateReceiverAttributes = {
   MEDIA_CHROME_ATTRIBUTES: 'mediachromeattributes',
   MEDIA_CONTROLLER: 'mediacontroller',
 };
 
-export const MediaUIAttributes = {
-  MEDIA_AIRPLAY_UNAVAILABLE: 'mediaairplayunavailable',
-  MEDIA_FULLSCREEN_UNAVAILABLE: 'mediafullscreenunavailable',
-  MEDIA_PIP_UNAVAILABLE: 'mediapipunavailable',
-  MEDIA_CAST_UNAVAILABLE: 'mediacastunavailable',
-  MEDIA_PAUSED: 'mediapaused',
-  MEDIA_HAS_PLAYED: 'mediahasplayed',
-  MEDIA_ENDED: 'mediaended',
-  MEDIA_MUTED: 'mediamuted',
-  MEDIA_VOLUME_LEVEL: 'mediavolumelevel',
-  MEDIA_VOLUME: 'mediavolume',
-  MEDIA_VOLUME_UNAVAILABLE: 'mediavolumeunavailable',
-  MEDIA_IS_PIP: 'mediaispip',
-  MEDIA_IS_CASTING: 'mediaiscasting',
-  MEDIA_SUBTITLES_LIST: 'mediasubtitleslist',
-  MEDIA_SUBTITLES_SHOWING: 'mediasubtitlesshowing',
-  MEDIA_IS_FULLSCREEN: 'mediaisfullscreen',
-  MEDIA_PLAYBACK_RATE: 'mediaplaybackrate',
-  MEDIA_CURRENT_TIME: 'mediacurrenttime',
-  MEDIA_DURATION: 'mediaduration',
-  MEDIA_SEEKABLE: 'mediaseekable',
-  MEDIA_PREVIEW_TIME: 'mediapreviewtime',
-  MEDIA_PREVIEW_IMAGE: 'mediapreviewimage',
-  MEDIA_PREVIEW_COORDS: 'mediapreviewcoords',
-  MEDIA_LOADING: 'medialoading',
-  MEDIA_BUFFERED: 'mediabuffered',
-  MEDIA_STREAM_TYPE: 'mediastreamtype',
-  MEDIA_TARGET_LIVE_WINDOW: 'mediatargetlivewindow',
-  MEDIA_TIME_IS_LIVE: 'mediatimeislive',
+export const MediaUIProps = {
+  MEDIA_AIRPLAY_UNAVAILABLE: 'mediaAirplayUnavailable',
+  MEDIA_FULLSCREEN_UNAVAILABLE: 'mediaFullscreenUnavailable',
+  MEDIA_PIP_UNAVAILABLE: 'mediaPipUnavailable',
+  MEDIA_CAST_UNAVAILABLE: 'mediaCastUnavailable',
+  MEDIA_PAUSED: 'mediaPaused',
+  MEDIA_HAS_PLAYED: 'mediaHasPlayed',
+  MEDIA_ENDED: 'mediaEnded',
+  MEDIA_MUTED: 'mediaMuted',
+  MEDIA_VOLUME_LEVEL: 'mediaVolumeLevel',
+  MEDIA_VOLUME: 'mediaVolume',
+  MEDIA_VOLUME_UNAVAILABLE: 'mediaVolumeUnavailable',
+  MEDIA_IS_PIP: 'mediaIsPip',
+  MEDIA_IS_CASTING: 'mediaIsCasting',
+  MEDIA_SUBTITLES_LIST: 'mediaSubtitlesList',
+  MEDIA_SUBTITLES_SHOWING: 'mediaSubtitlesShowing',
+  MEDIA_IS_FULLSCREEN: 'mediaIsFullscreen',
+  MEDIA_PLAYBACK_RATE: 'mediaPlaybackRate',
+  MEDIA_CURRENT_TIME: 'mediaCurrentTime',
+  MEDIA_DURATION: 'mediaDuration',
+  MEDIA_SEEKABLE: 'mediaSeekable',
+  MEDIA_PREVIEW_TIME: 'mediaPreviewTime',
+  MEDIA_PREVIEW_IMAGE: 'mediaPreviewImage',
+  MEDIA_PREVIEW_COORDS: 'mediaPreviewCoords',
+  MEDIA_LOADING: 'mediaLoading',
+  MEDIA_BUFFERED: 'mediaBuffered',
+  MEDIA_STREAM_TYPE: 'mediaStreamType',
+  MEDIA_TARGET_LIVE_WINDOW: 'mediaTargetLiveWindow',
+  MEDIA_TIME_IS_LIVE: 'mediaTimeIsLive',
 };
+
+const MediaUIPropsEntries = /** @type {[keyof MediaUIProps, string][]} */ (
+  Object.entries(MediaUIProps)
+);
+
+export const MediaUIAttributes =
+  /** @type {{ [k in keyof MediaUIProps]: string }} */ (
+    MediaUIPropsEntries.reduce((dictObj, [key, propName]) => {
+      dictObj[key] = `${propName.toLowerCase()}`;
+      return dictObj;
+    }, /** @type {Partial<{ [k in keyof MediaUIProps]: string }>} */ ({}))
+  );
+
+export const MediaStateChangeEvents =
+  /** @type {{ [k in keyof MediaUIProps | 'USER_INACTIVE' | 'BREAKPOINTS_CHANGE']: string }} */ (
+    MediaUIPropsEntries.reduce(
+      (dictObj, [key, propName]) => {
+        dictObj[key] = `${propName.toLowerCase()}`;
+        return dictObj;
+      },
+      /** @type {Partial<{ [k in keyof MediaUIProps | 'USER_INACTIVE' | 'BREAKPOINTS_CHANGE']: string  }>} */ ({
+        USER_INACTIVE: 'userinactivechange',
+        BREAKPOINTS_CHANGE: 'breakpointchange',
+      })
+    )
+  );
 
 // Maps from state change event type -> attribute name
 export const StateChangeEventToAttributeMap = Object.entries(
