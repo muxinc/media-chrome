@@ -21,7 +21,8 @@ const windowShim = {
   },
   CustomEvent: function CustomEvent() {},
   getComputedStyle: function () {},
-  requestAnimationFrame: function(cb) {
+  // eslint-disable-next-line no-unused-vars
+  requestAnimationFrame: function(_cb) {
     return 1;
   }
 };
