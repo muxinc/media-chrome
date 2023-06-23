@@ -21,6 +21,10 @@ const windowShim = {
   },
   CustomEvent: function CustomEvent() {},
   getComputedStyle: function () {},
+  // eslint-disable-next-line no-unused-vars
+  requestAnimationFrame: function(_cb) {
+    return 1;
+  }
 };
 
 const documentShim = {
@@ -54,7 +58,8 @@ export const isServer =
   * document?,
   * chrome?,
   * DocumentFragment?,
-  * ResizeObserver?
+  * ResizeObserver?,
+  * requestAnimationFrame,
   * } }
   * */
 export const Window = isServer ? windowShim : window;
