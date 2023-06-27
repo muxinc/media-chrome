@@ -33,8 +33,8 @@ const toReactComponentStr = (config) => {
   const { elementName } = config;
   const ReactComponentName = toPascalCase(elementName);
   return `/** @type { import("react").HTMLElement } */
-const ${ReactComponentName} = React.forwardRef(({ children, ...props }, ref) => {
-  return React.createElement('${elementName}', toNativeProps({ ...props, ref }), children);
+const ${ReactComponentName} = React.forwardRef(({ children = [], ...props }, ref) => {
+  return React.createElement('${elementName}', toNativeProps({ ...props, ref }), ...children);
 });`;
 };
 
