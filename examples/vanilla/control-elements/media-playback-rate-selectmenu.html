@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width">
+  <title>Media Chrome Playback Rate Selectmenu</title>
+  <script type="module" src="../../../dist/index.js"></script>
+  <script type="module" src="../../../dist/experimental/media-playback-rate-selectmenu.js"></script>
+  <style>
+    /** add styles to prevent CLS (Cumulative Layout Shift) */
+    media-controller:not([audio]) {
+      display: block;         /* expands the container if preload=none */
+      max-width: 960px;       /* allows the container to shrink if small */
+      aspect-ratio: 16/9;   /* set container aspect ratio if preload=none */
+    }
+
+    video {
+      width: 100%;      /* prevents video to expand beyond its container */
+    }
+
+    media-controller {
+      margin-top: 2em;
+    }
+
+    .examples {
+      margin-top: 20px;
+    }
+
+    main {
+      margin-inline: auto;
+      max-width: 640px;
+    }
+
+    [disabled]:not(media-playback-rate-selectmenu),
+    [disabled]::part(button) {
+      opacity: 60%;
+      cursor: not-allowed;
+    }
+
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Playback Rate Selectmenu</h1>
+
+    <h2>Default</h2>
+
+    <media-playback-rate-selectmenu mediacontroller="mc"></media-playback-rate-selectmenu>
+
+    <media-controller id="mc">
+      <video
+        slot="media"
+        src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/ed_hd.mp4"
+        preload="metadata"
+        muted
+        crossorigin
+      ></video>
+      <media-poster-image slot="poster" src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/poster.png"></media-poster-image>
+      <media-control-bar>
+        <media-play-button></media-play-button>
+        <!-- Here for testing the positioning from the left -->
+        <media-playback-rate-selectmenu></media-playback-rate-selectmenu>
+        <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+        <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+        <media-mute-button></media-mute-button>
+        <media-time-range></media-time-range>
+        <media-time-display></media-time-display>
+        <media-playback-rate-selectmenu></media-playback-rate-selectmenu>
+        <media-fullscreen-button></media-fullscreen-button>
+      </media-control-bar>
+    </media-controller>
+
+    <div class="examples">
+      <a href="../">View more examples</a>
+    </div>
+  </main>
+</body>
+</html>
