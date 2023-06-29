@@ -24,7 +24,10 @@ const windowShim = {
   // eslint-disable-next-line no-unused-vars
   requestAnimationFrame: function(_cb) {
     return 1;
-  }
+  },
+  // eslint-disable-next-line no-unused-vars
+  queueMicrotask: function(_cb) {
+  },
 };
 
 const documentShim = {
@@ -60,6 +63,7 @@ export const isServer =
   * DocumentFragment?,
   * ResizeObserver?,
   * requestAnimationFrame,
+  * queueMicrotask,
   * } }
   * */
 export const Window = isServer ? windowShim : window;
