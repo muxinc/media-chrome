@@ -1,3 +1,13 @@
+## [1.1.3](https://github.com/muxinc/media-chrome/compare/v1.1.2...v1.1.3) (2023-06-29)
+
+
+### Bug Fixes
+
+* React createElement function signature ([#675](https://github.com/muxinc/media-chrome/issues/675)) ([b461fb7](https://github.com/muxinc/media-chrome/commit/b461fb7a36c5e083673c2bfaa50771ded4dfa4ad))
+* Use queueMicrotask for async ResizeObserver cb. ([#677](https://github.com/muxinc/media-chrome/issues/677)) ([e9be608](https://github.com/muxinc/media-chrome/commit/e9be60824c6a0c279a42d0fd3105eff14b69704f))
+
+
+
 ## [1.1.2](https://github.com/muxinc/media-chrome/compare/v1.1.1...v1.1.2) (2023-06-26)
 
 
