@@ -311,17 +311,18 @@ class MediaContainer extends window.HTMLElement {
     const mutationObserver = new MutationObserver(mutationCallback);
     mutationObserver.observe(this, { childList: true, subtree: true });
 
-    let pendingAnimationCbId = undefined;
+    let pendingResizeCb = false;
     const deferResizeCallback = (entries) => {
       // Already have a pending async breakpoint computation, so go ahead and bail
-      if (pendingAnimationCbId !== undefined) return;
-      // Just in case the computation takes too longer (which will cause an error to throw),
-      // do the breakpoint update asynchronously
-      pendingAnimationCbId = window.requestAnimationFrame(() => {
+      if (pendingResizeCb) return;
+      // Just in case it takes too long (which will cause an error to throw),
+      // do the breakpoint computation asynchronously
+      window.queueMicrotask(() => {
         resizeCallback(entries);
-        // Once we've completed, reset the pending cb id to undefined
-        pendingAnimationCbId = undefined;
+        // Once we've completed, reset the pending cb flag to false
+        pendingResizeCb = false;
       });
+      pendingResizeCb = true;
     };
     const resizeObserver = new ResizeObserver(deferResizeCallback);
     this.resizeObserver = resizeObserver;
