@@ -371,6 +371,7 @@ class MediaContainer extends globalThis.HTMLElement {
    * webkitExitFullscreen?,
    * requestCast?,
    * webkitShowPlaybackTargetPicker?,
+   * videoTracks?,
    * }}
    */
   get media() {

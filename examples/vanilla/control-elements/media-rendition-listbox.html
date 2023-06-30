@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width">
+  <title>Media Chrome Rendition Listbox</title>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@luwes/hls-video-element@1.1/+esm"></script>
+  <script type="module" src="../../../dist/index.js"></script>
+  <script type="module" src="../../../../dist/experimental/media-rendition-listbox.js"></script>
+  <style>
+    /** add styles to prevent CLS (Cumulative Layout Shift) */
+    media-controller:not([audio]) {
+      display: block;         /* expands the container if preload=none */
+      max-width: 960px;       /* allows the container to shrink if small */
+      aspect-ratio: 2.4;   /* set container aspect ratio if preload=none */
+    }
+
+    video {
+      width: 100%;      /* prevents video to expand beyond its container */
+    }
+
+    .examples {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Rendition Listbox</h1>
+
+  <media-controller id="mc">
+    <hls-video
+      slot="media"
+      src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg.m3u8"
+      preload="metadata"
+      muted
+      crossorigin
+    ></hls-video>
+    <media-control-bar>
+      <media-play-button></media-play-button>
+      <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+      <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+      <media-mute-button></media-mute-button>
+      <media-volume-range></media-volume-range>
+      <media-time-range></media-time-range>
+      <media-time-display showduration remaining></media-time-display>
+      <media-playback-rate-button></media-playback-rate-button>
+      <media-fullscreen-button></media-fullscreen-button>
+    </media-control-bar>
+  </media-controller>
+  <br>
+
+  <media-rendition-listbox mediacontroller="mc"></media-rendition-listbox>
+
+  <script>
+
+  </script>
+
+  <div class="examples">
+    <a href="../">View more examples</a>
+  </div>
+</body>
+</html>

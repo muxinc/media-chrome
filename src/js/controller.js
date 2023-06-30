@@ -454,7 +454,7 @@ export const MediaUIStates = {
       return getSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language }));
     },
     mediaEvents: ['loadstart'],
-    trackListEvents: ['addtrack', 'removetrack'],
+    textTracksEvents: ['addtrack', 'removetrack'],
   },
   MEDIA_SUBTITLES_SHOWING: {
     get: function (controller) {
@@ -470,7 +470,33 @@ export const MediaUIStates = {
       return getShowingSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language }));
     },
     mediaEvents: ['loadstart'],
-    trackListEvents: ['addtrack', 'removetrack', 'change'],
+    textTracksEvents: ['addtrack', 'removetrack', 'change'],
+  },
+  MEDIA_RENDITION_LIST: {
+    get: function (controller) {
+      const { media } = controller;
+      const selected = media.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
+
+      if (!selected) return [];
+
+      return [...selected.renditions ?? []].map(({ id, height }) => ([id, height]));
+    },
+    mediaEvents: ['loadstart'],
+    renditionListEvents: ['addrendition', 'removerendition'],
+  },
+  MEDIA_RENDITION_ACTIVE: {
+    get: function (controller) {
+      const { media } = controller;
+      const selected = media.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
+
+      if (!selected) return [];
+
+      return [];
+
+      // return [...selected.renditions ?? []].map(({ id, height }) => ({ id, height }));
+    },
+    mediaEvents: ['loadstart'],
+    renditionListEvents: ['addrendition', 'removerendition', 'change'],
   },
 };
 
