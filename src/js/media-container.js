@@ -317,11 +317,11 @@ class MediaContainer extends window.HTMLElement {
       if (pendingResizeCb) return;
       // Just in case it takes too long (which will cause an error to throw),
       // do the breakpoint computation asynchronously
-      window.queueMicrotask(() => {
+      window.setTimeout(() => {
         resizeCallback(entries);
         // Once we've completed, reset the pending cb flag to false
         pendingResizeCb = false;
-      });
+      }, 16); // Use 16ms to ensure at most ~1 invocation per animation frame (~60fps)
       pendingResizeCb = true;
     };
     const resizeObserver = new ResizeObserver(deferResizeCallback);
