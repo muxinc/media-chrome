@@ -45,9 +45,9 @@ class MediaRenditionListbox extends MediaChromeListbox {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      'aria-multiselectable',
       MediaUIAttributes.MEDIA_RENDITION_LIST,
       MediaUIAttributes.MEDIA_RENDITION_ENABLED,
+      MediaUIAttributes.MEDIA_RENDITION_ACTIVE,
     ];
   }
 
@@ -69,11 +69,6 @@ class MediaRenditionListbox extends MediaChromeListbox {
 
     } else if (attrName === MediaUIAttributes.MEDIA_RENDITION_LIST && oldValue !== newValue) {
       this.#render();
-
-    } else if (attrName === 'aria-multiselectable') {
-      // diallow aria-multiselectable
-      this.removeAttribute('aria-multiselectable');
-      console.warn("Rendition listbox doesn't support multiple selections.");
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -105,6 +100,14 @@ class MediaRenditionListbox extends MediaChromeListbox {
 
   set mediaRenditionEnabled(list) {
     setRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ENABLED, list);
+  }
+
+  get mediaRenditionActive() {
+    return getRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ACTIVE);
+  }
+
+  set mediaRenditionActive(list) {
+    setRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ACTIVE, list);
   }
 
   #render() {
