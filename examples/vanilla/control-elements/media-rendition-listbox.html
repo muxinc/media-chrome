@@ -5,13 +5,14 @@
   <title>Media Chrome Rendition Listbox</title>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@luwes/hls-video-element@1.1/+esm"></script>
   <script type="module" src="../../../dist/index.js"></script>
+  <script type="module" src="../../../../dist/experimental/media-chrome-listitem.js"></script>
   <script type="module" src="../../../../dist/experimental/media-rendition-listbox.js"></script>
   <style>
     /** add styles to prevent CLS (Cumulative Layout Shift) */
     media-controller:not([audio]) {
       display: block;         /* expands the container if preload=none */
-      max-width: 960px;       /* allows the container to shrink if small */
-      aspect-ratio: 2.4;   /* set container aspect ratio if preload=none */
+      max-width: 540px;       /* allows the container to shrink if small */
+      aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
     }
 
     video {
@@ -29,7 +30,8 @@
   <media-controller id="mc">
     <hls-video
       slot="media"
-      src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg.m3u8"
+      src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k.m3u8"
+      poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.webp"
       preload="metadata"
       muted
       crossorigin

@@ -5,7 +5,7 @@ const template = document.createElement('template');
 
 template.innerHTML = /*html*/`
 <style>
-  :host ul {
+  :host {
     font: var(--media-font,
       var(--media-font-weight, normal)
       var(--media-font-size, 1em) /
@@ -13,7 +13,6 @@ template.innerHTML = /*html*/`
       var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
     color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
-    list-style: none;
     display: inline-flex;
     flex-direction: column;
     gap: 0.5em;
@@ -38,9 +37,7 @@ template.innerHTML = /*html*/`
     outline: var(--media-listbox-hover-outline, none);
   }
 </style>
-<ul tabindex="0">
-  <slot></slot>
-</ul>
+<slot></slot>
 `;
 
 /**

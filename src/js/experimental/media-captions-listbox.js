@@ -58,7 +58,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 
   constructor() {
-    super({slotTemplate});
+    super({ slotTemplate });
 
     const offOption = document.createElement('media-chrome-listitem');
 
@@ -160,7 +160,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 
   #renderTracks(tracks) {
-    const container = this.shadowRoot.querySelector('ul slot');
+    const container = this.shadowRoot.querySelector('slot');
 
     tracks.forEach(track => {
       let option = track.el;
@@ -200,7 +200,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 
   #render() {
-    const container = this.shadowRoot.querySelector('ul slot');
+    const container = this.shadowRoot.querySelector('slot');
     if (!container.contains(this.#offOption)) {
       container.append(this.#offOption);
     }

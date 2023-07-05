@@ -1,3 +1,10 @@
+
+export const stringifyRenditionList = (renditions) => {
+  return renditions
+    ?.map(({ id, height }) => [id, height].filter(a => a != null).join(':'))
+    .join(' ');
+}
+
 export function dashedToCamel(word) {
   return word
     .split('-')

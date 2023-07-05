@@ -10,7 +10,7 @@
 import { MediaContainer } from './media-container.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
-import { constToCamel, delay } from './utils/utils.js';
+import { constToCamel, delay, stringifyRenditionList } from './utils/utils.js';
 import { stringifyTextTrackList, toggleSubsCaps } from './utils/captions.js';
 import {
   MediaUIEvents,
@@ -177,7 +177,7 @@ class MediaController extends MediaContainer {
       const {
         mediaEvents,
         rootEvents,
-        textTrackEvents,
+        textTracksEvents,
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
@@ -192,7 +192,7 @@ class MediaController extends MediaContainer {
         handler();
       });
 
-      textTrackEvents?.forEach((eventName) => {
+      textTracksEvents?.forEach((eventName) => {
         media.textTracks?.addEventListener(eventName, handler);
         handler();
       });
@@ -225,7 +225,7 @@ class MediaController extends MediaContainer {
       const {
         mediaEvents,
         rootEvents,
-        textTrackEvents,
+        textTracksEvents,
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
@@ -238,7 +238,7 @@ class MediaController extends MediaContainer {
         this.getRootNode().removeEventListener(eventName, handler);
       });
 
-      textTrackEvents?.forEach((eventName) => {
+      textTracksEvents?.forEach((eventName) => {
         media.textTracks?.removeEventListener(eventName, handler);
       });
     });
@@ -562,7 +562,9 @@ const CustomAttrSerializer = {
   [MediaUIAttributes.MEDIA_SEEKABLE]: serializeTuple,
   [MediaUIAttributes.MEDIA_BUFFERED]: (tuples) => tuples?.map(serializeTuple).join(' '),
   [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords) => coords?.join(' '),
-  [MediaUIAttributes.MEDIA_RENDITION_LIST]: (tuples) => tuples?.map(serializeTuple).join(' '),
+  [MediaUIAttributes.MEDIA_RENDITION_LIST]: stringifyRenditionList,
+  [MediaUIAttributes.MEDIA_RENDITION_ENABLED]: stringifyRenditionList,
+  [MediaUIAttributes.MEDIA_RENDITION_ACTIVE]: stringifyRenditionList,
 };
 
 const setAttr = async (child, attrName, attrValue) => {

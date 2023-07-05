@@ -6,7 +6,7 @@ const template = document.createElement('template');
 template.innerHTML = /*html*/`
 <style>
   :host {
-    display: list-item;
+    display: inline-block;
     line-height: 1em;
     padding: 0.5em;
     margin: 0em;
@@ -17,9 +17,7 @@ template.innerHTML = /*html*/`
     outline: none;
   }
 </style>
-<li>
-  <slot></slot>
-</li>
+<slot></slot>
 `;
 
 export const Attributes = {
