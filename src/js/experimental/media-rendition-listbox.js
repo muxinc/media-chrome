@@ -1,6 +1,6 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
 import { window, document } from '../utils/server-safe-globals.js';
-import { stringifyRenditionList } from '../utils/utils.js';
+import { stringifyRenditionList, parseRenditionList } from '../utils/utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
 const slotTemplate = document.createElement('template');
@@ -16,12 +16,7 @@ const getRenditionListAttr = (el, attrName) => {
   const attrVal = el.getAttribute(attrName);
   if (!attrVal) return [];
 
-  return attrVal
-    .split(/\s+/)
-    .map((group) => {
-      const [id, height] = group.split(':');
-      return { id, height };
-    });
+  return parseRenditionList(attrVal);
 }
 
 const setRenditionListAttr = (el, attrName, list) => {
@@ -102,6 +97,14 @@ class MediaRenditionListbox extends MediaChromeListbox {
 
   set mediaRenditionList(list) {
     setRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_LIST, list);
+  }
+
+  get mediaRenditionEnabled() {
+    return getRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ENABLED);
+  }
+
+  set mediaRenditionEnabled(list) {
+    setRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ENABLED, list);
   }
 
   #render() {

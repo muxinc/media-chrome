@@ -1,8 +1,17 @@
 
-export const stringifyRenditionList = (renditions) => {
+export function stringifyRenditionList(renditions) {
   return renditions
     ?.map(({ id, height }) => [id, height].filter(a => a != null).join(':'))
     .join(' ');
+}
+
+export function parseRenditionList(renditions) {
+  return renditions
+    ?.split(/\s+/)
+    .map((group) => {
+      const [id, height] = group.split(':');
+      return { id, height };
+    });
 }
 
 export function dashedToCamel(word) {
