@@ -26,11 +26,6 @@
       margin-top: 20px;
     }
 
-    main {
-      margin-inline: auto;
-      max-width: 640px;
-    }
-
     [disabled]:not(media-captions-selectmenu),
     [disabled]::part(button) {
       opacity: 60%;
@@ -56,57 +51,55 @@
   </style>
 </head>
 <body>
-  <main>
-    <h1>Captions Selectmenu</h1>
+  <h1>Captions Selectmenu</h1>
 
-    <h2>Default</h2>
+  <h2>Default</h2>
 
-    <media-captions-selectmenu mediacontroller="mc"></media-captions-selectmenu>
+  <media-captions-selectmenu mediacontroller="mc"></media-captions-selectmenu>
 
-    <h2>Disabled</h2>
+  <h2>Disabled</h2>
 
-    <media-captions-selectmenu mediacontroller="mc" disabled></media-captions-selectmenu>
+  <media-captions-selectmenu mediacontroller="mc" disabled></media-captions-selectmenu>
 
-    <br>
+  <br>
 
-    <media-controller id="mc" defaultsubtitles>
-      <video
-        slot="media"
-        src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/ed_hd.mp4"
-        preload="metadata"
-        muted
-        crossorigin
-      >
-        <track label="English" kind="captions" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
-        <track label="Japanese" kind="captions" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
-        <track label="Swedish" kind="captions" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
-        <track label="Russian" kind="captions" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
-        <track label="Arabic" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
-        <track label="Scandinavian" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
-        <track label="Subs English" kind="subtitles" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
-        <track label="Subs Japanese" kind="subtitles" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
-        <track label="Subs Swedish" kind="subtitles" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
-        <track label="Subs Russian" kind="subtitles" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
-        <track label="Subs Arabic" kind="subtitles" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
-      </video>
-      <media-poster-image slot="poster" src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/poster.png"></media-poster-image>
-      <media-control-bar>
-        <media-play-button></media-play-button>
-        <!-- Here for testing the positioning from the left -->
-        <media-captions-selectmenu></media-captions-selectmenu>
-        <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
-        <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
-        <media-mute-button></media-mute-button>
-        <media-time-range></media-time-range>
-        <media-time-display></media-time-display>
-        <media-captions-selectmenu></media-captions-selectmenu>
-        <media-fullscreen-button></media-fullscreen-button>
-      </media-control-bar>
-    </media-controller>
+  <media-controller id="mc" defaultsubtitles>
+    <video
+      slot="media"
+      src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/ed_hd.mp4"
+      preload="metadata"
+      muted
+      crossorigin
+    >
+      <track label="English" kind="captions" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
+      <track label="Japanese" kind="captions" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
+      <track label="Swedish" kind="captions" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
+      <track label="Russian" kind="captions" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
+      <track label="Arabic" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
+      <track label="Scandinavian" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
+      <track label="Subs English" kind="subtitles" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
+      <track label="Subs Japanese" kind="subtitles" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
+      <track label="Subs Swedish" kind="subtitles" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
+      <track label="Subs Russian" kind="subtitles" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
+      <track label="Subs Arabic" kind="subtitles" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
+    </video>
+    <media-poster-image slot="poster" src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/poster.png"></media-poster-image>
+    <media-control-bar>
+      <media-play-button></media-play-button>
+      <!-- Here for testing the positioning from the left -->
+      <media-captions-selectmenu></media-captions-selectmenu>
+      <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+      <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+      <media-mute-button></media-mute-button>
+      <media-time-range></media-time-range>
+      <media-time-display></media-time-display>
+      <media-captions-selectmenu></media-captions-selectmenu>
+      <media-fullscreen-button></media-fullscreen-button>
+    </media-control-bar>
+  </media-controller>
 
-    <div class="examples">
-      <a href="../">View more examples</a>
-    </div>
-  </main>
+  <div class="examples">
+    <a href="../">View more examples</a>
+  </div>
 </body>
 </html>

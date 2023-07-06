@@ -1,4 +1,5 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
+import './media-chrome-listitem.js';
 import { window, document } from '../utils/server-safe-globals.js';
 import { parseRenditionList } from '../utils/utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
@@ -13,7 +14,8 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
+ * @attr {string} mediarenditionenabled - (read-only) Set to the enabled rendition.
+ * @attr {string} mediarenditionlist - (read-only) Set to the rendition list.
  *
  * @cssproperty --media-rendition-listbox-white-space - `white-space` of playback rate list item.
  */

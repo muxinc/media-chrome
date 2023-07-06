@@ -9,10 +9,6 @@ import { globalThis, document, } from '../utils/server-safe-globals.js';
  * @csspart listitem - A part that targets each listitem of the listbox.
  */
 class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
-  constructor() {
-    super();
-  }
-
   init() {
     const captionsButton = document.createElement('media-captions-button');
     captionsButton.part.add('button');
