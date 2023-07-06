@@ -1,6 +1,6 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
 import { window, document } from '../utils/server-safe-globals.js';
-import { stringifyRenditionList, parseRenditionList } from '../utils/utils.js';
+import { parseRenditionList } from '../utils/utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
 const slotTemplate = document.createElement('template');
@@ -12,28 +12,6 @@ slotTemplate.innerHTML = /*html*/`
   </style>
 `;
 
-const getRenditionListAttr = (el, attrName) => {
-  const attrVal = el.getAttribute(attrName);
-  if (!attrVal) return [];
-
-  return parseRenditionList(attrVal);
-}
-
-const setRenditionListAttr = (el, attrName, list) => {
-  // null, undefined, and empty arrays are treated as "no value" here
-  if (!list?.length) {
-    el.removeAttribute(attrName);
-    return;
-  }
-
-  // don't set if the new value is the same as existing
-  const newValStr = stringifyRenditionList(list);
-  const oldVal = el.getAttribute(attrName);
-  if (oldVal === newValStr) return;
-
-  el.setAttribute(attrName, newValStr);
-}
-
 /**
  * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
  *
@@ -41,13 +19,13 @@ const setRenditionListAttr = (el, attrName, list) => {
  */
 class MediaRenditionListbox extends MediaChromeListbox {
   #autoOption;
+  #renditionList = [];
 
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_RENDITION_LIST,
       MediaUIAttributes.MEDIA_RENDITION_ENABLED,
-      MediaUIAttributes.MEDIA_RENDITION_ACTIVE,
     ];
   }
 
@@ -57,7 +35,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
     const autoOption = document.createElement('media-chrome-listitem');
 
     autoOption.part.add('listitem');
-    autoOption.value = 'auto';
+    autoOption.value = '';
     autoOption.textContent = 'Auto';
     this.#autoOption = autoOption;
   }
@@ -68,6 +46,8 @@ class MediaRenditionListbox extends MediaChromeListbox {
       this.value = newValue;
 
     } else if (attrName === MediaUIAttributes.MEDIA_RENDITION_LIST && oldValue !== newValue) {
+
+      this.#renditionList = parseRenditionList(newValue);
       this.#render();
     }
 
@@ -87,27 +67,27 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 
   get mediaRenditionList() {
-    return getRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_LIST);
+    return this.#renditionList;
   }
 
   set mediaRenditionList(list) {
-    setRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_LIST, list);
+    this.removeAttribute(MediaUIAttributes.MEDIA_RENDITION_LIST);
+
+    this.#renditionList = list;
+    this.#render();
   }
 
   get mediaRenditionEnabled() {
-    return getRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ENABLED);
+    if (this.value) {
+      return this.mediaRenditionList.filter(({ id }) => id == this.value);
+    }
+    return undefined;
   }
 
   set mediaRenditionEnabled(list) {
-    setRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ENABLED, list);
-  }
+    this.removeAttribute(MediaUIAttributes.MEDIA_RENDITION_ENABLED);
 
-  get mediaRenditionActive() {
-    return getRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ACTIVE);
-  }
-
-  set mediaRenditionActive(list) {
-    setRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ACTIVE, list);
+    this.value = list[0]?.id;
   }
 
   #render() {
@@ -120,7 +100,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
       container.append(this.#autoOption);
     }
 
-    let isAuto = !this.hasAttribute(MediaUIAttributes.MEDIA_RENDITION_ENABLED);
+    let isAuto = !this.mediaRenditionEnabled;
     if (isAuto) {
       this.#autoOption.setAttribute('aria-selected', 'true');
       this.#autoOption.setAttribute('tabindex', '0');
@@ -134,10 +114,10 @@ class MediaRenditionListbox extends MediaChromeListbox {
       /** @type {HTMLOptionElement} */
       const option = document.createElement('media-chrome-listitem');
       option.part.add('listitem');
-      option.value = `${rendition.id}:${rendition.height}`;
-      option.textContent = `${rendition.height}p`;
+      option.value = `${rendition.id}`;
+      option.textContent = `${Math.min(rendition.width, rendition.height)}p`;
 
-      if (rendition.enabled && isAuto) {
+      if (rendition.enabled && !isAuto) {
         option.setAttribute('aria-selected', 'true');
       } else {
         option.setAttribute('aria-selected', 'false');
@@ -148,9 +128,9 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 
   #onChange() {
-    const selectedOption = this.selectedOptions[0]?.value?.split(':')[0];
+    const selectedOption = this.selectedOptions[0]?.value;
 
-    if (!selectedOption) return;
+    if (selectedOption == null) return;
 
     const event = new window.CustomEvent(
       MediaUIEvents.MEDIA_RENDITION_REQUEST,

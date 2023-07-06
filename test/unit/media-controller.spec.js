@@ -380,30 +380,34 @@ describe('receiving state / dispatching (bubbling) events', () => {
 
 describe('state propagation behaviors', () => {
   let mediaController;
+  let mediaAllReceiver;
 
   beforeEach(async () => {
     mediaController = await fixture(`
       <media-controller>
+        <div ${MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES}="${Object.values(MediaUIAttributes).join(' ')}"></div>
       </media-controller>
     `);
+    mediaAllReceiver = mediaController.querySelector('div');
   });
 
   afterEach(() => {
     mediaController = undefined;
+    mediaAllReceiver = undefined;
   });
 
   Object.entries(MediaUIProps).forEach(([key, propName]) => {
     const eventType = MediaStateChangeEvents[key];
 
     it(`should dispatch event ${eventType} when ${propName} changes`, (done) => {
-      const nextState = !mediaController.hasAttribute(propName.toLowerCase());
+      const nextState = !mediaAllReceiver.hasAttribute(propName.toLowerCase());
       assert.exists(eventType);
       mediaController.addEventListener(eventType, () => done());
       mediaController.propagateMediaState(propName, nextState);
     });
 
     it(`should not dispatch event ${eventType} when ${propName} does not change`, (done) => {
-      const nextState = !mediaController.hasAttribute(propName.toLowerCase());
+      const nextState = !mediaAllReceiver.hasAttribute(propName.toLowerCase());
       assert.exists(eventType);
       mediaController.propagateMediaState(propName, nextState);
       mediaController.addEventListener(eventType, () =>

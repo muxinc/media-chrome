@@ -475,11 +475,11 @@ export const MediaUIStates = {
   MEDIA_RENDITION_LIST: {
     get: function (controller) {
       const { media } = controller;
-      const selected = media.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
+      const selected = media?.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
 
       if (!selected) return [];
 
-      return [...selected.renditions ?? []].map(({ id, height }) => ({ id, height }));
+      return [...selected.renditions ?? []];
     },
     mediaEvents: ['loadstart'],
     renditionListEvents: ['addrendition', 'removerendition'],
@@ -487,7 +487,7 @@ export const MediaUIStates = {
   MEDIA_RENDITION_ENABLED: {
     get: function (controller) {
       const { media } = controller;
-      const selected = media.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
+      const selected = media?.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
 
       if (!selected) return [];
 
@@ -496,9 +496,7 @@ export const MediaUIStates = {
       // If all renditions are enabled it means `auto` is selected.
       if (renditions.every(r => r.enabled)) return [];
 
-      return renditions
-        .filter(r => r.enabled)
-        .map(({ id, height }) => ({ id, height }));
+      return renditions.filter(r => r.enabled);
     },
     mediaEvents: ['loadstart'],
     renditionListEvents: ['addrendition', 'removerendition', 'change'],
@@ -506,14 +504,12 @@ export const MediaUIStates = {
   MEDIA_RENDITION_ACTIVE: {
     get: function (controller) {
       const { media } = controller;
-      const selected = media.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
+      const selected = media?.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
 
       if (!selected) return [];
 
       const renditions = [...selected.renditions ?? []];
-      return renditions
-        .filter(r => r.active)
-        .map(({ id, height }) => ({ id, height }));
+      return renditions.filter(r => r.active);
     },
     mediaEvents: ['loadstart'],
     renditionListEvents: ['renditionchange'],
@@ -822,7 +818,7 @@ export const MediaUIRequestHandlers = {
     const selected = media.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
 
     for (const rendition of selected?.renditions ?? []) {
-      rendition.enabled = renditionId == 'auto' || rendition.id == renditionId;
+      rendition.enabled = renditionId === '' || rendition.id == renditionId;
     }
   }
 };

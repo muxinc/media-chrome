@@ -1,16 +1,17 @@
 
 export function stringifyRenditionList(renditions) {
   return renditions
-    ?.map(({ id, height }) => [id, height].filter(a => a != null).join(':'))
-    .join(' ');
+    ?.map(({ id, width, height }) => {
+      return [id, width, height].filter(a => a != null).join(':')
+    }).join(' ');
 }
 
 export function parseRenditionList(renditions) {
   return renditions
     ?.split(/\s+/)
     .map((group) => {
-      const [id, height] = group.split(':');
-      return { id, height };
+      const [id, width, height] = group.split(':');
+      return { id, width, height };
     });
 }
 

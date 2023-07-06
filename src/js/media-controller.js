@@ -283,13 +283,13 @@ class MediaController extends MediaContainer {
   }
 
   propagateMediaState(stateName, state) {
-    const attrName = stateName.toLowerCase();
-    const previousState = this.getAttribute(attrName);
+    const previousState = getStateValue(this.mediaStateReceivers, stateName);
 
     propagateMediaState(this.mediaStateReceivers, stateName, state);
 
-    if (previousState === this.getAttribute(attrName)) return;
+    if (previousState === getStateValue(this.mediaStateReceivers, stateName)) return;
 
+    const attrName = stateName.toLowerCase();
     // TODO: I don't think we want these events to bubble? Video element states don't. (heff)
     const evt = new globalThis.CustomEvent(
       AttributeToStateChangeEventMap[attrName],
@@ -666,6 +666,18 @@ const propagateMediaState = (els, stateName, val) => {
     setAttr(el, attrName, val);
   });
 };
+
+const getStateValue = (els, stateName) => {
+  for (const el of els) {
+    if (stateName in el) {
+      return el[stateName];
+    }
+    const relevantAttrs = getMediaUIAttributesFrom(el);
+    const attrName = stateName.toLowerCase();
+    if (!relevantAttrs.includes(attrName)) continue;
+    return el.getAttribute(attrName);
+  }
+}
 
 /**
  *

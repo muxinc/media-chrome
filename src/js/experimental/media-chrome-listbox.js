@@ -153,7 +153,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   get value() {
-    return this.selectedOptions[0].value || this.selectedOptions[0].textContent;
+    return this.selectedOptions[0]?.value || this.selectedOptions[0]?.textContent;
   }
 
   set value(newValue) {

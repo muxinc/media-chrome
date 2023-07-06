@@ -351,9 +351,13 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   static get observedAttributes() {
-    return [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED].concat(
-      MEDIA_UI_ATTRIBUTE_NAMES
-    );
+    return [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED]
+      .concat(MEDIA_UI_ATTRIBUTE_NAMES)
+      .filter(name => ![
+        MediaUIAttributes.MEDIA_RENDITION_LIST,
+        MediaUIAttributes.MEDIA_RENDITION_ACTIVE,
+        MediaUIAttributes.MEDIA_RENDITION_ENABLED,
+      ].includes(name));
   }
 
   // Could share this code with media-chrome-html-element instead
