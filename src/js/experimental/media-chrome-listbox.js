@@ -20,19 +20,19 @@ template.innerHTML = /*html*/`
     padding: 0.5em;
   }
 
-  ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible),
-  media-chrome-listitem[tabindex="0"]:focus-visible {
+  ::slotted(media-chrome-option[tabindex="0"]:focus-visible),
+  media-chrome-option[tabindex="0"]:focus-visible {
     box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
     outline: 0;
   }
 
-  ::slotted(media-chrome-listitem[aria-selected="true"]),
-  media-chrome-listitem[aria-selected="true"] {
+  ::slotted(media-chrome-option[aria-selected="true"]),
+  media-chrome-option[aria-selected="true"] {
     background-color: var(--media-listbox-selected-background, rgb(122 122 184 / .8));
   }
 
-  ::slotted(media-chrome-listitem:hover),
-  media-chrome-listitem:hover {
+  ::slotted(media-chrome-option:hover),
+  media-chrome-option:hover {
     background-color: var(--media-listbox-hover-background, rgb(82 82 122 / .8));
     outline: var(--media-listbox-hover-outline, none);
   }
@@ -134,7 +134,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   get #assignedElements() {
     if (!this.#_assignedElements) {
-      this.#_assignedElements = Array.from(this.shadowRoot.querySelectorAll('media-chrome-listitem'));
+      this.#_assignedElements = Array.from(this.shadowRoot.querySelectorAll('media-chrome-option'));
     }
 
     return this.#_assignedElements;
@@ -262,7 +262,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
     if (!this.hasAttribute('role')) {
       // set listbox role on the media-chrome-listbox element itself
-      // this is to make sure that SRs announce listitems as being part
+      // this is to make sure that SRs announce options as being part
       // of a listbox when focused
       this.setAttribute('role', 'listbox');
     }
@@ -294,7 +294,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   #getItem(e) {
     const composedPath = e.composedPath();
-    const index = composedPath.findIndex(el => el.nodeName === 'MEDIA-CHROME-LISTITEM');
+    const index = composedPath.findIndex(el => el.nodeName === 'MEDIA-CHROME-OPTION');
 
     return composedPath[index];
   }

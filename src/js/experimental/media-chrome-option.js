@@ -30,14 +30,14 @@ export const Attributes = {
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  */
-class MediaChromeListitem extends globalThis.HTMLElement {
+class MediaChromeOption extends globalThis.HTMLElement {
   static get observedAttributes() {
     return [
       'disabled',
       'aria-selected',
       Attributes.VALUE,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
-  ];
+    ];
   }
 
   constructor() {
@@ -47,10 +47,10 @@ class MediaChromeListitem extends globalThis.HTMLElement {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       const shadow = this.attachShadow({ mode: 'open' });
 
-      const listitemHTML = template.content.cloneNode(true);
-      this.nativeEl = listitemHTML;
+      const optionHTML = template.content.cloneNode(true);
+      this.nativeEl = optionHTML;
 
-      shadow.appendChild(listitemHTML);
+      shadow.appendChild(optionHTML);
     }
   }
 
@@ -125,8 +125,8 @@ class MediaChromeListitem extends globalThis.HTMLElement {
   handleClick() {}
 }
 
-if (!globalThis.customElements.get('media-chrome-listitem')) {
-  globalThis.customElements.define('media-chrome-listitem', MediaChromeListitem);
+if (!globalThis.customElements.get('media-chrome-option')) {
+  globalThis.customElements.define('media-chrome-option', MediaChromeOption);
 }
 
-export default MediaChromeListitem;
+export default MediaChromeOption;

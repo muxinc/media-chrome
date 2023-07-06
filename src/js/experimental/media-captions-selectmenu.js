@@ -6,7 +6,7 @@ import { globalThis, document, } from '../utils/server-safe-globals.js';
 /**
  * @csspart button - The default button that's in the shadow DOM.
  * @csspart listbox - The default listbox that's in the shadow DOM.
- * @csspart listitem - A part that targets each listitem of the listbox.
+ * @csspart option - A part that targets each option of the listbox.
  */
 class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
   init() {
@@ -17,7 +17,7 @@ class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
 
     const captionsListbox = document.createElement('media-captions-listbox');
     captionsListbox.part.add('listbox');
-    captionsListbox.setAttribute('exportparts', 'listitem');
+    captionsListbox.setAttribute('exportparts', 'option');
 
     const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');

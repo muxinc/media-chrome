@@ -53,7 +53,7 @@ Check out this example for usage, but please try and use better colors as this c
     background-color: yellow;
     --media-listbox-background: transparent;
 }
-#mpr-sm-1::part(listitem) {
+#mpr-sm-1::part(option) {
     background-color: blue;
 }
 </style>
@@ -68,7 +68,7 @@ Check out this example for usage, but please try and use better colors as this c
     background-color: yellow;
     --media-listbox-background: transparent;
 }
-#mpr-sm-1::part(listitem) {
+#mpr-sm-1::part(option) {
     background-color: blue;
 }
 </style>

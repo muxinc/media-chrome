@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Advanced Video Usage Example</title>
     <script type="module" src="../../../dist/experimental/media-chrome-listbox.js"></script>
-    <script type="module" src="../../../dist/experimental/media-chrome-listitem.js"></script>
+    <script type="module" src="../../../dist/experimental/media-chrome-option.js"></script>
     <style>
       [disabled] {
         opacity: 60%;
@@ -20,14 +20,14 @@
     <h1>Listbox</h1>
 
     <media-chrome-listbox aria-multiselectable="true">
-      <media-chrome-listitem>foo</media-chrome-listitem>
-      <media-chrome-listitem>bar</media-chrome-listitem>
-      <media-chrome-listitem disabled>bar</media-chrome-listitem>
-      <media-chrome-listitem>foo</media-chrome-listitem>
-      <media-chrome-listitem aria-selected="true"><span>foo</span>foo</media-chrome-listitem>
-      <media-chrome-listitem>bar</media-chrome-listitem>
-      <media-chrome-listitem><img src="https://placekitten.com/100/100"></media-chrome-listitem>
-      <media-chrome-listitem disabled>baz</media-chrome-listitem>
+      <media-chrome-option>foo</media-chrome-option>
+      <media-chrome-option>bar</media-chrome-option>
+      <media-chrome-option disabled>bar</media-chrome-option>
+      <media-chrome-option>foo</media-chrome-option>
+      <media-chrome-option aria-selected="true"><span>foo</span>foo</media-chrome-option>
+      <media-chrome-option>bar</media-chrome-option>
+      <media-chrome-option><img src="https://placekitten.com/100/100"></media-chrome-option>
+      <media-chrome-option disabled>baz</media-chrome-option>
     </media-chrome-listbox>
 
     <select>

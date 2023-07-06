@@ -5,7 +5,7 @@ import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/`
   <style>
-    media-chrome-listitem {
+    media-chrome-option {
       white-space: var(--media-playback-rate-listbox-white-space, nowrap);
     }
   </style>

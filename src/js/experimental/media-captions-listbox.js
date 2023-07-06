@@ -1,5 +1,5 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
-import './media-chrome-listitem.js';
+import './media-chrome-option.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 import { parseTextTracksStr, formatTextTrackObj } from '../utils/captions.js';
@@ -20,7 +20,7 @@ const ccIcon = /*html*/`
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/`
   <style>
-    media-chrome-listitem {
+    media-chrome-option {
       white-space: var(--media-captions-listbox-white-space, nowrap);
     }
   </style>
@@ -60,9 +60,9 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   constructor() {
     super({ slotTemplate });
 
-    const offOption = document.createElement('media-chrome-listitem');
+    const offOption = document.createElement('media-chrome-option');
 
-    offOption.part.add('listitem');
+    offOption.part.add('option');
     offOption.value = 'off';
     offOption.textContent = 'Off';
     this.#offOption = offOption;
@@ -168,10 +168,10 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       const type = track.kind ?? 'subs';
 
       if (!option) {
-        option = document.createElement('media-chrome-listitem');
+        option = document.createElement('media-chrome-option');
         alreadyInDom = false;
 
-        option.part.add('listitem');
+        option.part.add('option');
         option.value = formatTextTrackObj(track);
 
         const label = document.createElement('span');

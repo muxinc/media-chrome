@@ -1,5 +1,5 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
-import './media-chrome-listitem.js';
+import './media-chrome-option.js';
 import { window, document } from '../utils/server-safe-globals.js';
 import { parseRenditionList } from '../utils/utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
@@ -7,7 +7,7 @@ import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/`
   <style>
-    media-chrome-listitem {
+    media-chrome-option {
       white-space: var(--media-rendition-listbox-white-space, nowrap);
     }
   </style>
@@ -34,9 +34,9 @@ class MediaRenditionListbox extends MediaChromeListbox {
   constructor() {
     super({ slotTemplate });
 
-    const autoOption = document.createElement('media-chrome-listitem');
+    const autoOption = document.createElement('media-chrome-option');
 
-    autoOption.part.add('listitem');
+    autoOption.part.add('option');
     autoOption.value = '';
     autoOption.textContent = 'Auto';
     this.#autoOption = autoOption;
@@ -114,8 +114,8 @@ class MediaRenditionListbox extends MediaChromeListbox {
     for (const rendition of renditionList) {
 
       /** @type {HTMLOptionElement} */
-      const option = document.createElement('media-chrome-listitem');
-      option.part.add('listitem');
+      const option = document.createElement('media-chrome-option');
+      option.part.add('option');
       option.value = `${rendition.id}`;
       option.textContent = `${Math.min(rendition.width, rendition.height)}p`;
 
