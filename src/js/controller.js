@@ -818,7 +818,7 @@ export const MediaUIRequestHandlers = {
     const selected = media.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
 
     for (const rendition of selected?.renditions ?? []) {
-      rendition.enabled = renditionId === '' || rendition.id == renditionId;
+      rendition.enabled = renditionId === 'auto' || rendition.id == renditionId;
     }
   }
 };

@@ -37,7 +37,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
     const autoOption = document.createElement('media-chrome-option');
 
     autoOption.part.add('option');
-    autoOption.value = '';
+    autoOption.value = 'auto';
     autoOption.textContent = 'Auto';
     this.#autoOption = autoOption;
   }
