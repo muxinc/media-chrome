@@ -1,3 +1,12 @@
+## [1.1.4](https://github.com/muxinc/media-chrome/compare/v1.1.3...v1.1.4) (2023-07-07)
+
+
+### Bug Fixes
+
+* Use setTimeout at ~=1 frame (16ms) since queueMicrotask may stil… ([#682](https://github.com/muxinc/media-chrome/issues/682)) ([93ff3cb](https://github.com/muxinc/media-chrome/commit/93ff3cba432978eceb4259d5013673dda4c16c31))
+
+
+
 ## [1.1.3](https://github.com/muxinc/media-chrome/compare/v1.1.2...v1.1.3) (2023-06-29)
 
 
