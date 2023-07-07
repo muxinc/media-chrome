@@ -353,6 +353,8 @@ class MediaContainer extends globalThis.HTMLElement {
   static get observedAttributes() {
     return [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED]
       .concat(MEDIA_UI_ATTRIBUTE_NAMES)
+      // Filter out specific / complex data media UI attributes
+      // that shouldn't be propagated to this state receiver element.
       .filter(name => ![
         MediaUIAttributes.MEDIA_RENDITION_LIST,
         MediaUIAttributes.MEDIA_RENDITION_ACTIVE,
