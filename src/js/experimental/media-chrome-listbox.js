@@ -19,23 +19,6 @@ template.innerHTML = /*html*/`
     margin: 0;
     padding: 0.5em;
   }
-
-  ::slotted(media-chrome-option[tabindex="0"]:focus-visible),
-  media-chrome-option[tabindex="0"]:focus-visible {
-    box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
-    outline: 0;
-  }
-
-  ::slotted(media-chrome-option[aria-selected="true"]),
-  media-chrome-option[aria-selected="true"] {
-    background-color: var(--media-listbox-selected-background, rgb(122 122 184 / .8));
-  }
-
-  ::slotted(media-chrome-option:hover),
-  media-chrome-option:hover {
-    background-color: var(--media-listbox-hover-background, rgb(82 82 122 / .8));
-    outline: var(--media-listbox-hover-outline, none);
-  }
 </style>
 <slot></slot>
 `;
@@ -54,9 +37,6 @@ template.innerHTML = /*html*/`
  *
  * @cssproperty --media-control-background - `background` of control.
  * @cssproperty --media-listbox-background - `background` of listbox.
- * @cssproperty --media-listbox-selected-background - `background` of selected listbox item.
- * @cssproperty --media-listbox-hover-background - `background` of hovered listbox item.
- * @cssproperty --media-listbox-hover-outline - `outline` of hovered listbox item.
  *
  * @cssproperty --media-font - `font` shorthand property.
  * @cssproperty --media-font-weight - `font-weight` property.

@@ -9,12 +9,21 @@ template.innerHTML = /*html*/`
     display: inline-block;
     line-height: 1em;
     padding: 0.5em;
-    margin: 0em;
     cursor: pointer;
   }
 
-  ::slotted:not(:focus-visible) {
-    outline: none;
+  :host(:focus-visible) {
+    box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
+    outline: 0;
+  }
+
+  :host(:hover) {
+    background-color: var(--media-option-hover-background, rgb(82 82 122 / .8));
+    outline: var(--media-option-hover-outline, none);
+  }
+
+  :host([aria-selected="true"]) {
+    background-color: var(--media-option-selected-background, rgb(122 122 184 / .8));
   }
 </style>
 <slot></slot>
@@ -29,6 +38,10 @@ export const Attributes = {
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
+ *
+ * @cssproperty --media-option-selected-background - `background` of selected listbox item.
+ * @cssproperty --media-option-hover-background - `background` of hovered listbox item.
+ * @cssproperty --media-option-hover-outline - `outline` of hovered listbox item.
  */
 class MediaChromeOption extends globalThis.HTMLElement {
   static get observedAttributes() {
