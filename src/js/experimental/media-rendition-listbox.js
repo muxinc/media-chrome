@@ -93,7 +93,8 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 
   #render() {
-    const renditionList = this.mediaRenditionList;
+    const renditionList = this.mediaRenditionList
+      .sort((a, b) => b.height - a.height);
 
     const container = this.shadowRoot.querySelector('slot');
     container.textContent = '';
