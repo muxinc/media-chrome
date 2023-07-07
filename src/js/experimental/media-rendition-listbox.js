@@ -14,7 +14,7 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @attr {string} mediarenditionenabled - (read-only) Set to the enabled rendition.
+ * @attr {string} mediarenditionsenabled - (read-only) Set to the enabled rendition.
  * @attr {string} mediarenditionlist - (read-only) Set to the rendition list.
  *
  * @cssproperty --media-rendition-listbox-white-space - `white-space` of playback rate list item.
@@ -27,7 +27,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_RENDITION_LIST,
-      MediaUIAttributes.MEDIA_RENDITION_ENABLED,
+      MediaUIAttributes.MEDIA_RENDITIONS_ENABLED,
     ];
   }
 
@@ -44,7 +44,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
 
-    if (attrName === MediaUIAttributes.MEDIA_RENDITION_ENABLED && oldValue !== newValue) {
+    if (attrName === MediaUIAttributes.MEDIA_RENDITIONS_ENABLED && oldValue !== newValue) {
       this.value = newValue;
 
     } else if (attrName === MediaUIAttributes.MEDIA_RENDITION_LIST && oldValue !== newValue) {
@@ -79,15 +79,15 @@ class MediaRenditionListbox extends MediaChromeListbox {
     this.#render();
   }
 
-  get mediaRenditionEnabled() {
+  get mediaRenditionsEnabled() {
     if (this.value) {
       return this.mediaRenditionList.filter(({ id }) => id == this.value);
     }
     return undefined;
   }
 
-  set mediaRenditionEnabled(list) {
-    this.removeAttribute(MediaUIAttributes.MEDIA_RENDITION_ENABLED);
+  set mediaRenditionsEnabled(list) {
+    this.removeAttribute(MediaUIAttributes.MEDIA_RENDITIONS_ENABLED);
 
     this.value = list[0]?.id;
   }
@@ -103,7 +103,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
       container.append(this.#autoOption);
     }
 
-    let isAuto = !this.mediaRenditionEnabled;
+    let isAuto = !this.mediaRenditionsEnabled;
     if (isAuto) {
       this.#autoOption.setAttribute('aria-selected', 'true');
       this.#autoOption.setAttribute('tabindex', '0');

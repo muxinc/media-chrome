@@ -35,7 +35,7 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @attr {string} mediarenditionenabled - (read-only) Set to the enabled rendition.
+ * @attr {string} mediarenditionsenabled - (read-only) Set to the enabled rendition.
  * @attr {string} mediarenditionactive - (read-only) Set to the current active rendition.
  *
  * @cssproperty [--media-rendition-button-display = inline-flex] - `display` property of button.
@@ -44,7 +44,7 @@ class MediaRenditionButton extends MediaChromeButton {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      MediaUIAttributes.MEDIA_RENDITION_ENABLED,
+      MediaUIAttributes.MEDIA_RENDITIONS_ENABLED,
       MediaUIAttributes.MEDIA_RENDITION_ACTIVE,
     ];
   }
@@ -53,12 +53,12 @@ class MediaRenditionButton extends MediaChromeButton {
     super({ slotTemplate });
   }
 
-  get mediaRenditionEnabled() {
-    return getRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ENABLED);
+  get mediaRenditionsEnabled() {
+    return getRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITIONS_ENABLED);
   }
 
-  set mediaRenditionEnabled(list) {
-    setRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITION_ENABLED, list);
+  set mediaRenditionsEnabled(list) {
+    setRenditionListAttr(this, MediaUIAttributes.MEDIA_RENDITIONS_ENABLED, list);
   }
 
   get mediaRenditionActive() {

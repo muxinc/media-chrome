@@ -59,7 +59,7 @@ export const MediaUIProps = {
   MEDIA_TARGET_LIVE_WINDOW: 'mediaTargetLiveWindow',
   MEDIA_TIME_IS_LIVE: 'mediaTimeIsLive',
   MEDIA_RENDITION_LIST: 'mediaRenditionList',
-  MEDIA_RENDITION_ENABLED: 'mediaRenditionEnabled',
+  MEDIA_RENDITIONS_ENABLED: 'mediaRenditionsEnabled',
   MEDIA_RENDITION_ACTIVE: 'mediaRenditionActive',
 };
 

@@ -484,7 +484,7 @@ export const MediaUIStates = {
     mediaEvents: ['loadstart'],
     renditionListEvents: ['addrendition', 'removerendition'],
   },
-  MEDIA_RENDITION_ENABLED: {
+  MEDIA_RENDITIONS_ENABLED: {
     get: function (controller) {
       const { media } = controller;
       const selected = media?.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];

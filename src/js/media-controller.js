@@ -563,7 +563,7 @@ const CustomAttrSerializer = {
   [MediaUIAttributes.MEDIA_BUFFERED]: (tuples) => tuples?.map(serializeTuple).join(' '),
   [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords) => coords?.join(' '),
   [MediaUIAttributes.MEDIA_RENDITION_LIST]: stringifyRenditionList,
-  [MediaUIAttributes.MEDIA_RENDITION_ENABLED]: stringifyRenditionList,
+  [MediaUIAttributes.MEDIA_RENDITIONS_ENABLED]: stringifyRenditionList,
   [MediaUIAttributes.MEDIA_RENDITION_ACTIVE]: stringifyRenditionList,
 };
 
