@@ -475,44 +475,18 @@ export const MediaUIStates = {
   MEDIA_RENDITION_LIST: {
     get: function (controller) {
       const { media } = controller;
-      const selected = media?.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
-
-      if (!selected) return [];
-
-      return [...selected.renditions ?? []];
+      return [...media?.videoRenditions ?? []];
     },
-    mediaEvents: ['loadstart'],
-    renditionListEvents: ['addrendition', 'removerendition'],
+    videoTracksEvents: ['addtrack', 'removetrack', 'change'],
+    videoRenditionsEvents: ['addrendition', 'removerendition'],
   },
-  MEDIA_RENDITIONS_ENABLED: {
+  MEDIA_RENDITION_SELECTED: {
     get: function (controller) {
       const { media } = controller;
-      const selected = media?.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
-
-      if (!selected) return [];
-
-      const renditions = [...selected.renditions ?? []];
-
-      // If all renditions are enabled it means `auto` is selected.
-      if (renditions.every(r => r.enabled)) return [];
-
-      return renditions.filter(r => r.enabled);
+      return media?.videoRenditions?.[media.videoRenditions?.selectedIndex];
     },
-    mediaEvents: ['loadstart'],
-    renditionListEvents: ['addrendition', 'removerendition', 'change'],
-  },
-  MEDIA_RENDITION_ACTIVE: {
-    get: function (controller) {
-      const { media } = controller;
-      const selected = media?.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
-
-      if (!selected) return [];
-
-      const renditions = [...selected.renditions ?? []];
-      return renditions.filter(r => r.active);
-    },
-    mediaEvents: ['loadstart'],
-    renditionListEvents: ['renditionchange'],
+    videoTracksEvents: ['addtrack', 'removetrack', 'change'],
+    videoRenditionsEvents: ['addrendition', 'removerendition', 'change'],
   },
 };
 
@@ -812,13 +786,11 @@ export const MediaUIRequestHandlers = {
     media.currentTime = seekable.end(seekable.length - 1);
   },
   MEDIA_RENDITION_REQUEST: (media, event) => {
-    if (!media) return;
+    if (!media?.videoRenditions) return;
 
     const renditionId = event.detail;
-    const selected = media.videoTracks?.[media.videoTracks?.selectedIndex ?? 0];
-
-    for (const rendition of selected?.renditions ?? []) {
-      rendition.enabled = renditionId === 'auto' || rendition.id == renditionId;
-    }
+    const index = [...media.videoRenditions]
+      .findIndex(r => r.id == renditionId);
+    media.videoRenditions.selectedIndex = index;
   }
 };

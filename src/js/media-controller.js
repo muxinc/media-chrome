@@ -178,6 +178,8 @@ class MediaController extends MediaContainer {
         mediaEvents,
         rootEvents,
         textTracksEvents,
+        videoTracksEvents,
+        videoRenditionsEvents,
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
@@ -196,13 +198,17 @@ class MediaController extends MediaContainer {
         media.textTracks?.addEventListener(eventName, handler);
         handler();
       });
+
+      videoTracksEvents?.forEach((eventName) => {
+        media.videoTracks?.addEventListener(eventName, handler);
+        handler();
+      });
+
+      videoRenditionsEvents?.forEach((eventName) => {
+        media.videoRenditions?.addEventListener(eventName, handler);
+        handler();
+      });
     });
-
-    media.videoTracks?.addEventListener('addtrack', this.#handleVideoTrack);
-    media.videoTracks?.addEventListener('change', this.#handleVideoTrack);
-    media.videoTracks?.addEventListener('removetrack', this.#handleVideoTrack);
-
-    this.#handleVideoTrack();
 
     // don't get from localStorage if novolumepref attribute is set
     if (!this.hasAttribute('novolumepref')) {
@@ -226,6 +232,8 @@ class MediaController extends MediaContainer {
         mediaEvents,
         rootEvents,
         textTracksEvents,
+        videoTracksEvents,
+        videoRenditionsEvents,
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
@@ -241,45 +249,23 @@ class MediaController extends MediaContainer {
       textTracksEvents?.forEach((eventName) => {
         media.textTracks?.removeEventListener(eventName, handler);
       });
+
+      videoTracksEvents?.forEach((eventName) => {
+        media.videoTracks?.removeEventListener(eventName, handler);
+        handler();
+      });
+
+      videoRenditionsEvents?.forEach((eventName) => {
+        media.videoRenditions?.removeEventListener(eventName, handler);
+        handler();
+      });
     });
-
-    media.videoTracks?.removeEventListener('addtrack', this.#handleVideoTrack);
-    media.videoTracks?.removeEventListener('change', this.#handleVideoTrack);
-    media.videoTracks?.removeEventListener('removetrack', this.#handleVideoTrack);
-
-    this.#handleVideoTrack({ type: 'removeall' });
 
     // Reset to paused state
     // TODO: Can we just reset all state here?
     // Should hasPlayed refer to the media element or the controller?
     // i.e. the poster might re-show if not handled by the poster el
     this.propagateMediaState(MediaUIProps.MEDIA_PAUSED, true);
-  }
-
-  #handleVideoTrack = ({ type = '', track = null } = {}) => {
-
-    Object.keys(MediaUIStates).forEach((key) => {
-
-      const { renditionListEvents } = MediaUIStates[key];
-      const handler = this._mediaStatePropagators[key];
-
-      renditionListEvents?.forEach((eventName) => {
-
-        for (const videoTrack of this.media?.videoTracks ?? []) {
-
-          if (type !== 'removeall' && videoTrack.selected) {
-            videoTrack.renditions?.addEventListener(eventName, handler);
-            handler();
-          } else {
-            videoTrack.renditions?.removeEventListener(eventName, handler);
-          }
-        }
-
-        if (type === 'removetrack' && track) {
-          track.renditions?.removeEventListener(eventName, handler);
-        }
-      });
-    });
   }
 
   propagateMediaState(stateName, state) {
@@ -563,8 +549,7 @@ const CustomAttrSerializer = {
   [MediaUIAttributes.MEDIA_BUFFERED]: (tuples) => tuples?.map(serializeTuple).join(' '),
   [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords) => coords?.join(' '),
   [MediaUIAttributes.MEDIA_RENDITION_LIST]: stringifyRenditionList,
-  [MediaUIAttributes.MEDIA_RENDITIONS_ENABLED]: stringifyRenditionList,
-  [MediaUIAttributes.MEDIA_RENDITION_ACTIVE]: stringifyRenditionList,
+  [MediaUIAttributes.MEDIA_RENDITION_SELECTED]: (r) => stringifyRenditionList([r]),
 };
 
 const setAttr = async (child, attrName, attrValue) => {

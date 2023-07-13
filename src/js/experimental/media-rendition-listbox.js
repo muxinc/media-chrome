@@ -14,7 +14,7 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @attr {string} mediarenditionsenabled - (read-only) Set to the enabled rendition.
+ * @attr {string} mediarenditionselected - (read-only) Set to the enabled rendition.
  * @attr {string} mediarenditionlist - (read-only) Set to the rendition list.
  *
  * @cssproperty --media-rendition-listbox-white-space - `white-space` of playback rate list item.
@@ -27,7 +27,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_RENDITION_LIST,
-      MediaUIAttributes.MEDIA_RENDITIONS_ENABLED,
+      MediaUIAttributes.MEDIA_RENDITION_SELECTED,
     ];
   }
 
@@ -44,8 +44,8 @@ class MediaRenditionListbox extends MediaChromeListbox {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
 
-    if (attrName === MediaUIAttributes.MEDIA_RENDITIONS_ENABLED && oldValue !== newValue) {
-      this.value = newValue;
+    if (attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED && oldValue !== newValue) {
+      this.value = parseRenditionList(newValue)[0];
 
     } else if (attrName === MediaUIAttributes.MEDIA_RENDITION_LIST && oldValue !== newValue) {
 
@@ -79,17 +79,14 @@ class MediaRenditionListbox extends MediaChromeListbox {
     this.#render();
   }
 
-  get mediaRenditionsEnabled() {
-    if (this.value) {
-      return this.mediaRenditionList.filter(({ id }) => id == this.value);
-    }
-    return undefined;
+  get mediaRenditionSelected() {
+    return this.mediaRenditionList.find(({ id }) => id == this.value);
   }
 
-  set mediaRenditionsEnabled(list) {
-    this.removeAttribute(MediaUIAttributes.MEDIA_RENDITIONS_ENABLED);
+  set mediaRenditionSelected(rendition) {
+    this.removeAttribute(MediaUIAttributes.MEDIA_RENDITION_SELECTED);
 
-    this.value = list[0]?.id;
+    this.value = rendition?.id;
   }
 
   #render() {
@@ -103,7 +100,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
       container.append(this.#autoOption);
     }
 
-    let isAuto = !this.mediaRenditionsEnabled;
+    let isAuto = !this.mediaRenditionSelected;
     if (isAuto) {
       this.#autoOption.setAttribute('aria-selected', 'true');
       this.#autoOption.setAttribute('tabindex', '0');

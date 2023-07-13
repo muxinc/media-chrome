@@ -255,8 +255,7 @@ class MediaContainer extends globalThis.HTMLElement {
       // that shouldn't be propagated to this state receiver element.
       .filter(name => ![
         MediaUIAttributes.MEDIA_RENDITION_LIST,
-        MediaUIAttributes.MEDIA_RENDITION_ACTIVE,
-        MediaUIAttributes.MEDIA_RENDITIONS_ENABLED,
+        MediaUIAttributes.MEDIA_RENDITION_SELECTED,
       ].includes(name));
   }
 
