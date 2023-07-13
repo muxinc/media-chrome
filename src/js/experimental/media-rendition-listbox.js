@@ -90,6 +90,8 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 
   #render() {
+    console.log(this.mediaRenditionList);
+
     const renditionList = this.mediaRenditionList
       .sort((a, b) => b.height - a.height);
 
@@ -129,6 +131,8 @@ class MediaRenditionListbox extends MediaChromeListbox {
 
   #onChange() {
     const selectedOption = this.selectedOptions[0]?.value;
+
+    console.log(this.selectedOptions, selectedOption);
 
     if (selectedOption == null) return;
 

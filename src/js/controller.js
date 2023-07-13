@@ -477,7 +477,7 @@ export const MediaUIStates = {
       const { media } = controller;
       return [...media?.videoRenditions ?? []];
     },
-    videoTracksEvents: ['addtrack', 'removetrack', 'change'],
+    mediaEvents: ['emptied'],
     videoRenditionsEvents: ['addrendition', 'removerendition'],
   },
   MEDIA_RENDITION_SELECTED: {
@@ -485,7 +485,7 @@ export const MediaUIStates = {
       const { media } = controller;
       return media?.videoRenditions?.[media.videoRenditions?.selectedIndex];
     },
-    videoTracksEvents: ['addtrack', 'removetrack', 'change'],
+    mediaEvents: ['emptied'],
     videoRenditionsEvents: ['addrendition', 'removerendition', 'change'],
   },
 };
@@ -791,6 +791,11 @@ export const MediaUIRequestHandlers = {
     const renditionId = event.detail;
     const index = [...media.videoRenditions]
       .findIndex(r => r.id == renditionId);
+
+    console.log(index, media.videoRenditions.selectedIndex);
+
     media.videoRenditions.selectedIndex = index;
+
+    console.log(index, media.videoRenditions.selectedIndex);
   }
 };

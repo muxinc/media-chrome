@@ -178,7 +178,6 @@ class MediaController extends MediaContainer {
         mediaEvents,
         rootEvents,
         textTracksEvents,
-        videoTracksEvents,
         videoRenditionsEvents,
       } = MediaUIStates[key];
 
@@ -196,11 +195,6 @@ class MediaController extends MediaContainer {
 
       textTracksEvents?.forEach((eventName) => {
         media.textTracks?.addEventListener(eventName, handler);
-        handler();
-      });
-
-      videoTracksEvents?.forEach((eventName) => {
-        media.videoTracks?.addEventListener(eventName, handler);
         handler();
       });
 
@@ -232,7 +226,6 @@ class MediaController extends MediaContainer {
         mediaEvents,
         rootEvents,
         textTracksEvents,
-        videoTracksEvents,
         videoRenditionsEvents,
       } = MediaUIStates[key];
 
@@ -248,11 +241,6 @@ class MediaController extends MediaContainer {
 
       textTracksEvents?.forEach((eventName) => {
         media.textTracks?.removeEventListener(eventName, handler);
-      });
-
-      videoTracksEvents?.forEach((eventName) => {
-        media.videoTracks?.removeEventListener(eventName, handler);
-        handler();
       });
 
       videoRenditionsEvents?.forEach((eventName) => {
