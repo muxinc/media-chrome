@@ -1,6 +1,6 @@
 // Work in progress
 
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -38,7 +38,7 @@ template.innerHTML = `
   </media-chrome-menu>
 `;
 
-class MediaSettingsPopup extends window.HTMLElement {
+class MediaSettingsPopup extends globalThis.HTMLElement {
   constructor() {
     super();
 
@@ -47,8 +47,8 @@ class MediaSettingsPopup extends window.HTMLElement {
   }
 }
 
-if (!window.customElements.get('media-settings-popup')) {
-  window.customElements.define('media-settings-popup', MediaSettingsPopup);
+if (!globalThis.customElements.get('media-settings-popup')) {
+  globalThis.customElements.define('media-settings-popup', MediaSettingsPopup);
 }
 
 export default MediaSettingsPopup;

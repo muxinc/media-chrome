@@ -1,6 +1,6 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 const template = document.createElement('template');
@@ -65,7 +65,7 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
  */
-class MediaTextDisplay extends window.HTMLElement {
+class MediaTextDisplay extends globalThis.HTMLElement {
   #mediaController;
 
   static get observedAttributes() {
@@ -117,8 +117,8 @@ class MediaTextDisplay extends window.HTMLElement {
   }
 }
 
-if (!window.customElements.get('media-text-display')) {
-  window.customElements.define('media-text-display', MediaTextDisplay);
+if (!globalThis.customElements.get('media-text-display')) {
+  globalThis.customElements.define('media-text-display', MediaTextDisplay);
 }
 
 export { MediaTextDisplay };

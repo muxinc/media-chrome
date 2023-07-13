@@ -1,5 +1,5 @@
 import { MediaStateReceiverAttributes } from '../constants.js';
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -32,7 +32,7 @@ export const Attributes = {
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  */
-class MediaChromeListitem extends window.HTMLElement {
+class MediaChromeListitem extends globalThis.HTMLElement {
   static get observedAttributes() {
     return [
       'disabled',
@@ -127,8 +127,8 @@ class MediaChromeListitem extends window.HTMLElement {
   handleClick() {}
 }
 
-if (!window.customElements.get('media-chrome-listitem')) {
-  window.customElements.define('media-chrome-listitem', MediaChromeListitem);
+if (!globalThis.customElements.get('media-chrome-listitem')) {
+  globalThis.customElements.define('media-chrome-listitem', MediaChromeListitem);
 }
 
 export default MediaChromeListitem;

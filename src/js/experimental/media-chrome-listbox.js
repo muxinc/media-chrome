@@ -1,5 +1,5 @@
 import { MediaStateReceiverAttributes } from '../constants.js';
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -67,7 +67,7 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
  */
-class MediaChromeListbox extends window.HTMLElement {
+class MediaChromeListbox extends globalThis.HTMLElement {
   #keysSoFar = '';
   #clearKeysTimeout = null;
   #slot;
@@ -419,18 +419,18 @@ class MediaChromeListbox extends window.HTMLElement {
   }
 
   #clearKeysOnDelay() {
-    window.clearTimeout(this.#clearKeysTimeout);
+    clearTimeout(this.#clearKeysTimeout);
     this.#clearKeysTimeout = null;
 
-    this.#clearKeysTimeout = window.setTimeout(() => {
+    this.#clearKeysTimeout = setTimeout(() => {
       this.#keysSoFar = '';
       this.#clearKeysTimeout = null;
     }, 500);
   }
 }
 
-if (!window.customElements.get('media-chrome-listbox')) {
-  window.customElements.define('media-chrome-listbox', MediaChromeListbox);
+if (!globalThis.customElements.get('media-chrome-listbox')) {
+  globalThis.customElements.define('media-chrome-listbox', MediaChromeListbox);
 }
 
 export default MediaChromeListbox;

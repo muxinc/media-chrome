@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
@@ -85,13 +85,13 @@ class MediaPlayButton extends MediaChromeButton {
       ? MediaUIEvents.MEDIA_PLAY_REQUEST
       : MediaUIEvents.MEDIA_PAUSE_REQUEST;
     this.dispatchEvent(
-      new window.CustomEvent(eventName, { composed: true, bubbles: true })
+      new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
     );
   }
 }
 
-if (!window.customElements.get('media-play-button')) {
-  window.customElements.define('media-play-button', MediaPlayButton);
+if (!globalThis.customElements.get('media-play-button')) {
+  globalThis.customElements.define('media-play-button', MediaPlayButton);
 }
 
 export default MediaPlayButton;

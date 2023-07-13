@@ -7,7 +7,7 @@
 </media-theme-demuxed-2022>
 */
 
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
@@ -363,7 +363,7 @@ class MediaThemeDemuxed extends MediaThemeElement {
   connectedCallback() {
     this.render();
 
-    const resizeObserver = new window.ResizeObserver((entries) => {
+    const resizeObserver = new globalThis.ResizeObserver((entries) => {
       entries.forEach((entry) => {
         entry.target.className = this.#getBreakpoints(entry.contentRect).join(' ');
       });
@@ -382,8 +382,8 @@ class MediaThemeDemuxed extends MediaThemeElement {
   }
 }
 
-if (!window.customElements.get('media-theme-demuxed-2022')) {
-  window.customElements.define('media-theme-demuxed-2022', MediaThemeDemuxed);
+if (!globalThis.customElements.get('media-theme-demuxed-2022')) {
+  globalThis.customElements.define('media-theme-demuxed-2022', MediaThemeDemuxed);
 }
 
 export default MediaThemeDemuxed;

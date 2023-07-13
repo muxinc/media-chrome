@@ -1,5 +1,5 @@
 import { MediaTextDisplay } from './media-text-display.js';
-import { window } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
 import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
@@ -43,8 +43,8 @@ class MediaDurationDisplay extends MediaTextDisplay {
   }
 }
 
-if (!window.customElements.get('media-duration-display')) {
-  window.customElements.define('media-duration-display', MediaDurationDisplay);
+if (!globalThis.customElements.get('media-duration-display')) {
+  globalThis.customElements.define('media-duration-display', MediaDurationDisplay);
 }
 
 export default MediaDurationDisplay;

@@ -9,7 +9,7 @@ import {
   getBooleanAttr,
   setBooleanAttr,
 } from './utils/element-utils.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -31,7 +31,7 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-gesture-receiver-display - `display` property of gesture receiver.
  * @cssproperty --media-control-display - `display` property of control.
  */
-class MediaGestureReceiver extends window.HTMLElement {
+class MediaGestureReceiver extends globalThis.HTMLElement {
   #mediaController;
 
   // NOTE: Currently "baking in" actions + attrs until we come up with
@@ -174,7 +174,7 @@ class MediaGestureReceiver extends window.HTMLElement {
       ? MediaUIEvents.MEDIA_PLAY_REQUEST
       : MediaUIEvents.MEDIA_PAUSE_REQUEST;
     this.dispatchEvent(
-      new window.CustomEvent(eventName, { composed: true, bubbles: true })
+      new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
     );
   }
 }
@@ -189,8 +189,8 @@ function getMediaControllerEl(controlEl) {
   return closestComposedNode(controlEl, 'media-controller');
 }
 
-if (!window.customElements.get('media-gesture-receiver')) {
-  window.customElements.define('media-gesture-receiver', MediaGestureReceiver);
+if (!globalThis.customElements.get('media-gesture-receiver')) {
+  globalThis.customElements.define('media-gesture-receiver', MediaGestureReceiver);
 }
 
 export default MediaGestureReceiver;

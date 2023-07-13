@@ -1,5 +1,5 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
 const slotTemplate = document.createElement('template');
@@ -58,7 +58,7 @@ class MediaPlaybackrateListbox extends MediaChromeListbox {
 
     if (!selectedOption) return;
 
-    const event = new window.CustomEvent(
+    const event = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST,
       {
         composed: true,
@@ -70,8 +70,8 @@ class MediaPlaybackrateListbox extends MediaChromeListbox {
   }
 }
 
-if (!window.customElements.get('media-playback-rate-listbox')) {
-  window.customElements.define('media-playback-rate-listbox', MediaPlaybackrateListbox);
+if (!globalThis.customElements.get('media-playback-rate-listbox')) {
+  globalThis.customElements.define('media-playback-rate-listbox', MediaPlaybackrateListbox);
 }
 
 export default MediaPlaybackrateListbox;

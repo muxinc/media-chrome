@@ -7,7 +7,7 @@
 </media-theme-minimal>
 */
 
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
@@ -407,8 +407,8 @@ class MediaThemeMinimal extends MediaThemeElement {
   static template = template;
 }
 
-if (!window.customElements.get('media-theme-minimal')) {
-  window.customElements.define('media-theme-minimal', MediaThemeMinimal);
+if (!globalThis.customElements.get('media-theme-minimal')) {
+  globalThis.customElements.define('media-theme-minimal', MediaThemeMinimal);
 }
 
 export default MediaThemeMinimal;

@@ -1,4 +1,4 @@
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreen-api.js';
 import { containsComposedNode } from './utils/element-utils.js';
 import {
@@ -511,7 +511,7 @@ export const MediaUIRequestHandlers = {
     if (!mediaController.hasAttribute('novolumepref')) {
       // Store the last set volume as a local preference, if ls is supported
       try {
-        window.localStorage.setItem(
+        globalThis.localStorage.setItem(
           'media-chrome-pref-volume',
           volume.toString()
         );
@@ -742,7 +742,7 @@ export const MediaUIRequestHandlers = {
     if (
       !(
         media.webkitShowPlaybackTargetPicker &&
-        window.WebKitPlaybackTargetAvailabilityEvent
+        globalThis.WebKitPlaybackTargetAvailabilityEvent
       )
     ) {
       console.warn(

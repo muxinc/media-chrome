@@ -7,7 +7,7 @@
 </media-theme-responsive>
 */
 
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
@@ -132,8 +132,8 @@ class MediaThemeResponsive extends MediaThemeElement {
   static template = template;
 }
 
-if (!window.customElements.get('media-theme-responsive')) {
-  window.customElements.define('media-theme-responsive', MediaThemeResponsive);
+if (!globalThis.customElements.get('media-theme-responsive')) {
+  globalThis.customElements.define('media-theme-responsive', MediaThemeResponsive);
 }
 
 export default MediaThemeResponsive;

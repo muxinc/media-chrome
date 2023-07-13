@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
@@ -89,7 +89,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
       availableRates.find((r) => r > this.mediaPlaybackRate) ??
       availableRates[0] ??
       DEFAULT_RATE;
-    const evt = new window.CustomEvent(
+    const evt = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST,
       { composed: true, bubbles: true, detail }
     );
@@ -97,8 +97,8 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 }
 
-if (!window.customElements.get('media-playback-rate-button')) {
-  window.customElements.define(
+if (!globalThis.customElements.get('media-playback-rate-button')) {
+  globalThis.customElements.define(
     'media-playback-rate-button',
     MediaPlaybackRateButton
   );

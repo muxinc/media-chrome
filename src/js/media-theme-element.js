@@ -1,4 +1,4 @@
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { TemplateInstance } from './utils/template-parts.js';
 import { processor } from './utils/template-processor.js';
 import { camelCase, isNumericString } from './utils/utils.js';
@@ -42,7 +42,7 @@ prependTemplate.innerHTML = /*html*/`
  *
  * @attr {string} template - The element `id` of the template to render.
  */
-export class MediaThemeElement extends window.HTMLElement {
+export class MediaThemeElement extends globalThis.HTMLElement {
   static template;
   static observedAttributes = ['template'];
   static processor = processor;
@@ -250,6 +250,6 @@ async function request(resource) {
   return response.text();
 }
 
-if (!window.customElements.get('media-theme')) {
-  window.customElements.define('media-theme', MediaThemeElement);
+if (!globalThis.customElements.get('media-theme')) {
+  globalThis.customElements.define('media-theme', MediaThemeElement);
 }

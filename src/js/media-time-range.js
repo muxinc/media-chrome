@@ -1,5 +1,5 @@
 import { MediaChromeRange } from './media-chrome-range.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
@@ -210,7 +210,7 @@ class MediaTimeRange extends MediaChromeRange {
 
       const newTime = this.range.value;
       const detail = newTime;
-      const evt = new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+      const evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
         composed: true,
         bubbles: true,
         detail,
@@ -544,7 +544,7 @@ class MediaTimeRange extends MediaChromeRange {
     style.transform = `translateX(${boxPos})`;
 
     const detail = mouseRatio * duration;
-    const mediaPreviewEvt = new window.CustomEvent(
+    const mediaPreviewEvt = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_PREVIEW_REQUEST,
       { composed: true, bubbles: true, detail }
     );
@@ -560,19 +560,19 @@ class MediaTimeRange extends MediaChromeRange {
       // @ts-ignore
       [...this.#boxes].some((b) => evt.composedPath().includes(b))
     ) {
-      window.removeEventListener('pointermove', this.#offRangeHandler);
+      globalThis.window?.removeEventListener('pointermove', this.#offRangeHandler);
       this.#rangeEntered = false;
       this.#stopTrackingMouse();
     }
   };
 
   #trackMouse = () => {
-    window.addEventListener('pointermove', this.#pointermoveHandler, false);
+    globalThis.window?.addEventListener('pointermove', this.#pointermoveHandler, false);
   };
 
   #stopTrackingMouse = () => {
-    window.removeEventListener('pointermove', this.#pointermoveHandler);
-    const endEvt = new window.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
+    globalThis.window?.removeEventListener('pointermove', this.#pointermoveHandler);
+    const endEvt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
       composed: true,
       bubbles: true,
       detail: null,
@@ -588,7 +588,7 @@ class MediaTimeRange extends MediaChromeRange {
       this.#rangeEntered = true;
       this.#trackMouse();
 
-      window.addEventListener('pointermove', this.#offRangeHandler, false);
+      globalThis.window?.addEventListener('pointermove', this.#offRangeHandler, false);
     }
   };
 
@@ -597,15 +597,15 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   #disableBoxes() {
-    window.removeEventListener('pointermove', this.#offRangeHandler);
+    globalThis.window?.removeEventListener('pointermove', this.#offRangeHandler);
     this.removeEventListener('pointermove', this.#rangepointermoveHandler);
     this.#rangeEntered = false;
     this.#stopTrackingMouse();
   }
 }
 
-if (!window.customElements.get('media-time-range')) {
-  window.customElements.define('media-time-range', MediaTimeRange);
+if (!globalThis.customElements.get('media-time-range')) {
+  globalThis.customElements.define('media-time-range', MediaTimeRange);
 }
 
 export default MediaTimeRange;

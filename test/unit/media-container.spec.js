@@ -6,8 +6,8 @@ describe('<media-container>', () => {
   // NOTE: Although MediaContainer isn't designed for independent use, registering it
   // here to test behavior independent of <media-controller>
   before(async () => {
-    window.customElements.define('media-container', MediaContainer);
-    await window.customElements.whenDefined('media-container');
+    customElements.define('media-container', MediaContainer);
+    await customElements.whenDefined('media-container');
   });
 
   it('calls media callbacks', async () => {

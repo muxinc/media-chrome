@@ -5,7 +5,7 @@
 */
 import { MediaStateReceiverAttributes } from './constants.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
@@ -47,7 +47,7 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-control-bar-display - `display` property of control bar.
  * @cssproperty --media-control-display - `display` property of control.
  */
-class MediaControlBar extends window.HTMLElement {
+class MediaControlBar extends globalThis.HTMLElement {
   #mediaController;
 
   static get observedAttributes() {
@@ -104,8 +104,8 @@ class MediaControlBar extends window.HTMLElement {
   }
 }
 
-if (!window.customElements.get('media-control-bar')) {
-  window.customElements.define('media-control-bar', MediaControlBar);
+if (!globalThis.customElements.get('media-control-bar')) {
+  globalThis.customElements.define('media-control-bar', MediaControlBar);
 }
 
 export default MediaControlBar;

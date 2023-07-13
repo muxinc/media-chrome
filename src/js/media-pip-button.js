@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 import {
@@ -99,13 +99,13 @@ class MediaPipButton extends MediaChromeButton {
       ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
       : MediaUIEvents.MEDIA_ENTER_PIP_REQUEST;
     this.dispatchEvent(
-      new window.CustomEvent(eventName, { composed: true, bubbles: true })
+      new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
     );
   }
 }
 
-if (!window.customElements.get('media-pip-button')) {
-  window.customElements.define('media-pip-button', MediaPipButton);
+if (!globalThis.customElements.get('media-pip-button')) {
+  globalThis.customElements.define('media-pip-button', MediaPipButton);
 }
 
 export default MediaPipButton;

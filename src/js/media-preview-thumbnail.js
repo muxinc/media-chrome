@@ -1,4 +1,4 @@
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import {
   MediaUIAttributes,
   MediaStateReceiverAttributes,
@@ -36,7 +36,7 @@ template.innerHTML = /*html*/`
  * @cssproperty [--media-preview-thumbnail-display = inline-block] - `display` property of display.
  * @cssproperty [--media-control-display = inline-block] - `display` property of control.
  */
-class MediaPreviewThumbnail extends window.HTMLElement {
+class MediaPreviewThumbnail extends globalThis.HTMLElement {
   #mediaController;
 
   static get observedAttributes() {
@@ -178,8 +178,8 @@ class MediaPreviewThumbnail extends window.HTMLElement {
   }
 }
 
-if (!window.customElements.get('media-preview-thumbnail')) {
-  window.customElements.define(
+if (!globalThis.customElements.get('media-preview-thumbnail')) {
+  globalThis.customElements.define(
     'media-preview-thumbnail',
     MediaPreviewThumbnail
   );

@@ -1,4 +1,4 @@
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { getStringAttr, setStringAttr } from './utils/element-utils.js';
 
 export const Attributes = {
@@ -49,7 +49,7 @@ const setBackgroundImage = (el, image) => {
  * @cssproperty --media-object-fit - `object-fit` of poster image.
  * @cssproperty --media-object-position - `object-position` of poster image.
  */
-class MediaPosterImage extends window.HTMLElement {
+class MediaPosterImage extends globalThis.HTMLElement {
   static get observedAttributes() {
     return [Attributes.PLACEHOLDER_SRC, Attributes.SRC];
   }
@@ -107,8 +107,8 @@ class MediaPosterImage extends window.HTMLElement {
   }
 }
 
-if (!window.customElements.get('media-poster-image')) {
-  window.customElements.define('media-poster-image', MediaPosterImage);
+if (!globalThis.customElements.get('media-poster-image')) {
+  globalThis.customElements.define('media-poster-image', MediaPosterImage);
 }
 
 export default MediaPosterImage;

@@ -10,8 +10,17 @@ class ResizeObserver {
   observe() {}
 }
 
-const windowShim = {
+const documentShim = {
+  createElement: function () {
+    return new globalThisShim.HTMLElement();
+  },
+  addEventListener() {},
+  removeEventListener() {},
+};
+
+const globalThisShim = {
   ResizeObserver,
+  document: documentShim,
   HTMLElement: class HTMLElement extends EventTarget {},
   DocumentFragment: class DocumentFragment extends EventTarget {},
   customElements: {
@@ -21,32 +30,22 @@ const windowShim = {
   },
   CustomEvent: function CustomEvent() {},
   getComputedStyle: function () {},
-  // eslint-disable-next-line no-unused-vars
-  requestAnimationFrame: function(_cb) {
-    return 1;
-  },
-  // eslint-disable-next-line no-unused-vars
-  queueMicrotask: function(_cb) {
-  },
-};
-
-const documentShim = {
-  createElement: function () {
-    return new windowShim.HTMLElement();
-  },
-  addEventListener() {},
-  removeEventListener() {},
 };
 
 export const isServer =
   typeof window === 'undefined' ||
   typeof window.customElements === 'undefined';
 
+const isShimmed = Object.keys(globalThisShim)
+  .every(key => key in globalThis);
+
 /**
-  * @type { window & { WebKitPlaybackTargetAvailabilityEvent?,
+  * @type { globalThis & {
+  *   WebKitPlaybackTargetAvailabilityEvent?,
   *   chrome?,
   *   DocumentFragment?,
   *   getComputedStyle,
+  *   CastableVideoElement?
   * } |
   * {HTMLElement,
   * customElements,
@@ -54,19 +53,18 @@ export const isServer =
   * getComputedStyle,
   * addEventListener?,
   * removeEventListener?,
-  * setTimeout?,
-  * clearTimeout?,
   * localStorage?,
   * WebKitPlaybackTargetAvailabilityEvent?,
+  * window?,
   * document?,
   * chrome?,
   * DocumentFragment?,
   * ResizeObserver?,
-  * requestAnimationFrame,
-  * queueMicrotask,
+  * CastableVideoElement?
   * } }
   * */
-export const Window = isServer ? windowShim : window;
+export const GlobalThis = isServer && !isShimmed ? globalThisShim : globalThis;
+
 /**
   * @type { document & { webkitExitFullscreen? } |
   * {createElement,
@@ -81,6 +79,9 @@ export const Window = isServer ? windowShim : window;
   * removeEventListener?,
   * } }
   */
-export const Document = isServer ? documentShim : window.document;
+export const Document = isServer && !isShimmed ? documentShim : globalThis.document;
 
-export { Window as window, Document as document };
+export {
+  GlobalThis as globalThis,
+  Document as document
+};

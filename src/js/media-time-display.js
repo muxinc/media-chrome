@@ -6,7 +6,7 @@ import {
   setBooleanAttr,
   setNumericAttr,
 } from './utils/element-utils.js';
-import { window } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { formatAsTimePhrase, formatTime } from './utils/time.js';
 import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
@@ -273,8 +273,8 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 }
 
-if (!window.customElements.get('media-time-display')) {
-  window.customElements.define('media-time-display', MediaTimeDisplay);
+if (!globalThis.customElements.get('media-time-display')) {
+  globalThis.customElements.define('media-time-display', MediaTimeDisplay);
 }
 
 export default MediaTimeDisplay;

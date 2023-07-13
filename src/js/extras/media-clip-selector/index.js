@@ -1,4 +1,4 @@
-import { window, document } from '../../utils/server-safe-globals.js';
+import { globalThis, document } from '../../utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from '../../constants.js';
 
 const template = document.createElement('template');
@@ -138,7 +138,7 @@ template.innerHTML = `
 /**
  * @extends {HTMLElement}
  */
-class MediaClipSelector extends window.HTMLElement {
+class MediaClipSelector extends globalThis.HTMLElement {
   static get observedAttributes() {
     return [
       'thumbnails',
@@ -186,12 +186,12 @@ class MediaClipSelector extends window.HTMLElement {
     this.wrapper.addEventListener('click', this._clickHandler, false);
 
     this.wrapper.addEventListener('touchstart', this._dragStart, false);
-    window.addEventListener('touchend', this._dragEnd, false);
+    globalThis.window?.addEventListener('touchend', this._dragEnd, false);
     this.wrapper.addEventListener('touchmove', this._drag, false);
 
     this.wrapper.addEventListener('mousedown', this._dragStart, false);
-    window.addEventListener('mouseup', this._dragEnd, false);
-    window.addEventListener('mousemove', this._drag, false);
+    globalThis.window?.addEventListener('mouseup', this._dragEnd, false);
+    globalThis.window?.addEventListener('mousemove', this._drag, false);
 
     this.enableThumbnails();
   }
@@ -356,7 +356,7 @@ class MediaClipSelector extends window.HTMLElement {
      */
     if (this.isTimestampInBounds(timestampForClick)) {
       this.dispatchEvent(
-        new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+        new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
           composed: true,
           bubbles: true,
           detail: timestampForClick,
@@ -388,7 +388,7 @@ class MediaClipSelector extends window.HTMLElement {
         this.mediaCurrentTime > endTime
       ) {
         this.dispatchEvent(
-          new window.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+          new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
             composed: true,
             bubbles: true,
             detail: startTime,
@@ -407,8 +407,8 @@ class MediaClipSelector extends window.HTMLElement {
     this.wrapper.removeEventListener('touchmove', this._drag);
 
     this.wrapper.removeEventListener('mousedown', this._dragStart);
-    window.removeEventListener('mouseup', this._dragEnd);
-    window.removeEventListener('mousemove', this._drag);
+    globalThis.window?.removeEventListener('mouseup', this._dragEnd);
+    globalThis.window?.removeEventListener('mousemove', this._drag);
   }
 
   /*
@@ -444,18 +444,18 @@ class MediaClipSelector extends window.HTMLElement {
 
         this.thumbnailPreview.style.left = `${thumbnailLeft}px`;
         this.dispatchEvent(
-          new window.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
+          new globalThis.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
             composed: true,
             bubbles: true,
             detail: mousePercent * duration,
           })
         );
       };
-      window.addEventListener('mousemove', mouseMoveHandler, false);
+      globalThis.window?.addEventListener('mousemove', mouseMoveHandler, false);
     };
 
     const stopTrackingMouse = () => {
-      window.removeEventListener('mousemove', mouseMoveHandler);
+      globalThis.window?.removeEventListener('mousemove', mouseMoveHandler);
     };
 
     // Trigger when the mouse moves over the range
@@ -469,12 +469,12 @@ class MediaClipSelector extends window.HTMLElement {
         let offRangeHandler = (evt) => {
           if (evt.target != this && !this.contains(evt.target)) {
             this.thumbnailPreview.style.display = 'none';
-            window.removeEventListener('mousemove', offRangeHandler);
+            globalThis.window?.removeEventListener('mousemove', offRangeHandler);
             rangeEntered = false;
             stopTrackingMouse();
           }
         };
-        window.addEventListener('mousemove', offRangeHandler, false);
+        globalThis.window?.addEventListener('mousemove', offRangeHandler, false);
       }
 
       if (!this.mediaDuration) {
@@ -494,8 +494,8 @@ class MediaClipSelector extends window.HTMLElement {
   }
 }
 
-if (!window.customElements.get('media-clip-selector')) {
-  window.customElements.define('media-clip-selector', MediaClipSelector);
+if (!globalThis.customElements.get('media-clip-selector')) {
+  globalThis.customElements.define('media-clip-selector', MediaClipSelector);
 }
 
 export default MediaClipSelector;

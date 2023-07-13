@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { window, document } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import {
@@ -41,7 +41,7 @@ const updateAriaChecked = (el) => {
 };
 
 /**
- * @param {any} el Should be HTMLElement but issues with window shim
+ * @param {any} el Should be HTMLElement but issues with globalThis shim
  * @param {string} attrName
  * @returns {Array<Object>} An array of TextTrack-like objects.
  */
@@ -52,7 +52,7 @@ const getSubtitlesListAttr = (el, attrName) => {
 
 /**
  *
- * @param {any} el Should be HTMLElement but issues with window shim
+ * @param {any} el Should be HTMLElement but issues with globalThis shim
  * @param {string} attrName
  * @param {Array<Object>} list An array of TextTrack-like objects
  */
@@ -144,8 +144,8 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 }
 
-if (!window.customElements.get('media-captions-button')) {
-  window.customElements.define('media-captions-button', MediaCaptionsButton);
+if (!globalThis.customElements.get('media-captions-button')) {
+  globalThis.customElements.define('media-captions-button', MediaCaptionsButton);
 }
 
 export default MediaCaptionsButton;

@@ -420,7 +420,7 @@ describe('state propagation behaviors', () => {
     }
 
     const MEDIA_STATE_RECEIVER_WC_NAME = 'media-state-receiver';
-    window.customElements.define(
+    customElements.define(
       MEDIA_STATE_RECEIVER_WC_NAME,
       MediaStateReceiverWC
     );
