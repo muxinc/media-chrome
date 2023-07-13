@@ -28,6 +28,7 @@
 
   <media-controller id="mc">
     <hls-video
+      id="video"
       slot="media"
       src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k.m3u8"
       poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.webp"
@@ -37,7 +38,7 @@
     ></hls-video>
     <media-control-bar>
       <media-play-button></media-play-button>
-      <media-time-display showduration remaining></media-time-display>
+      <media-time-display showduration></media-time-display>
       <media-time-range></media-time-range>
       <media-mute-button></media-mute-button>
       <media-rendition-selectmenu></media-rendition-selectmenu>
@@ -45,6 +46,16 @@
       <media-fullscreen-button></media-fullscreen-button>
     </media-control-bar>
   </media-controller>
+
+  <p>
+    Quality: <span id="renditionactive">N/A</span>
+  </p>
+
+  <script>
+    video.addEventListener('resize', () => {
+      renditionactive.textContent = `${Math.min(video.videoWidth, video.videoHeight)}p`;
+    });
+  </script>
 
   <div class="examples">
     <a href="../">View more examples</a>
