@@ -30,13 +30,6 @@ const globalThisShim = {
   },
   CustomEvent: function CustomEvent() {},
   getComputedStyle: function () {},
-  // eslint-disable-next-line no-unused-vars
-  requestAnimationFrame: function(_cb) {
-    return 1;
-  },
-  // eslint-disable-next-line no-unused-vars
-  queueMicrotask: function(_cb) {
-  },
 };
 
 export const isServer =
@@ -60,8 +53,6 @@ const isShimmed = Object.keys(globalThisShim)
   * getComputedStyle,
   * addEventListener?,
   * removeEventListener?,
-  * setTimeout?,
-  * clearTimeout?,
   * localStorage?,
   * WebKitPlaybackTargetAvailabilityEvent?,
   * window?,
@@ -69,8 +60,6 @@ const isShimmed = Object.keys(globalThisShim)
   * chrome?,
   * DocumentFragment?,
   * ResizeObserver?,
-  * requestAnimationFrame,
-  * queueMicrotask,
   * CastableVideoElement?
   * } }
   * */

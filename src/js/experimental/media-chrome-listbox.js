@@ -419,10 +419,10 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   #clearKeysOnDelay() {
-    globalThis.clearTimeout(this.#clearKeysTimeout);
+    clearTimeout(this.#clearKeysTimeout);
     this.#clearKeysTimeout = null;
 
-    this.#clearKeysTimeout = globalThis.setTimeout(() => {
+    this.#clearKeysTimeout = setTimeout(() => {
       this.#keysSoFar = '';
       this.#clearKeysTimeout = null;
     }, 500);

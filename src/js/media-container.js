@@ -317,7 +317,7 @@ class MediaContainer extends globalThis.HTMLElement {
       if (pendingResizeCb) return;
       // Just in case it takes too long (which will cause an error to throw),
       // do the breakpoint computation asynchronously
-      globalThis.setTimeout(() => {
+      setTimeout(() => {
         resizeCallback(entries);
         // Once we've completed, reset the pending cb flag to false
         pendingResizeCb = false;
@@ -481,12 +481,12 @@ class MediaContainer extends globalThis.HTMLElement {
     const scheduleInactive = () => {
       setActive();
 
-      globalThis.clearTimeout(this._inactiveTimeout);
+      clearTimeout(this._inactiveTimeout);
 
       // Setting autohide to -1 turns off autohide
       if (this.autohide < 0) return;
 
-      this._inactiveTimeout = globalThis.setTimeout(() => {
+      this._inactiveTimeout = setTimeout(() => {
         setInactive();
       }, this.autohide * 1000);
     };
@@ -527,7 +527,7 @@ class MediaContainer extends globalThis.HTMLElement {
 
       setActive();
       // Stay visible if hovered over control bar
-      globalThis.clearTimeout(this._inactiveTimeout);
+      clearTimeout(this._inactiveTimeout);
 
       // If hovering over something other than controls, we're free to make inactive
       // @ts-ignore
