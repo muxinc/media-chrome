@@ -1,6 +1,6 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
 import './media-chrome-option.js';
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 import { parseRenditionList } from '../utils/utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
@@ -132,7 +132,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
 
     if (selectedOption == null) return;
 
-    const event = new window.CustomEvent(
+    const event = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_RENDITION_REQUEST,
       {
         composed: true,
@@ -144,8 +144,8 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 }
 
-if (!window.customElements.get('media-rendition-listbox')) {
-  window.customElements.define('media-rendition-listbox', MediaRenditionListbox);
+if (!globalThis.customElements.get('media-rendition-listbox')) {
+  globalThis.customElements.define('media-rendition-listbox', MediaRenditionListbox);
 }
 
 export default MediaRenditionListbox;

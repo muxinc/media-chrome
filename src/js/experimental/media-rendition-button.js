@@ -1,5 +1,5 @@
 import { MediaChromeButton } from '../media-chrome-button.js';
-import { window, document } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 import { stringifyRenditionList, parseRenditionList } from '../utils/utils.js';
 import { MediaUIAttributes } from '../constants.js';
 
@@ -61,8 +61,8 @@ class MediaRenditionButton extends MediaChromeButton {
   }
 }
 
-if (!window.customElements.get('media-rendition-button')) {
-  window.customElements.define('media-rendition-button', MediaRenditionButton);
+if (!globalThis.customElements.get('media-rendition-button')) {
+  globalThis.customElements.define('media-rendition-button', MediaRenditionButton);
 }
 
 export default MediaRenditionButton;

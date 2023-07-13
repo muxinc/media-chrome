@@ -1,7 +1,7 @@
 import MediaChromeSelectMenu from './media-chrome-selectmenu.js';
 import './media-rendition-button.js';
 import './media-rendition-listbox.js';
-import { window, document, } from '../utils/server-safe-globals.js';
+import { globalThis, document, } from '../utils/server-safe-globals.js';
 
 /**
  * @csspart button - The default button that's in the shadow DOM.
@@ -30,8 +30,8 @@ class MediaRenditionSelectMenu extends MediaChromeSelectMenu {
   }
 }
 
-if (!window.customElements.get('media-rendition-selectmenu')) {
-  window.customElements.define('media-rendition-selectmenu', MediaRenditionSelectMenu);
+if (!globalThis.customElements.get('media-rendition-selectmenu')) {
+  globalThis.customElements.define('media-rendition-selectmenu', MediaRenditionSelectMenu);
 }
 
 export default MediaRenditionSelectMenu;
