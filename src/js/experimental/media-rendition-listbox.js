@@ -22,6 +22,7 @@ slotTemplate.innerHTML = /*html*/`
 class MediaRenditionListbox extends MediaChromeListbox {
   #autoOption;
   #renditionList = [];
+  #prevState;
 
   static get observedAttributes() {
     return [
@@ -90,6 +91,9 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 
   #render() {
+    if (this.#prevState === JSON.stringify(this.mediaRenditionList)) return;
+    this.#prevState = JSON.stringify(this.mediaRenditionList);
+
     const renditionList = this.mediaRenditionList
       .sort((a, b) => b.height - a.height);
 
