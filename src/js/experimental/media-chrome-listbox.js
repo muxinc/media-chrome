@@ -48,7 +48,6 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   #keysSoFar = '';
   #clearKeysTimeout = null;
   #slot;
-  #_assignedElements;
   #metaPressed = false;
 
   static get observedAttributes() {
@@ -80,13 +79,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     this.#slot = this.shadowRoot.querySelector('slot');
 
     this.#slot.addEventListener('slotchange', () => {
-      this.#assignedElements = this.#slot.assignedElements({flatten: true});
-
-      if (this.#assignedElements.length === 1 && this.#assignedElements[0].nodeName.toLowerCase() === 'slot') {
-        this.#assignedElements = this.#assignedElements[0].assignedElements({flatten: true});
-      }
-
-      const els = this.#items;
+      const els = this.#options;
       const activeEls = els.some(el => el.getAttribute('tabindex') === '0');
 
       // if the user set an element as active, we should use that
@@ -106,30 +99,28 @@ class MediaChromeListbox extends globalThis.HTMLElement {
       }
 
       if (elToSelect) {
-        elToSelect.setAttribute('tabindex', 0);
+        elToSelect.setAttribute('tabindex', '0');
         elToSelect.setAttribute('aria-selected', 'true');
       }
     });
   }
 
-  get #assignedElements() {
-    if (!this.#_assignedElements) {
-      this.#_assignedElements = Array.from(this.shadowRoot.querySelectorAll('media-chrome-option'));
+  get #options() {
+    // First query the light dom children for any options.
+
+    /** @type NodeListOf<HTMLOptionElement> */
+    let options = this.querySelectorAll('media-chrome-option');
+
+    if (!options.length) {
+      // Fallback to the options in the shadow dom.
+      options = this.#slot.querySelectorAll('media-chrome-option');
     }
 
-    return this.#_assignedElements;
-  }
-
-  set #assignedElements(value) {
-    this.#_assignedElements = value;
-  }
-
-  get #items() {
-    return this.#assignedElements.filter(el => !el.hasAttribute('disabled'));
+    return Array.from(options);
   }
 
   get selectedOptions() {
-    return this.#items.filter(el => el.getAttribute('aria-selected') === 'true');
+    return this.#options.filter(el => el.getAttribute('aria-selected') === 'true');
   }
 
   get value() {
@@ -137,7 +128,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   set value(newValue) {
-    const item = this.#items.find(el => el.value === newValue || el.textContent === newValue);
+    const item = this.#options.find(el => el.value === newValue || el.textContent === newValue);
 
     if (!item) return;
 
@@ -289,7 +280,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   #selectItem(item, toggle) {
     if (!this.hasAttribute('aria-multiselectable') || this.getAttribute('aria-multiselectable') !== 'true') {
-      this.#assignedElements.forEach(el => el.setAttribute('aria-selected', 'false'));
+      this.#options.forEach(el => el.setAttribute('aria-selected', 'false'));
     }
 
     if (toggle) {
@@ -309,7 +300,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   handleMovement(e) {
     const { key } = e;
-    const els = this.#items;
+    const els = this.#options;
 
     let currentOption = this.#getItem(e);
     if (!currentOption) {
@@ -358,7 +349,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
     if (!item || item.hasAttribute('disabled')) return;
 
-    this.#items.forEach(el => el.setAttribute('tabindex', '-1'));
+    this.#options.forEach(el => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
 
     this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
@@ -367,7 +358,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   #searchItem(key) {
     this.#clearKeysOnDelay();
 
-    const els = this.#items;
+    const els = this.#options;
     const activeIndex = els.findIndex(el => el.getAttribute('tabindex') === '0');
 
     // always accumulate the key
