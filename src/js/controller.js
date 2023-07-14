@@ -789,13 +789,8 @@ export const MediaUIRequestHandlers = {
     if (!media?.videoRenditions) return;
 
     const renditionId = event.detail;
-    const index = [...media.videoRenditions]
-      .findIndex(r => r.id == renditionId);
-
-    console.log(index, media.videoRenditions.selectedIndex);
+    const index = [...media.videoRenditions].findIndex(r => r.id == renditionId);
 
     media.videoRenditions.selectedIndex = index;
-
-    console.log(index, media.videoRenditions.selectedIndex);
   }
 };
