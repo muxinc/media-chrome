@@ -84,7 +84,8 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const availableRates = Array.from(this.rates.values(), str => +str).sort();
+    const availableRates = Array.from(this.rates.values(), str => +str).sort((a, b) => a - b);
+
     const detail =
       availableRates.find((r) => r > this.mediaPlaybackRate) ??
       availableRates[0] ??
