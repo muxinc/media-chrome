@@ -1,8 +1,9 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { updateAriaLabel, updateSeekIconValue } from './utils/seek.js';
 import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
+import { verbs } from './labels/labels.js';
+import { getSlotted, updateIconText } from './utils/element-utils.js';
 
 export const Attributes = {
   SEEK_OFFSET: 'seekoffset',
@@ -38,18 +39,12 @@ class MediaSeekForwardButton extends MediaChromeButton {
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
-  }
-
-  connectedCallback() {
-    updateAriaLabel(this);
-    updateSeekIconValue(this);
-    super.connectedCallback();
+    this.seekOffset = getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
     if (attrName === Attributes.SEEK_OFFSET) {
-      updateSeekIconValue(this);
-      updateAriaLabel(this);
+      this.seekOffset = getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
     }
 
     super.attributeChangedCallback(attrName, _oldValue, newValue);
@@ -66,6 +61,8 @@ class MediaSeekForwardButton extends MediaChromeButton {
 
   set seekOffset(value) {
     setNumericAttr(this, Attributes.SEEK_OFFSET, value);
+    this.setAttribute('aria-label', verbs.SEEK_FORWARD_N_SECS({ seekOffset: this.seekOffset }));
+    updateIconText(getSlotted(this, 'icon'), this.seekOffset);
   }
 
   // Props derived from Media UI Attributes
