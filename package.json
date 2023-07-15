@@ -21,6 +21,11 @@
       "require": "./dist/cjs/react/index.js",
       "default": "./dist/react/index.js"
     },
+    "./dist/react": {
+      "import": "./dist/react/index.js",
+      "require": "./dist/cjs/react/index.js",
+      "default": "./dist/react/index.js"
+    },
     "./dist/cjs/*": "./dist/cjs/*",
     "./dist/react/*": {
       "import": "./dist/react/*",
