@@ -1,3 +1,15 @@
+## [1.1.5](https://github.com/muxinc/media-chrome/compare/v1.1.4...v1.1.5) (2023-07-17)
+
+
+### Bug Fixes
+
+* media-chrome/dist/react import ([#687](https://github.com/muxinc/media-chrome/issues/687)) ([a5975c0](https://github.com/muxinc/media-chrome/commit/a5975c0165cd4f49d8f4d0d0c25959ef8779e42a)), closes [#680](https://github.com/muxinc/media-chrome/issues/680)
+* Playback rate sorting for double digits ([#684](https://github.com/muxinc/media-chrome/issues/684)) ([2ebea97](https://github.com/muxinc/media-chrome/commit/2ebea974db52f5f00cc616012a7ede876ccc255c))
+* Seek forward aria label said "back" ([#685](https://github.com/muxinc/media-chrome/issues/685)) ([f2c85f6](https://github.com/muxinc/media-chrome/commit/f2c85f6bb2c47e49b7e1503a47cac6e65f504d59)), closes [#678](https://github.com/muxinc/media-chrome/issues/678)
+* use globalThis i/o window (declarative shadow DOM) ([#671](https://github.com/muxinc/media-chrome/issues/671)) ([f620c1e](https://github.com/muxinc/media-chrome/commit/f620c1ea37c6618d9c621a983baa088e8f9b6f0d))
+
+
+
 ## [1.1.4](https://github.com/muxinc/media-chrome/compare/v1.1.3...v1.1.4) (2023-07-07)
 
 
