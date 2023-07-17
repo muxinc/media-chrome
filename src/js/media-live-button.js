@@ -8,7 +8,7 @@ const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
 
 const indicatorSVG =
-  '<svg viewBox="0 0 6 12"><circle cx="3" cy="6" r="2"></circle></svg>';
+  '<svg viewBox="0 0 4 4"><circle cx="2" cy="2" r="2"></circle></svg>';
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/`
@@ -17,7 +17,8 @@ slotTemplate.innerHTML = /*html*/`
   slot[name=indicator] > *,
   :host ::slotted([slot=indicator]) {
     ${/* Override styles for icon-only buttons */ ''}
-    min-width: auto;
+    min-width: 6px;
+    height: 6px;
     fill: var(--media-live-button-icon-color, rgb(140, 140, 140));
     color: var(--media-live-button-icon-color, rgb(140, 140, 140));
   }
