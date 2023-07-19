@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@custom-elements-manifest/analyzer@^0.8.0":
-  version "0.8.0"
-  resolved "https://registry.yarnpkg.com/@custom-elements-manifest/analyzer/-/analyzer-0.8.0.tgz#757bdd5fd97c8b19ddcec05d2691557df0bc10cc"
-  integrity sha512-w+OMAWW4x04eE6dpEInoVkk6ITEsQTsbx/jv7ofbl5QniXFiY5CFwWCVVAxCd3pTQbXd2Y9VxwefVJuGs/vNWw==
+"@custom-elements-manifest/analyzer@^0.8.4":
+  version "0.8.4"
+  resolved "https://registry.yarnpkg.com/@custom-elements-manifest/analyzer/-/analyzer-0.8.4.tgz#34fce1158a44cb7a9d8c1c7415e8c9d03e25d95f"
+  integrity sha512-hibYFNoqPc/xSH9ySuotOllz3UtQnnbG912oC0RtRwHGilnOVT5zeL3Ip26swCjiuFAp8Y0uLN5DwnMpa/xXYQ==
   dependencies:
     "@custom-elements-manifest/find-dependencies" "^0.0.5"
     "@github/catalyst" "^1.6.0"
