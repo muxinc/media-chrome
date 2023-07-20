@@ -39,7 +39,11 @@ class MediaSeekForwardButton extends MediaChromeButton {
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
+  }
+
+  connectedCallback(){
     this.seekOffset = getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
+    super.connectedCallback();
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
