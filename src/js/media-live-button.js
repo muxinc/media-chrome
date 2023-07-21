@@ -44,6 +44,16 @@ slotTemplate.innerHTML = /*html*/`
   <slot name="spacer">&nbsp;</slot><slot name="text">LIVE</slot>
 `;
 
+const updateAriaAttributes = (el) => {
+  const isPaused = el.mediaPaused || !el.mediaTimeIsLive
+  const label = isPaused ? verbs.SEEK_LIVE() : verbs.PLAYING_LIVE();
+  el.setAttribute('aria-label', label);
+
+  isPaused ?
+    el.removeAttribute('aria-disabled') :
+    el.setAttribute('aria-disabled', 'true');
+};
+
 /**
  * @slot indicator - The default is an SVG of a circle that changes to red when the video or audio is live. Can be replaced with your own SVG or font icon.
  * @slot spacer - A simple text space (&nbsp;) between the indicator and the text.
@@ -63,19 +73,16 @@ class MediaLiveButton extends MediaChromeButton {
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
-    this.setAttribute('aria-label', verbs.SEEK_LIVE());
+  }
+
+  connectedCallback() {
+    updateAriaAttributes(this);
+    super.connectedCallback();
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
-
-    if (this.mediaPaused || !this.mediaTimeIsLive) {
-      this.setAttribute('aria-label', verbs.SEEK_LIVE());
-      this.removeAttribute('aria-disabled');
-    } else {
-      this.setAttribute('aria-label', verbs.PLAYING_LIVE());
-      this.setAttribute('aria-disabled', 'true');
-    }
+    updateAriaAttributes(this);
   }
 
   /**
