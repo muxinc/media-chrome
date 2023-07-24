@@ -45,11 +45,11 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 const updateAriaAttributes = (el) => {
-  const isPaused = el.mediaPaused || !el.mediaTimeIsLive
-  const label = isPaused ? verbs.SEEK_LIVE() : verbs.PLAYING_LIVE();
+  const isPausedOrNotLive = el.mediaPaused || !el.mediaTimeIsLive
+  const label = isPausedOrNotLive ? verbs.SEEK_LIVE() : verbs.PLAYING_LIVE();
   el.setAttribute('aria-label', label);
 
-  isPaused ?
+  isPausedOrNotLive ?
     el.removeAttribute('aria-disabled') :
     el.setAttribute('aria-disabled', 'true');
 };
