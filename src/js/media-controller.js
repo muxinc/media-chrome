@@ -381,6 +381,7 @@ class MediaController extends MediaContainer {
   }
 
   keyboardShortcutHandler(e) {
+    // TODO: e.target might need to be replaced w/ e.composedPath to account for shadow DOM.
     // if the event's key is already handled by the target, skip keyboard shortcuts
     // keysUsed is either an attribute or a property.
     // The attribute is a DOM array and the property is a JS array
