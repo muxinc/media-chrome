@@ -477,7 +477,7 @@ export const MediaUIStates = {
       const { media } = controller;
       return [...media?.videoRenditions ?? []];
     },
-    mediaEvents: ['emptied'],
+    mediaEvents: ['emptied', 'loadstart'],
     videoRenditionsEvents: ['addrendition', 'removerendition'],
   },
   MEDIA_RENDITION_SELECTED: {
