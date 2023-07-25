@@ -1,18 +1,28 @@
 
 export function stringifyRenditionList(renditions) {
   return renditions
-    ?.map(({ id, width, height }) => {
-      return [id, width, height].filter(a => a != null).join(':')
-    }).join(' ');
+    ?.map(stringifyRendition)
+    .join(' ');
 }
 
 export function parseRenditionList(renditions) {
   return renditions
     ?.split(/\s+/)
-    .map((group) => {
-      const [id, width, height] = group.split(':');
-      return { id, width, height };
-    });
+    .map(parseRendition);
+}
+
+export function stringifyRendition(rendition) {
+  if (rendition) {
+    const { id, width, height } = rendition;
+    return [id, width, height].filter(a => a != null).join(':')
+  }
+}
+
+export function parseRendition(rendition) {
+  if (rendition) {
+    const [id, width, height] = rendition.split(':');
+    return { id, width, height };
+  }
 }
 
 export function dashedToCamel(word) {
