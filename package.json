@@ -10,6 +10,12 @@
   },
   "main": "dist/index.js",
   "type": "module",
+  "typesVersions": {
+    "*": {
+      "react": ["dist/react/index.d.ts"],
+      "*": ["dist/index.d.ts"]
+    }
+  },
   "exports": {
     ".": {
       "import": "./dist/index.js",
