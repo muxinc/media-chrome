@@ -2,7 +2,6 @@ import MediaChromeListbox from './media-chrome-listbox.js';
 import './media-chrome-option.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import { parseRenditionList } from '../utils/utils.js';
-import { getNumericAttr, setNumericAttr } from '../utils/element-utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
 const slotTemplate = document.createElement('template');
@@ -15,7 +14,7 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @attr {string} mediarenditionselected - (read-only) Set to the enabled rendition index.
+ * @attr {string} mediarenditionselected - (read-only) Set to the enabled rendition.
  * @attr {string} mediarenditionlist - (read-only) Set to the rendition list.
  *
  * @cssproperty --media-rendition-listbox-white-space - `white-space` of playback rate list item.
@@ -47,7 +46,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
   attributeChangedCallback(attrName, oldValue, newValue) {
 
     if (attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED && oldValue !== newValue) {
-      this.value = this.mediaRenditionList?.[+newValue]?.id ?? 'auto';
+      this.value = parseRenditionList(newValue)[0];
 
     } else if (attrName === MediaUIAttributes.MEDIA_RENDITION_LIST && oldValue !== newValue) {
 
@@ -82,11 +81,13 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 
   get mediaRenditionSelected() {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED);
+    return this.mediaRenditionList.find(({ id }) => id == this.value);
   }
 
-  set mediaRenditionSelected(index) {
-    setNumericAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, index);
+  set mediaRenditionSelected(rendition) {
+    this.removeAttribute(MediaUIAttributes.MEDIA_RENDITION_SELECTED);
+
+    this.value = rendition?.id;
   }
 
   #render() {
