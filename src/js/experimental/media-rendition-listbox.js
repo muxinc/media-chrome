@@ -107,10 +107,8 @@ class MediaRenditionListbox extends MediaChromeListbox {
     let isAuto = !this.mediaRenditionSelected;
     if (isAuto) {
       this.#autoOption.setAttribute('aria-selected', 'true');
-      this.#autoOption.setAttribute('tabindex', '0');
     } else {
       this.#autoOption.setAttribute('aria-selected', 'false');
-      this.#autoOption.setAttribute('tabindex', '-1');
     }
 
     for (const rendition of renditionList) {
