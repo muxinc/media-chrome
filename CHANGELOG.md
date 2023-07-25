@@ -1,3 +1,12 @@
+## [1.1.7](https://github.com/muxinc/media-chrome/compare/v1.1.6...v1.1.7) (2023-07-25)
+
+
+### Bug Fixes
+
+* remove unneeded default types path ([#699](https://github.com/muxinc/media-chrome/issues/699)) ([cc1ebd9](https://github.com/muxinc/media-chrome/commit/cc1ebd9a67365b0aec150def71390c4d4ec96e96))
+
+
+
 ## [1.1.6](https://github.com/muxinc/media-chrome/compare/v1.1.5...v1.1.6) (2023-07-25)
 
 
