@@ -483,7 +483,7 @@ export const MediaUIStates = {
   MEDIA_RENDITION_SELECTED: {
     get: function (controller) {
       const { media } = controller;
-      return media?.videoRenditions?.[media.videoRenditions?.selectedIndex];
+      return media?.videoRenditions?.[media.videoRenditions?.selectedIndex]?.id;
     },
     mediaEvents: ['emptied'],
     videoRenditionsEvents: ['addrendition', 'removerendition', 'change'],
@@ -794,6 +794,8 @@ export const MediaUIRequestHandlers = {
     const renditionId = event.detail;
     const index = [...media.videoRenditions].findIndex(r => r.id == renditionId);
 
-    media.videoRenditions.selectedIndex = index;
+    if (media.videoRenditions.selectedIndex != index) {
+      media.videoRenditions.selectedIndex = index;
+    }
   }
 };

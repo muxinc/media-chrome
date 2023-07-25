@@ -1,6 +1,6 @@
 import { MediaChromeButton } from '../media-chrome-button.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
-import { stringifyRendition, parseRendition } from '../utils/utils.js';
+import { getNumericAttr, setNumericAttr } from '../utils/element-utils.js';
 import { MediaUIAttributes } from '../constants.js';
 
 const renditionIcon = /*html*/`<svg aria-hidden="true" viewBox="0 0 24 24">
@@ -13,7 +13,7 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @attr {string} mediarenditionselected - (read-only) Set to the enabled rendition index.
+ * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
  *
  * @cssproperty [--media-rendition-button-display = inline-flex] - `display` property of button.
  */
@@ -30,25 +30,11 @@ class MediaRenditionButton extends MediaChromeButton {
   }
 
   get mediaRenditionSelected() {
-    const attrVal = this.getAttribute(MediaUIAttributes.MEDIA_RENDITION_SELECTED);
-    if (!attrVal) return null;
-
-    return parseRendition(attrVal);
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED);
   }
 
-  set mediaRenditionSelected(rendition) {
-    // null, undefined, and empty arrays are treated as "no value" here
-    if (!rendition) {
-      this.removeAttribute(MediaUIAttributes.MEDIA_RENDITION_SELECTED);
-      return;
-    }
-
-    // don't set if the new value is the same as existing
-    const newValStr = stringifyRendition(rendition);
-    const oldVal = this.getAttribute(MediaUIAttributes.MEDIA_RENDITION_SELECTED);
-    if (oldVal === newValStr) return;
-
-    this.setAttribute(MediaUIAttributes.MEDIA_RENDITION_SELECTED, newValStr);
+  set mediaRenditionSelected(id) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
   }
 }
 

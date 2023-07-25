@@ -10,7 +10,7 @@
 import { MediaContainer } from './media-container.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
-import { constToCamel, delay, stringifyRendition, stringifyRenditionList } from './utils/utils.js';
+import { constToCamel, delay, stringifyRenditionList } from './utils/utils.js';
 import { stringifyTextTrackList, toggleSubsCaps } from './utils/captions.js';
 import {
   MediaUIEvents,
@@ -537,7 +537,6 @@ const CustomAttrSerializer = {
   [MediaUIAttributes.MEDIA_BUFFERED]: (tuples) => tuples?.map(serializeTuple).join(' '),
   [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords) => coords?.join(' '),
   [MediaUIAttributes.MEDIA_RENDITION_LIST]: stringifyRenditionList,
-  [MediaUIAttributes.MEDIA_RENDITION_SELECTED]: stringifyRendition,
 };
 
 const setAttr = async (child, attrName, attrValue) => {

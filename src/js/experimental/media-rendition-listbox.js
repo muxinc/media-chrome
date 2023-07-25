@@ -1,6 +1,7 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
 import './media-chrome-option.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
+import { getNumericAttr, setNumericAttr } from '../utils/element-utils.js';
 import { parseRenditionList } from '../utils/utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
@@ -14,7 +15,7 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @attr {string} mediarenditionselected - (read-only) Set to the enabled rendition.
+ * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
  * @attr {string} mediarenditionlist - (read-only) Set to the rendition list.
  *
  * @cssproperty --media-rendition-listbox-white-space - `white-space` of playback rate list item.
@@ -46,7 +47,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
   attributeChangedCallback(attrName, oldValue, newValue) {
 
     if (attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED && oldValue !== newValue) {
-      this.value = parseRenditionList(newValue)[0];
+      this.value = newValue ?? 'auto';
 
     } else if (attrName === MediaUIAttributes.MEDIA_RENDITION_LIST && oldValue !== newValue) {
 
@@ -81,13 +82,11 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 
   get mediaRenditionSelected() {
-    return this.mediaRenditionList.find(({ id }) => id == this.value);
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED);
   }
 
-  set mediaRenditionSelected(rendition) {
-    this.removeAttribute(MediaUIAttributes.MEDIA_RENDITION_SELECTED);
-
-    this.value = rendition?.id;
+  set mediaRenditionSelected(id) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
   }
 
   #render() {
@@ -119,7 +118,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
       option.value = `${rendition.id}`;
       option.textContent = `${Math.min(rendition.width, rendition.height)}p`;
 
-      if (rendition.enabled && !isAuto) {
+      if (rendition.selected && !isAuto) {
         option.setAttribute('aria-selected', 'true');
       } else {
         option.setAttribute('aria-selected', 'false');
@@ -130,16 +129,14 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 
   #onChange() {
-    const selectedOption = this.selectedOptions[0]?.value;
-
-    if (selectedOption == null) return;
+    if (this.value == null) return;
 
     const event = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_RENDITION_REQUEST,
       {
         composed: true,
         bubbles: true,
-        detail: selectedOption,
+        detail: this.value,
       }
     );
     this.dispatchEvent(event);
