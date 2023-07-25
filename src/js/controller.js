@@ -483,7 +483,7 @@ export const MediaUIStates = {
   MEDIA_RENDITION_SELECTED: {
     get: function (controller) {
       const { media } = controller;
-      return media?.videoRenditions?.[media.videoRenditions?.selectedIndex];
+      return media.videoRenditions?.selectedIndex;
     },
     mediaEvents: ['emptied'],
     videoRenditionsEvents: ['addrendition', 'removerendition', 'change'],
