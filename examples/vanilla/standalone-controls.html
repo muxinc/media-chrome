@@ -51,13 +51,10 @@
 
       <h2>Outside the control-bar element</h2>
       <media-play-button mediacontroller="controller"></media-play-button>
+      <media-live-button mediacontroller="controller"></media-live-button>
       <media-mute-button mediacontroller="controller"></media-mute-button>
-      <media-seek-backward-button
-        mediacontroller="controller"
-      ></media-seek-backward-button>
-      <media-seek-forward-button
-        mediacontroller="controller"
-      ></media-seek-forward-button>
+      <media-seek-backward-button mediacontroller="controller"></media-seek-backward-button>
+      <media-seek-forward-button mediacontroller="controller"></media-seek-forward-button>
       <media-volume-range mediacontroller="controller"></media-volume-range>
       <media-time-range mediacontroller="controller"></media-time-range>
       <!-- It works for "display-only" components, too! -->
@@ -66,16 +63,12 @@
         remaining
         showduration
       ></media-time-display>
-      <media-captions-button
-        mediacontroller="controller"
-      ></media-captions-button>
-      <media-playback-rate-button
-        mediacontroller="controller"
-      ></media-playback-rate-button>
+      <media-captions-button mediacontroller="controller"></media-captions-button>
+      <media-playback-rate-button mediacontroller="controller"></media-playback-rate-button>
       <media-pip-button mediacontroller="controller"></media-pip-button>
-      <media-fullscreen-button
-        mediacontroller="controller"
-      ></media-fullscreen-button>
+      <media-airplay-button mediacontroller="controller"></media-airplay-button>
+      <media-cast-button mediacontroller="controller"></media-cast-button>
+      <media-fullscreen-button mediacontroller="controller"></media-fullscreen-button>
       <media-loading-indicator mediacontroller="controller"></media-loading-indicator>
 
       <h2>Inside the control-bar element</h2>
@@ -88,6 +81,7 @@
 
       <media-control-bar mediacontroller="controller">
         <media-play-button></media-play-button>
+        <media-live-button></media-live-button>
         <media-mute-button></media-mute-button>
         <media-seek-backward-button></media-seek-backward-button>
         <media-seek-forward-button></media-seek-forward-button>
@@ -97,6 +91,8 @@
         <media-captions-button></media-captions-button>
         <media-playback-rate-button></media-playback-rate-button>
         <media-pip-button></media-pip-button>
+        <media-airplay-button></media-airplay-button>
+        <media-cast-button></media-cast-button>
         <media-fullscreen-button></media-fullscreen-button>
         <media-loading-indicator></media-loading-indicator>
       </media-control-bar>
