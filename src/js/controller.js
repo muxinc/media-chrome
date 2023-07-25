@@ -786,7 +786,10 @@ export const MediaUIRequestHandlers = {
     media.currentTime = seekable.end(seekable.length - 1);
   },
   MEDIA_RENDITION_REQUEST: (media, event) => {
-    if (!media?.videoRenditions) return;
+    if (!media?.videoRenditions) {
+      console.warn('MediaController: Rendition selection not supported by this media.');
+      return;
+    }
 
     const renditionId = event.detail;
     const index = [...media.videoRenditions].findIndex(r => r.id == renditionId);
