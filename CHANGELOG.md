@@ -1,3 +1,13 @@
+## [1.1.6](https://github.com/muxinc/media-chrome/compare/v1.1.5...v1.1.6) (2023-07-25)
+
+
+### Bug Fixes
+
+* `<media-live-button/>` setting attr in constructor ([#696](https://github.com/muxinc/media-chrome/issues/696)) ([c99eb1c](https://github.com/muxinc/media-chrome/commit/c99eb1ce91f3c78936fee8f2820e9f9aef2142a4))
+* Attr setting error in seek buttons ([#692](https://github.com/muxinc/media-chrome/issues/692)) ([d944d66](https://github.com/muxinc/media-chrome/commit/d944d663f5a3f9a5b085f2159d5d4b37c650f72e)), closes [#691](https://github.com/muxinc/media-chrome/issues/691)
+
+
+
 ## [1.1.5](https://github.com/muxinc/media-chrome/compare/v1.1.4...v1.1.5) (2023-07-17)
 
 
