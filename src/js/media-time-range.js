@@ -18,8 +18,8 @@ const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
 const updateAriaValueText = (el) => {
   const range = el.range;
-  const currentTimePhrase = formatAsTimePhrase(+range.value);
-  const totalTimePhrase = formatAsTimePhrase(+range.max);
+  const currentTimePhrase = formatAsTimePhrase(+calcTimeFromRangeValue(el));
+  const totalTimePhrase = formatAsTimePhrase(+el.mediaSeekableEnd);
   const fullPhrase = !(currentTimePhrase && totalTimePhrase)
     ? DEFAULT_MISSING_TIME_PHRASE
     : `${currentTimePhrase} of ${totalTimePhrase}`;
@@ -33,6 +33,13 @@ template.innerHTML = /*html*/`
       --media-preview-border-radius: 3px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;
+    }
+
+    #buffered {
+      background: var(--media-time-range-buffered-color, rgb(255 255 255 / .4));
+      border-radius: var(--media-range-track-border-radius, 1px);
+      position: absolute;
+      height: 100%;
     }
 
     #preview-rail,
@@ -135,6 +142,16 @@ template.innerHTML = /*html*/`
   </div>
 `;
 
+const calcRangeValueFromTime = (el, time = el.mediaCurrentTime) => {
+  if (Number.isNaN(el.mediaSeekableEnd)) return 0;
+  return time / (el.mediaSeekableEnd - el.mediaSeekableStart);
+}
+
+const calcTimeFromRangeValue = (el, value = el.range.value) => {
+  if (Number.isNaN(el.mediaSeekableEnd)) return 0;
+  return value * (el.mediaSeekableEnd - el.mediaSeekableStart);
+}
+
 /**
  * @slot preview - An element that slides along the timeline to the position of the pointer hovering.
  * @slot current - An element that slides along the timeline to the position of the current time.
@@ -202,13 +219,17 @@ class MediaTimeRange extends MediaChromeRange {
   constructor() {
     super();
 
+    const bufferedElement = document.createElement('div');
+    bufferedElement.id = 'buffered';
+    this.track.prepend(bufferedElement);
+
     this.container.appendChild(template.content.cloneNode(true));
 
     this.range.addEventListener('input', () => {
       // Cancel color bar refreshing when seeking.
       cancelAnimationFrame(this._refreshId);
 
-      const newTime = this.range.value;
+      const newTime = calcTimeFromRangeValue(this);
       const detail = newTime;
       const evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
         composed: true,
@@ -226,8 +247,8 @@ class MediaTimeRange extends MediaChromeRange {
     // };
 
     this._refreshBar = () => {
-      const delta = (performance.now() - this._updateTimestamp) / 1000;
-      this.range.value = this.mediaCurrentTime + delta * this.mediaPlaybackRate;
+      const delta = calcRangeValueFromTime(this, (performance.now() - this._updateTimestamp) / 1000);
+      this.range.value = calcRangeValueFromTime(this) + delta * this.mediaPlaybackRate;
       this.updateBar();
       this.updateCurrentBox();
 
@@ -267,7 +288,7 @@ class MediaTimeRange extends MediaChromeRange {
       attrName === MediaUIAttributes.MEDIA_LOADING
     ) {
       this._updateTimestamp = performance.now();
-      this.range.value = this.mediaCurrentTime;
+      this.range.value = calcRangeValueFromTime(this);
       updateAriaValueText(this);
       this.updateBar();
       this.updateCurrentBox();
@@ -278,14 +299,11 @@ class MediaTimeRange extends MediaChromeRange {
       }
     }
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
-      this.range.max = this.#mediaSeekableEnd ?? this.mediaDuration ?? 1000;
       updateAriaValueText(this);
       this.updateBar();
       this.updateCurrentBox();
     }
     if (attrName === MediaUIAttributes.MEDIA_SEEKABLE) {
-      this.range.min = this.#mediaSeekableStart ?? 0;
-      this.range.max = this.#mediaSeekableEnd ?? this.mediaDuration ?? 1000;
       updateAriaValueText(this);
       this.updateBar();
     }
@@ -400,13 +418,13 @@ class MediaTimeRange extends MediaChromeRange {
   /**
    * @type {number | undefined}
    */
-  get #mediaSeekableEnd() {
-    const [, end] = this.mediaSeekable ?? [];
+  get mediaSeekableEnd() {
+    const [, end = this.mediaDuration] = this.mediaSeekable ?? [];
     return end;
   }
 
-  get #mediaSeekableStart() {
-    const [start] = this.mediaSeekable ?? [];
+  get mediaSeekableStart() {
+    const [start = 0] = this.mediaSeekable ?? [];
     return start;
   }
 
@@ -443,49 +461,37 @@ class MediaTimeRange extends MediaChromeRange {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_ENDED, value);
   }
 
-  getRelativeValues() {
-    const defaultRelativeValues = super.getRelativeValues();
-    if (!this.mediaEnded) return defaultRelativeValues;
-    return {
-      ...defaultRelativeValues,
-      relativeValue: defaultRelativeValues.relativeMax,
-    };
-  }
-
   /* Add a buffered progress bar */
-  getBarColors() {
-    let colorsArray = super.getBarColors();
-    const { range } = this;
-    const relativeMax = range.max - range.min;
-    const buffered = this.mediaBuffered;
+  updateBar() {
+    super.updateBar();
 
-    if (!buffered.length || !Number.isFinite(relativeMax) || relativeMax <= 0) {
-      return colorsArray;
+    const buffered = this.mediaBuffered;
+    if (!buffered.length) {
+      return;
     }
 
     // Find the buffered range that "contains" the current time and get its end.
-    // If none, just assume the start of the media timeline/range.min for
+    // If none, just assume the start of the media timeline for
     // visualization purposes.
     let relativeBufferedEnd;
+
     if (!this.mediaEnded) {
       const currentTime = this.mediaCurrentTime;
-      const [, bufferedEnd = range.min] = buffered.find(
+      const [, bufferedEnd = 0] = buffered.find(
         ([start, end]) => start <= currentTime && currentTime <= end
       ) ?? [];
-      relativeBufferedEnd = bufferedEnd - range.min;
+      relativeBufferedEnd = calcRangeValueFromTime(this, bufferedEnd);
     } else {
       // If we've ended, there may be some discrepancies between seekable end, duration, and current time.
       // In this case, just presume `relativeBufferedEnd` is the maximum possible value for visualization
       // purposes (CJP.)
-      relativeBufferedEnd = relativeMax;
+      relativeBufferedEnd = 1;
     }
 
-    const buffPercent = (relativeBufferedEnd / relativeMax) * 100;
-    colorsArray.splice(1, 0, [
-      'var(--media-time-range-buffered-color, rgb(255 255 255 / .4))',
-      buffPercent,
-    ]);
-    return colorsArray;
+    const buffPercent = relativeBufferedEnd * 100;
+
+    let { style } = getOrInsertCSSRule(this.shadowRoot, '#buffered');
+    style.setProperty('width', `${buffPercent}%`);
   }
 
   updateCurrentBox() {
@@ -493,8 +499,7 @@ class MediaTimeRange extends MediaChromeRange {
     // @ts-ignore
     if (!this.#currentBox.assignedElements().length) return;
 
-    const boxRatio = this.range.value / (this.range.max - this.range.min);
-    const boxPos = this.#getBoxPosition(this.#currentBox, boxRatio);
+    const boxPos = this.#getBoxPosition(this.#currentBox, this.range.value);
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#current-rail');
     style.transform = `translateX(${boxPos})`;
   }
@@ -535,7 +540,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     // Get mouse position percent
     const rangeRect = this.range.getBoundingClientRect();
-    let mouseRatio = (evt.clientX - rangeRect.left - this.thumbWidth / 2) / (rangeRect.width - this.thumbWidth);
+    let mouseRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
     // Lock between 0 and 1
     mouseRatio = Math.max(0, Math.min(1, mouseRatio));
 
