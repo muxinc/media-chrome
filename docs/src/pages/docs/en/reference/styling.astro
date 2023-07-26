@@ -82,7 +82,7 @@ function backticksToMdnLinks(str) {
         .map(cls => (
           <li>
             <code>{cls.tagName}</code>
-            {hasLink(cls.tagName) && (<>(<a href={`./components/${cls.tagName}`}>docs</a>)</>)}
+            {hasLink(cls.tagName) && (<>(<a href={`../components/${cls.tagName}`}>docs</a>)</>)}
           </li>
         ))
       }
