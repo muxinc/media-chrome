@@ -20,6 +20,24 @@ template.innerHTML = /*html*/`
     bottom: 100%;
     max-height: 300px;
     overflow: hidden auto;
+    transition: var(--media-selectmenu-transition-in,
+      visibility .15s ease-out, transform .15s ease-out, opacity .15s ease-out);
+    transform: var(--media-listbox-transform-in, translateY(0) scale(1));
+    visibility: visible;
+    opacity: 1;
+  }
+
+  [name="listbox"][hidden]::slotted(*),
+  [hidden] [part=listbox] {
+    transition: var(--media-selectmenu-transition-out,
+      visibility .15s ease-out, transform .15s ease-out, opacity .15s ease-out);
+    transform: var(--media-listbox-transform-out, translateY(2px) scale(.99));
+    visibility: hidden;
+    opacity: 0;
+  }
+
+  slot[name="listbox"][hidden] {
+    display: block;
   }
   </style>
 
@@ -46,8 +64,8 @@ template.innerHTML = /*html*/`
  * @csspart listbox - The default listbox that's in the shadow DOM.
  */
 class MediaChromeSelectMenu extends globalThis.HTMLElement {
-  #handleClick;
-  #handleChange;
+  #handleButtonClick;
+  #handleOptionChange;
   #enabledState = true;
   #button;
   #buttonSlot;
@@ -57,7 +75,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 
   static get observedAttributes() {
     return [
-      'disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+      'disabled',
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
     ];
   }
 
@@ -66,19 +85,15 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      const shadow = this.attachShadow({ mode: 'open' });
-
-      const buttonHTML = template.content.cloneNode(true);
-      this.nativeEl = buttonHTML;
-
-      shadow.appendChild(buttonHTML);
+      this.attachShadow({ mode: 'open' });
+      this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
 
-    this.#handleClick = this.#handleClick_.bind(this);
-    this.#handleChange = this.#handleChange_.bind(this);
+    this.#handleButtonClick = this.#handleButtonClick_.bind(this);
+    this.#handleOptionChange = this.#handleOptionChange_.bind(this);
 
     this.init?.();
 
@@ -138,7 +153,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     // only allow Enter/Space on the button itself and not on the listbox
     // and allow hiding the menu when pressing Escape when focused on the listbox
     if (isButton && (key === 'Enter' || key === ' ')) {
-      this.#handleClick();
+      this.#handleButtonClick();
     } else if (key === 'Escape' && !this.#listboxSlot.hidden) {
       this.#toggle();
     }
@@ -163,11 +178,11 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     }
   }
 
-  #handleClick_() {
+  #handleButtonClick_() {
     this.#toggle();
   }
 
-  #handleChange_() {
+  #handleOptionChange_() {
     this.#toggle(true);
   }
 
@@ -211,12 +226,12 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
         ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
         : this.parentElement) ?? this;
 
+    // Choose .offsetWidth which is not affected by CSS transforms.
+    const listboxWidth = this.#listbox.offsetWidth;
     const boundsRect = bounds.getBoundingClientRect();
-    const listboxRect = this.#listbox.getBoundingClientRect();
-    let position = -Math.max(buttonRect.x + listboxRect.width - boundsRect.right, 0);
+    const position = -Math.max(buttonRect.x + listboxWidth - boundsRect.right, 0);
 
-
-    this.#listbox.style.transform = `translateX(${position}px)`;
+    this.#listbox.style.left = `${position}px`;
   }
 
   #toggleExpanded(closeOnly = false) {
@@ -226,22 +241,22 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 
   enable() {
     this.#button.removeAttribute('disabled');
-    this.#button.addEventListener('click', this.#handleClick);
+    this.#button.addEventListener('click', this.#handleButtonClick);
     this.#button.addEventListener('keydown', this.#keydownListener);
     this.#listbox.addEventListener('keydown', this.#keydownListener);
     this.#toggleExpanded();
-    this.#listbox.addEventListener('change', this.#handleChange);
+    this.#listbox.addEventListener('change', this.#handleOptionChange);
     document.addEventListener('click', this.#documentClickHandler);
   }
 
   disable() {
     this.#button.setAttribute('disabled', '');
-    this.#button.removeEventListener('click', this.#handleClick);
+    this.#button.removeEventListener('click', this.#handleButtonClick);
     this.#button.removeEventListener('keydown', this.#keydownListener);
     this.#button.removeEventListener('keyup', this.#keyupListener);
     this.#listbox.removeEventListener('keydown', this.#keydownListener);
     this.#listbox.removeEventListener('keyup', this.#keyupListener);
-    this.#listbox.addEventListener('change', this.#handleChange);
+    this.#listbox.addEventListener('change', this.#handleOptionChange);
     document.removeEventListener('click', this.#documentClickHandler);
   }
 
@@ -299,7 +314,6 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   get keysUsed() {
     return ['Enter', 'Escape', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
   }
-
 }
 
 if (!globalThis.customElements.get('media-chrome-selectmenu')) {

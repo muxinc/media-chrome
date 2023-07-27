@@ -12,7 +12,6 @@ class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
   init() {
     const captionsButton = document.createElement('media-captions-button');
     captionsButton.part.add('button');
-
     captionsButton.preventClick = true;
 
     const captionsListbox = document.createElement('media-captions-listbox');

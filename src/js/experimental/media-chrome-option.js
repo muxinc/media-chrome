@@ -12,6 +12,7 @@ template.innerHTML = /*html*/`
     text-wrap: nowrap;
     min-height: 1.2em;
     padding: .4em .5em;
+    transition: var(--media-option-transition);
   }
 
   :host(:focus-visible) {

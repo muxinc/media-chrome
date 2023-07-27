@@ -12,7 +12,6 @@ class MediaRenditionSelectMenu extends MediaChromeSelectMenu {
   init() {
     const renditionButton = document.createElement('media-rendition-button');
     renditionButton.part.add('button');
-
     renditionButton.preventClick = true;
 
     const renditionListbox = document.createElement('media-rendition-listbox');

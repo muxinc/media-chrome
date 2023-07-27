@@ -12,7 +12,6 @@ class MediaPlaybackRateSelectMenu extends MediaChromeSelectMenu {
   init() {
     const playbackRateButton = document.createElement('media-playback-rate-button');
     playbackRateButton.part.add('button');
-
     playbackRateButton.preventClick = true;
 
     const playbackRateListbox = document.createElement('media-playback-rate-listbox');
