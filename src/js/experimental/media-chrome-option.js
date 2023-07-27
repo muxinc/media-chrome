@@ -41,6 +41,8 @@ template.innerHTML = /*html*/`
 
 export const Attributes = {
   VALUE: 'value',
+  SELECTED: 'selected',
+  DISABLED: 'disabled',
 };
 
 /**
@@ -56,24 +58,23 @@ export const Attributes = {
 class MediaChromeOption extends globalThis.HTMLElement {
   static get observedAttributes() {
     return [
-      'disabled',
-      'aria-selected',
+      Attributes.DISABLED,
+      Attributes.SELECTED,
       Attributes.VALUE,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
     ];
   }
+
+  /** @see https://html.spec.whatwg.org/multipage/form-elements.html#concept-option-dirtiness */
+  #dirty = false;
 
   constructor() {
     super();
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      const shadow = this.attachShadow({ mode: 'open' });
-
-      const optionHTML = template.content.cloneNode(true);
-      this.nativeEl = optionHTML;
-
-      shadow.appendChild(optionHTML);
+      this.attachShadow({ mode: 'open' });
+      this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
   }
 
@@ -85,12 +86,21 @@ class MediaChromeOption extends globalThis.HTMLElement {
     return this.getAttribute(Attributes.VALUE);
   }
 
+  set selected(value) {
+    this.#dirty = true;
+    this.ariaSelected = value ? 'true' : 'false';
+  }
+
+  get selected() {
+    return this.ariaSelected === 'true';
+  }
+
   enable() {
     if (!this.hasAttribute('tabindex')) {
       this.setAttribute('tabindex', -1);
     }
-    if (!this.hasAttribute('aria-selected')) {
-      this.setAttribute('aria-selected', "false");
+    if (!this.ariaSelected) {
+      this.ariaSelected = 'false';
     }
   }
 
@@ -99,7 +109,20 @@ class MediaChromeOption extends globalThis.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
+
+    if (attrName === Attributes.SELECTED && !this.#dirty) {
+      this.ariaSelected = newValue != null ? 'true' : 'false';
+    }
+
+    else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
+      if (newValue == null) {
+        this.enable();
+      } else {
+        this.disable();
+      }
+    }
+
+    else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         const mediaControllerEl = document.getElementById(oldValue);
         mediaControllerEl?.unassociateElement?.(this);
@@ -108,17 +131,11 @@ class MediaChromeOption extends globalThis.HTMLElement {
         const mediaControllerEl = document.getElementById(newValue);
         mediaControllerEl?.associateElement?.(this);
       }
-    } else if (attrName === 'disabled' && newValue !== oldValue) {
-      if (newValue == null) {
-        this.enable();
-      } else {
-        this.disable();
-      }
     }
   }
 
   connectedCallback() {
-    if (!this.hasAttribute('disabled')) {
+    if (!this.hasAttribute(Attributes.DISABLED)) {
       this.enable();
     }
 

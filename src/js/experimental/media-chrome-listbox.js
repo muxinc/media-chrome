@@ -10,12 +10,7 @@ export function createOption(text, value, selected) {
   const option = document.createElement('media-chrome-option');
   option.part.add('option');
   option.value = value;
-
-  if (selected) {
-    option.setAttribute('aria-selected', 'true');
-  } else {
-    option.setAttribute('aria-selected', 'false');
-  }
+  option.selected = selected;
 
   const label = document.createElement('span');
   label.textContent = text;
@@ -136,7 +131,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
       // default to the aria-selected element if there isn't an
       // active element already
-      let elToSelect = els.filter(el => el.getAttribute('aria-selected') === 'true')[0];
+      let elToSelect = els.filter(el => el.selected)[0];
 
       // if there isn't an active element or a selected element,
       // default to the first element
@@ -146,7 +141,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
       if (elToSelect) {
         elToSelect.setAttribute('tabindex', '0');
-        elToSelect.setAttribute('aria-selected', 'true');
+        elToSelect.selected = true;
       }
     });
   }
@@ -188,7 +183,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   get selectedOptions() {
-    return this.#options.filter(el => el.getAttribute('aria-selected') === 'true');
+    return this.#options.filter(el => el.selected);
   }
 
   get value() {
@@ -196,11 +191,11 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   set value(newValue) {
-    const item = this.#options.find(el => el.value === newValue || el.textContent === newValue);
+    const option = this.#options.find(el => el.value === newValue || el.textContent === newValue);
 
-    if (!item) return;
+    if (!option) return;
 
-    this.#selectItem(item);
+    this.#selectOption(option);
   }
 
   focus() {
@@ -331,7 +326,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     return ['Enter', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
   }
 
-  #getItem(e) {
+  #getOption(e) {
     const composedPath = e.composedPath();
     const index = composedPath.findIndex(el => el.nodeName === 'MEDIA-CHROME-OPTION');
 
@@ -339,38 +334,36 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   handleSelection(e, toggle) {
-    const item = this.#getItem(e);
+    const option = this.#getOption(e);
 
-    if (!item) return;
+    if (!option) return;
 
-    this.#selectItem(item, toggle);
+    this.#selectOption(option, toggle);
   }
 
-  #selectItem(item, toggle) {
+  #selectOption(option, toggle) {
+    const oldSelectedOptions = [...this.selectedOptions];
+
     if (!this.hasAttribute('aria-multiselectable') || this.getAttribute('aria-multiselectable') !== 'true') {
-      this.#options.forEach(el => el.setAttribute('aria-selected', 'false'));
+      this.#options.forEach(el => (el.selected = false));
     }
 
     if (toggle) {
-      const selected = item.getAttribute('aria-selected') === 'true';
-
-      if (selected) {
-        item.setAttribute('aria-selected', 'false');
-      } else {
-        item.setAttribute('aria-selected', 'true');
-      }
+      option.selected = !option.selected;
     } else {
-      item.setAttribute('aria-selected', 'true');
+      option.selected = true;
     }
 
-    this.dispatchEvent(new Event('change'));
+    if (this.selectedOptions.some((opt, i) => opt != oldSelectedOptions[i])) {
+      this.dispatchEvent(new Event('change'));
+    }
   }
 
   handleMovement(e) {
     const { key } = e;
     const els = this.#options;
 
-    let currentOption = this.#getItem(e);
+    let currentOption = this.#getOption(e);
     if (!currentOption) {
       currentOption = els.filter(el => el.getAttribute('tabindex') === '0')[0];
     }
@@ -401,7 +394,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
         nextOption = els[els.length - 1];
         break;
       default:
-        nextOption = this.#searchItem(key);
+        nextOption = this.#searchOption(key);
         break;
     }
 
@@ -413,17 +406,17 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   handleClick(e) {
-    const item = this.#getItem(e);
+    const option = this.#getOption(e);
 
-    if (!item || item.hasAttribute('disabled')) return;
+    if (!option || option.hasAttribute('disabled')) return;
 
     this.#options.forEach(el => el.setAttribute('tabindex', '-1'));
-    item.setAttribute('tabindex', '0');
+    option.setAttribute('tabindex', '0');
 
     this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
   }
 
-  #searchItem(key) {
+  #searchOption(key) {
     this.#clearKeysOnDelay();
 
     const els = this.#options;
@@ -433,11 +426,11 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     this.#keysSoFar += key;
 
     // if the same key is pressed, assume it's a repeated key
-    // to skip to the same item that begings with that key
+    // to skip to the same option that begings with that key
     // until the user presses another key and a better choice is available
     const repeatedKey = this.#keysSoFar.split('').every(k => k === key);
 
-    // if it's a repeat key, skip the current item
+    // if it's a repeat key, skip the current option
     const after = els.slice(activeIndex + (repeatedKey ? 1 : 0)).filter(el => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
     const before = els.slice(0, activeIndex - (repeatedKey ? 1 : 0)).filter(el => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
 
