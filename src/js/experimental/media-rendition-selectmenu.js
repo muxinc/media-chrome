@@ -16,7 +16,7 @@ class MediaRenditionSelectMenu extends MediaChromeSelectMenu {
 
     const renditionListbox = document.createElement('media-rendition-listbox');
     renditionListbox.part.add('listbox');
-    renditionListbox.setAttribute('exportparts', 'option');
+    renditionListbox.setAttribute('exportparts', 'option, indicator');
 
     const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');

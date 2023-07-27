@@ -25,13 +25,13 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
   }
 
   /** @type {Element} */
-  #selectedIndicator;
+  #selectIndicator;
   #rates = new AttributeTokenList(this, Attributes.RATES, { defaultValue: DEFAULT_RATES });
 
   constructor() {
     super();
 
-    this.#selectedIndicator = this.getSlottedIndicator('selected-indicator');
+    this.#selectIndicator = this.getSlottedIndicator('select');
     this.#render();
   }
 
@@ -87,7 +87,7 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
   }
 
   #render() {
-    const container = this.shadowRoot.querySelector('slot');
+    const container = this.shadowRoot.querySelector('#container');
     container.textContent = '';
 
     for (const rate of this.rates) {
@@ -98,22 +98,20 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
         rate,
         this.mediaPlaybackRate == rate
       );
-      option.prepend(this.#selectedIndicator.cloneNode(true));
+      option.prepend(this.#selectIndicator.cloneNode(true));
       container.append(option);
     }
   }
 
   #onChange() {
-    const selectedOption = this.selectedOptions[0]?.value;
-
-    if (!selectedOption) return;
+    if (!this.value) return;
 
     const event = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST,
       {
         composed: true,
         bubbles: true,
-        detail: selectedOption,
+        detail: this.value,
       }
     );
     this.dispatchEvent(event);

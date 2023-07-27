@@ -15,37 +15,6 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 /**
- * @param {any} el Should be HTMLElement but issues with globalThis shim
- * @param {string} attrName
- * @returns {Array<Object>} An array of TextTrack-like objects.
- */
-const getSubtitlesListAttr = (el, attrName) => {
-  const attrVal = el.getAttribute(attrName);
-  return attrVal ? parseTextTracksStr(attrVal) : [];
-};
-
-/**
- *
- * @param {any} el Should be HTMLElement but issues with globalThis shim
- * @param {string} attrName
- * @param {Array<Object>} list An array of TextTrack-like objects
- */
-const setSubtitlesListAttr = (el, attrName, list) => {
-  // null, undefined, and empty arrays are treated as "no value" here
-  if (!list?.length) {
-    el.removeAttribute(attrName);
-    return;
-  }
-
-  // don't set if the new value is the same as existing
-  const newValStr = stringifyTextTrackList(list);
-  const oldVal = el.getAttribute(attrName);
-  if (oldVal === newValStr) return;
-
-  el.setAttribute(attrName, newValStr);
-};
-
-/**
  * @attr {string} mediasubtitleslist - (read-only) A list of all subtitles and captions.
  * @attr {boolean} mediasubtitlesshowing - (read-only) A list of the showing subtitles and captions.
  *
@@ -69,17 +38,19 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   /** @type {Element} */
   #captionsIndicator;
   /** @type {Element} */
-  #selectedIndicator;
+  #selectIndicator;
   #prevState;
 
   constructor() {
     super({ slotTemplate });
 
-    this.#selectedIndicator = this.getSlottedIndicator('selected-indicator');
-    this.#captionsIndicator = this.getSlottedIndicator('captions-indicator');
+    this.#selectIndicator = this.getSlottedIndicator('select');
+    this.#captionsIndicator = this.getSlottedIndicator('captions');
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_LIST && oldValue !== newValue) {
       this.#render();
 
@@ -91,8 +62,6 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       this.removeAttribute('aria-multiselectable');
       console.warn("Captions List doesn't currently support multiple selections. You can enable multiple items via the media.textTrack API.");
     }
-
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   connectedCallback() {
@@ -133,13 +102,13 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     if (this.#prevState === JSON.stringify(this.mediaSubtitlesList)) return;
     this.#prevState = JSON.stringify(this.mediaSubtitlesList);
 
-    const container = this.shadowRoot.querySelector('slot');
+    const container = this.shadowRoot.querySelector('#container');
     container.textContent = '';
 
     const isOff = !this.value;
 
     const option = createOption(this.formatOptionText('Off'), 'off', isOff);
-    option.prepend(this.#selectedIndicator.cloneNode(true));
+    option.prepend(this.#selectIndicator.cloneNode(true));
     container.append(option);
 
     const subtitlesList = this.mediaSubtitlesList;
@@ -152,7 +121,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
         formatTextTrackObj(subs),
         this.value == formatTextTrackObj(subs),
       );
-      option.prepend(this.#selectedIndicator.cloneNode(true));
+      option.prepend(this.#selectIndicator.cloneNode(true));
 
       // add CC icon for captions
       const type = subs.kind ?? 'subs';
@@ -165,24 +134,53 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 
   #onChange() {
-    const selectedOption = this.selectedOptions[0]?.value;
-
     // turn off currently selected tracks
     toggleSubsCaps(this, false);
 
-    if (!selectedOption) return;
+    if (!this.value) return;
 
     const event = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,
       {
         composed: true,
         bubbles: true,
-        detail: selectedOption,
+        detail: this.value,
       }
     );
     this.dispatchEvent(event);
   }
 }
+
+/**
+ * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {string} attrName
+ * @returns {Array<Object>} An array of TextTrack-like objects.
+ */
+const getSubtitlesListAttr = (el, attrName) => {
+  const attrVal = el.getAttribute(attrName);
+  return attrVal ? parseTextTracksStr(attrVal) : [];
+};
+
+/**
+ *
+ * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {string} attrName
+ * @param {Array<Object>} list An array of TextTrack-like objects
+ */
+const setSubtitlesListAttr = (el, attrName, list) => {
+  // null, undefined, and empty arrays are treated as "no value" here
+  if (!list?.length) {
+    el.removeAttribute(attrName);
+    return;
+  }
+
+  // don't set if the new value is the same as existing
+  const newValStr = stringifyTextTrackList(list);
+  const oldVal = el.getAttribute(attrName);
+  if (oldVal === newValStr) return;
+
+  el.setAttribute(attrName, newValStr);
+};
 
 if (!globalThis.customElements.get('media-captions-listbox')) {
   globalThis.customElements.define('media-captions-listbox', MediaCaptionsListbox);

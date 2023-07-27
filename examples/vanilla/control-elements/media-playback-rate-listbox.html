@@ -46,7 +46,35 @@
   </media-controller>
   <br>
 
-  <media-playback-rate-listbox mediacontroller="mc"></media-playback-rate-listbox>
+  <media-playback-rate-listbox mediacontroller="mc">
+    <!-- Custom select indicator icon -->
+    <span slot="select-indicator" class="select-icon">
+      <style>
+        .select-icon {
+          box-sizing: border-box;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+          border: 1.5px solid currentcolor;
+          width: 9px;
+          height: 9px;
+          margin-top: -.14em;
+          vertical-align: middle;
+          border-radius: 50%;
+          visibility: visible;
+        }
+
+        [aria-selected="true"] .select-icon::after {
+          content: '';
+          display: block;
+          width: 4px;
+          height: 4px;
+          border-radius: 8px;
+          background: currentcolor;
+        }
+      </style>
+    </span>
+  </media-playback-rate-listbox>
 
 
   <div class="examples">

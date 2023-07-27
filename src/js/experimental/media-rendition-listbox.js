@@ -21,17 +21,18 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 
   /** @type {Element} */
-  #selectedIndicator;
+  #selectIndicator;
   #renditionList = [];
   #prevState;
 
   constructor() {
     super();
 
-    this.#selectedIndicator = this.getSlottedIndicator('selected-indicator');
+    this.#selectIndicator = this.getSlottedIndicator('select');
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED && oldValue !== newValue) {
       this.value = newValue ?? 'auto';
@@ -41,8 +42,6 @@ class MediaRenditionListbox extends MediaChromeListbox {
       this.#renditionList = parseRenditionList(newValue);
       this.#render();
     }
-
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   connectedCallback() {
@@ -83,13 +82,13 @@ class MediaRenditionListbox extends MediaChromeListbox {
     const renditionList = this.mediaRenditionList
       .sort((a, b) => b.height - a.height);
 
-    const container = this.shadowRoot.querySelector('slot');
+    const container = this.shadowRoot.querySelector('#container');
     container.textContent = '';
 
     let isAuto = !this.mediaRenditionSelected;
 
     const option = createOption(this.formatOptionText('Auto'), 'auto', isAuto);
-    option.prepend(this.#selectedIndicator.cloneNode(true));
+    option.prepend(this.#selectIndicator.cloneNode(true));
     container.append(option);
 
     for (const rendition of renditionList) {
@@ -105,7 +104,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
         `${rendition.id}`,
         rendition.enabled && !isAuto
       );
-      option.prepend(this.#selectedIndicator.cloneNode(true));
+      option.prepend(this.#selectIndicator.cloneNode(true));
 
       container.append(option);
     }

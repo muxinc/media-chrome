@@ -2,8 +2,8 @@ import { MediaStateReceiverAttributes } from '../constants.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
 const checkIcon = /*html*/`
-<svg aria-hidden="true" viewBox="0 0 24 24">
-  <path fill="currentColor" d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
+<svg aria-hidden="true" viewBox="0 1 24 24">
+  <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
 </svg>`;
 
 export function createOption(text, value, selected) {
@@ -36,10 +36,6 @@ template.innerHTML = /*html*/`
     padding: .5em 0;
   }
 
-  slot:not([name]) {
-    display: block;
-  }
-
   media-chrome-option {
     padding-inline: .7em 1.4em;
   }
@@ -48,28 +44,26 @@ template.innerHTML = /*html*/`
     margin-inline: .5ch;
   }
 
-  media-chrome-option > .indicator {
-    fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
+  [part~="indicator"] {
+    fill: var(--media-option-indicator-fill, var(--media-icon-color, var(--media-primary-color, rgb(238 238 238))));
     height: var(--media-option-indicator-height, 1.25em);
     vertical-align: var(--media-option-indicator-vertical-align, text-top);
   }
 
-  media-chrome-option > .selected-indicator {
-    margin-top: -.06em;
-  }
-
-  media-chrome-option[aria-selected="false"] > .selected-indicator {
+  .select-indicator {
     visibility: hidden;
   }
+
+  [aria-selected="true"] > .select-indicator {
+    visibility: visible;
+  }
 </style>
-<slot></slot>
-<slot hidden name="selected-indicator">${checkIcon}</slot>
+<div id="container"></div>
+<slot hidden name="select-indicator">${checkIcon}</slot>
 `;
 
 /**
  * @extends {HTMLElement}
- *
- * @slot - Default slotted elements.
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
@@ -117,33 +111,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
       this.shadowRoot.append(this.nativeEl);
     }
 
-    this.#slot = this.shadowRoot.querySelector('slot');
-
-    this.#slot.addEventListener('slotchange', () => {
-      const els = this.#options;
-      const activeEls = els.some(el => el.getAttribute('tabindex') === '0');
-
-      // if the user set an element as active, we should use that
-      // rather than assume a default
-      if (activeEls) {
-        return;
-      }
-
-      // default to the aria-selected element if there isn't an
-      // active element already
-      let elToSelect = els.filter(el => el.selected)[0];
-
-      // if there isn't an active element or a selected element,
-      // default to the first element
-      if (!elToSelect) {
-        elToSelect = els[0];
-      }
-
-      if (elToSelect) {
-        elToSelect.setAttribute('tabindex', '0');
-        elToSelect.selected = true;
-      }
-    });
+    this.container = this.shadowRoot.querySelector('#container');
   }
 
   formatOptionText(text, data) {
@@ -152,7 +120,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   getSlottedIndicator(name) {
-    let indicator = this.querySelector(`:scope > [slot="${name}"]`);
+    let indicator = this.querySelector(`:scope > [slot="${name}-indicator"]`);
 
     // Chaining slots
     if (indicator?.nodeName == 'SLOT')
@@ -160,10 +128,11 @@ class MediaChromeListbox extends globalThis.HTMLElement {
       indicator = indicator.assignedElements({ flatten: true })[0];
 
     if (!indicator)
-      indicator = this.shadowRoot.querySelector(`[name="${name}"] > svg`);
+      indicator = this.shadowRoot.querySelector(`[name="${name}-indicator"] > svg`);
 
     indicator.removeAttribute('slot');
-    indicator.classList.add('indicator', name);
+    indicator.part.add('indicator');
+    indicator.classList.add(`${name}-indicator`);
 
     return indicator;
   }
@@ -176,7 +145,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
     if (!options.length) {
       // Fallback to the options in the shadow dom.
-      options = this.#slot.querySelectorAll('media-chrome-option');
+      options = this.container?.querySelectorAll('media-chrome-option');
     }
 
     return Array.from(options);
