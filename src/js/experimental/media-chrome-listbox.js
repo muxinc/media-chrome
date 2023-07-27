@@ -1,26 +1,74 @@
 import { MediaStateReceiverAttributes } from '../constants.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
-const template = document.createElement('template');
+const checkIcon = /*html*/`
+<svg aria-hidden="true" viewBox="0 0 24 24">
+  <path fill="currentColor" d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
+</svg>`;
 
+export function createOption(text, value, selected) {
+  const option = document.createElement('media-chrome-option');
+  option.part.add('option');
+  option.value = value;
+
+  if (selected) {
+    option.setAttribute('aria-selected', 'true');
+  } else {
+    option.setAttribute('aria-selected', 'false');
+  }
+
+  const label = document.createElement('span');
+  label.textContent = text;
+  option.append(label);
+
+  return option;
+}
+
+const template = document.createElement('template');
 template.innerHTML = /*html*/`
 <style>
   :host {
     font: var(--media-font,
       var(--media-font-weight, normal)
-      var(--media-font-size, 1em) /
+      var(--media-font-size, 15px) /
       var(--media-text-content-height, var(--media-control-height, 24px))
       var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
     color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
     display: inline-flex;
-    flex-direction: column;
-    gap: 0.5em;
+    gap: .5em;
     margin: 0;
-    padding: 0.5em;
+    padding: .5em 0;
+  }
+
+  slot:not([name]) {
+    display: block;
+  }
+
+  media-chrome-option {
+    padding-inline: .7em 1.4em;
+  }
+
+  media-chrome-option > span {
+    margin-inline: .5ch;
+  }
+
+  media-chrome-option > .indicator {
+    fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
+    height: var(--media-option-indicator-height, 1.25em);
+    vertical-align: var(--media-option-indicator-vertical-align, text-top);
+  }
+
+  media-chrome-option > .selected-indicator {
+    margin-top: -.06em;
+  }
+
+  media-chrome-option[aria-selected="false"] > .selected-indicator {
+    visibility: hidden;
   }
 </style>
 <slot></slot>
+<slot hidden name="selected-indicator">${checkIcon}</slot>
 `;
 
 /**
@@ -45,35 +93,33 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-text-content-height - `line-height` of text.
  */
 class MediaChromeListbox extends globalThis.HTMLElement {
+  static get observedAttributes() {
+    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
+  }
+
+  static formatOptionText(text) {
+    return text;
+  }
+
   #keysSoFar = '';
   #clearKeysTimeout = null;
   #slot;
   #metaPressed = false;
-
-  static get observedAttributes() {
-    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
-  }
 
   constructor(options = {}) {
     super();
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      const shadow = this.attachShadow({ mode: 'open' });
+      this.attachShadow({ mode: 'open' });
 
-      const listboxHTML = template.content.cloneNode(true);
-      this.nativeEl = listboxHTML;
+      this.nativeEl = template.content.cloneNode(true);
 
-      let slotTemplate = options.slotTemplate;
-
-      if (!slotTemplate) {
-        slotTemplate = document.createElement('template');
-        slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
+      if (options.slotTemplate) {
+        this.nativeEl.append(options.slotTemplate.content.cloneNode(true));
       }
 
-      this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
-
-      shadow.appendChild(listboxHTML);
+      this.shadowRoot.append(this.nativeEl);
     }
 
     this.#slot = this.shadowRoot.querySelector('slot');
@@ -103,6 +149,28 @@ class MediaChromeListbox extends globalThis.HTMLElement {
         elToSelect.setAttribute('aria-selected', 'true');
       }
     });
+  }
+
+  formatOptionText(text, data) {
+    // @ts-ignore
+    return this.constructor.formatOptionText(text, data);
+  }
+
+  getSlottedIndicator(name) {
+    let indicator = this.querySelector(`:scope > [slot="${name}"]`);
+
+    // Chaining slots
+    if (indicator?.nodeName == 'SLOT')
+      // @ts-ignore
+      indicator = indicator.assignedElements({ flatten: true })[0];
+
+    if (!indicator)
+      indicator = this.shadowRoot.querySelector(`[name="${name}"] > svg`);
+
+    indicator.removeAttribute('slot');
+    indicator.classList.add('indicator', name);
+
+    return indicator;
   }
 
   get #options() {
@@ -401,4 +469,5 @@ if (!globalThis.customElements.get('media-chrome-listbox')) {
   globalThis.customElements.define('media-chrome-listbox', MediaChromeListbox);
 }
 
+export { MediaChromeListbox };
 export default MediaChromeListbox;

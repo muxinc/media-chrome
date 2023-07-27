@@ -1,4 +1,4 @@
-import MediaChromeSelectMenu from './media-chrome-selectmenu.js';
+import { MediaChromeSelectMenu } from './media-chrome-selectmenu.js';
 import '../media-captions-button.js';
 import './media-captions-listbox.js';
 import { globalThis, document, } from '../utils/server-safe-globals.js';
@@ -34,4 +34,5 @@ if (!globalThis.customElements.get('media-captions-selectmenu')) {
   globalThis.customElements.define('media-captions-selectmenu', MediaCaptionsSelectMenu);
 }
 
+export { MediaCaptionsSelectMenu };
 export default MediaCaptionsSelectMenu;

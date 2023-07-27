@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width">
-  <title>Media Chrome Rendition Listbox</title>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@luwes/hls-video-element@1.2/+esm"></script>
+  <title>Media Chrome Playback Rate Listbox</title>
   <script type="module" src="../../../dist/index.js"></script>
-  <script type="module" src="../../../../dist/experimental/media-rendition-listbox.js"></script>
+  <script type="module" src="../../../../dist/experimental/media-playback-rate-listbox.js"></script>
   <style>
     /** add styles to prevent CLS (Cumulative Layout Shift) */
     media-controller:not([audio]) {
@@ -24,18 +23,18 @@
   </style>
 </head>
 <body>
-  <h1>Rendition Listbox</h1>
+  <h1>Playback Rate Listbox</h1>
 
   <media-controller id="mc">
-    <hls-video
+    <video
       id="video"
       slot="media"
-      src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k.m3u8"
+      src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
       poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.webp"
       preload="metadata"
       muted
       crossorigin
-    ></hls-video>
+    ></video>
     <media-control-bar>
       <media-play-button></media-play-button>
       <media-time-display showduration></media-time-display>
@@ -47,24 +46,8 @@
   </media-controller>
   <br>
 
-  <media-rendition-listbox mediacontroller="mc"></media-rendition-listbox>
+  <media-playback-rate-listbox mediacontroller="mc"></media-playback-rate-listbox>
 
-  <p>
-    Quality: <span id="renditionactive">N/A</span>
-  </p>
-
-  <script>
-    const renditionListbox = document.querySelector('media-rendition-listbox');
-
-    renditionListbox.formatOptionText = (text) => {
-      console.log(text);
-      return text.replace('720p', '720p (HD)');
-    }
-
-    video.addEventListener('resize', () => {
-      renditionactive.textContent = `${Math.min(video.videoWidth, video.videoHeight)}p`;
-    });
-  </script>
 
   <div class="examples">
     <a href="../">View more examples</a>

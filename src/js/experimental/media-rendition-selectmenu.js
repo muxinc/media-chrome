@@ -1,4 +1,4 @@
-import MediaChromeSelectMenu from './media-chrome-selectmenu.js';
+import { MediaChromeSelectMenu } from './media-chrome-selectmenu.js';
 import './media-rendition-button.js';
 import './media-rendition-listbox.js';
 import { globalThis, document, } from '../utils/server-safe-globals.js';
@@ -34,4 +34,5 @@ if (!globalThis.customElements.get('media-rendition-selectmenu')) {
   globalThis.customElements.define('media-rendition-selectmenu', MediaRenditionSelectMenu);
 }
 
+export { MediaRenditionSelectMenu };
 export default MediaRenditionSelectMenu;

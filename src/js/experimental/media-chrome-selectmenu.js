@@ -306,4 +306,5 @@ if (!globalThis.customElements.get('media-chrome-selectmenu')) {
   globalThis.customElements.define('media-chrome-selectmenu', MediaChromeSelectMenu);
 }
 
+export { MediaChromeSelectMenu };
 export default MediaChromeSelectMenu;
