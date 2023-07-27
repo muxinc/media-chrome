@@ -5,7 +5,7 @@ const template = document.createElement('template');
 
 template.innerHTML = /*html*/`
 <style>
-  :host ul {
+  :host {
     font: var(--media-font,
       var(--media-font-weight, normal)
       var(--media-font-size, 1em) /
@@ -13,34 +13,14 @@ template.innerHTML = /*html*/`
       var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
     color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
-    list-style: none;
     display: inline-flex;
     flex-direction: column;
     gap: 0.5em;
     margin: 0;
     padding: 0.5em;
   }
-
-  ::slotted(media-chrome-listitem[tabindex="0"]:focus-visible),
-  media-chrome-listitem[tabindex="0"]:focus-visible {
-    box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
-    outline: 0;
-  }
-
-  ::slotted(media-chrome-listitem[aria-selected="true"]),
-  media-chrome-listitem[aria-selected="true"] {
-    background-color: var(--media-listbox-selected-background, rgb(122 122 184 / .8));
-  }
-
-  ::slotted(media-chrome-listitem:hover),
-  media-chrome-listitem:hover {
-    background-color: var(--media-listbox-hover-background, rgb(82 82 122 / .8));
-    outline: var(--media-listbox-hover-outline, none);
-  }
 </style>
-<ul tabindex="0">
-  <slot></slot>
-</ul>
+<slot></slot>
 `;
 
 /**
@@ -57,9 +37,6 @@ template.innerHTML = /*html*/`
  *
  * @cssproperty --media-control-background - `background` of control.
  * @cssproperty --media-listbox-background - `background` of listbox.
- * @cssproperty --media-listbox-selected-background - `background` of selected listbox item.
- * @cssproperty --media-listbox-hover-background - `background` of hovered listbox item.
- * @cssproperty --media-listbox-hover-outline - `outline` of hovered listbox item.
  *
  * @cssproperty --media-font - `font` shorthand property.
  * @cssproperty --media-font-weight - `font-weight` property.
@@ -71,7 +48,6 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   #keysSoFar = '';
   #clearKeysTimeout = null;
   #slot;
-  #_assignedElements;
   #metaPressed = false;
 
   static get observedAttributes() {
@@ -103,13 +79,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     this.#slot = this.shadowRoot.querySelector('slot');
 
     this.#slot.addEventListener('slotchange', () => {
-      this.#assignedElements = this.#slot.assignedElements({flatten: true});
-
-      if (this.#assignedElements.length === 1 && this.#assignedElements[0].nodeName.toLowerCase() === 'slot') {
-        this.#assignedElements = this.#assignedElements[0].assignedElements({flatten: true});
-      }
-
-      const els = this.#items;
+      const els = this.#options;
       const activeEls = els.some(el => el.getAttribute('tabindex') === '0');
 
       // if the user set an element as active, we should use that
@@ -129,38 +99,36 @@ class MediaChromeListbox extends globalThis.HTMLElement {
       }
 
       if (elToSelect) {
-        elToSelect.setAttribute('tabindex', 0);
+        elToSelect.setAttribute('tabindex', '0');
         elToSelect.setAttribute('aria-selected', 'true');
       }
     });
   }
 
-  get #assignedElements() {
-    if (!this.#_assignedElements) {
-      this.#_assignedElements = Array.from(this.shadowRoot.querySelectorAll('media-chrome-listitem'));
+  get #options() {
+    // First query the light dom children for any options.
+
+    /** @type NodeListOf<HTMLOptionElement> */
+    let options = this.querySelectorAll('media-chrome-option');
+
+    if (!options.length) {
+      // Fallback to the options in the shadow dom.
+      options = this.#slot.querySelectorAll('media-chrome-option');
     }
 
-    return this.#_assignedElements;
-  }
-
-  set #assignedElements(value) {
-    this.#_assignedElements = value;
-  }
-
-  get #items() {
-    return this.#assignedElements.filter(el => !el.hasAttribute('disabled'));
+    return Array.from(options);
   }
 
   get selectedOptions() {
-    return this.#items.filter(el => el.getAttribute('aria-selected') === 'true');
+    return this.#options.filter(el => el.getAttribute('aria-selected') === 'true');
   }
 
   get value() {
-    return this.selectedOptions[0].value || this.selectedOptions[0].textContent;
+    return this.selectedOptions[0]?.value || this.selectedOptions[0]?.textContent;
   }
 
   set value(newValue) {
-    const item = this.#items.find(el => el.value === newValue || el.textContent === newValue);
+    const item = this.#options.find(el => el.value === newValue || el.textContent === newValue);
 
     if (!item) return;
 
@@ -265,7 +233,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
     if (!this.hasAttribute('role')) {
       // set listbox role on the media-chrome-listbox element itself
-      // this is to make sure that SRs announce listitems as being part
+      // this is to make sure that SRs announce options as being part
       // of a listbox when focused
       this.setAttribute('role', 'listbox');
     }
@@ -297,7 +265,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   #getItem(e) {
     const composedPath = e.composedPath();
-    const index = composedPath.findIndex(el => el.nodeName === 'MEDIA-CHROME-LISTITEM');
+    const index = composedPath.findIndex(el => el.nodeName === 'MEDIA-CHROME-OPTION');
 
     return composedPath[index];
   }
@@ -312,7 +280,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   #selectItem(item, toggle) {
     if (!this.hasAttribute('aria-multiselectable') || this.getAttribute('aria-multiselectable') !== 'true') {
-      this.#assignedElements.forEach(el => el.setAttribute('aria-selected', 'false'));
+      this.#options.forEach(el => el.setAttribute('aria-selected', 'false'));
     }
 
     if (toggle) {
@@ -332,7 +300,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   handleMovement(e) {
     const { key } = e;
-    const els = this.#items;
+    const els = this.#options;
 
     let currentOption = this.#getItem(e);
     if (!currentOption) {
@@ -381,7 +349,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
     if (!item || item.hasAttribute('disabled')) return;
 
-    this.#items.forEach(el => el.setAttribute('tabindex', '-1'));
+    this.#options.forEach(el => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
 
     this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
@@ -390,7 +358,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   #searchItem(key) {
     this.#clearKeysOnDelay();
 
-    const els = this.#items;
+    const els = this.#options;
     const activeIndex = els.findIndex(el => el.getAttribute('tabindex') === '0');
 
     // always accumulate the key

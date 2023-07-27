@@ -10,7 +10,7 @@
 import { MediaContainer } from './media-container.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
-import { constToCamel, delay } from './utils/utils.js';
+import { constToCamel, delay, stringifyRenditionList } from './utils/utils.js';
 import { stringifyTextTrackList, toggleSubsCaps } from './utils/captions.js';
 import {
   MediaUIEvents,
@@ -107,7 +107,7 @@ class MediaController extends MediaContainer {
 
     // Build event listeners for media states
     this._mediaStatePropagators = {};
-    Object.keys(MediaUIStates).forEach((key)=>{
+    Object.keys(MediaUIStates).forEach((key) => {
       this._mediaStatePropagators[key] = e => {
         this.propagateMediaState(MediaUIProps[key], MediaUIStates[key].get(this, e));
       };
@@ -177,23 +177,29 @@ class MediaController extends MediaContainer {
       const {
         mediaEvents,
         rootEvents,
-        trackListEvents
+        textTracksEvents,
+        videoRenditionsEvents,
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
 
-      mediaEvents?.forEach((eventName)=>{
+      mediaEvents?.forEach((eventName) => {
         media.addEventListener(eventName, handler);
         handler();
       });
 
-      rootEvents?.forEach((eventName)=>{
+      rootEvents?.forEach((eventName) => {
         this.getRootNode().addEventListener(eventName, handler);
         handler();
       });
 
-      trackListEvents?.forEach((eventName)=>{
+      textTracksEvents?.forEach((eventName) => {
         media.textTracks?.addEventListener(eventName, handler);
+        handler();
+      });
+
+      videoRenditionsEvents?.forEach((eventName) => {
+        media.videoRenditions?.addEventListener(eventName, handler);
         handler();
       });
     });
@@ -219,21 +225,27 @@ class MediaController extends MediaContainer {
       const {
         mediaEvents,
         rootEvents,
-        trackListEvents
+        textTracksEvents,
+        videoRenditionsEvents,
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
 
-      mediaEvents?.forEach((eventName)=>{
+      mediaEvents?.forEach((eventName) => {
         media.removeEventListener(eventName, handler);
       });
 
-      rootEvents?.forEach((eventName)=>{
+      rootEvents?.forEach((eventName) => {
         this.getRootNode().removeEventListener(eventName, handler);
       });
 
-      trackListEvents?.forEach((eventName)=>{
+      textTracksEvents?.forEach((eventName) => {
         media.textTracks?.removeEventListener(eventName, handler);
+      });
+
+      videoRenditionsEvents?.forEach((eventName) => {
+        media.videoRenditions?.removeEventListener(eventName, handler);
+        handler();
       });
     });
 
@@ -245,13 +257,13 @@ class MediaController extends MediaContainer {
   }
 
   propagateMediaState(stateName, state) {
-    const attrName = stateName.toLowerCase();
-    const previousState = this.getAttribute(attrName);
+    const previousState = getStateValue(this.mediaStateReceivers, stateName);
 
     propagateMediaState(this.mediaStateReceivers, stateName, state);
 
-    if (previousState === this.getAttribute(attrName)) return;
+    if (previousState === getStateValue(this.mediaStateReceivers, stateName)) return;
 
+    const attrName = stateName.toLowerCase();
     // TODO: I don't think we want these events to bubble? Video element states don't. (heff)
     const evt = new globalThis.CustomEvent(
       AttributeToStateChangeEventMap[attrName],
@@ -524,6 +536,7 @@ const CustomAttrSerializer = {
   [MediaUIAttributes.MEDIA_SEEKABLE]: serializeTuple,
   [MediaUIAttributes.MEDIA_BUFFERED]: (tuples) => tuples?.map(serializeTuple).join(' '),
   [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords) => coords?.join(' '),
+  [MediaUIAttributes.MEDIA_RENDITION_LIST]: stringifyRenditionList,
 };
 
 const setAttr = async (child, attrName, attrValue) => {
@@ -625,6 +638,18 @@ const propagateMediaState = (els, stateName, val) => {
     setAttr(el, attrName, val);
   });
 };
+
+const getStateValue = (els, stateName) => {
+  for (const el of els) {
+    if (stateName in el) {
+      return el[stateName];
+    }
+    const relevantAttrs = getMediaUIAttributesFrom(el);
+    const attrName = stateName.toLowerCase();
+    if (!relevantAttrs.includes(attrName)) continue;
+    return el.getAttribute(attrName);
+  }
+}
 
 /**
  *

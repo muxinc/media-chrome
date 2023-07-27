@@ -1,3 +1,30 @@
+
+export function stringifyRenditionList(renditions) {
+  return renditions
+    ?.map(stringifyRendition)
+    .join(' ');
+}
+
+export function parseRenditionList(renditions) {
+  return renditions
+    ?.split(/\s+/)
+    .map(parseRendition);
+}
+
+export function stringifyRendition(rendition) {
+  if (rendition) {
+    const { id, width, height } = rendition;
+    return [id, width, height].filter(a => a != null).join(':')
+  }
+}
+
+export function parseRendition(rendition) {
+  if (rendition) {
+    const [id, width, height] = rendition.split(':');
+    return { id, width, height };
+  }
+}
+
 export function dashedToCamel(word) {
   return word
     .split('-')

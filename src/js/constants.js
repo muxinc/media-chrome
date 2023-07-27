@@ -18,6 +18,7 @@ export const MediaUIEvents = {
   MEDIA_SHOW_SUBTITLES_REQUEST: 'mediashowsubtitlesrequest',
   MEDIA_DISABLE_SUBTITLES_REQUEST: 'mediadisablesubtitlesrequest',
   MEDIA_PLAYBACK_RATE_REQUEST: 'mediaplaybackraterequest',
+  MEDIA_RENDITION_REQUEST: 'mediarenditionrequest',
   MEDIA_SEEK_TO_LIVE_REQUEST: 'mediaseektoliverequest',
   REGISTER_MEDIA_STATE_RECEIVER: 'registermediastatereceiver',
   UNREGISTER_MEDIA_STATE_RECEIVER: 'unregistermediastatereceiver',
@@ -57,6 +58,8 @@ export const MediaUIProps = {
   MEDIA_STREAM_TYPE: 'mediaStreamType',
   MEDIA_TARGET_LIVE_WINDOW: 'mediaTargetLiveWindow',
   MEDIA_TIME_IS_LIVE: 'mediaTimeIsLive',
+  MEDIA_RENDITION_LIST: 'mediaRenditionList',
+  MEDIA_RENDITION_SELECTED: 'mediaRenditionSelected',
 };
 
 const MediaUIPropsEntries = /** @type {[keyof MediaUIProps, string][]} */ (

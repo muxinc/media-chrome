@@ -248,6 +248,16 @@ function getBreakpoints(breakpoints, rect) {
  * @cssprop --media-slot-display - `display` of the media slot (default none for [audio] usage).
  */
 class MediaContainer extends globalThis.HTMLElement {
+  static get observedAttributes() {
+    return [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED]
+      .concat(MEDIA_UI_ATTRIBUTE_NAMES)
+      // Filter out specific / complex data media UI attributes
+      // that shouldn't be propagated to this state receiver element.
+      .filter(name => ![
+        MediaUIAttributes.MEDIA_RENDITION_LIST,
+      ].includes(name));
+  }
+
   constructor() {
     super();
 
@@ -350,12 +360,6 @@ class MediaContainer extends globalThis.HTMLElement {
     }
   }
 
-  static get observedAttributes() {
-    return [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED].concat(
-      MEDIA_UI_ATTRIBUTE_NAMES
-    );
-  }
-
   // Could share this code with media-chrome-html-element instead
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
@@ -371,6 +375,7 @@ class MediaContainer extends globalThis.HTMLElement {
    * webkitExitFullscreen?,
    * requestCast?,
    * webkitShowPlaybackTargetPicker?,
+   * videoTracks?,
    * }}
    */
   get media() {

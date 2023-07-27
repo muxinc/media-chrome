@@ -6,20 +6,27 @@ const template = document.createElement('template');
 template.innerHTML = /*html*/`
 <style>
   :host {
-    display: list-item;
+    display: inline-block;
     line-height: 1em;
     padding: 0.5em;
-    margin: 0em;
     cursor: pointer;
   }
 
-  ::slotted:not(:focus-visible) {
-    outline: none;
+  :host(:focus-visible) {
+    box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
+    outline: 0;
+  }
+
+  :host(:hover) {
+    background-color: var(--media-option-hover-background, rgb(82 82 122 / .8));
+    outline: var(--media-option-hover-outline, none);
+  }
+
+  :host([aria-selected="true"]) {
+    background-color: var(--media-option-selected-background, rgb(122 122 184 / .8));
   }
 </style>
-<li>
-  <slot></slot>
-</li>
+<slot></slot>
 `;
 
 export const Attributes = {
@@ -31,15 +38,19 @@ export const Attributes = {
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
+ *
+ * @cssproperty --media-option-selected-background - `background` of selected listbox item.
+ * @cssproperty --media-option-hover-background - `background` of hovered listbox item.
+ * @cssproperty --media-option-hover-outline - `outline` of hovered listbox item.
  */
-class MediaChromeListitem extends globalThis.HTMLElement {
+class MediaChromeOption extends globalThis.HTMLElement {
   static get observedAttributes() {
     return [
       'disabled',
       'aria-selected',
       Attributes.VALUE,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
-  ];
+    ];
   }
 
   constructor() {
@@ -49,10 +60,10 @@ class MediaChromeListitem extends globalThis.HTMLElement {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       const shadow = this.attachShadow({ mode: 'open' });
 
-      const listitemHTML = template.content.cloneNode(true);
-      this.nativeEl = listitemHTML;
+      const optionHTML = template.content.cloneNode(true);
+      this.nativeEl = optionHTML;
 
-      shadow.appendChild(listitemHTML);
+      shadow.appendChild(optionHTML);
     }
   }
 
@@ -127,8 +138,8 @@ class MediaChromeListitem extends globalThis.HTMLElement {
   handleClick() {}
 }
 
-if (!globalThis.customElements.get('media-chrome-listitem')) {
-  globalThis.customElements.define('media-chrome-listitem', MediaChromeListitem);
+if (!globalThis.customElements.get('media-chrome-option')) {
+  globalThis.customElements.define('media-chrome-option', MediaChromeOption);
 }
 
-export default MediaChromeListitem;
+export default MediaChromeOption;

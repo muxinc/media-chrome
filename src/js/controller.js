@@ -454,7 +454,7 @@ export const MediaUIStates = {
       return getSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language }));
     },
     mediaEvents: ['loadstart'],
-    trackListEvents: ['addtrack', 'removetrack'],
+    textTracksEvents: ['addtrack', 'removetrack'],
   },
   MEDIA_SUBTITLES_SHOWING: {
     get: function (controller) {
@@ -470,13 +470,29 @@ export const MediaUIStates = {
       return getShowingSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language }));
     },
     mediaEvents: ['loadstart'],
-    trackListEvents: ['addtrack', 'removetrack', 'change'],
+    textTracksEvents: ['addtrack', 'removetrack', 'change'],
+  },
+  MEDIA_RENDITION_LIST: {
+    get: function (controller) {
+      const { media } = controller;
+      return [...media?.videoRenditions ?? []];
+    },
+    mediaEvents: ['emptied', 'loadstart'],
+    videoRenditionsEvents: ['addrendition', 'removerendition'],
+  },
+  MEDIA_RENDITION_SELECTED: {
+    get: function (controller) {
+      const { media } = controller;
+      return media?.videoRenditions?.[media.videoRenditions?.selectedIndex]?.id;
+    },
+    mediaEvents: ['emptied'],
+    videoRenditionsEvents: ['addrendition', 'removerendition', 'change'],
   },
 };
 
 // Capture request events from UI elements and tranlate to actions
 export const MediaUIRequestHandlers = {
-  MEDIA_PLAY_REQUEST: (media, e, controller) => {
+  MEDIA_PLAY_REQUEST: (media, event, controller) => {
     const streamType = MediaUIStates.MEDIA_STREAM_TYPE.get(controller);
     // TODO: Move to not attr value
     const autoSeekToLive = controller.getAttribute('noautoseektolive') === null;
@@ -497,8 +513,8 @@ export const MediaUIRequestHandlers = {
       media.volume = 0.25;
     }
   },
-  MEDIA_VOLUME_REQUEST: (media, e, mediaController) => {
-    const volume = e.detail;
+  MEDIA_VOLUME_REQUEST: (media, event, mediaController) => {
+    const volume = event.detail;
 
     media.volume = volume;
 
@@ -536,7 +552,7 @@ export const MediaUIRequestHandlers = {
   //   - Document.fullscreenElement / (ShadowRoot.fullscreenElement)
   //   - Element.requestFullscreen()
   //
-  MEDIA_ENTER_FULLSCREEN_REQUEST: (media, e, controller) => {
+  MEDIA_ENTER_FULLSCREEN_REQUEST: (media, event, controller) => {
     if (!fullscreenSupported) {
       console.warn(
         'Fullscreen support is unavailable; not entering fullscreen'
@@ -654,8 +670,8 @@ export const MediaUIRequestHandlers = {
       globalThis.CastableVideoElement.exitCast();
     }
   },
-  MEDIA_SEEK_REQUEST: (media, e) => {
-    const time = e.detail;
+  MEDIA_SEEK_REQUEST: (media, event) => {
+    const time = event.detail;
 
     // Can't set the time before the media is ready
     // Ignore if readyState isn't supported
@@ -663,14 +679,14 @@ export const MediaUIRequestHandlers = {
       media.currentTime = time;
     }
   },
-  MEDIA_PLAYBACK_RATE_REQUEST: (media, e) => {
-    media.playbackRate = e.detail;
+  MEDIA_PLAYBACK_RATE_REQUEST: (media, event) => {
+    media.playbackRate = event.detail;
   },
-  MEDIA_PREVIEW_REQUEST: (media, e, controller) => {
+  MEDIA_PREVIEW_REQUEST: (media, event, controller) => {
     // No media (yet), so bail early
     if (!media) return;
 
-    const time = e.detail;
+    const time = event.detail;
 
     // if time is null, then we're done previewing and want to remove the attributes
     if (time === null) {
@@ -726,14 +742,14 @@ export const MediaUIRequestHandlers = {
       previewCoordsStr.split(',')
     );
   },
-  MEDIA_SHOW_SUBTITLES_REQUEST: (media, e, controller) => {
+  MEDIA_SHOW_SUBTITLES_REQUEST: (media, event, controller) => {
     const tracks = getSubtitleTracks(controller);
-    const { detail: tracksToUpdate = [] } = e;
+    const { detail: tracksToUpdate = [] } = event;
     updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
   },
-  MEDIA_DISABLE_SUBTITLES_REQUEST: (media, e, controller) => {
+  MEDIA_DISABLE_SUBTITLES_REQUEST: (media, event, controller) => {
     const tracks = getSubtitleTracks(controller);
-    const { detail: tracksToUpdate = [] } = e;
+    const { detail: tracksToUpdate = [] } = event;
     updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
   },
   MEDIA_AIRPLAY_REQUEST: (media) => {
@@ -769,4 +785,17 @@ export const MediaUIRequestHandlers = {
 
     media.currentTime = seekable.end(seekable.length - 1);
   },
+  MEDIA_RENDITION_REQUEST: (media, event) => {
+    if (!media?.videoRenditions) {
+      console.warn('MediaController: Rendition selection not supported by this media.');
+      return;
+    }
+
+    const renditionId = event.detail;
+    const index = [...media.videoRenditions].findIndex(r => r.id == renditionId);
+
+    if (media.videoRenditions.selectedIndex != index) {
+      media.videoRenditions.selectedIndex = index;
+    }
+  }
 };

@@ -1,12 +1,12 @@
 import MediaChromeSelectMenu from './media-chrome-selectmenu.js';
-import './media-chrome-listitem.js';
+import './media-chrome-option.js';
 import { DEFAULT_RATES } from '../media-playback-rate-button.js';
 import './media-playback-rate-listbox.js';
 import { globalThis, document, } from '../utils/server-safe-globals.js';
 
 const createItem = (rate) => {
-  const item = document.createElement('media-chrome-listitem');
-  item.part.add('listitem');
+  const item = document.createElement('media-chrome-option');
+  item.part.add('option');
   item.value = rate;
   item.textContent = rate + 'x';
 
@@ -18,7 +18,7 @@ const createItem = (rate) => {
  *
  * @csspart button - The default button that's in the shadow DOM.
  * @csspart listbox - The default listbox that's in the shadow DOM.
- * @csspart listitem - A part that targets each listitem of the listbox.
+ * @csspart option - A part that targets each option of the listbox.
  */
 class MediaPlaybackrateSelectMenu extends MediaChromeSelectMenu {
   static get observedAttributes() {
@@ -40,7 +40,7 @@ class MediaPlaybackrateSelectMenu extends MediaChromeSelectMenu {
 
     const playbackrateListbox = document.createElement('media-playback-rate-listbox');
     playbackrateListbox.part.add('listbox');
-    playbackrateListbox.setAttribute('exportparts', 'listitem');
+    playbackrateListbox.setAttribute('exportparts', 'option');
 
     DEFAULT_RATES.forEach(rate => {
       playbackrateListbox.append(createItem(rate));
