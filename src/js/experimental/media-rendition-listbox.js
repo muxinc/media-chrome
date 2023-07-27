@@ -1,7 +1,7 @@
 import MediaChromeListbox from './media-chrome-listbox.js';
 import './media-chrome-option.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
-import { getNumericAttr, setNumericAttr } from '../utils/element-utils.js';
+import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
 import { parseRenditionList } from '../utils/utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
@@ -81,12 +81,16 @@ class MediaRenditionListbox extends MediaChromeListbox {
     this.#render();
   }
 
+  /**
+   * Get selected rendition id.
+   * @return {string}
+   */
   get mediaRenditionSelected() {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED);
+    return getStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED);
   }
 
   set mediaRenditionSelected(id) {
-    setNumericAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
+    setStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
   }
 
   #render() {

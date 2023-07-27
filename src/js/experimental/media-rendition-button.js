@@ -1,6 +1,6 @@
 import { MediaChromeButton } from '../media-chrome-button.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
-import { getNumericAttr, setNumericAttr } from '../utils/element-utils.js';
+import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
 import { MediaUIAttributes } from '../constants.js';
 
 const renditionIcon = /*html*/`<svg aria-hidden="true" viewBox="0 0 24 24">
@@ -29,12 +29,16 @@ class MediaRenditionButton extends MediaChromeButton {
     super({ slotTemplate });
   }
 
+  /**
+   * Get selected rendition id.
+   * @return {string}
+   */
   get mediaRenditionSelected() {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED);
+    return getStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED);
   }
 
   set mediaRenditionSelected(id) {
-    setNumericAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
+    setStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
   }
 }
 
