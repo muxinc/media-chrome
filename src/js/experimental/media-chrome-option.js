@@ -1,8 +1,6 @@
-import { MediaStateReceiverAttributes } from '../constants.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
-
 template.innerHTML = /*html*/`
 <style>
   :host {
@@ -49,7 +47,6 @@ export const Attributes = {
  * @slot - Default slotted elements.
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
- * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  *
  * @cssproperty --media-option-selected-background - `background` of selected listbox item.
  * @cssproperty --media-option-hover-background - `background` of hovered listbox item.
@@ -61,7 +58,6 @@ class MediaChromeOption extends globalThis.HTMLElement {
       Attributes.DISABLED,
       Attributes.SELECTED,
       Attributes.VALUE,
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
     ];
   }
 
@@ -121,17 +117,6 @@ class MediaChromeOption extends globalThis.HTMLElement {
         this.disable();
       }
     }
-
-    else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
-      if (oldValue) {
-        const mediaControllerEl = document.getElementById(oldValue);
-        mediaControllerEl?.unassociateElement?.(this);
-      }
-      if (newValue) {
-        const mediaControllerEl = document.getElementById(newValue);
-        mediaControllerEl?.associateElement?.(this);
-      }
-    }
   }
 
   connectedCallback() {
@@ -140,26 +125,10 @@ class MediaChromeOption extends globalThis.HTMLElement {
     }
 
     this.setAttribute('role', 'option');
-
-    const mediaControllerId = this.getAttribute(
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER
-    );
-    if (mediaControllerId) {
-      const mediaControllerEl = document.getElementById(mediaControllerId);
-      mediaControllerEl?.associateElement?.(this);
-    }
   }
 
   disconnectedCallback() {
     this.disable();
-
-    const mediaControllerId = this.getAttribute(
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER
-    );
-    if (mediaControllerId) {
-      const mediaControllerEl = document.getElementById(mediaControllerId);
-      mediaControllerEl?.unassociateElement?.(this);
-    }
   }
 
   handleClick() {}
