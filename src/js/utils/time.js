@@ -80,7 +80,7 @@ export function formatTime(seconds, guide) {
   if (isNaN(seconds) || seconds === Infinity) {
     // '-' is false for all relational operators (e.g. <, >=) so this setting
     // will add the minimum number of fields specified by the guide
-    h = m = s = '-';
+    h = m = s = '0';
   }
 
   // Check if we need to show hours
