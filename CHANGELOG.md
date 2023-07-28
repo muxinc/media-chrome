@@ -1,3 +1,19 @@
+# [1.2.0](https://github.com/muxinc/media-chrome/compare/v1.1.7...v1.2.0) (2023-07-28)
+
+
+### Bug Fixes
+
+* -:-- time codes on player load to 0:00 ([#706](https://github.com/muxinc/media-chrome/issues/706)) ([927dc41](https://github.com/muxinc/media-chrome/commit/927dc41e227f3c61452c43f9bae02f6a907c492d))
+* select keyboard focus ([#705](https://github.com/muxinc/media-chrome/issues/705)) ([2eca046](https://github.com/muxinc/media-chrome/commit/2eca0461c9d557de1750d3ecc235901456bb6503))
+* set breakpoints on connected  ([#707](https://github.com/muxinc/media-chrome/issues/707)) ([6f66e93](https://github.com/muxinc/media-chrome/commit/6f66e93f9f03ca574b72ada690a95474248ced28)), closes [#697](https://github.com/muxinc/media-chrome/issues/697)
+
+
+### Features
+
+* add checkmark icon to listboxes ([#694](https://github.com/muxinc/media-chrome/issues/694)) ([110d28a](https://github.com/muxinc/media-chrome/commit/110d28ae2049762f8725344268f22ba0af7bf36d))
+
+
+
 ## [1.1.7](https://github.com/muxinc/media-chrome/compare/v1.1.6...v1.1.7) (2023-07-25)
 
 
