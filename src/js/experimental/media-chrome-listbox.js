@@ -92,7 +92,6 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   #keysSoFar = '';
   #clearKeysTimeout = null;
-  #slot;
   #metaPressed = false;
 
   constructor(options = {}) {
@@ -137,7 +136,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     return indicator;
   }
 
-  get #options() {
+  get options() {
     // First query the light dom children for any options.
 
     /** @type NodeListOf<HTMLOptionElement> */
@@ -152,15 +151,15 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   get selectedOptions() {
-    return this.#options.filter(el => el.selected);
+    return this.options.filter(option => option.selected);
   }
 
   get value() {
-    return this.selectedOptions[0]?.value || this.selectedOptions[0]?.textContent;
+    return this.selectedOptions[0]?.value ?? '';
   }
 
   set value(newValue) {
-    const option = this.#options.find(el => el.value === newValue || el.textContent === newValue);
+    const option = this.options.find(option => option.value === newValue);
 
     if (!option) return;
 
@@ -314,7 +313,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     const oldSelectedOptions = [...this.selectedOptions];
 
     if (!this.hasAttribute('aria-multiselectable') || this.getAttribute('aria-multiselectable') !== 'true') {
-      this.#options.forEach(el => (el.selected = false));
+      this.options.forEach(el => (el.selected = false));
     }
 
     if (toggle) {
@@ -330,7 +329,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   handleMovement(e) {
     const { key } = e;
-    const els = this.#options;
+    const els = this.options;
 
     let currentOption = this.#getOption(e);
     if (!currentOption) {
@@ -379,7 +378,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
     if (!option || option.hasAttribute('disabled')) return;
 
-    this.#options.forEach(el => el.setAttribute('tabindex', '-1'));
+    this.options.forEach(el => el.setAttribute('tabindex', '-1'));
     option.setAttribute('tabindex', '0');
 
     this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
@@ -388,7 +387,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   #searchOption(key) {
     this.#clearKeysOnDelay();
 
-    const els = this.#options;
+    const els = this.options;
     const activeIndex = els.findIndex(el => el.getAttribute('tabindex') === '0');
 
     // always accumulate the key

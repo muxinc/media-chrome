@@ -64,6 +64,7 @@ class MediaChromeOption extends globalThis.HTMLElement {
 
   /** @see https://html.spec.whatwg.org/multipage/form-elements.html#concept-option-dirtiness */
   #dirty = false;
+  #ownerElement;
 
   constructor() {
     super();
@@ -75,29 +76,34 @@ class MediaChromeOption extends globalThis.HTMLElement {
     }
   }
 
-  set value(value) {
-    this.setAttribute(Attributes.VALUE, value);
+  get value() {
+    return this.getAttribute(Attributes.VALUE) ?? this.text;
   }
 
-  get value() {
-    return this.getAttribute(Attributes.VALUE);
+  set value(val) {
+    this.setAttribute(Attributes.VALUE, val);
+  }
+
+  get text() {
+    return (this.textContent ?? '').trim();
+  }
+
+  get selected() {
+    return this.getAttribute('aria-selected') === 'true';
   }
 
   set selected(value) {
     this.#dirty = true;
-    this.ariaSelected = value ? 'true' : 'false';
-  }
-
-  get selected() {
-    return this.ariaSelected === 'true';
+    // Firefox doesn't support the property .ariaSelected.
+    this.setAttribute('aria-selected', value ? 'true' : 'false');
   }
 
   enable() {
     if (!this.hasAttribute('tabindex')) {
       this.setAttribute('tabindex', -1);
     }
-    if (!this.ariaSelected) {
-      this.ariaSelected = 'false';
+    if (!this.hasAttribute('aria-selected')) {
+      this.setAttribute('aria-selected', 'false');
     }
   }
 
@@ -108,7 +114,7 @@ class MediaChromeOption extends globalThis.HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
 
     if (attrName === Attributes.SELECTED && !this.#dirty) {
-      this.ariaSelected = newValue != null ? 'true' : 'false';
+      this.setAttribute('aria-selected', newValue != null ? 'true' : 'false');
     }
 
     else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
@@ -126,13 +132,48 @@ class MediaChromeOption extends globalThis.HTMLElement {
     }
 
     this.setAttribute('role', 'option');
+
+    this.#ownerElement = closestOptionsContainer(this, this.parentNode);
+    this.#reset();
   }
 
   disconnectedCallback() {
     this.disable();
+
+    this.#reset();
+    this.#ownerElement = null;
+  }
+
+  #reset() {
+    const options = this.#ownerElement?.options;
+    if (!options) return;
+
+    const hasActiveOption = options.some(option => option.getAttribute('tabindex') === '0');
+    // If the user set an element as active, we should use that rather than assume a default.
+    if (hasActiveOption) return;
+
+    // Default to the aria-selected element if there isn't an active element already.
+    let selectedOption = options.find(option => option.getAttribute('aria-selected') === 'true');
+
+    // If there isn't an active element or a selected element, default to the first element.
+    if (!selectedOption) selectedOption = options[0];
+
+    selectedOption?.setAttribute('tabindex', '0');
+    selectedOption?.setAttribute('aria-selected', 'true');
   }
 
   handleClick() {}
+}
+
+function closestOptionsContainer(childNode, parentNode) {
+  if (!childNode) return null;
+
+  const { host } = childNode.getRootNode();
+  if (!parentNode && host) return closestOptionsContainer(childNode, host);
+
+  if (parentNode?.options) return parentNode;
+
+  return closestOptionsContainer(parentNode, parentNode?.parentNode);
 }
 
 if (!globalThis.customElements.get('media-chrome-option')) {
