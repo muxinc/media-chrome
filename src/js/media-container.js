@@ -184,52 +184,53 @@ const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 const defaultBreakpoints = 'sm:384 md:576 lg:768 xl:960';
 
-const resizeCallback = (entries) => {
+function resizeCallback(entries) {
   for (const entry of entries) {
-    const container = entry.target;
+    setBreakpoints(entry.target, entry.contentRect.width);
+  }
+}
 
-    if (!container.isConnected) continue;
+function setBreakpoints(container, width) {
+  if (!container.isConnected) return;
 
-    const breakpoints =
-      container.getAttribute(Attributes.BREAKPOINTS) ?? defaultBreakpoints;
-    const ranges = createBreakpointMap(breakpoints);
-    const activeBreakpoints = getBreakpoints(ranges, entry.contentRect);
+  const breakpoints = container.getAttribute(Attributes.BREAKPOINTS) ?? defaultBreakpoints;
+  const ranges = createBreakpointMap(breakpoints);
+  const activeBreakpoints = getBreakpoints(ranges, width);
 
-    let changed = false;
+  let changed = false;
 
-    Object.keys(ranges).forEach((name) => {
-      if (activeBreakpoints.includes(name)) {
-        if (!container.hasAttribute(`breakpoint${name}`)) {
-          container.setAttribute(`breakpoint${name}`, '');
-          changed = true;
-        }
-        return;
-      }
-
-      if (container.hasAttribute(`breakpoint${name}`)) {
-        container.removeAttribute(`breakpoint${name}`);
+  Object.keys(ranges).forEach((name) => {
+    if (activeBreakpoints.includes(name)) {
+      if (!container.hasAttribute(`breakpoint${name}`)) {
+        container.setAttribute(`breakpoint${name}`, '');
         changed = true;
       }
+      return;
+    }
+
+    if (container.hasAttribute(`breakpoint${name}`)) {
+      container.removeAttribute(`breakpoint${name}`);
+      changed = true;
+    }
+  });
+
+  if (changed) {
+    const evt = new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_CHANGE, {
+      detail: activeBreakpoints
     });
 
-    if (changed) {
-      const evt = new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_CHANGE, {
-        detail: activeBreakpoints
-      });
-
-      container.dispatchEvent(evt)
-    }
+    container.dispatchEvent(evt)
   }
-};
+}
 
 function createBreakpointMap(breakpoints) {
   const pairs = breakpoints.split(/\s+/);
   return Object.fromEntries(pairs.map((pair) => pair.split(':')));
 }
 
-function getBreakpoints(breakpoints, rect) {
+function getBreakpoints(breakpoints, width) {
   return Object.keys(breakpoints).filter((name) => {
-    return rect.width >= breakpoints[name];
+    return width >= breakpoints[name];
   });
 }
 
@@ -447,6 +448,8 @@ class MediaContainer extends globalThis.HTMLElement {
     const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
     this.setAttribute('role', 'region');
     this.setAttribute('aria-label', label);
+
+    setBreakpoints(this, this.offsetWidth);
 
     if (this.media) {
       this.handleMediaUpdated(this.media).then((media) =>
