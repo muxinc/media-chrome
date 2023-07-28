@@ -21,7 +21,7 @@ template.innerHTML = /*html*/`
     max-height: 300px;
     overflow: hidden auto;
     transition: var(--media-selectmenu-transition-in,
-      visibility .15s ease-out, transform .15s ease-out, opacity .15s ease-out);
+      visibility 0s, transform .15s ease-out, opacity .15s ease-out);
     transform: var(--media-listbox-transform-in, translateY(0) scale(1));
     visibility: visible;
     opacity: 1;
