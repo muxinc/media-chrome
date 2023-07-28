@@ -1,32 +1,69 @@
 import { MediaStateReceiverAttributes } from '../constants.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
-const template = document.createElement('template');
+const checkIcon = /*html*/`
+<svg aria-hidden="true" viewBox="0 1 24 24">
+  <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
+</svg>`;
 
+export function createOption(text, value, selected) {
+  const option = document.createElement('media-chrome-option');
+  option.part.add('option');
+  option.value = value;
+  option.selected = selected;
+
+  const label = document.createElement('span');
+  label.textContent = text;
+  option.append(label);
+
+  return option;
+}
+
+const template = document.createElement('template');
 template.innerHTML = /*html*/`
 <style>
   :host {
     font: var(--media-font,
       var(--media-font-weight, normal)
-      var(--media-font-size, 1em) /
+      var(--media-font-size, 15px) /
       var(--media-text-content-height, var(--media-control-height, 24px))
       var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
     color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
     display: inline-flex;
-    flex-direction: column;
-    gap: 0.5em;
+    gap: .5em;
     margin: 0;
-    padding: 0.5em;
+    padding: .5em 0;
+  }
+
+  media-chrome-option {
+    padding-inline: .7em 1.4em;
+  }
+
+  media-chrome-option > span {
+    margin-inline: .5ch;
+  }
+
+  [part~="indicator"] {
+    fill: var(--media-option-indicator-fill, var(--media-icon-color, var(--media-primary-color, rgb(238 238 238))));
+    height: var(--media-option-indicator-height, 1.25em);
+    vertical-align: var(--media-option-indicator-vertical-align, text-top);
+  }
+
+  .select-indicator {
+    visibility: hidden;
+  }
+
+  [aria-selected="true"] > .select-indicator {
+    visibility: visible;
   }
 </style>
-<slot></slot>
+<div id="container"></div>
+<slot hidden name="select-indicator">${checkIcon}</slot>
 `;
 
 /**
  * @extends {HTMLElement}
- *
- * @slot - Default slotted elements.
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
@@ -45,67 +82,61 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-text-content-height - `line-height` of text.
  */
 class MediaChromeListbox extends globalThis.HTMLElement {
-  #keysSoFar = '';
-  #clearKeysTimeout = null;
-  #slot;
-  #metaPressed = false;
-
   static get observedAttributes() {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
+
+  static formatOptionText(text) {
+    return text;
+  }
+
+  #keysSoFar = '';
+  #clearKeysTimeout = null;
+  #metaPressed = false;
 
   constructor(options = {}) {
     super();
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      const shadow = this.attachShadow({ mode: 'open' });
+      this.attachShadow({ mode: 'open' });
 
-      const listboxHTML = template.content.cloneNode(true);
-      this.nativeEl = listboxHTML;
+      this.nativeEl = template.content.cloneNode(true);
 
-      let slotTemplate = options.slotTemplate;
-
-      if (!slotTemplate) {
-        slotTemplate = document.createElement('template');
-        slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
+      if (options.slotTemplate) {
+        this.nativeEl.append(options.slotTemplate.content.cloneNode(true));
       }
 
-      this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
-
-      shadow.appendChild(listboxHTML);
+      this.shadowRoot.append(this.nativeEl);
     }
 
-    this.#slot = this.shadowRoot.querySelector('slot');
-
-    this.#slot.addEventListener('slotchange', () => {
-      const els = this.#options;
-      const activeEls = els.some(el => el.getAttribute('tabindex') === '0');
-
-      // if the user set an element as active, we should use that
-      // rather than assume a default
-      if (activeEls) {
-        return;
-      }
-
-      // default to the aria-selected element if there isn't an
-      // active element already
-      let elToSelect = els.filter(el => el.getAttribute('aria-selected') === 'true')[0];
-
-      // if there isn't an active element or a selected element,
-      // default to the first element
-      if (!elToSelect) {
-        elToSelect = els[0];
-      }
-
-      if (elToSelect) {
-        elToSelect.setAttribute('tabindex', '0');
-        elToSelect.setAttribute('aria-selected', 'true');
-      }
-    });
+    this.container = this.shadowRoot.querySelector('#container');
   }
 
-  get #options() {
+  formatOptionText(text, data) {
+    // @ts-ignore
+    return this.constructor.formatOptionText(text, data);
+  }
+
+  getSlottedIndicator(name) {
+    let indicator = this.querySelector(`:scope > [slot="${name}-indicator"]`);
+
+    // Chaining slots
+    if (indicator?.nodeName == 'SLOT')
+      // @ts-ignore
+      indicator = indicator.assignedElements({ flatten: true })[0];
+
+    if (!indicator)
+      indicator = this.shadowRoot.querySelector(`[name="${name}-indicator"] > svg`);
+
+    indicator.removeAttribute('slot');
+    indicator.part.add('indicator');
+    indicator.classList.add(`${name}-indicator`);
+
+    return indicator;
+  }
+
+  get options() {
     // First query the light dom children for any options.
 
     /** @type NodeListOf<HTMLOptionElement> */
@@ -113,26 +144,26 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
     if (!options.length) {
       // Fallback to the options in the shadow dom.
-      options = this.#slot.querySelectorAll('media-chrome-option');
+      options = this.container?.querySelectorAll('media-chrome-option');
     }
 
     return Array.from(options);
   }
 
   get selectedOptions() {
-    return this.#options.filter(el => el.getAttribute('aria-selected') === 'true');
+    return this.options.filter(option => option.selected);
   }
 
   get value() {
-    return this.selectedOptions[0]?.value || this.selectedOptions[0]?.textContent;
+    return this.selectedOptions[0]?.value ?? '';
   }
 
   set value(newValue) {
-    const item = this.#options.find(el => el.value === newValue || el.textContent === newValue);
+    const option = this.options.find(option => option.value === newValue);
 
-    if (!item) return;
+    if (!option) return;
 
-    this.#selectItem(item);
+    this.#selectOption(option);
   }
 
   focus() {
@@ -263,7 +294,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     return ['Enter', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
   }
 
-  #getItem(e) {
+  #getOption(e) {
     const composedPath = e.composedPath();
     const index = composedPath.findIndex(el => el.nodeName === 'MEDIA-CHROME-OPTION');
 
@@ -271,38 +302,36 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   handleSelection(e, toggle) {
-    const item = this.#getItem(e);
+    const option = this.#getOption(e);
 
-    if (!item) return;
+    if (!option) return;
 
-    this.#selectItem(item, toggle);
+    this.#selectOption(option, toggle);
   }
 
-  #selectItem(item, toggle) {
+  #selectOption(option, toggle) {
+    const oldSelectedOptions = [...this.selectedOptions];
+
     if (!this.hasAttribute('aria-multiselectable') || this.getAttribute('aria-multiselectable') !== 'true') {
-      this.#options.forEach(el => el.setAttribute('aria-selected', 'false'));
+      this.options.forEach(el => (el.selected = false));
     }
 
     if (toggle) {
-      const selected = item.getAttribute('aria-selected') === 'true';
-
-      if (selected) {
-        item.setAttribute('aria-selected', 'false');
-      } else {
-        item.setAttribute('aria-selected', 'true');
-      }
+      option.selected = !option.selected;
     } else {
-      item.setAttribute('aria-selected', 'true');
+      option.selected = true;
     }
 
-    this.dispatchEvent(new Event('change'));
+    if (this.selectedOptions.some((opt, i) => opt != oldSelectedOptions[i])) {
+      this.dispatchEvent(new Event('change'));
+    }
   }
 
   handleMovement(e) {
     const { key } = e;
-    const els = this.#options;
+    const els = this.options;
 
-    let currentOption = this.#getItem(e);
+    let currentOption = this.#getOption(e);
     if (!currentOption) {
       currentOption = els.filter(el => el.getAttribute('tabindex') === '0')[0];
     }
@@ -333,7 +362,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
         nextOption = els[els.length - 1];
         break;
       default:
-        nextOption = this.#searchItem(key);
+        nextOption = this.#searchOption(key);
         break;
     }
 
@@ -345,31 +374,31 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   handleClick(e) {
-    const item = this.#getItem(e);
+    const option = this.#getOption(e);
 
-    if (!item || item.hasAttribute('disabled')) return;
+    if (!option || option.hasAttribute('disabled')) return;
 
-    this.#options.forEach(el => el.setAttribute('tabindex', '-1'));
-    item.setAttribute('tabindex', '0');
+    this.options.forEach(el => el.setAttribute('tabindex', '-1'));
+    option.setAttribute('tabindex', '0');
 
     this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
   }
 
-  #searchItem(key) {
+  #searchOption(key) {
     this.#clearKeysOnDelay();
 
-    const els = this.#options;
+    const els = this.options;
     const activeIndex = els.findIndex(el => el.getAttribute('tabindex') === '0');
 
     // always accumulate the key
     this.#keysSoFar += key;
 
     // if the same key is pressed, assume it's a repeated key
-    // to skip to the same item that begings with that key
+    // to skip to the same option that begings with that key
     // until the user presses another key and a better choice is available
     const repeatedKey = this.#keysSoFar.split('').every(k => k === key);
 
-    // if it's a repeat key, skip the current item
+    // if it's a repeat key, skip the current option
     const after = els.slice(activeIndex + (repeatedKey ? 1 : 0)).filter(el => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
     const before = els.slice(0, activeIndex - (repeatedKey ? 1 : 0)).filter(el => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
 
@@ -401,4 +430,5 @@ if (!globalThis.customElements.get('media-chrome-listbox')) {
   globalThis.customElements.define('media-chrome-listbox', MediaChromeListbox);
 }
 
+export { MediaChromeListbox };
 export default MediaChromeListbox;

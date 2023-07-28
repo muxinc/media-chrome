@@ -41,37 +41,6 @@ const updateAriaChecked = (el) => {
 };
 
 /**
- * @param {any} el Should be HTMLElement but issues with globalThis shim
- * @param {string} attrName
- * @returns {Array<Object>} An array of TextTrack-like objects.
- */
-const getSubtitlesListAttr = (el, attrName) => {
-  const attrVal = el.getAttribute(attrName);
-  return attrVal ? parseTextTracksStr(attrVal) : [];
-};
-
-/**
- *
- * @param {any} el Should be HTMLElement but issues with globalThis shim
- * @param {string} attrName
- * @param {Array<Object>} list An array of TextTrack-like objects
- */
-const setSubtitlesListAttr = (el, attrName, list) => {
-  // null, undefined, and empty arrays are treated as "no value" here
-  if (!list?.length) {
-    el.removeAttribute(attrName);
-    return;
-  }
-
-  // don't set if the new value is the same as existing
-  const newValStr = stringifyTextTrackList(list);
-  const oldVal = el.getAttribute(attrName);
-  if (oldVal === newValStr) return;
-
-  el.setAttribute(attrName, newValStr);
-};
-
-/**
  * @slot on - An element that will be shown while closed captions or subtitles are on.
  * @slot off - An element that will be shown while closed captions or subtitles are off.
  * @slot icon - An element for representing on and off states in a single icon
@@ -143,6 +112,37 @@ class MediaCaptionsButton extends MediaChromeButton {
     toggleSubsCaps(this);
   }
 }
+
+/**
+ * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {string} attrName
+ * @returns {Array<Object>} An array of TextTrack-like objects.
+ */
+const getSubtitlesListAttr = (el, attrName) => {
+  const attrVal = el.getAttribute(attrName);
+  return attrVal ? parseTextTracksStr(attrVal) : [];
+};
+
+/**
+ *
+ * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {string} attrName
+ * @param {Array<Object>} list An array of TextTrack-like objects
+ */
+const setSubtitlesListAttr = (el, attrName, list) => {
+  // null, undefined, and empty arrays are treated as "no value" here
+  if (!list?.length) {
+    el.removeAttribute(attrName);
+    return;
+  }
+
+  // don't set if the new value is the same as existing
+  const newValStr = stringifyTextTrackList(list);
+  const oldVal = el.getAttribute(attrName);
+  if (oldVal === newValStr) return;
+
+  el.setAttribute(attrName, newValStr);
+};
 
 if (!globalThis.customElements.get('media-captions-button')) {
   globalThis.customElements.define('media-captions-button', MediaCaptionsButton);

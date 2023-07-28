@@ -1,18 +1,9 @@
-import MediaChromeListbox from './media-chrome-listbox.js';
+import { MediaChromeListbox, createOption } from './media-chrome-listbox.js';
 import './media-chrome-option.js';
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { globalThis } from '../utils/server-safe-globals.js';
 import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
 import { parseRenditionList } from '../utils/utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
-
-const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
-  <style>
-    media-chrome-option {
-      white-space: var(--media-rendition-listbox-white-space, nowrap);
-    }
-  </style>
-`;
 
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
@@ -21,10 +12,6 @@ slotTemplate.innerHTML = /*html*/`
  * @cssproperty --media-rendition-listbox-white-space - `white-space` of playback rate list item.
  */
 class MediaRenditionListbox extends MediaChromeListbox {
-  #autoOption;
-  #renditionList = [];
-  #prevState;
-
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
@@ -33,18 +20,19 @@ class MediaRenditionListbox extends MediaChromeListbox {
     ];
   }
 
+  /** @type {Element} */
+  #selectIndicator;
+  #renditionList = [];
+  #prevState;
+
   constructor() {
-    super({ slotTemplate });
+    super();
 
-    const autoOption = document.createElement('media-chrome-option');
-
-    autoOption.part.add('option');
-    autoOption.value = 'auto';
-    autoOption.textContent = 'Auto';
-    this.#autoOption = autoOption;
+    this.#selectIndicator = this.getSlottedIndicator('select');
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED && oldValue !== newValue) {
       this.value = newValue ?? 'auto';
@@ -54,20 +42,16 @@ class MediaRenditionListbox extends MediaChromeListbox {
       this.#renditionList = parseRenditionList(newValue);
       this.#render();
     }
-
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   connectedCallback() {
-    this.addEventListener('change', this.#onChange);
-
     super.connectedCallback();
+    this.addEventListener('change', this.#onChange);
   }
 
   disconnectedCallback() {
-    this.removeEventListener('change', this.#onChange);
-
     super.disconnectedCallback();
+    this.removeEventListener('change', this.#onChange);
   }
 
   get mediaRenditionList() {
@@ -75,8 +59,6 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 
   set mediaRenditionList(list) {
-    this.removeAttribute(MediaUIAttributes.MEDIA_RENDITION_LIST);
-
     this.#renditionList = list;
     this.#render();
   }
@@ -100,33 +82,29 @@ class MediaRenditionListbox extends MediaChromeListbox {
     const renditionList = this.mediaRenditionList
       .sort((a, b) => b.height - a.height);
 
-    const container = this.shadowRoot.querySelector('slot');
+    const container = this.shadowRoot.querySelector('#container');
     container.textContent = '';
 
-    if (!container.contains(this.#autoOption)) {
-      container.append(this.#autoOption);
-    }
-
     let isAuto = !this.mediaRenditionSelected;
-    if (isAuto) {
-      this.#autoOption.setAttribute('aria-selected', 'true');
-    } else {
-      this.#autoOption.setAttribute('aria-selected', 'false');
-    }
+
+    const option = createOption(this.formatOptionText('Auto'), 'auto', isAuto);
+    option.prepend(this.#selectIndicator.cloneNode(true));
+    container.append(option);
 
     for (const rendition of renditionList) {
 
-      /** @type {HTMLOptionElement} */
-      const option = document.createElement('media-chrome-option');
-      option.part.add('option');
-      option.value = `${rendition.id}`;
-      option.textContent = `${Math.min(rendition.width, rendition.height)}p`;
+      const text = this.formatOptionText(
+        `${Math.min(rendition.width, rendition.height)}p`,
+        rendition
+      );
 
-      if (rendition.selected && !isAuto) {
-        option.setAttribute('aria-selected', 'true');
-      } else {
-        option.setAttribute('aria-selected', 'false');
-      }
+      /** @type {HTMLOptionElement} */
+      const option = createOption(
+        text,
+        `${rendition.id}`,
+        rendition.enabled && !isAuto
+      );
+      option.prepend(this.#selectIndicator.cloneNode(true));
 
       container.append(option);
     }
@@ -151,4 +129,5 @@ if (!globalThis.customElements.get('media-rendition-listbox')) {
   globalThis.customElements.define('media-rendition-listbox', MediaRenditionListbox);
 }
 
+export { MediaRenditionListbox };
 export default MediaRenditionListbox;
