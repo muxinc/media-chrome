@@ -8,8 +8,6 @@ import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
  * @attr {string} mediarenditionlist - (read-only) Set to the rendition list.
- *
- * @cssproperty --media-rendition-listbox-white-space - `white-space` of playback rate list item.
  */
 class MediaRenditionListbox extends MediaChromeListbox {
   static get observedAttributes() {

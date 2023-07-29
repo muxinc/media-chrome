@@ -23,7 +23,7 @@ template.innerHTML = /*html*/`
   :host(:hover) {
     cursor: pointer;
     background: var(--media-option-hover-background, rgb(82 82 122 / .8));
-    outline: var(--media-option-hover-outline, none);
+    outline: var(--media-option-hover-outline);
   }
 
   :host([aria-selected="true"]) {
@@ -49,9 +49,10 @@ export const Attributes = {
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  *
- * @cssproperty --media-option-selected-background - `background` of selected listbox item.
- * @cssproperty --media-option-hover-background - `background` of hovered listbox item.
- * @cssproperty --media-option-hover-outline - `outline` of hovered listbox item.
+ * @cssproperty --media-option-transition - `transition` of option.
+ * @cssproperty --media-option-selected-background - `background` of selected option.
+ * @cssproperty --media-option-hover-background - `background` of hovered option.
+ * @cssproperty --media-option-hover-outline - `outline` of hovered option.
  */
 class MediaChromeOption extends globalThis.HTMLElement {
   static get observedAttributes() {

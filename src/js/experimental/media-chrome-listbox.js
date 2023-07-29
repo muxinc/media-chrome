@@ -68,7 +68,7 @@ template.innerHTML = /*html*/`
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  *
- * @cssproperty --media-primary-color - Default color of text.
+ * @cssproperty --media-primary-color - Default color of text / icon.
  * @cssproperty --media-secondary-color - Default color of background.
  * @cssproperty --media-text-color - `color` of text.
  *
@@ -80,6 +80,12 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-font-family - `font-family` property.
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
+ *
+ * @cssproperty --media-option-indicator-fill - `fill` color of indicator icon.
+ * @cssproperty --media-icon-color - `fill` color of icon.
+ *
+ * @cssproperty --media-option-indicator-height - `height` of option indicator.
+ * @cssproperty --media-option-indicator-vertical-align - `vertical-align` of option indicator.
  */
 class MediaChromeListbox extends globalThis.HTMLElement {
   static get observedAttributes() {
