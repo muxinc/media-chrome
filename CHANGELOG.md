@@ -1,3 +1,12 @@
+## [1.2.1](https://github.com/muxinc/media-chrome/compare/v1.2.0...v1.2.1) (2023-08-02)
+
+
+### Bug Fixes
+
+* selectmenu / listbox fixes ([#709](https://github.com/muxinc/media-chrome/issues/709)) ([66ed3b7](https://github.com/muxinc/media-chrome/commit/66ed3b7235014689339b70791ac05673291250d7))
+
+
+
 # [1.2.0](https://github.com/muxinc/media-chrome/compare/v1.1.7...v1.2.0) (2023-07-28)
 
 
