@@ -68,7 +68,7 @@ template.innerHTML = /*html*/`
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  *
- * @cssproperty --media-primary-color - Default color of text.
+ * @cssproperty --media-primary-color - Default color of text / icon.
  * @cssproperty --media-secondary-color - Default color of background.
  * @cssproperty --media-text-color - `color` of text.
  *
@@ -80,6 +80,12 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-font-family - `font-family` property.
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
+ *
+ * @cssproperty --media-option-indicator-fill - `fill` color of indicator icon.
+ * @cssproperty --media-icon-color - `fill` color of icon.
+ *
+ * @cssproperty --media-option-indicator-height - `height` of option indicator.
+ * @cssproperty --media-option-indicator-vertical-align - `vertical-align` of option indicator.
  */
 class MediaChromeListbox extends globalThis.HTMLElement {
   static get observedAttributes() {
@@ -90,6 +96,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     return text;
   }
 
+  #mediaController;
   #keysSoFar = '';
   #clearKeysTimeout = null;
   #metaPressed = false;
@@ -241,12 +248,13 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
-        const mediaControllerEl = document.getElementById(oldValue);
-        mediaControllerEl?.unassociateElement?.(this);
+        this.#mediaController?.unassociateElement?.(this);
+        this.#mediaController = null;
       }
       if (newValue) {
-        const mediaControllerEl = document.getElementById(newValue);
-        mediaControllerEl?.associateElement?.(this);
+        // @ts-ignore
+        this.#mediaController = this.getRootNode()?.getElementById(newValue);
+        this.#mediaController?.associateElement?.(this);
       }
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
@@ -273,21 +281,18 @@ class MediaChromeListbox extends globalThis.HTMLElement {
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
-      const mediaControllerEl = document.getElementById(mediaControllerId);
-      mediaControllerEl?.associateElement?.(this);
+      // @ts-ignore
+      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController?.associateElement?.(this);
     }
   }
 
   disconnectedCallback() {
     this.disable();
 
-    const mediaControllerId = this.getAttribute(
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER
-    );
-    if (mediaControllerId) {
-      const mediaControllerEl = document.getElementById(mediaControllerId);
-      mediaControllerEl?.unassociateElement?.(this);
-    }
+    // Use cached mediaController, getRootNode() doesn't work if disconnected.
+    this.#mediaController?.unassociateElement?.(this);
+    this.#mediaController = null;
   }
 
   get keysUsed() {
