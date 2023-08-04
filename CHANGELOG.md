@@ -1,3 +1,13 @@
+## [1.2.2](https://github.com/muxinc/media-chrome/compare/v1.2.1...v1.2.2) (2023-08-04)
+
+
+### Bug Fixes
+
+* Adding parts for media-poster-image underlying img for advanced … ([#712](https://github.com/muxinc/media-chrome/issues/712)) ([8a003bf](https://github.com/muxinc/media-chrome/commit/8a003bf1438eb9133c239b1fae59788dfc97c5dc))
+* Move all breakpoint computation to resizeObserver. defer quickly… ([#711](https://github.com/muxinc/media-chrome/issues/711)) ([f60a499](https://github.com/muxinc/media-chrome/commit/f60a4990444cfccd199e9c9090cf7c3df6502671))
+
+
+
 ## [1.2.1](https://github.com/muxinc/media-chrome/compare/v1.2.0...v1.2.1) (2023-08-02)
 
 
