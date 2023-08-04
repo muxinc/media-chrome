@@ -332,7 +332,7 @@ class MediaContainer extends globalThis.HTMLElement {
         resizeCallback(entries);
         // Once we've completed, reset the pending cb flag to false
         pendingResizeCb = false;
-      }, 16); // Use 16ms to ensure at most ~1 invocation per animation frame (~60fps)
+      }, 0);
       pendingResizeCb = true;
     };
     const resizeObserver = new ResizeObserver(deferResizeCallback);
@@ -448,8 +448,6 @@ class MediaContainer extends globalThis.HTMLElement {
     const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
     this.setAttribute('role', 'region');
     this.setAttribute('aria-label', label);
-
-    setBreakpoints(this, this.offsetWidth);
 
     if (this.media) {
       this.handleMediaUpdated(this.media).then((media) =>
