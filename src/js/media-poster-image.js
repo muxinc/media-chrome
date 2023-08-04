@@ -29,7 +29,7 @@ template.innerHTML = /*html*/`
     }
   </style>
 
-  <img aria-hidden="true" id="image"/>
+  <img part="poster img" aria-hidden="true" id="image"/>
 `;
 
 const unsetBackgroundImage = (el) => {
