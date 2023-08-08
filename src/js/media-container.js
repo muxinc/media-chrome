@@ -322,20 +322,7 @@ class MediaContainer extends globalThis.HTMLElement {
     const mutationObserver = new MutationObserver(mutationCallback);
     mutationObserver.observe(this, { childList: true, subtree: true });
 
-    let pendingResizeCb = false;
-    const deferResizeCallback = (entries) => {
-      // Already have a pending async breakpoint computation, so go ahead and bail
-      if (pendingResizeCb) return;
-      // Just in case it takes too long (which will cause an error to throw),
-      // do the breakpoint computation asynchronously
-      setTimeout(() => {
-        resizeCallback(entries);
-        // Once we've completed, reset the pending cb flag to false
-        pendingResizeCb = false;
-      }, 0);
-      pendingResizeCb = true;
-    };
-    const resizeObserver = new ResizeObserver(deferResizeCallback);
+    const resizeObserver = new ResizeObserver(resizeCallback);
     this.resizeObserver = resizeObserver;
     resizeObserver.observe(this);
 
