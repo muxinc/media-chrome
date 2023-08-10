@@ -3,7 +3,7 @@
 <head>
   <meta name="viewport" content="width=device-width">
   <title>Media Chrome Rendition Listbox</title>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@luwes/hls-video-element@1.2/+esm"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@canary/+esm"></script>
   <script type="module" src="../../../dist/index.js"></script>
   <script type="module" src="../../../../dist/experimental/media-rendition-listbox.js"></script>
   <style>
@@ -27,7 +27,7 @@
   <h1>Rendition Listbox</h1>
 
   <media-controller id="mc">
-    <hls-video
+    <mux-video
       id="video"
       slot="media"
       src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k.m3u8"
@@ -35,7 +35,7 @@
       preload="metadata"
       muted
       crossorigin
-    ></hls-video>
+    ></mux-video>
     <media-control-bar>
       <media-play-button></media-play-button>
       <media-time-display showduration></media-time-display>
