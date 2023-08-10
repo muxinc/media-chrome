@@ -20,6 +20,18 @@
       display: none;
     }
 
+    :not(:defined) .rendition-title {
+      display: none;
+    }
+
+    .rendition-title {
+      background: rgb(20 20 30 / .8);
+      border-bottom: 1px solid rgb(255 255 255 / .38);
+      border-radius: 2px 2px 0 0;
+      text-align: center;
+      padding-block: .4em;
+    }
+
     video {
       width: 100%;      /* prevents video to expand beyond its container */
     }
@@ -47,7 +59,12 @@
       <media-time-display showduration></media-time-display>
       <media-time-range></media-time-range>
       <media-mute-button></media-mute-button>
-      <media-rendition-selectmenu></media-rendition-selectmenu>
+      <media-rendition-selectmenu>
+        <div slot="listbox">
+          <div class="rendition-title">Quality</div>
+          <media-rendition-listbox></media-rendition-listbox>
+        </div>
+      </media-rendition-selectmenu>
       <media-pip-button></media-pip-button>
       <media-fullscreen-button></media-fullscreen-button>
     </media-control-bar>
