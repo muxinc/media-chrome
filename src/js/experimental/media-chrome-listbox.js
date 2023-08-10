@@ -31,8 +31,7 @@ template.innerHTML = /*html*/`
     color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
     border-radius: var(--media-listbox-border-radius);
-    display: inline-flex;
-    gap: .5em;
+    display: inline-block;
     margin: 0;
     padding: .5em 0;
   }
@@ -59,7 +58,7 @@ template.innerHTML = /*html*/`
     visibility: visible;
   }
 </style>
-<div id="container"></div>
+<slot id="container"></slot>
 <slot hidden name="select-indicator">${checkIcon}</slot>
 `;
 
@@ -120,6 +119,16 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
 
     this.container = this.shadowRoot.querySelector('#container');
+
+    this.container.addEventListener('slotchange', (event) => {
+      // @ts-ignore
+      for (let node of event.target.assignedNodes({ flatten: true })) {
+        // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
+        if (node.nodeType === 3 && node.textContent.trim() === '') {
+          node.remove();
+        }
+      }
+    });
   }
 
   formatOptionText(text, data) {
@@ -138,6 +147,8 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     if (!indicator)
       indicator = this.shadowRoot.querySelector(`[name="${name}-indicator"] > svg`);
 
+    // @ts-ignore
+    indicator = indicator.cloneNode(true);
     indicator.removeAttribute('slot');
     indicator.part.add('indicator');
     indicator.classList.add(`${name}-indicator`);
