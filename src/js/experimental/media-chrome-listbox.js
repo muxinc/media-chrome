@@ -30,6 +30,7 @@ template.innerHTML = /*html*/`
       var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
     color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
+    border-radius: var(--media-listbox-border-radius);
     display: inline-flex;
     gap: .5em;
     margin: 0;
@@ -74,6 +75,7 @@ template.innerHTML = /*html*/`
  *
  * @cssproperty --media-control-background - `background` of control.
  * @cssproperty --media-listbox-background - `background` of listbox.
+ * @cssproperty --media-listbox-border-radius - `border-radius` of listbox.
  *
  * @cssproperty --media-font - `font` shorthand property.
  * @cssproperty --media-font-weight - `font-weight` property.
