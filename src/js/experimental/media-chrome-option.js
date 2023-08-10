@@ -156,7 +156,10 @@ class MediaChromeOption extends globalThis.HTMLElement {
     if (!selectedOption) selectedOption = options[0];
 
     if (this.#ownerElement.getAttribute('aria-multiselectable') !== 'true') {
-      options.forEach(option => option.setAttribute('aria-selected', 'false'));
+      options.forEach(option => {
+        option.setAttribute('tabindex', '-1');
+        option.setAttribute('aria-selected', 'false')
+      });
     }
 
     selectedOption?.setAttribute('tabindex', '0');
