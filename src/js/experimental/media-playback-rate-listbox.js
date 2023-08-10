@@ -1,4 +1,4 @@
-import { MediaChromeListbox, createOption } from './media-chrome-listbox.js';
+import { MediaChromeListbox, createOption, createIndicator } from './media-chrome-listbox.js';
 import './media-chrome-option.js';
 import { DEFAULT_RATES, DEFAULT_RATE } from '../media-playback-rate-button.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
@@ -24,14 +24,11 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
     ];
   }
 
-  /** @type {Element} */
-  #selectIndicator;
   #rates = new AttributeTokenList(this, Attributes.RATES, { defaultValue: DEFAULT_RATES });
 
   constructor() {
     super();
 
-    this.#selectIndicator = this.getSlottedIndicator('select');
     this.#render();
   }
 
@@ -98,7 +95,7 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
         rate,
         this.mediaPlaybackRate == rate
       );
-      option.prepend(this.#selectIndicator.cloneNode(true));
+      option.prepend(createIndicator(this, 'select-indicator'));
       container.append(option);
     }
   }

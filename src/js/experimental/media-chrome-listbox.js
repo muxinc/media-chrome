@@ -2,7 +2,7 @@ import { MediaStateReceiverAttributes } from '../constants.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
 const checkIcon = /*html*/`
-<svg aria-hidden="true" viewBox="0 1 24 24">
+<svg aria-hidden="true" viewBox="0 1 24 24" part="select-indicator indicator">
   <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
 </svg>`;
 
@@ -19,6 +19,25 @@ export function createOption(text, value, selected) {
   return option;
 }
 
+export function createIndicator(el, name) {
+  let customIndicator = el.querySelector(`:scope > [slot="${name}"]`);
+
+  // Chaining slots
+  if (customIndicator?.nodeName == 'SLOT')
+    // @ts-ignore
+    customIndicator = customIndicator.assignedElements({ flatten: true })[0];
+
+  if (customIndicator) {
+    // @ts-ignore
+    customIndicator = customIndicator.cloneNode(true);
+    customIndicator.removeAttribute('slot');
+    return customIndicator;
+  }
+
+  let fallbackIndicator = el.shadowRoot.querySelector(`[name="${name}"] > svg`);
+  return fallbackIndicator.cloneNode(true);
+}
+
 const template = document.createElement('template');
 template.innerHTML = /*html*/`
 <style>
@@ -30,10 +49,15 @@ template.innerHTML = /*html*/`
       var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
     color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
-    display: inline-flex;
-    gap: .5em;
-    margin: 0;
-    padding: .5em 0;
+    border-radius: var(--media-listbox-border-radius);
+    display: inline-block;
+    padding-block: .5em;
+  }
+
+  ::slotted([slot="header"]) {
+    padding: 0 1.4em .4em;
+    margin-bottom: .5em;
+    border-bottom: 1px solid rgb(255 255 255 / .25);
   }
 
   media-chrome-option {
@@ -50,20 +74,25 @@ template.innerHTML = /*html*/`
     vertical-align: var(--media-option-indicator-vertical-align, text-top);
   }
 
-  .select-indicator {
+  [part~="select-indicator"] {
     visibility: hidden;
   }
 
-  [aria-selected="true"] > .select-indicator {
+  [aria-selected="true"] > [part~="select-indicator"] {
     visibility: visible;
   }
 </style>
-<div id="container"></div>
-<slot hidden name="select-indicator">${checkIcon}</slot>
+<slot name="header"></slot>
+<slot id="container"></slot>
+<slot name="select-indicator" hidden>${checkIcon}</slot>
 `;
 
 /**
  * @extends {HTMLElement}
+ *
+ * @slot - Default slotted elements.
+ * @slot header - An element shown at the top of the listbox.
+ * @slot select-indicator - An icon element indicating a selected option.
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
@@ -74,6 +103,7 @@ template.innerHTML = /*html*/`
  *
  * @cssproperty --media-control-background - `background` of control.
  * @cssproperty --media-listbox-background - `background` of listbox.
+ * @cssproperty --media-listbox-border-radius - `border-radius` of listbox.
  *
  * @cssproperty --media-font - `font` shorthand property.
  * @cssproperty --media-font-weight - `font-weight` property.
@@ -118,29 +148,21 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
 
     this.container = this.shadowRoot.querySelector('#container');
+
+    this.container.addEventListener('slotchange', (event) => {
+      // @ts-ignore
+      for (let node of event.target.assignedNodes({ flatten: true })) {
+        // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
+        if (node.nodeType === 3 && node.textContent.trim() === '') {
+          node.remove();
+        }
+      }
+    });
   }
 
   formatOptionText(text, data) {
     // @ts-ignore
     return this.constructor.formatOptionText(text, data);
-  }
-
-  getSlottedIndicator(name) {
-    let indicator = this.querySelector(`:scope > [slot="${name}-indicator"]`);
-
-    // Chaining slots
-    if (indicator?.nodeName == 'SLOT')
-      // @ts-ignore
-      indicator = indicator.assignedElements({ flatten: true })[0];
-
-    if (!indicator)
-      indicator = this.shadowRoot.querySelector(`[name="${name}-indicator"] > svg`);
-
-    indicator.removeAttribute('slot');
-    indicator.part.add('indicator');
-    indicator.classList.add(`${name}-indicator`);
-
-    return indicator;
   }
 
   get options() {

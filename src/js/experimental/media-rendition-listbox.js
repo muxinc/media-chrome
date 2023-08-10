@@ -1,4 +1,4 @@
-import { MediaChromeListbox, createOption } from './media-chrome-listbox.js';
+import { MediaChromeListbox, createOption, createIndicator } from './media-chrome-listbox.js';
 import './media-chrome-option.js';
 import { globalThis } from '../utils/server-safe-globals.js';
 import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
@@ -18,16 +18,8 @@ class MediaRenditionListbox extends MediaChromeListbox {
     ];
   }
 
-  /** @type {Element} */
-  #selectIndicator;
   #renditionList = [];
   #prevState;
-
-  constructor() {
-    super();
-
-    this.#selectIndicator = this.getSlottedIndicator('select');
-  }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -85,10 +77,6 @@ class MediaRenditionListbox extends MediaChromeListbox {
 
     let isAuto = !this.mediaRenditionSelected;
 
-    const option = createOption(this.formatOptionText('Auto'), 'auto', isAuto);
-    option.prepend(this.#selectIndicator.cloneNode(true));
-    container.append(option);
-
     for (const rendition of renditionList) {
 
       const text = this.formatOptionText(
@@ -100,12 +88,16 @@ class MediaRenditionListbox extends MediaChromeListbox {
       const option = createOption(
         text,
         `${rendition.id}`,
-        rendition.enabled && !isAuto
+        rendition.selected && !isAuto
       );
-      option.prepend(this.#selectIndicator.cloneNode(true));
+      option.prepend(createIndicator(this, 'select-indicator'));
 
       container.append(option);
     }
+
+    const option = createOption(this.formatOptionText('Auto'), 'auto', isAuto);
+    option.prepend(createIndicator(this, 'select-indicator'));
+    container.append(option);
   }
 
   #onChange() {

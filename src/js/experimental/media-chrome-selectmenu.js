@@ -8,6 +8,12 @@ const template = document.createElement('template');
 template.innerHTML = /*html*/`
   <style>
   :host {
+    font: var(--media-font,
+      var(--media-font-weight, normal)
+      var(--media-font-size, 15px) /
+      var(--media-text-content-height, var(--media-control-height, 24px))
+      var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+    color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     display: inline-flex;
     position: relative;
     flex-shrink: .5;
