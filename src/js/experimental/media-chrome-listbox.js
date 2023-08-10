@@ -36,6 +36,12 @@ template.innerHTML = /*html*/`
     padding: .5em 0;
   }
 
+  ::slotted([slot=header]) {
+    padding: 0 1.4em .4em;
+    margin-bottom: .5em;
+    border-bottom: 1px solid rgb(255 255 255 / .25);
+  }
+
   media-chrome-option {
     padding-inline: .7em 1.4em;
   }
@@ -58,8 +64,11 @@ template.innerHTML = /*html*/`
     visibility: visible;
   }
 </style>
+<slot name="header"></slot>
 <slot id="container"></slot>
-<slot hidden name="select-indicator">${checkIcon}</slot>
+<slot name="select-indicator" hidden>
+  ${checkIcon}
+</slot>
 `;
 
 /**
