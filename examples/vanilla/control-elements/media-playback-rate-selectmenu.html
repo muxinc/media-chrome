@@ -40,7 +40,41 @@
       <media-time-display showduration></media-time-display>
       <media-time-range></media-time-range>
       <media-mute-button></media-mute-button>
-      <media-playback-rate-selectmenu></media-playback-rate-selectmenu>
+      <media-playback-rate-selectmenu>
+        <media-playback-rate-listbox slot="listbox">
+          <!-- Custom select indicator icon -->
+          <span slot="select-indicator" class="select-icon">
+            <style>
+              .select-icon {
+                box-sizing: border-box;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                border: 1.5px solid currentcolor;
+                width: 9px;
+                height: 9px;
+                margin-top: -.14em;
+                vertical-align: middle;
+                border-radius: 50%;
+                visibility: visible;
+              }
+
+              [aria-selected="true"] .select-icon::after {
+                content: '';
+                display: block;
+                width: 4px;
+                height: 4px;
+                border-radius: 8px;
+                background: currentcolor;
+              }
+
+              [slot="select-indicator"] {
+                display: none;
+              }
+            </style>
+          </span>
+        </media-playback-rate-listbox>
+      </media-playback-rate-selectmenu>
       <media-pip-button></media-pip-button>
       <media-fullscreen-button></media-fullscreen-button>
     </media-control-bar>
