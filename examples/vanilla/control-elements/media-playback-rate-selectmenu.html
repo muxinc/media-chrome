@@ -6,6 +6,11 @@
   <script type="module" src="../../../dist/index.js"></script>
   <script type="module" src="../../../../dist/experimental/media-playback-rate-selectmenu.js"></script>
   <style>
+    /* Hide custom elements that are not defined yet */
+    :not(:defined) {
+      display: none;
+    }
+
     /** add styles to prevent CLS (Cumulative Layout Shift) */
     media-controller:not([audio]) {
       display: block;         /* expands the container if preload=none */
@@ -56,7 +61,6 @@
                 margin-top: -.14em;
                 vertical-align: middle;
                 border-radius: 50%;
-                visibility: visible;
               }
 
               [aria-selected="true"] .select-icon::after {
@@ -66,10 +70,6 @@
                 height: 4px;
                 border-radius: 8px;
                 background: currentcolor;
-              }
-
-              [slot="select-indicator"] {
-                display: none;
               }
             </style>
           </span>
