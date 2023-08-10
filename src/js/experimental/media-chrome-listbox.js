@@ -32,8 +32,7 @@ template.innerHTML = /*html*/`
     background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
     border-radius: var(--media-listbox-border-radius);
     display: inline-block;
-    margin: 0;
-    padding: .5em 0;
+    padding-block: .5em;
   }
 
   ::slotted([slot=header]) {
@@ -66,13 +65,15 @@ template.innerHTML = /*html*/`
 </style>
 <slot name="header"></slot>
 <slot id="container"></slot>
-<slot name="select-indicator" hidden>
-  ${checkIcon}
-</slot>
+<slot name="select-indicator" hidden>${checkIcon}</slot>
 `;
 
 /**
  * @extends {HTMLElement}
+ *
+ * @slot - Default slotted elements.
+ * @slot header - An element shown at the top of the listbox.
+ * @slot select-indicator - An icon element indicating a selected option.
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).

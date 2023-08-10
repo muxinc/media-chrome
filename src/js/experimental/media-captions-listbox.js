@@ -11,10 +11,12 @@ const ccIcon = /*html*/`
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/`
-  <slot hidden name="captions-indicator">${ccIcon}</slot>
+  <slot name="captions-indicator" hidden>${ccIcon}</slot>
 `;
 
 /**
+ * @slot captions-indicator - An icon element indicating an option with closed captions.
+ *
  * @attr {string} mediasubtitleslist - (read-only) A list of all subtitles and captions.
  * @attr {boolean} mediasubtitlesshowing - (read-only) A list of the showing subtitles and captions.
  */
