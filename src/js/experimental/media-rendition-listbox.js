@@ -85,10 +85,6 @@ class MediaRenditionListbox extends MediaChromeListbox {
 
     let isAuto = !this.mediaRenditionSelected;
 
-    const option = createOption(this.formatOptionText('Auto'), 'auto', isAuto);
-    option.prepend(this.#selectIndicator.cloneNode(true));
-    container.append(option);
-
     for (const rendition of renditionList) {
 
       const text = this.formatOptionText(
@@ -100,12 +96,16 @@ class MediaRenditionListbox extends MediaChromeListbox {
       const option = createOption(
         text,
         `${rendition.id}`,
-        rendition.enabled && !isAuto
+        rendition.selected && !isAuto
       );
       option.prepend(this.#selectIndicator.cloneNode(true));
 
       container.append(option);
     }
+
+    const option = createOption(this.formatOptionText('Auto'), 'auto', isAuto);
+    option.prepend(this.#selectIndicator.cloneNode(true));
+    container.append(option);
   }
 
   #onChange() {

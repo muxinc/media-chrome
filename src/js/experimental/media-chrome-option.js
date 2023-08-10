@@ -149,15 +149,15 @@ class MediaChromeOption extends globalThis.HTMLElement {
     const options = this.#ownerElement?.options;
     if (!options) return;
 
-    const hasActiveOption = options.some(option => option.getAttribute('tabindex') === '0');
-    // If the user set an element as active, we should use that rather than assume a default.
-    if (hasActiveOption) return;
-
-    // Default to the aria-selected element if there isn't an active element already.
-    let selectedOption = options.find(option => option.getAttribute('aria-selected') === 'true');
+    // Default to the last aria-selected element if there isn't an active element already.
+    let selectedOption = options.filter(option => option.getAttribute('aria-selected') === 'true').pop();
 
     // If there isn't an active element or a selected element, default to the first element.
     if (!selectedOption) selectedOption = options[0];
+
+    if (this.#ownerElement.getAttribute('aria-multiselectable') !== 'true') {
+      options.forEach(option => option.setAttribute('aria-selected', 'false'));
+    }
 
     selectedOption?.setAttribute('tabindex', '0');
     selectedOption?.setAttribute('aria-selected', 'true');
