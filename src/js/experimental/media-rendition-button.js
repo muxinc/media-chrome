@@ -14,6 +14,7 @@ slotTemplate.innerHTML = /*html*/`
 
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
+ * @attr {(unavailable|unsupported)} mediarenditionunavailable - (read-only) Set if rendition selection is unavailable.
  *
  * @cssproperty [--media-rendition-button-display = inline-flex] - `display` property of button.
  */
@@ -22,6 +23,7 @@ class MediaRenditionButton extends MediaChromeButton {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_RENDITION_SELECTED,
+      MediaUIAttributes.MEDIA_RENDITION_UNAVAILABLE,
     ];
   }
 

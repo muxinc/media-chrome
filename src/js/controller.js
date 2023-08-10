@@ -6,7 +6,7 @@ import {
   fullscreenSupported,
   pipSupported,
   airplaySupported,
-  castSupported
+  castSupported,
 } from './utils/platform-tests.js';
 import {
   MediaUIAttributes,
@@ -429,6 +429,25 @@ export const MediaUIStates = {
       // TODO: Move to non attr specific value
       return pipSupported ? undefined : AvailabilityStates.UNSUPPORTED;
     },
+  },
+  MEDIA_RENDITION_UNAVAILABLE: {
+    get: function (controller) {
+      const { media } = controller;
+
+      if (!media) return AvailabilityStates.UNSUPPORTED;
+
+      if (!media.videoRenditions) {
+        return AvailabilityStates.UNSUPPORTED;
+      }
+
+      if (!media.videoRenditions?.length) {
+        return AvailabilityStates.UNAVAILABLE;
+      }
+
+      return undefined;
+    },
+    mediaEvents: ['emptied', 'loadstart'],
+    videoRenditionsEvents: ['addrendition', 'removerendition'],
   },
   MEDIA_VOLUME_UNAVAILABLE: {
     get: function (controller) {
