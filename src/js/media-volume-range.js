@@ -18,7 +18,7 @@ const toVolume = (el) => {
   return el.mediaVolume;
 };
 
-const formatAsPercentString = ({ value }) => `${value}%`;
+const formatAsPercentString = ({ value }) => `${Math.round(value * 100)}%`;
 
 /**
  * @attr {string} mediavolume - (read-only) Set to the media volume.

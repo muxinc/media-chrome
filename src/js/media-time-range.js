@@ -144,12 +144,12 @@ template.innerHTML = /*html*/`
 
 const calcRangeValueFromTime = (el, time = el.mediaCurrentTime) => {
   if (Number.isNaN(el.mediaSeekableEnd)) return 0;
-  return time / (el.mediaSeekableEnd - el.mediaSeekableStart);
+  return (time - el.mediaSeekableStart) / (el.mediaSeekableEnd - el.mediaSeekableStart);
 }
 
 const calcTimeFromRangeValue = (el, value = el.range.value) => {
   if (Number.isNaN(el.mediaSeekableEnd)) return 0;
-  return value * (el.mediaSeekableEnd - el.mediaSeekableStart);
+  return (value * (el.mediaSeekableEnd - el.mediaSeekableStart)) + el.mediaSeekableStart;
 }
 
 /**
@@ -271,21 +271,25 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   connectedCallback() {
-    this.range.setAttribute('aria-label', nouns.SEEK());
     super.connectedCallback();
+    this.range.setAttribute('aria-label', nouns.SEEK());
   }
 
   disconnectedCallback() {
-    cancelAnimationFrame(this._refreshId);
     super.disconnectedCallback();
+    cancelAnimationFrame(this._refreshId);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (
       attrName === MediaUIAttributes.MEDIA_CURRENT_TIME ||
       attrName === MediaUIAttributes.MEDIA_PAUSED ||
       attrName === MediaUIAttributes.MEDIA_ENDED ||
-      attrName === MediaUIAttributes.MEDIA_LOADING
+      attrName === MediaUIAttributes.MEDIA_LOADING ||
+      attrName === MediaUIAttributes.MEDIA_DURATION ||
+      attrName === MediaUIAttributes.MEDIA_SEEKABLE
     ) {
       this._updateTimestamp = performance.now();
       this.range.value = calcRangeValueFromTime(this);
@@ -298,26 +302,16 @@ class MediaTimeRange extends MediaChromeRange {
         this._refreshId = requestAnimationFrame(this._refreshBar);
       }
     }
-    if (attrName === MediaUIAttributes.MEDIA_DURATION) {
-      updateAriaValueText(this);
-      this.updateBar();
-      this.updateCurrentBox();
-    }
-    if (attrName === MediaUIAttributes.MEDIA_SEEKABLE) {
-      updateAriaValueText(this);
+    else if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
       this.updateBar();
     }
-    if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
-      this.updateBar();
-    }
-    if (attrName === 'disabled') {
+    else if (attrName === 'disabled') {
       if (newValue == null) {
         this.#enableBoxes();
       } else {
         this.#disableBoxes();
       }
     }
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**
@@ -477,7 +471,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     if (!this.mediaEnded) {
       const currentTime = this.mediaCurrentTime;
-      const [, bufferedEnd = 0] = buffered.find(
+      const [, bufferedEnd = this.mediaSeekableStart] = buffered.find(
         ([start, end]) => start <= currentTime && currentTime <= end
       ) ?? [];
       relativeBufferedEnd = calcRangeValueFromTime(this, bufferedEnd);
@@ -488,9 +482,9 @@ class MediaTimeRange extends MediaChromeRange {
       relativeBufferedEnd = 1;
     }
 
-    const buffPercent = relativeBufferedEnd * 100;
+    const buffPercent = Math.max(0, Math.min(relativeBufferedEnd, 1)) * 100;
 
-    let { style } = getOrInsertCSSRule(this.shadowRoot, '#buffered');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, '#buffered');
     style.setProperty('width', `${buffPercent}%`);
   }
 
