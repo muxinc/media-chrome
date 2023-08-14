@@ -1,3 +1,12 @@
+## [1.2.4](https://github.com/muxinc/media-chrome/compare/v1.2.3...v1.2.4) (2023-08-14)
+
+
+### Bug Fixes
+
+* monitor if breakpoints have been computed and only trigger theme… ([#719](https://github.com/muxinc/media-chrome/issues/719)) ([ddc0817](https://github.com/muxinc/media-chrome/commit/ddc081798422a6132bd06da5180499614ac9a3b8))
+
+
+
 ## [1.2.3](https://github.com/muxinc/media-chrome/compare/v1.2.2...v1.2.3) (2023-08-11)
 
 
