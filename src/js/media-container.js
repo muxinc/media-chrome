@@ -259,6 +259,8 @@ class MediaContainer extends globalThis.HTMLElement {
       ].includes(name));
   }
 
+  breakpointsUncomputed = true;
+
   constructor() {
     super();
 
@@ -332,6 +334,7 @@ class MediaContainer extends globalThis.HTMLElement {
         resizeCallback(entries);
         // Once we've completed, reset the pending cb flag to false
         pendingResizeCb = false;
+        this.breakpointsUncomputed = false;
       }, 0);
       pendingResizeCb = true;
     };

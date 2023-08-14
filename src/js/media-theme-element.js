@@ -66,8 +66,11 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     }
 
     const observer = new MutationObserver((mutationList) => {
+      // Only update if `<media-controller>` has computed breakpoints at least once.
+      if (this.mediaController?.breakpointsUncomputed) return;
+
       if (mutationList.some((mutation) => {
-        const target = /** @type HTMLElement */ (mutation.target);
+        const target = /** @type {HTMLElement} */ (mutation.target);
 
         // Render on each attribute change of the `<media-theme(-x)>` element.
         if (target === this) return true;
@@ -111,6 +114,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     }
   }
 
+  /** @type {HTMLElement & { breakpointsUncomputed?: boolean }} */
   get mediaController() {
     // Expose the media controller if API access is needed
     return this.renderRoot.querySelector('media-controller');
