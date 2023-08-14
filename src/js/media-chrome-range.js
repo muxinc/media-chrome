@@ -11,19 +11,18 @@ template.innerHTML = /*html*/`
       --_focus-box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
       --_media-range-padding: var(--media-range-padding, var(--media-control-padding, 10px));
 
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       vertical-align: middle;
       box-sizing: border-box;
-      display: inline-block;
       position: relative;
+      width: 100px;
       background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
       transition: background .15s linear;
-      width: 100px;
-      height: calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
       padding-left: var(--media-range-padding-left, var(--_media-range-padding));
       padding-right: var(--media-range-padding-right, var(--_media-range-padding));
       pointer-events: auto;
-      ${/* needed for vertical align issue 1px off */''}
-      font-size: 0;
       box-shadow: var(--_focus-visible-box-shadow, none);
     }
 
@@ -40,8 +39,12 @@ template.innerHTML = /*html*/`
     }
 
     #container {
+      display: flex;
+      align-items: center;
       position: relative;
+      width: 100%;
       height: 100%;
+      min-height: calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
     }
 
     input[type=range] {
@@ -79,9 +82,8 @@ template.innerHTML = /*html*/`
       width: var(--media-range-track-width, 100%);
       height: var(--track-height);
       border-radius: var(--media-range-track-border-radius, 1px);
-      transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px) - 50%));
+      transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px)));
       position: absolute;
-      top: 50%;
       pointer-events: none;
     }
 
@@ -249,7 +251,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
     }
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-block))`);
+    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
 
     this.container = this.shadowRoot.querySelector('#container');
     this.track = this.shadowRoot.querySelector('#track');
