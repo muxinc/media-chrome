@@ -507,6 +507,22 @@ export const MediaUIStates = {
     mediaEvents: ['emptied'],
     videoRenditionsEvents: ['addrendition', 'removerendition', 'change'],
   },
+  MEDIA_AUDIO_TRACK_LIST: {
+    get: function (controller) {
+      const { media } = controller;
+      return [...media?.audioTracks ?? []];
+    },
+    mediaEvents: ['emptied', 'loadstart'],
+    audioTracksEvents: ['addtrack', 'removetrack'],
+  },
+  MEDIA_AUDIO_TRACK_ENABLED: {
+    get: function (controller) {
+      const { media } = controller;
+      return [...media?.audioTracks ?? []].find(audioTrack => audioTrack.enabled)?.id;
+    },
+    mediaEvents: ['emptied'],
+    audioTracksEvents: ['addtrack', 'removetrack', 'change'],
+  },
 };
 
 // Capture request events from UI elements and tranlate to actions
@@ -816,5 +832,17 @@ export const MediaUIRequestHandlers = {
     if (media.videoRenditions.selectedIndex != index) {
       media.videoRenditions.selectedIndex = index;
     }
-  }
+  },
+  MEDIA_AUDIO_TRACK_REQUEST: (media, event) => {
+    if (!media?.audioTracks) {
+      console.warn('MediaController: Audio track selection not supported by this media.');
+      return;
+    }
+
+    const audioTrackId = event.detail;
+
+    for (let track of media.audioTracks) {
+      track.enabled = audioTrackId == track.id;
+    }
+  },
 };

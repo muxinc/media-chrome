@@ -25,6 +25,32 @@ export function parseRendition(rendition) {
   }
 }
 
+export function stringifyAudioTrackList(audioTracks) {
+  return audioTracks
+    ?.map(stringifyAudioTrack)
+    .join(' ');
+}
+
+export function parseAudioTrackList(audioTracks) {
+  return audioTracks
+    ?.split(/\s+/)
+    .map(parseAudioTrack);
+}
+
+export function stringifyAudioTrack(audioTrack) {
+  if (audioTrack) {
+    const { id, kind, language, label } = audioTrack;
+    return [id, kind, language, label].filter(a => a != null).join(':')
+  }
+}
+
+export function parseAudioTrack(audioTrack) {
+  if (audioTrack) {
+    const [id, kind, language, label] = audioTrack.split(':');
+    return { id, kind, language, label };
+  }
+}
+
 export function dashedToCamel(word) {
   return word
     .split('-')

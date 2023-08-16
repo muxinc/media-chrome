@@ -7,3 +7,4 @@ export { MediaPlaybackRateListbox } from './media-playback-rate-listbox.js';
 export { MediaPlaybackRateSelectMenu } from './media-playback-rate-selectmenu.js';
 export { MediaRenditionListbox } from './media-rendition-listbox.js';
 export { MediaRenditionSelectMenu } from './media-rendition-selectmenu.js';
+export { MediaAudioTrackListbox } from './media-audio-track-listbox.js';

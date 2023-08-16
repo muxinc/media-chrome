@@ -10,7 +10,7 @@
 import { MediaContainer } from './media-container.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
-import { constToCamel, delay, stringifyRenditionList } from './utils/utils.js';
+import { constToCamel, delay, stringifyRenditionList, stringifyAudioTrackList } from './utils/utils.js';
 import { stringifyTextTrackList, toggleSubsCaps } from './utils/captions.js';
 import {
   MediaUIEvents,
@@ -179,6 +179,7 @@ class MediaController extends MediaContainer {
         rootEvents,
         textTracksEvents,
         videoRenditionsEvents,
+        audioTracksEvents,
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
@@ -200,6 +201,11 @@ class MediaController extends MediaContainer {
 
       videoRenditionsEvents?.forEach((eventName) => {
         media.videoRenditions?.addEventListener(eventName, handler);
+        handler();
+      });
+
+      audioTracksEvents?.forEach((eventName) => {
+        media.audioTracks?.addEventListener(eventName, handler);
         handler();
       });
     });
@@ -227,6 +233,7 @@ class MediaController extends MediaContainer {
         rootEvents,
         textTracksEvents,
         videoRenditionsEvents,
+        audioTracksEvents,
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
@@ -245,6 +252,11 @@ class MediaController extends MediaContainer {
 
       videoRenditionsEvents?.forEach((eventName) => {
         media.videoRenditions?.removeEventListener(eventName, handler);
+        handler();
+      });
+
+      audioTracksEvents?.forEach((eventName) => {
+        media.audioTracks?.removeEventListener(eventName, handler);
         handler();
       });
     });
@@ -537,6 +549,7 @@ const CustomAttrSerializer = {
   [MediaUIAttributes.MEDIA_BUFFERED]: (tuples) => tuples?.map(serializeTuple).join(' '),
   [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords) => coords?.join(' '),
   [MediaUIAttributes.MEDIA_RENDITION_LIST]: stringifyRenditionList,
+  [MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST]: stringifyAudioTrackList,
 };
 
 const setAttr = async (child, attrName, attrValue) => {
