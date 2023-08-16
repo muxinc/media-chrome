@@ -1,7 +1,7 @@
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
 <style>
   :host {
     cursor: pointer;
@@ -13,17 +13,21 @@ template.innerHTML = /*html*/`
     min-height: 1.2em;
     padding: .4em .5em;
     transition: var(--media-option-transition);
+    outline: var(--media-option-outline, 0);
+    outline-offset: var(--media-option-outline-offset, -1px);
   }
 
   :host(:focus-visible) {
     box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
-    outline: 0;
+    outline: var(--media-option-hover-outline, 0);
+    outline-offset: var(--media-option-hover-outline-offset, -1px);
   }
 
   :host(:hover) {
     cursor: pointer;
     background: var(--media-option-hover-background, rgb(82 82 122 / .8));
     outline: var(--media-option-hover-outline);
+    outline-offset: var(--media-option-hover-outline-offset, -1px);
   }
 
   :host([aria-selected="true"]) {
@@ -51,8 +55,11 @@ export const Attributes = {
  *
  * @cssproperty --media-option-transition - `transition` of option.
  * @cssproperty --media-option-selected-background - `background` of selected option.
+ * @cssproperty --media-option-outline - `outline` option.
+ * @cssproperty --media-option-outline-offset - `outline-offset` of option.
  * @cssproperty --media-option-hover-background - `background` of hovered option.
  * @cssproperty --media-option-hover-outline - `outline` of hovered option.
+ * @cssproperty --media-option-hover-outline-offset - `outline-offset` of hovered option.
  */
 class MediaChromeOption extends globalThis.HTMLElement {
   static get observedAttributes() {
