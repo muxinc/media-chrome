@@ -449,6 +449,25 @@ export const MediaUIStates = {
     mediaEvents: ['emptied', 'loadstart'],
     videoRenditionsEvents: ['addrendition', 'removerendition'],
   },
+  MEDIA_AUDIO_TRACK_UNAVAILABLE: {
+    get: function (controller) {
+      const { media } = controller;
+
+      if (!media) return AvailabilityStates.UNSUPPORTED;
+
+      if (!media.audioTracks) {
+        return AvailabilityStates.UNSUPPORTED;
+      }
+
+      if (!media.audioTracks?.length) {
+        return AvailabilityStates.UNAVAILABLE;
+      }
+
+      return undefined;
+    },
+    mediaEvents: ['emptied', 'loadstart'],
+    audioTracksEvents: ['addtrack', 'removetrack'],
+  },
   MEDIA_VOLUME_UNAVAILABLE: {
     get: function (controller) {
       if (volumeSupported !== undefined && !volumeSupported) {
