@@ -1,3 +1,12 @@
+## [1.2.5](https://github.com/muxinc/media-chrome/compare/v1.2.4...v1.2.5) (2023-08-16)
+
+
+### Bug Fixes
+
+* make poster slot work with fallback ([#721](https://github.com/muxinc/media-chrome/issues/721)) ([f38c3f4](https://github.com/muxinc/media-chrome/commit/f38c3f448c6cad7b5d88422311ff8bf4f21b31a6))
+
+
+
 ## [1.2.4](https://github.com/muxinc/media-chrome/compare/v1.2.3...v1.2.4) (2023-08-14)
 
 
