@@ -18,7 +18,7 @@ template.innerHTML = /*html*/ `
   }
 
   :host(:focus-visible) {
-    box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
+    box-shadow: var(--media-option-focus-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
     outline: var(--media-option-hover-outline, 0);
     outline-offset: var(--media-option-hover-outline-offset, -1px);
   }
@@ -60,6 +60,7 @@ export const Attributes = {
  * @cssproperty --media-option-hover-background - `background` of hovered option.
  * @cssproperty --media-option-hover-outline - `outline` of hovered option.
  * @cssproperty --media-option-hover-outline-offset - `outline-offset` of hovered option.
+ * @cssproperty --media-option-focus-shadow - `box-shadow` of the :focus-visible state
  */
 class MediaChromeOption extends globalThis.HTMLElement {
   static get observedAttributes() {
