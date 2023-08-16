@@ -161,7 +161,8 @@ template.innerHTML = /*html*/`
       align-self: stretch;
     }
 
-    :host([${MediaUIAttributes.MEDIA_HAS_PLAYED}]) ::slotted([slot=poster]) {
+    ${/* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''}
+    :host(:not([${Attributes.AUDIO}])[${MediaUIAttributes.MEDIA_HAS_PLAYED}]) slot[name=poster] {
       display: none;
     }
   </style>
