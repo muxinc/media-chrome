@@ -4,7 +4,8 @@ import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
 import { MediaUIAttributes } from '../constants.js';
 
 const audioTrackIcon = /*html*/`<svg aria-hidden="true" viewBox="0 0 24 24">
-  <path d="M13.5 2.5h2v6h-2v-2h-11v-2h11v-2Zm4 2h4v2h-4v-2Zm-12 4h2v6h-2v-2h-3v-2h3v-2Zm4 2h12v2h-12v-2Zm1 4h2v6h-2v-2h-8v-2h8v-2Zm4 2h7v2h-7v-2Z" />
+  <path d="M11 17H9.5V7H11v10Zm-3-3H6.5v-4H8v4Zm6-5h-1.5v6H14V9Zm3 7h-1.5V8H17v8Z"/>
+  <path d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Zm-2 0a8 8 0 1 0-16 0 8 8 0 0 0 16 0Z"/>
 </svg>`;
 
 const slotTemplate = document.createElement('template');
