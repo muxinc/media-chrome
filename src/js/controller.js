@@ -459,7 +459,8 @@ export const MediaUIStates = {
         return AvailabilityStates.UNSUPPORTED;
       }
 
-      if (!media.audioTracks?.length) {
+      // An audio selection is only possible if there are 2 or more audio tracks.
+      if ((media.audioTracks?.length ?? 0) <= 1) {
         return AvailabilityStates.UNAVAILABLE;
       }
 
