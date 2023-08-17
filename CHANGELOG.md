@@ -1,3 +1,12 @@
+## [1.2.6](https://github.com/muxinc/media-chrome/compare/v1.2.5...v1.2.6) (2023-08-17)
+
+
+### Bug Fixes
+
+* media-chrome-option outline fix and new css vars ([#722](https://github.com/muxinc/media-chrome/issues/722)) ([bc95f55](https://github.com/muxinc/media-chrome/commit/bc95f554d1f998286a35e818e82d44ddbb1f3ff7))
+
+
+
 ## [1.2.5](https://github.com/muxinc/media-chrome/compare/v1.2.4...v1.2.5) (2023-08-16)
 
 
