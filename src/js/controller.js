@@ -434,9 +434,7 @@ export const MediaUIStates = {
     get: function (controller) {
       const { media } = controller;
 
-      if (!media) return AvailabilityStates.UNSUPPORTED;
-
-      if (!media.videoRenditions) {
+      if (!media?.videoRenditions) {
         return AvailabilityStates.UNSUPPORTED;
       }
 
@@ -453,9 +451,7 @@ export const MediaUIStates = {
     get: function (controller) {
       const { media } = controller;
 
-      if (!media) return AvailabilityStates.UNSUPPORTED;
-
-      if (!media.audioTracks) {
+      if (!media?.audioTracks) {
         return AvailabilityStates.UNSUPPORTED;
       }
 

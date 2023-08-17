@@ -43,9 +43,11 @@
     <mux-video
       id="video"
       slot="media"
-      src="https://playertest.longtailvideo.com/adaptive/elephants_dream_v4/index.m3u8"
+      src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
+      poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
       stream-type="on-demand"
       preload="metadata"
+      playsinline
       crossorigin
     ></mux-video>
     <media-control-bar>
@@ -73,12 +75,25 @@
   </p>
 
   <p>
+    Audio: <span id="audioactive">N/A</span>
+  </p>
+
+  <p>
     <button id="loadbtn">Load new clip</button>
   </p>
 
-  <script>
+  <script type="module">
+    video.addEventListener('emptied', () => {
+      renditionactive.textContent = 'N/A';
+      audioactive.textContent = 'N/A';
+    });
+
     video.addEventListener('resize', () => {
       renditionactive.textContent = `${Math.min(video.videoWidth, video.videoHeight)}p`;
+    });
+
+    video.audioTracks.addEventListener('change', () => {
+      audioactive.textContent = [...video.audioTracks ?? []].find(a => a.enabled)?.label;
     });
 
     loadbtn.onclick = () => {
