@@ -20,14 +20,14 @@ template.innerHTML = /*html*/ `
   :host(:focus-visible) {
     box-shadow: var(--media-option-focus-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
     outline: var(--media-option-hover-outline, 0);
-    outline-offset: var(--media-option-hover-outline-offset, -1px);
+    outline-offset: var(--media-option-hover-outline-offset,  var(--media-option-outline-offset, -1px));
   }
 
   :host(:hover) {
     cursor: pointer;
     background: var(--media-option-hover-background, rgb(82 82 122 / .8));
     outline: var(--media-option-hover-outline);
-    outline-offset: var(--media-option-hover-outline-offset, -1px);
+    outline-offset: var(--media-option-hover-outline-offset,  var(--media-option-outline-offset, -1px));
   }
 
   :host([aria-selected="true"]) {
