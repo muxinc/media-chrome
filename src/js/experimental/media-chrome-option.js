@@ -105,6 +105,11 @@ class MediaChromeOption extends globalThis.HTMLElement {
     this.#dirty = true;
     // Firefox doesn't support the property .ariaSelected.
     this.setAttribute('aria-selected', value ? 'true' : 'false');
+    if (value) {
+      this.part.add('option-selected');
+    } else {
+      this.part.remove('option-selected');
+    }
   }
 
   enable() {
