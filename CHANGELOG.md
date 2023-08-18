@@ -1,3 +1,12 @@
+## [1.3.1](https://github.com/muxinc/media-chrome/compare/v1.3.0...v1.3.1) (2023-08-18)
+
+
+### Bug Fixes
+
+* remove pointer events from hidden list boxes ([#725](https://github.com/muxinc/media-chrome/issues/725)) ([1447f19](https://github.com/muxinc/media-chrome/commit/1447f192205be3803dd5d6e282a226b7cae4f1aa))
+
+
+
 # [1.3.0](https://github.com/muxinc/media-chrome/compare/v1.2.6...v1.3.0) (2023-08-18)
 
 
