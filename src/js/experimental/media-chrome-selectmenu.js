@@ -40,6 +40,7 @@ template.innerHTML = /*html*/`
     transform: var(--media-listbox-transform-out, translateY(2px) scale(.99));
     visibility: hidden;
     opacity: 0;
+    pointer-events: none;
   }
 
   slot[name="listbox"][hidden] {
