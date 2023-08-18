@@ -16,7 +16,7 @@ class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
 
     const captionsListbox = document.createElement('media-captions-listbox');
     captionsListbox.part.add('listbox');
-    captionsListbox.setAttribute('exportparts', 'option, indicator');
+    captionsListbox.setAttribute('exportparts', 'option, option-selected, indicator');
 
     const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');

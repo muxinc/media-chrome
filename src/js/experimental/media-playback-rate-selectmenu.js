@@ -16,7 +16,7 @@ class MediaPlaybackRateSelectMenu extends MediaChromeSelectMenu {
 
     const playbackRateListbox = document.createElement('media-playback-rate-listbox');
     playbackRateListbox.part.add('listbox');
-    playbackRateListbox.setAttribute('exportparts', 'option, indicator');
+    playbackRateListbox.setAttribute('exportparts', 'option, option-selected, indicator');
 
     const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
