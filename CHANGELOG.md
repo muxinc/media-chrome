@@ -1,3 +1,12 @@
+# [1.3.0](https://github.com/muxinc/media-chrome/compare/v1.2.6...v1.3.0) (2023-08-18)
+
+
+### Features
+
+* add option-selected part for selected option elements ([#724](https://github.com/muxinc/media-chrome/issues/724)) ([2299cdd](https://github.com/muxinc/media-chrome/commit/2299cdd2feb75c48c1bdf083891319a847ad0b4c))
+
+
+
 ## [1.2.6](https://github.com/muxinc/media-chrome/compare/v1.2.5...v1.2.6) (2023-08-17)
 
 
