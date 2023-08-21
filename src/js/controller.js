@@ -434,9 +434,7 @@ export const MediaUIStates = {
     get: function (controller) {
       const { media } = controller;
 
-      if (!media) return AvailabilityStates.UNSUPPORTED;
-
-      if (!media.videoRenditions) {
+      if (!media?.videoRenditions) {
         return AvailabilityStates.UNSUPPORTED;
       }
 
@@ -448,6 +446,24 @@ export const MediaUIStates = {
     },
     mediaEvents: ['emptied', 'loadstart'],
     videoRenditionsEvents: ['addrendition', 'removerendition'],
+  },
+  MEDIA_AUDIO_TRACK_UNAVAILABLE: {
+    get: function (controller) {
+      const { media } = controller;
+
+      if (!media?.audioTracks) {
+        return AvailabilityStates.UNSUPPORTED;
+      }
+
+      // An audio selection is only possible if there are 2 or more audio tracks.
+      if ((media.audioTracks?.length ?? 0) <= 1) {
+        return AvailabilityStates.UNAVAILABLE;
+      }
+
+      return undefined;
+    },
+    mediaEvents: ['emptied', 'loadstart'],
+    audioTracksEvents: ['addtrack', 'removetrack'],
   },
   MEDIA_VOLUME_UNAVAILABLE: {
     get: function (controller) {
@@ -506,6 +522,22 @@ export const MediaUIStates = {
     },
     mediaEvents: ['emptied'],
     videoRenditionsEvents: ['addrendition', 'removerendition', 'change'],
+  },
+  MEDIA_AUDIO_TRACK_LIST: {
+    get: function (controller) {
+      const { media } = controller;
+      return [...media?.audioTracks ?? []];
+    },
+    mediaEvents: ['emptied', 'loadstart'],
+    audioTracksEvents: ['addtrack', 'removetrack'],
+  },
+  MEDIA_AUDIO_TRACK_ENABLED: {
+    get: function (controller) {
+      const { media } = controller;
+      return [...media?.audioTracks ?? []].find(audioTrack => audioTrack.enabled)?.id;
+    },
+    mediaEvents: ['emptied'],
+    audioTracksEvents: ['addtrack', 'removetrack', 'change'],
   },
 };
 
@@ -816,5 +848,17 @@ export const MediaUIRequestHandlers = {
     if (media.videoRenditions.selectedIndex != index) {
       media.videoRenditions.selectedIndex = index;
     }
-  }
+  },
+  MEDIA_AUDIO_TRACK_REQUEST: (media, event) => {
+    if (!media?.audioTracks) {
+      console.warn('MediaController: Audio track selection not supported by this media.');
+      return;
+    }
+
+    const audioTrackId = event.detail;
+
+    for (let track of media.audioTracks) {
+      track.enabled = audioTrackId == track.id;
+    }
+  },
 };
