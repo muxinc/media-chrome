@@ -1,3 +1,12 @@
+# [1.4.0](https://github.com/muxinc/media-chrome/compare/v1.3.1...v1.4.0) (2023-08-21)
+
+
+### Features
+
+* add audio track selectmenu ([#723](https://github.com/muxinc/media-chrome/issues/723)) ([91c9208](https://github.com/muxinc/media-chrome/commit/91c920858c2fd5848c93a9e08154238c920ebdb2))
+
+
+
 ## [1.3.1](https://github.com/muxinc/media-chrome/compare/v1.3.0...v1.3.1) (2023-08-18)
 
 
