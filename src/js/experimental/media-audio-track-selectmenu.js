@@ -28,7 +28,7 @@ class MediaAudioTrackSelectMenu extends MediaChromeSelectMenu {
 
     const audioTrackListbox = document.createElement('media-audio-track-listbox');
     audioTrackListbox.part.add('listbox');
-    audioTrackListbox.setAttribute('exportparts', 'option, indicator');
+    audioTrackListbox.setAttribute('exportparts', 'option, option-selected, indicator');
 
     const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');

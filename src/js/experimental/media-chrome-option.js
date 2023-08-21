@@ -1,7 +1,7 @@
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/ `
+template.innerHTML = /*html*/`
 <style>
   :host {
     cursor: pointer;
