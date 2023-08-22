@@ -28,6 +28,7 @@ prependTemplate.innerHTML = /*html*/`
     media-controller:not([mediasubtitleslist]) media-captions-selectmenu,
     media-captions-button:not([mediasubtitleslist]),
     media-rendition-selectmenu[mediarenditionunavailable],
+    media-audio-track-selectmenu[mediaaudiotrackunavailable],
     media-volume-range[mediavolumeunavailable],
     media-airplay-button[mediaairplayunavailable],
     media-fullscreen-button[mediafullscreenunavailable],
