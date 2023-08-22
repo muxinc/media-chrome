@@ -1,3 +1,13 @@
+## [1.4.1](https://github.com/muxinc/media-chrome/compare/v1.4.0...v1.4.1) (2023-08-22)
+
+
+### Bug Fixes
+
+* buffered in time range ([#729](https://github.com/muxinc/media-chrome/issues/729)) ([eacccde](https://github.com/muxinc/media-chrome/commit/eacccde78f2cc9f231e08c266a0e006fb2e11567))
+* mediaaudiotrackunavailable in theme ([#728](https://github.com/muxinc/media-chrome/issues/728)) ([0ecb4c9](https://github.com/muxinc/media-chrome/commit/0ecb4c975388ac58fa95ffbd012b7df3ddbb231a))
+
+
+
 # [1.4.0](https://github.com/muxinc/media-chrome/compare/v1.3.1...v1.4.0) (2023-08-21)
 
 
