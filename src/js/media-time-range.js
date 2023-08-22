@@ -374,7 +374,7 @@ class MediaTimeRange extends MediaChromeRange {
       this.removeAttribute(MediaUIAttributes.MEDIA_BUFFERED);
       return;
     }
-    const strVal = list.map((n1, n2) => `${n1}:${n2}`).join(' ');
+    const strVal = list.map((tuple) => tuple.join(':')).join(' ');
     this.setAttribute(MediaUIAttributes.MEDIA_BUFFERED, strVal);
   }
 
