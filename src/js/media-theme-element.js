@@ -103,7 +103,6 @@ export class MediaThemeElement extends globalThis.HTMLElement {
 
     this.addEventListener(MediaStateChangeEvents.BREAKPOINTS_COMPUTED, this.render);
 
-
     // In case the template prop was set before custom element upgrade.
     // https://web.dev/custom-elements-best-practices/#make-properties-lazy
     this.#upgradeProperty('template');
