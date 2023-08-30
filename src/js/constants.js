@@ -80,15 +80,16 @@ export const MediaUIAttributes =
   );
 
 export const MediaStateChangeEvents =
-  /** @type {{ [k in keyof MediaUIProps | 'USER_INACTIVE' | 'BREAKPOINTS_CHANGE']: string }} */ (
+  /** @type {{ [k in keyof MediaUIProps | 'USER_INACTIVE' | 'BREAKPOINTS_CHANGE' | 'BREAKPOINTS_COMPUTED']: string }} */ (
     MediaUIPropsEntries.reduce(
       (dictObj, [key, propName]) => {
         dictObj[key] = `${propName.toLowerCase()}`;
         return dictObj;
       },
-      /** @type {Partial<{ [k in keyof MediaUIProps | 'USER_INACTIVE' | 'BREAKPOINTS_CHANGE']: string  }>} */ ({
+      /** @type {Partial<{ [k in keyof MediaUIProps | 'USER_INACTIVE' | 'BREAKPOINTS_CHANGE' | 'BREAKPOINTS_COMPUTED']: string  }>} */ ({
         USER_INACTIVE: 'userinactivechange',
         BREAKPOINTS_CHANGE: 'breakpointchange',
+        BREAKPOINTS_COMPUTED: 'initialbreakpointscomputed',
       })
     )
   );
