@@ -89,7 +89,7 @@ export const MediaStateChangeEvents =
       /** @type {Partial<{ [k in keyof MediaUIProps | 'USER_INACTIVE' | 'BREAKPOINTS_CHANGE' | 'BREAKPOINTS_COMPUTED']: string  }>} */ ({
         USER_INACTIVE: 'userinactivechange',
         BREAKPOINTS_CHANGE: 'breakpointchange',
-        BREAKPOINTS_COMPUTED: 'initialbreakpointscomputed',
+        BREAKPOINTS_COMPUTED: 'breakpointscomputed',
       })
     )
   );
