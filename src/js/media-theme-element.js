@@ -1,3 +1,4 @@
+import { MediaStateChangeEvents } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { TemplateInstance } from './utils/template-parts.js';
 import { processor } from './utils/template-processor.js';
@@ -68,7 +69,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
 
     const observer = new MutationObserver((mutationList) => {
       // Only update if `<media-controller>` has computed breakpoints at least once.
-      if (this.mediaController?.breakpointsUncomputed) return;
+      if (this.mediaController && !this.mediaController?.breakpointsComputed) return;
 
       if (mutationList.some((mutation) => {
         const target = /** @type {HTMLElement} */ (mutation.target);
@@ -100,6 +101,8 @@ export class MediaThemeElement extends globalThis.HTMLElement {
       subtree: true,
     });
 
+    this.addEventListener(MediaStateChangeEvents.BREAKPOINTS_COMPUTED, this.render);
+
     // In case the template prop was set before custom element upgrade.
     // https://web.dev/custom-elements-best-practices/#make-properties-lazy
     this.#upgradeProperty('template');
@@ -115,7 +118,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     }
   }
 
-  /** @type {HTMLElement & { breakpointsUncomputed?: boolean }} */
+  /** @type {HTMLElement & { breakpointsComputed?: boolean }} */
   get mediaController() {
     // Expose the media controller if API access is needed
     return this.renderRoot.querySelector('media-controller');

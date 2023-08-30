@@ -261,7 +261,7 @@ class MediaContainer extends globalThis.HTMLElement {
       ].includes(name));
   }
 
-  breakpointsUncomputed = true;
+  breakpointsComputed = false;
 
   constructor() {
     super();
@@ -336,7 +336,16 @@ class MediaContainer extends globalThis.HTMLElement {
         resizeCallback(entries);
         // Once we've completed, reset the pending cb flag to false
         pendingResizeCb = false;
-        this.breakpointsUncomputed = false;
+
+        if (!this.breakpointsComputed) {
+          this.breakpointsComputed = true;
+          this.dispatchEvent(
+            new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_COMPUTED, {
+              bubbles: true,
+              composed: true
+            })
+          );
+        }
       }, 0);
       pendingResizeCb = true;
     };
