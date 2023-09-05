@@ -1,3 +1,13 @@
+## [1.4.2](https://github.com/muxinc/media-chrome/compare/v1.4.1...v1.4.2) (2023-09-05)
+
+
+### Bug Fixes
+
+* account for single child in react wrapper templating. ([#730](https://github.com/muxinc/media-chrome/issues/730)) ([7e267f7](https://github.com/muxinc/media-chrome/commit/7e267f7aa35b41cc822d2ace94532767b64ef227)), closes [#727](https://github.com/muxinc/media-chrome/issues/727)
+* Themes not rendering if no breakpoint is active on load ([#731](https://github.com/muxinc/media-chrome/issues/731)) ([e719be9](https://github.com/muxinc/media-chrome/commit/e719be9dcd601fcb1061e55249610ced1d583f5a))
+
+
+
 ## [1.4.1](https://github.com/muxinc/media-chrome/compare/v1.4.0...v1.4.1) (2023-08-22)
 
 
