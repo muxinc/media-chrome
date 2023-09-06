@@ -235,6 +235,15 @@ function getBreakpoints(breakpoints, width) {
   });
 }
 
+function debounce(callback, delay) {
+	let timer;
+
+	return (...args) => {
+		clearTimeout(timer);
+		timer = setTimeout(() => callback(...args), delay);
+	};
+}
+
 /**
  * @extends {HTMLElement}
  *
@@ -331,8 +340,8 @@ class MediaContainer extends globalThis.HTMLElement {
       // Already have a pending async breakpoint computation, so go ahead and bail
       if (pendingResizeCb) return;
       // Just in case it takes too long (which will cause an error to throw),
-      // do the breakpoint computation asynchronously
-      setTimeout(() => {
+      // do the breakpoint computation asynchronously and with a debounce
+      debounce(() => {
         resizeCallback(entries);
         // Once we've completed, reset the pending cb flag to false
         pendingResizeCb = false;
@@ -346,7 +355,7 @@ class MediaContainer extends globalThis.HTMLElement {
             })
           );
         }
-      }, 0);
+      }, 0); // Can be set to a higher value like 10ms if the problem arises again
       pendingResizeCb = true;
     };
     const resizeObserver = new ResizeObserver(deferResizeCallback);
