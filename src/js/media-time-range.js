@@ -144,7 +144,8 @@ template.innerHTML = /*html*/`
 
 const calcRangeValueFromTime = (el, time = el.mediaCurrentTime) => {
   if (Number.isNaN(el.mediaSeekableEnd)) return 0;
-  return (time - el.mediaSeekableStart) / (el.mediaSeekableEnd - el.mediaSeekableStart);
+  const value = (time - el.mediaSeekableStart) / (el.mediaSeekableEnd - el.mediaSeekableStart);
+  return Math.max(0, Math.min(value, 1));
 }
 
 const calcTimeFromRangeValue = (el, value = el.range.value) => {
@@ -482,10 +483,8 @@ class MediaTimeRange extends MediaChromeRange {
       relativeBufferedEnd = 1;
     }
 
-    const buffPercent = Math.max(0, Math.min(relativeBufferedEnd, 1)) * 100;
-
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#buffered');
-    style.setProperty('width', `${buffPercent}%`);
+    style.setProperty('width', `${relativeBufferedEnd * 100}%`);
   }
 
   updateCurrentBox() {
