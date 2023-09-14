@@ -19,13 +19,12 @@ template.innerHTML = /*html*/`
     flex-shrink: .5;
   }
 
-  [name="listbox"]::slotted(*),
+  [name=listbox]::slotted(*),
   [part=listbox] {
     position: absolute;
     left: 0;
     bottom: 100%;
     max-height: 300px;
-    overflow: hidden auto;
     transition: var(--media-selectmenu-transition-in,
       visibility 0s, transform .15s ease-out, opacity .15s ease-out);
     transform: var(--media-listbox-transform-in, translateY(0) scale(1));
@@ -33,7 +32,7 @@ template.innerHTML = /*html*/`
     opacity: 1;
   }
 
-  [name="listbox"][hidden]::slotted(*),
+  [name=listbox][hidden]::slotted(*),
   [hidden] [part=listbox] {
     transition: var(--media-selectmenu-transition-out,
       visibility .15s ease-out, transform .15s ease-out, opacity .15s ease-out);
@@ -43,7 +42,7 @@ template.innerHTML = /*html*/`
     pointer-events: none;
   }
 
-  slot[name="listbox"][hidden] {
+  slot[name=listbox][hidden] {
     display: block;
   }
   </style>
@@ -199,8 +198,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     this.#toggleExpanded(closeOnly);
 
     if (!this.#listboxSlot.hidden) {
-      this.#listbox.focus();
       this.#updateMenuPosition();
+      this.#listbox.focus();
     } else if (this.shadowRoot.activeElement === this.#listbox || this.#listbox.contains(this.shadowRoot.activeElement)) {
       this.#button.focus();
     }
@@ -214,7 +213,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 
     // if we're outside of the controller,
     // one of the components should have a mediacontroller attribute.
-    // There isn't a good way now to differentiate between default buttons or
+    // There isn't a good way now to differentiate between default buttons
     // or a slotted button but outside of the media-controller.
     // So, a regular declarative selectmenu may default to open up rather than down.
     if (
@@ -232,7 +231,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     const bounds =
       (this.getAttribute('bounds')
         ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
-        : this.parentElement) ?? this;
+        : (getMediaControllerEl(this) || this.parentElement)) ?? this;
 
     // Choose .offsetWidth which is not affected by CSS transforms.
     const listboxWidth = this.#listbox.offsetWidth;
@@ -240,6 +239,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     const position = -Math.max(buttonRect.x + listboxWidth - boundsRect.right, 0);
 
     this.#listbox.style.left = `${position}px`;
+    this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height}px`;
   }
 
   #toggleExpanded(closeOnly = false) {
@@ -320,6 +320,16 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   get keysUsed() {
     return ['Enter', 'Escape', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
   }
+}
+
+function getMediaControllerEl(controlEl) {
+  const mediaControllerId = controlEl.getAttribute(
+    MediaStateReceiverAttributes.MEDIA_CONTROLLER
+  );
+  if (mediaControllerId) {
+    return controlEl.getRootNode()?.getElementById(mediaControllerId);
+  }
+  return closestComposedNode(controlEl, 'media-controller');
 }
 
 if (!globalThis.customElements.get('media-chrome-selectmenu')) {
