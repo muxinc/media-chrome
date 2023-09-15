@@ -78,7 +78,6 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #buttonSlot;
   #listbox;
   #listboxSlot;
-  #expanded = false;
 
   static get observedAttributes() {
     return [
@@ -190,17 +189,30 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   }
 
   #handleOptionChange_() {
-    this.#toggle(true);
+    this.#hide();
   }
 
-  #toggle(closeOnly) {
-    this.#listboxSlot.hidden = !this.#listboxSlot.hidden || closeOnly;
-    this.#toggleExpanded(closeOnly);
+  #toggle() {
+    if (this.#listboxSlot.hidden) {
+      this.#show();
+    } else {
+      this.#hide();
+    }
+  }
 
-    if (!this.#listboxSlot.hidden) {
-      this.#updateMenuPosition();
-      this.#listbox.focus();
-    } else if (this.shadowRoot.activeElement === this.#listbox || this.#listbox.contains(this.shadowRoot.activeElement)) {
+  #show() {
+    this.#listboxSlot.hidden = false;
+    this.#button.setAttribute('aria-expanded', 'true');
+
+    this.#updateMenuPosition();
+    this.#listbox.focus();
+  }
+
+  #hide() {
+    this.#listboxSlot.hidden = true;
+    this.#button.setAttribute('aria-expanded', 'false');
+
+    if (this.shadowRoot.activeElement === this.#listbox || this.#listbox.contains(this.shadowRoot.activeElement)) {
       this.#button.focus();
     }
   }
@@ -242,17 +254,12 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height}px`;
   }
 
-  #toggleExpanded(closeOnly = false) {
-    this.#expanded = !this.#expanded || closeOnly;
-    this.#button.setAttribute('aria-expanded', this.#expanded);
-  }
-
   enable() {
     this.#button.removeAttribute('disabled');
+    this.#button.setAttribute('aria-expanded', 'false');
     this.#button.addEventListener('click', this.#handleButtonClick);
     this.#button.addEventListener('keydown', this.#keydownListener);
     this.#listbox.addEventListener('keydown', this.#keydownListener);
-    this.#toggleExpanded();
     this.#listbox.addEventListener('change', this.#handleOptionChange);
     document.addEventListener('click', this.#documentClickHandler);
   }
