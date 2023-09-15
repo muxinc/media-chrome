@@ -1,7 +1,7 @@
 import '../media-chrome-button.js';
 import './media-chrome-listbox.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
-import { closestComposedNode, getOrInsertCSSRule } from '../utils/element-utils.js';
+import { closestComposedNode, getOrInsertCSSRule, getActiveElement } from '../utils/element-utils.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
 
 const template = document.createElement('template');
@@ -212,7 +212,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     this.#listboxSlot.hidden = true;
     this.#button.setAttribute('aria-expanded', 'false');
 
-    if (this.shadowRoot.activeElement === this.#listbox || this.#listbox.contains(this.shadowRoot.activeElement)) {
+    const activeElement = getActiveElement();
+    if (activeElement === this.#listbox || this.#listbox.contains(activeElement)) {
       this.#button.focus();
     }
   }
