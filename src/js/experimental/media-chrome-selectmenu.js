@@ -78,6 +78,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #buttonSlot;
   #listbox;
   #listboxSlot;
+  #boundsResizeObserver;
 
   static get observedAttributes() {
     return [
@@ -206,16 +207,24 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 
     this.#updateMenuPosition();
     this.#listbox.focus();
+
+    this.#boundsResizeObserver?.disconnect();
+    this.#boundsResizeObserver = new ResizeObserver(() => this.#updateMenuPosition());
+    this.#boundsResizeObserver.observe(getBoundsElement(this));
   }
 
   #hide() {
+    const activeElement = getActiveElement();
+
     this.#listboxSlot.hidden = true;
     this.#button.setAttribute('aria-expanded', 'false');
 
-    const activeElement = getActiveElement();
     if (activeElement === this.#listbox || this.#listbox.contains(activeElement)) {
       this.#button.focus();
     }
+
+    this.#boundsResizeObserver?.disconnect();
+    this.#boundsResizeObserver = null;
   }
 
   #updateMenuPosition() {
@@ -241,10 +250,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     }
 
     // Get the element that enforces the bounds for the list boxes.
-    const bounds =
-      (this.getAttribute('bounds')
-        ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
-        : (getMediaControllerEl(this) || this.parentElement)) ?? this;
+    const bounds = getBoundsElement(this);
 
     // Choose .offsetWidth which is not affected by CSS transforms.
     const listboxWidth = this.#listbox.offsetWidth;
@@ -330,14 +336,20 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   }
 }
 
-function getMediaControllerEl(controlEl) {
-  const mediaControllerId = controlEl.getAttribute(
+function getBoundsElement(host) {
+  return (host.getAttribute('bounds')
+    ? closestComposedNode(host, `#${host.getAttribute('bounds')}`)
+    : (getMediaControllerElement(host) || host.parentElement)) ?? host;
+}
+
+function getMediaControllerElement(host) {
+  const mediaControllerId = host.getAttribute(
     MediaStateReceiverAttributes.MEDIA_CONTROLLER
   );
   if (mediaControllerId) {
-    return controlEl.getRootNode()?.getElementById(mediaControllerId);
+    return host.getRootNode()?.getElementById(mediaControllerId);
   }
-  return closestComposedNode(controlEl, 'media-controller');
+  return closestComposedNode(host, 'media-controller');
 }
 
 if (!globalThis.customElements.get('media-chrome-selectmenu')) {
