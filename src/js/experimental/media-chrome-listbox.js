@@ -357,7 +357,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
 
     if (this.selectedOptions.some((opt, i) => opt != oldSelectedOptions[i])) {
-      this.dispatchEvent(new Event('change'));
+      this.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
     }
   }
 

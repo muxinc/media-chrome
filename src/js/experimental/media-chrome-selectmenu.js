@@ -71,8 +71,6 @@ template.innerHTML = /*html*/`
  */
 class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #mediaController;
-  #handleButtonClick;
-  #handleOptionChange;
   #enabledState = true;
   #button;
   #buttonSlot;
@@ -98,9 +96,6 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
-
-    this.#handleButtonClick = this.#handleButtonClick_.bind(this);
-    this.#handleOptionChange = this.#handleOptionChange_.bind(this);
 
     this.init?.();
 
@@ -160,9 +155,9 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     // only allow Enter/Space on the button itself and not on the listbox
     // and allow hiding the menu when pressing Escape when focused on the listbox
     if (isButton && (key === 'Enter' || key === ' ')) {
-      this.#handleButtonClick();
-    } else if (key === 'Escape' && !this.#listboxSlot.hidden) {
       this.#toggle();
+    } else if (key === 'Escape') {
+      this.#hide();
     }
   }
 
@@ -180,16 +175,16 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     // if we clicked inside the selectmenu, don't handle it here
     if (e.composedPath().includes(this)) return;
 
-    if (!this.#listboxSlot.hidden) {
+    this.#hide();
+  }
+
+  #clickHandler = (e) => {
+    if (e.composedPath().includes(this.#button)) {
       this.#toggle();
     }
   }
 
-  #handleButtonClick_() {
-    this.#toggle();
-  }
-
-  #handleOptionChange_() {
+  #handleOptionChange = () => {
     this.#hide();
   }
 
@@ -202,6 +197,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   }
 
   #show() {
+    if (!this.#listboxSlot.hidden) return;
+
     this.#listboxSlot.hidden = false;
     this.#button.setAttribute('aria-expanded', 'true');
 
@@ -214,6 +211,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   }
 
   #hide() {
+    if (this.#listboxSlot.hidden) return;
+
     const activeElement = getActiveElement();
 
     this.#listboxSlot.hidden = true;
@@ -262,23 +261,19 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   }
 
   enable() {
-    this.#button.removeAttribute('disabled');
-    this.#button.setAttribute('aria-expanded', 'false');
-    this.#button.addEventListener('click', this.#handleButtonClick);
-    this.#button.addEventListener('keydown', this.#keydownListener);
-    this.#listbox.addEventListener('keydown', this.#keydownListener);
-    this.#listbox.addEventListener('change', this.#handleOptionChange);
+    this.#button.toggleAttribute('disabled', false);
+    this.addEventListener('change', this.#handleOptionChange);
+    this.addEventListener('keydown', this.#keydownListener);
+    this.addEventListener('click', this.#clickHandler);
     document.addEventListener('click', this.#documentClickHandler);
   }
 
   disable() {
-    this.#button.setAttribute('disabled', '');
-    this.#button.removeEventListener('click', this.#handleButtonClick);
-    this.#button.removeEventListener('keydown', this.#keydownListener);
-    this.#button.removeEventListener('keyup', this.#keyupListener);
-    this.#listbox.removeEventListener('keydown', this.#keydownListener);
-    this.#listbox.removeEventListener('keyup', this.#keyupListener);
-    this.#listbox.addEventListener('change', this.#handleOptionChange);
+    this.#button.toggleAttribute('disabled', true);
+    this.removeEventListener('change', this.#handleOptionChange);
+    this.removeEventListener('keydown', this.#keydownListener);
+    this.removeEventListener('keyup', this.#keyupListener);
+    this.removeEventListener('click', this.#clickHandler);
     document.removeEventListener('click', this.#documentClickHandler);
   }
 
