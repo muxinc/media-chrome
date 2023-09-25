@@ -2,6 +2,7 @@ import '../media-chrome-button.js';
 import './media-chrome-listbox.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import { containsComposedNode, closestComposedNode, getOrInsertCSSRule, getActiveElement } from '../utils/element-utils.js';
+import { observeResize, unobserveResize } from '../utils/resize-observer.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
 
 const template = document.createElement('template');
@@ -76,7 +77,6 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #buttonSlot;
   #listbox;
   #listboxSlot;
-  #boundsResizeObserver;
 
   static get observedAttributes() {
     return [
@@ -205,9 +205,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     this.#updateMenuPosition();
     this.#listbox.focus();
 
-    this.#boundsResizeObserver?.disconnect();
-    this.#boundsResizeObserver = new ResizeObserver(() => this.#updateMenuPosition());
-    this.#boundsResizeObserver.observe(getBoundsElement(this));
+    observeResize(getBoundsElement(this), () => this.#updateMenuPosition());
   }
 
   #hide() {
@@ -222,8 +220,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.#button.focus();
     }
 
-    this.#boundsResizeObserver?.disconnect();
-    this.#boundsResizeObserver = null;
+    unobserveResize(getBoundsElement(this));
   }
 
   #updateMenuPosition() {
@@ -302,22 +299,25 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.hasAttribute('disabled')) {
-      this.enable();
-    }
-
-    const mediaControllerId = this.getAttribute(
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER
-    );
+    const mediaControllerId = this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
     if (mediaControllerId) {
       // @ts-ignore
       this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
       this.#listbox.setAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER, mediaControllerId);
     }
+
+    if (!this.hasAttribute('disabled')) {
+      this.enable();
+    }
+
+    if (!this.#listboxSlot.hidden) {
+      observeResize(getBoundsElement(this), () => this.#updateMenuPosition());
+    }
   }
 
   disconnectedCallback() {
+    unobserveResize(getBoundsElement(this));
     this.disable();
 
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
