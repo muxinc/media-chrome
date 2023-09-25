@@ -29,6 +29,16 @@ export const closestComposedNode = (childNode, selector) => {
 };
 
 /**
+ * Get the active element, accounting for Shadow DOM subtrees.
+ * @param {Document|ShadowRoot} root
+ */
+export function getActiveElement(root = document) {
+  const activeEl = root?.activeElement;
+  if (!activeEl) return null;
+  return getActiveElement(activeEl.shadowRoot) ?? activeEl;
+}
+
+/**
  * Get or insert a CSS rule with a selector in an element containing <style> tags.
  * @param  {Element|ShadowRoot} styleParent
  * @param  {string} selectorText
@@ -164,26 +174,4 @@ export function setStringAttr(el, attrName, value) {
   if (getStringAttr(el, attrName, undefined) === nextValue) return;
 
   el.setAttribute(attrName, nextValue);
-}
-
-/**
- * Get the active element, accounting for Shadow DOM subtrees.
- * @author Cory LaViska
- * @see https://www.abeautifulsite.net/posts/finding-the-active-element-in-a-shadow-root/
- */
-export function getActiveElement(root = document) {
-  const activeEl = root.activeElement;
-
-  if (!activeEl) return null;
-
-  // If there’s a shadow root, recursively find the active element within it.
-  // If the recursive call returns null, return the active element
-  // of the top-level Document.
-  if (activeEl.shadowRoot) {
-    // @ts-ignore
-    return getActiveElement(activeEl.shadowRoot) || document.activeElement;
-  }
-
-  // If not, we can just return the active element
-  return activeEl;
 }
