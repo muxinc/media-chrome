@@ -192,7 +192,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     this.#updateMenuPosition();
     this.#listbox.focus();
 
-    observeResize(getBoundsElement(this), () => this.#updateMenuPosition());
+    observeResize(getBoundsElement(this), this.#updateMenuPosition);
   }
 
   #hide() {
@@ -207,10 +207,10 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.#button.focus();
     }
 
-    unobserveResize(getBoundsElement(this));
+    unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
   }
 
-  #updateMenuPosition() {
+  #updateMenuPosition = () => {
     // if the menu is hidden, skip updating the menu position
     if (this.#listbox.offsetWidth === 0) return;
 
@@ -297,12 +297,12 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     }
 
     if (!this.#listboxSlot.hidden) {
-      observeResize(getBoundsElement(this), () => this.#updateMenuPosition());
+      observeResize(getBoundsElement(this), this.#updateMenuPosition);
     }
   }
 
   disconnectedCallback() {
-    unobserveResize(getBoundsElement(this));
+    unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
     this.disable();
 
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
