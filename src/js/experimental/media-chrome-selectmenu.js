@@ -72,7 +72,6 @@ template.innerHTML = /*html*/`
  */
 class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #mediaController;
-  #enabledState = true;
   #button;
   #buttonSlot;
   #listbox;
@@ -109,34 +108,22 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       // if the slotted button is the built-in, nothing to do
       if (!newButton) return;
 
-      // disconnect previous button
-      this.disable();
-
-      // update button reference if necessary
       this.#button = newButton;
-
-      // if it's a media-chrome-button, ask it to not handle the click event
       this.#button.preventClick = true;
 
-      if (this.#button.hasAttribute('disabled')) {
-        this.#enabledState = false;
-      }
+      const disabled = this.hasAttribute('disabled') || this.#button.hasAttribute('disabled');
 
-      // reconnect new button
-      if (this.#enabledState) {
+      if (disabled) {
+        this.disable();
+      } else {
         this.enable();
         this.#button.setAttribute('aria-haspopup', 'listbox');
-      } else {
-        this.disable();
       }
     });
 
     this.#listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
     this.#listboxSlot.addEventListener('slotchange', () => {
-      this.disable();
-      // update listbox reference if necessary
       this.#listbox = this.#listboxSlot.assignedElements()[0] || this.#listbox;
-      this.enable();
     });
   }
 
@@ -289,10 +276,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       }
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
-        this.#enabledState = true;
         this.enable();
       } else {
-        this.#enabledState = false;
         this.disable();
       }
     }

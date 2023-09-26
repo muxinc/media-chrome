@@ -8,6 +8,8 @@ class EventTarget {
 
 class ResizeObserver {
   observe() {}
+  unobserve() {}
+  disconnect() {}
 }
 
 const documentShim = {
