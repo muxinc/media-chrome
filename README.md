@@ -1,9 +1,9 @@
 <h1>
   <a href="https://media-chrome.org" target="_blank">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/muxinc/media-chrome/assets/360826/55332ebe-aca2-4db8-9743-09f1e15682f4">
-      <source media="(prefers-color-scheme: light)" srcset="https://github.com/muxinc/media-chrome/assets/360826/a012ae18-1060-44d2-977f-ae1e639024f5">
-      <img alt="Media Chrome Logo" src="https://github.com/muxinc/media-chrome/assets/360826/a012ae18-1060-44d2-977f-ae1e639024f5">
+      <source media="(prefers-color-scheme: dark)" srcset="docs/public/media-chrome-logo-dark.svg">
+      <source media="(prefers-color-scheme: light)" srcset="docs/public/media-chrome-logo-light.svg">
+      <img alt="Media Chrome Logo" src="docs/public/media-chrome-logo-light.svg">
     </picture>
   </a>
 </h1>
