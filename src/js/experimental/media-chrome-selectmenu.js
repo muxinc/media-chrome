@@ -1,7 +1,8 @@
 import '../media-chrome-button.js';
 import './media-chrome-listbox.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
-import { closestComposedNode, getOrInsertCSSRule } from '../utils/element-utils.js';
+import { containsComposedNode, closestComposedNode, getOrInsertCSSRule, getActiveElement } from '../utils/element-utils.js';
+import { observeResize, unobserveResize } from '../utils/resize-observer.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
 
 const template = document.createElement('template');
@@ -19,13 +20,12 @@ template.innerHTML = /*html*/`
     flex-shrink: .5;
   }
 
-  [name="listbox"]::slotted(*),
+  [name=listbox]::slotted(*),
   [part=listbox] {
     position: absolute;
     left: 0;
     bottom: 100%;
     max-height: 300px;
-    overflow: hidden auto;
     transition: var(--media-selectmenu-transition-in,
       visibility 0s, transform .15s ease-out, opacity .15s ease-out);
     transform: var(--media-listbox-transform-in, translateY(0) scale(1));
@@ -33,7 +33,7 @@ template.innerHTML = /*html*/`
     opacity: 1;
   }
 
-  [name="listbox"][hidden]::slotted(*),
+  [name=listbox][hidden]::slotted(*),
   [hidden] [part=listbox] {
     transition: var(--media-selectmenu-transition-out,
       visibility .15s ease-out, transform .15s ease-out, opacity .15s ease-out);
@@ -43,7 +43,7 @@ template.innerHTML = /*html*/`
     pointer-events: none;
   }
 
-  slot[name="listbox"][hidden] {
+  slot[name=listbox][hidden] {
     display: block;
   }
   </style>
@@ -72,14 +72,10 @@ template.innerHTML = /*html*/`
  */
 class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #mediaController;
-  #handleButtonClick;
-  #handleOptionChange;
-  #enabledState = true;
   #button;
   #buttonSlot;
   #listbox;
   #listboxSlot;
-  #expanded = false;
 
   static get observedAttributes() {
     return [
@@ -100,9 +96,6 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
 
-    this.#handleButtonClick = this.#handleButtonClick_.bind(this);
-    this.#handleOptionChange = this.#handleOptionChange_.bind(this);
-
     this.init?.();
 
     this.#button = this.shadowRoot.querySelector('[part=button]');
@@ -115,34 +108,22 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       // if the slotted button is the built-in, nothing to do
       if (!newButton) return;
 
-      // disconnect previous button
-      this.disable();
-
-      // update button reference if necessary
       this.#button = newButton;
-
-      // if it's a media-chrome-button, ask it to not handle the click event
       this.#button.preventClick = true;
 
-      if (this.#button.hasAttribute('disabled')) {
-        this.#enabledState = false;
-      }
+      const disabled = this.hasAttribute('disabled') || this.#button.hasAttribute('disabled');
 
-      // reconnect new button
-      if (this.#enabledState) {
+      if (disabled) {
+        this.disable();
+      } else {
         this.enable();
         this.#button.setAttribute('aria-haspopup', 'listbox');
-      } else {
-        this.disable();
       }
     });
 
     this.#listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
     this.#listboxSlot.addEventListener('slotchange', () => {
-      this.disable();
-      // update listbox reference if necessary
       this.#listbox = this.#listboxSlot.assignedElements()[0] || this.#listbox;
-      this.enable();
     });
   }
 
@@ -161,9 +142,9 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     // only allow Enter/Space on the button itself and not on the listbox
     // and allow hiding the menu when pressing Escape when focused on the listbox
     if (isButton && (key === 'Enter' || key === ' ')) {
-      this.#handleButtonClick();
-    } else if (key === 'Escape' && !this.#listboxSlot.hidden) {
       this.#toggle();
+    } else if (key === 'Escape') {
+      this.#hide();
     }
   }
 
@@ -181,32 +162,55 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     // if we clicked inside the selectmenu, don't handle it here
     if (e.composedPath().includes(this)) return;
 
-    if (!this.#listboxSlot.hidden) {
+    this.#hide();
+  }
+
+  #clickHandler = (e) => {
+    if (e.composedPath().includes(this.#button)) {
       this.#toggle();
     }
   }
 
-  #handleButtonClick_() {
-    this.#toggle();
+  #handleOptionChange = () => {
+    this.#hide();
   }
 
-  #handleOptionChange_() {
-    this.#toggle(true);
-  }
-
-  #toggle(closeOnly) {
-    this.#listboxSlot.hidden = !this.#listboxSlot.hidden || closeOnly;
-    this.#toggleExpanded(closeOnly);
-
-    if (!this.#listboxSlot.hidden) {
-      this.#listbox.focus();
-      this.#updateMenuPosition();
-    } else if (this.shadowRoot.activeElement === this.#listbox || this.#listbox.contains(this.shadowRoot.activeElement)) {
-      this.#button.focus();
+  #toggle() {
+    if (this.#listboxSlot.hidden) {
+      this.#show();
+    } else {
+      this.#hide();
     }
   }
 
-  #updateMenuPosition() {
+  #show() {
+    if (!this.#listboxSlot.hidden) return;
+
+    this.#listboxSlot.hidden = false;
+    this.#button.setAttribute('aria-expanded', 'true');
+
+    this.#updateMenuPosition();
+    this.#listbox.focus();
+
+    observeResize(getBoundsElement(this), this.#updateMenuPosition);
+  }
+
+  #hide() {
+    if (this.#listboxSlot.hidden) return;
+
+    const activeElement = getActiveElement();
+
+    this.#listboxSlot.hidden = true;
+    this.#button.setAttribute('aria-expanded', 'false');
+
+    if (containsComposedNode(this.#listbox, activeElement)) {
+      this.#button.focus();
+    }
+
+    unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
+  }
+
+  #updateMenuPosition = () => {
     // if the menu is hidden, skip updating the menu position
     if (this.#listbox.offsetWidth === 0) return;
 
@@ -214,7 +218,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 
     // if we're outside of the controller,
     // one of the components should have a mediacontroller attribute.
-    // There isn't a good way now to differentiate between default buttons or
+    // There isn't a good way now to differentiate between default buttons
     // or a slotted button but outside of the media-controller.
     // So, a regular declarative selectmenu may default to open up rather than down.
     if (
@@ -229,10 +233,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     }
 
     // Get the element that enforces the bounds for the list boxes.
-    const bounds =
-      (this.getAttribute('bounds')
-        ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
-        : this.parentElement) ?? this;
+    const bounds = getBoundsElement(this);
 
     // Choose .offsetWidth which is not affected by CSS transforms.
     const listboxWidth = this.#listbox.offsetWidth;
@@ -240,31 +241,23 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     const position = -Math.max(buttonRect.x + listboxWidth - boundsRect.right, 0);
 
     this.#listbox.style.left = `${position}px`;
-  }
-
-  #toggleExpanded(closeOnly = false) {
-    this.#expanded = !this.#expanded || closeOnly;
-    this.#button.setAttribute('aria-expanded', this.#expanded);
+    this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height}px`;
   }
 
   enable() {
-    this.#button.removeAttribute('disabled');
-    this.#button.addEventListener('click', this.#handleButtonClick);
-    this.#button.addEventListener('keydown', this.#keydownListener);
-    this.#listbox.addEventListener('keydown', this.#keydownListener);
-    this.#toggleExpanded();
-    this.#listbox.addEventListener('change', this.#handleOptionChange);
+    this.#button.toggleAttribute('disabled', false);
+    this.addEventListener('change', this.#handleOptionChange);
+    this.addEventListener('keydown', this.#keydownListener);
+    this.addEventListener('click', this.#clickHandler);
     document.addEventListener('click', this.#documentClickHandler);
   }
 
   disable() {
-    this.#button.setAttribute('disabled', '');
-    this.#button.removeEventListener('click', this.#handleButtonClick);
-    this.#button.removeEventListener('keydown', this.#keydownListener);
-    this.#button.removeEventListener('keyup', this.#keyupListener);
-    this.#listbox.removeEventListener('keydown', this.#keydownListener);
-    this.#listbox.removeEventListener('keyup', this.#keyupListener);
-    this.#listbox.addEventListener('change', this.#handleOptionChange);
+    this.#button.toggleAttribute('disabled', true);
+    this.removeEventListener('change', this.#handleOptionChange);
+    this.removeEventListener('keydown', this.#keydownListener);
+    this.removeEventListener('keyup', this.#keyupListener);
+    this.removeEventListener('click', this.#clickHandler);
     document.removeEventListener('click', this.#documentClickHandler);
   }
 
@@ -283,32 +276,33 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       }
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
-        this.#enabledState = true;
         this.enable();
       } else {
-        this.#enabledState = false;
         this.disable();
       }
     }
   }
 
   connectedCallback() {
-    if (!this.hasAttribute('disabled')) {
-      this.enable();
-    }
-
-    const mediaControllerId = this.getAttribute(
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER
-    );
+    const mediaControllerId = this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
     if (mediaControllerId) {
       // @ts-ignore
       this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
       this.#listbox.setAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER, mediaControllerId);
     }
+
+    if (!this.hasAttribute('disabled')) {
+      this.enable();
+    }
+
+    if (!this.#listboxSlot.hidden) {
+      observeResize(getBoundsElement(this), this.#updateMenuPosition);
+    }
   }
 
   disconnectedCallback() {
+    unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
     this.disable();
 
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
@@ -320,6 +314,22 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   get keysUsed() {
     return ['Enter', 'Escape', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
   }
+}
+
+function getBoundsElement(host) {
+  return (host.getAttribute('bounds')
+    ? closestComposedNode(host, `#${host.getAttribute('bounds')}`)
+    : (getMediaControllerElement(host) || host.parentElement)) ?? host;
+}
+
+function getMediaControllerElement(host) {
+  const mediaControllerId = host.getAttribute(
+    MediaStateReceiverAttributes.MEDIA_CONTROLLER
+  );
+  if (mediaControllerId) {
+    return host.getRootNode()?.getElementById(mediaControllerId);
+  }
+  return closestComposedNode(host, 'media-controller');
 }
 
 if (!globalThis.customElements.get('media-chrome-selectmenu')) {

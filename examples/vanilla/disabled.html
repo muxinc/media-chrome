@@ -4,6 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Disabled-Controls Video Usage Example</title>
     <script type="module" src="../../dist/index.js"></script>
+    <script type="module" src="../../../dist/experimental/index.js"></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
@@ -72,6 +73,7 @@
           <media-time-range disabled aria-disabled="true"></media-time-range>
           <media-time-display showduration remaining disabled aria-disabled="true"></media-time-display>
           <media-captions-button default-showing disabled aria-disabled="true"></media-captions-button>
+          <media-captions-selectmenu disabled aria-disabled="true"></media-captions-selectmenu>
           <media-playback-rate-button disabled aria-disabled="true"></media-playback-rate-button>
           <media-pip-button disabled aria-disabled="true"></media-pip-button>
           <media-fullscreen-button disabled aria-disabled="true"></media-fullscreen-button>

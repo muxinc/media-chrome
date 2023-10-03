@@ -50,14 +50,21 @@ template.innerHTML = /*html*/`
     color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
     border-radius: var(--media-listbox-border-radius);
-    display: inline-block;
-    padding-block: .5em;
+    display: inline-flex;
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
   }
 
   ::slotted([slot="header"]) {
-    padding: 0 1.4em .4em;
-    margin-bottom: .5em;
+    padding: .4em 1.4em;
     border-bottom: 1px solid rgb(255 255 255 / .25);
+  }
+
+  #container {
+    display: block;
+    overflow: hidden auto;
+    padding-block: .5em;
   }
 
   media-chrome-option {
@@ -350,7 +357,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
 
     if (this.selectedOptions.some((opt, i) => opt != oldSelectedOptions[i])) {
-      this.dispatchEvent(new Event('change'));
+      this.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
     }
   }
 

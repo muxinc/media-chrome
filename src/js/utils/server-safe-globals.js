@@ -8,6 +8,8 @@ class EventTarget {
 
 class ResizeObserver {
   observe() {}
+  unobserve() {}
+  disconnect() {}
 }
 
 const documentShim = {
@@ -68,6 +70,7 @@ export const GlobalThis = isServer && !isShimmed ? globalThisShim : globalThis;
 /**
   * @type { document & { webkitExitFullscreen? } |
   * {createElement,
+  * activeElement?,
   * fullscreenElement?,
   * webkitExitFullscreen?,
   * getElementById?,

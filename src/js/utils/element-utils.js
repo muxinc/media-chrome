@@ -29,6 +29,16 @@ export const closestComposedNode = (childNode, selector) => {
 };
 
 /**
+ * Get the active element, accounting for Shadow DOM subtrees.
+ * @param {Document|ShadowRoot} root
+ */
+export function getActiveElement(root = document) {
+  const activeEl = root?.activeElement;
+  if (!activeEl) return null;
+  return getActiveElement(activeEl.shadowRoot) ?? activeEl;
+}
+
+/**
  * Get or insert a CSS rule with a selector in an element containing <style> tags.
  * @param  {Element|ShadowRoot} styleParent
  * @param  {string} selectorText
