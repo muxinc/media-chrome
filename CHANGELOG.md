@@ -1,3 +1,12 @@
+## [1.4.3](https://github.com/muxinc/media-chrome/compare/v1.4.2...v1.4.3) (2023-10-03)
+
+
+### Bug Fixes
+
+* improve selectmenu overflow ([#734](https://github.com/muxinc/media-chrome/issues/734)) ([08b580f](https://github.com/muxinc/media-chrome/commit/08b580fcdbf1d6183948539657bbe99fc139e55d))
+
+
+
 ## [1.4.2](https://github.com/muxinc/media-chrome/compare/v1.4.1...v1.4.2) (2023-09-05)
 
 
