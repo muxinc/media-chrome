@@ -377,28 +377,22 @@ export const MediaUIStates = {
   MEDIA_AIRPLAY_UNAVAILABLE: {
     // NOTE: only adding this if airplay is supported, in part to avoid unnecessary battery consumption per
     // Apple docs recommendations (See: https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls)
-    // For a more advanced solution, we could monitor for media state receivers that "care" about airplay support and add/remove
-    // whenever these are added/removed. (CJP)
-    // NOTE: I don't think only adding this if supported helps, so making this match others.
-    // If Airplay's not supported then it it doesn't hurt to add it.
-    // If battery is really an issue we need a different approach.
-    // Also this is a terrible API, Apple. (heff)
-    get: function (controller, e) {
+    get: function (controller, availability) {
       if (!airplaySupported) return AvailabilityStates.UNSUPPORTED;
 
       // NOTE: since we invoke all these event handlers without arguments whenever a media is attached,
       // need to account for the possibility that event is undefined (CJP).
-      // TODO: Is there reall no way to detect this without an event? (heff)
-      if (!e) return undefined;
       // TODO: Switch to non attr specific value
+      if (availability == null || availability === true) return undefined;
 
-      if (e.availability === 'available') {
-        return undefined;
-      } else if (e.availability === 'not-available') {
-        return AvailabilityStates.UNAVAILABLE;
-      }
+      return AvailabilityStates.UNAVAILABLE;
     },
-    mediaEvents: ['webkitplaybacktargetavailabilitychanged'],
+    setup(media, callback) {
+      media.remote.watchAvailability(callback);
+    },
+    destroy(media) {
+      media.remote.cancelWatchAvailability();
+    },
   },
   MEDIA_CAST_UNAVAILABLE: {
     get: function () {
@@ -806,18 +800,21 @@ export const MediaUIRequestHandlers = {
   MEDIA_AIRPLAY_REQUEST: (media) => {
     if (!media) return;
 
-    if (
-      !(
-        media.webkitShowPlaybackTargetPicker &&
-        globalThis.WebKitPlaybackTargetAvailabilityEvent
-      )
-    ) {
+    // Safari 16.5 desktop has a bug where remote.prompt() does not work
+    // without playing the video first. Prefer the old method if available.
+    if (media.webkitShowPlaybackTargetPicker) {
+      media.webkitShowPlaybackTargetPicker();
+      return;
+    }
+
+    if (!media.remote.prompt) {
       console.warn(
         'received a request to select AirPlay but AirPlay is not supported in this environment'
       );
       return;
     }
-    media.webkitShowPlaybackTargetPicker();
+
+    media.remote.prompt();
   },
   MEDIA_SEEK_TO_LIVE_REQUEST: (media) => {
     const seekable = media.seekable;

@@ -175,6 +175,7 @@ class MediaController extends MediaContainer {
     // Listen for media state changes and propagate them to children and associated els
     Object.keys(MediaUIStates).forEach((key) => {
       const {
+        setup,
         mediaEvents,
         rootEvents,
         textTracksEvents,
@@ -183,6 +184,11 @@ class MediaController extends MediaContainer {
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
+
+      if (setup) {
+        setup(media, handler)
+        handler();
+      }
 
       mediaEvents?.forEach((eventName) => {
         media.addEventListener(eventName, handler);
@@ -229,6 +235,7 @@ class MediaController extends MediaContainer {
     // Remove all state change propagators
     Object.keys(MediaUIStates).forEach((key) => {
       const {
+        destroy,
         mediaEvents,
         rootEvents,
         textTracksEvents,
@@ -259,6 +266,11 @@ class MediaController extends MediaContainer {
         media.audioTracks?.removeEventListener(eventName, handler);
         handler();
       });
+
+      if (destroy) {
+        destroy(media, handler)
+        handler();
+      }
     });
 
     // Reset to paused state
