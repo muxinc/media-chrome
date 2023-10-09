@@ -89,7 +89,7 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
         this.#mediaController?.unassociateElement?.(this);
         this.#mediaController = null;
       }
-      if (newValue) {
+      if (newValue && this.isConnected) {
         // @ts-ignore
         this.#mediaController = this.getRootNode()?.getElementById(newValue);
         this.#mediaController?.associateElement?.(this);
