@@ -268,7 +268,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
         this.#mediaController = null;
         this.#listbox.removeAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
       }
-      if (newValue) {
+      if (newValue && this.isConnected) {
         // @ts-ignore
         this.#mediaController = this.getRootNode()?.getElementById(newValue);
         this.#mediaController?.associateElement?.(this);
