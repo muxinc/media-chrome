@@ -356,23 +356,15 @@ export const MediaUIStates = {
     mediaEvents: ['enterpictureinpicture', 'leavepictureinpicture'],
   },
   MEDIA_IS_CASTING: {
-    // Note this relies on a customized video[is=castable-video] element.
-    get: function (controller, e) {
+    // Note this relies on a customized castable-video element.
+    get: function (controller) {
       const { media } = controller;
 
-      if (!media) return false;
+      if (!media?.remote || media.remote?.state === 'disconnected') return false;
 
-      const castElement = globalThis.CastableVideoElement?.castElement;
-      let castState = containsComposedNode(media, castElement);
-
-      // While the cast is connecting set media-is-cast="connecting"
-      if (e?.type === 'castchange' && e?.detail === 'CONNECTING') {
-        castState = 'connecting';
-      }
-
-      return castState;
+      return media.remote.state;
     },
-    mediaEvents: ['entercast', 'leavecast', 'castchange'],
+    remoteEvents: ['connect', 'connecting', 'disconnect'],
   },
   MEDIA_AIRPLAY_UNAVAILABLE: {
     // NOTE: only adding this if airplay is supported, in part to avoid unnecessary battery consumption per
@@ -387,30 +379,31 @@ export const MediaUIStates = {
 
       return AvailabilityStates.UNAVAILABLE;
     },
-    setup(media, callback) {
-      media.remote.watchAvailability(callback);
+    mediaSetCallback(media, callback) {
+      media.remote?.watchAvailability(callback);
     },
-    destroy(media) {
-      media.remote.cancelWatchAvailability();
+    mediaUnsetCallback(media) {
+      media.remote?.cancelWatchAvailability();
     },
   },
   MEDIA_CAST_UNAVAILABLE: {
-    get: function () {
-      const castState = globalThis.CastableVideoElement?.castState;
+    get: function (controller, availability) {
+      const { media } = controller;
 
-      if (!castSupported || !castState) {
+      if (!castSupported || !media?.remote?.state) {
         return AvailabilityStates.UNSUPPORTED;
       }
 
-      // Cast state: NO_DEVICES_AVAILABLE, NOT_CONNECTED, CONNECTING, CONNECTED
-      if (castState.includes('CONNECT')) {
-        // TODO: Move to non attr specific value
-        return undefined;
-      } else {
-        return AvailabilityStates.UNAVAILABLE;
-      }
+      if (availability == null || availability === true) return undefined;
+
+      return AvailabilityStates.UNAVAILABLE;
     },
-    mediaEvents: ['castchange'],
+    mediaSetCallback(media, callback) {
+      media.remote?.watchAvailability(callback);
+    },
+    mediaUnsetCallback(media) {
+      media.remote?.cancelWatchAvailability();
+    },
   },
   MEDIA_FULLSCREEN_UNAVAILABLE: {
     get: function () {
@@ -600,7 +593,7 @@ export const MediaUIRequestHandlers = {
   MEDIA_ENTER_FULLSCREEN_REQUEST: (media, event, controller) => {
     if (!fullscreenSupported) {
       console.warn(
-        'Fullscreen support is unavailable; not entering fullscreen'
+        'MediaChrome: Fullscreen support is unavailable; not entering fullscreen'
       );
       return;
     }
@@ -699,21 +692,28 @@ export const MediaUIRequestHandlers = {
     }
   },
   MEDIA_ENTER_CAST_REQUEST: (media) => {
-    if (!globalThis.CastableVideoElement?.castEnabled) return;
+    if (media.remote?.state !== 'disconnected') return;
 
     // Exit fullscreen if needed
     if (document[fullscreenApi.element]) {
       document[fullscreenApi.exit]();
     }
 
-    // Open the browser cast menu.
-    // Note this relies on a customized video[is=castable-video] element.
-    media.requestCast();
-  },
-  MEDIA_EXIT_CAST_REQUEST: async () => {
-    if (globalThis.CastableVideoElement?.castElement) {
-      globalThis.CastableVideoElement.exitCast();
+    if (!media.remote.prompt) {
+      console.warn('MediaChrome: Casting is not supported in this environment');
+      return;
     }
+
+    // Open the browser cast menu.
+    // Note this relies on a customized castable-video element.
+    media.remote.prompt();
+  },
+  MEDIA_EXIT_CAST_REQUEST: (media) => {
+    if (media.remote?.state !== 'connected') return;
+
+    // Open the browser cast menu.
+    // Note this relies on a customized castable-video element.
+    media.remote.prompt();
   },
   MEDIA_SEEK_REQUEST: (media, event) => {
     const time = event.detail;
@@ -798,7 +798,7 @@ export const MediaUIRequestHandlers = {
     updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
   },
   MEDIA_AIRPLAY_REQUEST: (media) => {
-    if (!media) return;
+    if (!media?.remote) return;
 
     // Safari 16.5 desktop has a bug where remote.prompt() does not work
     // without playing the video first. Prefer the old method if available.
@@ -808,9 +808,7 @@ export const MediaUIRequestHandlers = {
     }
 
     if (!media.remote.prompt) {
-      console.warn(
-        'received a request to select AirPlay but AirPlay is not supported in this environment'
-      );
+      console.warn('MediaChrome: AirPlay is not supported in this environment');
       return;
     }
 
@@ -820,14 +818,12 @@ export const MediaUIRequestHandlers = {
     const seekable = media.seekable;
 
     if (!seekable) {
-      console.warn(
-        'MediaController: Media element does not support seeking to live.'
-      );
+      console.warn('MediaChrome: Media element does not support seeking to live.');
       return;
     }
 
     if (!seekable.length) {
-      console.warn('MediaController: Media is unable to seek to live.');
+      console.warn('MediaChrome: Media is unable to seek to live.');
       return;
     }
 
@@ -835,7 +831,7 @@ export const MediaUIRequestHandlers = {
   },
   MEDIA_RENDITION_REQUEST: (media, event) => {
     if (!media?.videoRenditions) {
-      console.warn('MediaController: Rendition selection not supported by this media.');
+      console.warn('MediaChrome: Rendition selection not supported by this media.');
       return;
     }
 
@@ -848,7 +844,7 @@ export const MediaUIRequestHandlers = {
   },
   MEDIA_AUDIO_TRACK_REQUEST: (media, event) => {
     if (!media?.audioTracks) {
-      console.warn('MediaController: Audio track selection not supported by this media.');
+      console.warn('MediaChrome: Audio track selection not supported by this media.');
       return;
     }
 

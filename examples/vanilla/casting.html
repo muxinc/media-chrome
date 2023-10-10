@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome with Casting Example</title>
     <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/castable-video@0"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/castable-video@0.6.0-canary.2/+esm"></script>
     <script type="module" src="../../dist/index.js"></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
@@ -30,6 +30,10 @@
         display: none;
       }
 
+      media-cast-button[mediacastunavailable] {
+        display: none;
+      }
+
       .examples {
         margin-top: 20px;
       }
@@ -39,9 +43,8 @@
     <main>
       <h1>Media Chrome with Casting Example</h1>
       <media-controller defaultsubtitles>
-        <video
+        <castable-video
           slot="media"
-          is="castable-video"
           src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
           poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=56"
           muted
@@ -60,7 +63,7 @@
             srclang="en"
             src="./vtt/bbb-en-cc.vtt"
           />
-        </video>
+        </castable-video>
         <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
         <media-control-bar>
           <media-play-button></media-play-button>

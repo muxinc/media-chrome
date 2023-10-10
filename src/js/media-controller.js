@@ -175,18 +175,19 @@ class MediaController extends MediaContainer {
     // Listen for media state changes and propagate them to children and associated els
     Object.keys(MediaUIStates).forEach((key) => {
       const {
-        setup,
+        mediaSetCallback,
         mediaEvents,
         rootEvents,
         textTracksEvents,
         videoRenditionsEvents,
         audioTracksEvents,
+        remoteEvents,
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
 
-      if (setup) {
-        setup(media, handler)
+      if (mediaSetCallback) {
+        mediaSetCallback(media, handler)
         handler();
       }
 
@@ -214,6 +215,11 @@ class MediaController extends MediaContainer {
         media.audioTracks?.addEventListener(eventName, handler);
         handler();
       });
+
+      remoteEvents?.forEach((eventName) => {
+        media.remote?.addEventListener(eventName, handler);
+        handler();
+      });
     });
 
     // don't get from localStorage if novolumepref attribute is set
@@ -235,12 +241,13 @@ class MediaController extends MediaContainer {
     // Remove all state change propagators
     Object.keys(MediaUIStates).forEach((key) => {
       const {
-        destroy,
+        mediaUnsetCallback,
         mediaEvents,
         rootEvents,
         textTracksEvents,
         videoRenditionsEvents,
         audioTracksEvents,
+        remoteEvents,
       } = MediaUIStates[key];
 
       const handler = this._mediaStatePropagators[key];
@@ -267,8 +274,13 @@ class MediaController extends MediaContainer {
         handler();
       });
 
-      if (destroy) {
-        destroy(media, handler)
+      remoteEvents?.forEach((eventName) => {
+        media.remote?.removeEventListener(eventName, handler);
+        handler();
+      });
+
+      if (mediaUnsetCallback) {
+        mediaUnsetCallback(media, handler)
         handler();
       }
     });
