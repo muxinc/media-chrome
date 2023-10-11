@@ -30,7 +30,8 @@ template.innerHTML = /*html*/`
     --media-range-thumb-height: 14px;
   }
 
-  :host([streamtype="live"]) media-time-range, :host([streamtype="live"]) media-time-display {
+  :host([mediastreamtype="live"]) media-time-range,
+  :host([mediastreamtype="live"]) media-time-display {
     opacity: 0;
   }
 
@@ -74,11 +75,6 @@ template.innerHTML = /*html*/`
 
   .small-button:hover {
     box-shadow: 0 0 0 calc(2px) var(--media-tertiary-color);
-  }
-
-  media-cinema-button.small-button {
-    display: none;
-    cursor: pointer;
   }
 
   div[slot="centered-chrome"] media-play-button {
@@ -178,114 +174,83 @@ template.innerHTML = /*html*/`
     opacity: 1;
   }
 
-  media-airplay-button[mediaairplayunavailable].small-button {
-    display: none;
-  }
-
-  media-cast-button[mediacastunavailable].small-button {
-    display: none;
-  }
-
-  media-pip-button[mediapipunavailable].small-button {
-    display: none;
-  }
-
-  media-captions-button.small-button {
-    display: none;
-  }
-
-  media-captions-button[mediasubtitleslist].small-button {
-    display: flex;
-  }
-
-  media-controller[userinactive]:not(.sm) * {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-
-  media-controller:not(.sm) media-control-bar {
+  media-controller:not([breakpointsm]) media-control-bar {
     position: static;
     background: transparent;
     margin: 0;
     padding: 22px 15px;
   }
 
-  media-controller:not(.sm) .media-volume-range-wrapper {
+  media-controller:not([breakpointsm]) media-time-range,
+  media-controller:not([breakpointsm]) media-time-display,
+  media-controller:not([breakpointsm]) .media-volume-range-wrapper {
     display: none;
   }
 
-  media-controller:not(.sm) .small-button {
+  media-controller:not([breakpointsm]) .small-button {
     display: none;
     width: 48px;
     height: 48px;
   }
 
-  media-controller:not(.sm) .small-button svg {
+  media-controller:not([breakpointsm]) .small-button svg {
     transform: scale(1.4);
   }
 
-  media-controller:not(.sm) div[slot="top-chrome"] {
+  media-controller:not([breakpointsm]) div[slot="top-chrome"] {
     width: calc(100% - 13px);
     padding-right: 13px;
   }
 
-  media-controller:not(.sm) div[slot="top-chrome"] .small-button {
+  media-controller:not([breakpointsm]) div[slot="top-chrome"] .small-button {
     display: flex;
     margin: 22px 7px;
   }
 
-  media-controller:not(.sm) media-airplay-button[mediaairplayunavailable].small-button {
-    display: none;
-  }
-
-  media-controller:not(.sm) media-cast-button[mediacastunavailable].small-button {
-    display: none;
-  }
-
-  media-controller:not(.sm) media-fullscreen-button.small-button {
+  media-controller:not([breakpointsm]) media-fullscreen-button.small-button {
     display: flex;
     position: absolute;
     right: 20px;
   }
 
-  media-controller:not(.sm) media-mute-button.small-button {
+  media-controller:not([breakpointsm]) media-airplay-button[mediaairplayunavailable].small-button {
+    display: none;
+  }
+
+  media-controller:not([breakpointsm]) media-cast-button[mediacastunavailable].small-button {
+    display: none;
+  }
+
+  media-controller:not([breakpointsm]) media-mute-button.small-button {
     display: flex;
   }
 
-  media-controller:not(.sm) media-captions-button.small-button {
+  media-controller:not([breakpointsm]) media-captions-button.small-button {
     position: absolute;
     top: 22px;
     left: 16px;
   }
 
-  media-controller:not(.sm) media-time-range {
-    display: none;
-  }
-
-  media-controller:not(.sm) media-time-display {
-    display: none;
-  }
-
-  media-controller:not(.sm) div[slot="centered-chrome"] media-play-button {
+  media-controller:not([breakpointsm]) div[slot="centered-chrome"] media-play-button {
     z-index: 1;
     height: 72px;
     width: 72px;
   }
 
-  media-controller:not(.sm) div[slot="centered-chrome"] media-play-button svg {
+  media-controller:not([breakpointsm]) div[slot="centered-chrome"] media-play-button svg {
     margin-left: -2px;
     height: 48px;
   }
 </style>
 
-<media-controller>
+<media-controller
+  defaultsubtitles="{{defaultsubtitles}}"
+  gesturesdisabled="{{disabled}}"
+  hotkeys="{{hotkeys}}"
+  nohotkeys="{{nohotkeys}}"
+  audio="{{audio}}"
+  breakpoints="xs:360 sm:600 md:760 lg:960 xl:1100"
+>
   <slot name="media" slot="media"></slot>
   <slot name="poster" slot="poster"></slot>
   <div class="demuxed-gradient-bottom"></div>
@@ -320,9 +285,6 @@ template.innerHTML = /*html*/`
         <media-volume-range></media-volume-range>
       </div>
     </div>
-    <media-seek-forward-button style="display: none;" class="small-button">
-      <svg slot="icon" viewBox="0 0 16 16"><path d="M3.1 13.1c-.1 0-.2 0-.3-.1-.2-.1-.3-.4-.3-.6V3.5c0-.3.1-.5.3-.6.1-.1.4 0 .6.1l6.5 4.4c.2.1.3.3.3.5s-.1.4-.3.5l-6.5 4.4c-.1.3-.2.3-.3.3zM12.8 13.1c-.5 0-.8-.4-.8-.8V3.7c0-.5.4-.8.8-.8.5 0 .8.4.8.8v8.6c.1.4-.3.8-.8.8z"/></svg>
-    </media-seek-forward-button>
     <media-time-display showduration></media-time-display>
     <media-time-range>
       <media-preview-thumbnail slot="preview"></media-preview-thumbnail>
@@ -336,9 +298,6 @@ template.innerHTML = /*html*/`
       <svg slot="enter" viewBox="0 0 16 16"><path d="M14.2 13.1H1.8c-.4 0-.7-.3-.7-.7V3.5c0-.4.3-.7.7-.7h12.3c.4 0 .7.3.7.7v8.9c.1.5-.2.7-.6.7zM2.5 11.8h11V4.3h-11v7.5z"/><path d="M7.2 7.3h5.1v3.1H7.2z"/></svg>
       <svg slot="exit" viewBox="0 0 16 16"><path d="M14.2 13.1H1.8c-.4 0-.7-.3-.7-.7V3.5c0-.4.3-.7.7-.7h12.3c.4 0 .7.3.7.7v8.9c.1.5-.2.7-.6.7zM2.5 11.8h11V4.3h-11v7.5z"/><path d="M7.2 7.3h5.1v3.1H7.2z"/></svg>
     </media-pip-button>
-    <media-cinema-button class="small-button">
-      <svg viewBox="0 0 16 16"><path d="M13.2 11.6H2.8c-.4 0-.7-.3-.7-.7V5.1c0-.4.3-.7.7-.7h10.4c.4 0 .7.3.7.7v5.8c0 .4-.3.7-.7.7zm-9.7-1.4h9V5.8h-9v4.4z"/></svg>
-    </media-cinema-button>
     <media-fullscreen-button class="small-button">
       <svg slot="enter" viewBox="0 0 16 16"><path d="M2.9 6.6c-.4 0-.7-.3-.7-.7v-3c0-.4.3-.7.7-.7h3c.4 0 .7.3.7.7s-.2.7-.6.7H3.6V6c0 .3-.3.6-.7.6zM13.1 6.6c-.4 0-.7-.3-.7-.7V3.6H10c-.4 0-.7-.3-.7-.7s.3-.7.7-.7h3c.4 0 .7.3.7.7v3c.1.4-.2.7-.6.7zM6 13.8H3c-.4 0-.7-.3-.7-.7v-3c0-.4.3-.7.7-.7.4 0 .7.3.7.7v2.4H6c.4 0 .7.3.7.7-.1.3-.4.6-.7.6zM13.1 13.8h-3c-.4 0-.7-.3-.7-.7 0-.4.3-.7.7-.7h2.4V10c0-.4.3-.7.7-.7.4 0 .7.3.7.7v3c-.1.5-.4.8-.8.8z"/></svg>
       <svg slot="exit" viewBox="0 0 16 16"><path d="M2.9 6.6c-.4 0-.7-.3-.7-.7v-3c0-.4.3-.7.7-.7h3c.4 0 .7.3.7.7s-.2.7-.6.7H3.6V6c0 .3-.3.6-.7.6zM13.1 6.6c-.4 0-.7-.3-.7-.7V3.6H10c-.4 0-.7-.3-.7-.7s.3-.7.7-.7h3c.4 0 .7.3.7.7v3c.1.4-.2.7-.6.7zM6 13.8H3c-.4 0-.7-.3-.7-.7v-3c0-.4.3-.7.7-.7.4 0 .7.3.7.7v2.4H6c.4 0 .7.3.7.7-.1.3-.4.6-.7.6zM13.1 13.8h-3c-.4 0-.7-.3-.7-.7 0-.4.3-.7.7-.7h2.4V10c0-.4.3-.7.7-.7.4 0 .7.3.7.7v3c-.1.5-.4.8-.8.8z"/></svg>
@@ -349,31 +308,15 @@ template.innerHTML = /*html*/`
 
 class MediaThemeDemuxed extends MediaThemeElement {
   static template = template;
-  static get observedAttributes() {
-    return ["streamtype"];
-  }
-  #breakpoints = { xs: 360, sm: 600, md: 760, lg: 960, xl: 1100 };
-
-  #getBreakpoints(rect) {
-    return Object.keys(this.#breakpoints).filter((key) => {
-      return rect.width >= this.#breakpoints[key];
-    });
-  }
-
-  connectedCallback() {
-    this.render();
-
-    const resizeObserver = new globalThis.ResizeObserver((entries) => {
-      entries.forEach((entry) => {
-        entry.target.className = this.#getBreakpoints(entry.contentRect).join(' ');
-      });
-    });
-
-    resizeObserver.observe(this.shadowRoot.querySelector('media-controller'));
-  }
+  static observedAttributes = [
+    ...MediaThemeElement.observedAttributes,
+    'mediastreamtype'
+  ];
 
   attributeChangedCallback(name, _oldValue, newValue) {
-    if(name === "streamtype" && newValue === "live") {
+    super.attributeChangedCallback(name, _oldValue, newValue);
+
+    if(name === "mediastreamtype" && newValue === "live") {
       /** @type {HTMLMediaElement} */
       const media = this.querySelector('[slot="media"]');
       media.muted = true;

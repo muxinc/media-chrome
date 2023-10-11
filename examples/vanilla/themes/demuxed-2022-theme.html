@@ -5,6 +5,8 @@
     <title>Media Chrome Demuxed 2022 Theme Example</title>
     <script type="module" src="../../../dist/index.js"></script>
     <script type="module" src="../../../src/js/themes/demuxed-2022.js"></script>
+    <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/castable-video@0"></script>
     <link rel="stylesheet" href="https://use.typekit.net/dbt1sbf.css">
   </head>
   <body>
@@ -28,9 +30,10 @@
     <main>
       <h1>Media Chrome Demuxed 2022 Theme Example</h1>
 
-      <media-theme-demuxed-2022 streamtype="on-demand">
-      <!-- <media-theme-demuxed-2022 streamtype="live"> -->
+      <media-theme-demuxed-2022 mediastreamtype="on-demand">
+      <!-- <media-theme-demuxed-2022 mediastreamtype="live"> -->
         <video
+          is="castable-video"
           slot="media"
           src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
           poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=23"
