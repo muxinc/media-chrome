@@ -12,6 +12,7 @@ While there were some sweeping changes to Media Chrome, most of these should be 
 - All attributes have been changed from `kebab-case` to `lowercase` (aka "`smushedcase`")
 - Several CSS variables have been renamed for consistency, more consistently applied, and more consistently defaulted
 - `AttributeTokenList` (e.g. `hotkeys`) removed the `keys()` method
+- All state change event types have been changed from `"statenamechange"` to `"statename"`.
 
 **Captions & Subtitles**
 - Captions & Subtitles list attributes are now just subtitles attributes
@@ -172,6 +173,29 @@ We've updated some of our CSS variable names based on how and where they will be
 - `--media-background-size` -> `--media-poster-image-background-size`
 
 (**NOTE:** Just prior to v1.0, we also added several CSS variables, added more consistent defaulting, applied the pre-existing variables more consistently, and added a better "inheritance" chain of CSS variable values and defaults. For a list of all CSS variables currently in v1.0 and where they apply, check out our [Styling Reference](../reference/styling). For all of the aforementioned changes, check out [this PR](https://github.com/muxinc/media-chrome/pull/528).)
+
+### Updating state change events
+
+We've changed all of our media state change event types/names to be more consistent with `HTMLMediaElement` state change event naming conventions, dropping the "change" suffix. For example:
+
+**Before**
+
+```js
+mediaController.addEventListener('mediapausedchange', pausedHandler);
+mediaController.addEventListener('mediavolumechange', volumeHandler);
+mediaController.addEventListener('mediaendedchange', endedHandler);
+```
+
+**After**
+
+```js
+mediaController.addEventListener('mediapaused', pausedHandler);
+mediaController.addEventListener('mediavolume', volumeHandler);
+mediaController.addEventListener('mediaended', endedHandler);
+```
+
+(**NOTE:** Non-media state change events do still have the "change" suffix, such as "userinactivechange" and "breakpointchange". You can find an example of all state change events with their types and corresponding state names and values [here](https://media-chrome.mux.dev/examples/vanilla/state-change-events-demo.html))
+
 
 ## Working with captions and subtitles
 
