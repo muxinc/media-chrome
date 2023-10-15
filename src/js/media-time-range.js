@@ -148,7 +148,7 @@ const calcRangeValueFromTime = (el, time = el.mediaCurrentTime) => {
   return Math.max(0, Math.min(value, 1));
 }
 
-const calcTimeFromRangeValue = (el, value = el.range.value) => {
+const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
   if (Number.isNaN(el.mediaSeekableEnd)) return 0;
   return (value * (el.mediaSeekableEnd - el.mediaSeekableStart)) + el.mediaSeekableStart;
 }
@@ -211,6 +211,10 @@ class MediaTimeRange extends MediaChromeRange {
     ];
   }
 
+  #refreshId = 0;
+  #lastRangeIncrease = 0;
+  #updateTimestamp;
+  #updateCurrentTime;
   #boxes;
   #previewBox;
   #currentBox;
@@ -228,10 +232,10 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.range.addEventListener('input', () => {
       // Cancel color bar refreshing when seeking.
-      cancelAnimationFrame(this._refreshId);
+      cancelAnimationFrame(this.#refreshId);
+      this.#refreshId = 0;
 
-      const newTime = calcTimeFromRangeValue(this);
-      const detail = newTime;
+      const detail = calcTimeFromRangeValue(this);
       const evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
         composed: true,
         bubbles: true,
@@ -246,15 +250,6 @@ class MediaTimeRange extends MediaChromeRange {
     //   const media = this.media;
     //   media.play().then(this.setMediaTimeWithRange);
     // };
-
-    this._refreshBar = () => {
-      const delta = calcRangeValueFromTime(this, (performance.now() - this._updateTimestamp) / 1000);
-      this.range.value = calcRangeValueFromTime(this) + delta * this.mediaPlaybackRate;
-      this.updateBar();
-      this.updateCurrentBox();
-
-      this._refreshId = requestAnimationFrame(this._refreshBar);
-    };
 
     this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
@@ -274,15 +269,18 @@ class MediaTimeRange extends MediaChromeRange {
   connectedCallback() {
     super.connectedCallback();
     this.range.setAttribute('aria-label', nouns.SEEK());
+    this.#toggleRefreshBar();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    cancelAnimationFrame(this._refreshId);
+    this.#toggleRefreshBar();
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
+
+    if (oldValue == newValue) return;
 
     if (
       attrName === MediaUIAttributes.MEDIA_CURRENT_TIME ||
@@ -292,19 +290,12 @@ class MediaTimeRange extends MediaChromeRange {
       attrName === MediaUIAttributes.MEDIA_DURATION ||
       attrName === MediaUIAttributes.MEDIA_SEEKABLE
     ) {
-      this._updateTimestamp = performance.now();
-      this.range.value = calcRangeValueFromTime(this);
+      this.#toggleRefreshBar();
+      this.#updateFromMedia();
       updateAriaValueText(this);
-      this.updateBar();
-      this.updateCurrentBox();
-
-      cancelAnimationFrame(this._refreshId);
-      if (!this.mediaPaused && !this.mediaLoading) {
-        this._refreshId = requestAnimationFrame(this._refreshBar);
-      }
     }
     else if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
-      this.updateBar();
+      this.updateBufferedBar();
     }
     else if (attrName === 'disabled') {
       if (newValue == null) {
@@ -312,6 +303,69 @@ class MediaTimeRange extends MediaChromeRange {
       } else {
         this.#disableBoxes();
       }
+    }
+  }
+
+  #toggleRefreshBar() {
+    if (this.#shouldRefreshBar()) {
+      if (this.#refreshId === 0) {
+        this.#updateFromMedia();
+        this.#refreshId = requestAnimationFrame(this.#refreshBar);
+      }
+    } else {
+      if (this.#refreshId !== 0) {
+        this.#updateFromMedia();
+        cancelAnimationFrame(this.#refreshId);
+        this.#refreshId = 0;
+      }
+    }
+  }
+
+  #shouldRefreshBar() {
+    return this.isConnected && !this.mediaPaused && !this.mediaLoading && !this.mediaEnded;
+  }
+
+  #updateFromMedia() {
+    const value = calcRangeValueFromTime(this);
+    this.#smoothUpdateBar(value);
+
+    this.#updateCurrentTime = this.mediaCurrentTime;
+    this.#updateTimestamp = performance.now();
+  }
+
+  #refreshBar = () => {
+    if (!this.#shouldRefreshBar()) {
+      this.#refreshId = 0;
+      return;
+    }
+
+    const delta = (performance.now() - this.#updateTimestamp) / 1000;
+    const time = this.#updateCurrentTime + delta * this.mediaPlaybackRate;
+    let value = calcRangeValueFromTime(this, time);
+    const increase = value - this.range.valueAsNumber;
+
+    // If the increase is negative, the animation was faster than the playhead.
+    // Can happen on video startup. Slow down the animation to match the playhead.
+    if (increase > 0) {
+      this.#lastRangeIncrease = increase;
+    } else {
+      this.#lastRangeIncrease = this.#lastRangeIncrease * .995;
+      value = this.range.valueAsNumber + this.#lastRangeIncrease;
+    }
+
+    this.#smoothUpdateBar(value);
+
+    this.#refreshId = requestAnimationFrame(this.#refreshBar);
+  }
+
+  #smoothUpdateBar(value) {
+    const increase = value - this.range.valueAsNumber;
+
+    // 1. Always allow increases.
+    // 2. Allow a relatively large decrease (user action).
+    if (increase > 0 || increase < -.03) {
+      this.range.valueAsNumber = value;
+      this.updateBar();
     }
   }
 
@@ -459,7 +513,11 @@ class MediaTimeRange extends MediaChromeRange {
   /* Add a buffered progress bar */
   updateBar() {
     super.updateBar();
+    this.updateBufferedBar();
+    this.updateCurrentBox();
+  }
 
+  updateBufferedBar() {
     const buffered = this.mediaBuffered;
     if (!buffered.length) {
       return;
@@ -492,7 +550,7 @@ class MediaTimeRange extends MediaChromeRange {
     // @ts-ignore
     if (!this.#currentBox.assignedElements().length) return;
 
-    const boxPos = this.#getBoxPosition(this.#currentBox, this.range.value);
+    const boxPos = this.#getBoxPosition(this.#currentBox, this.range.valueAsNumber);
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#current-rail');
     style.transform = `translateX(${boxPos})`;
   }
