@@ -256,12 +256,8 @@ class MediaTimeRange extends MediaChromeRange {
     this.#currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
 
     const computedStyle = getComputedStyle(this);
-    this.#boxPaddingLeft = parseInt(
-      computedStyle.getPropertyValue('--media-box-padding-left')
-    );
-    this.#boxPaddingRight = parseInt(
-      computedStyle.getPropertyValue('--media-box-padding-right')
-    );
+    this.#boxPaddingLeft = parseInt(computedStyle.getPropertyValue('--media-box-padding-left'));
+    this.#boxPaddingRight = parseInt(computedStyle.getPropertyValue('--media-box-padding-right'));
 
     this.#enableBoxes();
   }
@@ -354,7 +350,6 @@ class MediaTimeRange extends MediaChromeRange {
     }
 
     this.#smoothUpdateBar(value);
-
     this.#refreshId = requestAnimationFrame(this.#refreshBar);
   }
 
@@ -581,7 +576,12 @@ class MediaTimeRange extends MediaChromeRange {
 
   #pointermoveHandler = (evt) => {
     // @ts-ignore
-    if ([...this.#boxes].some((b) => evt.composedPath().includes(b))) return;
+    const isOverBoxes = [...this.#boxes].some((b) => evt.composedPath().includes(b));
+
+    if (!evt.composedPath().includes(this) || isOverBoxes) {
+      this.#stopTrackingPointer();
+      return;
+    }
 
     this.updatePointerBar(evt);
 
@@ -610,53 +610,32 @@ class MediaTimeRange extends MediaChromeRange {
   // Trigger when the mouse moves over the range
   #rangeEntered = false;
 
-  #offRangeHandler = (evt) => {
-    if (
-      !evt.composedPath().includes(this) ||
-      // @ts-ignore
-      [...this.#boxes].some((b) => evt.composedPath().includes(b))
-    ) {
-      globalThis.window?.removeEventListener('pointermove', this.#offRangeHandler);
-      this.#rangeEntered = false;
-      this.#stopTrackingMouse();
-    }
-  };
-
-  #trackMouse = () => {
-    globalThis.window?.addEventListener('pointermove', this.#pointermoveHandler, false);
-  };
-
-  #stopTrackingMouse = () => {
+  #stopTrackingPointer() {
+    this.#rangeEntered = false;
     globalThis.window?.removeEventListener('pointermove', this.#pointermoveHandler);
+
     const endEvt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
       composed: true,
       bubbles: true,
       detail: null,
     });
     this.dispatchEvent(endEvt);
-  };
+  }
 
-  #rangepointermoveHandler = () => {
-    const mediaDurationStr = this.getAttribute(
-      MediaUIAttributes.MEDIA_DURATION
-    );
-    if (!this.#rangeEntered && mediaDurationStr) {
+  #pointerenterHandler = () => {
+    if (!this.#rangeEntered && this.mediaDuration) {
       this.#rangeEntered = true;
-      this.#trackMouse();
-
-      globalThis.window?.addEventListener('pointermove', this.#offRangeHandler, false);
+      globalThis.window?.addEventListener('pointermove', this.#pointermoveHandler);
     }
   };
 
   #enableBoxes() {
-    this.addEventListener('pointermove', this.#rangepointermoveHandler, false);
+    this.addEventListener('pointerenter', this.#pointerenterHandler);
   }
 
   #disableBoxes() {
-    globalThis.window?.removeEventListener('pointermove', this.#offRangeHandler);
-    this.removeEventListener('pointermove', this.#rangepointermoveHandler);
-    this.#rangeEntered = false;
-    this.#stopTrackingMouse();
+    this.removeEventListener('pointerenter', this.#pointerenterHandler);
+    this.#stopTrackingPointer();
   }
 }
 
