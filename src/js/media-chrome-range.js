@@ -44,7 +44,7 @@ template.innerHTML = /*html*/`
       position: relative;
       width: 100%;
       height: 100%;
-      min-height: calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
+      min-height: min(100%, calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding)));
     }
 
     input[type=range] {

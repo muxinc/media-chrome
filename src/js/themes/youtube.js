@@ -84,9 +84,10 @@ template.innerHTML = /*html*/`
     width: 0px;
     overflow: hidden;
     padding-right: 0px;
+    --media-range-track-translate-x: 7px;
 
     /* Set the internal width so it reveals, not grows */
-    --media-range-track-width: 60px;
+    --media-range-track-width: 50px;
     transition: width 0.2s ease-in;
   }
 
