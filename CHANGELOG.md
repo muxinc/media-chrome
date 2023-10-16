@@ -1,3 +1,12 @@
+## [1.4.4](https://github.com/muxinc/media-chrome/compare/v1.4.3...v1.4.4) (2023-10-16)
+
+
+### Bug Fixes
+
+* Since attributeChangedCallback can be invoked before DOM connection, only attempt to resolve media controller id if isConnected. ([#742](https://github.com/muxinc/media-chrome/issues/742)) ([3bf7d18](https://github.com/muxinc/media-chrome/commit/3bf7d18eea5b62b202fdf32619186e7f1090cb9f)), closes [#741](https://github.com/muxinc/media-chrome/issues/741)
+
+
+
 ## [1.4.3](https://github.com/muxinc/media-chrome/compare/v1.4.2...v1.4.3) (2023-10-03)
 
 
