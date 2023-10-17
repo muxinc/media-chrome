@@ -6,8 +6,6 @@ const template = document.createElement('template');
 template.innerHTML = /*html*/`
   <style>
     :host {
-      --thumb-height: var(--media-range-thumb-height, 10px);
-      --track-height: var(--media-range-track-height, 4px);
       --_focus-box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
       --_media-range-padding: var(--media-range-padding, var(--media-control-padding, 10px));
 
@@ -47,30 +45,34 @@ template.innerHTML = /*html*/`
       min-height: min(100%, calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding)));
     }
 
-    input[type=range] {
-      ${/* Reset */''}
+    #range {
       -webkit-appearance: none; ${/* Hides the slider so that custom slider can be made */''}
+      -webkit-tap-highlight-color: transparent;
       background: transparent; ${/* Otherwise white in Chrome */''}
-
-      ${/* Fill host with the range */''}
-      min-height: 100%;
-      width: var(--media-range-track-width, 100%); ${/* Specific width is required for Firefox. */''}
-
       box-sizing: border-box;
-      padding: 0;
       margin: 0;
+      padding: 0;
+      ${/* The input range acts as a hover and hit zone for input events. */''}
+      width: var(--media-range-track-width, 100%); ${/* Firefox requires specific width. */''}
+      transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px)));
+      display: var(--media-time-range-hover-display, block);
+      bottom: var(--media-time-range-hover-bottom, -5px);
+      height: var(--media-time-range-hover-height, max(calc(100% + 5px), 20px));
+      position: absolute;
+      cursor: pointer;
+      z-index: 1; ${/* Apply z-index to overlap buttons below. */''}
     }
 
     ${/* Special styling for WebKit/Blink */''}
     ${/* Make thumb width/height small so it has no effect on range click position. */''}
-    input[type=range]::-webkit-slider-thumb {
+    #range::-webkit-slider-thumb {
       -webkit-appearance: none;
       width: .1px;
       height: .1px;
     }
 
     ${/* The thumb is not positioned relative to the track in Firefox */''}
-    input[type=range]::-moz-range-thumb {
+    #range::-moz-range-thumb {
       background: transparent;
       border: transparent;
       width: .1px;
@@ -80,7 +82,7 @@ template.innerHTML = /*html*/`
     #background,
     #track {
       width: var(--media-range-track-width, 100%);
-      height: var(--track-height);
+      height: var(--media-range-track-height, 4px);
       border-radius: var(--media-range-track-border-radius, 1px);
       transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px)));
       position: absolute;
@@ -130,8 +132,8 @@ template.innerHTML = /*html*/`
     }
 
     #thumb {
-      height: var(--thumb-height);
       width: var(--media-range-thumb-width, 10px);
+      height: var(--media-range-thumb-height, 10px);
       margin-left: calc(var(--media-range-thumb-width, 10px) / -2);
       border: var(--media-range-thumb-border, none);
       border-radius: var(--media-range-thumb-border-radius, 10px);
@@ -148,23 +150,6 @@ template.innerHTML = /*html*/`
     :host([disabled]) #thumb {
       background-color: #777;
     }
-
-    #hoverzone {
-      display: var(--media-time-range-hover-display, none);
-      bottom: var(--media-time-range-hover-bottom, -5px);
-      height: var(--media-time-range-hover-height, max(calc(100% + 5px), 20px));
-      position: absolute;
-      width: 100%;
-      ${/* Add z-index so it overlaps the top of the control buttons if they are right under. */''}
-      z-index: 1;
-    }
-
-    #range {
-      height: var(--media-range-track-height, 4px);
-      position: relative;
-      cursor: pointer;
-      z-index: 2;
-    }
   </style>
   <div id="container">
     <div id="background"></div>
@@ -173,7 +158,6 @@ template.innerHTML = /*html*/`
       <div id="progress"></div>
       <div id="thumb"></div>
     </div>
-    <div id="hoverzone"></div>
     <input id="range" type="range" min="0" max="1" step="any" value="0">
   </div>
 `;
@@ -335,7 +319,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   updateBar() {
-    const rangePercent = this.range.value * 100;
+    const rangePercent = this.range.valueAsNumber * 100;
 
     const progressRule = getOrInsertCSSRule(this.shadowRoot, '#progress');
     const thumbRule = getOrInsertCSSRule(this.shadowRoot, '#thumb');

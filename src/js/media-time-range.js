@@ -33,6 +33,8 @@ template.innerHTML = /*html*/`
       --media-preview-border-radius: 3px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;
+      ${/* Only allow mobile vertical pan. */ ''}
+      touch-action: pan-y;
     }
 
     #buffered {
@@ -230,20 +232,6 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.container.appendChild(template.content.cloneNode(true));
 
-    this.range.addEventListener('input', () => {
-      // Cancel color bar refreshing when seeking.
-      cancelAnimationFrame(this.#refreshId);
-      this.#refreshId = 0;
-
-      const detail = calcTimeFromRangeValue(this);
-      const evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
-        composed: true,
-        bubbles: true,
-        detail,
-      });
-      this.dispatchEvent(evt);
-    });
-
     // Come back to this feature
     // this.playIfNotReady = e => {
     //   this.range.removeEventListener('change', this.playIfNotReady);
@@ -259,7 +247,7 @@ class MediaTimeRange extends MediaChromeRange {
     this.#boxPaddingLeft = parseInt(computedStyle.getPropertyValue('--media-box-padding-left'));
     this.#boxPaddingRight = parseInt(computedStyle.getPropertyValue('--media-box-padding-right'));
 
-    this.#enableBoxes();
+    if (!this.hasAttribute('disabled')) this.#enableUserEvents();
   }
 
   connectedCallback() {
@@ -295,9 +283,9 @@ class MediaTimeRange extends MediaChromeRange {
     }
     else if (attrName === 'disabled') {
       if (newValue == null) {
-        this.#enableBoxes();
+        this.#enableUserEvents();
       } else {
-        this.#disableBoxes();
+        this.#disableUserEvents();
       }
     }
   }
@@ -354,6 +342,8 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   #smoothUpdateBar(value) {
+    if (this.scrubbing) return;
+
     const increase = value - this.range.valueAsNumber;
 
     // 1. Always allow increases.
@@ -362,6 +352,10 @@ class MediaTimeRange extends MediaChromeRange {
       this.range.valueAsNumber = value;
       this.updateBar();
     }
+  }
+
+  get scrubbing() {
+    return this.hasAttribute('scrubbing');
   }
 
   /**
@@ -574,68 +568,96 @@ class MediaTimeRange extends MediaChromeRange {
     return position;
   }
 
-  #pointermoveHandler = (evt) => {
+  #enableUserEvents() {
+    this.addEventListener('input', this.#seekRequest);
+    this.addEventListener('pointerenter', this.#pointerEnterHandler);
+    this.addEventListener('pointerdown', this.#pointerDownHandler);
+  }
+
+  #disableUserEvents() {
+    this.removeEventListener('input', this.#seekRequest);
+    this.removeEventListener('pointerenter', this.#pointerEnterHandler);
+    this.removeEventListener('pointerdown', this.#pointerDownHandler);
+    this.#stopTrackingPointer();
+  }
+
+  #pointerEnterHandler() {
+    globalThis.window?.addEventListener('pointermove', this.#pointerMoveHandler);
+  }
+
+  #pointerDownHandler(evt) {
+    // Mouse dragging is only enabled if the pointerdown event is on the range element.
+    if (evt.pointerType === 'touch' || evt.composedPath().includes(this.range)) {
+      this.toggleAttribute('scrubbing', true);
+      globalThis.window?.addEventListener('pointerup', this.#pointerUpHandler);
+      globalThis.window?.addEventListener('pointermove', this.#pointerMoveHandler);
+    }
+  }
+
+  #pointerUpHandler = (evt) => {
+    // Hide preview thumbnail on mobile on touch end.
+    if (evt.pointerType === 'touch') this.#previewRequest(null);
+
+    globalThis.window?.removeEventListener('pointerup', this.#pointerUpHandler);
+    this.toggleAttribute('scrubbing', false);
+  }
+
+  #pointerMoveHandler = (evt) => {
     // @ts-ignore
     const isOverBoxes = [...this.#boxes].some((b) => evt.composedPath().includes(b));
 
-    if (!evt.composedPath().includes(this) || isOverBoxes) {
+    if (!this.scrubbing && (isOverBoxes || !evt.composedPath().includes(this))) {
       this.#stopTrackingPointer();
       return;
     }
-
-    this.updatePointerBar(evt);
 
     const duration = this.mediaDuration;
     // If no duration we can't calculate which time to show
     if (!duration) return;
 
+    this.updatePointerBar(evt);
+
     // Get mouse position percent
     const rangeRect = this.range.getBoundingClientRect();
-    let mouseRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
-    // Lock between 0 and 1
-    mouseRatio = Math.max(0, Math.min(1, mouseRatio));
+    let pointerRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
+    pointerRatio = Math.max(0, Math.min(1, pointerRatio));
 
-    const boxPos = this.#getBoxPosition(this.#previewBox, mouseRatio);
+    if (this.scrubbing && evt.pointerType === 'touch') {
+      // Prevent scrolling when scrubbing on mobile is done with touch-action: pan-y.
+      this.range.valueAsNumber = pointerRatio;
+      this.updateBar();
+      this.#seekRequest();
+    }
+
+    const boxPos = this.#getBoxPosition(this.#previewBox, pointerRatio);
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
     style.transform = `translateX(${boxPos})`;
 
-    const detail = mouseRatio * duration;
-    const mediaPreviewEvt = new globalThis.CustomEvent(
-      MediaUIEvents.MEDIA_PREVIEW_REQUEST,
-      { composed: true, bubbles: true, detail }
-    );
-    this.dispatchEvent(mediaPreviewEvt);
+    this.#previewRequest(pointerRatio * duration);
   };
-
-  // Trigger when the mouse moves over the range
-  #rangeEntered = false;
 
   #stopTrackingPointer() {
-    this.#rangeEntered = false;
-    globalThis.window?.removeEventListener('pointermove', this.#pointermoveHandler);
-
-    const endEvt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
-      composed: true,
-      bubbles: true,
-      detail: null,
-    });
-    this.dispatchEvent(endEvt);
+    globalThis.window?.removeEventListener('pointermove', this.#pointerMoveHandler);
+    this.#previewRequest(null);
   }
 
-  #pointerenterHandler = () => {
-    if (!this.#rangeEntered && this.mediaDuration) {
-      this.#rangeEntered = true;
-      globalThis.window?.addEventListener('pointermove', this.#pointermoveHandler);
-    }
-  };
-
-  #enableBoxes() {
-    this.addEventListener('pointerenter', this.#pointerenterHandler);
+  #previewRequest(detail) {
+    this.dispatchEvent(new globalThis.CustomEvent(
+      MediaUIEvents.MEDIA_PREVIEW_REQUEST,
+      { composed: true, bubbles: true, detail }
+    ));
   }
 
-  #disableBoxes() {
-    this.removeEventListener('pointerenter', this.#pointerenterHandler);
-    this.#stopTrackingPointer();
+  #seekRequest() {
+    // Cancel progress bar refreshing when seeking.
+    cancelAnimationFrame(this.#refreshId);
+    this.#refreshId = 0;
+
+    const detail = calcTimeFromRangeValue(this);
+    this.dispatchEvent(new globalThis.CustomEvent(
+      MediaUIEvents.MEDIA_SEEK_REQUEST,
+      { composed: true, bubbles: true, detail }
+    ));
   }
 }
 
