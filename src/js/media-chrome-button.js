@@ -23,6 +23,7 @@ template.innerHTML = /*html*/`
     transition: background .15s linear;
     pointer-events: auto;
     cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
   }
 
   ${/*
