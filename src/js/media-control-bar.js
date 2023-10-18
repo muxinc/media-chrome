@@ -18,7 +18,11 @@ template.innerHTML = /*html*/`
       --media-loading-indicator-icon-height: 44px;
     }
 
-    media-time-range,
+    ::slotted(media-time-range),
+    ::slotted(media-volume-range) {
+      height: auto;
+    }
+
     ::slotted(media-time-range),
     ::slotted(media-clip-selector) {
       flex-grow: 1;

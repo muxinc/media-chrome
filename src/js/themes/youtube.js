@@ -71,8 +71,6 @@ template.innerHTML = /*html*/`
   }
 
   media-volume-range {
-    padding-left: 0px;
-
     --media-range-track-background: rgba(255,255,255,.2);
   }
 
@@ -81,13 +79,8 @@ template.innerHTML = /*html*/`
   }
 
   media-mute-button + media-volume-range {
-    width: 0px;
+    width: 0;
     overflow: hidden;
-    padding-right: 0px;
-    --media-range-track-translate-x: 7px;
-
-    /* Set the internal width so it reveals, not grows */
-    --media-range-track-width: 50px;
     transition: width 0.2s ease-in;
   }
 

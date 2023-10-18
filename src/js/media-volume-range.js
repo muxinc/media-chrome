@@ -52,24 +52,24 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 
   connectedCallback() {
-    this.range.setAttribute('aria-label', nouns.VOLUME());
     super.connectedCallback();
+    this.range.setAttribute('aria-label', nouns.VOLUME());
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (
       attrName === MediaUIAttributes.MEDIA_VOLUME ||
       attrName === MediaUIAttributes.MEDIA_MUTED
     ) {
-      const newVolume = toVolume(this);
-      this.range.value = newVolume;
+      this.range.valueAsNumber = toVolume(this);
       this.range.setAttribute(
         'aria-valuetext',
         formatAsPercentString(this.range)
       );
       this.updateBar();
     }
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**

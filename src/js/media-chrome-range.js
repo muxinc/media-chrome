@@ -9,19 +9,18 @@ template.innerHTML = /*html*/`
       --_focus-box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
       --_media-range-padding: var(--media-range-padding, var(--media-control-padding, 10px));
 
+      box-shadow: var(--_focus-visible-box-shadow, none);
+      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
+      height: calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
       display: inline-flex;
       align-items: center;
-      justify-content: center;
+      ${/* Don't horizontal align w/ justify-content! #container can go negative on the x-axis w/ small width. */''}
       vertical-align: middle;
       box-sizing: border-box;
       position: relative;
       width: 100px;
-      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
       transition: background .15s linear;
-      padding-left: var(--media-range-padding-left, var(--_media-range-padding));
-      padding-right: var(--media-range-padding-right, var(--_media-range-padding));
       pointer-events: auto;
-      box-shadow: var(--_focus-visible-box-shadow, none);
     }
 
     ${/* Reset before `outline` on track could be set by a CSS var */''}
@@ -37,36 +36,42 @@ template.innerHTML = /*html*/`
     }
 
     #container {
+      ${/* Not using the CSS `padding` prop makes it easier for slide open volume ranges so the width can be zero. */''}
+      width: calc(
+        var(--media-range-track-width, 100%)
+        - var(--media-range-padding-left, var(--_media-range-padding))
+        - var(--media-range-padding-right, var(--_media-range-padding)));
+      transform: translate(
+        calc(var(--media-range-track-translate-x, 0px) + var(--media-range-padding-left, var(--_media-range-padding))),
+        var(--media-range-track-translate-y, 0px));
+      height: 100%;
       display: flex;
       align-items: center;
       position: relative;
-      width: 100%;
-      height: 100%;
-      min-height: min(100%, calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding)));
+      min-width: 40px;
     }
 
     #range {
-      -webkit-appearance: none; ${/* Hides the slider so that custom slider can be made */''}
-      -webkit-tap-highlight-color: transparent;
-      background: transparent; ${/* Otherwise white in Chrome */''}
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
       ${/* The input range acts as a hover and hit zone for input events. */''}
-      width: var(--media-range-track-width, 100%); ${/* Firefox requires specific width. */''}
-      transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px)));
       display: var(--media-time-range-hover-display, block);
       bottom: var(--media-time-range-hover-bottom, -5px);
       height: var(--media-time-range-hover-height, max(calc(100% + 5px), 20px));
+      width: 100%;
       position: absolute;
       cursor: pointer;
       z-index: 1; ${/* Apply z-index to overlap buttons below. */''}
+
+      -webkit-appearance: none; ${/* Hides the slider so that custom slider can be made */''}
+      -webkit-tap-highlight-color: transparent;
+      background: transparent; ${/* Otherwise white in Chrome */''}
+      margin: 0;
     }
 
     ${/* Special styling for WebKit/Blink */''}
     ${/* Make thumb width/height small so it has no effect on range click position. */''}
     #range::-webkit-slider-thumb {
       -webkit-appearance: none;
+      background: transparent;
       width: .1px;
       height: .1px;
     }
@@ -81,10 +86,9 @@ template.innerHTML = /*html*/`
 
     #background,
     #track {
-      width: var(--media-range-track-width, 100%);
+      width: 100%;
       height: var(--media-range-track-height, 4px);
       border-radius: var(--media-range-track-border-radius, 1px);
-      transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px)));
       position: absolute;
       pointer-events: none;
     }
@@ -92,7 +96,6 @@ template.innerHTML = /*html*/`
     #background {
       background: var(--media-range-track-background, rgb(255 255 255 / .2));
       backdrop-filter: var(--media-range-track-background-backdrop-filter);
-      min-width: 40px;
     }
 
     #track {
@@ -104,7 +107,6 @@ template.innerHTML = /*html*/`
       display: flex;
       flex-direction: column;
       justify-content: center;
-      min-width: 40px;
     }
 
     #progress {
