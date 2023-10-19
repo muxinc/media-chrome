@@ -20,7 +20,7 @@ template.innerHTML = /*html*/`
 
     ::slotted(media-time-range),
     ::slotted(media-volume-range) {
-      height: auto;
+      min-height: 100%;
     }
 
     ::slotted(media-time-range),

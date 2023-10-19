@@ -33,11 +33,9 @@ template.innerHTML = /*html*/`
       --media-preview-border-radius: 3px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;
-      ${/* Only allow mobile vertical pan. */ ''}
-      touch-action: pan-y;
     }
 
-    #buffered {
+    #highlight {
       background: var(--media-time-range-buffered-color, rgb(255 255 255 / .4));
       border-radius: var(--media-range-track-border-radius, 1px);
       position: absolute;
@@ -72,12 +70,20 @@ template.innerHTML = /*html*/`
       opacity: 0;
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~="preview-box"],
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) [part~="preview-box"] {
+    :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${MediaUIAttributes.MEDIA_PREVIEW_TIME}])[dragging]) [part~="preview-box"] {
       transition-duration: var(--media-preview-transition-duration-in, .5s);
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
       opacity: 1;
+    }
+
+    @media (hover: hover) {
+      :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${MediaUIAttributes.MEDIA_PREVIEW_TIME}]):hover) [part~="preview-box"] {
+        transition-duration: var(--media-preview-transition-duration-in, .5s);
+        transition-delay: var(--media-preview-transition-delay-in, .25s);
+        visibility: visible;
+        opacity: 1;
+      }
     }
 
     media-preview-thumbnail,
@@ -97,10 +103,22 @@ template.innerHTML = /*html*/`
         var(--media-preview-border-radius) var(--media-preview-border-radius) 0 0);
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) media-preview-thumbnail,
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) ::slotted(media-preview-thumbnail) {
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}][dragging]) media-preview-thumbnail,
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}][dragging]) ::slotted(media-preview-thumbnail) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
+    }
+
+    @media (hover: hover) {
+      :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) media-preview-thumbnail,
+      :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) ::slotted(media-preview-thumbnail) {
+        transition-delay: var(--media-preview-transition-delay-in, .25s);
+        visibility: visible;
+      }
+
+      :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
+        --media-time-range-hover-display: block;
+      }
     }
 
     media-preview-time-display,
@@ -124,10 +142,6 @@ template.innerHTML = /*html*/`
       min-width: 100%;
       border-radius: var(--media-preview-time-border-radius,
         0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
-    }
-
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
-      --media-time-range-hover-display: block;
     }
   </style>
   <div id="preview-rail">
@@ -226,10 +240,6 @@ class MediaTimeRange extends MediaChromeRange {
   constructor() {
     super();
 
-    const bufferedElement = document.createElement('div');
-    bufferedElement.id = 'buffered';
-    this.track.prepend(bufferedElement);
-
     this.container.appendChild(template.content.cloneNode(true));
 
     // Come back to this feature
@@ -246,8 +256,6 @@ class MediaTimeRange extends MediaChromeRange {
     const computedStyle = getComputedStyle(this);
     this.#boxPaddingLeft = parseInt(computedStyle.getPropertyValue('--media-box-padding-left'));
     this.#boxPaddingRight = parseInt(computedStyle.getPropertyValue('--media-box-padding-right'));
-
-    if (!this.hasAttribute('disabled')) this.#enableUserEvents();
   }
 
   connectedCallback() {
@@ -280,13 +288,6 @@ class MediaTimeRange extends MediaChromeRange {
     }
     else if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
       this.updateBufferedBar();
-    }
-    else if (attrName === 'disabled') {
-      if (newValue == null) {
-        this.#enableUserEvents();
-      } else {
-        this.#disableUserEvents();
-      }
     }
   }
 
@@ -342,7 +343,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   #smoothUpdateBar(value) {
-    if (this.scrubbing) return;
+    if (this.dragging) return;
 
     const increase = value - this.range.valueAsNumber;
 
@@ -352,10 +353,6 @@ class MediaTimeRange extends MediaChromeRange {
       this.range.valueAsNumber = value;
       this.updateBar();
     }
-  }
-
-  get scrubbing() {
-    return this.hasAttribute('scrubbing');
   }
 
   /**
@@ -530,7 +527,7 @@ class MediaTimeRange extends MediaChromeRange {
       relativeBufferedEnd = 1;
     }
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#buffered');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, '#highlight');
     style.setProperty('width', `${relativeBufferedEnd * 100}%`);
   }
 
@@ -568,46 +565,29 @@ class MediaTimeRange extends MediaChromeRange {
     return position;
   }
 
-  #enableUserEvents() {
-    this.addEventListener('input', this.#seekRequest);
-    this.addEventListener('pointerenter', this.#pointerEnterHandler);
-    this.addEventListener('pointerdown', this.#pointerDownHandler);
-  }
+  handleEvent(evt) {
+    super.handleEvent(evt);
 
-  #disableUserEvents() {
-    this.removeEventListener('input', this.#seekRequest);
-    this.removeEventListener('pointerenter', this.#pointerEnterHandler);
-    this.removeEventListener('pointerdown', this.#pointerDownHandler);
-    this.#stopTrackingPointer();
-  }
-
-  #pointerEnterHandler() {
-    globalThis.window?.addEventListener('pointermove', this.#pointerMoveHandler);
-  }
-
-  #pointerDownHandler(evt) {
-    // Mouse dragging is only enabled if the pointerdown event is on the range element.
-    if (evt.pointerType === 'touch' || evt.composedPath().includes(this.range)) {
-      this.toggleAttribute('scrubbing', true);
-      globalThis.window?.addEventListener('pointerup', this.#pointerUpHandler);
-      globalThis.window?.addEventListener('pointermove', this.#pointerMoveHandler);
+    switch (evt.type) {
+      case 'input':
+        this.#seekRequest();
+        break;
+      case 'pointermove':
+        this.#handlePointerMove(evt);
+        break;
+      case 'pointerup':
+      case 'pointerleave':
+        this.#previewRequest(null);
+        break;
     }
   }
 
-  #pointerUpHandler = (evt) => {
-    // Hide preview thumbnail on mobile on touch end.
-    if (evt.pointerType === 'touch') this.#previewRequest(null);
-
-    globalThis.window?.removeEventListener('pointerup', this.#pointerUpHandler);
-    this.toggleAttribute('scrubbing', false);
-  }
-
-  #pointerMoveHandler = (evt) => {
+  #handlePointerMove(evt) {
     // @ts-ignore
     const isOverBoxes = [...this.#boxes].some((b) => evt.composedPath().includes(b));
 
-    if (!this.scrubbing && (isOverBoxes || !evt.composedPath().includes(this))) {
-      this.#stopTrackingPointer();
+    if (!this.dragging && (isOverBoxes || !evt.composedPath().includes(this))) {
+      this.#previewRequest(null);
       return;
     }
 
@@ -615,30 +595,15 @@ class MediaTimeRange extends MediaChromeRange {
     // If no duration we can't calculate which time to show
     if (!duration) return;
 
-    this.updatePointerBar(evt);
-
-    // Get mouse position percent
     const rangeRect = this.range.getBoundingClientRect();
     let pointerRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
     pointerRatio = Math.max(0, Math.min(1, pointerRatio));
-
-    if (this.scrubbing && evt.pointerType === 'touch') {
-      // Prevent scrolling when scrubbing on mobile is done with touch-action: pan-y.
-      this.range.valueAsNumber = pointerRatio;
-      this.updateBar();
-      this.#seekRequest();
-    }
 
     const boxPos = this.#getBoxPosition(this.#previewBox, pointerRatio);
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
     style.transform = `translateX(${boxPos})`;
 
     this.#previewRequest(pointerRatio * duration);
-  };
-
-  #stopTrackingPointer() {
-    globalThis.window?.removeEventListener('pointermove', this.#pointerMoveHandler);
-    this.#previewRequest(null);
   }
 
   #previewRequest(detail) {
