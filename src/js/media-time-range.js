@@ -3,6 +3,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
+import { RangeAnimation } from './utils/range-animation.js';
 import {
   getOrInsertCSSRule,
   closestComposedNode,
@@ -37,9 +38,6 @@ template.innerHTML = /*html*/`
 
     #highlight {
       background: var(--media-time-range-buffered-color, rgb(255 255 255 / .4));
-      border-radius: var(--media-range-track-border-radius, 1px);
-      position: absolute;
-      height: 100%;
     }
 
     #preview-rail,
@@ -227,10 +225,7 @@ class MediaTimeRange extends MediaChromeRange {
     ];
   }
 
-  #refreshId = 0;
-  #lastRangeIncrease = 0;
-  #updateTimestamp;
-  #updateCurrentTime;
+  #animation;
   #boxes;
   #previewBox;
   #currentBox;
@@ -256,17 +251,19 @@ class MediaTimeRange extends MediaChromeRange {
     const computedStyle = getComputedStyle(this);
     this.#boxPaddingLeft = parseInt(computedStyle.getPropertyValue('--media-box-padding-left'));
     this.#boxPaddingRight = parseInt(computedStyle.getPropertyValue('--media-box-padding-right'));
+
+    this.#animation = new RangeAnimation(this.range, this.#updateRange, 60);
   }
 
   connectedCallback() {
     super.connectedCallback();
     this.range.setAttribute('aria-label', nouns.SEEK());
-    this.#toggleRefreshBar();
+    this.#toggleRangeAnimation();
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.#toggleRefreshBar();
+    this.#toggleRangeAnimation();
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -282,8 +279,12 @@ class MediaTimeRange extends MediaChromeRange {
       attrName === MediaUIAttributes.MEDIA_DURATION ||
       attrName === MediaUIAttributes.MEDIA_SEEKABLE
     ) {
-      this.#toggleRefreshBar();
-      this.#updateFromMedia();
+      this.#animation.update({
+        start: calcRangeValueFromTime(this),
+        duration: this.mediaSeekableEnd - this.mediaSeekableStart,
+        playbackRate: this.mediaPlaybackRate
+      });
+      this.#toggleRangeAnimation();
       updateAriaValueText(this);
     }
     else if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
@@ -291,68 +292,23 @@ class MediaTimeRange extends MediaChromeRange {
     }
   }
 
-  #toggleRefreshBar() {
-    if (this.#shouldRefreshBar()) {
-      if (this.#refreshId === 0) {
-        this.#updateFromMedia();
-        this.#refreshId = requestAnimationFrame(this.#refreshBar);
-      }
+  #toggleRangeAnimation() {
+    if (this.#shouldRangeAnimate()) {
+      this.#animation.start();
     } else {
-      if (this.#refreshId !== 0) {
-        this.#updateFromMedia();
-        cancelAnimationFrame(this.#refreshId);
-        this.#refreshId = 0;
-      }
+      this.#animation.stop();
     }
   }
 
-  #shouldRefreshBar() {
+  #shouldRangeAnimate() {
     return this.isConnected && !this.mediaPaused && !this.mediaLoading && !this.mediaEnded;
   }
 
-  #updateFromMedia() {
-    const value = calcRangeValueFromTime(this);
-    this.#smoothUpdateBar(value);
-
-    this.#updateCurrentTime = this.mediaCurrentTime;
-    this.#updateTimestamp = performance.now();
-  }
-
-  #refreshBar = () => {
-    if (!this.#shouldRefreshBar()) {
-      this.#refreshId = 0;
-      return;
-    }
-
-    const delta = (performance.now() - this.#updateTimestamp) / 1000;
-    const time = this.#updateCurrentTime + delta * this.mediaPlaybackRate;
-    let value = calcRangeValueFromTime(this, time);
-    const increase = value - this.range.valueAsNumber;
-
-    // If the increase is negative, the animation was faster than the playhead.
-    // Can happen on video startup. Slow down the animation to match the playhead.
-    if (increase > 0) {
-      this.#lastRangeIncrease = increase;
-    } else {
-      this.#lastRangeIncrease = this.#lastRangeIncrease * .995;
-      value = this.range.valueAsNumber + this.#lastRangeIncrease;
-    }
-
-    this.#smoothUpdateBar(value);
-    this.#refreshId = requestAnimationFrame(this.#refreshBar);
-  }
-
-  #smoothUpdateBar(value) {
+  #updateRange = (value) => {
     if (this.dragging) return;
 
-    const increase = value - this.range.valueAsNumber;
-
-    // 1. Always allow increases.
-    // 2. Allow a relatively large decrease (user action).
-    if (increase > 0 || increase < -.03) {
-      this.range.valueAsNumber = value;
-      this.updateBar();
-    }
+    this.range.valueAsNumber = value;
+    this.updateBar();
   }
 
   /**
@@ -615,8 +571,7 @@ class MediaTimeRange extends MediaChromeRange {
 
   #seekRequest() {
     // Cancel progress bar refreshing when seeking.
-    cancelAnimationFrame(this.#refreshId);
-    this.#refreshId = 0;
+    this.#animation.stop();
 
     const detail = calcTimeFromRangeValue(this);
     this.dispatchEvent(new globalThis.CustomEvent(

@@ -22,8 +22,7 @@ template.innerHTML = /*html*/`
       transition: background .15s linear;
       cursor: pointer;
       pointer-events: auto;
-      ${/* Prevent scrolling when dragging on mobile. */''}
-      touch-action: none;
+      touch-action: none; ${/* Prevent scrolling when dragging on mobile. */''}
       z-index: 1; ${/* Apply z-index to overlap buttons below. */''}
     }
 
@@ -128,8 +127,14 @@ template.innerHTML = /*html*/`
 
     #progress {
       background: var(--media-range-bar-color, var(--media-primary-color, rgb(238 238 238)));
-      border-radius: var(--media-range-progress-border-radius, var(--media-range-track-border-radius, 1px));
+      border-radius: var(--media-range-track-border-radius, 1px);
       transition: var(--media-range-track-transition);
+      position: absolute;
+      height: 100%;
+    }
+
+    #highlight {
+      border-radius: var(--media-range-track-border-radius, 1px);
       position: absolute;
       height: 100%;
     }
@@ -137,7 +142,7 @@ template.innerHTML = /*html*/`
     #pointer {
       background: var(--media-range-track-pointer-background);
       border-right: var(--media-range-track-pointer-border-right);
-      border-radius: var(--media-range-pointer-border-radius, var(--media-range-track-border-radius, 1px));
+      border-radius: var(--media-range-track-border-radius, 1px);
       transition: visibility .25s, opacity .25s;
       visibility: hidden;
       opacity: 0;
@@ -241,6 +246,7 @@ template.innerHTML = /*html*/`
 class MediaChromeRange extends globalThis.HTMLElement {
   #mediaController;
   #isInputTarget;
+  #isPointerDown = false;
 
   static get observedAttributes() {
     return [
@@ -262,8 +268,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
 
     this.container = this.shadowRoot.querySelector('#container');
-    this.track = this.shadowRoot.querySelector('#track');
-    this.thumb = this.shadowRoot.querySelector('#thumb');
 
     /** @type {Omit<HTMLInputElement, "value" | "min" | "max"> &
       * {value: number, min: number, max: number}} */
@@ -402,8 +406,8 @@ class MediaChromeRange extends globalThis.HTMLElement {
   #handlePointerDown(evt) {
     // Events outside the range element are handled manually below.
     this.#isInputTarget = evt.composedPath().includes(this.range);
+    this.#isPointerDown = true;
 
-    this.toggleAttribute('dragging', true);
     globalThis.window?.addEventListener('pointerup', this);
   }
 
@@ -416,6 +420,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   #handlePointerUp() {
+    this.#isPointerDown = false;
     globalThis.window?.removeEventListener('pointerup', this);
     this.toggleAttribute('dragging', false);
   }
@@ -427,6 +432,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   #handlePointerMove(evt) {
+    this.toggleAttribute('dragging', this.#isPointerDown);
     this.updatePointerBar(evt);
 
     // If the native input target & events are used don't fire manual input events.
