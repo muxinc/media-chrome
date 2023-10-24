@@ -518,6 +518,20 @@ export const MediaUIStates = {
     mediaEvents: ['loadstart'],
     textTracksEvents: ['addtrack', 'removetrack', 'change'],
   },
+  MEDIA_CHAPTERS_CUES: {
+    get: function (controller) {
+      const { media } = controller;
+      if (!media) return [];
+
+      const [chaptersTrack] = getTextTracksList(media, { kind: TextTrackKinds.CHAPTERS });
+      if (chaptersTrack) chaptersTrack.mode = 'hidden';
+
+      return Array.from(chaptersTrack?.cues  ?? [])
+        .map((/** @type VTTCue */{ text, startTime, endTime }) => ({ text, startTime, endTime }));
+    },
+    mediaEvents: ['loadstart'],
+    textTracksEvents: ['addtrack', 'removetrack'],
+  },
   MEDIA_RENDITION_LIST: {
     get: function (controller) {
       const { media } = controller;

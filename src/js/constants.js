@@ -67,6 +67,7 @@ export const MediaUIProps = {
   MEDIA_RENDITION_SELECTED: 'mediaRenditionSelected',
   MEDIA_AUDIO_TRACK_LIST: 'mediaAudioTrackList',
   MEDIA_AUDIO_TRACK_ENABLED: 'mediaAudioTrackEnabled',
+  MEDIA_CHAPTERS_CUES: 'mediaChaptersCues',
 };
 
 const MediaUIPropsEntries = /** @type {[keyof MediaUIProps, string][]} */ (

@@ -74,6 +74,7 @@ export const GlobalThis = isServer && !isShimmed ? globalThisShim : globalThis;
 /**
   * @type { document & { webkitExitFullscreen? } |
   * {createElement,
+  * createElementNS?,
   * activeElement?,
   * fullscreenElement?,
   * webkitExitFullscreen?,

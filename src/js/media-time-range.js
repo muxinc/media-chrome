@@ -234,6 +234,7 @@ class MediaTimeRange extends MediaChromeRange {
   #currentBox;
   #boxPaddingLeft;
   #boxPaddingRight;
+  #cues;
 
   constructor() {
     super();
@@ -300,6 +301,10 @@ class MediaTimeRange extends MediaChromeRange {
     else if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
       this.updateBufferedBar();
     }
+
+    if (attrName === MediaUIAttributes.MEDIA_DURATION) {
+      this.mediaChaptersCues = this.#cues;
+    }
   }
 
   #toggleRangeAnimation() {
@@ -323,6 +328,19 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.range.valueAsNumber = value;
     this.updateBar();
+  }
+
+  get mediaChaptersCues() {
+    return this.#cues;
+  }
+
+  set mediaChaptersCues(value) {
+    this.#cues = value;
+
+    this.updateSegments(this.#cues?.map(c => ({
+      start: calcRangeValueFromTime(this, c.startTime),
+      end: calcRangeValueFromTime(this, c.endTime),
+    })));
   }
 
   /**
