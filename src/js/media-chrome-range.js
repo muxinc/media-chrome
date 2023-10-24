@@ -246,7 +246,6 @@ template.innerHTML = /*html*/`
 class MediaChromeRange extends globalThis.HTMLElement {
   #mediaController;
   #isInputTarget;
-  #isPointerDown = false;
 
   static get observedAttributes() {
     return [
@@ -406,7 +405,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
   #handlePointerDown(evt) {
     // Events outside the range element are handled manually below.
     this.#isInputTarget = evt.composedPath().includes(this.range);
-    this.#isPointerDown = true;
 
     globalThis.window?.addEventListener('pointerup', this);
   }
@@ -420,23 +418,26 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   #handlePointerUp() {
-    this.#isPointerDown = false;
     globalThis.window?.removeEventListener('pointerup', this);
     this.toggleAttribute('dragging', false);
+    this.range.disabled = this.hasAttribute('disabled');
   }
 
   #handlePointerLeave() {
     this.removeEventListener('pointerleave', this);
     globalThis.window?.removeEventListener('pointermove', this);
     this.toggleAttribute('dragging', false);
+    this.range.disabled = this.hasAttribute('disabled');
   }
 
   #handlePointerMove(evt) {
-    this.toggleAttribute('dragging', this.#isPointerDown);
+    this.toggleAttribute('dragging', evt.buttons === 1 || evt.pointerType !== 'mouse');
     this.updatePointerBar(evt);
 
     // If the native input target & events are used don't fire manual input events.
     if (this.dragging && (evt.pointerType !== 'mouse' || !this.#isInputTarget)) {
+      // Disable native input events if manual events are fired.
+      this.range.disabled = true;
 
       const rangeRect = this.range.getBoundingClientRect();
       let pointerRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
