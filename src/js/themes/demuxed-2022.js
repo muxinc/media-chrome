@@ -41,6 +41,7 @@ template.innerHTML = /*html*/`
     padding: 10px 14px;
     border-radius: 9999px;
     background: rgba(0,0,0,0.2);
+    align-items: center;
   }
 
   media-control-bar :first-child {
@@ -142,7 +143,7 @@ template.innerHTML = /*html*/`
     margin: 32px 8px;
   }
 
-  .media-volume-wrapper {
+  media-controller[breakpointsm] .media-volume-wrapper {
     position: relative;
     padding-left: 6px;
   }
@@ -181,7 +182,6 @@ template.innerHTML = /*html*/`
     padding: 22px 15px;
   }
 
-  media-controller:not([breakpointsm]) media-time-range,
   media-controller:not([breakpointsm]) media-time-display,
   media-controller:not([breakpointsm]) .media-volume-range-wrapper {
     display: none;
@@ -209,8 +209,6 @@ template.innerHTML = /*html*/`
 
   media-controller:not([breakpointsm]) media-fullscreen-button.small-button {
     display: flex;
-    position: absolute;
-    right: 20px;
   }
 
   media-controller:not([breakpointsm]) media-airplay-button[mediaairplayunavailable].small-button {
