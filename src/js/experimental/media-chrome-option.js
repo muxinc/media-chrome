@@ -10,7 +10,6 @@ template.innerHTML = /*html*/`
     white-space: nowrap;
     white-space-collapse: collapse;
     text-wrap: nowrap;
-    min-height: 1.2em;
     padding: .4em .5em;
     transition: var(--media-option-transition);
     outline: var(--media-option-outline, 0);

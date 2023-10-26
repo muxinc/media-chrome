@@ -23,7 +23,7 @@ template.innerHTML = /*html*/`
   [name=listbox]::slotted(*),
   [part=listbox] {
     position: absolute;
-    left: 0;
+    right: 0;
     bottom: 100%;
     max-height: 300px;
     transition: var(--media-selectmenu-transition-in,
@@ -198,6 +198,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #hide() {
     if (this.#listboxSlot.hidden) return;
 
+    unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
+
     const activeElement = getActiveElement();
 
     this.#listboxSlot.hidden = true;
@@ -206,8 +208,6 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     if (containsComposedNode(this.#listbox, activeElement)) {
       this.#button.focus();
     }
-
-    unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
   }
 
   #updateMenuPosition = () => {
@@ -238,9 +238,12 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     // Choose .offsetWidth which is not affected by CSS transforms.
     const listboxWidth = this.#listbox.offsetWidth;
     const boundsRect = bounds.getBoundingClientRect();
-    const position = -Math.max(buttonRect.x + listboxWidth - boundsRect.right, 0);
-
-    this.#listbox.style.left = `${position}px`;
+    const listboxRight = buttonRect.x + listboxWidth;
+    const position = Math.max(
+      buttonRect.right - listboxRight,
+      buttonRect.right - boundsRect.right
+    );
+    this.#listbox.style.right = `${position}px`;
     this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height}px`;
   }
 

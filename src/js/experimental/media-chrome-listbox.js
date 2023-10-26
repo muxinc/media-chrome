@@ -62,7 +62,9 @@ template.innerHTML = /*html*/`
   }
 
   #container {
-    display: block;
+    gap: var(--media-listbox-gap);
+    display: flex;
+    flex-direction: column;
     overflow: hidden auto;
     padding-block: .5em;
   }
@@ -82,11 +84,30 @@ template.innerHTML = /*html*/`
   }
 
   [part~="select-indicator"] {
+    display: var(--media-option-select-indicator-display);
     visibility: hidden;
   }
 
   [aria-selected="true"] > [part~="select-indicator"] {
     visibility: visible;
+  }
+
+  :host([row]) #container {
+    gap: var(--media-listbox-gap, .25em);
+    flex-direction: row;
+    padding-inline: .5em;
+  }
+
+  :host([row]) media-chrome-option {
+    padding: .3em;
+  }
+
+  :host([row]) media-chrome-option[aria-selected="true"] {
+    background: var(--media-option-selected-background, rgb(255 255 255 / .2));
+  }
+
+  :host([row]) [part~="select-indicator"] {
+    display: var(--media-option-select-indicator-display, none);
   }
 </style>
 <slot name="header"></slot>

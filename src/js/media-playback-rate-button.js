@@ -9,7 +9,7 @@ export const Attributes = {
   RATES: 'rates',
 };
 
-export const DEFAULT_RATES = [1, 1.25, 1.5, 1.75, 2];
+export const DEFAULT_RATES = [1, 1.2, 1.5, 1.7, 2];
 export const DEFAULT_RATE = 1;
 
 const slotTemplate = document.createElement('template');
