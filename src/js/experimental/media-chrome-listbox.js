@@ -99,7 +99,7 @@ template.innerHTML = /*html*/`
   }
 
   :host([row]) media-chrome-option {
-    padding: .3em;
+    padding: .3em .24em;
   }
 
   :host([row]) media-chrome-option[aria-selected="true"] {
