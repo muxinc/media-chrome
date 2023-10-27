@@ -136,6 +136,9 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-text-color - `color` of text.
  *
  * @cssproperty --media-control-background - `background` of control.
+ * @cssproperty --media-listbox-layout - Set to `row` for a horizontal listbox design.
+ * @cssproperty --media-listbox-flex-direction - `flex-direction` of listbox.
+ * @cssproperty --media-listbox-gap - `gap` between listbox options.
  * @cssproperty --media-listbox-background - `background` of listbox.
  * @cssproperty --media-listbox-border-radius - `border-radius` of listbox.
  *
@@ -145,11 +148,11 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
  *
- * @cssproperty --media-option-indicator-fill - `fill` color of indicator icon.
  * @cssproperty --media-icon-color - `fill` color of icon.
- *
+ * @cssproperty --media-option-indicator-fill - `fill` color of indicator icon.
  * @cssproperty --media-option-indicator-height - `height` of option indicator.
  * @cssproperty --media-option-indicator-vertical-align - `vertical-align` of option indicator.
+ * @cssproperty --media-option-select-indicator-display - `display` of select indicator.
  */
 class MediaChromeListbox extends globalThis.HTMLElement {
   static get observedAttributes() {
