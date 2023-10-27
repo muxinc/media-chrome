@@ -64,7 +64,7 @@ template.innerHTML = /*html*/`
   #container {
     gap: var(--media-listbox-gap);
     display: flex;
-    flex-direction: column;
+    flex-direction: var(--media-listbox-flex-direction, column);
     overflow: hidden auto;
     padding-block: .5em;
   }
@@ -91,22 +91,28 @@ template.innerHTML = /*html*/`
   [aria-selected="true"] > [part~="select-indicator"] {
     visibility: visible;
   }
+</style>
+<style id="layout-row" media="width:0">
 
-  :host([row]) #container {
+  ::slotted([slot="header"]) {
+    padding: .4em .5em;
+  }
+
+  #container {
     gap: var(--media-listbox-gap, .25em);
-    flex-direction: row;
+    flex-direction: var(--media-listbox-flex-direction, row);
     padding-inline: .5em;
   }
 
-  :host([row]) media-chrome-option {
+  media-chrome-option {
     padding: .3em .24em;
   }
 
-  :host([row]) media-chrome-option[aria-selected="true"] {
+  media-chrome-option[aria-selected="true"] {
     background: var(--media-option-selected-background, rgb(255 255 255 / .2));
   }
 
-  :host([row]) [part~="select-indicator"] {
+  [part~="select-indicator"] {
     display: var(--media-option-select-indicator-display, none);
   }
 </style>
@@ -147,7 +153,7 @@ template.innerHTML = /*html*/`
  */
 class MediaChromeListbox extends globalThis.HTMLElement {
   static get observedAttributes() {
-    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
+    return ['disabled', 'style', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
   static formatOptionText(text) {
@@ -296,6 +302,8 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    this.#updateLayoutStyle();
+
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -315,7 +323,17 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
   }
 
+  #updateLayoutStyle() {
+    const layoutRowStyle = this.shadowRoot.querySelector('#layout-row');
+    const isLayoutRow = getComputedStyle(this)
+      .getPropertyValue('--media-listbox-layout')?.trim() === 'row';
+
+    layoutRowStyle.setAttribute('media', isLayoutRow ? '' : 'width:0');
+  }
+
   connectedCallback() {
+    this.#updateLayoutStyle();
+
     if (!this.hasAttribute('disabled')) {
       this.enable();
     }

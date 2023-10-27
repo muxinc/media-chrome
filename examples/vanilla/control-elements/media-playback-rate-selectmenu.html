@@ -82,7 +82,7 @@
     </media-control-bar>
   </media-controller>
 
-  <h2>Row layout</h2>
+  <h2>Row layout w/ header</h2>
 
   <media-controller id="mc">
     <video
@@ -99,8 +99,21 @@
       <media-time-display showduration></media-time-display>
       <media-time-range></media-time-range>
       <media-mute-button></media-mute-button>
-      <media-playback-rate-selectmenu>
-        <media-playback-rate-listbox slot="listbox" row></media-playback-rate-listbox>
+      <media-playback-rate-selectmenu style="--media-listbox-layout: row;">
+        <media-playback-rate-listbox slot="listbox">
+          <div slot="header">
+            <style>
+              kbd {
+                color: #000;
+                background-color: #fff;
+                padding-inline: .3em;
+                line-height: 1;
+                border-radius: 3px;
+              }
+            </style>
+            Playback Speed <kbd>s</kbd>
+          </div>
+        </media-playback-rate-listbox>
       </media-playback-rate-selectmenu>
       <media-pip-button></media-pip-button>
       <media-fullscreen-button></media-fullscreen-button>
