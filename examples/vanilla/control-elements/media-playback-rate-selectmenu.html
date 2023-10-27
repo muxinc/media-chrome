@@ -30,6 +30,8 @@
 <body>
   <h1>Playback Rate Selectmenu</h1>
 
+  <h2>Column layout w/ custom icon</h2>
+
   <media-controller id="mc">
     <video
       id="video"
@@ -73,6 +75,44 @@
               }
             </style>
           </span>
+        </media-playback-rate-listbox>
+      </media-playback-rate-selectmenu>
+      <media-pip-button></media-pip-button>
+      <media-fullscreen-button></media-fullscreen-button>
+    </media-control-bar>
+  </media-controller>
+
+  <h2>Row layout w/ header</h2>
+
+  <media-controller id="mc">
+    <video
+      id="video"
+      slot="media"
+      src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+      poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.webp"
+      preload="metadata"
+      muted
+      crossorigin
+    ></video>
+    <media-control-bar>
+      <media-play-button></media-play-button>
+      <media-time-display showduration></media-time-display>
+      <media-time-range></media-time-range>
+      <media-mute-button></media-mute-button>
+      <media-playback-rate-selectmenu>
+        <media-playback-rate-listbox slot="listbox" style="--media-listbox-layout: row;">
+          <div slot="header">
+            <style>
+              kbd {
+                color: #000;
+                background-color: #fff;
+                padding-inline: .3em;
+                line-height: 1;
+                border-radius: 3px;
+              }
+            </style>
+            Playback Speed <kbd>s</kbd>
+          </div>
         </media-playback-rate-listbox>
       </media-playback-rate-selectmenu>
       <media-pip-button></media-pip-button>

@@ -9,11 +9,17 @@ export const Attributes = {
   RATES: 'rates',
 };
 
-export const DEFAULT_RATES = [1, 1.25, 1.5, 1.75, 2];
+export const DEFAULT_RATES = [1, 1.2, 1.5, 1.7, 2];
 export const DEFAULT_RATE = 1;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = `
+slotTemplate.innerHTML = /*html*/`
+  <style>
+    :host {
+      min-width: 5ch;
+      padding: var(--media-control-padding, 10px 5px);
+    }
+  </style>
   <span id="container"></span>
 `;
 
@@ -41,6 +47,8 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (attrName === Attributes.RATES) {
       this.#rates.value = newValue;
     }
@@ -51,9 +59,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
         : DEFAULT_RATE;
       this.container.innerHTML = `${playbackRate}x`;
       this.setAttribute('aria-label', nouns.PLAYBACK_RATE({ playbackRate }));
-      return;
     }
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**

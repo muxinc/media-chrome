@@ -62,7 +62,9 @@ template.innerHTML = /*html*/`
   }
 
   #container {
-    display: block;
+    gap: var(--media-listbox-gap);
+    display: flex;
+    flex-direction: var(--media-listbox-flex-direction, column);
     overflow: hidden auto;
     padding-block: .5em;
   }
@@ -82,11 +84,36 @@ template.innerHTML = /*html*/`
   }
 
   [part~="select-indicator"] {
+    display: var(--media-option-select-indicator-display);
     visibility: hidden;
   }
 
   [aria-selected="true"] > [part~="select-indicator"] {
     visibility: visible;
+  }
+</style>
+<style id="layout-row" media="width:0">
+
+  ::slotted([slot="header"]) {
+    padding: .4em .5em;
+  }
+
+  #container {
+    gap: var(--media-listbox-gap, .25em);
+    flex-direction: var(--media-listbox-flex-direction, row);
+    padding-inline: .5em;
+  }
+
+  media-chrome-option {
+    padding: .3em .24em;
+  }
+
+  media-chrome-option[aria-selected="true"] {
+    background: var(--media-option-selected-background, rgb(255 255 255 / .2));
+  }
+
+  [part~="select-indicator"] {
+    display: var(--media-option-select-indicator-display, none);
   }
 </style>
 <slot name="header"></slot>
@@ -109,6 +136,9 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-text-color - `color` of text.
  *
  * @cssproperty --media-control-background - `background` of control.
+ * @cssproperty --media-listbox-layout - Set to `row` for a horizontal listbox design.
+ * @cssproperty --media-listbox-flex-direction - `flex-direction` of listbox.
+ * @cssproperty --media-listbox-gap - `gap` between listbox options.
  * @cssproperty --media-listbox-background - `background` of listbox.
  * @cssproperty --media-listbox-border-radius - `border-radius` of listbox.
  *
@@ -118,15 +148,15 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
  *
- * @cssproperty --media-option-indicator-fill - `fill` color of indicator icon.
  * @cssproperty --media-icon-color - `fill` color of icon.
- *
+ * @cssproperty --media-option-indicator-fill - `fill` color of indicator icon.
  * @cssproperty --media-option-indicator-height - `height` of option indicator.
  * @cssproperty --media-option-indicator-vertical-align - `vertical-align` of option indicator.
+ * @cssproperty --media-option-select-indicator-display - `display` of select indicator.
  */
 class MediaChromeListbox extends globalThis.HTMLElement {
   static get observedAttributes() {
-    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
+    return ['disabled', 'style', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
   static formatOptionText(text) {
@@ -275,7 +305,10 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
+
+    if (attrName === 'style' && newValue !== oldValue) {
+      this.#updateLayoutStyle();
+    } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
         this.#mediaController = null;
@@ -294,7 +327,17 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
   }
 
+  #updateLayoutStyle() {
+    const layoutRowStyle = this.shadowRoot.querySelector('#layout-row');
+    const isLayoutRow = getComputedStyle(this)
+      .getPropertyValue('--media-listbox-layout')?.trim() === 'row';
+
+    layoutRowStyle.setAttribute('media', isLayoutRow ? '' : 'width:0');
+  }
+
   connectedCallback() {
+    this.#updateLayoutStyle();
+
     if (!this.hasAttribute('disabled')) {
       this.enable();
     }
