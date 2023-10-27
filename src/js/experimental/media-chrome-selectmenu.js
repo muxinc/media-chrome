@@ -23,7 +23,6 @@ template.innerHTML = /*html*/`
   [name=listbox]::slotted(*),
   [part=listbox] {
     position: absolute;
-    right: 0;
     bottom: 100%;
     max-height: 300px;
     transition: var(--media-selectmenu-transition-in,
@@ -214,13 +213,11 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     // if the menu is hidden, skip updating the menu position
     if (this.#listbox.offsetWidth === 0) return;
 
+    // Choose .offsetWidth which is not affected by CSS transforms.
+    const listboxWidth = this.#listbox.offsetWidth;
     const buttonRect = this.#button.getBoundingClientRect();
 
-    // if we're outside of the controller,
-    // one of the components should have a mediacontroller attribute.
-    // There isn't a good way now to differentiate between default buttons
-    // or a slotted button but outside of the media-controller.
-    // So, a regular declarative selectmenu may default to open up rather than down.
+    // If this select element is outside of the controller open downward.
     if (
       this.hasAttribute('mediacontroller') ||
       this.#button.hasAttribute('mediacontroller') ||
@@ -228,21 +225,21 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     ) {
       this.#listbox.style.zIndex = '1';
       this.#listbox.style.bottom = 'unset';
-      this.#listbox.style.top = buttonRect.height + 'px'
+      this.#listbox.style.right = null;
+      this.#listbox.style.left = '0';
+      this.#listbox.style.top = `${buttonRect.height}px`
       return;
     }
 
     // Get the element that enforces the bounds for the list boxes.
     const bounds = getBoundsElement(this);
-
-    // Choose .offsetWidth which is not affected by CSS transforms.
-    const listboxWidth = this.#listbox.offsetWidth;
     const boundsRect = bounds.getBoundingClientRect();
     const listboxRight = buttonRect.x + listboxWidth;
     const position = Math.max(
       buttonRect.right - listboxRight,
       buttonRect.right - boundsRect.right
     );
+    this.#listbox.style.left = null;
     this.#listbox.style.right = `${position}px`;
     this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height}px`;
   }
