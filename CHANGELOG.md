@@ -1,3 +1,13 @@
+## [1.4.5](https://github.com/muxinc/media-chrome/compare/v1.4.4...v1.4.5) (2023-10-27)
+
+
+### Bug Fixes
+
+* add timerange to mobile ([#752](https://github.com/muxinc/media-chrome/issues/752)) ([0151fcd](https://github.com/muxinc/media-chrome/commit/0151fcd7c6528d4ffa4a245a30d8bd851ba94171))
+* selectmenu anchor right + add listbox row layout ([#753](https://github.com/muxinc/media-chrome/issues/753)) ([444f248](https://github.com/muxinc/media-chrome/commit/444f2486bf8f399c33bd329f24362c81822c36c0))
+
+
+
 ## [1.4.4](https://github.com/muxinc/media-chrome/compare/v1.4.3...v1.4.4) (2023-10-16)
 
 
