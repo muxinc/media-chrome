@@ -305,9 +305,10 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-    this.#updateLayoutStyle();
 
-    if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
+    if (attrName === 'style' && newValue !== oldValue) {
+      this.#updateLayoutStyle();
+    } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
         this.#mediaController = null;
