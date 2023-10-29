@@ -13,8 +13,9 @@
         aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
 
-      video {
-        width: 100%;      /* prevents video to expand beyond its container */
+      castable-video {
+        width: 100%;          /* prevents video to expand beyond its container */
+        height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
       }
 
       media-airplay-button[mediaairplayunavailable] {
