@@ -1,3 +1,12 @@
+# [1.5.0](https://github.com/muxinc/media-chrome/compare/v1.4.5...v1.5.0) (2023-10-30)
+
+
+### Features
+
+* separate slider UI from input range + improve mobile ([#704](https://github.com/muxinc/media-chrome/issues/704)) ([b1a219e](https://github.com/muxinc/media-chrome/commit/b1a219e1dd87d7d2c4174e7105bc802a6464b7a7)), closes [#751](https://github.com/muxinc/media-chrome/issues/751) [#662](https://github.com/muxinc/media-chrome/issues/662)
+
+
+
 ## [1.4.5](https://github.com/muxinc/media-chrome/compare/v1.4.4...v1.4.5) (2023-10-27)
 
 
