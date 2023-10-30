@@ -145,7 +145,7 @@ export const MediaUIStates = {
 
       return media.currentTime;
     },
-    mediaEvents: ['timeupdate', 'loadedmetadata'],
+    mediaEvents: ['playing', 'pause', 'timeupdate', 'loadedmetadata'],
   },
   MEDIA_DURATION: {
     get: function (controller) {

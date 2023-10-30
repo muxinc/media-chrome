@@ -542,10 +542,6 @@ class MediaContainer extends globalThis.HTMLElement {
     });
 
     this.addEventListener('pointermove', (e) => {
-      // pointermove doesn't happen with touch on taps on iOS, but does on android,
-      // so, only run pointermove for mouse
-      if (e.pointerType !== 'mouse') return;
-
       setActive();
       // Stay visible if hovered over control bar
       clearTimeout(this._inactiveTimeout);

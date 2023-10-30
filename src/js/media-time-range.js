@@ -3,6 +3,8 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
+import { isElementVisible } from './utils/element-utils.js';
+import { RangeAnimation } from './utils/range-animation.js';
 import {
   getOrInsertCSSRule,
   closestComposedNode,
@@ -18,8 +20,8 @@ const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
 const updateAriaValueText = (el) => {
   const range = el.range;
-  const currentTimePhrase = formatAsTimePhrase(+range.value);
-  const totalTimePhrase = formatAsTimePhrase(+range.max);
+  const currentTimePhrase = formatAsTimePhrase(+calcTimeFromRangeValue(el));
+  const totalTimePhrase = formatAsTimePhrase(+el.mediaSeekableEnd);
   const fullPhrase = !(currentTimePhrase && totalTimePhrase)
     ? DEFAULT_MISSING_TIME_PHRASE
     : `${currentTimePhrase} of ${totalTimePhrase}`;
@@ -33,6 +35,10 @@ template.innerHTML = /*html*/`
       --media-preview-border-radius: 3px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;
+    }
+
+    #highlight {
+      background: var(--media-time-range-buffered-color, rgb(255 255 255 / .4));
     }
 
     #preview-rail,
@@ -63,12 +69,20 @@ template.innerHTML = /*html*/`
       opacity: 0;
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) [part~="preview-box"],
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) [part~="preview-box"] {
+    :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${MediaUIAttributes.MEDIA_PREVIEW_TIME}])[dragging]) [part~="preview-box"] {
       transition-duration: var(--media-preview-transition-duration-in, .5s);
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
       opacity: 1;
+    }
+
+    @media (hover: hover) {
+      :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${MediaUIAttributes.MEDIA_PREVIEW_TIME}]):hover) [part~="preview-box"] {
+        transition-duration: var(--media-preview-transition-duration-in, .5s);
+        transition-delay: var(--media-preview-transition-delay-in, .25s);
+        visibility: visible;
+        opacity: 1;
+      }
     }
 
     media-preview-thumbnail,
@@ -88,10 +102,22 @@ template.innerHTML = /*html*/`
         var(--media-preview-border-radius) var(--media-preview-border-radius) 0 0);
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) media-preview-thumbnail,
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) ::slotted(media-preview-thumbnail) {
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}][dragging]) media-preview-thumbnail,
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}][dragging]) ::slotted(media-preview-thumbnail) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
+    }
+
+    @media (hover: hover) {
+      :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) media-preview-thumbnail,
+      :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) ::slotted(media-preview-thumbnail) {
+        transition-delay: var(--media-preview-transition-delay-in, .25s);
+        visibility: visible;
+      }
+
+      :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
+        --media-time-range-hover-display: block;
+      }
     }
 
     media-preview-time-display,
@@ -116,10 +142,6 @@ template.innerHTML = /*html*/`
       border-radius: var(--media-preview-time-border-radius,
         0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
     }
-
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
-      --media-time-range-hover-display: block;
-    }
   </style>
   <div id="preview-rail">
     <slot name="preview" part="box preview-box">
@@ -134,6 +156,17 @@ template.innerHTML = /*html*/`
     </slot>
   </div>
 `;
+
+const calcRangeValueFromTime = (el, time = el.mediaCurrentTime) => {
+  if (Number.isNaN(el.mediaSeekableEnd)) return 0;
+  const value = (time - el.mediaSeekableStart) / (el.mediaSeekableEnd - el.mediaSeekableStart);
+  return Math.max(0, Math.min(value, 1));
+}
+
+const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
+  if (Number.isNaN(el.mediaSeekableEnd)) return 0;
+  return (value * (el.mediaSeekableEnd - el.mediaSeekableStart)) + el.mediaSeekableStart;
+}
 
 /**
  * @slot preview - An element that slides along the timeline to the position of the pointer hovering.
@@ -193,6 +226,7 @@ class MediaTimeRange extends MediaChromeRange {
     ];
   }
 
+  #animation;
   #boxes;
   #previewBox;
   #currentBox;
@@ -204,20 +238,6 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.container.appendChild(template.content.cloneNode(true));
 
-    this.range.addEventListener('input', () => {
-      // Cancel color bar refreshing when seeking.
-      cancelAnimationFrame(this._refreshId);
-
-      const newTime = this.range.value;
-      const detail = newTime;
-      const evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
-        composed: true,
-        bubbles: true,
-        detail,
-      });
-      this.dispatchEvent(evt);
-    });
-
     // Come back to this feature
     // this.playIfNotReady = e => {
     //   this.range.removeEventListener('change', this.playIfNotReady);
@@ -225,81 +245,76 @@ class MediaTimeRange extends MediaChromeRange {
     //   media.play().then(this.setMediaTimeWithRange);
     // };
 
-    this._refreshBar = () => {
-      const delta = (performance.now() - this._updateTimestamp) / 1000;
-      this.range.value = this.mediaCurrentTime + delta * this.mediaPlaybackRate;
-      this.updateBar();
-      this.updateCurrentBox();
-
-      this._refreshId = requestAnimationFrame(this._refreshBar);
-    };
-
     this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
     this.#currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
 
     const computedStyle = getComputedStyle(this);
-    this.#boxPaddingLeft = parseInt(
-      computedStyle.getPropertyValue('--media-box-padding-left')
-    );
-    this.#boxPaddingRight = parseInt(
-      computedStyle.getPropertyValue('--media-box-padding-right')
-    );
+    this.#boxPaddingLeft = parseInt(computedStyle.getPropertyValue('--media-box-padding-left'));
+    this.#boxPaddingRight = parseInt(computedStyle.getPropertyValue('--media-box-padding-right'));
 
-    this.#enableBoxes();
+    this.#animation = new RangeAnimation(this.range, this.#updateRange, 60);
+    this.addEventListener('transitionstart', this);
   }
 
   connectedCallback() {
-    this.range.setAttribute('aria-label', nouns.SEEK());
     super.connectedCallback();
+    this.range.setAttribute('aria-label', nouns.SEEK());
+    this.#toggleRangeAnimation();
   }
 
   disconnectedCallback() {
-    cancelAnimationFrame(this._refreshId);
     super.disconnectedCallback();
+    this.#toggleRangeAnimation();
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
+    if (oldValue == newValue) return;
+
     if (
       attrName === MediaUIAttributes.MEDIA_CURRENT_TIME ||
       attrName === MediaUIAttributes.MEDIA_PAUSED ||
       attrName === MediaUIAttributes.MEDIA_ENDED ||
-      attrName === MediaUIAttributes.MEDIA_LOADING
+      attrName === MediaUIAttributes.MEDIA_LOADING ||
+      attrName === MediaUIAttributes.MEDIA_DURATION ||
+      attrName === MediaUIAttributes.MEDIA_SEEKABLE
     ) {
-      this._updateTimestamp = performance.now();
-      this.range.value = this.mediaCurrentTime;
+      this.#animation.update({
+        start: calcRangeValueFromTime(this),
+        duration: this.mediaSeekableEnd - this.mediaSeekableStart,
+        playbackRate: this.mediaPlaybackRate
+      });
+      this.#toggleRangeAnimation();
       updateAriaValueText(this);
-      this.updateBar();
-      this.updateCurrentBox();
+    }
+    else if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
+      this.updateBufferedBar();
+    }
+  }
 
-      cancelAnimationFrame(this._refreshId);
-      if (!this.mediaPaused && !this.mediaLoading) {
-        this._refreshId = requestAnimationFrame(this._refreshBar);
-      }
+  #toggleRangeAnimation() {
+    if (this.#shouldRangeAnimate()) {
+      this.#animation.start();
+    } else {
+      this.#animation.stop();
     }
-    if (attrName === MediaUIAttributes.MEDIA_DURATION) {
-      this.range.max = this.#mediaSeekableEnd ?? this.mediaDuration ?? 1000;
-      updateAriaValueText(this);
-      this.updateBar();
-      this.updateCurrentBox();
-    }
-    if (attrName === MediaUIAttributes.MEDIA_SEEKABLE) {
-      this.range.min = this.#mediaSeekableStart ?? 0;
-      this.range.max = this.#mediaSeekableEnd ?? this.mediaDuration ?? 1000;
-      updateAriaValueText(this);
-      this.updateBar();
-    }
-    if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
-      this.updateBar();
-    }
-    if (attrName === 'disabled') {
-      if (newValue == null) {
-        this.#enableBoxes();
-      } else {
-        this.#disableBoxes();
-      }
-    }
-    super.attributeChangedCallback(attrName, oldValue, newValue);
+  }
+
+  #shouldRangeAnimate() {
+    return this.isConnected
+      && isElementVisible(this)
+      && !this.mediaPaused
+      && !this.mediaLoading
+      && !this.mediaEnded;
+  }
+
+  #updateRange = (value) => {
+    if (this.dragging) return;
+
+    this.range.valueAsNumber = value;
+    this.updateBar();
   }
 
   /**
@@ -400,13 +415,13 @@ class MediaTimeRange extends MediaChromeRange {
   /**
    * @type {number | undefined}
    */
-  get #mediaSeekableEnd() {
-    const [, end] = this.mediaSeekable ?? [];
+  get mediaSeekableEnd() {
+    const [, end = this.mediaDuration] = this.mediaSeekable ?? [];
     return end;
   }
 
-  get #mediaSeekableStart() {
-    const [start] = this.mediaSeekable ?? [];
+  get mediaSeekableStart() {
+    const [start = 0] = this.mediaSeekable ?? [];
     return start;
   }
 
@@ -443,49 +458,39 @@ class MediaTimeRange extends MediaChromeRange {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_ENDED, value);
   }
 
-  getRelativeValues() {
-    const defaultRelativeValues = super.getRelativeValues();
-    if (!this.mediaEnded) return defaultRelativeValues;
-    return {
-      ...defaultRelativeValues,
-      relativeValue: defaultRelativeValues.relativeMax,
-    };
+  /* Add a buffered progress bar */
+  updateBar() {
+    super.updateBar();
+    this.updateBufferedBar();
+    this.updateCurrentBox();
   }
 
-  /* Add a buffered progress bar */
-  getBarColors() {
-    let colorsArray = super.getBarColors();
-    const { range } = this;
-    const relativeMax = range.max - range.min;
+  updateBufferedBar() {
     const buffered = this.mediaBuffered;
-
-    if (!buffered.length || !Number.isFinite(relativeMax) || relativeMax <= 0) {
-      return colorsArray;
+    if (!buffered.length) {
+      return;
     }
 
     // Find the buffered range that "contains" the current time and get its end.
-    // If none, just assume the start of the media timeline/range.min for
+    // If none, just assume the start of the media timeline for
     // visualization purposes.
     let relativeBufferedEnd;
+
     if (!this.mediaEnded) {
       const currentTime = this.mediaCurrentTime;
-      const [, bufferedEnd = range.min] = buffered.find(
+      const [, bufferedEnd = this.mediaSeekableStart] = buffered.find(
         ([start, end]) => start <= currentTime && currentTime <= end
       ) ?? [];
-      relativeBufferedEnd = bufferedEnd - range.min;
+      relativeBufferedEnd = calcRangeValueFromTime(this, bufferedEnd);
     } else {
       // If we've ended, there may be some discrepancies between seekable end, duration, and current time.
       // In this case, just presume `relativeBufferedEnd` is the maximum possible value for visualization
       // purposes (CJP.)
-      relativeBufferedEnd = relativeMax;
+      relativeBufferedEnd = 1;
     }
 
-    const buffPercent = (relativeBufferedEnd / relativeMax) * 100;
-    colorsArray.splice(1, 0, [
-      'var(--media-time-range-buffered-color, rgb(255 255 255 / .4))',
-      buffPercent,
-    ]);
-    return colorsArray;
+    const { style } = getOrInsertCSSRule(this.shadowRoot, '#highlight');
+    style.setProperty('width', `${relativeBufferedEnd * 100}%`);
   }
 
   updateCurrentBox() {
@@ -493,8 +498,7 @@ class MediaTimeRange extends MediaChromeRange {
     // @ts-ignore
     if (!this.#currentBox.assignedElements().length) return;
 
-    const boxRatio = this.range.value / (this.range.max - this.range.min);
-    const boxPos = this.#getBoxPosition(this.#currentBox, boxRatio);
+    const boxPos = this.#getBoxPosition(this.#currentBox, this.range.valueAsNumber);
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#current-rail');
     style.transform = `translateX(${boxPos})`;
   }
@@ -523,84 +527,67 @@ class MediaTimeRange extends MediaChromeRange {
     return position;
   }
 
-  #pointermoveHandler = (evt) => {
-    // @ts-ignore
-    if ([...this.#boxes].some((b) => evt.composedPath().includes(b))) return;
+  handleEvent(evt) {
+    super.handleEvent(evt);
 
-    this.updatePointerBar(evt);
+    switch (evt.type) {
+      case 'input':
+        this.#seekRequest();
+        break;
+      case 'pointermove':
+        this.#handlePointerMove(evt);
+        break;
+      case 'pointerup':
+      case 'pointerleave':
+        this.#previewRequest(null);
+        break;
+      case 'transitionstart':
+        // Wait a tick to be sure the transition has started. Required for Safari.
+        setTimeout(() => this.#toggleRangeAnimation(), 0);
+        break;
+    }
+  }
+
+  #handlePointerMove(evt) {
+    // @ts-ignore
+    const isOverBoxes = [...this.#boxes].some((b) => evt.composedPath().includes(b));
+
+    if (!this.dragging && (isOverBoxes || !evt.composedPath().includes(this))) {
+      this.#previewRequest(null);
+      return;
+    }
 
     const duration = this.mediaDuration;
     // If no duration we can't calculate which time to show
     if (!duration) return;
 
-    // Get mouse position percent
     const rangeRect = this.range.getBoundingClientRect();
-    let mouseRatio = (evt.clientX - rangeRect.left - this.thumbWidth / 2) / (rangeRect.width - this.thumbWidth);
-    // Lock between 0 and 1
-    mouseRatio = Math.max(0, Math.min(1, mouseRatio));
+    let pointerRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
+    pointerRatio = Math.max(0, Math.min(1, pointerRatio));
 
-    const boxPos = this.#getBoxPosition(this.#previewBox, mouseRatio);
+    const boxPos = this.#getBoxPosition(this.#previewBox, pointerRatio);
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
     style.transform = `translateX(${boxPos})`;
 
-    const detail = mouseRatio * duration;
-    const mediaPreviewEvt = new globalThis.CustomEvent(
-      MediaUIEvents.MEDIA_PREVIEW_REQUEST,
-      { composed: true, bubbles: true, detail }
-    );
-    this.dispatchEvent(mediaPreviewEvt);
-  };
-
-  // Trigger when the mouse moves over the range
-  #rangeEntered = false;
-
-  #offRangeHandler = (evt) => {
-    if (
-      !evt.composedPath().includes(this) ||
-      // @ts-ignore
-      [...this.#boxes].some((b) => evt.composedPath().includes(b))
-    ) {
-      globalThis.window?.removeEventListener('pointermove', this.#offRangeHandler);
-      this.#rangeEntered = false;
-      this.#stopTrackingMouse();
-    }
-  };
-
-  #trackMouse = () => {
-    globalThis.window?.addEventListener('pointermove', this.#pointermoveHandler, false);
-  };
-
-  #stopTrackingMouse = () => {
-    globalThis.window?.removeEventListener('pointermove', this.#pointermoveHandler);
-    const endEvt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
-      composed: true,
-      bubbles: true,
-      detail: null,
-    });
-    this.dispatchEvent(endEvt);
-  };
-
-  #rangepointermoveHandler = () => {
-    const mediaDurationStr = this.getAttribute(
-      MediaUIAttributes.MEDIA_DURATION
-    );
-    if (!this.#rangeEntered && mediaDurationStr) {
-      this.#rangeEntered = true;
-      this.#trackMouse();
-
-      globalThis.window?.addEventListener('pointermove', this.#offRangeHandler, false);
-    }
-  };
-
-  #enableBoxes() {
-    this.addEventListener('pointermove', this.#rangepointermoveHandler, false);
+    this.#previewRequest(pointerRatio * duration);
   }
 
-  #disableBoxes() {
-    globalThis.window?.removeEventListener('pointermove', this.#offRangeHandler);
-    this.removeEventListener('pointermove', this.#rangepointermoveHandler);
-    this.#rangeEntered = false;
-    this.#stopTrackingMouse();
+  #previewRequest(detail) {
+    this.dispatchEvent(new globalThis.CustomEvent(
+      MediaUIEvents.MEDIA_PREVIEW_REQUEST,
+      { composed: true, bubbles: true, detail }
+    ));
+  }
+
+  #seekRequest() {
+    // Cancel progress bar refreshing when seeking.
+    this.#animation.stop();
+
+    const detail = calcTimeFromRangeValue(this);
+    this.dispatchEvent(new globalThis.CustomEvent(
+      MediaUIEvents.MEDIA_SEEK_REQUEST,
+      { composed: true, bubbles: true, detail }
+    ));
   }
 }
 

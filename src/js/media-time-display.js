@@ -97,14 +97,12 @@ class MediaTimeDisplay extends MediaTextDisplay {
     this.#slot = this.shadowRoot.querySelector('slot');
     this.#slot.innerHTML = `${formatTimesLabel(this)}`;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host:not([notoggle])');
-    style.setProperty('cursor', 'pointer');
-
-    const { style: hoverStyle } = getOrInsertCSSRule(
+    const { style } = getOrInsertCSSRule(
       this.shadowRoot,
       ':host(:hover:not([notoggle]))'
     );
-    hoverStyle.setProperty(
+    style.setProperty('cursor', 'pointer');
+    style.setProperty(
       'background',
       'var(--media-control-hover-background, rgba(50 50 70 / .7))'
     );

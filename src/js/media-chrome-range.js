@@ -3,59 +3,27 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
 
 const template = document.createElement('template');
-
-// Can't comma-separate selectors like ::-webkit-slider-thumb, ::-moz-range-thumb
-// Browsers ignore the whole rule if you do. So using templates for those.
-const thumbStyles = `
-  height: var(--thumb-height);
-  width: var(--media-range-thumb-width, 10px);
-  border: var(--media-range-thumb-border, none);
-  border-radius: var(--media-range-thumb-border-radius, 10px);
-  background: var(--media-range-thumb-background, var(--media-primary-color, rgb(238 238 238)));
-  box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
-  cursor: pointer;
-  transition: var(--media-range-thumb-transition, none);
-  transform: var(--media-range-thumb-transform, none);
-  opacity: var(--media-range-thumb-opacity, 1);
-`;
-
-const trackStyles = `
-  min-width: 40px;
-  height: var(--track-height);
-  border: var(--media-range-track-border, none);
-  outline: var(--media-range-track-outline);
-  outline-offset: var(--media-range-track-outline-offset);
-  border-radius: var(--media-range-track-border-radius, 1px);
-  background: var(--media-range-track-progress-internal, var(--media-range-track-background, rgb(255 255 255 / .2)));
-  backdrop-filter: var(--media-range-track-backdrop-filter);
-  box-shadow: var(--media-range-track-box-shadow, none);
-  transition: var(--media-range-track-transition, none);
-  transform: translate(var(--media-range-track-translate-x, 0), var(--media-range-track-translate-y, 0));
-  cursor: pointer;
-`;
-
 template.innerHTML = /*html*/`
   <style>
     :host {
-      --thumb-height: var(--media-range-thumb-height, 10px);
-      --track-height: var(--media-range-track-height, 4px);
       --_focus-box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
       --_media-range-padding: var(--media-range-padding, var(--media-control-padding, 10px));
 
+      box-shadow: var(--_focus-visible-box-shadow, none);
+      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
+      height: calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
+      display: inline-flex;
+      align-items: center;
+      ${/* Don't horizontal align w/ justify-content! #container can go negative on the x-axis w/ small width. */''}
       vertical-align: middle;
       box-sizing: border-box;
-      display: inline-block;
       position: relative;
-      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
-      transition: background .15s linear;
       width: 100px;
-      height: calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
-      padding-left: var(--media-range-padding-left, var(--_media-range-padding));
-      padding-right: var(--media-range-padding-right, var(--_media-range-padding));
+      transition: background .15s linear;
+      cursor: pointer;
       pointer-events: auto;
-      ${/* needed for vertical align issue 1px off */''}
-      font-size: 0;
-      box-shadow: var(--_focus-visible-box-shadow, none);
+      touch-action: none; ${/* Prevent scrolling when dragging on mobile. */''}
+      z-index: 1; ${/* Apply z-index to overlap buttons below. */''}
     }
 
     ${/* Reset before `outline` on track could be set by a CSS var */''}
@@ -71,74 +39,115 @@ template.innerHTML = /*html*/`
     }
 
     #container {
-      position: relative;
+      ${/* Not using the CSS `padding` prop makes it easier for slide open volume ranges so the width can be zero. */''}
+      width: calc(
+        var(--media-range-track-width, 100%)
+        - var(--media-range-padding-left, var(--_media-range-padding))
+        - var(--media-range-padding-right, var(--_media-range-padding)));
+      transform: translate(
+        calc(var(--media-range-track-translate-x, 0px) + var(--media-range-padding-left, var(--_media-range-padding))),
+        var(--media-range-track-translate-y, 0px));
       height: 100%;
+      display: flex;
+      align-items: center;
+      position: relative;
+      min-width: 40px;
     }
 
-    input[type=range] {
-      ${/* Reset */''}
+    #range {
+      ${/* The input range acts as a hover and hit zone for input events. */''}
+      display: var(--media-time-range-hover-display, block);
+      bottom: var(--media-time-range-hover-bottom, -7px);
+      height: var(--media-time-range-hover-height, max(100% + 7px, 25px));
+      width: 100%;
+      position: absolute;
+      cursor: pointer;
+
       -webkit-appearance: none; ${/* Hides the slider so that custom slider can be made */''}
+      -webkit-tap-highlight-color: transparent;
       background: transparent; ${/* Otherwise white in Chrome */''}
-
-      ${/* Fill host with the range */''}
-      min-height: 100%;
-      width: var(--media-range-track-width, 100%); ${/* Specific width is required for Firefox. */''}
-
-      box-sizing: border-box;
-      padding: 0;
       margin: 0;
+      z-index: 1;
+    }
+
+    @media (hover: hover) {
+      #range {
+        bottom: var(--media-time-range-hover-bottom, -5px);
+        height: var(--media-time-range-hover-height, max(100% + 5px, 20px));
+      }
     }
 
     ${/* Special styling for WebKit/Blink */''}
-    input[type=range]::-webkit-slider-thumb {
+    ${/* Make thumb width/height small so it has no effect on range click position. */''}
+    #range::-webkit-slider-thumb {
       -webkit-appearance: none;
-      ${thumbStyles}
-      ${/* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */''}
-      margin-top: calc(calc(0px - var(--thumb-height) + var(--track-height)) / 2);
+      background: transparent;
+      width: .1px;
+      height: .1px;
     }
 
     ${/* The thumb is not positioned relative to the track in Firefox */''}
-    input[type=range]::-moz-range-thumb {
-      ${thumbStyles}
-      translate: var(--media-range-track-translate-x, 0) var(--media-range-track-translate-y, 0);
+    #range::-moz-range-thumb {
+      background: transparent;
+      border: transparent;
+      width: .1px;
+      height: .1px;
     }
 
-    input[type=range]::-webkit-slider-runnable-track { ${trackStyles} }
-    input[type=range]::-moz-range-track { ${trackStyles} }
-    input[type=range]::-ms-track {
-      ${/* Reset */''}
+    #appearance {
+      height: var(--media-range-track-height, 4px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
       width: 100%;
-      cursor: pointer;
-      ${/* Hides the slider so custom styles can be added */''}
-      background: transparent;
-      border-color: transparent;
-      color: transparent;
-
-      ${trackStyles}
+      position: absolute;
     }
 
     #background,
-    #pointer {
-      width: var(--media-range-track-width, 100%);
-      height: var(--track-height);
+    #track {
       border-radius: var(--media-range-track-border-radius, 1px);
       position: absolute;
-      top: 50%;
-      transform: translate(var(--media-range-track-translate-x, 0px), calc(var(--media-range-track-translate-y, 0px) - 50%));
+      width: 100%;
+      height: 100%;
     }
 
     #background {
-      min-width: 40px;
       background: var(--media-range-track-background, rgb(255 255 255 / .2));
       backdrop-filter: var(--media-range-track-background-backdrop-filter);
+    }
+
+    #track {
+      border: var(--media-range-track-border, none);
+      outline: var(--media-range-track-outline);
+      outline-offset: var(--media-range-track-outline-offset);
+      backdrop-filter: var(--media-range-track-backdrop-filter);
+      box-shadow: var(--media-range-track-box-shadow, none);
+      overflow: hidden;
+    }
+
+    #progress {
+      background: var(--media-range-bar-color, var(--media-primary-color, rgb(238 238 238)));
+      border-radius: var(--media-range-track-border-radius, 1px);
+      transition: var(--media-range-track-transition);
+      position: absolute;
+      height: 100%;
+    }
+
+    #highlight {
+      border-radius: var(--media-range-track-border-radius, 1px);
+      position: absolute;
+      height: 100%;
     }
 
     #pointer {
       background: var(--media-range-track-pointer-background);
       border-right: var(--media-range-track-pointer-border-right);
+      border-radius: var(--media-range-track-border-radius, 1px);
       transition: visibility .25s, opacity .25s;
       visibility: hidden;
       opacity: 0;
+      position: absolute;
+      height: 100%;
     }
 
     :host(:hover) #pointer {
@@ -147,35 +156,37 @@ template.innerHTML = /*html*/`
       opacity: 1;
     }
 
-    #hoverzone {
-      ${/* Add z-index so it overlaps the top of the control buttons if they are right under. */''}
-      z-index: 1;
-      display: var(--media-time-range-hover-display, none);
+    #thumb {
+      width: var(--media-range-thumb-width, 10px);
+      height: var(--media-range-thumb-height, 10px);
+      margin-left: calc(var(--media-range-thumb-width, 10px) / -2);
+      border: var(--media-range-thumb-border, none);
+      border-radius: var(--media-range-thumb-border-radius, 10px);
+      background: var(--media-range-thumb-background, var(--media-primary-color, rgb(238 238 238)));
+      box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
+      transition: var(--media-range-thumb-transition);
+      transform: var(--media-range-thumb-transform, none);
+      opacity: var(--media-range-thumb-opacity, 1);
       position: absolute;
-      width: 100%;
-      bottom: var(--media-time-range-hover-bottom, -5px);
-      height: var(--media-time-range-hover-height, max(calc(100% + 5px), 20px));
+      left: 0;
+      cursor: pointer;
     }
 
-    #range {
-      z-index: 2;
-      position: relative;
-      height: var(--media-range-track-height, 4px);
-    }
-
-    input[type=range]:disabled::-webkit-slider-thumb {
-      background-color: #777;
-    }
-
-    input[type=range]:disabled::-webkit-slider-runnable-track {
+    :host([disabled]) #thumb {
       background-color: #777;
     }
   </style>
   <div id="container">
-    <div id="background"></div>
-    <div id="pointer"></div>
-    <div id="hoverzone"></div>
-    <input id="range" type="range" min="0" max="1000" step="any" value="0">
+    <div id="appearance">
+      <div id="background"></div>
+      <div id="track">
+        <div id="highlight"></div>
+        <div id="pointer"></div>
+        <div id="progress"></div>
+      </div>
+      <div id="thumb"></div>
+    </div>
+    <input id="range" type="range" min="0" max="1" step="any" value="0">
   </div>
 `;
 
@@ -233,8 +244,8 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-range-track-pointer-border-right - `border-right` of range track pointer.
  */
 class MediaChromeRange extends globalThis.HTMLElement {
-  thumbWidth;
   #mediaController;
+  #isInputTarget;
 
   static get observedAttributes() {
     return [
@@ -253,15 +264,13 @@ class MediaChromeRange extends globalThis.HTMLElement {
     }
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-block))`);
+    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
 
     this.container = this.shadowRoot.querySelector('#container');
+
     /** @type {Omit<HTMLInputElement, "value" | "min" | "max"> &
       * {value: number, min: number, max: number}} */
     this.range = this.shadowRoot.querySelector('#range');
-    this.range.addEventListener('input', this.updateBar.bind(this));
-
-    this.thumbWidth = parseInt(getComputedStyle(this).getPropertyValue('--media-range-thumb-width') || '10', 10);
   }
 
   #onFocusIn = () => {
@@ -294,8 +303,10 @@ class MediaChromeRange extends globalThis.HTMLElement {
     ) {
       if (newValue == null) {
         this.range.removeAttribute(attrName);
+        this.#enableUserEvents();
       } else {
         this.range.setAttribute(attrName, newValue);
+        this.#disableUserEvents();
       }
     }
   }
@@ -314,9 +325,13 @@ class MediaChromeRange extends globalThis.HTMLElement {
 
     this.shadowRoot.addEventListener('focusin', this.#onFocusIn);
     this.shadowRoot.addEventListener('focusout', this.#onFocusOut);
+
+    this.#enableUserEvents();
   }
 
   disconnectedCallback() {
+    this.#disableUserEvents();
+
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
@@ -330,71 +345,109 @@ class MediaChromeRange extends globalThis.HTMLElement {
     const rangeRect = this.range.getBoundingClientRect();
     let mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
     // Lock between 0 and 1
-    mousePercent = Math.max(0, Math.min(1, mousePercent));
+    mousePercent = Math.max(0, Math.min(1, mousePercent)) * 100;
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#pointer');
-    style.setProperty('width', `${mousePercent * rangeRect.width}px`);
+    style.setProperty('width', `${mousePercent}%`);
   }
 
-  /*
-    Native ranges have a single color for the whole track, which is different
-    from most video players that have a colored "bar" to the left of the handle
-    showing playback progress or volume level. Here we're building that bar
-    by using a background gradient that moves with the range value.
-  */
   updateBar() {
-    const colorArray = this.getBarColors();
+    const rangePercent = this.range.valueAsNumber * 100;
 
-    let gradientStr = 'linear-gradient(to right, ';
-    /** @type {number|string} */
-    let prevPercent = 0;
-    colorArray.forEach((color) => {
-      if (color[1] < prevPercent) return;
-      gradientStr =
-        gradientStr + `${color[0]} ${prevPercent}%, ${color[0]} ${color[1]}%,`;
-      prevPercent = color[1];
-    });
-    gradientStr = gradientStr.slice(0, gradientStr.length - 1) + ')';
+    const progressRule = getOrInsertCSSRule(this.shadowRoot, '#progress');
+    const thumbRule = getOrInsertCSSRule(this.shadowRoot, '#thumb');
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#range');
-    style.setProperty('--media-range-track-progress-internal', gradientStr);
+    progressRule.style.setProperty('width', `${rangePercent}%`);
+    thumbRule.style.setProperty('left', `${rangePercent}%`);
   }
 
-  getRelativeValues() {
-    const { range } = this;
-    return {
-      relativeValue: range.value - range.min,
-      relativeMax: range.max - range.min,
-    };
+  get dragging() {
+    return this.hasAttribute('dragging');
   }
 
-  /*
-    Build the color gradient for the range bar.
-    Creating an array so progress-bar can insert the buffered bar.
-  */
-  getBarColors() {
-    const range = this.range;
-    const {
-      relativeValue,
-      relativeMax,
-    } = this.getRelativeValues();
-    const rangePercent = (relativeValue / relativeMax) * 100;
+  #enableUserEvents() {
+    if (this.hasAttribute('disabled')) return;
 
-    let thumbPercent = 0;
-    // If the range thumb is at min or max don't correct the time range.
-    // Ideally the thumb center would go all the way to min and max values
-    // but input[type=range] doesn't play like that.
-    if (!!relativeValue && relativeValue < relativeMax) {
-      const thumbOffset = this.thumbWidth * (0.5 - rangePercent / 100);
-      thumbPercent = (thumbOffset / range.offsetWidth) * 100;
+    this.addEventListener('input', this);
+    this.addEventListener('pointerdown', this);
+    this.addEventListener('pointerenter', this);
+  }
+
+  #disableUserEvents() {
+    this.removeEventListener('input', this);
+    this.removeEventListener('pointerdown', this);
+    this.removeEventListener('pointerenter', this);
+    globalThis.window?.removeEventListener('pointerup', this);
+    globalThis.window?.removeEventListener('pointermove', this);
+  }
+
+  handleEvent(evt) {
+    switch (evt.type) {
+      case 'input':
+        this.updateBar();
+        break;
+      case 'pointerenter':
+        this.#handlePointerEnter(evt);
+        break;
+      case 'pointerdown':
+        this.#handlePointerDown(evt);
+        break;
+      case 'pointermove':
+        this.#handlePointerMove(evt);
+        break;
+      case 'pointerup':
+        this.#handlePointerUp();
+        break;
+      case 'pointerleave':
+        this.#handlePointerLeave();
+        break;
     }
+  }
 
-    let colorArray = [
-      ['var(--media-range-bar-color, var(--media-primary-color, rgb(238 238 238)))', rangePercent + thumbPercent],
-      ['var(--media-range-track-color, transparent)', 100],
-    ];
+  #handlePointerDown(evt) {
+    // Events outside the range element are handled manually below.
+    this.#isInputTarget = evt.composedPath().includes(this.range);
 
-    return colorArray;
+    globalThis.window?.addEventListener('pointerup', this);
+  }
+
+  #handlePointerEnter(evt) {
+    // On mobile a pointerdown is not required to drag the range.
+    if (evt.pointerType !== 'mouse') this.#handlePointerDown(evt);
+
+    this.addEventListener('pointerleave', this);
+    globalThis.window?.addEventListener('pointermove', this);
+  }
+
+  #handlePointerUp() {
+    globalThis.window?.removeEventListener('pointerup', this);
+    this.toggleAttribute('dragging', false);
+    this.range.disabled = this.hasAttribute('disabled');
+  }
+
+  #handlePointerLeave() {
+    this.removeEventListener('pointerleave', this);
+    globalThis.window?.removeEventListener('pointermove', this);
+    this.toggleAttribute('dragging', false);
+    this.range.disabled = this.hasAttribute('disabled');
+  }
+
+  #handlePointerMove(evt) {
+    this.toggleAttribute('dragging', evt.buttons === 1 || evt.pointerType !== 'mouse');
+    this.updatePointerBar(evt);
+
+    // If the native input target & events are used don't fire manual input events.
+    if (this.dragging && (evt.pointerType !== 'mouse' || !this.#isInputTarget)) {
+      // Disable native input events if manual events are fired.
+      this.range.disabled = true;
+
+      const rangeRect = this.range.getBoundingClientRect();
+      let pointerRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
+      pointerRatio = Math.max(0, Math.min(1, pointerRatio));
+
+      this.range.valueAsNumber = pointerRatio;
+      this.range.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+    }
   }
 
   get keysUsed() {
