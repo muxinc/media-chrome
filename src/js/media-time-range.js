@@ -3,6 +3,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
+import { isElementVisible } from './utils/element-utils.js';
 import { RangeAnimation } from './utils/range-animation.js';
 import {
   getOrInsertCSSRule,
@@ -253,6 +254,7 @@ class MediaTimeRange extends MediaChromeRange {
     this.#boxPaddingRight = parseInt(computedStyle.getPropertyValue('--media-box-padding-right'));
 
     this.#animation = new RangeAnimation(this.range, this.#updateRange, 60);
+    this.addEventListener('transitionstart', this);
   }
 
   connectedCallback() {
@@ -301,7 +303,11 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   #shouldRangeAnimate() {
-    return this.isConnected && !this.mediaPaused && !this.mediaLoading && !this.mediaEnded;
+    return this.isConnected
+      && isElementVisible(this)
+      && !this.mediaPaused
+      && !this.mediaLoading
+      && !this.mediaEnded;
   }
 
   #updateRange = (value) => {
@@ -534,6 +540,10 @@ class MediaTimeRange extends MediaChromeRange {
       case 'pointerup':
       case 'pointerleave':
         this.#previewRequest(null);
+        break;
+      case 'transitionstart':
+        // Wait a tick to be sure the transition has started. Required for Safari.
+        setTimeout(() => this.#toggleRangeAnimation(), 0);
         break;
     }
   }

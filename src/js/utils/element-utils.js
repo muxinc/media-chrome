@@ -39,6 +39,24 @@ export function getActiveElement(root = document) {
 }
 
 /**
+ * Checks if the element is visible includes opacity: 0 and visibility: hidden.
+ * @param  {HTMLElement} el
+ * @return {Boolean}
+ */
+export function isElementVisible(el) {
+  // Supported by Chrome and Firefox https://caniuse.com/mdn-api_element_checkvisibility
+  // https://drafts.csswg.org/cssom-view-1/#dom-element-checkvisibility
+  // @ts-ignore
+  if (el.checkVisibility) {
+    // @ts-ignore
+    return el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
+  }
+  // Check if the element or its parent is hidden.
+  // This doesn't go up the tree further than the parent because getComputedStyle is expensive.
+  return getComputedStyle(el).opacity != '0' && getComputedStyle(el.parentElement).opacity != '0';
+}
+
+/**
  * Get or insert a CSS rule with a selector in an element containing <style> tags.
  * @param  {Element|ShadowRoot} styleParent
  * @param  {string} selectorText
