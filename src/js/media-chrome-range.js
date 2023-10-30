@@ -377,6 +377,8 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.removeEventListener('input', this);
     this.removeEventListener('pointerdown', this);
     this.removeEventListener('pointerenter', this);
+    globalThis.window?.removeEventListener('pointerup', this);
+    globalThis.window?.removeEventListener('pointermove', this);
   }
 
   handleEvent(evt) {
