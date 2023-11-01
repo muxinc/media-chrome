@@ -355,6 +355,17 @@ export const MediaUIStates = {
     },
     mediaEvents: ['enterpictureinpicture', 'leavepictureinpicture'],
   },
+  MEDIA_IS_AIRPLAYING: {
+    get: function (controller) {
+      const { media } = controller;
+
+      if (!media?.remote || media.remote?.state === 'disconnected') return false;
+
+      return media.remote.state;
+    },
+    // Add playing because random disconnects happen after closing AirPlay menu.
+    remoteEvents: ['playing', 'connect', 'connecting', 'disconnect'],
+  },
   MEDIA_IS_CASTING: {
     // Note this relies on a customized castable-video element.
     get: function (controller) {
@@ -799,13 +810,6 @@ export const MediaUIRequestHandlers = {
   },
   MEDIA_AIRPLAY_REQUEST: (media) => {
     if (!media?.remote) return;
-
-    // Safari 16.5 desktop has a bug where remote.prompt() does not work
-    // without playing the video first. Prefer the old method if available.
-    if (media.webkitShowPlaybackTargetPicker) {
-      media.webkitShowPlaybackTargetPicker();
-      return;
-    }
 
     if (!media.remote.prompt) {
       console.warn('MediaChrome: AirPlay is not supported in this environment');

@@ -46,6 +46,7 @@ export const MediaUIProps = {
   MEDIA_VOLUME_UNAVAILABLE: 'mediaVolumeUnavailable',
   MEDIA_IS_PIP: 'mediaIsPip',
   MEDIA_IS_CASTING: 'mediaIsCasting',
+  MEDIA_IS_AIRPLAYING: 'mediaIsAirplaying',
   MEDIA_SUBTITLES_LIST: 'mediaSubtitlesList',
   MEDIA_SUBTITLES_SHOWING: 'mediaSubtitlesShowing',
   MEDIA_IS_FULLSCREEN: 'mediaIsFullscreen',
