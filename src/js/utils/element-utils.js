@@ -143,6 +143,26 @@ export function distance(p1, p2) {
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
+const rectCache = new WeakMap();
+
+/**
+ * Get the cached bounding client rect of an element with a configurable cache expiration time.
+ * Animations at 12fps are smooth enough for human perception.
+ * @param {Element} element
+ * @param {number} [time = 1000 / 12]
+ * @returns {DOMRect}
+ */
+export function cachedBoundingClientRect(element, time = 1000 / 12) {
+  if (!rectCache.has(element)) rectCache.set(element, {});
+
+  const cached = rectCache.get(element);
+  if (!cached.t || performance.now() - cached.t > time) {
+    cached.rect = element.getBoundingClientRect();
+    cached.t = performance.now();
+  }
+  return cached.rect;
+}
+
 /**
  * Get or insert a CSSStyleRule with a selector in an element containing <style> tags.
  * @param  {Element|ShadowRoot} styleParent
