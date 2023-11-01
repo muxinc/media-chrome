@@ -187,7 +187,7 @@ class MediaController extends MediaContainer {
       const handler = this._mediaStatePropagators[key];
 
       if (mediaSetCallback) {
-        mediaSetCallback(media, handler)
+        mediaSetCallback(media, handler);
         handler();
       }
 
@@ -280,7 +280,7 @@ class MediaController extends MediaContainer {
       });
 
       if (mediaUnsetCallback) {
-        mediaUnsetCallback(media, handler)
+        mediaUnsetCallback(media, handler);
         handler();
       }
     });

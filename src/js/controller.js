@@ -369,7 +369,7 @@ export const MediaUIStates = {
   MEDIA_AIRPLAY_UNAVAILABLE: {
     // NOTE: only adding this if airplay is supported, in part to avoid unnecessary battery consumption per
     // Apple docs recommendations (See: https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls)
-    get: function (controller, availability) {
+    get: function (controller, { availability = false } = {}) {
       if (!airplaySupported) return AvailabilityStates.UNSUPPORTED;
 
       // NOTE: since we invoke all these event handlers without arguments whenever a media is attached,
@@ -380,14 +380,14 @@ export const MediaUIStates = {
       return AvailabilityStates.UNAVAILABLE;
     },
     mediaSetCallback(media, callback) {
-      media.remote?.watchAvailability(callback);
+      media.remote?.watchAvailability((availability) => callback({ availability }));
     },
     mediaUnsetCallback(media) {
       media.remote?.cancelWatchAvailability();
     },
   },
   MEDIA_CAST_UNAVAILABLE: {
-    get: function (controller, availability) {
+    get: function (controller, { availability = false } = {}) {
       const { media } = controller;
 
       if (!castSupported || !media?.remote?.state) {
@@ -399,7 +399,7 @@ export const MediaUIStates = {
       return AvailabilityStates.UNAVAILABLE;
     },
     mediaSetCallback(media, callback) {
-      media.remote?.watchAvailability(callback);
+      media.remote?.watchAvailability((availability) => callback({ availability }));
     },
     mediaUnsetCallback(media) {
       media.remote?.cancelWatchAvailability();
