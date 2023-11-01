@@ -114,6 +114,7 @@ template.innerHTML = /*html*/`
       justify-content: center;
       width: 100%;
       position: absolute;
+      ${/* Required for Safari to stop glitching track height on hover */''}
       will-change: transform;
     }
 
@@ -167,10 +168,12 @@ template.innerHTML = /*html*/`
       opacity: 0;
     }
 
-    :host(:hover) #pointer {
-      transition: visibility .5s, opacity .5s;
-      visibility: visible;
-      opacity: 1;
+    @media (hover: hover) {
+      :host(:hover) #pointer {
+        transition: visibility .5s, opacity .5s;
+        visibility: visible;
+        opacity: 1;
+      }
     }
 
     #thumb {
@@ -294,7 +297,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
   #startpoint;
   #endpoint;
   #segments = [];
-  #activeSegmentCSSRule;
+  #cssRules = {};
 
   static get observedAttributes() {
     return [
@@ -315,7 +318,10 @@ class MediaChromeRange extends globalThis.HTMLElement {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
 
-    this.#activeSegmentCSSRule = insertCSSRule(this.shadowRoot, '#segments-clipping rect:nth-child(0)');
+    this.#cssRules.pointer = getOrInsertCSSRule(this.shadowRoot, '#pointer');
+    this.#cssRules.progress = getOrInsertCSSRule(this.shadowRoot, '#progress');
+    this.#cssRules.thumb = getOrInsertCSSRule(this.shadowRoot, '#thumb');
+    this.#cssRules.activeSegment = insertCSSRule(this.shadowRoot, '#segments-clipping rect:nth-child(0)');
 
     this.container = this.shadowRoot.querySelector('#container');
     this.#startpoint = this.shadowRoot.querySelector('#startpoint');
@@ -402,18 +408,13 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   updatePointerBar(evt) {
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#pointer');
-    style.setProperty('width', `${this.#getPointerRatio(evt) * 100}%`);
+    this.#cssRules.pointer.style.setProperty('width', `${this.#getPointerRatio(evt) * 100}%`);
   }
 
   updateBar() {
     const rangePercent = this.range.valueAsNumber * 100;
-
-    const progressRule = getOrInsertCSSRule(this.shadowRoot, '#progress');
-    const thumbRule = getOrInsertCSSRule(this.shadowRoot, '#thumb');
-
-    progressRule.style.setProperty('width', `${rangePercent}%`);
-    thumbRule.style.setProperty('left', `${rangePercent}%`);
+    this.#cssRules.progress.style.setProperty('width', `${rangePercent}%`);
+    this.#cssRules.thumb.style.setProperty('left', `${rangePercent}%`);
   }
 
   updateSegments(segments) {
@@ -455,13 +456,11 @@ class MediaChromeRange extends globalThis.HTMLElement {
     });
 
     const selectorText = `#segments-clipping rect:nth-child(${segmentIndex + 1})`;
+    const rule = this.#cssRules.activeSegment;
 
-    if (
-      this.#activeSegmentCSSRule.selectorText != selectorText
-      || !this.#activeSegmentCSSRule.style.transform
-    ) {
-      this.#activeSegmentCSSRule.selectorText = selectorText;
-      this.#activeSegmentCSSRule.style.setProperty(
+    if (rule.selectorText != selectorText || !rule.style.transform) {
+      rule.selectorText = selectorText;
+      rule.style.setProperty(
         'transform',
         'var(--media-range-segment-hover-transform, scaleY(2))'
       );
@@ -500,6 +499,9 @@ class MediaChromeRange extends globalThis.HTMLElement {
 
   handleEvent(evt) {
     switch (evt.type) {
+      case 'pointermove':
+        this.#handlePointerMove(evt);
+        break;
       case 'input':
         this.updateBar();
         break;
@@ -508,9 +510,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
         break;
       case 'pointerdown':
         this.#handlePointerDown(evt);
-        break;
-      case 'pointermove':
-        this.#handlePointerMove(evt);
         break;
       case 'pointerup':
         this.#handlePointerUp();
@@ -547,7 +546,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
     globalThis.window?.removeEventListener('pointermove', this);
     this.toggleAttribute('dragging', false);
     this.range.disabled = this.hasAttribute('disabled');
-    this.#activeSegmentCSSRule.style.removeProperty('transform');
+    this.#cssRules.activeSegment.style.removeProperty('transform');
   }
 
   #handlePointerMove(evt) {

@@ -50,6 +50,7 @@ template.innerHTML = /*html*/`
       left: 0;
       bottom: 100%;
       pointer-events: none;
+      will-change: transform;
     }
 
     [part~="box"] {
@@ -230,6 +231,7 @@ class MediaTimeRange extends MediaChromeRange {
   #rootNode;
   #animation;
   #boxes;
+  #previewTime;
   #previewBox;
   #currentBox;
   #boxPaddingLeft;
@@ -597,7 +599,12 @@ class MediaTimeRange extends MediaChromeRange {
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
     style.transform = `translateX(${boxPos})`;
 
-    this.#previewRequest(pointerRatio * duration);
+    // At least require a 1s difference before requesting a new preview thumbnail.
+    const diff = Math.round(this.#previewTime) - Math.round(pointerRatio * duration);
+    if (Math.abs(diff) < 1) return;
+
+    this.#previewTime = pointerRatio * duration;
+    this.#previewRequest(this.#previewTime);
   }
 
   #previewRequest(detail) {
