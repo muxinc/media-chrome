@@ -38,19 +38,22 @@ template.innerHTML = /*html*/`
       background: var(--media-control-hover-background, rgb(50 50 70 / .7));
     }
 
+    #leftgap {
+      padding-left: var(--media-range-padding-left, var(--_media-range-padding));
+    }
+
+    #rightgap {
+      padding-right: var(--media-range-padding-right, var(--_media-range-padding));
+    }
+
     #container {
       ${/* Not using the CSS `padding` prop makes it easier for slide open volume ranges so the width can be zero. */''}
-      width: calc(
-        var(--media-range-track-width, 100%)
-        - var(--media-range-padding-left, var(--_media-range-padding))
-        - var(--media-range-padding-right, var(--_media-range-padding)));
-      transform: translate(
-        calc(var(--media-range-track-translate-x, 0px) + var(--media-range-padding-left, var(--_media-range-padding))),
-        var(--media-range-track-translate-y, 0px));
+      width: var(--media-range-track-width, 100%);
+      transform: translate(var(--media-range-track-translate-x, 0px), var(--media-range-track-translate-y, 0px));
+      position: relative;
       height: 100%;
       display: flex;
       align-items: center;
-      position: relative;
       min-width: 40px;
     }
 
@@ -176,6 +179,7 @@ template.innerHTML = /*html*/`
       background-color: #777;
     }
   </style>
+  <div id="leftgap"></div>
   <div id="container">
     <div id="appearance">
       <div id="background"></div>
@@ -188,6 +192,7 @@ template.innerHTML = /*html*/`
     </div>
     <input id="range" type="range" min="0" max="1" step="any" value="0">
   </div>
+  <div id="rightgap"></div>
 `;
 
 /**
