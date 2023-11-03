@@ -1,3 +1,12 @@
+## [1.5.1](https://github.com/muxinc/media-chrome/compare/v1.5.0...v1.5.1) (2023-11-03)
+
+
+### Bug Fixes
+
+* calc padding CSS var issue ([#757](https://github.com/muxinc/media-chrome/issues/757)) ([2429f21](https://github.com/muxinc/media-chrome/commit/2429f2183107228d828f1ea2d4bb964f1e9747b3))
+
+
+
 # [1.5.0](https://github.com/muxinc/media-chrome/compare/v1.4.5...v1.5.0) (2023-10-30)
 
 
