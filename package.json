@@ -1,6 +1,6 @@
 {
   "name": "media-chrome",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
   "author": "@muxinc",
   "license": "MIT",
