@@ -157,6 +157,10 @@ template.innerHTML = /*html*/`
       transition: opacity 1s;
     }
 
+    :host([${Attributes.USER_INACTIVE}]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${Attributes.AUDIO}])) ::slotted([slot=media]) {
+      cursor: none;
+    }
+
     ::slotted(media-control-bar)  {
       align-self: stretch;
     }
