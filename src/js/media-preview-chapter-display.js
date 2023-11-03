@@ -2,7 +2,7 @@ import MediaTextDisplay from './media-text-display.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
 
-class MediaChapterDisplay extends MediaTextDisplay {
+class MediaPreviewChapterDisplay extends MediaTextDisplay {
   #slot;
 
   static get observedAttributes() {
@@ -25,14 +25,14 @@ class MediaChapterDisplay extends MediaTextDisplay {
       // Only update if it changed, preview events are called a few times per second.
       if (newValue !== this.#slot.textContent) {
         this.#slot.textContent = newValue;
-        this.setAttribute('aria-valuetext', newValue);
+        this.setAttribute('aria-valuetext', `chapter: "${newValue}"`);
       }
     }
   }
 }
 
-if (!globalThis.customElements.get('media-chapter-display')) {
-  globalThis.customElements.define('media-chapter-display', MediaChapterDisplay);
+if (!globalThis.customElements.get('media-preview-chapter-display')) {
+  globalThis.customElements.define('media-preview-chapter-display', MediaPreviewChapterDisplay);
 }
 
-export default MediaChapterDisplay;
+export default MediaPreviewChapterDisplay;

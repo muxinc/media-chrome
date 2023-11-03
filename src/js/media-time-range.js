@@ -2,7 +2,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaChromeRange } from './media-chrome-range.js';
 import './media-preview-thumbnail.js';
 import './media-preview-time-display.js';
-import './media-chapter-display.js';
+import './media-preview-chapter-display.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
@@ -152,20 +152,20 @@ template.innerHTML = /*html*/`
       --media-time-range-hover-display: block;
     }
 
-    media-chapter-display {
+    media-preview-chapter-display {
       display: none;
       padding: 0;
       min-width: 100%;
     }
 
-    media-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}] {
+    media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}] {
       display: initial;
     }
   </style>
   <div id="preview-rail">
     <slot name="preview" part="box preview-box">
       <media-preview-thumbnail></media-preview-thumbnail>
-      <media-chapter-display></media-chapter-display>
+      <media-preview-chapter-display></media-preview-chapter-display>
       <media-preview-time-display></media-preview-time-display>
     </slot>
   </div>
