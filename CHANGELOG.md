@@ -1,3 +1,12 @@
+## [1.5.2](https://github.com/muxinc/media-chrome/compare/v1.5.1...v1.5.2) (2023-11-03)
+
+
+### Bug Fixes
+
+* hide cursor on media when controls fade out ([#758](https://github.com/muxinc/media-chrome/issues/758)) ([bbc81d7](https://github.com/muxinc/media-chrome/commit/bbc81d756e6958d9aa1424b92de4eddb55d775e2)), closes [#756](https://github.com/muxinc/media-chrome/issues/756)
+
+
+
 ## [1.5.1](https://github.com/muxinc/media-chrome/compare/v1.5.0...v1.5.1) (2023-11-03)
 
 
