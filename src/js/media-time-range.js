@@ -154,10 +154,8 @@ template.innerHTML = /*html*/`
 
     media-chapter-display {
       display: none;
-      padding: 0;transition-delay: var(--media-preview-transition-delay-in, .25s);
+      padding: 0;
       min-width: 100%;
-      border-radius: var(--media-preview-time-border-radius,
-        0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
     }
 
     media-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}] {

@@ -25,10 +25,11 @@ class MediaPreviewTimeDisplay extends MediaTextDisplay {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (attrName === MediaUIAttributes.MEDIA_PREVIEW_TIME && newValue != null) {
       this.#slot.textContent = formatTime(newValue);
     }
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**
