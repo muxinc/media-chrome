@@ -7,7 +7,7 @@ import Cta from "./components/cta";
 import PlayerPanel from "./components/player-panel";
 import Hero from "./components/hero";
 import Description from "./components/description";
-import { MediaChromeListItem } from "../../types";
+import type { MediaChromeListItem } from "../../types";
 import SourcePanel from "./components/source-panel";
 import Toggle from "./components/toggle";
 import ComponentsList from "./components/components-list";

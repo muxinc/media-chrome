@@ -1,5 +1,6 @@
+/** @jsxImportSource react */
 import React from "react";
-import { MediaChromeListItem } from "../../../types";
+import type { MediaChromeListItem } from "../../../types";
 
 const toAttrsStrings = (
   htmlAttrs: { [k: string]: string | boolean | undefined } = {}
