@@ -122,7 +122,7 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
     {rightSidebar === false && <style>
       @media (min-width: 72em) {
         .layout {
-          grid-template-columns: 18rem minmax(0, var(--max-width)) !important;
+          grid-template-columns: 18rem minmax(0, calc(var(--max-width) + 5rem)) !important;
         }
       }
     </style>}
