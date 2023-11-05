@@ -1,0 +1,73 @@
+---
+import type { GetStaticPathsOptions, Page } from "astro"
+import { type CollectionEntry, getCollection } from "astro:content"
+import MainLayout from "/src/layouts/MainLayout.astro"
+import ShowcaseCard from "./_components/ShowcaseCard.astro"
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const getWeight = (site: CollectionEntry<"showcase">) =>
+    site.data.featured ?? 1000 + Math.random()
+
+  // fetch all showcase sites and sort featured sites to the front, randomize the rest
+  const sortedShowcase = (await getCollection("showcase")).sort(
+    (a, b) => getWeight(a) - getWeight(b),
+  )
+
+  // seperate out sites that display with a larger thumbnail
+  const highlighted = sortedShowcase.filter((site) => site.data.highlight)
+
+  // build final showcase array by interleaving 1 highlighted item for every 4 non-highlighted items
+  const showcase = sortedShowcase.filter((site) => !site.data.highlight)
+  for (let i = 2; i < showcase.length; i += 5) {
+    const highlight = highlighted.shift()
+    if (!highlight) break
+    showcase.splice(i, 0, highlight)
+  }
+
+  return paginate(showcase, { pageSize: 30 })
+}
+
+const { page } = Astro.props as { page: Page<CollectionEntry<"showcase">> }
+const showcase = page.data
+
+const allPages = [...Array(page.lastPage).keys()].map((num) => {
+  return `/showcase${num === 0 ? "" : `/${String(num + 1)}`}`
+})
+
+const title = "Showcase"
+const description = "Explore Media Chrome in the wild."
+---
+
+<MainLayout
+  title={title}
+  description={description}
+  rightSidebar={false}
+>
+  <div class="hero relative">
+    <div class="grid-container">
+      <h1 class="sm:text-6xl leading-none tracking-tight mx-auto max-w-3xl pt-10 pb-20 text-center">
+        Explore Media Chrome
+      </h1>
+    </div>
+  </div>
+
+  <div class="grid-container relative">
+    <div class="grid gap-5 md:grid-flow-row-dense md:grid-cols-2 lg:grid-cols-3">
+      {showcase.map((site, i) => <ShowcaseCard site={site} />)}
+    </div>
+  </div>
+
+
+</MainLayout>
+
+<style>
+  .grid-container ul {
+    list-style: none;
+    padding: 0;
+    max-width: none;
+  }
+
+  .grid-container li {
+    margin: 0;
+  }
+</style>

@@ -17,10 +17,11 @@ type Props = {
   headings: MarkdownHeading[];
 };
 
-const { frontmatter, headings } = Astro.props as Props;
+const { frontmatter = {}, headings, rightSidebar } = Astro.props as Props;
 const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(/\/$/, '');
 const currentPage = Astro.url.pathname;
-const currentFile = `src/pages${currentPage.replace(/\/$/, '')}.${Astro.props.file.split('.').pop()}`;
+let currentFile = `src/pages${currentPage.replace(/\/$/, '')}`;
+if (Astro.props.file) currentFile += `.${Astro.props.file.split('.').pop()}`;
 const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
 ---
 
@@ -51,10 +52,10 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
       .layout {
         display: grid;
         grid-auto-flow: column;
-        grid-template-columns: minmax(var(--gutter), 1fr) minmax(
-            0,
-            var(--max-width)
-          ) minmax(var(--gutter), 1fr);
+        grid-template-columns:
+          minmax(var(--gutter), 1fr)
+          minmax(0, var(--max-width))
+          minmax(var(--gutter), 1fr);
         overflow-x: hidden;
       }
 
@@ -118,6 +119,13 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
         }
       }
     </style>
+    {rightSidebar === false && <style>
+      @media (min-width: 72em) {
+        .layout {
+          grid-template-columns: 18rem minmax(0, var(--max-width)) !important;
+        }
+      }
+    </style>}
     <style is:global>
       .layout > * {
         width: 100%;
@@ -153,9 +161,9 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
           <slot />
         </PageContent>
       </div>
-      <aside id="grid-right" class="grid-sidebar" title="Table of Contents">
+      {rightSidebar !== false && <aside id="grid-right" class="grid-sidebar" title="Table of Contents">
         <RightSidebar headings={headings} githubEditUrl={githubEditUrl} />
-      </aside>
+      </aside>}
     </main>
     <Footer path={currentFile} />
   </body>
