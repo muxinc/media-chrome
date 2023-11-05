@@ -49,7 +49,6 @@ const ThemeToggle = () => {
       {themes.map((t, i) => {
         const icon = icons[i];
         const checked = t === theme;
-        console.log(t, theme, checked);
         return (
           <label className={checked ? 'checked' : ''}>
             {icon}
