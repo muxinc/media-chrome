@@ -1,11 +1,12 @@
 /** @type {import('tailwindcss').Config} */
-const colors = require("tailwindcss/colors");
+import colors from 'tailwindcss/colors';
 
 const fuchsia = { ...colors.fuchsia, 25: "#fefaff" };
 const amber = { ...colors.amber, 225: "#FFE5C6" };
 
-module.exports = {
+export default {
 	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+  darkMode: ['class', '.theme-dark'],
   theme: {
     extend: {
       spacing: {

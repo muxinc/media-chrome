@@ -1,5 +1,3 @@
-/** @jsxImportSource preact */
-import type { FunctionalComponent } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import './ThemeToggleButton.css';
 
@@ -30,22 +28,18 @@ const icons = [
   </svg>,
 ];
 
-const ThemeToggle: FunctionalComponent = () => {
-  const [theme, setTheme] = useState(() => {
-    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
-      return localStorage.getItem('theme');
-    }
-    if (typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
-  });
+const ThemeToggle = () => {
+  const [theme, setTheme] = useState<'light' | 'dark'>();
+
+  useEffect(() => {
+    setTheme(document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light');
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
     if (theme === 'light') {
       root.classList.remove('theme-dark');
-    } else {
+    } else if (theme === 'dark') {
       root.classList.add('theme-dark');
     }
   }, [theme]);
@@ -55,6 +49,7 @@ const ThemeToggle: FunctionalComponent = () => {
       {themes.map((t, i) => {
         const icon = icons[i];
         const checked = t === theme;
+        console.log(t, theme, checked);
         return (
           <label className={checked ? 'checked' : ''}>
             {icon}
