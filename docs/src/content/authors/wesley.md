@@ -1,6 +1,6 @@
 ---
-"name": "Wesley Luyten"
-"title": ""
-"image": ""
-"twitter": "https://twitter.com/luwes"
+name: "Wesley Luyten"
+title: ""
+image: ""
+twitter: "https://twitter.com/luwes"
 ---

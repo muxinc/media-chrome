@@ -1,6 +1,6 @@
 ---
 import type { GetStaticPathsOptions, Page } from "astro"
-import { type CollectionEntry, getCollection } from "astro:content"
+import { type CollectionEntry, getCollection, getEntry } from "astro:content"
 import MainLayout from "/src/layouts/MainLayout.astro"
 import ShowcaseCard from "./_components/ShowcaseCard.astro"
 
@@ -18,6 +18,7 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
 
   // build final showcase array by interleaving 1 highlighted item for every 4 non-highlighted items
   const showcase = sortedShowcase.filter((site) => !site.data.highlight)
+
   for (let i = 2; i < showcase.length; i += 5) {
     const highlight = highlighted.shift()
     if (!highlight) break
@@ -33,6 +34,13 @@ const showcase = page.data
 const allPages = [...Array(page.lastPage).keys()].map((num) => {
   return `/showcase${num === 0 ? "" : `/${String(num + 1)}`}`
 })
+
+const blogrollEntries = await getCollection('blogroll');
+blogrollEntries.sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
+
+for (let entry of blogrollEntries) {
+  entry.data.author = await getEntry('authors', entry.data.authors[0]);
+}
 
 const title = "Showcase"
 const description = "Explore Media Chrome in the wild."
@@ -51,13 +59,30 @@ const description = "Explore Media Chrome in the wild."
     </div>
   </div>
 
-  <div class="grid-container relative">
+  <div class="grid-container relative mb-20">
     <div class="grid gap-5 md:grid-flow-row-dense md:grid-cols-2 lg:grid-cols-3">
       {showcase.map((site, i) => <ShowcaseCard site={site} />)}
     </div>
   </div>
 
-
+  <div class="blogroll">
+    <h2 class="text-3xl font-bold text-center mb-10">Talks and writing</h2>
+    <p class="mb-5">
+      Here are some resources that relate to the evolving ideas, development, & history of Media Chrome.
+    </p>
+    {blogrollEntries.map((entry) => (
+      <p class="my-2">
+        <a
+          href={entry.data.url}
+          rel="noopener"
+          target="_blank"
+        >
+          {entry.data.title}
+        </a>
+        – {entry.data.author?.data.name}, {entry.data.location}, {entry.data.date.getFullYear()}
+      </p>
+    ))}
+  </div>
 </MainLayout>
 
 <style>
