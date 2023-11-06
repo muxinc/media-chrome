@@ -1,0 +1,39 @@
+---
+import type { CollectionEntry } from "astro:content"
+import ExternalLinkIcon from "/src/icons/ExternalLinkIcon.jsx"
+import { Picture } from "astro:assets";
+
+export type Props = { site: CollectionEntry<"showcase"> }
+
+const { site } = Astro.props
+---
+
+<a
+  href={site.data.url}
+  rel="noopener"
+  target="_blank"
+  class="overflow-hidden text-black flex flex-col gap-0"
+>
+  <div
+    class="overflow-hidden flex flex-col justify-end items-center"
+    style="aspect-ratio: 16 / 10"
+  >
+    <Picture
+      src={site.data.image}
+      formats={['avif', 'webp']}
+      alt="Screenshot of {site.data.title}"
+      loading="lazy"
+      decoding="async"
+      pictureAttributes={{ class: "w-full h-full" }}
+      class="object-cover object-center"
+    />
+  </div>
+  <div class="border border-gray dark:border-black w-full px-3 py-3 md:px-5 text-black">
+    <p class="text-md font-bold">
+      {site.data.title}
+    </p>
+    <p class="text-sm">
+      {site.data.byline}
+    </p>
+  </div>
+</a>

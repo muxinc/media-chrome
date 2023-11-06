@@ -38,10 +38,27 @@ const createSROnlyLabel = (text) => {
 // https://astro.build/config
 export default defineConfig({
   site: `https://www.media-chrome.org/`,
+  redirects: {
+    '/showcase/submit': 'https://github.com/muxinc/media-chrome/discussions/760'
+  },
   integrations: [
     // Enable Preact to support Preact JSX components.
-    preact(), // Enable React for the Algolia search component.
-    react(),
+    preact({
+      include: [
+        './src/components/Header/SidebarToggle.tsx',
+        './src/components/Header/ThemeToggleButton.tsx',
+        './src/components/RightSidebar/TableOfContents.tsx',
+      ]
+    }),
+    // Enable React for the Algolia search component.
+    react({
+      include: ['**/*.{tsx,jsx}'],
+      exclude: [
+        './src/components/Header/SidebarToggle.tsx',
+        './src/components/Header/ThemeToggleButton.tsx',
+        './src/components/RightSidebar/TableOfContents.tsx',
+      ]
+    }),
     tailwind({
       // Example: Disable injecting a basic `base.css` import on every page.
       // Useful if you need to define and/or import your own custom `base.css`.

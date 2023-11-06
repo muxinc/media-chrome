@@ -1,3 +1,4 @@
+/** @jsxImportSource preact */
 import type { FunctionalComponent } from 'preact';
 import { useState, useEffect, useRef } from 'preact/hooks';
 import type { MarkdownHeading } from 'astro';

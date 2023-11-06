@@ -1,0 +1,133 @@
+---
+import type { GetStaticPathsOptions, Page } from "astro"
+import { type CollectionEntry, getCollection, getEntry } from "astro:content"
+import MainLayout from "/src/layouts/MainLayout.astro"
+import ShowcaseCard from "./_components/ShowcaseCard.astro"
+
+export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  const getWeight = (site: CollectionEntry<"showcase">) =>
+    site.data.featured ?? 1000 + Math.random()
+
+  // fetch all showcase sites and sort featured sites to the front, randomize the rest
+  const sortedShowcase = (await getCollection("showcase")).sort(
+    (a, b) => getWeight(a) - getWeight(b),
+  )
+
+  // seperate out sites that display with a larger thumbnail
+  const highlighted = sortedShowcase.filter((site) => site.data.highlight)
+
+  // build final showcase array by interleaving 1 highlighted item for every 4 non-highlighted items
+  const showcase = sortedShowcase.filter((site) => !site.data.highlight)
+
+  for (let i = 2; i < showcase.length; i += 5) {
+    const highlight = highlighted.shift()
+    if (!highlight) break
+    showcase.splice(i, 0, highlight)
+  }
+
+  return paginate(showcase, { pageSize: 30 })
+}
+
+const { page } = Astro.props as { page: Page<CollectionEntry<"showcase">> }
+const showcase = page.data
+
+const allPages = [...Array(page.lastPage).keys()].map((num) => {
+  return `/showcase${num === 0 ? "" : `/${String(num + 1)}`}`
+})
+
+const blogrollEntries = await getCollection('blogroll');
+blogrollEntries.sort((a, b) => new Date(b.data.date) - new Date(a.data.date));
+
+for (let entry of blogrollEntries) {
+  entry.data.author = await getEntry('authors', entry.data.authors[0]);
+}
+
+const title = "Showcase"
+const description = "Explore Media Chrome in the wild."
+---
+
+<MainLayout
+  title={title}
+  description={description}
+  rightSidebar={false}
+>
+  <div class="hero relative">
+    <div class="grid-container">
+      <h1 class="sm:text-6xl leading-none tracking-tight mx-auto max-w-3xl pt-10 pb-20 text-center">
+        Explore Media Chrome
+      </h1>
+    </div>
+  </div>
+
+  <div class="grid-container relative mb-20">
+    <div class="grid gap-5 md:grid-flow-row-dense md:grid-cols-2 lg:grid-cols-3">
+      {showcase.map((site, i) => <ShowcaseCard site={site} />)}
+    </div>
+  </div>
+
+  <aside
+    class="py-6 md:py-8 px-6 md:px-8 xl:px-10 flex flex-col lg:flex-row
+      items-center gap-6 lg:gap-10 text-center lg:text-start mb-20 border"
+  >
+    <div class="flex items-center gap-5">
+      <h2 class="heading-4 lg:whitespace-nowrap m-0">Submit your site</h2>
+    </div>
+    <p class="body mb-2 flex-1 lg:mb-0">
+      Anyone is welcome to submit a site for our Showcase.
+    </p>
+
+    <a
+      class="relative group/button inline-block mt-1"
+      href="/showcase/submit"
+      target="_blank"
+      rel="prefetch"
+    >
+      <span
+        class="min-h-10 flex items-center justify-center cursor-pointer px-10 py-3 text-center bg-putty border border-green-dark rounded-3xl user-select-none"
+      >
+        <span class="font-mono text-sm leading-mono font-normal uppercase">
+          Submit site
+        </span>
+      </span>
+      <span
+        class="absolute inset-0 min-h-10 flex items-center justify-center cursor-pointer px-10 py-3 text-center text-black bg-green border border-green-dark rounded-3xl transition-transform transform-gpu ease-in-out-energetic duration-short translate-y-0 group-hover/button:-translate-y-[5.25px] group-focus-visible/button:-translate-y-[5.25px] group-active/button:translate-y-0"
+        aria-hidden="true"
+      >
+        <span class="font-mono text-sm leading-mono font-normal uppercase">
+          Submit site
+        </span>
+      </span>
+    </a>
+  </aside>
+
+  <div class="blogroll">
+    <h2 class="text-4xl font-bold text-center mb-10 mx-auto">Talks and writing</h2>
+    <p class="mb-5 mx-auto">
+      Here are some resources that relate to the evolving ideas, development, & history of Media Chrome.
+    </p>
+    {blogrollEntries.map((entry) => (
+      <p class="my-2 mx-auto">
+        <a
+          href={entry.data.url}
+          rel="noopener"
+          target="_blank"
+        >
+          {entry.data.title}
+        </a>
+        – {entry.data.author?.data.name}, {entry.data.location}, {entry.data.date.getFullYear()}
+      </p>
+    ))}
+  </div>
+</MainLayout>
+
+<style>
+  .grid-container ul {
+    list-style: none;
+    padding: 0;
+    max-width: none;
+  }
+
+  .grid-container li {
+    margin: 0;
+  }
+</style>

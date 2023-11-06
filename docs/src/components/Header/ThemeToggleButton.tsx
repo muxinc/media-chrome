@@ -1,4 +1,3 @@
-import type { FunctionalComponent } from 'preact';
 import { useState, useEffect } from 'preact/hooks';
 import './ThemeToggleButton.css';
 
@@ -29,25 +28,18 @@ const icons = [
   </svg>,
 ];
 
-const ThemeToggle: FunctionalComponent = () => {
-  const [theme, setTheme] = useState(() => {
-    if (import.meta.env.SSR) {
-      return undefined;
-    }
-    if (typeof localStorage !== undefined && localStorage.getItem('theme')) {
-      return localStorage.getItem('theme');
-    }
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      return 'dark';
-    }
-    return 'light';
-  });
+const ThemeToggle = () => {
+  const [theme, setTheme] = useState<'light' | 'dark'>();
+
+  useEffect(() => {
+    setTheme(document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light');
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
     if (theme === 'light') {
       root.classList.remove('theme-dark');
-    } else {
+    } else if (theme === 'dark') {
       root.classList.add('theme-dark');
     }
   }, [theme]);
@@ -58,7 +50,7 @@ const ThemeToggle: FunctionalComponent = () => {
         const icon = icons[i];
         const checked = t === theme;
         return (
-          <label className={checked ? ' checked' : ''}>
+          <label className={checked ? 'checked' : ''}>
             {icon}
             <input
               type="radio"

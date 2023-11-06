@@ -1,9 +1,12 @@
 /** @jsxImportSource react */
-import { MediaChromeListItem } from "../../../types";
+import type { MediaChromeListItem } from "../../../types";
 import HtmlRenderer from "./html-renderer";
 import MediaChromeHtmlRenderer from "./media-chrome-html-renderer";
 
-const SourcePanel: React.FC<{ selectedItem?: MediaChromeListItem }> = ({
+const SourcePanel: React.FC<{
+  selectedItem?: MediaChromeListItem;
+  tabIndex?: number;
+}> = ({
   selectedItem,
 }) => {
   const { name: selectedName } = selectedItem ?? {};

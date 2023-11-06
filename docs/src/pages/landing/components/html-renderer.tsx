@@ -25,6 +25,7 @@ const HtmlRenderer: React.FC<{
   selectedName?: string;
   nameFormatter?: (name?: string) => string;
   htmlAttrs?: { [k: string]: string | boolean | undefined };
+  children?: React.ReactNode;
 }> = ({
   name,
   selectedName,
