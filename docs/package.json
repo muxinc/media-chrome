@@ -1,6 +1,7 @@
 {
   "name": "media-chrome-docs",
   "version": "0.0.1",
+  "type": "module",
   "private": true,
   "scripts": {
     "format": "prettier --write .",

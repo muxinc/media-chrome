@@ -1,3 +1,9 @@
 {
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/showcase/submit",
+      "destination": "https://github.com/muxinc/media-chrome/discussions/760"
+    }
+  ]
 }
