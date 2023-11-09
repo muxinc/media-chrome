@@ -110,6 +110,7 @@ export function distance(p1, p2) {
  * { style: {
  * setProperty: () => void,
  * removeProperty: () => void,
+ * getPropertyValue: () => string,
  * width?: string,
  * height?: string,
  * display?: string,
@@ -138,6 +139,7 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
       style: {
         setProperty: () => {},
         removeProperty: () => {},
+        getPropertyValue: () => '',
       },
     };
   }

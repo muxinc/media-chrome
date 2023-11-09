@@ -1,3 +1,5 @@
+export { MediaControlMenu } from './media-control-menu.js';
+export { MediaControlMenuButton } from './media-control-menu-button.js';
 export { MediaChromeListbox } from './media-chrome-listbox.js';
 export { MediaChromeOption } from './media-chrome-option.js';
 export { MediaChromeSelectMenu } from './media-chrome-selectmenu.js';

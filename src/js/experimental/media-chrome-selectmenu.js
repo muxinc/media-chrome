@@ -3,6 +3,7 @@ import './media-chrome-listbox.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import { containsComposedNode, closestComposedNode, getOrInsertCSSRule, getActiveElement } from '../utils/element-utils.js';
 import { observeResize, unobserveResize } from '../utils/resize-observer.js';
+import { ToggleEvent } from '../utils/events.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
 
 const template = document.createElement('template');
@@ -22,23 +23,25 @@ template.innerHTML = /*html*/`
 
   [name=listbox]::slotted(*),
   [part=listbox] {
-    position: absolute;
-    bottom: 100%;
-    max-height: 300px;
+    position: var(--media-selectmenu-listbox-position, absolute);
+    opacity: var(--media-selectmenu-listbox-opacity, 1);
+    max-height: var(--media-selectmenu-listbox-max-height, 300px);
+    visibility: var(--media-selectmenu-listbox-visibility, visible);
     transition: var(--media-selectmenu-transition-in,
       visibility 0s, transform .15s ease-out, opacity .15s ease-out);
-    transform: var(--media-listbox-transform-in, translateY(0) scale(1));
-    visibility: visible;
-    opacity: 1;
+    transform: var(--media-selectmenu-transform-in, translateY(0) scale(1));
+    bottom: 100%;
+    overflow: hidden;
   }
 
   [name=listbox][hidden]::slotted(*),
   [hidden] [part=listbox] {
+    opacity: var(--media-selectmenu-listbox-hidden-opacity, 0);
+    max-height: var(--media-selectmenu-listbox-hidden-max-height, var(--media-selectmenu-listbox-max-height, 300px));
+    visibility: var(--media-selectmenu-listbox-hidden-visibility, hidden);
     transition: var(--media-selectmenu-transition-out,
       visibility .15s ease-out, transform .15s ease-out, opacity .15s ease-out);
-    transform: var(--media-listbox-transform-out, translateY(2px) scale(.99));
-    visibility: hidden;
-    opacity: 0;
+    transform: var(--media-selectmenu-transform-out, translateY(2px) scale(.99));
     pointer-events: none;
   }
 
@@ -75,6 +78,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #buttonSlot;
   #listbox;
   #listboxSlot;
+  #hostStyle;
 
   static get observedAttributes() {
     return [
@@ -92,8 +96,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
+    this.#hostStyle = getOrInsertCSSRule(this.shadowRoot, ':host').style;
+    this.#hostStyle.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
 
     this.init?.();
 
@@ -185,17 +189,33 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #show() {
     if (!this.#listboxSlot.hidden) return;
 
+    this.dispatchEvent(new ToggleEvent('beforetoggle', {
+      bubbles: true, composed: true,
+      oldState: 'closed', newState: 'open',
+    }));
+
     this.#listboxSlot.hidden = false;
     this.#button.setAttribute('aria-expanded', 'true');
+    this.setAttribute('aria-expanded', 'true');
 
     this.#updateMenuPosition();
     this.#listbox.focus();
 
     observeResize(getBoundsElement(this), this.#updateMenuPosition);
+
+    this.dispatchEvent(new ToggleEvent('toggle', {
+      bubbles: true, composed: true,
+      oldState: 'closed', newState: 'open',
+    }));
   }
 
   #hide() {
     if (this.#listboxSlot.hidden) return;
+
+    this.dispatchEvent(new ToggleEvent('beforetoggle', {
+      bubbles: true, composed: true,
+      oldState: 'open', newState: 'closed',
+    }));
 
     unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
 
@@ -203,10 +223,16 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 
     this.#listboxSlot.hidden = true;
     this.#button.setAttribute('aria-expanded', 'false');
+    this.removeAttribute('aria-expanded');
 
     if (containsComposedNode(this.#listbox, activeElement)) {
       this.#button.focus();
     }
+
+    this.dispatchEvent(new ToggleEvent('toggle', {
+      bubbles: true, composed: true,
+      oldState: 'open', newState: 'closed',
+    }));
   }
 
   #updateMenuPosition = () => {
@@ -241,7 +267,11 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     );
     this.#listbox.style.left = null;
     this.#listbox.style.right = `${position}px`;
-    this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height}px`;
+
+    this.#hostStyle.setProperty(
+      '--media-selectmenu-listbox-max-height',
+      `${boundsRect.height - buttonRect.height}px`
+    );
   }
 
   enable() {
