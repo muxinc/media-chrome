@@ -17,10 +17,10 @@ slotTemplate.innerHTML = /*html*/`
   <style>
     :host {
       min-width: 5ch;
-      padding: var(--media-control-padding, 10px 5px);
+      padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
     }
   </style>
-  <span id="container"></span>
+  <slot name="icon"></slot>
 `;
 
 /**
@@ -42,7 +42,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
-    this.container = this.shadowRoot.querySelector('#container');
+    this.container = this.shadowRoot.querySelector('slot[name="icon"]');
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }
 
