@@ -702,7 +702,7 @@ export const MediaUIRequestHandlers = {
       document.exitPictureInPicture();
     }
   },
-  MEDIA_ENTER_CAST_REQUEST: (media) => {
+  MEDIA_ENTER_CAST_REQUEST: async (media) => {
     if (media.remote?.state !== 'disconnected') return;
 
     // Exit fullscreen if needed
@@ -717,7 +717,11 @@ export const MediaUIRequestHandlers = {
 
     // Open the browser cast menu.
     // Note this relies on a customized castable-video element.
-    media.remote.prompt();
+    try {
+      await media.remote.prompt();
+    } catch {
+      // Don't warn here because catch is run when the user closes the cast menu.
+    }
   },
   MEDIA_EXIT_CAST_REQUEST: (media) => {
     if (media.remote?.state !== 'connected') return;
@@ -808,7 +812,7 @@ export const MediaUIRequestHandlers = {
     const { detail: tracksToUpdate = [] } = event;
     updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
   },
-  MEDIA_AIRPLAY_REQUEST: (media) => {
+  MEDIA_AIRPLAY_REQUEST: async (media) => {
     if (!media?.remote) return;
 
     if (!media.remote.prompt) {
@@ -816,7 +820,11 @@ export const MediaUIRequestHandlers = {
       return;
     }
 
-    media.remote.prompt();
+    try {
+      await media.remote.prompt();
+    } catch {
+      // Don't warn here because catch is run when the user closes the airplay menu.
+    }
   },
   MEDIA_SEEK_TO_LIVE_REQUEST: (media) => {
     const seekable = media.seekable;
