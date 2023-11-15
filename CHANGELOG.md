@@ -1,3 +1,12 @@
+## [1.5.3](https://github.com/muxinc/media-chrome/compare/v1.5.2...v1.5.3) (2023-11-15)
+
+
+### Bug Fixes
+
+* Android toggle controls on tapping ([#766](https://github.com/muxinc/media-chrome/issues/766)) ([74d890f](https://github.com/muxinc/media-chrome/commit/74d890f5a319e866b0a5948e5debda89b1231230))
+
+
+
 ## [1.5.2](https://github.com/muxinc/media-chrome/compare/v1.5.1...v1.5.2) (2023-11-03)
 
 
