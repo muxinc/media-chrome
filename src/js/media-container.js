@@ -518,7 +518,7 @@ class MediaContainer extends globalThis.HTMLElement {
       // On mobile we toggle the controls on a tap which is handled in pointerup,
       // but Android fires pointermove events even when the user is just tapping.
       // Prevent calling setActive() on tap because it will mess with the toggle logic.
-      const MAX_TAP_DURATION = 200;
+      const MAX_TAP_DURATION = 250;
       // If the move duration exceeds 200ms then it's a drag and we should show the controls.
       if (event.timeStamp - this.#pointerDownTimeStamp < MAX_TAP_DURATION) return;
     }
