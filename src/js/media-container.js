@@ -265,6 +265,7 @@ class MediaContainer extends globalThis.HTMLElement {
       ].includes(name));
   }
 
+  #pointerDownTimeStamp = 0;
   breakpointsComputed = false;
 
   constructor() {
@@ -477,98 +478,116 @@ class MediaContainer extends globalThis.HTMLElement {
     // This allows things like autoplay and programmatic playing to also initiate hiding controls (CJP)
     this.setAttribute(Attributes.USER_INACTIVE, '');
 
-    const setInactive = () => {
-      if (this.autohide < 0) return;
-      if (this.hasAttribute(Attributes.USER_INACTIVE)) return;
+    this.addEventListener('pointerdown', this);
+    this.addEventListener('pointermove', this);
+    this.addEventListener('pointerup', this);
+    this.addEventListener('mouseleave', this);
+    this.addEventListener('keyup', this);
 
-      this.setAttribute(Attributes.USER_INACTIVE, '');
-
-      const evt = new globalThis.CustomEvent(
-        MediaStateChangeEvents.USER_INACTIVE,
-        { composed: true, bubbles: true, detail: true }
-      );
-      this.dispatchEvent(evt);
-    };
-
-    const setActive = () => {
-      if (!this.hasAttribute(Attributes.USER_INACTIVE)) return;
-
-      this.removeAttribute(Attributes.USER_INACTIVE);
-
-      const evt = new globalThis.CustomEvent(
-        MediaStateChangeEvents.USER_INACTIVE,
-        { composed: true, bubbles: true, detail: false }
-      );
-      this.dispatchEvent(evt);
-    }
-
-    const scheduleInactive = () => {
-      setActive();
-
-      clearTimeout(this._inactiveTimeout);
-
-      // Setting autohide to -1 turns off autohide
-      if (this.autohide < 0) return;
-
-      /** @type {ReturnType<typeof setTimeout>} */
-      this._inactiveTimeout = setTimeout(() => {
-        setInactive();
-      }, this.autohide * 1000);
-    };
-
-    // Unhide for keyboard controlling
-    this.addEventListener('keyup', () => {
-      scheduleInactive();
-    });
-
-    // when we get a tap, we want to unhide
-    this.addEventListener('pointerup', (e) => {
-      if (e.pointerType === 'touch') {
-        if (
-          // @ts-ignore
-          [this, this.media].includes(e.target) &&
-          !this.hasAttribute(Attributes.USER_INACTIVE)
-        ) {
-          setInactive();
-        } else {
-          scheduleInactive();
-        }
-      } else if (
-        e.composedPath().some((el) =>
-          ['media-play-button', 'media-fullscreen-button'].includes(
-            // @ts-ignore
-            el?.nodeName?.toLowerCase()
-          )
-        )
-      ) {
-        scheduleInactive();
-      }
-    });
-
-    this.addEventListener('pointermove', (e) => {
-      setActive();
-      // Stay visible if hovered over control bar
-      clearTimeout(this._inactiveTimeout);
-
-      // If hovering over something other than controls, we're free to make inactive
-      // @ts-ignore
-      if ([this, this.media].includes(e.target)) {
-        scheduleInactive();
-      }
-    });
-
-    // Immediately hide if mouse leaves the container
-    this.addEventListener('mouseleave', () => {
-      setInactive();
-    });
-
-    // Allow for focus styles only when using the keyboard to navigate
-    this.addEventListener('keyup', () => {
-      this.setAttribute(Attributes.KEYBOARD_CONTROL, '');
-    });
     globalThis.window?.addEventListener('mouseup', () => {
       this.removeAttribute(Attributes.KEYBOARD_CONTROL);
     });
+  }
+
+  handleEvent(event) {
+    switch (event.type) {
+      case 'pointerdown':
+        this.#pointerDownTimeStamp = event.timeStamp;
+        break;
+      case 'pointermove':
+        this.#handlePointerMove(event);
+        break;
+      case 'pointerup':
+        this.#handlePointerUp(event);
+        break;
+      case 'mouseleave':
+        // Immediately hide if mouse leaves the container.
+        this.#setInactive();
+        break;
+      case 'keyup':
+        // Unhide for keyboard controlling.
+        this.#scheduleInactive();
+        // Allow for focus styles only when using the keyboard to navigate.
+        this.setAttribute(Attributes.KEYBOARD_CONTROL, '');
+        break;
+    }
+  }
+
+  #handlePointerMove(event) {
+    if (event.pointerType !== 'mouse') {
+      // On mobile we toggle the controls on a tap which is handled in pointerup,
+      // but Android fires pointermove events even when the user is just tapping.
+      // Prevent calling setActive() on tap because it will mess with the toggle logic.
+      const MAX_TAP_DURATION = 200;
+      // If the move duration exceeds 200ms then it's a drag and we should show the controls.
+      if (event.timeStamp - this.#pointerDownTimeStamp < MAX_TAP_DURATION) return;
+    }
+
+    this.#setActive();
+    // Stay visible if hovered over control bar
+    clearTimeout(this._inactiveTimeout);
+
+    // If hovering over something other than controls, we're free to make inactive
+    // @ts-ignore
+    if ([this, this.media].includes(event.target)) {
+      this.#scheduleInactive();
+    }
+  }
+
+  #handlePointerUp(event) {
+    if (event.pointerType === 'touch') {
+      const controlsVisible = !this.hasAttribute(Attributes.USER_INACTIVE);
+
+      if ([this, this.media].includes(event.target) && controlsVisible) {
+        this.#setInactive();
+      } else {
+        this.#scheduleInactive();
+      }
+    } else if (
+      event.composedPath().some((el) =>
+        ['media-play-button', 'media-fullscreen-button'].includes(el?.localName))
+    ) {
+      this.#scheduleInactive();
+    }
+  }
+
+  #setInactive() {
+    if (this.autohide < 0) return;
+    if (this.hasAttribute(Attributes.USER_INACTIVE)) return;
+
+    this.setAttribute(Attributes.USER_INACTIVE, '');
+
+    const evt = new globalThis.CustomEvent(
+      MediaStateChangeEvents.USER_INACTIVE,
+      { composed: true, bubbles: true, detail: true }
+    );
+    this.dispatchEvent(evt);
+  }
+
+  #setActive() {
+    if (!this.hasAttribute(Attributes.USER_INACTIVE)) return;
+
+    this.removeAttribute(Attributes.USER_INACTIVE);
+
+    const evt = new globalThis.CustomEvent(
+      MediaStateChangeEvents.USER_INACTIVE,
+      { composed: true, bubbles: true, detail: false }
+    );
+    this.dispatchEvent(evt);
+  }
+
+  #scheduleInactive() {
+    this.#setActive();
+
+    clearTimeout(this._inactiveTimeout);
+
+    // Setting autohide to -1 turns off autohide
+    if (this.autohide < 0) return;
+
+    /** @type {ReturnType<typeof setTimeout>} */
+    this._inactiveTimeout = setTimeout(() => {
+      this.#setInactive();
+    }, this.autohide * 1000);
   }
 
   set autohide(seconds) {
