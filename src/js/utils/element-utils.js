@@ -43,19 +43,35 @@ export function getActiveElement(root = document) {
  * @param  {HTMLElement} el
  * @return {Boolean}
  */
-export function isElementVisible(el) {
+export function isElementVisible(element, depth = 3) {
   // Supported by Chrome and Firefox https://caniuse.com/mdn-api_element_checkvisibility
   // https://drafts.csswg.org/cssom-view-1/#dom-element-checkvisibility
   // @ts-ignore
-  if (el.checkVisibility) {
+  if (element.checkVisibility) {
     // @ts-ignore
-    return el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
+    return element.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
   }
-  // Check if the element or its parent is hidden.
-  // This doesn't go up the tree further than the parent because getComputedStyle is expensive.
-  return getComputedStyle(el).opacity != '0' && getComputedStyle(el.parentElement).opacity != '0';
+  // Check if the element or its ancestors are hidden.
+  let el = element;
+  while (el && depth > 0) {
+    const style = getComputedStyle(el);
+    if (style.opacity === '0' || style.visibility === 'hidden' || style.display === 'none') {
+      return false;
+    }
+    el = el.parentElement;
+    depth--;
+  }
+  return true;
 }
 
+/**
+ * Get progress ratio of a point on a line segment.
+ * @param  {number} x
+ * @param  {number} y
+ * @param  {{ x: number, y: number }} p1
+ * @param  {{ x: number, y: number }} p2
+ * @return {number}
+ */
 export function getPointProgressOnLine(x, y, p1, p2) {
   const segment = distance(p1, p2);
   const toStart = distance(p1, { x, y });
@@ -67,7 +83,7 @@ export function getPointProgressOnLine(x, y, p1, p2) {
   return toStart / segment;
 }
 
-function distance(p1, p2) {
+export function distance(p1, p2) {
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
