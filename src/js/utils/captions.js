@@ -178,13 +178,20 @@ export const updateTracksModeTo = (mode, tracks = [], tracksToUpdate = []) => {
     return preds.some((pred) => pred(textTrack));
   };
 
-  Array.from(tracks)
-    // 1. Filter to only include tracks to update
-    .filter(isTrackToUpdate)
-    // 2. Update each of those tracks to the appropriate mode.
-    .forEach((textTrack) => {
-      textTrack.mode = mode;
-    });
+  // 1. Filter to only include tracks to update.
+  const updatingTracks = Array.from(tracks).filter(isTrackToUpdate);
+
+  // 2. Update each of those tracks to the appropriate mode.
+  updatingTracks.forEach((textTrack) => {
+    textTrack.mode = mode;
+  });
+
+  // 3. Set the first (typically, the only) track to be the new preferred subtitles language.
+  const [preferredTrack] = updatingTracks;
+  /** @TODO Figure out how to respect nosubtitlespref (CJP) */
+  if (preferredTrack?.language) {
+    globalThis.localStorage.setItem('media-chrome-pref-subtitles', preferredTrack.language);
+  }
 };
 
 /**
@@ -250,7 +257,7 @@ export const areSubsOn = (el) => {
  *
  * This was originally in media-captions-button.
  *
- * @param {HTMLElement} el - An HTMLElement that has caption related attributes on it.
+ * @param {HTMLElement & { mediaSubtitlesList?: any[] }} el - An HTMLElement that has caption related attributes on it.
  * @param {boolean} [force] - An optional boolean that will force captions to the given state. True for on and false for off
  */
 export const toggleSubsCaps = (el, force) => {
@@ -271,16 +278,31 @@ export const toggleSubsCaps = (el, force) => {
       el.dispatchEvent(evt);
     }
   } else if (!subsOn || force === true) {
-    // Subtitles are off. Clicking should show the first relevant captions track or subtitles track (true/"on" by default)
-    const [subTrackStr] =
-      splitTextTracksStr(
+    let subTrackObjs = el?.mediaSubtitlesList ?? [];
+    if (!subTrackObjs?.length && el.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST)) {
+      subTrackObjs = parseTextTracksStr(
         el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST) ?? ''
-      ) ?? [];
-    if (subTrackStr) {
+      );
+    }
+    const subtitlesPref = globalThis.localStorage.getItem('media-chrome-pref-subtitles');
+
+    const userLangPrefs = subtitlesPref
+      ? [subtitlesPref, ...globalThis.navigator.languages]
+      : globalThis.navigator.languages;
+    const preferredAvailableSubs = subTrackObjs.filter(textTrack => {
+      return userLangPrefs.some(lang => textTrack.language.toLowerCase().startsWith(lang.split('-')[0]));
+    }).sort((textTrackA, textTrackB) => {
+      const idxA = userLangPrefs.findIndex(lang => textTrackA.language.toLowerCase().startsWith(lang.split('-')[0]));
+      const idxB = userLangPrefs.findIndex(lang => textTrackB.language.toLowerCase().startsWith(lang.split('-')[0]));
+      return idxA - idxB;
+    });
+
+    const [subTrack = subTrackObjs[0]] = preferredAvailableSubs;
+    if (subTrack) {
       // If we have at least one subtitles track (and didn't have any captions tracks), request for the first one to be showing as a fallback for captions.
       const evt = new globalThis.CustomEvent(
         MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,
-        { composed: true, bubbles: true, detail: subTrackStr }
+        { composed: true, bubbles: true, detail: subTrack }
       );
       el.dispatchEvent(evt);
     }
