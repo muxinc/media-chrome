@@ -263,6 +263,7 @@ class MediaTimeRange extends MediaChromeRange {
     this.range.setAttribute('aria-label', nouns.SEEK());
     this.#toggleRangeAnimation();
 
+    // NOTE: Adding an event listener to an ancestor here.
     this.#rootNode = this.getRootNode();
     this.#rootNode?.addEventListener('transitionstart', this);
   }
