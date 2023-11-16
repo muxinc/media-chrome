@@ -7,6 +7,7 @@ import { isElementVisible } from './utils/element-utils.js';
 import { RangeAnimation } from './utils/range-animation.js';
 import {
   getOrInsertCSSRule,
+  containsComposedNode,
   closestComposedNode,
   getBooleanAttr,
   setBooleanAttr,
@@ -226,6 +227,7 @@ class MediaTimeRange extends MediaChromeRange {
     ];
   }
 
+  #rootNode;
   #animation;
   #boxes;
   #previewBox;
@@ -254,18 +256,24 @@ class MediaTimeRange extends MediaChromeRange {
     this.#boxPaddingRight = parseInt(computedStyle.getPropertyValue('--media-box-padding-right'));
 
     this.#animation = new RangeAnimation(this.range, this.#updateRange, 60);
-    this.addEventListener('transitionstart', this);
   }
 
   connectedCallback() {
     super.connectedCallback();
     this.range.setAttribute('aria-label', nouns.SEEK());
     this.#toggleRangeAnimation();
+
+    // NOTE: Adding an event listener to an ancestor here.
+    this.#rootNode = this.getRootNode();
+    this.#rootNode?.addEventListener('transitionstart', this);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.#toggleRangeAnimation();
+
+    this.#rootNode?.removeEventListener('transitionstart', this);
+    this.#rootNode = null;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -542,8 +550,10 @@ class MediaTimeRange extends MediaChromeRange {
         this.#previewRequest(null);
         break;
       case 'transitionstart':
-        // Wait a tick to be sure the transition has started. Required for Safari.
-        setTimeout(() => this.#toggleRangeAnimation(), 0);
+        if (containsComposedNode(evt.target, this)) {
+          // Wait a tick to be sure the transition has started. Required for Safari.
+          setTimeout(() => this.#toggleRangeAnimation(), 0);
+        }
         break;
     }
   }

@@ -1,6 +1,6 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
+import { getOrInsertCSSRule, getPointProgressOnLine } from './utils/element-utils.js';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/`
@@ -44,6 +44,15 @@ template.innerHTML = /*html*/`
 
     #rightgap {
       padding-right: var(--media-range-padding-right, var(--_media-range-padding));
+    }
+
+    #startpoint,
+    #endpoint {
+      position: absolute;
+    }
+
+    #endpoint {
+      right: 0;
     }
 
     #container {
@@ -181,6 +190,8 @@ template.innerHTML = /*html*/`
   </style>
   <div id="leftgap"></div>
   <div id="container">
+    <div id="startpoint"></div>
+    <div id="endpoint"></div>
     <div id="appearance">
       <div id="background"></div>
       <div id="track">
@@ -251,6 +262,8 @@ template.innerHTML = /*html*/`
 class MediaChromeRange extends globalThis.HTMLElement {
   #mediaController;
   #isInputTarget;
+  #startpoint;
+  #endpoint;
 
   static get observedAttributes() {
     return [
@@ -272,6 +285,8 @@ class MediaChromeRange extends globalThis.HTMLElement {
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
 
     this.container = this.shadowRoot.querySelector('#container');
+    this.#startpoint = this.shadowRoot.querySelector('#startpoint');
+    this.#endpoint = this.shadowRoot.querySelector('#endpoint');
 
     /** @type {Omit<HTMLInputElement, "value" | "min" | "max"> &
       * {value: number, min: number, max: number}} */
@@ -446,8 +461,12 @@ class MediaChromeRange extends globalThis.HTMLElement {
       // Disable native input events if manual events are fired.
       this.range.disabled = true;
 
-      const rangeRect = this.range.getBoundingClientRect();
-      let pointerRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
+      let pointerRatio = getPointProgressOnLine(
+        evt.clientX,
+        evt.clientY,
+        this.#startpoint.getBoundingClientRect(),
+        this.#endpoint.getBoundingClientRect(),
+      );
       pointerRatio = Math.max(0, Math.min(1, pointerRatio));
 
       this.range.valueAsNumber = pointerRatio;
