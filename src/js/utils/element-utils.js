@@ -40,7 +40,7 @@ export function getActiveElement(root = document) {
 
 /**
  * Checks if the element is visible includes opacity: 0 and visibility: hidden.
- * @param  {HTMLElement} el
+ * @param  {HTMLElement} element
  * @return {Boolean}
  */
 export function isElementVisible(element, depth = 3) {
