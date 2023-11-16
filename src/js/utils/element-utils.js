@@ -56,6 +56,21 @@ export function isElementVisible(el) {
   return getComputedStyle(el).opacity != '0' && getComputedStyle(el.parentElement).opacity != '0';
 }
 
+export function getPointProgressOnLine(x, y, p1, p2) {
+  const segment = distance(p1, p2);
+  const toStart = distance(p1, { x, y });
+  const toEnd = distance(p2, { x, y });
+  if (toStart > segment || toEnd > segment) {
+    // Point is outside the line segment, so clamp it to the nearest end
+    return toStart > toEnd ? 1 : 0;
+  }
+  return toStart / segment;
+}
+
+function distance(p1, p2) {
+  return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+}
+
 /**
  * Get or insert a CSS rule with a selector in an element containing <style> tags.
  * @param  {Element|ShadowRoot} styleParent
