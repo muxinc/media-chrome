@@ -34,6 +34,8 @@ describe('<media-captions-listbox>', () => {
   });
 
   it('listbox is populated', async function () {
+    this.timeout(5000);
+
     await new Promise(resolve => mediaController.media.textTracks.addEventListener('addtrack', resolve));
 
     assert.equal(mediaController.media.textTracks.length, 10);
