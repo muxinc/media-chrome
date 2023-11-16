@@ -64,7 +64,7 @@
     "postbuild:iife": "yarn size",
     "build:react": "node ./scripts/react/build.js",
     "postbuild:react": "esbuild dist/react/*.js dist/react/common/*.js --target=es2019 --format=cjs --outdir=dist/cjs/react",
-    "build": "run-s build:types build:esm build:cjs build:iife build:react",
+    "build": "I'm hacking the build 👻👻",
     "watch": "run-p watch:types watch:esbuild",
     "watch:types": "yarn build:types -w",
     "watch:esbuild": "node ./scripts/esbuild.js",
