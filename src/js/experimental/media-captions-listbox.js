@@ -1,8 +1,9 @@
 import { MediaChromeListbox, createOption, createIndicator } from './media-chrome-listbox.js';
 import './media-chrome-option.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
-import { parseTextTracksStr, stringifyTextTrackList, formatTextTrackObj, toggleSubsCaps } from '../utils/captions.js';
+import { MediaStateReceiverAttributes, MediaUIAttributes, MediaUIEvents } from '../constants.js';
+import { parseTextTracksStr, parseTextTrackStr, stringifyTextTrackList, formatTextTrackObj, toggleSubsCaps } from '../utils/captions.js';
+import { closestComposedNode, closestElementSelector } from '../utils/element-utils.js';
 
 const ccIcon = /*html*/`
 <svg aria-hidden="true" viewBox="0 0 26 24" part="captions-indicator indicator">
@@ -135,6 +136,17 @@ class MediaCaptionsListbox extends MediaChromeListbox {
         detail: this.value,
       }
     );
+
+    const preferredLanguage = parseTextTrackStr(this.value)?.language;
+    if (preferredLanguage) {
+      const mediaController = this.hasAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER)
+        // @ts-ignore
+        ? closestElementSelector(this, `#${this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER)}`)
+        : closestComposedNode(this, 'media-controller');
+      if (!mediaController?.hasAttribute('nosubtitlespref')) {
+        globalThis.localStorage.setItem('media-chrome-pref-subtitles', preferredLanguage);
+      }
+    }
     this.dispatchEvent(event);
   }
 }
