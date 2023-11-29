@@ -126,6 +126,7 @@ template.innerHTML = /*html*/`
     #background {
       background: var(--media-range-track-background, rgb(255 255 255 / .2));
       backdrop-filter: var(--media-range-track-background-backdrop-filter);
+      -webkit-backdrop-filter: var(--media-range-track-background-backdrop-filter);
     }
 
     #track {
@@ -133,6 +134,7 @@ template.innerHTML = /*html*/`
       outline: var(--media-range-track-outline);
       outline-offset: var(--media-range-track-outline-offset);
       backdrop-filter: var(--media-range-track-backdrop-filter);
+      -webkit-backdrop-filter: var(--media-range-track-backdrop-filter);
       box-shadow: var(--media-range-track-box-shadow, none);
       overflow: hidden;
     }
