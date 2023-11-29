@@ -1,3 +1,13 @@
+## [1.5.4](https://github.com/muxinc/media-chrome/compare/v1.5.3...v1.5.4) (2023-11-29)
+
+
+### Bug Fixes
+
+* Make backdrop-filter work on Safari with vendor prefix ([#773](https://github.com/muxinc/media-chrome/issues/773)) ([893b826](https://github.com/muxinc/media-chrome/commit/893b826f74b0150f5ca3ccff4928382d8205bac6)), closes [#646](https://github.com/muxinc/media-chrome/issues/646)
+* time range bug fixes ([#769](https://github.com/muxinc/media-chrome/issues/769)) ([9a6e0d7](https://github.com/muxinc/media-chrome/commit/9a6e0d76f6caa5635d3af0f247411ad6a8e99065))
+
+
+
 ## [1.5.3](https://github.com/muxinc/media-chrome/compare/v1.5.2...v1.5.3) (2023-11-15)
 
 
