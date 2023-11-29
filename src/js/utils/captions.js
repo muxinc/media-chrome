@@ -1,5 +1,4 @@
-import { globalThis } from './server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from '../constants.js';
+import { MediaUIAttributes } from '../constants.js';
 
 // NOTE: This is generic for any CSS/html list representation. Consider renaming and moving to generic module.
 /**
