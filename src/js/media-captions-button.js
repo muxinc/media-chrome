@@ -1,12 +1,11 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIAttributes } from './constants.js';
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
 import {
   areSubsOn,
   parseTextTracksStr,
   stringifyTextTrackList,
-  toggleSubsCaps,
 } from './utils/captions.js';
 
 const ccIconOn = `<svg aria-hidden="true" viewBox="0 0 26 24">
@@ -18,7 +17,7 @@ const ccIconOff = `<svg aria-hidden="true" viewBox="0 0 26 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
     :host([aria-checked="true"]) slot[name=off] {
       display: none !important;
@@ -109,7 +108,12 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   handleClick() {
-    toggleSubsCaps(this);
+    this.dispatchEvent(
+      new globalThis.CustomEvent(MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST, {
+        composed: true,
+        bubbles: true,
+      })
+    );
   }
 }
 
@@ -145,7 +149,10 @@ const setSubtitlesListAttr = (el, attrName, list) => {
 };
 
 if (!globalThis.customElements.get('media-captions-button')) {
-  globalThis.customElements.define('media-captions-button', MediaCaptionsButton);
+  globalThis.customElements.define(
+    'media-captions-button',
+    MediaCaptionsButton
+  );
 }
 
 export default MediaCaptionsButton;

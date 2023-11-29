@@ -19,7 +19,7 @@ import {
 import {
   getTextTracksList,
   updateTracksModeTo,
-  toggleSubsCaps,
+  parseTracks,
 } from './utils/captions.js';
 
 let volumeSupported;
@@ -500,7 +500,7 @@ export const MediaUIStates = {
         !controller.hasAttribute(MediaUIAttributes.MEDIA_HAS_PLAYED) &&
         !controller.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING)
       ) {
-        toggleSubsCaps(controller, true);
+        MediaUIRequestHandlers.MEDIA_TOGGLE_SUBTITLES_REQUEST(undefined, undefined, controller);
       }
       return getShowingSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language }));
     },
@@ -793,15 +793,69 @@ export const MediaUIRequestHandlers = {
       previewCoordsStr.split(',')
     );
   },
-  MEDIA_SHOW_SUBTITLES_REQUEST: (media, event, controller) => {
+  MEDIA_SHOW_SUBTITLES_REQUEST: (_media, event, controller) => {
     const tracks = getSubtitleTracks(controller);
-    const { detail: tracksToUpdate = [] } = event;
+    const { detail = [] } = event;
+    const tracksToUpdate = parseTracks(detail);
+    const preferredLanguage = tracksToUpdate[0]?.language;
+    if (preferredLanguage && !controller?.hasAttribute('nosubtitlespref')) {
+      globalThis.localStorage.setItem(
+        'media-chrome-pref-subtitles',
+        preferredLanguage
+      );
+    }
     updateTracksModeTo(TextTrackModes.SHOWING, tracks, tracksToUpdate);
   },
-  MEDIA_DISABLE_SUBTITLES_REQUEST: (media, event, controller) => {
+  MEDIA_DISABLE_SUBTITLES_REQUEST: (_media, event, controller) => {
     const tracks = getSubtitleTracks(controller);
     const { detail: tracksToUpdate = [] } = event;
     updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
+  },
+  MEDIA_TOGGLE_SUBTITLES_REQUEST: (_media, event, controller) => {
+    // NOTE: Like Element::toggleAttribute(), this event uses the detail for an optional "force"
+    // value. When present, this means "toggle to" "on" (aka showing, even if something's already showing)
+    // or "off" (aka disabled, even if all tracks are currently disabled).
+    // See, e.g.: https://developer.mozilla.org/en-US/docs/Web/API/Element/toggleAttribute#force (CJP)
+    const { detail: force } = event ?? {};
+    const tracks = getSubtitleTracks(controller);
+    const showingSubitleTracks = getShowingSubtitleTracks(controller);
+    const subtitlesShowing = !!showingSubitleTracks.length;
+    // If there are no tracks, this request doesn't matter, so we're done.
+    // If we already have showing subtitles and we want to force toggle "on", there's nothing left to do.
+    // If there are no showing subtitles and we want to force toggle "off", we're already done.
+    if (!tracks.length || (subtitlesShowing && force) || (!subtitlesShowing && force === false)) return;
+
+    if (subtitlesShowing) {
+      updateTracksModeTo(TextTrackModes.DISABLED, tracks, showingSubitleTracks);
+    } else {
+      let subTrack = tracks[0];
+      if (!controller?.hasAttribute('nosubtitlespref')) {
+        const subtitlesPref = globalThis.localStorage.getItem('media-chrome-pref-subtitles');
+
+        const userLangPrefs = subtitlesPref
+          ? [subtitlesPref, ...globalThis.navigator.languages]
+          : globalThis.navigator.languages;
+        const preferredAvailableSubs = tracks.filter(textTrack => {
+          return userLangPrefs.some(lang => textTrack.language.toLowerCase().startsWith(lang.split('-')[0]));
+        }).sort((textTrackA, textTrackB) => {
+          const idxA = userLangPrefs.findIndex(lang => textTrackA.language.toLowerCase().startsWith(lang.split('-')[0]));
+          const idxB = userLangPrefs.findIndex(lang => textTrackB.language.toLowerCase().startsWith(lang.split('-')[0]));
+          return idxA - idxB;
+        });
+
+        // Since there may not have been any user preferred subs/cc match, keep the default (picking the first) as
+        // the subtitle track to show for these cases.
+        if (preferredAvailableSubs[0]) {
+          subTrack = preferredAvailableSubs[0];
+        }
+      }
+      const { language, label, kind } = subTrack;
+      updateTracksModeTo(
+        TextTrackModes.SHOWING,
+        tracks,
+        [{ language, label, kind }]
+      );
+    }
   },
   MEDIA_AIRPLAY_REQUEST: (media) => {
     if (!media) return;
