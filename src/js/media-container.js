@@ -410,28 +410,16 @@ class MediaContainer extends globalThis.HTMLElement {
     return media;
   }
 
-  mediaSetCallback(media) {
-    // Toggle play/pause with clicks on the media element itself
-    this._mediaClickPlayToggle = () => {
-      const eventName = media.paused
-        ? MediaUIEvents.MEDIA_PLAY_REQUEST
-        : MediaUIEvents.MEDIA_PAUSE_REQUEST;
-      this.dispatchEvent(
-        new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
-      );
-    };
-  }
+  /**
+   * @abstract
+   */
+  // eslint-disable-next-line
+  mediaSetCallback(media) {}
 
-  handleMediaUpdated(media) {
-    const resolveMediaPromise = (media) => {
-      // media.addEventListener('click', this._mediaClickPlayToggle, false);
-
-      return Promise.resolve(media);
-    };
-
+  async handleMediaUpdated(media) {
     const rejectMediaPromise = (media) => {
       console.error(
-        '<media-chrome>: Media element set with slot="media" does not appear to be compatible.',
+        'Media Chrome: Media element set with slot="media" does not appear to be compatible.',
         media
       );
       return Promise.reject(media);
@@ -446,21 +434,19 @@ class MediaContainer extends globalThis.HTMLElement {
     // Custom element. Wait until it's defined before resolving
     if (mediaName.includes('-')) {
       return globalThis.customElements.whenDefined(mediaName).then(() => {
-        return resolveMediaPromise(media);
+        return media;
       });
     }
 
     // Exists and isn't a custom element. Resolve.
-    return resolveMediaPromise(media);
+    return media;
   }
 
   /**
    * @abstract
    */
   // eslint-disable-next-line
-  mediaUnsetCallback(node) {
-    // media.removeEventListener('click', this._mediaClickPlayToggle);
-  }
+  mediaUnsetCallback(node) {}
 
   connectedCallback() {
     const isAudioChrome = this.getAttribute(Attributes.AUDIO) != null;
