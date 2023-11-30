@@ -470,9 +470,11 @@ class MediaContainer extends globalThis.HTMLElement {
     this.addEventListener('mouseleave', this);
     this.addEventListener('keyup', this);
 
-    globalThis.window?.addEventListener('mouseup', () => {
-      this.removeAttribute(Attributes.KEYBOARD_CONTROL);
-    });
+    globalThis.window?.addEventListener('mouseup', this);
+  }
+
+  disconnectedCallback() {
+    globalThis.window?.removeEventListener('mouseup', this);
   }
 
   handleEvent(event) {
@@ -489,6 +491,9 @@ class MediaContainer extends globalThis.HTMLElement {
       case 'mouseleave':
         // Immediately hide if mouse leaves the container.
         this.#setInactive();
+        break;
+      case 'mouseup':
+        this.removeAttribute(Attributes.KEYBOARD_CONTROL);
         break;
       case 'keyup':
         // Unhide for keyboard controlling.
