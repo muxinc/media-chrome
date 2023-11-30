@@ -9,23 +9,29 @@ import SandpackContainer from "../../../../components/SandpackContainer.astro";
 
 The `<media-cast-button>` component is used to bring up the Cast menu and select playback on a Chromecast-enabled device and to stop casting once started.
 
-
 The contents of the `<media-cast-button>` will update based on the availability of casting support and current casting state.
 - When the media is not currently casting, the `enter` slot will be shown.
 - When the media is currently casting, the `exit` slot will be shown.
 
-> NOTE: Casting support isn't available in all browsers. Interacting with these examples may not do anything when support isn't available.
+> Requires the [`<castable-video>`](https://github.com/muxinc/castable-video) element
+or a custom media element that implements the `CastableMedia` interface like
+[`<mux-video>`](https://github.com/muxinc/elements/tree/main/packages/mux-video).
+
+> NOTE: Google Cast support is only available in Chromium browsers. Interacting with these examples may not do anything when support isn't available.
 
 ## Default usage
 
 <SandpackContainer
   editorHeight={190}
+  dependencies={{
+    "castable-video": "^1.0.0"
+  }}
   html={`<media-controller>
-  <video
+  <castable-video
     playsinline muted crossorigin
     slot="media"
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
-  ></video>
+  ></castable-video>
   <media-cast-button></media-cast-button>
 </media-controller>`}
 />
@@ -38,12 +44,15 @@ Here's an example of how you can replace the default icons with the words "Cast"
 
 <SandpackContainer
   editorHeight={250}
+  dependencies={{
+    "castable-video": "^1.0.0"
+  }}
   html={`<media-controller>
-  <video
+  <castable-video
     playsinline muted crossorigin
     slot="media"
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
-  ></video>
+  ></castable-video>
   <media-cast-button>
     <span slot="enter">Cast</span>
     <span slot="exit">Exit</span>
@@ -56,13 +65,16 @@ Alternatively, if you would like to represent both states using a single element
 <SandpackContainer
   height={365}
   active="css"
+  dependencies={{
+    "castable-video": "^1.0.0"
+  }}
   html={`<media-controller>
-  <video
+  <castable-video
     slot="media"
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
     playsinline
     muted
-  ></video>
+  ></castable-video>
   <media-cast-button>
     <span class="my-icon" slot="icon">[ ]</span>
   </media-cast-button>
