@@ -63,6 +63,8 @@
 
   <br>
 
+  <!-- Use nosubtitlespref to disable local storage of subtitles selection -->
+  <!-- <media-controller id="mc" defaultsubtitles nosubtitlespref> -->
   <media-controller id="mc" defaultsubtitles>
     <video
       slot="media"
@@ -71,11 +73,12 @@
       muted
       crossorigin
     >
-      <track label="English" kind="captions" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
+      <track label="German" kind="captions" srclang="de" src="../vtt/elephantsdream/captions.de.vtt"></track>
       <track label="Japanese" kind="captions" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
       <track label="Swedish" kind="captions" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
       <track label="Russian" kind="captions" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
       <track label="Arabic" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
+      <track label="English" kind="captions" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
       <track label="Scandinavian" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
       <track label="Subs English" kind="subtitles" srclang="en" src="../vtt/elephantsdream/captions.en.vtt"></track>
       <track label="Subs Japanese" kind="subtitles" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
@@ -94,6 +97,7 @@
       <media-time-range></media-time-range>
       <media-time-display></media-time-display>
       <media-captions-selectmenu></media-captions-selectmenu>
+      <media-captions-button></media-captions-button>
       <media-fullscreen-button></media-fullscreen-button>
     </media-control-bar>
   </media-controller>

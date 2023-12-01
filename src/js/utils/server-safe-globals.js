@@ -32,6 +32,9 @@ const globalThisShim = {
   },
   CustomEvent: function CustomEvent() {},
   getComputedStyle: function () {},
+  navigator: {
+    languages: []
+  }
 };
 
 export const isServer =
@@ -62,7 +65,8 @@ const isShimmed = Object.keys(globalThisShim)
   * chrome?,
   * DocumentFragment?,
   * ResizeObserver?,
-  * CastableVideoElement?
+  * CastableVideoElement?,
+  * navigator?,
   * } }
   * */
 export const GlobalThis = isServer && !isShimmed ? globalThisShim : globalThis;

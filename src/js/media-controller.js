@@ -11,7 +11,7 @@ import { MediaContainer } from './media-container.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { constToCamel, delay, stringifyRenditionList, stringifyAudioTrackList } from './utils/utils.js';
-import { stringifyTextTrackList, toggleSubsCaps } from './utils/captions.js';
+import { stringifyTextTrackList } from './utils/captions.js';
 import {
   MediaUIEvents,
   MediaUIAttributes,
@@ -146,7 +146,12 @@ class MediaController extends MediaContainer {
       newValue !== oldValue &&
       newValue === ''
     ) {
-      toggleSubsCaps(this, true);
+      this.dispatchEvent(
+        new globalThis.CustomEvent(
+          MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
+          { composed: true, bubbles: true, detail: true }
+        )
+      );
 
     } else if (attrName === Attributes.DEFAULT_STREAM_TYPE) {
       this.propagateMediaState(MediaUIProps.MEDIA_STREAM_TYPE);
@@ -459,7 +464,12 @@ class MediaController extends MediaContainer {
         break;
 
       case 'c':
-        toggleSubsCaps(this);
+        this.dispatchEvent(
+          new globalThis.CustomEvent(
+            MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
+            { composed: true, bubbles: true }
+          )
+        );
         break;
 
       case 'ArrowLeft':
