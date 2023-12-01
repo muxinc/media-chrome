@@ -9,11 +9,11 @@
 */
 import { globalThis, document } from './utils/server-safe-globals.js';
 import {
-  MediaUIEvents,
   MediaUIAttributes,
   MediaStateChangeEvents,
 } from './constants.js';
 import { nouns } from './labels/labels.js';
+import { observeResize } from './utils/resize-observer.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
 
@@ -189,10 +189,8 @@ const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 const defaultBreakpoints = 'sm:384 md:576 lg:768 xl:960';
 
-function resizeCallback(entries) {
-  for (const entry of entries) {
-    setBreakpoints(entry.target, entry.contentRect.width);
-  }
+function resizeCallback(entry) {
+  setBreakpoints(entry.target, entry.contentRect.width);
 }
 
 function setBreakpoints(container, width) {
@@ -332,13 +330,13 @@ class MediaContainer extends globalThis.HTMLElement {
     mutationObserver.observe(this, { childList: true, subtree: true });
 
     let pendingResizeCb = false;
-    const deferResizeCallback = (entries) => {
+    const deferResizeCallback = (entry) => {
       // Already have a pending async breakpoint computation, so go ahead and bail
       if (pendingResizeCb) return;
       // Just in case it takes too long (which will cause an error to throw),
       // do the breakpoint computation asynchronously
       setTimeout(() => {
-        resizeCallback(entries);
+        resizeCallback(entry);
         // Once we've completed, reset the pending cb flag to false
         pendingResizeCb = false;
 
@@ -354,9 +352,7 @@ class MediaContainer extends globalThis.HTMLElement {
       }, 0);
       pendingResizeCb = true;
     };
-    const resizeObserver = new ResizeObserver(deferResizeCallback);
-    this.resizeObserver = resizeObserver;
-    resizeObserver.observe(this);
+    observeResize(this, deferResizeCallback);
 
     // Handles the case when the slotted media element is a slot element itself.
     // e.g. chaining media slots for media themes.
