@@ -126,12 +126,8 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     const showingSubsStr = this.getAttribute(
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
     );
-    // NOTE: Since 'change' events and thus the onChange method will be fired/invoked
-    // from both user interaction and programmatic value changes, *including those
-    // propagated from the media controller itself*, we can check if the value (which
-    // will change from user interactions/direct programmatic changes) is actually different
-    // the mediaSubtitlesShowing value (which won't have been updated yet if the change was
-    // "local to the component") to determine if we need to request state changes. (CJP)
+
+    // Don't make request if this was the result of a media state change (CJP)
     const localStateChange = this.value !== showingSubsStr;
     if (showingSubs?.length && localStateChange) {
       // turn off currently selected tracks
@@ -147,9 +143,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       );
     }
 
-    // NOTE: The same applies here, where we only need to request a state change
-    // if `onChange` is a result of a state change local to the component (via user
-    // interaction or direct programmatic state change of `this.value`) (CJP)
+    // Don't make request if this was the result of a media state change (CJP)
     if (!this.value || !localStateChange) return;
 
     const event = new globalThis.CustomEvent(
