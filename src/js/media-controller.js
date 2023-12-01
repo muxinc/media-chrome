@@ -62,6 +62,8 @@ class MediaController extends MediaContainer {
 
   #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
   #fullscreenElement;
+  /** @type {HTMLDocument|ShadowRoot} */
+  #rootNode;
 
   constructor() {
     super();
@@ -112,8 +114,6 @@ class MediaController extends MediaContainer {
         this.propagateMediaState(MediaUIProps[key], MediaUIStates[key].get(this, e));
       };
     });
-
-    this.enableHotkeys();
   }
 
   get fullscreenElement() {
@@ -128,6 +128,8 @@ class MediaController extends MediaContainer {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (attrName === Attributes.NO_HOTKEYS) {
       if (newValue !== oldValue && newValue === '') {
         if (this.hasAttribute(Attributes.HOTKEYS)) {
@@ -157,18 +159,35 @@ class MediaController extends MediaContainer {
       this.propagateMediaState(MediaUIProps.MEDIA_STREAM_TYPE);
 
     } else if (attrName === Attributes.FULLSCREEN_ELEMENT) {
-      const el = newValue
-        // @ts-ignore
-        ? this.getRootNode()?.getElementById(newValue)
-        : undefined;
+      const el = newValue ? this.#rootNode?.getElementById(newValue) : undefined;
       // NOTE: Setting the internal private prop here to not
       // clear the attribute that was just set (CJP).
       this.#fullscreenElement = el;
     }
-
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
+  connectedCallback() {
+    // mediaSetCallback() is called in super.connectedCallback();
+    super.connectedCallback();
+
+    // getRootNode() in disconnectedCallback returns the media-controller element itself
+    // but we need the HTMLDocument or ShadowRoot if media-controller is in a shadow DOM.
+    // We store the correct root node here so we can access it later.
+    this.#rootNode = /** @type HTMLDocument | ShadowRoot */ (this.getRootNode());
+
+    this.enableHotkeys();
+  }
+
+  disconnectedCallback() {
+    // mediaUnsetCallback() is called in super.disconnectedCallback();
+    super.disconnectedCallback();
+    this.disableHotkeys();
+  }
+
+  /**
+   * @override
+   * @param {HTMLMediaElement} media
+   */
   mediaSetCallback(media) {
     super.mediaSetCallback(media);
 
@@ -195,7 +214,7 @@ class MediaController extends MediaContainer {
       });
 
       rootEvents?.forEach((eventName) => {
-        this.getRootNode().addEventListener(eventName, handler);
+        this.#rootNode?.addEventListener(eventName, handler);
         handler();
       });
 
@@ -205,11 +224,13 @@ class MediaController extends MediaContainer {
       });
 
       videoRenditionsEvents?.forEach((eventName) => {
+        // @ts-ignore
         media.videoRenditions?.addEventListener(eventName, handler);
         handler();
       });
 
       audioTracksEvents?.forEach((eventName) => {
+        // @ts-ignore
         media.audioTracks?.addEventListener(eventName, handler);
         handler();
       });
@@ -228,6 +249,10 @@ class MediaController extends MediaContainer {
     }
   }
 
+  /**
+   * @override
+   * @param {HTMLMediaElement} media
+   */
   mediaUnsetCallback(media) {
     super.mediaUnsetCallback(media);
 
@@ -248,7 +273,7 @@ class MediaController extends MediaContainer {
       });
 
       rootEvents?.forEach((eventName) => {
-        this.getRootNode().removeEventListener(eventName, handler);
+        this.#rootNode?.removeEventListener(eventName, handler);
       });
 
       textTracksEvents?.forEach((eventName) => {
@@ -256,11 +281,13 @@ class MediaController extends MediaContainer {
       });
 
       videoRenditionsEvents?.forEach((eventName) => {
+        // @ts-ignore
         media.videoRenditions?.removeEventListener(eventName, handler);
         handler();
       });
 
       audioTracksEvents?.forEach((eventName) => {
+        // @ts-ignore
         media.audioTracks?.removeEventListener(eventName, handler);
         handler();
       });

@@ -264,6 +264,7 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   #pointerDownTimeStamp = 0;
+  #currentMedia;
   breakpointsComputed = false;
 
   constructor() {
@@ -314,11 +315,10 @@ class MediaContainer extends globalThis.HTMLElement {
           // No need to inject anything if media=null
           if (media) {
             mutation.addedNodes.forEach((node) => {
-              if (node == media) {
+              if (node === media && media !== this.#currentMedia) {
                 // Update all controls with new media if this is the new media
-                this.handleMediaUpdated(media).then((media) =>
-                  this.mediaSetCallback(media)
-                );
+                this.handleMediaUpdated(media)
+                  .then((media) => this.mediaSetCallback(media));
               }
             });
           }
@@ -356,21 +356,19 @@ class MediaContainer extends globalThis.HTMLElement {
 
     // Handles the case when the slotted media element is a slot element itself.
     // e.g. chaining media slots for media themes.
-    let currentMedia = this.media;
+
     /** @type {HTMLSlotElement} */
     let chainedSlot = this.querySelector(':scope > slot[slot=media]');
     if (chainedSlot) {
       chainedSlot.addEventListener('slotchange', () => {
         const slotEls = chainedSlot.assignedElements({ flatten: true });
         if (!slotEls.length) {
-          this.mediaUnsetCallback(currentMedia);
+          this.mediaUnsetCallback(this.#currentMedia);
           return;
         }
-        if (this.media) {
-          currentMedia = this.media;
-          this.handleMediaUpdated(this.media).then((media) =>
-            this.mediaSetCallback(media)
-          );
+        if (this.media && this.media !== this.#currentMedia) {
+          this.handleMediaUpdated(this.media)
+            .then((media) => this.mediaSetCallback(media));
         }
       });
     }
@@ -407,13 +405,14 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   /**
-   * @abstract
+   * @param {HTMLMediaElement} media
    */
-  // eslint-disable-next-line
-  mediaSetCallback(media) {}
-
   async handleMediaUpdated(media) {
+    this.#currentMedia = media;
+
     const rejectMediaPromise = (media) => {
+      this.#currentMedia = null;
+
       console.error(
         'Media Chrome: Media element set with slot="media" does not appear to be compatible.',
         media
@@ -426,23 +425,13 @@ class MediaContainer extends globalThis.HTMLElement {
       return rejectMediaPromise(media);
     }
 
-    const mediaName = media.nodeName.toLowerCase();
     // Custom element. Wait until it's defined before resolving
-    if (mediaName.includes('-')) {
-      return globalThis.customElements.whenDefined(mediaName).then(() => {
-        return media;
-      });
+    if (media.localName.includes('-')) {
+      await globalThis.customElements.whenDefined(media.localName);
     }
 
-    // Exists and isn't a custom element. Resolve.
     return media;
   }
-
-  /**
-   * @abstract
-   */
-  // eslint-disable-next-line
-  mediaUnsetCallback(node) {}
 
   connectedCallback() {
     const isAudioChrome = this.getAttribute(Attributes.AUDIO) != null;
@@ -450,10 +439,9 @@ class MediaContainer extends globalThis.HTMLElement {
     this.setAttribute('role', 'region');
     this.setAttribute('aria-label', label);
 
-    if (this.media) {
-      this.handleMediaUpdated(this.media).then((media) =>
-        this.mediaSetCallback(media)
-      );
+    if (this.media && this.media !== this.#currentMedia) {
+      this.handleMediaUpdated(this.media)
+        .then((media) => this.mediaSetCallback(media));
     }
 
     // Assume user is inactive until they're not (aka userinactive by default is true)
@@ -470,8 +458,26 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   disconnectedCallback() {
+    // When disconnected from the DOM, remove root node and media event listeners
+    // to prevent memory leaks and unneeded invisble UI updates.
+    if (this.media) {
+      this.mediaUnsetCallback(this.media);
+    }
+
     globalThis.window?.removeEventListener('mouseup', this);
   }
+
+  /**
+   * @abstract
+   * @param {HTMLMediaElement} media
+   */
+  mediaSetCallback(media) {} // eslint-disable-line
+
+  /**
+   * @abstract
+   * @param {HTMLMediaElement} media
+   */
+  mediaUnsetCallback(media) {} // eslint-disable-line
 
   handleEvent(event) {
     switch (event.type) {
