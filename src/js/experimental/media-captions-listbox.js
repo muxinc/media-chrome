@@ -48,7 +48,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     } else if (attrName === 'aria-multiselectable') {
       // diallow aria-multiselectable
       this.removeAttribute('aria-multiselectable');
-      console.warn("Captions List doesn't currently support multiple selections. You can enable multiple items via the media.textTrack API.");
+      console.warn("Captions List doesn't currently support multiple selections. You can enable multiple items via the media.textTracks API.");
     }
   }
 
