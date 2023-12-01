@@ -28,14 +28,6 @@ export const closestComposedNode = (childNode, selector) => {
   return closestComposedNode(childNode.getRootNode().host, selector);
 };
 
-export const closestElementSelector = (childNode, selector) => {
-  if (!childNode) return null;
-  const rootEl = childNode.getRootNode();
-  const selectorMatchEl = rootEl.querySelector(selector)
-  if (selectorMatchEl) return selectorMatchEl;
-  return closestElementSelector(rootEl.host, selector);
-};
-
 /**
  * Get the active element, accounting for Shadow DOM subtrees.
  * @param {Document|ShadowRoot} root
