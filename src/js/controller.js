@@ -798,9 +798,9 @@ export const MediaUIRequestHandlers = {
     const { detail = [] } = event;
     const tracksToUpdate = parseTracks(detail);
     const preferredLanguage = tracksToUpdate[0]?.language;
-    if (preferredLanguage && !controller?.hasAttribute('nosubtitlespref')) {
+    if (preferredLanguage && !controller?.hasAttribute('nosubtitleslangpref')) {
       globalThis.localStorage.setItem(
-        'media-chrome-pref-subtitles',
+        'media-chrome-pref-subtitles-lang',
         preferredLanguage
       );
     }
@@ -829,8 +829,8 @@ export const MediaUIRequestHandlers = {
       updateTracksModeTo(TextTrackModes.DISABLED, tracks, showingSubitleTracks);
     } else {
       let subTrack = tracks[0];
-      if (!controller?.hasAttribute('nosubtitlespref')) {
-        const subtitlesPref = globalThis.localStorage.getItem('media-chrome-pref-subtitles');
+      if (!controller?.hasAttribute('nosubtitleslangpref')) {
+        const subtitlesPref = globalThis.localStorage.getItem('media-chrome-pref-subtitles-lang');
 
         const userLangPrefs = subtitlesPref
           ? [subtitlesPref, ...globalThis.navigator.languages]
