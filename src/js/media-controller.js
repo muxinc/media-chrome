@@ -182,8 +182,14 @@ class MediaController extends MediaContainer {
     // mediaUnsetCallback() is called in super.disconnectedCallback();
     super.disconnectedCallback();
     this.disableHotkeys();
+
     // Disable captions on disconnect to prevent a memory leak if they stay enabled.
-    toggleSubsCaps(this, false);
+    this.dispatchEvent(
+      new globalThis.CustomEvent(
+        MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
+        { composed: true, bubbles: true, detail: false }
+      )
+    );
   }
 
   /**
