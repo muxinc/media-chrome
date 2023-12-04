@@ -1,3 +1,17 @@
+# [1.6.0](https://github.com/muxinc/media-chrome/compare/v1.5.4...v1.6.0) (2023-12-04)
+
+
+### Bug Fixes
+
+* video element memory leak + optimizations ([#775](https://github.com/muxinc/media-chrome/issues/775)) ([e1d6377](https://github.com/muxinc/media-chrome/commit/e1d6377a368427f74f0cfb1a62d526910f67ae43)), closes [#750](https://github.com/muxinc/media-chrome/issues/750)
+
+
+### Features
+
+* Add user prefs for subtitles+cc lang, including local storage. ([#770](https://github.com/muxinc/media-chrome/issues/770)) ([ebb4f15](https://github.com/muxinc/media-chrome/commit/ebb4f15705a183f44e6aeafbecd5c4e9e6bac4ce))
+
+
+
 ## [1.5.4](https://github.com/muxinc/media-chrome/compare/v1.5.3...v1.5.4) (2023-11-29)
 
 
