@@ -17,6 +17,7 @@ export const MediaUIEvents = {
   MEDIA_HIDE_TEXT_TRACKS_REQUEST: 'mediahidetexttracksrequest',
   MEDIA_SHOW_SUBTITLES_REQUEST: 'mediashowsubtitlesrequest',
   MEDIA_DISABLE_SUBTITLES_REQUEST: 'mediadisablesubtitlesrequest',
+  MEDIA_TOGGLE_SUBTITLES_REQUEST: 'mediatogglesubtitlesrequest',
   MEDIA_PLAYBACK_RATE_REQUEST: 'mediaplaybackraterequest',
   MEDIA_RENDITION_REQUEST: 'mediarenditionrequest',
   MEDIA_AUDIO_TRACK_REQUEST: 'mediaaudiotrackrequest',

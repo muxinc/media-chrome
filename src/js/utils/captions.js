@@ -1,5 +1,4 @@
-import { globalThis } from './server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from '../constants.js';
+import { MediaUIAttributes } from '../constants.js';
 
 // NOTE: This is generic for any CSS/html list representation. Consider renaming and moving to generic module.
 /**
@@ -243,51 +242,4 @@ export const areSubsOn = (el) => {
     MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
   );
   return showingSubtitles;
-};
-
-/**
- * Trigger the appropriate event on the provided element that will toggle either captions or subtitles as appropriate.
- *
- * This was originally in media-captions-button.
- *
- * @param {HTMLElement} el - An HTMLElement that has caption related attributes on it.
- * @param {boolean} [force] - An optional boolean that will force captions to the given state. True for on and false for off
- */
-export const toggleSubsCaps = (el, force) => {
-  const subsOn = areSubsOn(el);
-
-  if (subsOn || force === false) {
-    // Subtitles are on. Clicking should disable any currently showing captions (and subtitles, if relevant)
-    // For why we are requesting tracks to `mode="disabled"` and not `mode="hidden"`, see: https://github.com/muxinc/media-chrome/issues/60
-    const subtitlesShowingStr = el.getAttribute(
-      MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
-    );
-    // If we have currently showing subtitles track(s), request for them to be disabled.
-    if (subtitlesShowingStr) {
-      const evt = new globalThis.CustomEvent(
-        MediaUIEvents.MEDIA_DISABLE_SUBTITLES_REQUEST,
-        { composed: true, bubbles: true, detail: subtitlesShowingStr }
-      );
-      el.dispatchEvent(evt);
-    }
-  } else if (!subsOn || force === true) {
-    // Subtitles are off. Clicking should show the first relevant captions track or subtitles track (true/"on" by default)
-    const [subTrackStr] =
-      splitTextTracksStr(
-        el.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_LIST) ?? ''
-      ) ?? [];
-    if (subTrackStr) {
-      // If we have at least one subtitles track (and didn't have any captions tracks), request for the first one to be showing as a fallback for captions.
-      const evt = new globalThis.CustomEvent(
-        MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,
-        { composed: true, bubbles: true, detail: subTrackStr }
-      );
-      el.dispatchEvent(evt);
-    }
-  } else {
-    // If we end up here, it means we have an enabled CC-button that a user has clicked on but there are no captions or subtitles.
-    console.error(
-      'Attempting to enable captions or subtitles but none are available! Please verify your media content if this is unexpected.'
-    );
-  }
 };

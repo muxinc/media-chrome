@@ -9,11 +9,11 @@
 */
 import { globalThis, document } from './utils/server-safe-globals.js';
 import {
-  MediaUIEvents,
   MediaUIAttributes,
   MediaStateChangeEvents,
 } from './constants.js';
 import { nouns } from './labels/labels.js';
+import { observeResize } from './utils/resize-observer.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
 
@@ -189,10 +189,8 @@ const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 const defaultBreakpoints = 'sm:384 md:576 lg:768 xl:960';
 
-function resizeCallback(entries) {
-  for (const entry of entries) {
-    setBreakpoints(entry.target, entry.contentRect.width);
-  }
+function resizeCallback(entry) {
+  setBreakpoints(entry.target, entry.contentRect.width);
 }
 
 function setBreakpoints(container, width) {
@@ -266,6 +264,7 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   #pointerDownTimeStamp = 0;
+  #currentMedia;
   breakpointsComputed = false;
 
   constructor() {
@@ -316,11 +315,10 @@ class MediaContainer extends globalThis.HTMLElement {
           // No need to inject anything if media=null
           if (media) {
             mutation.addedNodes.forEach((node) => {
-              if (node == media) {
+              if (node === media && media !== this.#currentMedia) {
                 // Update all controls with new media if this is the new media
-                this.handleMediaUpdated(media).then((media) =>
-                  this.mediaSetCallback(media)
-                );
+                this.handleMediaUpdated(media)
+                  .then((media) => this.mediaSetCallback(media));
               }
             });
           }
@@ -332,13 +330,13 @@ class MediaContainer extends globalThis.HTMLElement {
     mutationObserver.observe(this, { childList: true, subtree: true });
 
     let pendingResizeCb = false;
-    const deferResizeCallback = (entries) => {
+    const deferResizeCallback = (entry) => {
       // Already have a pending async breakpoint computation, so go ahead and bail
       if (pendingResizeCb) return;
       // Just in case it takes too long (which will cause an error to throw),
       // do the breakpoint computation asynchronously
       setTimeout(() => {
-        resizeCallback(entries);
+        resizeCallback(entry);
         // Once we've completed, reset the pending cb flag to false
         pendingResizeCb = false;
 
@@ -354,27 +352,23 @@ class MediaContainer extends globalThis.HTMLElement {
       }, 0);
       pendingResizeCb = true;
     };
-    const resizeObserver = new ResizeObserver(deferResizeCallback);
-    this.resizeObserver = resizeObserver;
-    resizeObserver.observe(this);
+    observeResize(this, deferResizeCallback);
 
     // Handles the case when the slotted media element is a slot element itself.
     // e.g. chaining media slots for media themes.
-    let currentMedia = this.media;
+
     /** @type {HTMLSlotElement} */
     let chainedSlot = this.querySelector(':scope > slot[slot=media]');
     if (chainedSlot) {
       chainedSlot.addEventListener('slotchange', () => {
         const slotEls = chainedSlot.assignedElements({ flatten: true });
         if (!slotEls.length) {
-          this.mediaUnsetCallback(currentMedia);
+          this.mediaUnsetCallback(this.#currentMedia);
           return;
         }
-        if (this.media) {
-          currentMedia = this.media;
-          this.handleMediaUpdated(this.media).then((media) =>
-            this.mediaSetCallback(media)
-          );
+        if (this.media && this.media !== this.#currentMedia) {
+          this.handleMediaUpdated(this.media)
+            .then((media) => this.mediaSetCallback(media));
         }
       });
     }
@@ -410,28 +404,17 @@ class MediaContainer extends globalThis.HTMLElement {
     return media;
   }
 
-  mediaSetCallback(media) {
-    // Toggle play/pause with clicks on the media element itself
-    this._mediaClickPlayToggle = () => {
-      const eventName = media.paused
-        ? MediaUIEvents.MEDIA_PLAY_REQUEST
-        : MediaUIEvents.MEDIA_PAUSE_REQUEST;
-      this.dispatchEvent(
-        new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
-      );
-    };
-  }
-
-  handleMediaUpdated(media) {
-    const resolveMediaPromise = (media) => {
-      // media.addEventListener('click', this._mediaClickPlayToggle, false);
-
-      return Promise.resolve(media);
-    };
+  /**
+   * @param {HTMLMediaElement} media
+   */
+  async handleMediaUpdated(media) {
+    this.#currentMedia = media;
 
     const rejectMediaPromise = (media) => {
+      this.#currentMedia = null;
+
       console.error(
-        '<media-chrome>: Media element set with slot="media" does not appear to be compatible.',
+        'Media Chrome: Media element set with slot="media" does not appear to be compatible.',
         media
       );
       return Promise.reject(media);
@@ -442,24 +425,12 @@ class MediaContainer extends globalThis.HTMLElement {
       return rejectMediaPromise(media);
     }
 
-    const mediaName = media.nodeName.toLowerCase();
     // Custom element. Wait until it's defined before resolving
-    if (mediaName.includes('-')) {
-      return globalThis.customElements.whenDefined(mediaName).then(() => {
-        return resolveMediaPromise(media);
-      });
+    if (media.localName.includes('-')) {
+      await globalThis.customElements.whenDefined(media.localName);
     }
 
-    // Exists and isn't a custom element. Resolve.
-    return resolveMediaPromise(media);
-  }
-
-  /**
-   * @abstract
-   */
-  // eslint-disable-next-line
-  mediaUnsetCallback(node) {
-    // media.removeEventListener('click', this._mediaClickPlayToggle);
+    return media;
   }
 
   connectedCallback() {
@@ -468,10 +439,9 @@ class MediaContainer extends globalThis.HTMLElement {
     this.setAttribute('role', 'region');
     this.setAttribute('aria-label', label);
 
-    if (this.media) {
-      this.handleMediaUpdated(this.media).then((media) =>
-        this.mediaSetCallback(media)
-      );
+    if (this.media && this.media !== this.#currentMedia) {
+      this.handleMediaUpdated(this.media)
+        .then((media) => this.mediaSetCallback(media));
     }
 
     // Assume user is inactive until they're not (aka userinactive by default is true)
@@ -484,10 +454,30 @@ class MediaContainer extends globalThis.HTMLElement {
     this.addEventListener('mouseleave', this);
     this.addEventListener('keyup', this);
 
-    globalThis.window?.addEventListener('mouseup', () => {
-      this.removeAttribute(Attributes.KEYBOARD_CONTROL);
-    });
+    globalThis.window?.addEventListener('mouseup', this);
   }
+
+  disconnectedCallback() {
+    // When disconnected from the DOM, remove root node and media event listeners
+    // to prevent memory leaks and unneeded invisble UI updates.
+    if (this.media) {
+      this.mediaUnsetCallback(this.media);
+    }
+
+    globalThis.window?.removeEventListener('mouseup', this);
+  }
+
+  /**
+   * @abstract
+   * @param {HTMLMediaElement} media
+   */
+  mediaSetCallback(media) {} // eslint-disable-line
+
+  /**
+   * @abstract
+   * @param {HTMLMediaElement} media
+   */
+  mediaUnsetCallback(media) {} // eslint-disable-line
 
   handleEvent(event) {
     switch (event.type) {
@@ -503,6 +493,9 @@ class MediaContainer extends globalThis.HTMLElement {
       case 'mouseleave':
         // Immediately hide if mouse leaves the container.
         this.#setInactive();
+        break;
+      case 'mouseup':
+        this.removeAttribute(Attributes.KEYBOARD_CONTROL);
         break;
       case 'keyup':
         // Unhide for keyboard controlling.

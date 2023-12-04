@@ -2,7 +2,7 @@ import { MediaChromeListbox, createOption, createIndicator } from './media-chrom
 import './media-chrome-option.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
-import { parseTextTracksStr, stringifyTextTrackList, formatTextTrackObj, toggleSubsCaps } from '../utils/captions.js';
+import { parseTextTracksStr, stringifyTextTrackList, formatTextTrackObj } from '../utils/captions.js';
 
 const ccIcon = /*html*/`
 <svg aria-hidden="true" viewBox="0 0 26 24" part="captions-indicator indicator">
@@ -48,7 +48,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     } else if (attrName === 'aria-multiselectable') {
       // diallow aria-multiselectable
       this.removeAttribute('aria-multiselectable');
-      console.warn("Captions List doesn't currently support multiple selections. You can enable multiple items via the media.textTrack API.");
+      console.warn("Captions List doesn't currently support multiple selections. You can enable multiple items via the media.textTracks API.");
     }
   }
 
@@ -122,10 +122,29 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 
   #onChange() {
-    // turn off currently selected tracks
-    toggleSubsCaps(this, false);
+    const showingSubs = this.mediaSubtitlesShowing;
+    const showingSubsStr = this.getAttribute(
+      MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
+    );
 
-    if (!this.value) return;
+    // Don't make request if this was the result of a media state change (CJP)
+    const localStateChange = this.value !== showingSubsStr;
+    if (showingSubs?.length && localStateChange) {
+      // turn off currently selected tracks
+      this.dispatchEvent(
+        new globalThis.CustomEvent(
+          MediaUIEvents.MEDIA_DISABLE_SUBTITLES_REQUEST,
+          {
+            composed: true,
+            bubbles: true,
+            detail: showingSubs,
+          }
+        )
+      );
+    }
+
+    // Don't make request if this was the result of a media state change (CJP)
+    if (!this.value || !localStateChange) return;
 
     const event = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST,

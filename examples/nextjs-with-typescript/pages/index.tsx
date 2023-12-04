@@ -19,6 +19,7 @@ import {
   MediaFullscreenButton,
   MediaPosterImage,
 } from 'media-chrome/dist/react';
+import { useState } from 'react';
 
 const primaryColor = 'white';
 const chromeStyles = {
@@ -29,6 +30,8 @@ const chromeStyles = {
 };
 
 const Home: NextPage = () => {
+  const [mounted, setMounted] = useState(true);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -40,60 +43,66 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <h1 className={styles.title}>
           Welcome to{' '}
-          <a href="https://www.media-chrome.org" target="_blank">
+          <a href="https://www.media-chrome.org" target="_blank" rel="noreferrer">
             Media Chrome!
           </a>
         </h1>
-        <MediaController
-          ref={(node: HTMLElement) => console.log('ref', node)}
-          style={chromeStyles}
-          defaultSubtitles
-        >
-          <video
-            slot="media"
-            src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-            preload="auto"
-            muted
-            crossOrigin=""
+        <br/>
+        <button id="mount-btn" onClick={() => setMounted(prev => !prev)}>
+          {mounted ? "Unmount": "Mount"}
+        </button>
+        <br/>
+        <div className={styles.grid}>
+          {mounted && (<MediaController
+            style={chromeStyles}
+            defaultSubtitles
           >
-            <track
-              label="thumbnails"
-              default
-              kind="metadata"
-              src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
-            />
-            <track
-              label="English"
-              kind="captions"
-              srcLang="en"
-              src="./vtt/en-cc.vtt"
-            />
-          </video>
-          <MediaPosterImage
-            slot="poster"
-            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
-            placeholderSrc="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
-          ></MediaPosterImage>
-          <MediaLoadingIndicator
-            noautohide
-            slot="centered-chrome"
-            style={{ '--media-loading-indicator-icon-height': '200px' }}
-          ></MediaLoadingIndicator>
-          <MediaControlBar>
-            <MediaPlayButton></MediaPlayButton>
-            <MediaSeekBackwardButton seekOffset={10}></MediaSeekBackwardButton>
-            <MediaSeekForwardButton seekOffset={10}></MediaSeekForwardButton>
-            <MediaTimeRange></MediaTimeRange>
-            <MediaTimeDisplay showDuration></MediaTimeDisplay>
-            <MediaMuteButton></MediaMuteButton>
-            <MediaVolumeRange></MediaVolumeRange>
-            <MediaPlaybackRateButton></MediaPlaybackRateButton>
-            <MediaCaptionsButton></MediaCaptionsButton>
-            <MediaAirplayButton></MediaAirplayButton>
-            <MediaPipButton></MediaPipButton>
-            <MediaFullscreenButton></MediaFullscreenButton>
-          </MediaControlBar>
-        </MediaController>
+            <video
+              slot="media"
+              src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+              preload="auto"
+              muted
+              crossOrigin=""
+            >
+              <track
+                label="thumbnails"
+                default
+                kind="metadata"
+                src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"
+              />
+              <track
+                label="English"
+                kind="captions"
+                srcLang="en"
+                src="./vtt/en-cc.vtt"
+              />
+            </video>
+            <MediaPosterImage
+              slot="poster"
+              src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg"
+              placeholderSrc="data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAUADADASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAECBAP/xAAdEAEBAAEEAwAAAAAAAAAAAAAAARECAxITFCFR/8QAGQEAAwADAAAAAAAAAAAAAAAAAAEDAgQF/8QAGBEBAQEBAQAAAAAAAAAAAAAAAAETERL/2gAMAwEAAhEDEQA/ANeC4ldyI1b2EtIzzrrIqYZLvl5FGkGdbfQzGPvo76WsPxXLlfqbaA5va2iVJADgPELACsD/2Q=="
+            ></MediaPosterImage>
+            <MediaLoadingIndicator
+              noautohide
+              slot="centered-chrome"
+              style={{ '--media-loading-indicator-icon-height': '200px' }}
+            ></MediaLoadingIndicator>
+            <MediaControlBar>
+              <MediaPlayButton></MediaPlayButton>
+              <MediaSeekBackwardButton seekOffset={10}></MediaSeekBackwardButton>
+              <MediaSeekForwardButton seekOffset={10}></MediaSeekForwardButton>
+              <MediaTimeRange></MediaTimeRange>
+              <MediaTimeDisplay showDuration></MediaTimeDisplay>
+              <MediaMuteButton></MediaMuteButton>
+              <MediaVolumeRange></MediaVolumeRange>
+              <MediaPlaybackRateButton></MediaPlaybackRateButton>
+              <MediaCaptionsButton></MediaCaptionsButton>
+              <MediaAirplayButton></MediaAirplayButton>
+              <MediaPipButton></MediaPipButton>
+              <MediaFullscreenButton></MediaFullscreenButton>
+            </MediaControlBar>
+          </MediaController>)}
+        </div>
       </main>
 
       <footer className={styles.footer}></footer>
