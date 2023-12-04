@@ -42,7 +42,7 @@
 .title {
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 3rem;
 }
 
 .title,
@@ -70,7 +70,9 @@
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  width: 100%;
   max-width: 800px;
+  aspect-ratio: 2.4;
 }
 
 .card {
