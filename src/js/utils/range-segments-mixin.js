@@ -49,13 +49,6 @@ export const RangeSegmentsMixin = (superclass) =>
     #segments = [];
     #cssRules = {};
 
-    constructor(...args) {
-      super(...args);
-
-      this.#cssRules.activeSegment = insertCSSRule(this.shadowRoot, '#segments-clipping rect:nth-child(0)');
-      this.appearance.append(template.content.cloneNode(true));
-    }
-
     connectedCallback() {
       super.connectedCallback();
       observeResize(this.container, this.#updateComputedStyles);
@@ -69,15 +62,22 @@ export const RangeSegmentsMixin = (superclass) =>
     #updateComputedStyles = () => {
       // This fixes a Chrome bug where it doesn't refresh the clip-path on content resize.
       const clipping = this.shadowRoot.querySelector('#segments-clipping');
-      clipping.parentNode.append(clipping);
+      if (clipping) clipping.parentNode.append(clipping);
     }
 
     updateSegments(segments) {
       if (!segments?.length) return;
 
+      let clipping = this.shadowRoot.querySelector('#segments-clipping');
+
+      if (!clipping) {
+        this.#cssRules.activeSegment = insertCSSRule(this.shadowRoot, '#segments-clipping rect:nth-child(0)');
+        this.appearance.append(template.content.cloneNode(true));
+      }
+
       this.container.classList.toggle('segments', !!segments.length);
 
-      const clipping = this.shadowRoot.querySelector('#segments-clipping');
+      clipping = this.shadowRoot.querySelector('#segments-clipping');
       clipping.textContent = '';
 
       const normalized = [...new Set([
@@ -111,12 +111,15 @@ export const RangeSegmentsMixin = (superclass) =>
           this.#updateActiveSegment(evt);
           break;
         case 'pointerleave':
-          this.#cssRules.activeSegment.style.removeProperty('transform');
+          this.#cssRules.activeSegment?.style.removeProperty('transform');
           break;
       }
     }
 
     #updateActiveSegment(evt) {
+      const rule = this.#cssRules.activeSegment;
+      if (!rule) return;
+
       const pointerRatio = this.getPointerRatio(evt);
       const segmentIndex = this.#segments.findIndex((start, i, arr) => {
         const end = arr[i + 1];
@@ -124,7 +127,6 @@ export const RangeSegmentsMixin = (superclass) =>
       });
 
       const selectorText = `#segments-clipping rect:nth-child(${segmentIndex + 1})`;
-      const rule = this.#cssRules.activeSegment;
 
       if (rule.selectorText != selectorText || !rule.style.transform) {
         rule.selectorText = selectorText;
