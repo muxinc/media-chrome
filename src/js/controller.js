@@ -165,7 +165,6 @@ export const MediaUIStates = {
 
       // If `defaultduration` is unset, we still want to propagate `NaN`
       // for some cases to ensure appropriate media state receiver updates.
-      // TODO: What if duration is infinity/live? (heff)
       if (!media || !Number.isFinite(media.duration)) {
         return Number.NaN;
       }
