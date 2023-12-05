@@ -32,14 +32,17 @@ The `<media-time-display>` component is used to show the current or remaining ti
 
 Showing the duration can be configured with the `showduration` attribute.
 
+ Media Controller also sets the `defaultduration` to use before the media is loaded.
+
 <SandpackContainer
   editorHeight={265}
-  html={`<media-controller defaultsubtitles>
+  html={`<media-controller defaultduration="134">
   <video
     slot="media"
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
     playsinline
     muted
+    preload="none"
   >
   </video>
   <media-control-bar>
@@ -55,7 +58,7 @@ Showing the remaining time by default can be configured with the `remaining` att
 
 <SandpackContainer
   editorHeight={265}
-  html={`<media-controller defaultsubtitles>
+  html={`<media-controller>
   <video
     slot="media"
     src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
