@@ -66,6 +66,21 @@ as `breakpointx` attributes on media-controller and as `breakpointx`
 
 When enabled, this will cause captions or subtitles to be turned on by default, if available.
 
+### defaultduration
+
+`defaultduration` (number, in seconds)
+
+When enabled, this will use the value of `defaultduration` as the `mediaduration` before the media has been loaded. This is useful when you want to avoid preloading the media (e.g. for cost or network usage reasons) but still want the UI to show what the (already known) duration will be.
+
+Example:
+
+```html
+<media-controller defaultduration="134"> <!-- aka 2:14 -->
+  <video slot="media" src="..." preload="none"></video> <!-- don't automatically load the media -->
+  <media-time-display showduration></media-time-display> <!-- This will show 0:00 / 2:14 before the media is loaded and the actual duration after -->
+</media-controller>
+```
+
 ### defaultstreamtype
 
 `defaultstreamtype` (values: `live`, `on-demand`)
