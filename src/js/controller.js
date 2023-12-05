@@ -150,18 +150,24 @@ export const MediaUIStates = {
   MEDIA_DURATION: {
     get: function (controller) {
       const { media } = controller;
-      const defaultDuration = controller.hasAttribute('defaultduration')
-        ? +controller.getAttribute('defaultduration')
-        : NaN;
 
-      // TODO: What if duration is infinity/live? (heff)
-      if (!media || !Number.isFinite(media.duration)) {
-        return defaultDuration;
+      // If `defaultduration` is set and we don't yet have a usable `duration`
+      // available, use the default duration.
+      if (
+        controller.hasAttribute('defaultduration') &&
+        (!media ||
+          !media.duration ||
+          Number.isNaN(media.duration) ||
+          !Number.isFinite(media.duration))
+      ) {
+        return +controller.getAttribute('defaultduration');
       }
 
-      // Apply defaultDuration if it's set and the media is not yet ready
-      if (!(media.readyState || Number.isNaN(defaultDuration))) {
-        return defaultDuration;
+      // If `defaultduration` is unset, we still want to propagate `NaN`
+      // for some cases to ensure appropriate media state receiver updates.
+      // TODO: What if duration is infinity/live? (heff)
+      if (!media || !Number.isFinite(media.duration)) {
+        return Number.NaN;
       }
 
       return media.duration;
