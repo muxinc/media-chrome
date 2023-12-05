@@ -29,6 +29,7 @@ const DEFAULT_TIME = 0;
 export const Attributes = {
   DEFAULT_SUBTITLES: 'defaultsubtitles',
   DEFAULT_STREAM_TYPE: 'defaultstreamtype',
+  DEFAULT_DURATION: 'defaultduration',
   FULLSCREEN_ELEMENT: 'fullscreenelement',
   HOTKEYS: 'hotkeys',
   KEYS_USED: 'keysused',
@@ -43,6 +44,7 @@ export const Attributes = {
  *
  * @attr {boolean} defaultsubtitles
  * @attr {string} defaultstreamtype
+ * @attr {string} defaultduration
  * @attr {string} fullscreenelement
  * @attr {boolean} nohotkeys
  * @attr {string} hotkeys
@@ -56,7 +58,8 @@ class MediaController extends MediaContainer {
       Attributes.NO_HOTKEYS,
       Attributes.HOTKEYS,
       Attributes.DEFAULT_STREAM_TYPE,
-      Attributes.DEFAULT_SUBTITLES
+      Attributes.DEFAULT_SUBTITLES,
+      Attributes.DEFAULT_DURATION,
     );
   }
 
