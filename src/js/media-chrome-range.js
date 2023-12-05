@@ -1,7 +1,6 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { getOrInsertCSSRule, insertCSSRule, getPointProgressOnLine, cachedBoundingClientRect } from './utils/element-utils.js';
-import { observeResize, unobserveResize } from './utils/resize-observer.js';
+import { getOrInsertCSSRule, getPointProgressOnLine, cachedBoundingClientRect } from './utils/element-utils.js';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/`
@@ -118,17 +117,12 @@ template.innerHTML = /*html*/`
       will-change: transform;
     }
 
-    .segments #appearance {
-      height: var(--media-range-segment-hover-height, 7px);
-    }
-
     #background,
     #track {
       border-radius: var(--media-range-track-border-radius, 1px);
       position: absolute;
       width: 100%;
       height: 100%;
-      clip-path: url(#segments-clipping);
     }
 
     #background {
@@ -195,29 +189,6 @@ template.innerHTML = /*html*/`
     :host([disabled]) #thumb {
       background-color: #777;
     }
-
-    #segments {
-      --segments-gap: var(--media-range-segments-gap, 2px);
-      position: absolute;
-      width: 100%;
-      height: 100%;
-    }
-
-    #segments-clipping {
-      transform: translateX(calc(var(--segments-gap) / 2));
-    }
-
-    #segments-clipping:empty {
-      display: none;
-    }
-
-    #segments-clipping rect {
-      height: var(--media-range-track-height, 4px);
-      y: calc((var(--media-range-segment-hover-height, 7px) - var(--media-range-track-height, 4px)) / 2);
-      transition: var(--media-range-segment-transition, transform .1s ease-in-out);
-      transform: var(--media-range-segment-transform, scaleY(1));
-      transform-origin: center;
-    }
   </style>
   <div id="leftgap"></div>
   <div id="container">
@@ -231,7 +202,6 @@ template.innerHTML = /*html*/`
         <div id="progress"></div>
       </div>
       <div id="thumb"></div>
-      <svg id="segments"><clipPath id="segments-clipping"></clipPath></svg>
     </div>
     <input id="range" type="range" min="0" max="1" step="any" value="0">
   </div>
@@ -296,7 +266,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
   #isInputTarget;
   #startpoint;
   #endpoint;
-  #segments = [];
   #cssRules = {};
 
   static get observedAttributes() {
@@ -321,7 +290,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.#cssRules.pointer = getOrInsertCSSRule(this.shadowRoot, '#pointer');
     this.#cssRules.progress = getOrInsertCSSRule(this.shadowRoot, '#progress');
     this.#cssRules.thumb = getOrInsertCSSRule(this.shadowRoot, '#thumb');
-    this.#cssRules.activeSegment = insertCSSRule(this.shadowRoot, '#segments-clipping rect:nth-child(0)');
 
     this.container = this.shadowRoot.querySelector('#container');
     this.#startpoint = this.shadowRoot.querySelector('#startpoint');
@@ -330,6 +298,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
     /** @type {Omit<HTMLInputElement, "value" | "min" | "max"> &
       * {value: number, min: number, max: number}} */
     this.range = this.shadowRoot.querySelector('#range');
+    this.appearance = this.shadowRoot.querySelector('#appearance');
   }
 
   #onFocusIn = () => {
@@ -386,7 +355,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.shadowRoot.addEventListener('focusout', this.#onFocusOut);
 
     this.#enableUserEvents();
-    observeResize(this.container, this.#updateComputedStyles);
   }
 
   disconnectedCallback() {
@@ -398,17 +366,10 @@ class MediaChromeRange extends globalThis.HTMLElement {
 
     this.shadowRoot.removeEventListener('focusin', this.#onFocusIn);
     this.shadowRoot.removeEventListener('focusout', this.#onFocusOut);
-    unobserveResize(this.container, this.#updateComputedStyles);
-  }
-
-  #updateComputedStyles = () => {
-    // This fixes a Chrome bug where it doesn't refresh the clip-path on content resize.
-    const clipping = this.shadowRoot.querySelector('#segments-clipping');
-    clipping.parentNode.append(clipping);
   }
 
   updatePointerBar(evt) {
-    this.#cssRules.pointer.style.setProperty('width', `${this.#getPointerRatio(evt) * 100}%`);
+    this.#cssRules.pointer.style.setProperty('width', `${this.getPointerRatio(evt) * 100}%`);
   }
 
   updateBar() {
@@ -417,57 +378,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.#cssRules.thumb.style.setProperty('left', `${rangePercent}%`);
   }
 
-  updateSegments(segments) {
-    if (!segments?.length) return;
-
-    this.container.classList.toggle('segments', !!segments.length);
-
-    const clipping = this.shadowRoot.querySelector('#segments-clipping');
-    clipping.textContent = '';
-
-    const normalized = [...new Set([
-      +this.range.min,
-      ...segments.flatMap(s => [s.start, s.end]),
-      +this.range.max
-    ])];
-
-    this.#segments = [...normalized];
-
-    const lastMarker = normalized.pop();
-    for (const [i, marker] of normalized.entries()) {
-      const [isFirst, isLast] = [i === 0, i === normalized.length - 1];
-      const x = isFirst ? 'calc(var(--segments-gap) / -1)' : `${marker * 100}%`;
-      const x2 = isLast ? lastMarker : normalized[i + 1];
-      const width = `calc(${(x2 - marker) * 100}%${isFirst || isLast ? '' : ` - var(--segments-gap)`})`;
-
-      const segmentEl = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      const cssRule = getOrInsertCSSRule(this.shadowRoot, `#segments-clipping rect:nth-child(${i + 1})`);
-      cssRule.style.setProperty('x', x);
-      cssRule.style.setProperty('width', width);
-      clipping.append(segmentEl);
-    }
-  }
-
-  #updateActiveSegment(evt) {
-    const pointerRatio = this.#getPointerRatio(evt);
-    const segmentIndex = this.#segments.findIndex((start, i, arr) => {
-      const end = arr[i + 1];
-      return end != null && pointerRatio >= start && pointerRatio <= end;
-    });
-
-    const selectorText = `#segments-clipping rect:nth-child(${segmentIndex + 1})`;
-    const rule = this.#cssRules.activeSegment;
-
-    if (rule.selectorText != selectorText || !rule.style.transform) {
-      rule.selectorText = selectorText;
-      rule.style.setProperty(
-        'transform',
-        'var(--media-range-segment-hover-transform, scaleY(2))'
-      );
-    }
-  }
-
-  #getPointerRatio(evt) {
+  getPointerRatio(evt) {
     let pointerRatio = getPointProgressOnLine(
       evt.clientX,
       evt.clientY,
@@ -546,20 +457,18 @@ class MediaChromeRange extends globalThis.HTMLElement {
     globalThis.window?.removeEventListener('pointermove', this);
     this.toggleAttribute('dragging', false);
     this.range.disabled = this.hasAttribute('disabled');
-    this.#cssRules.activeSegment.style.removeProperty('transform');
   }
 
   #handlePointerMove(evt) {
     this.toggleAttribute('dragging', evt.buttons === 1 || evt.pointerType !== 'mouse');
     this.updatePointerBar(evt);
-    this.#updateActiveSegment(evt);
 
     // If the native input target & events are used don't fire manual input events.
     if (this.dragging && (evt.pointerType !== 'mouse' || !this.#isInputTarget)) {
       // Disable native input events if manual events are fired.
       this.range.disabled = true;
 
-      this.range.valueAsNumber = this.#getPointerRatio(evt);
+      this.range.valueAsNumber = this.getPointerRatio(evt);
       this.range.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
     }
   }
