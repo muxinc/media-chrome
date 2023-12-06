@@ -1,3 +1,24 @@
+# [2.0.0](https://github.com/muxinc/media-chrome/compare/v1.7.0...v2.0.0) (2023-12-06)
+
+
+* feat!: use remote playback API (#743) ([83c1a0f](https://github.com/muxinc/media-chrome/commit/83c1a0f000bc8898971f030bcafa0d6df37cdc34)), closes [#743](https://github.com/muxinc/media-chrome/issues/743)
+
+
+### BREAKING CHANGES
+
+* uses castable-video v1
+
+Requires https://github.com/muxinc/castable-video/pull/16
+
+https://github.com/muxinc/media-chrome/discussions/654
+
+
+# IMPORTANT
+Mux player requires the new `<castable-video>` with this change!
+https://github.com/muxinc/castable-video
+
+
+
 # [1.7.0](https://github.com/muxinc/media-chrome/compare/v1.6.0...v1.7.0) (2023-12-06)
 
 
