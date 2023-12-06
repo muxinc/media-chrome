@@ -1,3 +1,17 @@
+# [1.7.0](https://github.com/muxinc/media-chrome/compare/v1.6.0...v1.7.0) (2023-12-06)
+
+
+### Bug Fixes
+
+* fullscreen attr if node is not isConnected ([#780](https://github.com/muxinc/media-chrome/issues/780)) ([7140c6f](https://github.com/muxinc/media-chrome/commit/7140c6f7c7b1261cd71cd1f46ff357ba745d9b3b)), closes [#761](https://github.com/muxinc/media-chrome/issues/761)
+
+
+### Features
+
+* **default duration:** add support for defaultduration when usable duration is unavailble ([#779](https://github.com/muxinc/media-chrome/issues/779)) ([b5a8af6](https://github.com/muxinc/media-chrome/commit/b5a8af68a4fd5cdd5fb39389b89d87639fdc5136))
+
+
+
 # [1.6.0](https://github.com/muxinc/media-chrome/compare/v1.5.4...v1.6.0) (2023-12-04)
 
 
