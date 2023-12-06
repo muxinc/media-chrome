@@ -33,14 +33,13 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 const updateAriaLabel = (el) => {
-  const isCast = el.getAttribute(MediaUIAttributes.MEDIA_IS_CASTING) != null;
-  const label = isCast ? verbs.EXIT_CAST() : verbs.ENTER_CAST();
+  const label = el.mediaIsCasting ? verbs.EXIT_CAST() : verbs.ENTER_CAST();
   el.setAttribute('aria-label', label);
 };
 
 /**
  * @slot enter - An element shown when the media is not in casting mode and pressing the button will open the Cast menu.
- * @slot exit - An element shown when the media is in casting mode and pressing the button will trigger exiting casting mode.
+ * @slot exit - An element shown when the media is in casting mode and pressing the button will open the Cast menu.
  * @slot icon - An element for representing enter and exit states in a single icon
  *
  * @attr {(unavailable|unsupported)} mediacastunavailable - (read-only) Set if casting is unavailable.
@@ -62,15 +61,16 @@ class MediaCastButton extends MediaChromeButton {
   }
 
   connectedCallback() {
-    updateAriaLabel(this);
     super.connectedCallback();
+    updateAriaLabel(this);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (attrName === MediaUIAttributes.MEDIA_IS_CASTING) {
       updateAriaLabel(this);
     }
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**
