@@ -1,6 +1,6 @@
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { fullscreenApi } from './utils/fullscreen-api.js';
-import { containsComposedNode } from './utils/element-utils.js';
+import { containsComposedNode, getDocumentOrShadowRoot } from './utils/element-utils.js';
 import {
   hasVolumeSupportAsync,
   fullscreenSupported,
@@ -337,7 +337,7 @@ export const MediaUIStates = {
       } else {
         // If the getter was called w/o an event use the root's fullscreenElement.
         fullscreenEl =
-          controller.getRootNode().fullscreenElement ??
+          getDocumentOrShadowRoot(controller)?.fullscreenElement ??
           document[fullscreenApi.element];
       }
 

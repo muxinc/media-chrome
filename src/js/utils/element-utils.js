@@ -31,11 +31,26 @@ export const closestComposedNode = (childNode, selector) => {
 /**
  * Get the active element, accounting for Shadow DOM subtrees.
  * @param {Document|ShadowRoot} root
+ * @return {Element|null}
  */
 export function getActiveElement(root = document) {
   const activeEl = root?.activeElement;
   if (!activeEl) return null;
   return getActiveElement(activeEl.shadowRoot) ?? activeEl;
+}
+
+/**
+ * Gets the document or shadow root of a node, not the node itself which can lead to bugs.
+ * https://developer.mozilla.org/en-US/docs/Web/API/Node/getRootNode#return_value
+ * @param {Node} node
+ * @return {Document|ShadowRoot|null}
+ */
+export function getDocumentOrShadowRoot(node) {
+  const rootNode = node?.getRootNode?.();
+  if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
+    return rootNode;
+  }
+  return null;
 }
 
 /**
