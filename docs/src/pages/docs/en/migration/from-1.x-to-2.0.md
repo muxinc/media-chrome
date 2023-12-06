@@ -10,7 +10,7 @@ Here's a high level overview:
 ### Breaking changes
 
 **Casting media element**
-- Media Chrome v2 casting behavior requires ['castable-video'](https://github.com/muxinc/castable-video) v1.
+- Media Chrome v2 casting behavior requires [castable-video](https://github.com/muxinc/castable-video) v1.
 - The custom built-in `<video is="castable-video">` should be replaced with `<castable-video>`.
 
 ### Example of HTML changes
