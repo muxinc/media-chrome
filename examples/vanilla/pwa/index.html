@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Basic PWA Example</title>
+    <link rel="manifest" href="./pwa-manifest.json" />
+    <script type="module" src="../../../dist/index.js"></script>
+    <style>
+      @media all and (display-mode: standalone) {
+        body {
+          /* Added to demonstrate these styles are applied for PWA */
+          background-color: darkslategray;
+          color: white;
+        }
+
+        .pwa-install {
+          display: none;
+        }
+      }
+
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block; /* expands the container if preload=none */
+        max-width: 960px; /* allows the container to shrink if small */
+        aspect-ratio: 2.4; /* set container aspect ratio if preload=none */
+      }
+
+      video {
+        width: 100%; /* prevents video to expand beyond its container */
+      }
+
+      /* Breaking these up into two selectors to demonstrate how this could work with a new custom "contaienr" element (CJP) */
+      media-controller .centered-controls-overlay {
+        align-self: stretch;
+      }
+
+      .centered-controls-overlay {
+        display: flex;
+        flex-flow: row nowrap;
+        align-items: center;
+        justify-content: space-evenly;
+      }
+
+      *[slot='centered-chrome'] {
+        margin: 0 15%;
+        --media-control-hover-background: none;
+        --media-control-background: none;
+      }
+
+      *[slot='centered-chrome']
+        :is(media-play-button, media-seek-backward-button, media-seek-forward-button) {
+        padding: 0px;
+      }
+
+      *[slot='centered-chrome'] media-play-button {
+        width: 20%;
+      }
+
+      *[slot='centered-chrome']
+        :is(media-seek-backward-button, media-seek-forward-button) {
+        width: 15%;
+      }
+
+      media-control-bar {
+        width: 100%;
+      }
+
+      media-pip-button[mediapipunavailable] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome Basic PWA Example</h1>
+      <media-controller>
+        <video
+          playsinline
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+        ></video>
+        <div slot="centered-chrome" class="centered-controls-overlay">
+          <media-seek-backward-button></media-seek-backward-button>
+          <media-play-button></media-play-button>
+          <media-seek-forward-button></media-seek-forward-button>
+        </div>
+        <media-control-bar>
+          <media-mute-button></media-mute-button>
+          <media-time-display showduration></media-time-display>
+          <div
+            style="
+              flex-grow: 1;
+              background: var(
+                --media-control-background,
+                var(--media-secondary-color, rgb(20 20 30 / 0.7))
+              );
+            "
+          ></div>
+          <media-pip-button></media-pip-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+      <div class="pwa-install">
+        This is an example Progressive Web App. If you need help on how to
+        install, see
+        <a href="https://web.dev/learn/pwa/installation" target="_blank">here</a
+        >.
+      </div>
+    </main>
+  </body>
+</html>
