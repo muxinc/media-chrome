@@ -1,3 +1,12 @@
+## [2.0.1](https://github.com/muxinc/media-chrome/compare/v2.0.0...v2.0.1) (2023-12-11)
+
+
+### Bug Fixes
+
+* prevent unset callback if there is no media ([#782](https://github.com/muxinc/media-chrome/issues/782)) ([4198832](https://github.com/muxinc/media-chrome/commit/4198832a625d6145fa3fa5fbf9454c77e2ac0f7d))
+
+
+
 # [2.0.0](https://github.com/muxinc/media-chrome/compare/v1.7.0...v2.0.0) (2023-12-06)
 
 
