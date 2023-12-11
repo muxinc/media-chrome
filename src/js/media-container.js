@@ -363,7 +363,9 @@ class MediaContainer extends globalThis.HTMLElement {
       chainedSlot.addEventListener('slotchange', () => {
         const slotEls = chainedSlot.assignedElements({ flatten: true });
         if (!slotEls.length) {
-          this.mediaUnsetCallback(this.#currentMedia);
+          if (this.#currentMedia) {
+            this.mediaUnsetCallback(this.#currentMedia);
+          }
           return;
         }
         if (this.media && this.media !== this.#currentMedia) {
