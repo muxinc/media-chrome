@@ -1,3 +1,4 @@
+import { document } from './server-safe-globals.js';
 import { getOrInsertCSSRule, insertCSSRule } from './element-utils.js';
 import { observeResize, unobserveResize } from './resize-observer.js';
 
