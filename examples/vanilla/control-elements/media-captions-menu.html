@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width">
-  <title>Media Chrome Captions Listbox</title>
+  <title>Media Chrome Captions Menu</title>
   <script type="module" src="../../../dist/index.js"></script>
-  <script type="module" src="../../../../dist/experimental/media-captions-listbox.js"></script>
+  <script type="module" src="../../../../dist/experimental/menu/media-captions-menu.js"></script>
   <style>
     .examples {
       margin-top: 20px;
@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h1>Captions Listbox</h1>
+  <h1>Captions Menu</h1>
 
   <media-controller id="mc">
     <video
@@ -50,7 +50,7 @@
   <br>
 
   <button type="button" class="remove">Remove First Track</button>
-  <media-captions-listbox title="Captions & Subtitles List" mediacontroller="mc" ></media-captions-listbox>
+  <media-captions-menu title="Captions & Subtitles List" mediacontroller="mc" ></media-captions-menu>
 
   <script>
     document.querySelector('.remove').addEventListener('click', () => {

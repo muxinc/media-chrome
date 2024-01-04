@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width">
-  <title>Media Chrome Rendition Listbox</title>
+  <title>Media Chrome Rendition Menu</title>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@canary/+esm"></script>
   <script type="module" src="../../../dist/index.js"></script>
-  <script type="module" src="../../../../dist/experimental/media-rendition-listbox.js"></script>
+  <script type="module" src="../../../../dist/experimental/menu/media-rendition-menu.js"></script>
   <style>
     /** add styles to prevent CLS (Cumulative Layout Shift) */
     media-controller:not([audio]) {
@@ -24,7 +24,7 @@
   </style>
 </head>
 <body>
-  <h1>Rendition Listbox</h1>
+  <h1>Rendition Menu</h1>
 
   <media-controller id="mc">
     <mux-video
@@ -47,16 +47,16 @@
   </media-controller>
   <br>
 
-  <media-rendition-listbox mediacontroller="mc"></media-rendition-listbox>
+  <media-rendition-menu mediacontroller="mc"></media-rendition-menu>
 
   <p>
     Quality: <span id="renditionactive">N/A</span>
   </p>
 
   <script>
-    const renditionListbox = document.querySelector('media-rendition-listbox');
+    const renditionMenu = document.querySelector('media-rendition-menu');
 
-    renditionListbox.formatOptionText = (text) => {
+    renditionMenu.formatOptionText = (text) => {
       console.log(text);
       return text.replace('720p', '720p (HD)');
     }

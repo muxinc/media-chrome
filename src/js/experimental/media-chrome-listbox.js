@@ -50,7 +50,7 @@ template.innerHTML = /*html*/`
     color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
     background: var(--media-listbox-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
     border-radius: var(--media-listbox-border-radius);
-    display: var(--media-listbox-display, inline-flex);
+    display: inline-flex;
     flex-direction: column;
     position: relative;
     box-sizing: border-box;
@@ -63,9 +63,9 @@ template.innerHTML = /*html*/`
 
   #container {
     gap: var(--media-listbox-gap);
-    flex-direction: var(--media-listbox-flex-direction, column);
-    overflow: var(--media-listbox-overflow, hidden auto);
     display: flex;
+    flex-direction: var(--media-listbox-flex-direction, column);
+    overflow: hidden auto;
     padding-block: .5em;
   }
 

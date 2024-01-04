@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width">
-  <title>Media Chrome Playback Rate Listbox</title>
+  <title>Media Chrome Playback Rate Menu</title>
   <script type="module" src="../../../dist/index.js"></script>
-  <script type="module" src="../../../../dist/experimental/media-playback-rate-listbox.js"></script>
+  <script type="module" src="../../../../dist/experimental/menu/media-playback-rate-menu.js"></script>
   <style>
     /* Hide custom elements that are not defined yet */
     :not(:defined) {
@@ -28,7 +28,7 @@
   </style>
 </head>
 <body>
-  <h1>Playback Rate Listbox</h1>
+  <h1>Playback Rate Menu</h1>
 
   <media-controller id="mc">
     <video
@@ -51,11 +51,11 @@
   </media-controller>
   <br>
 
-  <media-playback-rate-listbox mediacontroller="mc">
+  <media-playback-rate-menu mediacontroller="mc">
     <!-- Custom select indicator icon -->
-    <span slot="select-indicator" class="select-icon">
+    <span slot="check-indicator" class="check-icon">
       <style>
-        .select-icon {
+        .check-icon {
           box-sizing: border-box;
           display: inline-flex;
           justify-content: center;
@@ -68,7 +68,7 @@
           border-radius: 50%;
         }
 
-        [aria-selected="true"] .select-icon::after {
+        [aria-checked="true"] .check-icon::after {
           content: '';
           display: block;
           width: 4px;
@@ -78,7 +78,7 @@
         }
       </style>
     </span>
-  </media-playback-rate-listbox>
+  </media-playback-rate-menu>
 
 
   <div class="examples">

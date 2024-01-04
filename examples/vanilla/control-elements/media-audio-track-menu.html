@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width">
-  <title>Media Chrome Audio Track Listbox</title>
+  <title>Media Chrome Audio Track Menu</title>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@canary/+esm"></script>
   <script type="module" src="../../../dist/index.js"></script>
-  <script type="module" src="../../../../dist/experimental/media-audio-track-listbox.js"></script>
+  <script type="module" src="../../../../dist/experimental/menu/media-audio-track-button.js"></script>
+  <script type="module" src="../../../../dist/experimental/menu/index.js"></script>
   <style>
     /** add styles to prevent CLS (Cumulative Layout Shift) */
     media-controller:not([audio]) {
@@ -24,7 +25,7 @@
   </style>
 </head>
 <body>
-  <h1>Audio Track Listbox</h1>
+  <h1>Audio Track Menu</h1>
 
   <media-controller id="mc">
     <mux-video
@@ -37,18 +38,20 @@
       playsinline
       crossorigin
     ></mux-video>
+    <media-audio-track-menu hidden></media-audio-track-menu>
     <media-control-bar>
       <media-play-button></media-play-button>
       <media-time-display showduration></media-time-display>
       <media-time-range></media-time-range>
       <media-mute-button></media-mute-button>
+      <media-audio-track-button></media-audio-track-button>
       <media-pip-button></media-pip-button>
       <media-fullscreen-button></media-fullscreen-button>
     </media-control-bar>
   </media-controller>
   <br>
 
-  <media-audio-track-listbox mediacontroller="mc"></media-audio-track-listbox>
+  <media-audio-track-menu mediacontroller="mc"></media-audio-track-menu>
 
   <div class="examples">
     <a href="../">View more examples</a>
