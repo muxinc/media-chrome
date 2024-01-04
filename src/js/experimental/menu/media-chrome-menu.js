@@ -439,10 +439,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   #getItem(event) {
-    const composedPath = event.composedPath();
-    const index = composedPath.findIndex(el => el.localName === 'media-chrome-menu-item');
-
-    return composedPath[index];
+    return event.composedPath().find(el => {
+      return ['menuitemradio', 'menuitemcheckbox'].includes(el.getAttribute?.('role'));
+    });
   }
 
   handleSelection(event) {
@@ -457,7 +456,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     const oldCheckedItems = [...this.checkedItems];
 
     if (item.type === 'radio') {
-      this.items.forEach(el => (el.checked = false));
+      this.radioGroupItems.forEach(el => (el.checked = false));
     }
 
     if (toggle) {

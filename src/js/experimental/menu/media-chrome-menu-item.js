@@ -107,10 +107,13 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   }
 
   get checked() {
+    if (!isCheckable(this)) return undefined;
     return this.getAttribute('aria-checked') === 'true';
   }
 
   set checked(value) {
+    if (!isCheckable(this)) return;
+
     this.#dirty = true;
     // Firefox doesn't support the property .ariaChecked.
     this.setAttribute('aria-checked', value ? 'true' : 'false');
@@ -126,7 +129,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     if (!this.hasAttribute('tabindex')) {
       this.setAttribute('tabindex', -1);
     }
-    if (!this.hasAttribute('aria-checked')) {
+    if (isCheckable(this) && !this.hasAttribute('aria-checked')) {
       this.setAttribute('aria-checked', 'false');
     }
   }
@@ -137,7 +140,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
 
-    if (attrName === Attributes.CHECKED && !this.#dirty) {
+    if (attrName === Attributes.CHECKED && isCheckable(this) && !this.#dirty) {
       this.setAttribute('aria-checked', newValue != null ? 'true' : 'false');
     }
     else if (attrName === Attributes.TYPE && newValue !== oldValue) {
@@ -190,6 +193,10 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   }
 
   handleClick() {}
+}
+
+function isCheckable(item) {
+  return item.type === 'radio' || item.type === 'checkbox';
 }
 
 function closestMenuItemsContainer(childNode, parentNode) {

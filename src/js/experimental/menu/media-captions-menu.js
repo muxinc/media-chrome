@@ -40,8 +40,8 @@ class MediaCaptionsMenu extends MediaChromeMenu {
 
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_LIST && oldValue !== newValue) {
       this.#render();
-
-    } else if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING && oldValue !== newValue) {
+    }
+    else if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING && oldValue !== newValue) {
       this.value = newValue;
     }
   }
