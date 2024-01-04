@@ -2,6 +2,11 @@ import { MediaChromeButton } from '../../media-chrome-button.js';
 import { globalThis, document } from '../../utils/server-safe-globals.js';
 import { getStringAttr, setStringAttr } from '../../utils/element-utils.js';
 import { MediaUIAttributes } from '../../constants.js';
+import { showMenu, getTarget } from './menu-utils.js';
+
+export const Attributes = {
+  TARGET: 'target',
+};
 
 const renditionIcon = /*html*/`<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M13.5 2.5h2v6h-2v-2h-11v-2h11v-2Zm4 2h4v2h-4v-2Zm-12 4h2v6h-2v-2h-3v-2h3v-2Zm4 2h12v2h-12v-2Zm1 4h2v6h-2v-2h-8v-2h8v-2Zm4 2h7v2h-7v-2Z" />
@@ -29,6 +34,26 @@ class MediaRenditionButton extends MediaChromeButton {
 
   constructor() {
     super({ slotTemplate });
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    if (getTarget(this, 'media-rendition-menu')) {
+      this.setAttribute('aria-haspopup', 'menu');
+    }
+  }
+
+  get target() {
+    return this.getAttribute('target');
+  }
+
+  set target(value) {
+    this.setAttribute('target', `${value}`);
+  }
+
+  handleClick() {
+    showMenu(this, 'media-rendition-menu');
   }
 
   /**

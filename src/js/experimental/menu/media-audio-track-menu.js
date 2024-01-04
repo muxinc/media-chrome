@@ -15,6 +15,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST,
       MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED,
+      MediaUIAttributes.MEDIA_AUDIO_TRACK_UNAVAILABLE,
     ];
   }
 

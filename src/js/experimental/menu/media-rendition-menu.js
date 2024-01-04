@@ -15,6 +15,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_RENDITION_LIST,
       MediaUIAttributes.MEDIA_RENDITION_SELECTED,
+      MediaUIAttributes.MEDIA_RENDITION_UNAVAILABLE,
     ];
   }
 

@@ -64,6 +64,8 @@ template.innerHTML = /*html*/`
       visibility 0s, transform .15s ease-out, opacity .15s ease-out);
     transform: var(--media-menu-transform-in, translateY(0) scale(1));
     flex-direction: column;
+    ${/* Prevent overflowing a flex container */ ''}
+    min-height: 0;
     position: relative;
     box-sizing: border-box;
   }
