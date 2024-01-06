@@ -139,14 +139,11 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-
     if (attrName === Attributes.CHECKED && isCheckable(this) && !this.#dirty) {
       this.setAttribute('aria-checked', newValue != null ? 'true' : 'false');
-    }
-    else if (attrName === Attributes.TYPE && newValue !== oldValue) {
+    } else if (attrName === Attributes.TYPE && newValue !== oldValue) {
       this.setAttribute('role', 'menuitem' + newValue);
-    }
-    else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
+    } else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
       } else {
@@ -178,14 +175,16 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     if (!items) return;
 
     // Default to the last aria-checked element if there isn't an active element already.
-    let checkedItem = items.filter(item => item.getAttribute('aria-checked') === 'true').pop();
+    let checkedItem = items
+      .filter((item) => item.getAttribute('aria-checked') === 'true')
+      .pop();
 
     // If there isn't an active element or a checked element, default to the first element.
     if (!checkedItem) checkedItem = items[0];
 
     for (const item of items) {
       item.setAttribute('tabindex', '-1');
-      item.setAttribute('aria-checked', 'false')
+      item.setAttribute('aria-checked', 'false');
     }
 
     checkedItem?.setAttribute('tabindex', '0');
@@ -211,7 +210,10 @@ function closestMenuItemsContainer(childNode, parentNode) {
 }
 
 if (!globalThis.customElements.get('media-chrome-menu-item')) {
-  globalThis.customElements.define('media-chrome-menu-item', MediaChromeMenuItem);
+  globalThis.customElements.define(
+    'media-chrome-menu-item',
+    MediaChromeMenuItem
+  );
 }
 
 export { MediaChromeMenuItem };

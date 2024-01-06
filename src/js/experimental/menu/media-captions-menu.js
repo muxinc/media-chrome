@@ -1,8 +1,16 @@
-import { MediaChromeMenu, createMenuItem, createIndicator } from './media-chrome-menu.js';
+import {
+  MediaChromeMenu,
+  createMenuItem,
+  createIndicator,
+} from './media-chrome-menu.js';
 import './media-chrome-menu-item.js';
 import { globalThis, document } from '../../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
-import { parseTextTracksStr, stringifyTextTrackList, formatTextTrackObj } from '../../utils/captions.js';
+import {
+  parseTextTracksStr,
+  stringifyTextTrackList,
+  formatTextTrackObj,
+} from '../../utils/captions.js';
 
 const ccIcon = /*html*/`
 <svg aria-hidden="true" viewBox="0 0 26 24" part="captions-indicator indicator">
@@ -38,10 +46,15 @@ class MediaCaptionsMenu extends MediaChromeMenu {
   attributeChangedCallback(attrName, oldValue, newValue) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_LIST && oldValue !== newValue) {
+    if (
+      attrName === MediaUIAttributes.MEDIA_SUBTITLES_LIST &&
+      oldValue !== newValue
+    ) {
       this.#render();
-    }
-    else if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING && oldValue !== newValue) {
+    } else if (
+      attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING &&
+      oldValue !== newValue
+    ) {
       this.value = newValue;
     }
   }
@@ -73,7 +86,10 @@ class MediaCaptionsMenu extends MediaChromeMenu {
    * Objects must have the properties: kind, language, and label.
    */
   get mediaSubtitlesShowing() {
-    return getSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
+    return getSubtitlesListAttr(
+      this,
+      MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
+    );
   }
 
   set mediaSubtitlesShowing(list) {
@@ -93,7 +109,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
       type: 'radio',
       text: this.formatMenuItemText('Off'),
       value: 'off',
-      checked: isOff
+      checked: isOff,
     });
     item.prepend(createIndicator(this, 'check-indicator'));
     container.append(item);
@@ -101,12 +117,11 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     const subtitlesList = this.mediaSubtitlesList;
 
     for (const subs of subtitlesList) {
-
       const item = createMenuItem({
         type: 'radio',
         text: this.formatMenuItemText(subs.label, subs),
         value: formatTextTrackObj(subs),
-        checked: this.value == formatTextTrackObj(subs)
+        checked: this.value == formatTextTrackObj(subs),
       });
       item.prepend(createIndicator(this, 'check-indicator'));
 

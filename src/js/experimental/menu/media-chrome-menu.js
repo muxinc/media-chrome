@@ -1,6 +1,16 @@
 import { MediaStateReceiverAttributes } from '../../constants.js';
 import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { getActiveElement, containsComposedNode } from '../../utils/element-utils.js';
+import { computePosition } from '../../utils/anchor-utils.js';
+import { observeResize, unobserveResize } from '../../utils/resize-observer.js';
+import {
+  getActiveElement,
+  containsComposedNode,
+  closestComposedNode,
+  getOrInsertCSSRule,
+  getMediaController,
+  getAttributeMediaController,
+  getDocumentOrShadowRoot,
+} from '../../utils/element-utils.js';
 
 const checkIcon = /*html*/`
 <svg aria-hidden="true" viewBox="0 1 24 24" part="check-indicator indicator">
@@ -46,109 +56,112 @@ export function createIndicator(el, name) {
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/`
-<style>
-  :host {
-    font: var(--media-font,
-      var(--media-font-weight, normal)
-      var(--media-font-size, 15px) /
-      var(--media-text-content-height, var(--media-control-height, 24px))
-      var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
-    color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-    background: var(--media-menu-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
-    border-radius: var(--media-menu-border-radius);
-    display: var(--media-menu-display, inline-flex);
-    opacity: var(--media-menu-opacity, 1);
-    max-height: var(--media-menu-max-height, 300px);
-    visibility: var(--media-menu-visibility, visible);
-    transition: var(--media-menu-transition-in,
-      visibility 0s, transform .15s ease-out, opacity .15s ease-out);
-    transform: var(--media-menu-transform-in, translateY(0) scale(1));
-    flex-direction: column;
-    ${/* Prevent overflowing a flex container */ ''}
-    min-height: 0;
-    position: relative;
-    box-sizing: border-box;
-  }
+  <style>
+    :host {
+      font: var(--media-font,
+        var(--media-font-weight, normal)
+        var(--media-font-size, 15px) /
+        var(--media-text-content-height, var(--media-control-height, 24px))
+        var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+      color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
+      background: var(--media-menu-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
+      border-radius: var(--media-menu-border-radius);
+      border: var(--media-menu-border, none);
+      display: var(--media-menu-display, inline-flex);
+      opacity: var(--media-menu-opacity, 1);
+      max-height: var(--media-menu-max-height, 300px);
+      visibility: var(--media-menu-visibility, visible);
+      transition: var(--media-menu-transition-in,
+        visibility 0s, transform .15s ease-out, opacity .15s ease-out);
+      transform: var(--media-menu-transform-in, translateY(0) scale(1));
+      flex-direction: column;
+      ${/* Prevent overflowing a flex container */ ''}
+      min-height: 0;
+      position: relative;
+      inset: auto;
+      box-sizing: border-box;
+    }
 
-  :host([hidden]) {
-    opacity: var(--media-menu-hidden-opacity, 0);
-    max-height: var(--media-menu-hidden-max-height, var(--media-menu-max-height, 300px));
-    visibility: var(--media-menu-hidden-visibility, hidden);
-    transition: var(--media-menu-transition-out,
-      visibility .15s ease-out, transform .15s ease-out, opacity .15s ease-out);
-    transform: var(--media-menu-transform-out, translateY(2px) scale(.99));
-    pointer-events: none;
-  }
+    :host([hidden]) {
+      opacity: var(--media-menu-hidden-opacity, 0);
+      max-height: var(--media-menu-hidden-max-height, var(--media-menu-max-height, 300px));
+      visibility: var(--media-menu-hidden-visibility, hidden);
+      transition: var(--media-menu-transition-out,
+        visibility .15s ease-out, transform .15s ease-out, opacity .15s ease-out);
+      transform: var(--media-menu-transform-out, translateY(2px) scale(.99));
+      pointer-events: none;
+    }
 
-  ::slotted([slot="header"]) {
-    padding: .4em 1.4em;
-    border-bottom: 1px solid rgb(255 255 255 / .25);
-  }
+    ::slotted([slot="header"]) {
+      padding: .4em 1.4em;
+      border-bottom: 1px solid rgb(255 255 255 / .25);
+    }
 
-  #container {
-    gap: var(--media-menu-gap);
-    flex-direction: var(--media-menu-flex-direction, column);
-    overflow: var(--media-menu-overflow, hidden auto);
-    display: flex;
-    padding-block: .5em;
-  }
+    #container {
+      gap: var(--media-menu-gap);
+      flex-direction: var(--media-menu-flex-direction, column);
+      overflow: var(--media-menu-overflow, hidden auto);
+      display: flex;
+      padding-block: .5em;
+    }
 
-  media-chrome-menu-item {
-    padding-inline: .7em 1.4em;
-  }
+    media-chrome-menu-item {
+      padding-inline: .7em 1.4em;
+    }
 
-  media-chrome-menu-item > span {
-    margin-inline: .5ch;
-  }
+    media-chrome-menu-item > span {
+      margin-inline: .5ch;
+    }
 
-  [part~="indicator"] {
-    fill: var(--media-menu-item-indicator-fill, var(--media-icon-color, var(--media-primary-color, rgb(238 238 238))));
-    height: var(--media-menu-item-indicator-height, 1.25em);
-    vertical-align: var(--media-menu-item-indicator-vertical-align, text-top);
-  }
+    [part~="indicator"] {
+      fill: var(--media-menu-item-indicator-fill, var(--media-icon-color, var(--media-primary-color, rgb(238 238 238))));
+      height: var(--media-menu-item-indicator-height, 1.25em);
+      vertical-align: var(--media-menu-item-indicator-vertical-align, text-top);
+    }
 
-  [part~="check-indicator"] {
-    display: var(--media-menu-item-check-indicator-display);
-    visibility: hidden;
-  }
+    [part~="check-indicator"] {
+      display: var(--media-menu-item-check-indicator-display);
+      visibility: hidden;
+    }
 
-  [aria-checked="true"] > [part~="check-indicator"] {
-    visibility: visible;
-  }
-</style>
-<style id="layout-row" media="width:0">
+    [aria-checked="true"] > [part~="check-indicator"] {
+      visibility: visible;
+    }
+  </style>
+  <style id="layout-row" media="width:0">
 
-  ::slotted([slot="header"]) {
-    padding: .4em .5em;
-  }
+    ::slotted([slot="header"]) {
+      padding: .4em .5em;
+    }
 
-  #container {
-    gap: var(--media-menu-gap, .25em);
-    flex-direction: var(--media-menu-flex-direction, row);
-    padding-inline: .5em;
-  }
+    #container {
+      gap: var(--media-menu-gap, .25em);
+      flex-direction: var(--media-menu-flex-direction, row);
+      padding-inline: .5em;
+    }
 
-  media-chrome-menu-item {
-    padding: .3em .24em;
-  }
+    media-chrome-menu-item {
+      padding: .3em .24em;
+    }
 
-  media-chrome-menu-item[aria-checked="true"] {
-    background: var(--media-menu-item-checked-background, rgb(255 255 255 / .2));
-  }
+    media-chrome-menu-item[aria-checked="true"] {
+      background: var(--media-menu-item-checked-background, rgb(255 255 255 / .2));
+    }
 
-  [part~="check-indicator"] {
-    display: var(--media-menu-item-check-indicator-display, none);
-  }
-</style>
-<slot name="header"></slot>
-<slot id="container"></slot>
-<slot name="check-indicator" hidden>${checkIcon}</slot>
+    [part~="check-indicator"] {
+      display: var(--media-menu-item-check-indicator-display, none);
+    }
+  </style>
+  <slot name="header"></slot>
+  <slot id="container"></slot>
+  <slot name="check-indicator" hidden>${checkIcon}</slot>
 `;
 
 export const Attributes = {
   STYLE: 'style',
   HIDDEN: 'hidden',
   DISABLED: 'disabled',
+  ANCHOR: 'anchor',
 };
 
 /**
@@ -190,7 +203,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       Attributes.DISABLED,
       Attributes.HIDDEN,
       Attributes.STYLE,
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER
+      Attributes.ANCHOR,
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
     ];
   }
 
@@ -199,10 +213,11 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   #mediaController;
+  #previouslyFocused;
+  #invokerElement;
   #keysSoFar = '';
   #clearKeysTimeout = null;
   #metaPressed = false;
-  #previouslyFocused;
 
   constructor(options = {}) {
     super();
@@ -238,63 +253,106 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   enable() {
     this.addEventListener('click', this);
     this.addEventListener('keydown', this);
+    this.addEventListener('invoke', this);
   }
 
   disable() {
     this.removeEventListener('click', this);
     this.removeEventListener('keyup', this);
+    this.removeEventListener('invoke', this);
   }
 
   handleEvent(event) {
     switch (event.type) {
-      case 'focusout':
-        if (!containsComposedNode(this, event.relatedTarget)) {
-          this.#previouslyFocused?.focus();
-        }
+      case 'invoke':
+        this.handleInvoke(event);
         break;
       case 'click':
         this.handleClick(event);
         break;
       case 'keydown':
-        this.#keydownListener(event);
+        this.#handleKeyDown(event);
         break;
       case 'keyup':
-        this.#keyupListener(event);
+        this.#handleKeyUp(event);
+        break;
+      case 'focusout':
+        if (!containsComposedNode(this, event.relatedTarget)) {
+          this.#previouslyFocused?.focus();
+        }
         break;
     }
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  connectedCallback() {
+    this.#updateLayoutStyle();
 
-    if (attrName === Attributes.HIDDEN && newValue !== oldValue && !this.hidden) {
-      this.focus();
+    if (!this.hasAttribute('disabled')) {
+      this.enable();
     }
-    else if (attrName === Attributes.STYLE && newValue !== oldValue) {
-      this.#updateLayoutStyle();
+
+    if (!this.hasAttribute('role')) {
+      // set menu role on the media-chrome-menu element itself
+      // this is to make sure that SRs announce items as being part
+      // of a menu when focused
+      this.setAttribute('role', 'menu');
     }
-    else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
+
+    this.#mediaController = getAttributeMediaController(this);
+    this.#mediaController?.associateElement?.(this);
+
+    if (!this.hidden) {
+      observeResize(getBoundsElement(this), this.#updateMenuPosition);
+    }
+  }
+
+  disconnectedCallback() {
+    unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
+    this.disable();
+
+    // Use cached mediaController, getRootNode() doesn't work if disconnected.
+    this.#mediaController?.unassociateElement?.(this);
+    this.#mediaController = null;
+  }
+
+  attributeChangedCallback(attrName, oldValue, newValue) {
+    if (attrName === Attributes.HIDDEN && newValue !== oldValue) {
+        if (this.hidden) {
+          this.#handleClosed();
+        } else {
+          this.#handleOpen();
+        }
+    } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
         this.#mediaController = null;
       }
       if (newValue && this.isConnected) {
-        // @ts-ignore
-        this.#mediaController = this.getRootNode()?.getElementById(newValue);
+        this.#mediaController = getAttributeMediaController(this);
         this.#mediaController?.associateElement?.(this);
       }
-    }
-    else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
+    } else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
       } else {
         this.disable();
       }
+    } else if (attrName === Attributes.STYLE && newValue !== oldValue) {
+      this.#updateLayoutStyle();
     }
   }
 
   formatMenuItemText(text, data) {
     // @ts-ignore
     return this.constructor.formatMenuItemText(text, data);
+  }
+
+  get anchor() {
+    return this.getAttribute('anchor');
+  }
+
+  set anchor(value) {
+    this.setAttribute('anchor', `${value}`);
   }
 
   get items() {
@@ -312,11 +370,13 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   get radioGroupItems() {
-    return this.items.filter(item => item.getAttribute('role') === 'menuitemradio');
+    return this.items.filter(
+      (item) => item.getAttribute('role') === 'menuitemradio'
+    );
   }
 
   get checkedItems() {
-    return this.items.filter(item => item.checked);
+    return this.items.filter((item) => item.checked);
   }
 
   get value() {
@@ -324,7 +384,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   set value(newValue) {
-    const item = this.items.find(item => item.value === newValue);
+    const item = this.items.find((item) => item.value === newValue);
 
     if (!item) return;
 
@@ -342,23 +402,74 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.items?.[0]?.focus();
   }
 
-  #handleKeyListener(event) {
-    const { key } = event;
+  #updateLayoutStyle() {
+    const layoutRowStyle = this.shadowRoot.querySelector('#layout-row');
+    const menuLayout = getComputedStyle(this)
+      .getPropertyValue('--media-menu-layout')
+      ?.trim();
 
-    if (key === 'Enter' || key === ' ') {
-      this.handleSelection(event);
-    } else {
-      this.handleMovement(event);
+    layoutRowStyle.setAttribute('media', menuLayout === 'row' ? '' : 'width:0');
+  }
+
+  handleInvoke(event) {
+    this.#invokerElement = event.relatedTarget;
+    this.hidden = !this.hidden;
+  }
+
+  #handleOpen() {
+    this.#invokerElement?.setAttribute('aria-expanded', 'true');
+
+    this.#updateMenuPosition();
+    this.focus();
+
+    observeResize(getBoundsElement(this), this.#updateMenuPosition);
+  }
+
+  #handleClosed() {
+    this.#invokerElement?.setAttribute('aria-expanded', 'false');
+    unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
+  }
+
+  #updateMenuPosition = () => {
+    // Can't position if the menu doesn't have an anchor and isn't a child of a media controller.
+    if (this.hasAttribute('mediacontroller') && !this.anchor) return;
+
+    // If the menu is hidden or there is no anchor, skip updating the menu position.
+    if (this.hidden || !this.anchorElement) return;
+
+    const { x, y } = computePosition({
+      anchor: this.anchorElement,
+      floating: this,
+      placement: 'top-start',
+    });
+
+    console.log(x, y);
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty('position', 'absolute');
+    style.setProperty('left', `${x}px`);
+    style.setProperty('top', `${y}px`);
+  };
+
+  get anchorElement() {
+    if (this.anchor) {
+      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.anchor}`);
     }
+    return null;
+  }
+
+  get keysUsed() {
+    return ['Enter', 'Escape', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
   }
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
-  #keyupListener(event) {
+  #handleKeyUp(event) {
     const { key } = event;
     // only cancel on Escape
     if (key === 'Escape') {
-      this.removeEventListener('keyup', this.#keyupListener);
+      this.hidden = true;
+      this.removeEventListener('keyup', this.#handleKeyUp);
       return;
     }
 
@@ -370,7 +481,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.#handleKeyListener(event);
   }
 
-  #keydownListener(event) {
+  #handleKeyDown(event) {
     const { key, altKey } = event;
 
     if (altKey) {
@@ -396,54 +507,14 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.addEventListener('keyup', this, { once: true });
   }
 
-  #updateLayoutStyle() {
-    const layoutRowStyle = this.shadowRoot.querySelector('#layout-row');
-    const isLayoutRow = getComputedStyle(this)
-      .getPropertyValue('--media-menu-layout')?.trim() === 'row';
+  #handleKeyListener(event) {
+    const { key } = event;
 
-    layoutRowStyle.setAttribute('media', isLayoutRow ? '' : 'width:0');
-  }
-
-  connectedCallback() {
-    this.#updateLayoutStyle();
-
-    if (!this.hasAttribute('disabled')) {
-      this.enable();
+    if (key === 'Enter' || key === ' ') {
+      this.handleSelection(event);
+    } else {
+      this.handleMovement(event);
     }
-
-    if (!this.hasAttribute('role')) {
-      // set menu role on the media-chrome-menu element itself
-      // this is to make sure that SRs announce items as being part
-      // of a menu when focused
-      this.setAttribute('role', 'menu');
-    }
-
-    const mediaControllerId = this.getAttribute(
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER
-    );
-    if (mediaControllerId) {
-      // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
-      this.#mediaController?.associateElement?.(this);
-    }
-  }
-
-  disconnectedCallback() {
-    this.disable();
-
-    // Use cached mediaController, getRootNode() doesn't work if disconnected.
-    this.#mediaController?.unassociateElement?.(this);
-    this.#mediaController = null;
-  }
-
-  get keysUsed() {
-    return ['Enter', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
-  }
-
-  #getItem(event) {
-    return event.composedPath().find(el => {
-      return ['menuitemradio', 'menuitemcheckbox'].includes(el.getAttribute?.('role'));
-    });
   }
 
   handleSelection(event) {
@@ -454,11 +525,19 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.#selectItem(item, item.type === 'checkbox');
   }
 
+  #getItem(event) {
+    return event.composedPath().find((el) => {
+      return ['menuitemradio', 'menuitemcheckbox'].includes(
+        el.getAttribute?.('role')
+      );
+    });
+  }
+
   #selectItem(item, toggle) {
     const oldCheckedItems = [...this.checkedItems];
 
     if (item.type === 'radio') {
-      this.radioGroupItems.forEach(el => (el.checked = false));
+      this.radioGroupItems.forEach((el) => (el.checked = false));
     }
 
     if (toggle) {
@@ -468,7 +547,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
 
     if (this.checkedItems.some((opt, i) => opt != oldCheckedItems[i])) {
-      this.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
+      this.dispatchEvent(
+        new Event('change', { bubbles: true, composed: true })
+      );
     }
   }
 
@@ -478,7 +559,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     let currentItem = this.#getItem(event);
     if (!currentItem) {
-      currentItem = els.filter(el => el.getAttribute('tabindex') === '0')[0];
+      currentItem = els.filter((el) => el.getAttribute('tabindex') === '0')[0];
     }
 
     let nextItem;
@@ -512,7 +593,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
 
     if (nextItem) {
-      els.forEach(el => el.setAttribute('tabindex', '-1'));
+      els.forEach((el) => el.setAttribute('tabindex', '-1'));
       nextItem.setAttribute('tabindex', '0');
       nextItem.focus();
     }
@@ -523,7 +604,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     if (!item || item.hasAttribute('disabled')) return;
 
-    this.items.forEach(el => el.setAttribute('tabindex', '-1'));
+    this.items.forEach((el) => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
 
     this.handleSelection(event);
@@ -533,7 +614,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.#clearKeysOnDelay();
 
     const els = this.items;
-    const activeIndex = els.findIndex(el => el.getAttribute('tabindex') === '0');
+    const activeIndex = els.findIndex(
+      (el) => el.getAttribute('tabindex') === '0'
+    );
 
     // always accumulate the key
     this.#keysSoFar += key;
@@ -541,18 +624,26 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     // if the same key is pressed, assume it's a repeated key
     // to skip to the same item that begings with that key
     // until the user presses another key and a better choice is available
-    const repeatedKey = this.#keysSoFar.split('').every(k => k === key);
+    const repeatedKey = this.#keysSoFar.split('').every((k) => k === key);
 
     // if it's a repeat key, skip the current item
-    const after = els.slice(activeIndex + (repeatedKey ? 1 : 0)).filter(el => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
-    const before = els.slice(0, activeIndex - (repeatedKey ? 1 : 0)).filter(el => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
+    const after = els
+      .slice(activeIndex + (repeatedKey ? 1 : 0))
+      .filter((el) => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
+    const before = els
+      .slice(0, activeIndex - (repeatedKey ? 1 : 0))
+      .filter((el) => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
 
     let afterRepeated = [];
     let beforeRepeated = [];
 
     if (repeatedKey) {
-      afterRepeated = els.slice(activeIndex + (repeatedKey ? 1 : 0)).filter(el => el.textContent.startsWith(key));
-      beforeRepeated = els.slice(0, activeIndex - (repeatedKey ? 1 : 0)).filter(el => el.textContent.startsWith(key));
+      afterRepeated = els
+        .slice(activeIndex + (repeatedKey ? 1 : 0))
+        .filter((el) => el.textContent.startsWith(key));
+      beforeRepeated = els
+        .slice(0, activeIndex - (repeatedKey ? 1 : 0))
+        .filter((el) => el.textContent.startsWith(key));
     }
 
     const returns = [...after, ...before, ...afterRepeated, ...beforeRepeated];
@@ -569,6 +660,14 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       this.#clearKeysTimeout = null;
     }, 500);
   }
+}
+
+function getBoundsElement(host) {
+  return (
+    (host.getAttribute('bounds')
+      ? closestComposedNode(host, `#${host.getAttribute('bounds')}`)
+      : getMediaController(host) || host.parentElement) ?? host
+  );
 }
 
 if (!globalThis.customElements.get('media-chrome-menu')) {

@@ -1,9 +1,13 @@
-import { MediaChromeMenu, createMenuItem, createIndicator } from './media-chrome-menu.js';
 import './media-chrome-menu-item.js';
 import { globalThis } from '../../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
-import { getStringAttr, setStringAttr } from '../../utils/element-utils.js';
+import { getMediaController, getStringAttr, setStringAttr } from '../../utils/element-utils.js';
 import { parseRenditionList } from '../../utils/utils.js';
+import {
+  MediaChromeMenu,
+  createMenuItem,
+  createIndicator,
+} from './media-chrome-menu.js';
 
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
@@ -25,11 +29,15 @@ class MediaRenditionMenu extends MediaChromeMenu {
   attributeChangedCallback(attrName, oldValue, newValue) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED && oldValue !== newValue) {
+    if (
+      attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED &&
+      oldValue !== newValue
+    ) {
       this.value = newValue ?? 'auto';
-
-    } else if (attrName === MediaUIAttributes.MEDIA_RENDITION_LIST && oldValue !== newValue) {
-
+    } else if (
+      attrName === MediaUIAttributes.MEDIA_RENDITION_LIST &&
+      oldValue !== newValue
+    ) {
       this.#renditionList = parseRenditionList(newValue);
       this.#render();
     }
@@ -43,6 +51,13 @@ class MediaRenditionMenu extends MediaChromeMenu {
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('change', this.#onChange);
+  }
+
+  get anchorElement() {
+    return (
+      super.anchorElement ??
+      getMediaController(this).querySelector('media-rendition-button')
+    );
   }
 
   get mediaRenditionList() {
@@ -70,8 +85,9 @@ class MediaRenditionMenu extends MediaChromeMenu {
     if (this.#prevState === JSON.stringify(this.mediaRenditionList)) return;
     this.#prevState = JSON.stringify(this.mediaRenditionList);
 
-    const renditionList = this.mediaRenditionList
-      .sort((a, b) => b.height - a.height);
+    const renditionList = this.mediaRenditionList.sort(
+      (a, b) => b.height - a.height
+    );
 
     const container = this.shadowRoot.querySelector('#container');
     container.textContent = '';
@@ -79,7 +95,6 @@ class MediaRenditionMenu extends MediaChromeMenu {
     let isAuto = !this.mediaRenditionSelected;
 
     for (const rendition of renditionList) {
-
       const text = this.formatMenuItemText(
         `${Math.min(rendition.width, rendition.height)}p`,
         rendition
@@ -90,7 +105,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
         type: 'radio',
         text,
         value: `${rendition.id}`,
-        checked: rendition.selected && !isAuto
+        checked: rendition.selected && !isAuto,
       });
       option.prepend(createIndicator(this, 'check-indicator'));
 
@@ -101,7 +116,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       type: 'radio',
       text: this.formatMenuItemText('Auto'),
       value: 'auto',
-      checked: isAuto
+      checked: isAuto,
     });
     option.prepend(createIndicator(this, 'check-indicator'));
     container.append(option);

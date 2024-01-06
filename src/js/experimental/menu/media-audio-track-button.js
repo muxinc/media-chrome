@@ -1,12 +1,13 @@
+import { MediaUIAttributes } from '../../constants.js';
 import { MediaChromeButton } from '../../media-chrome-button.js';
 import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { getStringAttr, setStringAttr } from '../../utils/element-utils.js';
-import { MediaUIAttributes } from '../../constants.js';
-import { showMenu, getTarget } from './menu-utils.js';
-
-export const Attributes = {
-  TARGET: 'target',
-};
+import { InvokeEvent } from '../../utils/events.js';
+import {
+  getStringAttr,
+  setStringAttr,
+  getDocumentOrShadowRoot,
+  getMediaController,
+} from '../../utils/element-utils.js';
 
 const audioTrackIcon = /*html*/`<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M11 17H9.5V7H11v10Zm-3-3H6.5v-4H8v4Zm6-5h-1.5v6H14V9Zm3 7h-1.5V8H17v8Z"/>
@@ -14,7 +15,7 @@ const audioTrackIcon = /*html*/`<svg aria-hidden="true" viewBox="0 0 24 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <slot name="icon">${audioTrackIcon}</slot>
 `;
 
@@ -28,7 +29,6 @@ class MediaAudioTrackButton extends MediaChromeButton {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      Attributes.TARGET,
       MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED,
       MediaUIAttributes.MEDIA_AUDIO_TRACK_UNAVAILABLE,
     ];
@@ -41,21 +41,23 @@ class MediaAudioTrackButton extends MediaChromeButton {
   connectedCallback() {
     super.connectedCallback();
 
-    if (getTarget(this, 'media-audio-track-menu')) {
+    if (this.invokeTargetElement) {
       this.setAttribute('aria-haspopup', 'menu');
     }
   }
 
-  get target() {
-    return this.getAttribute('target');
-  }
-
-  set target(value) {
-    this.setAttribute('target', `${value}`);
+  get invokeTargetElement() {
+    const invoketarget = this.getAttribute('invoketarget');
+    if (invoketarget) {
+      return getDocumentOrShadowRoot(this).getElementById(invoketarget);
+    }
+    return getMediaController(this).querySelector('media-audio-track-menu');
   }
 
   handleClick() {
-    showMenu(this, 'media-audio-track-menu');
+    this.invokeTargetElement.dispatchEvent(
+      new InvokeEvent({ relatedTarget: this, bubbles: true, composed: true })
+    );
   }
 
   /**
@@ -72,7 +74,10 @@ class MediaAudioTrackButton extends MediaChromeButton {
 }
 
 if (!globalThis.customElements.get('media-audio-track-button')) {
-  globalThis.customElements.define('media-audio-track-button', MediaAudioTrackButton);
+  globalThis.customElements.define(
+    'media-audio-track-button',
+    MediaAudioTrackButton
+  );
 }
 
 export { MediaAudioTrackButton };
