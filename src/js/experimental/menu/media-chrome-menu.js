@@ -69,7 +69,7 @@ template.innerHTML = /*html*/`
       border: var(--media-menu-border, none);
       display: var(--media-menu-display, inline-flex);
       opacity: var(--media-menu-opacity, 1);
-      max-height: var(--media-menu-max-height, 300px);
+      max-height: var(--media-menu-max-height, var(--_max-height, 300px));
       visibility: var(--media-menu-visibility, visible);
       transition: var(--media-menu-transition-in,
         visibility 0s, transform .15s ease-out, opacity .15s ease-out);
@@ -78,13 +78,12 @@ template.innerHTML = /*html*/`
       ${/* Prevent overflowing a flex container */ ''}
       min-height: 0;
       position: relative;
-      inset: auto;
       box-sizing: border-box;
     }
 
     :host([hidden]) {
       opacity: var(--media-menu-hidden-opacity, 0);
-      max-height: var(--media-menu-hidden-max-height, var(--media-menu-max-height, 300px));
+      max-height: var(--media-menu-hidden-max-height, var(--media-menu-max-height, var(--_max-height, 300px)));
       visibility: var(--media-menu-hidden-visibility, hidden);
       transition: var(--media-menu-transition-out,
         visibility .15s ease-out, transform .15s ease-out, opacity .15s ease-out);
@@ -419,7 +418,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #handleOpen() {
     this.#invokerElement?.setAttribute('aria-expanded', 'true');
 
-    this.#updateMenuPosition();
+    // Wait one animation frame so the element dimensions are updated.
+    requestAnimationFrame(() => this.#updateMenuPosition());
     this.focus();
 
     observeResize(getBoundsElement(this), this.#updateMenuPosition);
@@ -443,14 +443,25 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       placement: 'top-start',
     });
 
-    console.log(x, y);
+    const bounds = getBoundsElement(this);
+    const boundsRect = bounds.getBoundingClientRect();
+    const anchorRect = this.anchorElement.getBoundingClientRect();
+
+    const right = boundsRect.width - x - this.offsetWidth;
+    const bottom = boundsRect.height - y - this.offsetHeight;
+    const maxHeight = boundsRect.height - anchorRect.height;
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('position', 'absolute');
-    style.setProperty('left', `${x}px`);
-    style.setProperty('top', `${y}px`);
+    style.setProperty('right', `${Math.max(0, right)}px`);
+    style.setProperty('bottom', `${bottom}px`);
+    style.setProperty('--_max-height', `${maxHeight}px`);
   };
 
+  /**
+   * Returns the anchor element when it is a floating menu.
+   * @return {HTMLElement}
+   */
   get anchorElement() {
     if (this.anchor) {
       return getDocumentOrShadowRoot(this)?.querySelector(`#${this.anchor}`);

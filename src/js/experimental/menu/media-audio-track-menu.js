@@ -1,17 +1,17 @@
 import './media-chrome-menu-item.js';
 import { globalThis } from '../../utils/server-safe-globals.js';
-import {
-  getStringAttr,
-  setStringAttr,
-  getMediaController,
-} from '../../utils/element-utils.js';
-import { parseAudioTrackList } from '../../utils/utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
+import { parseAudioTrackList } from '../../utils/utils.js';
 import {
   MediaChromeMenu,
   createMenuItem,
   createIndicator,
 } from './media-chrome-menu.js';
+import {
+  getStringAttr,
+  setStringAttr,
+  getMediaController,
+} from '../../utils/element-utils.js';
 
 /**
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the enabled audio track.
@@ -57,11 +57,13 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
     this.removeEventListener('change', this.#onChange);
   }
 
+  /**
+   * Returns the anchor element when it is a floating menu.
+   * @return {HTMLElement}
+   */
   get anchorElement() {
-    return (
-      super.anchorElement ??
-      getMediaController(this).querySelector('media-audio-track-button')
-    );
+    if (this.anchor) return super.anchorElement;
+    return getMediaController(this).querySelector('media-audio-track-button');
   }
 
   get mediaAudioTrackList() {
@@ -97,16 +99,14 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
     for (const audioTrack of audioTrackList) {
       const text = this.formatMenuItemText(audioTrack.label, audioTrack);
 
-      /** @type {HTMLOptionElement} */
-      const option = createMenuItem({
+      const item = createMenuItem({
         type: 'radio',
         text,
         value: `${audioTrack.id}`,
         checked: audioTrack.enabled,
       });
-      option.prepend(createIndicator(this, 'check-indicator'));
-
-      container.append(option);
+      item.prepend(createIndicator(this, 'check-indicator'));
+      container.append(item);
     }
   }
 

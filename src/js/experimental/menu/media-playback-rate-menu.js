@@ -1,17 +1,21 @@
+import './media-chrome-menu-item.js';
+import { globalThis } from '../../utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
+import { AttributeTokenList } from '../../utils/attribute-token-list.js';
+import {
+  getNumericAttr,
+  setNumericAttr,
+  getMediaController,
+} from '../../utils/element-utils.js';
+import {
+  DEFAULT_RATES,
+  DEFAULT_RATE,
+} from '../../media-playback-rate-button.js';
 import {
   MediaChromeMenu,
   createMenuItem,
   createIndicator,
 } from './media-chrome-menu.js';
-import './media-chrome-menu-item.js';
-import { globalThis } from '../../utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
-import {
-  DEFAULT_RATES,
-  DEFAULT_RATE,
-} from '../../media-playback-rate-button.js';
-import { getNumericAttr, setNumericAttr } from '../../utils/element-utils.js';
-import { AttributeTokenList } from '../../utils/attribute-token-list.js';
 
 export const Attributes = {
   RATES: 'rates',
@@ -36,7 +40,6 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
 
   constructor() {
     super();
-
     this.#render();
   }
 
@@ -52,6 +55,25 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
       this.#rates.value = newValue;
       this.#render();
     }
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('change', this.#onChange);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener('change', this.#onChange);
+  }
+
+  /**
+   * Returns the anchor element when it is a floating menu.
+   * @return {HTMLElement}
+   */
+  get anchorElement() {
+    if (this.anchor) return super.anchorElement;
+    return getMediaController(this).querySelector('media-playback-rate-button');
   }
 
   /**
@@ -86,30 +108,19 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
     setNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, value);
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-    this.addEventListener('change', this.#onChange);
-  }
-
-  disconnectedCallback() {
-    super.disconnectedCallback();
-    this.removeEventListener('change', this.#onChange);
-  }
-
   #render() {
     const container = this.shadowRoot.querySelector('#container');
     container.textContent = '';
 
     for (const rate of this.rates) {
-      /** @type {HTMLOptionElement} */
-      const option = createMenuItem({
+      const item = createMenuItem({
         type: 'radio',
         text: this.formatMenuItemText(`${rate}x`, rate),
         value: rate,
         checked: this.mediaPlaybackRate == rate,
       });
-      option.prepend(createIndicator(this, 'check-indicator'));
-      container.append(option);
+      item.prepend(createIndicator(this, 'check-indicator'));
+      container.append(item);
     }
   }
 

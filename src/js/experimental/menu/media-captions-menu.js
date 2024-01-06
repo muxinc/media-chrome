@@ -1,11 +1,12 @@
+import './media-chrome-menu-item.js';
+import { globalThis, document } from '../../utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
+import { getMediaController } from '../../utils/element-utils.js';
 import {
   MediaChromeMenu,
   createMenuItem,
   createIndicator,
 } from './media-chrome-menu.js';
-import './media-chrome-menu-item.js';
-import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
 import {
   parseTextTracksStr,
   stringifyTextTrackList,
@@ -67,6 +68,15 @@ class MediaCaptionsMenu extends MediaChromeMenu {
   disconnectedCallback() {
     super.disconnectedCallback();
     this.removeEventListener('change', this.#onChange);
+  }
+
+  /**
+   * Returns the anchor element when it is a floating menu.
+   * @return {HTMLElement}
+   */
+  get anchorElement() {
+    if (this.anchor) return super.anchorElement;
+    return getMediaController(this).querySelector('media-captions-button');
   }
 
   /**

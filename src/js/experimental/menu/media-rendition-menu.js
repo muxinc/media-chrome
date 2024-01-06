@@ -53,11 +53,13 @@ class MediaRenditionMenu extends MediaChromeMenu {
     this.removeEventListener('change', this.#onChange);
   }
 
+  /**
+   * Returns the anchor element when it is a floating menu.
+   * @return {HTMLElement}
+   */
   get anchorElement() {
-    return (
-      super.anchorElement ??
-      getMediaController(this).querySelector('media-rendition-button')
-    );
+    if (this.anchor) return super.anchorElement;
+    return getMediaController(this).querySelector('media-rendition-button');
   }
 
   get mediaRenditionList() {
@@ -100,26 +102,25 @@ class MediaRenditionMenu extends MediaChromeMenu {
         rendition
       );
 
-      /** @type {HTMLOptionElement} */
-      const option = createMenuItem({
+      const item = createMenuItem({
         type: 'radio',
         text,
         value: `${rendition.id}`,
         checked: rendition.selected && !isAuto,
       });
-      option.prepend(createIndicator(this, 'check-indicator'));
+      item.prepend(createIndicator(this, 'check-indicator'));
 
-      container.append(option);
+      container.append(item);
     }
 
-    const option = createMenuItem({
+    const item = createMenuItem({
       type: 'radio',
       text: this.formatMenuItemText('Auto'),
       value: 'auto',
       checked: isAuto,
     });
-    option.prepend(createIndicator(this, 'check-indicator'));
-    container.append(option);
+    item.prepend(createIndicator(this, 'check-indicator'));
+    container.append(item);
   }
 
   #onChange() {
