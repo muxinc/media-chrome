@@ -245,18 +245,18 @@ class MediaChromeMenu extends globalThis.HTMLElement {
         }
       }
     });
-
-    this.addEventListener('focusout', this);
   }
 
   enable() {
     this.addEventListener('click', this);
+    this.addEventListener('focusout', this);
     this.addEventListener('keydown', this);
     this.addEventListener('invoke', this);
   }
 
   disable() {
     this.removeEventListener('click', this);
+    this.removeEventListener('focusout', this);
     this.removeEventListener('keyup', this);
     this.removeEventListener('invoke', this);
   }
@@ -264,21 +264,19 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   handleEvent(event) {
     switch (event.type) {
       case 'invoke':
-        this.handleInvoke(event);
+        this.#handleInvoke(event);
         break;
       case 'click':
-        this.handleClick(event);
+        this.#handleClick(event);
+        break;
+      case 'focusout':
+        this.#handleFocusOut(event);
         break;
       case 'keydown':
         this.#handleKeyDown(event);
         break;
       case 'keyup':
         this.#handleKeyUp(event);
-        break;
-      case 'focusout':
-        if (!containsComposedNode(this, event.relatedTarget)) {
-          this.#previouslyFocused?.focus();
-        }
         break;
     }
   }
@@ -410,7 +408,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     layoutRowStyle.setAttribute('media', menuLayout === 'row' ? '' : 'width:0');
   }
 
-  handleInvoke(event) {
+  #handleInvoke(event) {
     this.#invokerElement = event.relatedTarget;
     this.hidden = !this.hidden;
   }
@@ -534,6 +532,11 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     if (!item) return;
 
     this.#selectItem(item, item.type === 'checkbox');
+
+    // If the menu was opened by a click, close it when selecting an item.
+    if (this.#invokerElement && !this.hidden) {
+      this.hidden = true;
+    }
   }
 
   #getItem(event) {
@@ -610,7 +613,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
   }
 
-  handleClick(event) {
+  #handleClick(event) {
     const item = this.#getItem(event);
 
     if (!item || item.hasAttribute('disabled')) return;
@@ -619,6 +622,17 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     item.setAttribute('tabindex', '0');
 
     this.handleSelection(event);
+  }
+
+  #handleFocusOut(event) {
+    if (!containsComposedNode(this, event.relatedTarget)) {
+      this.#previouslyFocused?.focus();
+    }
+
+    // If the menu was opened by a click, close it when selecting an item.
+    if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && !this.hidden) {
+      this.hidden = true;
+    }
   }
 
   #searchItem(key) {
