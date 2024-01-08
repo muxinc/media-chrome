@@ -2,6 +2,8 @@ import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { nouns } from './labels/labels.js';
+import { InvokeEvent } from './utils/events.js';
+import { getMediaController } from './utils/element-utils.js';
 import {
   areSubsOn,
   parseTextTracksStr,
@@ -73,11 +75,11 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
       updateAriaChecked(this);
     }
-
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**
@@ -107,7 +109,23 @@ class MediaCaptionsButton extends MediaChromeButton {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
   }
 
+  /**
+   * Returns the element with the id specified by the `invoketarget` attribute.
+   * @return {HTMLElement | null}
+   */
+  get invokeTargetElement() {
+    if (this.invokeTarget != undefined) return super.invokeTargetElement;
+    return getMediaController(this).querySelector('media-captions-menu');
+  }
+
   handleClick() {
+    if (this.invokeTargetElement) {
+      this.invokeTargetElement.dispatchEvent(
+        new InvokeEvent({ relatedTarget: this, bubbles: true, composed: true })
+      );
+      return;
+    }
+
     this.dispatchEvent(
       new globalThis.CustomEvent(MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST, {
         composed: true,

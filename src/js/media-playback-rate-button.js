@@ -2,8 +2,9 @@ import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
-import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
+import { InvokeEvent } from './utils/events.js';
+import { getNumericAttr, setNumericAttr, getMediaController } from './utils/element-utils.js';
 
 export const Attributes = {
   RATES: 'rates',
@@ -89,7 +90,23 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     setNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, value);
   }
 
+  /**
+   * Returns the element with the id specified by the `invoketarget` attribute.
+   * @return {HTMLElement | null}
+   */
+  get invokeTargetElement() {
+    if (this.invokeTarget != undefined) return super.invokeTargetElement;
+    return getMediaController(this).querySelector('media-playback-rate-menu');
+  }
+
   handleClick() {
+    if (this.invokeTargetElement) {
+      this.invokeTargetElement.dispatchEvent(
+        new InvokeEvent({ relatedTarget: this, bubbles: true, composed: true })
+      );
+      return;
+    }
+
     const availableRates = Array.from(this.rates.values(), str => +str).sort((a, b) => a - b);
 
     const detail =

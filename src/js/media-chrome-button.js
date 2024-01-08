@@ -1,5 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
+import { getOrInsertCSSRule, getDocumentOrShadowRoot } from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
@@ -211,6 +211,25 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   get keysUsed() {
     return ['Enter', ' '];
+  }
+
+  get invokeTarget() {
+    return this.getAttribute('invoketarget');
+  }
+
+  set invokeTarget(value) {
+    this.setAttribute('invoketarget', `${value}`);
+  }
+
+  /**
+   * Returns the element with the id specified by the `invoketarget` attribute.
+   * @return {HTMLElement | null}
+   */
+  get invokeTargetElement() {
+    if (this.invokeTarget) {
+      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.invokeTarget}`);
+    }
+    return null;
   }
 
   /**

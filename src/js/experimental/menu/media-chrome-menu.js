@@ -344,12 +344,27 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     return this.constructor.formatMenuItemText(text, data);
   }
 
+  get keysUsed() {
+    return ['Enter', 'Escape', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
+  }
+
   get anchor() {
     return this.getAttribute('anchor');
   }
 
   set anchor(value) {
     this.setAttribute('anchor', `${value}`);
+  }
+
+  /**
+   * Returns the anchor element when it is a floating menu.
+   * @return {HTMLElement}
+   */
+  get anchorElement() {
+    if (this.anchor) {
+      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.anchor}`);
+    }
+    return null;
   }
 
   get items() {
@@ -455,21 +470,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     style.setProperty('bottom', `${bottom}px`);
     style.setProperty('--_max-height', `${maxHeight}px`);
   };
-
-  /**
-   * Returns the anchor element when it is a floating menu.
-   * @return {HTMLElement}
-   */
-  get anchorElement() {
-    if (this.anchor) {
-      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.anchor}`);
-    }
-    return null;
-  }
-
-  get keysUsed() {
-    return ['Enter', 'Escape', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
-  }
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.

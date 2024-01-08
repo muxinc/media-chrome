@@ -5,7 +5,6 @@ import { InvokeEvent } from '../../utils/events.js';
 import {
   getStringAttr,
   setStringAttr,
-  getDocumentOrShadowRoot,
   getMediaController,
 } from '../../utils/element-utils.js';
 
@@ -45,11 +44,12 @@ class MediaRenditionButton extends MediaChromeButton {
     }
   }
 
+  /**
+   * Returns the element with the id specified by the `invoketarget` attribute.
+   * @return {HTMLElement | null}
+   */
   get invokeTargetElement() {
-    const invoketarget = this.getAttribute('invoketarget');
-    if (invoketarget) {
-      return getDocumentOrShadowRoot(this).getElementById(invoketarget);
-    }
+    if (this.invokeTarget != undefined) return super.invokeTargetElement;
     return getMediaController(this).querySelector('media-rendition-menu');
   }
 
