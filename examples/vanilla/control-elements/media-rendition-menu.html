@@ -5,8 +5,7 @@
   <title>Media Chrome Rendition Menu</title>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@canary/+esm"></script>
   <script type="module" src="../../../dist/index.js"></script>
-  <script type="module" src="../../../../dist/experimental/menu/media-rendition-menu.js"></script>
-  <script type="module" src="../../../../dist/experimental/menu/media-rendition-button.js"></script>
+  <script type="module" src="../../../../dist/experimental/menu/index.js"></script>
   <style>
     /** add styles to prevent CLS (Cumulative Layout Shift) */
     media-controller:not([audio]) {
@@ -20,7 +19,7 @@
     }
 
     media-rendition-menu[mediarenditionunavailable],
-    media-rendition-button[mediarenditionunavailable],
+    media-rendition-menu-button[mediarenditionunavailable],
     media-fullscreen-button[mediafullscreenunavailable],
     media-pip-button[mediapipunavailable] {
       display: none;
@@ -52,7 +51,7 @@
       <media-time-display showduration></media-time-display>
       <media-time-range></media-time-range>
       <media-mute-button></media-mute-button>
-      <media-rendition-button></media-rendition-button>
+      <media-rendition-menu-button></media-rendition-menu-button>
       <media-pip-button></media-pip-button>
       <media-fullscreen-button></media-fullscreen-button>
     </media-control-bar>

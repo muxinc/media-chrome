@@ -1,9 +1,9 @@
-import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
-import { AttributeTokenList } from './utils/attribute-token-list.js';
-import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
+import { globalThis, document } from '../../utils/server-safe-globals.js';
+import { MediaUIAttributes } from '../../constants.js';
+import { nouns } from '../../labels/labels.js';
+import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
+import { AttributeTokenList } from '../../utils/attribute-token-list.js';
+import { getNumericAttr, setNumericAttr, getMediaController } from '../../utils/element-utils.js';
 
 export const Attributes = {
   RATES: 'rates',
@@ -27,9 +27,9 @@ slotTemplate.innerHTML = /*html*/`
  * @attr {string} rates - Set custom playback rates for the user to choose from.
  * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
  *
- * @cssproperty [--media-playback-rate-button-display = inline-flex] - `display` property of button.
+ * @cssproperty [--media-playback-rate-menu-button-display = inline-flex] - `display` property of button.
  */
-class MediaPlaybackRateButton extends MediaChromeButton {
+class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
@@ -63,6 +63,15 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   /**
+   * Returns the element with the id specified by the `invoketarget` attribute.
+   * @return {HTMLElement | null}
+   */
+  get invokeTargetElement() {
+    if (this.invokeTarget != undefined) return super.invokeTargetElement;
+    return getMediaController(this).querySelector('media-playback-rate-menu');
+  }
+
+  /**
    * @type { AttributeTokenList | Array<number> | undefined} Will return a DOMTokenList.
    * Setting a value will accept an array of numbers.
    */
@@ -88,27 +97,14 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   set mediaPlaybackRate(value) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, value);
   }
-
-  handleClick() {
-    const availableRates = Array.from(this.rates.values(), str => +str).sort((a, b) => a - b);
-
-    const detail =
-      availableRates.find((r) => r > this.mediaPlaybackRate) ??
-      availableRates[0] ??
-      DEFAULT_RATE;
-    const evt = new globalThis.CustomEvent(
-      MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST,
-      { composed: true, bubbles: true, detail }
-    );
-    this.dispatchEvent(evt);
-  }
 }
 
-if (!globalThis.customElements.get('media-playback-rate-button')) {
+if (!globalThis.customElements.get('media-playback-rate-menu-button')) {
   globalThis.customElements.define(
-    'media-playback-rate-button',
-    MediaPlaybackRateButton
+    'media-playback-rate-menu-button',
+    MediaPlaybackRateMenuButton
   );
 }
 
-export default MediaPlaybackRateButton;
+export { MediaPlaybackRateMenuButton };
+export default MediaPlaybackRateMenuButton;

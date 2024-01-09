@@ -76,7 +76,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
    */
   get anchorElement() {
     if (this.anchor != undefined) return super.anchorElement;
-    return getMediaController(this).querySelector('media-captions-button');
+    return getMediaController(this).querySelector('media-captions-menu-button');
   }
 
   /**

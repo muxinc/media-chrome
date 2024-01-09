@@ -1,7 +1,6 @@
 import { MediaUIAttributes } from '../../constants.js';
-import { MediaChromeButton } from '../../media-chrome-button.js';
+import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { InvokeEvent } from '../../utils/events.js';
 import {
   getStringAttr,
   setStringAttr,
@@ -22,9 +21,9 @@ slotTemplate.innerHTML = /*html*/ `
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the selected audio track id.
  * @attr {(unavailable|unsupported)} mediaaudiotrackunavailable - (read-only) Set if audio track selection is unavailable.
  *
- * @cssproperty [--media-audio-track-button-display = inline-flex] - `display` property of button.
+ * @cssproperty [--media-audio-track-menu-button-display = inline-flex] - `display` property of button.
  */
-class MediaAudioTrackButton extends MediaChromeButton {
+class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
@@ -37,14 +36,6 @@ class MediaAudioTrackButton extends MediaChromeButton {
     super({ slotTemplate });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-
-    if (this.invokeTargetElement) {
-      this.setAttribute('aria-haspopup', 'menu');
-    }
-  }
-
   /**
    * Returns the element with the id specified by the `invoketarget` attribute.
    * @return {HTMLElement | null}
@@ -52,12 +43,6 @@ class MediaAudioTrackButton extends MediaChromeButton {
   get invokeTargetElement() {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
     return getMediaController(this).querySelector('media-audio-track-menu');
-  }
-
-  handleClick() {
-    this.invokeTargetElement.dispatchEvent(
-      new InvokeEvent({ relatedTarget: this, bubbles: true, composed: true })
-    );
   }
 
   /**
@@ -73,12 +58,12 @@ class MediaAudioTrackButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get('media-audio-track-button')) {
+if (!globalThis.customElements.get('media-audio-track-menu-button')) {
   globalThis.customElements.define(
-    'media-audio-track-button',
-    MediaAudioTrackButton
+    'media-audio-track-menu-button',
+    MediaAudioTrackMenuButton
   );
 }
 
-export { MediaAudioTrackButton };
-export default MediaAudioTrackButton;
+export { MediaAudioTrackMenuButton };
+export default MediaAudioTrackMenuButton;

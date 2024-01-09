@@ -1,7 +1,6 @@
 import { MediaUIAttributes } from '../../constants.js';
-import { MediaChromeButton } from '../../media-chrome-button.js';
+import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { InvokeEvent } from '../../utils/events.js';
 import {
   getStringAttr,
   setStringAttr,
@@ -21,9 +20,9 @@ slotTemplate.innerHTML = /*html*/`
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
  * @attr {(unavailable|unsupported)} mediarenditionunavailable - (read-only) Set if rendition selection is unavailable.
  *
- * @cssproperty [--media-rendition-button-display = inline-flex] - `display` property of button.
+ * @cssproperty [--media-rendition-menu-button-display = inline-flex] - `display` property of button.
  */
-class MediaRenditionButton extends MediaChromeButton {
+class MediaRenditionMenuButton extends MediaChromeMenuButton {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
@@ -36,14 +35,6 @@ class MediaRenditionButton extends MediaChromeButton {
     super({ slotTemplate });
   }
 
-  connectedCallback() {
-    super.connectedCallback();
-
-    if (this.invokeTargetElement) {
-      this.setAttribute('aria-haspopup', 'menu');
-    }
-  }
-
   /**
    * Returns the element with the id specified by the `invoketarget` attribute.
    * @return {HTMLElement | null}
@@ -51,12 +42,6 @@ class MediaRenditionButton extends MediaChromeButton {
   get invokeTargetElement() {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
     return getMediaController(this).querySelector('media-rendition-menu');
-  }
-
-  handleClick() {
-    this.invokeTargetElement.dispatchEvent(
-      new InvokeEvent({ relatedTarget: this, bubbles: true, composed: true })
-    );
   }
 
   /**
@@ -72,12 +57,12 @@ class MediaRenditionButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get('media-rendition-button')) {
+if (!globalThis.customElements.get('media-rendition-menu-button')) {
   globalThis.customElements.define(
-    'media-rendition-button',
-    MediaRenditionButton
+    'media-rendition-menu-button',
+    MediaRenditionMenuButton
   );
 }
 
-export { MediaRenditionButton };
-export default MediaRenditionButton;
+export { MediaRenditionMenuButton };
+export default MediaRenditionMenuButton;

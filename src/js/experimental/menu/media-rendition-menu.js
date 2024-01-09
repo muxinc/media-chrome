@@ -59,7 +59,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
    */
   get anchorElement() {
     if (this.anchor != undefined) return super.anchorElement;
-    return getMediaController(this).querySelector('media-rendition-button');
+    return getMediaController(this).querySelector('media-rendition-menu-button');
   }
 
   get mediaRenditionList() {

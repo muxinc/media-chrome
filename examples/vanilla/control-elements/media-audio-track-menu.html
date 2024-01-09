@@ -5,7 +5,6 @@
   <title>Media Chrome Audio Track Menu</title>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@canary/+esm"></script>
   <script type="module" src="../../../dist/index.js"></script>
-  <script type="module" src="../../../../dist/experimental/menu/media-audio-track-button.js"></script>
   <script type="module" src="../../../../dist/experimental/menu/index.js"></script>
   <style>
     /** add styles to prevent CLS (Cumulative Layout Shift) */
@@ -20,9 +19,9 @@
     }
 
     media-audio-track-menu[mediaaudiotrackunavailable],
-    media-audio-track-button[mediaaudiotrackunavailable],
+    media-audio-track-menu-button[mediaaudiotrackunavailable],
     media-rendition-menu[mediarenditionunavailable],
-    media-rendition-button[mediarenditionunavailable],
+    media-rendition-menu-button[mediarenditionunavailable],
     media-fullscreen-button[mediafullscreenunavailable],
     media-pip-button[mediapipunavailable] {
       display: none;
@@ -55,7 +54,7 @@
       <media-time-display showduration></media-time-display>
       <media-time-range></media-time-range>
       <media-mute-button></media-mute-button>
-      <media-audio-track-button></media-audio-track-button>
+      <media-audio-track-menu-button></media-audio-track-menu-button>
       <media-pip-button></media-pip-button>
       <media-fullscreen-button></media-fullscreen-button>
     </media-control-bar>
