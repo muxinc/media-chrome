@@ -108,7 +108,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
         value: `${rendition.id}`,
         checked: rendition.selected && !isAuto,
       });
-      item.prepend(createIndicator(this, 'check-indicator'));
+      item.prepend(createIndicator(this, 'checked-indicator'));
 
       container.append(item);
     }
@@ -119,7 +119,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       value: 'auto',
       checked: isAuto,
     });
-    item.prepend(createIndicator(this, 'check-indicator'));
+    item.prepend(createIndicator(this, 'checked-indicator'));
     container.append(item);
   }
 

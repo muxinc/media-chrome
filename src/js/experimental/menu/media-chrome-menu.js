@@ -13,7 +13,7 @@ import {
 } from '../../utils/element-utils.js';
 
 const checkIcon = /*html*/`
-<svg aria-hidden="true" viewBox="0 1 24 24" part="check-indicator indicator">
+<svg aria-hidden="true" viewBox="0 1 24 24" part="checked-indicator indicator">
   <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
 </svg>`;
 
@@ -118,12 +118,12 @@ template.innerHTML = /*html*/`
       vertical-align: var(--media-menu-item-indicator-vertical-align, text-top);
     }
 
-    [part~="check-indicator"] {
-      display: var(--media-menu-item-check-indicator-display);
+    [part~="checked-indicator"] {
+      display: var(--media-menu-item-checked-indicator-display);
       visibility: hidden;
     }
 
-    [aria-checked="true"] > [part~="check-indicator"] {
+    [aria-checked="true"] > [part~="checked-indicator"] {
       visibility: visible;
     }
   </style>
@@ -147,13 +147,13 @@ template.innerHTML = /*html*/`
       background: var(--media-menu-item-checked-background, rgb(255 255 255 / .2));
     }
 
-    [part~="check-indicator"] {
-      display: var(--media-menu-item-check-indicator-display, none);
+    [part~="checked-indicator"] {
+      display: var(--media-menu-item-checked-indicator-display, none);
     }
   </style>
   <slot name="header"></slot>
   <slot id="container"></slot>
-  <slot name="check-indicator" hidden>${checkIcon}</slot>
+  <slot name="checked-indicator" hidden>${checkIcon}</slot>
 `;
 
 export const Attributes = {
@@ -168,7 +168,7 @@ export const Attributes = {
  *
  * @slot - Default slotted elements.
  * @slot header - An element shown at the top of the menu.
- * @slot check-indicator - An icon element indicating a checked menu-item.
+ * @slot checked-indicator - An icon element indicating a checked menu-item.
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
@@ -194,7 +194,7 @@ export const Attributes = {
  * @cssproperty --media-menu-item-indicator-fill - `fill` color of indicator icon.
  * @cssproperty --media-menu-item-indicator-height - `height` of menu-item indicator.
  * @cssproperty --media-menu-item-indicator-vertical-align - `vertical-align` of menu-item indicator.
- * @cssproperty --media-menu-item-check-indicator-display - `display` of check indicator.
+ * @cssproperty --media-menu-item-checked-indicator-display - `display` of check indicator.
  */
 class MediaChromeMenu extends globalThis.HTMLElement {
   static get observedAttributes() {

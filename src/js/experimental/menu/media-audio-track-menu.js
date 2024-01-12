@@ -105,7 +105,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
         value: `${audioTrack.id}`,
         checked: audioTrack.enabled,
       });
-      item.prepend(createIndicator(this, 'check-indicator'));
+      item.prepend(createIndicator(this, 'checked-indicator'));
       container.append(item);
     }
   }

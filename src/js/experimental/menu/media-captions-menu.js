@@ -121,7 +121,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
       value: 'off',
       checked: isOff,
     });
-    item.prepend(createIndicator(this, 'check-indicator'));
+    item.prepend(createIndicator(this, 'checked-indicator'));
     container.append(item);
 
     const subtitlesList = this.mediaSubtitlesList;
@@ -133,7 +133,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
         value: formatTextTrackObj(subs),
         checked: this.value == formatTextTrackObj(subs),
       });
-      item.prepend(createIndicator(this, 'check-indicator'));
+      item.prepend(createIndicator(this, 'checked-indicator'));
 
       // add CC icon for captions
       const type = subs.kind ?? 'subs';

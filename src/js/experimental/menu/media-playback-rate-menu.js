@@ -119,7 +119,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
         value: rate,
         checked: this.mediaPlaybackRate == rate,
       });
-      item.prepend(createIndicator(this, 'check-indicator'));
+      item.prepend(createIndicator(this, 'checked-indicator'));
       container.append(item);
     }
   }
