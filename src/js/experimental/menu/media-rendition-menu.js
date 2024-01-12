@@ -1,4 +1,3 @@
-import './media-chrome-menu-item.js';
 import { globalThis } from '../../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
 import { getMediaController, getStringAttr, setStringAttr } from '../../utils/element-utils.js';

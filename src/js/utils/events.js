@@ -10,3 +10,22 @@ export class InvokeEvent extends Event {
     this.relatedTarget = relatedTarget;
   }
 }
+
+/**
+ * Similar to the popover toggle event.
+ * https://developer.mozilla.org/en-US/docs/Web/API/ToggleEvent
+ */
+export class ToggleEvent extends Event {
+  /** @type {'open' | 'closed'} */
+  newState;
+  /** @type {'open' | 'closed'} */
+  oldState;
+  /**
+   * @param  {EventInit & { newState: 'open' | 'closed', oldState: 'open' | 'closed' }} init
+   */
+  constructor({ newState, oldState, ...options }) {
+    super('toggle', options);
+    this.newState = newState;
+    this.oldState = oldState;
+  }
+}

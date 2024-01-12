@@ -1,7 +1,9 @@
+import './media-chrome-menu-item.js';
 import { MediaStateReceiverAttributes } from '../../constants.js';
 import { globalThis, document } from '../../utils/server-safe-globals.js';
 import { computePosition } from '../../utils/anchor-utils.js';
 import { observeResize, unobserveResize } from '../../utils/resize-observer.js';
+import { ToggleEvent } from '../../utils/events.js';
 import {
   getActiveElement,
   containsComposedNode,
@@ -69,7 +71,7 @@ template.innerHTML = /*html*/`
       border: var(--media-menu-border, none);
       display: var(--media-menu-display, inline-flex);
       opacity: var(--media-menu-opacity, 1);
-      max-height: var(--media-menu-max-height, var(--_max-height, 300px));
+      max-height: var(--media-menu-max-height, var(--_menu-max-height, 300px));
       visibility: var(--media-menu-visibility, visible);
       transition: var(--media-menu-transition-in,
         visibility 0s, transform .15s ease-out, opacity .15s ease-out);
@@ -83,12 +85,24 @@ template.innerHTML = /*html*/`
 
     :host([hidden]) {
       opacity: var(--media-menu-hidden-opacity, 0);
-      max-height: var(--media-menu-hidden-max-height, var(--media-menu-max-height, var(--_max-height, 300px)));
+      max-height: var(--media-menu-hidden-max-height, var(--media-menu-max-height, var(--_menu-max-height, 300px)));
       visibility: var(--media-menu-hidden-visibility, hidden);
       transition: var(--media-menu-transition-out,
         visibility .15s ease-out, transform .15s ease-out, opacity .15s ease-out);
       transform: var(--media-menu-transform-out, translateY(2px) scale(.99));
       pointer-events: none;
+    }
+
+    :host([slot="submenu"]) {
+      overflow: hidden;
+      transition: var(--media-submenu-transition-in, visibility 0s, max-height .2s ease-in-out);
+      max-height: var(--media-submenu-max-height, var(--media-submenu-max-height, var(--_submenu-max-height, 190px)));
+    }
+
+    :host([slot="submenu"][hidden]) {
+      opacity: var(--media-submenu-hidden-opacity, 1);
+      max-height: var(--media-submenu-hidden-max-height, var(--media-submenu-max-height, var(--_submenu-max-height, 0)));
+      transform: var(--media-submenu-transform-out, visibility .2s ease-in-out, max-height .2s ease-in-out);
     }
 
     ::slotted([slot="header"]) {
@@ -197,6 +211,8 @@ export const Attributes = {
  * @cssproperty --media-menu-item-checked-indicator-display - `display` of check indicator.
  */
 class MediaChromeMenu extends globalThis.HTMLElement {
+  static template = template;
+
   static get observedAttributes() {
     return [
       Attributes.DISABLED,
@@ -218,19 +234,15 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #clearKeysTimeout = null;
   #metaPressed = false;
 
-  constructor(options = {}) {
+  constructor() {
     super();
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       this.attachShadow({ mode: 'open' });
 
-      this.nativeEl = template.content.cloneNode(true);
-
-      if (options.slotTemplate) {
-        this.nativeEl.append(options.slotTemplate.content.cloneNode(true));
-      }
-
+      // @ts-ignore
+      this.nativeEl = this.constructor.template.content.cloneNode(true);
       this.shadowRoot.append(this.nativeEl);
     }
 
@@ -348,6 +360,22 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     return ['Enter', 'Escape', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
   }
 
+  get hidden() {
+    return super.hidden;
+  }
+
+  set hidden(value) {
+    super.hidden = value;
+
+    this.dispatchEvent(
+      new ToggleEvent({
+        oldState: super.hidden ? 'open' : 'closed',
+        newState: super.hidden ? 'closed' : 'open',
+        bubbles: true,
+      })
+    );
+  }
+
   get anchor() {
     return this.getAttribute('anchor');
   }
@@ -411,7 +439,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       return;
     }
 
-    this.items?.[0]?.focus();
+    if (this.items.length) {
+      this.items[0]?.focus();
+    }
   }
 
   #updateLayoutStyle() {
@@ -425,7 +455,10 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
   #handleInvoke(event) {
     this.#invokerElement = event.relatedTarget;
-    this.hidden = !this.hidden;
+
+    if (!containsComposedNode(this, event.relatedTarget)) {
+      this.hidden = !this.hidden;
+    }
   }
 
   #handleOpen() {
@@ -468,8 +501,31 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     style.setProperty('position', 'absolute');
     style.setProperty('right', `${Math.max(0, right)}px`);
     style.setProperty('bottom', `${bottom}px`);
-    style.setProperty('--_max-height', `${maxHeight}px`);
+    style.setProperty('--_menu-max-height', `${maxHeight}px`);
   };
+
+  #handleClick(event) {
+    const item = this.#getItem(event);
+
+    if (!item || item.hasAttribute('disabled')) return;
+
+    this.items.forEach((el) => el.setAttribute('tabindex', '-1'));
+    item.setAttribute('tabindex', '0');
+
+    this.handleSelection(event);
+  }
+
+  #handleFocusOut(event) {
+    if (!containsComposedNode(this, event.relatedTarget)) {
+      this.#previouslyFocused?.focus();
+
+      // If the menu was opened by a click, close it when selecting an item.
+      if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && !this.hidden) {
+        console.log(2, this);
+        // this.hidden = true;
+      }
+    }
+  }
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
@@ -540,6 +596,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   #getItem(event) {
+    // Prevent running this in a parent menu if the event target is a sub menu.
+    if (event.target !== this) return;
+
     return event.composedPath().find((el) => {
       return ['menuitemradio', 'menuitemcheckbox'].includes(
         el.getAttribute?.('role')
@@ -601,9 +660,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       case 'End':
         nextItem = els[els.length - 1];
         break;
-      default:
-        nextItem = this.#searchItem(key);
-        break;
     }
 
     if (nextItem) {
@@ -611,79 +667,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       nextItem.setAttribute('tabindex', '0');
       nextItem.focus();
     }
-  }
-
-  #handleClick(event) {
-    const item = this.#getItem(event);
-
-    if (!item || item.hasAttribute('disabled')) return;
-
-    this.items.forEach((el) => el.setAttribute('tabindex', '-1'));
-    item.setAttribute('tabindex', '0');
-
-    this.handleSelection(event);
-  }
-
-  #handleFocusOut(event) {
-    if (!containsComposedNode(this, event.relatedTarget)) {
-      this.#previouslyFocused?.focus();
-    }
-
-    // If the menu was opened by a click, close it when selecting an item.
-    if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && !this.hidden) {
-      this.hidden = true;
-    }
-  }
-
-  #searchItem(key) {
-    this.#clearKeysOnDelay();
-
-    const els = this.items;
-    const activeIndex = els.findIndex(
-      (el) => el.getAttribute('tabindex') === '0'
-    );
-
-    // always accumulate the key
-    this.#keysSoFar += key;
-
-    // if the same key is pressed, assume it's a repeated key
-    // to skip to the same item that begings with that key
-    // until the user presses another key and a better choice is available
-    const repeatedKey = this.#keysSoFar.split('').every((k) => k === key);
-
-    // if it's a repeat key, skip the current item
-    const after = els
-      .slice(activeIndex + (repeatedKey ? 1 : 0))
-      .filter((el) => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
-    const before = els
-      .slice(0, activeIndex - (repeatedKey ? 1 : 0))
-      .filter((el) => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
-
-    let afterRepeated = [];
-    let beforeRepeated = [];
-
-    if (repeatedKey) {
-      afterRepeated = els
-        .slice(activeIndex + (repeatedKey ? 1 : 0))
-        .filter((el) => el.textContent.startsWith(key));
-      beforeRepeated = els
-        .slice(0, activeIndex - (repeatedKey ? 1 : 0))
-        .filter((el) => el.textContent.startsWith(key));
-    }
-
-    const returns = [...after, ...before, ...afterRepeated, ...beforeRepeated];
-
-    return returns[0];
-  }
-
-  #clearKeysOnDelay() {
-    clearTimeout(this.#clearKeysTimeout);
-    this.#clearKeysTimeout = null;
-
-    this.#clearKeysTimeout = setTimeout(() => {
-      this.#keysSoFar = '';
-      this.#clearKeysTimeout = null;
-    }, 500);
   }
 }
 

@@ -36,7 +36,7 @@ class MediaChromeMenuButton extends MediaChromeButton {
 
   handleClick() {
     this.invokeTargetElement.dispatchEvent(
-      new InvokeEvent({ relatedTarget: this, bubbles: true, composed: true })
+      new InvokeEvent({ relatedTarget: this })
     );
   }
 }
