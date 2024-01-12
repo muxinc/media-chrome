@@ -521,8 +521,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
       // If the menu was opened by a click, close it when selecting an item.
       if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && !this.hidden) {
-        console.log(2, this);
-        // this.hidden = true;
+        this.hidden = true;
       }
     }
   }
@@ -591,6 +590,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     // If the menu was opened by a click, close it when selecting an item.
     if (this.#invokerElement && !this.hidden) {
+      this.#previouslyFocused?.focus();
       this.hidden = true;
     }
   }
