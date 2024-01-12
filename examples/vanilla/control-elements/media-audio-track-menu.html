@@ -2,17 +2,11 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width">
-  <title>Media Chrome Audio Track Selectmenu</title>
+  <title>Media Chrome Audio Track Menu</title>
   <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@canary/+esm"></script>
   <script type="module" src="../../../dist/index.js"></script>
-  <script type="module" src="../../../../dist/experimental/media-rendition-selectmenu.js"></script>
-  <script type="module" src="../../../../dist/experimental/media-audio-track-selectmenu.js"></script>
+  <script type="module" src="../../../../dist/experimental/menu/index.js"></script>
   <style>
-    /* Hide custom elements that are not defined yet */
-    :not(:defined) {
-      display: none;
-    }
-
     /** add styles to prevent CLS (Cumulative Layout Shift) */
     media-controller:not([audio]) {
       display: block;         /* expands the container if preload=none */
@@ -24,8 +18,10 @@
       width: 100%;      /* prevents video to expand beyond its container */
     }
 
-    media-audio-track-selectmenu[mediaaudiotrackunavailable],
-    media-rendition-selectmenu[mediarenditionunavailable],
+    media-audio-track-menu[mediaaudiotrackunavailable],
+    media-audio-track-menu-button[mediaaudiotrackunavailable],
+    media-rendition-menu[mediarenditionunavailable],
+    media-rendition-menu-button[mediarenditionunavailable],
     media-fullscreen-button[mediafullscreenunavailable],
     media-pip-button[mediapipunavailable] {
       display: none;
@@ -37,7 +33,7 @@
   </style>
 </head>
 <body>
-  <h1>Audio Track Selectmenu</h1>
+  <h1>Audio Track Menu</h1>
 
   <media-controller id="mc">
     <mux-video
@@ -50,25 +46,22 @@
       playsinline
       crossorigin
     ></mux-video>
+    <media-audio-track-menu hidden>
+      <div slot="header">Audio</div>
+    </media-audio-track-menu>
     <media-control-bar>
       <media-play-button></media-play-button>
       <media-time-display showduration></media-time-display>
       <media-time-range></media-time-range>
       <media-mute-button></media-mute-button>
-      <media-rendition-selectmenu>
-        <media-rendition-listbox slot="listbox">
-          <div slot="header">Quality</div>
-        </media-rendition-listbox>
-      </media-rendition-selectmenu>
-      <media-audio-track-selectmenu>
-        <media-audio-track-listbox slot="listbox">
-          <div slot="header">Audio</div>
-        </media-audio-track-listbox>
-      </media-audio-track-selectmenu>
+      <media-audio-track-menu-button></media-audio-track-menu-button>
       <media-pip-button></media-pip-button>
       <media-fullscreen-button></media-fullscreen-button>
     </media-control-bar>
   </media-controller>
+  <br>
+
+  <media-audio-track-menu mediacontroller="mc"></media-audio-track-menu>
 
   <p>
     Quality: <span id="renditionactive">N/A</span>

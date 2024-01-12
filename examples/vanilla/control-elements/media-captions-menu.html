@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta name="viewport" content="width=device-width">
-  <title>Media Chrome Captions Listbox</title>
+  <title>Media Chrome Captions Menu</title>
   <script type="module" src="../../../dist/index.js"></script>
-  <script type="module" src="../../../../dist/experimental/media-captions-listbox.js"></script>
+  <script type="module" src="../../../../dist/experimental/menu/index.js"></script>
   <style>
     .examples {
       margin-top: 20px;
@@ -12,7 +12,7 @@
   </style>
 </head>
 <body>
-  <h1>Captions Listbox</h1>
+  <h1>Captions Menu</h1>
 
   <media-controller id="mc">
     <video
@@ -33,6 +33,7 @@
       <track label="Subs Russian" kind="subtitles" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
       <track label="Subs Arabic" kind="subtitles" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
     </video>
+    <media-captions-menu hidden></media-captions-menu>
     <media-control-bar>
       <media-play-button></media-play-button>
       <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
@@ -41,6 +42,7 @@
       <media-time-range></media-time-range>
       <media-time-display showduration remaining></media-time-display>
       <media-captions-button></media-captions-button>
+      <media-captions-menu-button></media-captions-menu-button>
       <media-playback-rate-button></media-playback-rate-button>
       <media-pip-button></media-pip-button>
       <media-fullscreen-button></media-fullscreen-button>
@@ -50,7 +52,16 @@
   <br>
 
   <button type="button" class="remove">Remove First Track</button>
-  <media-captions-listbox title="Captions & Subtitles List" mediacontroller="mc" ></media-captions-listbox>
+
+  <h2>Default</h2>
+
+  <media-captions-menu mediacontroller="mc"></media-captions-menu>
+
+  <h2>Disabled</h2>
+
+  <media-captions-menu mediacontroller="mc" disabled></media-captions-menu>
+
+  <br>
 
   <script>
     document.querySelector('.remove').addEventListener('click', () => {

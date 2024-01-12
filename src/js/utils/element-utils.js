@@ -1,3 +1,37 @@
+import { MediaStateReceiverAttributes } from '../constants.js';
+
+/** @typedef {import('../media-controller.js').MediaController} MediaController */
+
+/**
+ * Get the media controller element from the `mediacontroller` attribute or closest ancestor.
+ * @param  {HTMLElement} host
+ * @return {MediaController | undefined}
+ */
+export function getMediaController(host) {
+  return (
+    getAttributeMediaController(host) ??
+    closestComposedNode(host, 'media-controller')
+  );
+}
+
+/**
+ * Get the media controller element from the `mediacontroller` attribute.
+ * @param  {HTMLElement} host
+ * @return {MediaController | undefined}
+ */
+export function getAttributeMediaController(host) {
+  const { MEDIA_CONTROLLER } = MediaStateReceiverAttributes;
+  const mediaControllerId = host.getAttribute(MEDIA_CONTROLLER);
+
+  if (mediaControllerId) {
+    return /** @type MediaController */ (
+      /** @type {unknown} */ (
+        getDocumentOrShadowRoot(host)?.getElementById(mediaControllerId)
+      )
+    );
+  }
+}
+
 export const updateIconText = (svg, value, selector = '.value') => {
   const node = svg.querySelector(selector);
 
@@ -64,13 +98,20 @@ export function isElementVisible(element, depth = 3) {
   // @ts-ignore
   if (element.checkVisibility) {
     // @ts-ignore
-    return element.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
+    return element.checkVisibility({
+      checkOpacity: true,
+      checkVisibilityCSS: true,
+    });
   }
   // Check if the element or its ancestors are hidden.
   let el = element;
   while (el && depth > 0) {
     const style = getComputedStyle(el);
-    if (style.opacity === '0' || style.visibility === 'hidden' || style.display === 'none') {
+    if (
+      style.opacity === '0' ||
+      style.visibility === 'hidden' ||
+      style.display === 'none'
+    ) {
       return false;
     }
     el = el.parentElement;
@@ -110,6 +151,7 @@ export function distance(p1, p2) {
  * { style: {
  * setProperty: () => void,
  * removeProperty: () => void,
+ * getPropertyValue: () => string,
  * width?: string,
  * height?: string,
  * display?: string,
@@ -138,6 +180,7 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
       style: {
         setProperty: () => {},
         removeProperty: () => {},
+        getPropertyValue: () => '',
       },
     };
   }

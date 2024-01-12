@@ -144,7 +144,7 @@ template.innerHTML = /*html*/`
     }
 
     ${/* Only add these if auto hide is not disabled */ ''}
-    ::slotted(:not([slot=media]):not([${Attributes.NO_AUTOHIDE}])) {
+    ::slotted(:not([slot=media]):not([${Attributes.NO_AUTOHIDE}]):not([hidden])) {
       opacity: 1;
       transition: opacity 0.25s;
     }
@@ -168,6 +168,10 @@ template.innerHTML = /*html*/`
     ${/* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''}
     :host(:not([${Attributes.AUDIO}])[${MediaUIAttributes.MEDIA_HAS_PLAYED}]) slot[name=poster] {
       display: none;
+    }
+
+    ::slotted([role=menu]) {
+      align-self: end;
     }
   </style>
 
