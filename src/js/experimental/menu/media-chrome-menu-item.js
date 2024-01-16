@@ -96,40 +96,6 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     this.shadowRoot.addEventListener('slotchange', this);
   }
 
-  handleEvent(event) {
-    switch (event.type) {
-      case 'slotchange':
-        this.#handleSlotChange(event);
-      break;
-      case 'click':
-        this.#handleClick(event);
-        break;
-    }
-  }
-
-  #handleSlotChange(event) {
-    const slot = event.target;
-    const isDefaultSlot = !slot?.name;
-
-    if (isDefaultSlot) {
-      for (let node of slot.assignedNodes({ flatten: true })) {
-        // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
-        if (node instanceof Text && node.textContent.trim() === '') {
-          node.remove();
-        }
-      }
-
-      // Add an empty class to the default slot if there are no nodes left.
-      slot.classList.toggle('empty', !slot.assignedNodes({ flatten: true }).length);
-      return;
-    }
-
-    if (slot.name === 'submenu' && this.invokeTargetElement) {
-      this.setAttribute('aria-haspopup', 'menu');
-      this.setAttribute('aria-expanded', `${!this.invokeTargetElement.hidden}`);
-    }
-  }
-
   enable() {
     if (!this.hasAttribute('tabindex')) {
       this.setAttribute('tabindex', '-1');
@@ -140,11 +106,32 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     }
 
     this.addEventListener('click', this);
+    this.addEventListener('keydown', this);
   }
 
   disable() {
     this.removeAttribute('tabindex');
+
     this.removeEventListener('click', this);
+    this.removeEventListener('keydown', this);
+    this.removeEventListener('keyup', this);
+  }
+
+  handleEvent(event) {
+    switch (event.type) {
+      case 'slotchange':
+        this.#handleSlotChange(event);
+        break;
+      case 'click':
+        this.handleClick(event);
+        break;
+      case 'keydown':
+        this.#handleKeyDown(event);
+        break;
+      case 'keyup':
+        this.#handleKeyUp(event);
+        break;
+    }
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -226,7 +213,30 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     }
   }
 
-  #handleClick(event) {
+  #handleSlotChange(event) {
+    const slot = event.target;
+    const isDefaultSlot = !slot?.name;
+
+    if (isDefaultSlot) {
+      for (let node of slot.assignedNodes({ flatten: true })) {
+        // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
+        if (node instanceof Text && node.textContent.trim() === '') {
+          node.remove();
+        }
+      }
+
+      // Add an empty class to the default slot if there are no nodes left.
+      slot.classList.toggle('empty', !slot.assignedNodes({ flatten: true }).length);
+      return;
+    }
+
+    if (slot.name === 'submenu' && this.invokeTargetElement) {
+      this.setAttribute('aria-haspopup', 'menu');
+      this.setAttribute('aria-expanded', `${!this.invokeTargetElement.hidden}`);
+    }
+  }
+
+  handleClick(event) {
     // Checkable menu items are handled in media-chrome-menu.
     if (isCheckable(this)) return;
 
@@ -235,6 +245,32 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
         new InvokeEvent({ relatedTarget: this })
       );
     }
+  }
+
+  get keysUsed() {
+    return ['Enter', ' '];
+  }
+
+  #handleKeyUp(event) {
+    const { key } = event;
+
+    if (!this.keysUsed.includes(key)) {
+      this.removeEventListener('keyup', this.#handleKeyUp);
+      return;
+    }
+
+    this.handleClick(event);
+  }
+
+  #handleKeyDown(event) {
+    const { metaKey, altKey, key } = event;
+
+    if (metaKey || altKey || !this.keysUsed.includes(key)) {
+      this.removeEventListener('keyup', this.#handleKeyUp);
+      return;
+    }
+
+    this.addEventListener('keyup', this.#handleKeyUp, { once: true });
   }
 
   #reset() {

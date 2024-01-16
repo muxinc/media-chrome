@@ -232,7 +232,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #invokerElement;
   #keysSoFar = '';
   #clearKeysTimeout = null;
-  #metaPressed = false;
 
   constructor() {
     super();
@@ -286,9 +285,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
         break;
       case 'keydown':
         this.#handleKeyDown(event);
-        break;
-      case 'keyup':
-        this.#handleKeyUp(event);
         break;
     }
   }
@@ -356,21 +352,18 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     return this.constructor.formatMenuItemText(text, data);
   }
 
-  get keysUsed() {
-    return ['Enter', 'Escape', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
-  }
-
   get hidden() {
     return super.hidden;
   }
 
   set hidden(value) {
-    super.hidden = value;
+    const hidden = !!value;
+    super.hidden = hidden;
 
     this.dispatchEvent(
       new ToggleEvent({
-        oldState: super.hidden ? 'open' : 'closed',
-        newState: super.hidden ? 'closed' : 'open',
+        oldState: hidden ? 'open' : 'closed',
+        newState: hidden ? 'closed' : 'open',
         bubbles: true,
       })
     );
@@ -429,19 +422,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     if (!item) return;
 
     this.#selectItem(item);
-  }
-
-  focus() {
-    this.#previouslyFocused = getActiveElement();
-
-    if (this.checkedItems.length) {
-      this.checkedItems[0]?.focus();
-      return;
-    }
-
-    if (this.items.length) {
-      this.items[0]?.focus();
-    }
   }
 
   #updateLayoutStyle() {
@@ -504,6 +484,19 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     style.setProperty('--_menu-max-height', `${maxHeight}px`);
   };
 
+  focus() {
+    this.#previouslyFocused = getActiveElement();
+
+    if (this.checkedItems.length) {
+      this.checkedItems[0]?.focus();
+      return;
+    }
+
+    if (this.items.length) {
+      this.items[0]?.focus();
+    }
+  }
+
   #handleClick(event) {
     const item = this.#getItem(event);
 
@@ -512,7 +505,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.items.forEach((el) => el.setAttribute('tabindex', '-1'));
     item.setAttribute('tabindex', '0');
 
-    this.handleSelection(event);
+    this.handleSelect(event);
   }
 
   #handleFocusOut(event) {
@@ -526,62 +519,34 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
   }
 
-  // NOTE: There are definitely some "false positive" cases with multi-key pressing,
-  // but this should be good enough for most use cases.
-  #handleKeyUp(event) {
-    const { key } = event;
-    // only cancel on Escape
-    if (key === 'Escape') {
-      this.hidden = true;
-      this.removeEventListener('keyup', this.#handleKeyUp);
-      return;
-    }
-
-    if (key === 'Meta') {
-      this.#metaPressed = false;
-      return;
-    }
-
-    this.#handleKeyListener(event);
+  get keysUsed() {
+    return ['Enter', 'Escape', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
   }
 
   #handleKeyDown(event) {
-    const { key, altKey } = event;
+    const { key, ctrlKey, altKey, metaKey } = event;
 
-    if (altKey) {
-      this.removeEventListener('keyup', this);
+    if (ctrlKey || altKey || metaKey) {
       return;
     }
 
-    if (key === 'Meta') {
-      this.#metaPressed = true;
+    if (!this.keysUsed.includes(key)) {
       return;
     }
 
-    // only prevent default on used keys
-    if (this.keysUsed.includes(key)) {
-      event.preventDefault();
-    }
+    event.preventDefault();
+    event.stopPropagation();
 
-    if (this.#metaPressed && this.keysUsed.includes(key)) {
-      this.#handleKeyListener(event);
-      return;
-    }
-
-    this.addEventListener('keyup', this, { once: true });
-  }
-
-  #handleKeyListener(event) {
-    const { key } = event;
-
-    if (key === 'Enter' || key === ' ') {
-      this.handleSelection(event);
+    if (key === 'Escape') {
+      this.hidden = true;
+    } else if (key === 'Enter' || key === ' ') {
+      this.handleSelect(event);
     } else {
-      this.handleMovement(event);
+      this.handleMove(event);
     }
   }
 
-  handleSelection(event) {
+  handleSelect(event) {
     const item = this.#getItem(event);
 
     if (!item) return;
@@ -626,47 +591,34 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
   }
 
-  handleMovement(event) {
+  handleMove(event) {
     const { key } = event;
-    const els = this.items;
+    const activeItems = this.items.filter(opt => !opt.disabled);
 
     let currentItem = this.#getItem(event);
+
     if (!currentItem) {
-      currentItem = els.filter((el) => el.getAttribute('tabindex') === '0')[0];
+      currentItem = activeItems.find((el) => el.tabIndex === 0) ?? activeItems[0];
     }
 
-    let nextItem;
+    const currentIndex = activeItems.indexOf(currentItem);
+    let newIndex = Math.max(0, currentIndex);
 
-    switch (key) {
-      case 'ArrowDown':
-        nextItem = currentItem.nextElementSibling;
-
-        if (nextItem?.hasAttribute('disabled')) {
-          nextItem = nextItem.nextElementSibling;
-        }
-
-        break;
-      case 'ArrowUp':
-        nextItem = currentItem.previousElementSibling;
-
-        if (nextItem?.hasAttribute('disabled')) {
-          nextItem = nextItem.previousElementSibling;
-        }
-
-        break;
-      case 'Home':
-        nextItem = els[0];
-        break;
-      case 'End':
-        nextItem = els[els.length - 1];
-        break;
+    if (key === 'ArrowDown') {
+      newIndex = Math.min(currentIndex + 1, activeItems.length - 1);
+    } else if (key === 'ArrowUp') {
+      newIndex = Math.max(0, currentIndex - 1);
+    } else if (event.key === 'Home') {
+      newIndex = 0;
+    } else if (event.key === 'End') {
+      newIndex = activeItems.length - 1;
     }
 
-    if (nextItem) {
-      els.forEach((el) => el.setAttribute('tabindex', '-1'));
-      nextItem.setAttribute('tabindex', '0');
-      nextItem.focus();
-    }
+    this.items.forEach(item => (item.tabIndex = -1));
+
+    currentItem = activeItems[newIndex];
+    currentItem.tabIndex = 0;
+    currentItem.focus();
   }
 }
 
