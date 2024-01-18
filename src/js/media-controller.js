@@ -75,6 +75,9 @@ class MediaController extends MediaContainer {
   #mediaStore;
   #mediaStateCallback;
   #mediaStoreUnsubscribe;
+  #mediaStateEventHandler = (event) => {
+    this.#mediaStore?.dispatch(event);
+  };
 
   constructor() {
     super();
@@ -84,15 +87,6 @@ class MediaController extends MediaContainer {
     this.mediaStateReceivers = [];
     this.associatedElementSubscriptions = new Map();
     this.associateElement(this);
-
-    // Still generically setup events -> mediaStore dispatch, since it will
-    // forward the events on to whichever store is defined (CJP)
-    Object.values(MediaUIEvents).forEach(eventName => {
-      this.addEventListener(eventName, e => {
-        // Pass events along to the media store.
-        this.#mediaStore?.dispatch(e);
-      });
-    });
 
     let prevState = {};
     this.#mediaStateCallback = (nextState) => {
@@ -174,13 +168,12 @@ class MediaController extends MediaContainer {
   }
 
   connectedCallback() {
-
     super.connectedCallback?.();
+    // getRootNode() in disconnectedCallback returns the media-controller element itself
+    // but we need the HTMLDocument or ShadowRoot if media-controller is in a shadow DOM.
+    // We store the correct root node here so we can access it later.
+    this.#rootNode = /** @type Document | ShadowRoot */ (this.getRootNode());
     if (this.#mediaStore && !this.#mediaStoreUnsubscribe) {
-      // getRootNode() in disconnectedCallback returns the media-controller element itself
-      // but we need the HTMLDocument or ShadowRoot if media-controller is in a shadow DOM.
-      // We store the correct root node here so we can access it later.
-      this.#rootNode = /** @type Document | ShadowRoot */ (this.getRootNode());
       this.#mediaStore.dispatch({ type: 'rootnodechangerequest', detail: this.#rootNode });
       this.#mediaStoreUnsubscribe = this.#mediaStore.subscribe(this.#mediaStateCallback);
     }
@@ -197,9 +190,8 @@ class MediaController extends MediaContainer {
         detail: false
       });
     }
+    this.#rootNode = undefined;
     if (this.#mediaStoreUnsubscribe) {
-      /** @TODO Revisit: may not be necessary anymore or better solved via unsubscribe behavior? (CJP) */
-      this.#rootNode = undefined;
       this.#mediaStore?.dispatch({ type: 'rootnodechangerequest', detail: this.#rootNode });
       this.#mediaStoreUnsubscribe?.();
       this.#mediaStoreUnsubscribe = undefined;
@@ -307,11 +299,10 @@ class MediaController extends MediaContainer {
     // Add all media request event listeners to the Associated Element. This allows any DOM element that
     // is a descendant of any Associated Element (including the <media-controller/> itself) to make requests
     // for media state changes rather than constraining that exclusively to a Media State Receivers.
-    Object.keys(MediaUIEvents).forEach((key) => {
-      element.addEventListener(
-        MediaUIEvents[key],
-        this[`_handle${constToCamel(key, true)}`]
-      );
+    // Still generically setup events -> mediaStore dispatch, since it will
+    // forward the events on to whichever store is defined (CJP)
+    Object.values(MediaUIEvents).forEach(eventName => {
+      element.addEventListener(eventName, this.#mediaStateEventHandler);
     });
 
     associatedElementSubscriptions.set(element, unsubscribe);
@@ -326,11 +317,8 @@ class MediaController extends MediaContainer {
     associatedElementSubscriptions.delete(element);
 
     // Remove all media UI event listeners
-    Object.keys(MediaUIEvents).forEach((key) => {
-      element.removeEventListener(
-        MediaUIEvents[key],
-        this[`_handle${constToCamel(key, true)}`]
-      );
+    Object.values(MediaUIEvents).forEach(eventName => {
+      element.removeEventListener(eventName, this.#mediaStateEventHandler);
     });
   }
 
