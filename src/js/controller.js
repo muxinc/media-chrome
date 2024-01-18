@@ -510,7 +510,7 @@ export const MediaUIStates = {
         controller.hasAttribute('defaultsubtitles') &&
         ['addtrack', 'removetrack'].includes(event?.type)
       ) {
-        MediaUIRequestHandlers.MEDIA_TOGGLE_SUBTITLES_REQUEST(controller.media, { detail: true }, controller);
+        MediaUIRequestHandlers.MEDIA_TOGGLE_SUBTITLES_REQUEST(undefined, { detail: true }, controller);
       }
       return getShowingSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language }));
     },
@@ -832,7 +832,7 @@ export const MediaUIRequestHandlers = {
     const { detail: tracksToUpdate = [] } = event;
     updateTracksModeTo(TextTrackModes.DISABLED, tracks, tracksToUpdate);
   },
-  MEDIA_TOGGLE_SUBTITLES_REQUEST: (media, event, controller) => {
+  MEDIA_TOGGLE_SUBTITLES_REQUEST: (_media, event, controller) => {
     // NOTE: Like Element::toggleAttribute(), this event uses the detail for an optional "force"
     // value. When present, this means "toggle to" "on" (aka showing, even if something's already showing)
     // or "off" (aka disabled, even if all tracks are currently disabled).
@@ -874,7 +874,7 @@ export const MediaUIRequestHandlers = {
       updateTracksModeTo(TextTrackModes.DISABLED, tracks, showingSubitleTracks);
       updateTracksModeTo(
         TextTrackModes.SHOWING,
-        media.textTracks,
+        tracks,
         [{ language, label, kind }]
       );
     }
