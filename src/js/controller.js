@@ -508,7 +508,8 @@ export const MediaUIStates = {
       // will also respect `defaultsubtitles` (CJP)
       if (
         controller.hasAttribute('defaultsubtitles') &&
-        ['addtrack', 'removetrack'].includes(event?.type)
+        ['addtrack', 'removetrack'].includes(event?.type) &&
+        [TextTrackKinds.CAPTIONS, TextTrackKinds.SUBTITLES].includes(event?.track?.kind)
       ) {
         MediaUIRequestHandlers.MEDIA_TOGGLE_SUBTITLES_REQUEST(undefined, { detail: true }, controller);
       }
