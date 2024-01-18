@@ -74,7 +74,7 @@ import {
  */
 
 /**
- * @typedef {{ type: Event['type']; detail?: D }} EventOrAction<D>
+ * @typedef {{ type: Event['type']; detail?: D; target?: Event['target'] }} EventOrAction<D>
  * @template {any} [D=undefined]
  */
 
@@ -872,7 +872,6 @@ export const defaultStateFacade = {
         // document.fullscreenElement could be several ancestors up the tree.
         // Use event.target instead.
         const isSomeElementFullscreen = document[fullscreenApi.element];
-        /** @ts-ignore */
         currentFullscreenEl = isSomeElementFullscreen ? event.target : null;
       }
 

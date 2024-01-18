@@ -20,7 +20,7 @@ import {
   MediaUIProps,
 } from './constants.js';
 import { setBooleanAttr, setNumericAttr, setStringAttr } from './utils/element-utils.js';
-import createMediaStore from './mediaStore.js';
+import createMediaStore from './media-store.js';
 
 const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;
@@ -106,7 +106,6 @@ class MediaController extends MediaContainer {
       prevState = nextState;
     };
 
-    /** @TODO rootNode was refactored to get set/updated in connectedCallback. Figure out what needs to change for store setup for parity */
     if (!this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
       this.#setupDefaultStore();
     }
@@ -122,7 +121,7 @@ class MediaController extends MediaContainer {
       options: {
         defaultSubtitles: this.hasAttribute(Attributes.DEFAULT_SUBTITLES),
         defaultDuration: this.hasAttribute(Attributes.DEFAULT_DURATION) ? +this.getAttribute(Attributes.DEFAULT_DURATION) : undefined,
-        defaultStreamType: /** @type {import('./mediaStore.js').StreamTypeValue} */ (this.getAttribute(Attributes.DEFAULT_STREAM_TYPE)) ?? undefined,
+        defaultStreamType: /** @type {import('./media-store.js').StreamTypeValue} */ (this.getAttribute(Attributes.DEFAULT_STREAM_TYPE)) ?? undefined,
         liveEdgeOffset: this.hasAttribute(Attributes.LIVE_EDGE_OFFSET) ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET) : undefined,
         // NOTE: This wasn't updated if it was changed later. Should it be? (CJP)
         noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
@@ -130,7 +129,6 @@ class MediaController extends MediaContainer {
       },
       // NOTE: When using a default store, we're going to assume that we should stop monitoring the state owners whenever
       // there are no subscribers. This allows us to do proper teardown/GC when the media-controller is no longer in use.
-      /** @TODO Re-fix me! (current solution may be buggy) (CJP) */
       monitorStateOwnersOnlyWithSubscriptions: true,
     });
   }
@@ -169,10 +167,12 @@ class MediaController extends MediaContainer {
 
   connectedCallback() {
     super.connectedCallback?.();
+
     // getRootNode() in disconnectedCallback returns the media-controller element itself
     // but we need the HTMLDocument or ShadowRoot if media-controller is in a shadow DOM.
     // We store the correct root node here so we can access it later.
     this.#rootNode = /** @type Document | ShadowRoot */ (this.getRootNode());
+
     if (this.#mediaStore && !this.#mediaStoreUnsubscribe) {
       this.#mediaStore.dispatch({ type: 'rootnodechangerequest', detail: this.#rootNode });
       this.#mediaStoreUnsubscribe = this.#mediaStore.subscribe(this.#mediaStateCallback);
@@ -190,7 +190,9 @@ class MediaController extends MediaContainer {
         detail: false
       });
     }
+
     this.#rootNode = undefined;
+
     if (this.#mediaStoreUnsubscribe) {
       this.#mediaStore?.dispatch({ type: 'rootnodechangerequest', detail: this.#rootNode });
       this.#mediaStoreUnsubscribe?.();
@@ -329,6 +331,7 @@ class MediaController extends MediaContainer {
     if (index > -1) return;
 
     els.push(el);
+
     if (this.#mediaStore) {
       Object.entries(this.#mediaStore.getState()).forEach(([stateName, stateValue]) => {
         propagateMediaState([el], stateName, stateValue);
