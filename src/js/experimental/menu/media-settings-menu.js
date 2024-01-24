@@ -2,20 +2,17 @@ import { globalThis } from '../../utils/server-safe-globals.js';
 import { MediaChromeMenu } from './media-chrome-menu.js';
 import { getMediaController } from '../../utils/element-utils.js';
 
-/** @typedef {import('./media-chrome-menu-item.js').MediaChromeMenuItem} MediaChromeMenuItem */
-
 const template = document.createElement('template');
 // prettier-ignore
 template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <style>
     :host {
-      display: var(--media-settings-menu-display, inline-grid);
-      overflow: hidden;
+      justify-content: var(--media-settings-menu-justify-content, flex-end);
       border-radius: 2px 2px 0 0;
+      overflow: hidden;
     }
 
     slot:not([name]) {
-      justify-content: var(--media-settings-menu-justify-content, flex-end);
       overflow: visible;
     }
 
@@ -26,8 +23,7 @@ template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
 `;
 
 /**
- * @cssproperty --media-settings-menu-flex-direction - `flex-direction` of the container.
- * @cssproperty --media-settings-menu-align-items - `align-items` of the container.
+ * @cssproperty --media-settings-menu-justify-content - `justify-content` of the menu.
  */
 class MediaSettingsMenu extends MediaChromeMenu {
   static template = template;

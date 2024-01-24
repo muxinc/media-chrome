@@ -149,6 +149,13 @@ template.innerHTML = /*html*/`
       cursor: pointer;
     }
 
+    svg[part~="back"] {
+      height: var(--media-menu-icon-height, var(--media-control-height, 24px));
+      fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
+      display: block;
+      margin-right: .5ch;
+    }
+
     slot:not([name]) {
       gap: var(--media-menu-gap);
       flex-direction: var(--media-menu-flex-direction, column);
@@ -156,17 +163,6 @@ template.innerHTML = /*html*/`
       display: flex;
       min-height: 0;
       padding-block: .4em;
-    }
-
-    slot[name="header"] svg {
-      width: var(--media-menu-icon-width);
-      height: var(--media-menu-icon-height, var(--media-control-height, 24px));
-      fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
-      display: block;
-    }
-
-    slot[name="back-icon"] :where(svg, img) {
-      margin-right: .5ch;
     }
 
     media-chrome-menu-item > span {
@@ -193,6 +189,7 @@ template.innerHTML = /*html*/`
       background: var(--media-menu-item-checked-background, rgb(255 255 255 / .2));
     }
 
+    ${/* In row layout hide the checked indicator completely. */ ''}
     media-chrome-menu-item::part(checked-indicator) {
       display: var(--media-menu-item-checked-indicator-display, none);
     }
@@ -201,7 +198,7 @@ template.innerHTML = /*html*/`
     <slot name="header" hidden>
       <button part="back button" aria-label="Back to previous menu">
         <slot name="back-icon">
-          <svg aria-hidden="true" viewBox="0 0 20 24">
+          <svg aria-hidden="true" viewBox="0 0 20 24" part="back indicator">
             <path d="m11.88 17.585.742-.669-4.2-4.665 4.2-4.666-.743-.669-4.803 5.335 4.803 5.334Z"/>
           </svg>
         </slot>
@@ -235,11 +232,23 @@ export const Attributes = {
  * @cssproperty --media-text-color - `color` of text.
  *
  * @cssproperty --media-control-background - `background` of control.
+ * @cssproperty --media-menu-display - `display` of menu.
  * @cssproperty --media-menu-layout - Set to `row` for a horizontal menu design.
  * @cssproperty --media-menu-flex-direction - `flex-direction` of menu.
  * @cssproperty --media-menu-gap - `gap` between menu items.
  * @cssproperty --media-menu-background - `background` of menu.
  * @cssproperty --media-menu-border-radius - `border-radius` of menu.
+ * @cssproperty --media-menu-border - `border` of menu.
+ * @cssproperty --media-menu-transition-in - `transition` of menu when showing.
+ * @cssproperty --media-menu-transition-out - `transition` of menu when hiding.
+ * @cssproperty --media-menu-visibility - `visibility` of menu when showing.
+ * @cssproperty --media-menu-hidden-visibility - `visibility` of menu when hiding.
+ * @cssproperty --media-menu-max-height - `max-height` of menu.
+ * @cssproperty --media-menu-hidden-max-height - `max-height` of menu when hiding.
+ * @cssproperty --media-menu-opacity - `opacity` of menu when showing.
+ * @cssproperty --media-menu-hidden-opacity - `opacity` of menu when hiding.
+ * @cssproperty --media-menu-transform-in - `transform` of menu when showing.
+ * @cssproperty --media-menu-transform-out - `transform` of menu when hiding.
  *
  * @cssproperty --media-font - `font` shorthand property.
  * @cssproperty --media-font-weight - `font-weight` property.
@@ -248,9 +257,7 @@ export const Attributes = {
  * @cssproperty --media-text-content-height - `line-height` of text.
  *
  * @cssproperty --media-icon-color - `fill` color of icon.
- * @cssproperty --media-menu-item-indicator-fill - `fill` color of indicator icon.
- * @cssproperty --media-menu-item-indicator-height - `height` of menu-item indicator.
- * @cssproperty --media-menu-item-indicator-vertical-align - `vertical-align` of menu-item indicator.
+ * @cssproperty --media-menu-icon-height - `height` of icon.
  * @cssproperty --media-menu-item-checked-indicator-display - `display` of check indicator.
  */
 class MediaChromeMenu extends globalThis.HTMLElement {
@@ -584,12 +591,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     // Prevent running this in a parent menu if the event target is a sub menu.
     event.stopPropagation();
 
-    /** @type {HTMLSlotElement} */
-    const headerSlot = this.shadowRoot.querySelector('slot[name="header"]');
-    const backButton = headerSlot.assignedElements({ flatten: true })
-      ?.find((el) => el.part.contains('back'));
-
-    if (event.composedPath().includes(backButton)) {
+    if (event.composedPath().includes(this.#backButtonElement)) {
+      this.#previouslyFocused?.focus();
       this.hidden = true;
       return;
     }
@@ -600,6 +603,13 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     this.#setTabItem(item);
     this.handleSelect(event);
+  }
+
+  get #backButtonElement() {
+    /** @type {HTMLSlotElement} */
+    const headerSlot = this.shadowRoot.querySelector('slot[name="header"]');
+    return headerSlot.assignedElements({ flatten: true })
+      ?.find((el) => el.part.contains('back') && el.part.contains('button'));
   }
 
   handleSelect(event) {

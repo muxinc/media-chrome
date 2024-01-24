@@ -7,6 +7,10 @@ template.innerHTML = MediaChromeMenuItem.template.innerHTML + /*html*/`
     slot:not([name="submenu"]) {
       opacity: var(--media-settings-menu-item-opacity, var(--media-menu-item-opacity));
     }
+
+    :host([aria-expanded="true"]:hover) {
+      background: transparent;
+    }
   </style>
 `;
 

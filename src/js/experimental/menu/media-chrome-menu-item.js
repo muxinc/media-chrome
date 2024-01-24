@@ -22,7 +22,7 @@ template.innerHTML = /*html*/`
       white-space: nowrap;
       white-space-collapse: collapse;
       text-wrap: nowrap;
-      padding: .4em 1em;
+      padding: .4em .8em;
     }
 
     :host(:focus-visible) {
@@ -77,24 +77,19 @@ template.innerHTML = /*html*/`
       display: var(--media-menu-item-checked-indicator-display, inline-block);
     }
 
+    ${/* For all slotted icons in prefix and suffix. */ ''}
     svg, img, ::slotted(svg), ::slotted(img) {
-      display: block;
-      width: var(--media-menu-item-icon-width);
       height: var(--media-menu-item-icon-height, var(--media-control-height, 24px));
-      transform: var(--media-menu-item-icon-transform);
-      transition: var(--media-menu-item-icon-transition);
       fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
+      display: block;
     }
 
+    ${/* Only for indicator icons like checked-indicator or captions-indicator. */ ''}
     [part~="indicator"],
     ::slotted([part~="indicator"]) {
       fill: var(--media-menu-item-indicator-fill,
         var(--media-icon-color, var(--media-primary-color, rgb(238 238 238))));
       height: var(--media-menu-item-indicator-height, 1.25em);
-    }
-
-    [part~="checked-indicator"],
-    slot[name="checked-indicator"]::slotted(*) {
       margin-right: .5ch;
     }
 
@@ -132,6 +127,7 @@ export const Attributes = {
  * @attr {(''|'radio'|'checkbox')} type - This attribute indicates the kind of command, and can be one of three values.
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  *
+ * @cssproperty --media-menu-item-opacity - `opacity` of menu-item content.
  * @cssproperty --media-menu-item-transition - `transition` of menu-item.
  * @cssproperty --media-menu-item-checked-background - `background` of checked menu-item.
  * @cssproperty --media-menu-item-outline - `outline` menu-item.
@@ -139,7 +135,13 @@ export const Attributes = {
  * @cssproperty --media-menu-item-hover-background - `background` of hovered menu-item.
  * @cssproperty --media-menu-item-hover-outline - `outline` of hovered menu-item.
  * @cssproperty --media-menu-item-hover-outline-offset - `outline-offset` of hovered menu-item.
- * @cssproperty --media-menu-item-focus-shadow - `box-shadow` of the :focus-visible state
+ * @cssproperty --media-menu-item-focus-shadow - `box-shadow` of the :focus-visible state.
+ *
+ * @cssproperty --media-icon-color - `fill` color of icon.
+ * @cssproperty --media-menu-icon-height - `height` of icon.
+ *
+ * @cssproperty --media-menu-item-indicator-fill - `fill` color of indicator icon.
+ * @cssproperty --media-menu-item-indicator-height - `height` of menu-item indicator.
  */
 class MediaChromeMenuItem extends globalThis.HTMLElement {
   static template = template;
