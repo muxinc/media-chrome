@@ -108,8 +108,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   }
 
   #render() {
-    const container = this.shadowRoot.querySelector('#container');
-    container.textContent = '';
+    this.defaultSlot.textContent = '';
 
     for (const rate of this.rates) {
       const item = createMenuItem({
@@ -119,7 +118,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
         checked: this.mediaPlaybackRate == rate,
       });
       item.prepend(createIndicator(this, 'checked-indicator'));
-      container.append(item);
+      this.defaultSlot.append(item);
     }
   }
 

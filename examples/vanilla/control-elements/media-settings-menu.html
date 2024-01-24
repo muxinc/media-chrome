@@ -36,20 +36,31 @@
     <media-controller id="mc" defaultsubtitles>
       <mux-video
         slot="media"
-        src="https://stream.mux.com/fss00bwClhYMynhxeE2Hv757J02VI68KY5.m3u8"
-        poster="https://image.mux.com/fss00bwClhYMynhxeE2Hv757J02VI68KY5/thumbnail.webp"
+        src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
+        poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
+        stream-type="on-demand"
         preload="metadata"
-        muted
+        playsinline
         crossorigin
       ></mux-video>
       <media-settings-menu hidden>
         <media-settings-menu-item>
-          Quality
-          <media-rendition-menu slot="submenu" hidden></media-rendition-menu>
+          Speed
+          <media-playback-rate-menu slot="submenu" hidden>
+            <div slot="title">Speed</div>
+          </media-playback-rate-menu>
         </media-settings-menu-item>
         <media-settings-menu-item>
-          Speed
-          <media-playback-rate-menu slot="submenu" hidden></media-playback-rate-menu>
+          Quality
+          <media-rendition-menu slot="submenu" hidden>
+            <div slot="title">Quality</div>
+          </media-rendition-menu>
+        </media-settings-menu-item>
+        <media-settings-menu-item>
+          Captions
+          <media-captions-menu slot="submenu" hidden>
+            <div slot="title">Captions</div>
+          </media-captions-menu>
         </media-settings-menu-item>
       </media-settings-menu>
       <media-control-bar>
@@ -59,54 +70,6 @@
         <media-time-display></media-time-display>
         <media-settings-menu-button></media-settings-menu-button>
         <media-pip-button></media-pip-button>
-        <media-fullscreen-button></media-fullscreen-button>
-      </media-control-bar>
-    </media-controller>
-
-    <h2>&lt;menu&gt; children</h2>
-
-    <media-controller id="mc" defaultsubtitles>
-      <mux-video
-        slot="media"
-        src="https://stream.mux.com/fss00bwClhYMynhxeE2Hv757J02VI68KY5.m3u8"
-        poster="https://image.mux.com/fss00bwClhYMynhxeE2Hv757J02VI68KY5/thumbnail.webp"
-        preload="metadata"
-        muted
-        crossorigin
-      ></mux-video>
-      <media-settings-menu id="settings" hidden style="--media-settings-menu-flex-direction: row">
-        <media-settings-menu-item>
-          <media-rendition-menu slot="submenu">
-            <div slot="header">
-              Quality
-            </div>
-          </media-rendition-menu>
-        </media-settings-menu-item>
-        <media-settings-menu-item>
-          <media-playback-rate-menu slot="submenu">
-            <div slot="header">
-              <style>
-                kbd {
-                  color: #000;
-                  background-color: #fff;
-                  padding-inline: .3em;
-                  line-height: 1;
-                  border-radius: 3px;
-                }
-              </style>
-              Playback Speed <kbd>s</kbd>
-            </div>
-          </media-playback-rate-menu>
-        </media-settings-menu-item>
-      </media-settings-menu>
-      <media-control-bar>
-        <media-play-button></media-play-button>
-        <media-mute-button></media-mute-button>
-        <media-time-range></media-time-range>
-        <media-time-display></media-time-display>
-        <media-rendition-selectmenu></media-rendition-selectmenu>
-        <!-- Link menu button and menu with invoketarget<->id -->
-        <media-settings-menu-button invoketarget="settings"></media-settings-menu-button>
         <media-fullscreen-button></media-fullscreen-button>
       </media-control-bar>
     </media-controller>

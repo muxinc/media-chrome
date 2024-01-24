@@ -1,18 +1,26 @@
 import { globalThis } from '../../utils/server-safe-globals.js';
-import { getMediaController } from '../../utils/element-utils.js';
-import { InvokeEvent } from '../../utils/events.js';
 import { MediaChromeMenu } from './media-chrome-menu.js';
+import { getMediaController } from '../../utils/element-utils.js';
 
 /** @typedef {import('./media-chrome-menu-item.js').MediaChromeMenuItem} MediaChromeMenuItem */
 
 const template = document.createElement('template');
+// prettier-ignore
 template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <style>
-    #container {
-      flex-direction: var(--media-settings-menu-flex-direction, column);
-      align-items: var(--media-settings-menu-align-items, flex-start);
-      padding-block: 0;
+    :host {
+      display: var(--media-settings-menu-display, inline-grid);
       overflow: hidden;
+      border-radius: 2px 2px 0 0;
+    }
+
+    slot:not([name]) {
+      justify-content: var(--media-settings-menu-justify-content, flex-end);
+      overflow: visible;
+    }
+
+    #container.has-expanded {
+      --media-settings-menu-item-opacity: 0;
     }
   </style>
 `;
@@ -23,46 +31,6 @@ template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
  */
 class MediaSettingsMenu extends MediaChromeMenu {
   static template = template;
-
-  constructor() {
-    super();
-    this.addEventListener('toggle', this);
-  }
-
-  handleEvent(event) {
-    super.handleEvent(event);
-
-    switch (event.type) {
-      case 'toggle':
-        this.#handleToggle(event);
-        break;
-    }
-  }
-
-  #handleToggle(event) {
-    // Only handle events of submenus.
-    if (event.target === this) return;
-
-    /** @type {MediaChromeMenuItem[]} */
-    const invokers = Array.from(
-      this.querySelectorAll('[role="menuitem"][aria-haspopup]')
-    );
-
-    // Close all other open submenus.
-    for (const item of invokers) {
-      if (item.invokeTargetElement == event.target) continue;
-
-      if (
-        event.newState == 'open' &&
-        item.getAttribute('aria-expanded') == 'true' &&
-        !item.invokeTargetElement.hidden
-      ) {
-        item.invokeTargetElement.dispatchEvent(
-          new InvokeEvent({ relatedTarget: item })
-        );
-      }
-    }
-  }
 
   /**
    * Returns the anchor element when it is a floating menu.

@@ -4,41 +4,20 @@ import { MediaChromeMenuItem } from './media-chrome-menu-item.js';
 const template = document.createElement('template');
 template.innerHTML = MediaChromeMenuItem.template.innerHTML + /*html*/`
   <style>
-    :host {
-      padding: 0;
-      max-height: 100%;
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    slot:not([name]):not(.empty) {
-      display: block;
-      padding: .3em .7em;
-    }
-
-    :host(:hover) slot:not([name]):not(.empty) {
-      cursor: pointer;
-      background: var(--media-menu-item-hover-background, rgb(82 82 122 / .8));
-      outline: var(--media-menu-item-hover-outline);
-      outline-offset: var(--media-menu-item-hover-outline-offset,  var(--media-menu-item-outline-offset, -1px));
-    }
-
-    ::slotted(*) {
-      background: none;
-    }
-
-    :host(:hover) {
-      background: none;
+    slot:not([name="submenu"]) {
+      opacity: var(--media-settings-menu-item-opacity, var(--media-menu-item-opacity));
     }
   </style>
 `;
 
-/**
- */
+template.content.querySelector('slot[name="suffix"]').innerHTML = /*html*/`
+  <svg aria-hidden="true" viewBox="0 0 20 24">
+    <path d="m8.12 17.585-.742-.669 4.2-4.665-4.2-4.666.743-.669 4.803 5.335-4.803 5.334Z"/>
+  </svg>
+`;
+
 class MediaSettingsMenuItem extends MediaChromeMenuItem {
   static template = template;
-
-
 }
 
 if (!globalThis.customElements.get('media-settings-menu-item')) {

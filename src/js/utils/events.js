@@ -1,3 +1,8 @@
+/**
+ * Dispatch an InvokeEvent on the target element to perform an action.
+ * The default action is auto, which is determined by the target element.
+ * In our case it's only used for toggling a menu.
+ */
 export class InvokeEvent extends Event {
   /** @type {string} */
   action;

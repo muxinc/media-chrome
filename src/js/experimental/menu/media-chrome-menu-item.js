@@ -1,22 +1,28 @@
 import { globalThis, document } from '../../utils/server-safe-globals.js';
 import { InvokeEvent } from '../../utils/events.js';
+import { getDocumentOrShadowRoot, getOrInsertCSSRule } from '../../utils/element-utils.js';
+
+/** @typedef {import('./media-chrome-menu.js').MediaChromeMenu} MediaChromeMenu */
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/`
   <style>
     :host {
-      transition: var(--media-menu-item-transition);
+      transition: var(--media-menu-item-transition,
+        background .15s linear,
+        opacity .2s ease-in-out
+      );
       outline: var(--media-menu-item-outline, 0);
       outline-offset: var(--media-menu-item-outline-offset, -1px);
       cursor: pointer;
       display: flex;
       align-items: center;
-      width: 100%;
-      line-height: revert;
+      align-self: stretch;
+      justify-self: stretch;
       white-space: nowrap;
       white-space-collapse: collapse;
       text-wrap: nowrap;
-      padding: .3em .5em;
+      padding: .4em 1em;
     }
 
     :host(:focus-visible) {
@@ -27,7 +33,7 @@ template.innerHTML = /*html*/`
 
     :host(:hover) {
       cursor: pointer;
-      background: var(--media-menu-item-hover-background, rgb(82 82 122 / .8));
+      background: var(--media-menu-item-hover-background, rgb(92 92 102 / .5));
       outline: var(--media-menu-item-hover-outline);
       outline-offset: var(--media-menu-item-hover-outline-offset,  var(--media-menu-item-outline-offset, -1px));
     }
@@ -40,8 +46,75 @@ template.innerHTML = /*html*/`
       pointer-events: none;
       color: rgba(255, 255, 255, .3);
     }
+
+    slot:not([name]) {
+      width: 100%;
+    }
+
+    slot:not([name="submenu"]) {
+      display: inline-flex;
+      align-items: center;
+      transition: inherit;
+      opacity: var(--media-menu-item-opacity, 1);
+    }
+
+    slot[name="description"]:not(.empty) {
+      justify-content: end;
+      text-align: right;
+      min-width: 45px;
+      margin-inline: 1em .2em;
+      font-size: .8em;
+      position: relative;
+      top: .04em;
+      font-weight: 400;
+    }
+
+    slot[name="checked-indicator"] {
+      display: none;
+    }
+
+    :host(:is([role="menuitemradio"],[role="menuitemcheckbox"])) slot[name="checked-indicator"] {
+      display: var(--media-menu-item-checked-indicator-display, inline-block);
+    }
+
+    svg, img, ::slotted(svg), ::slotted(img) {
+      display: block;
+      width: var(--media-menu-item-icon-width);
+      height: var(--media-menu-item-icon-height, var(--media-control-height, 24px));
+      transform: var(--media-menu-item-icon-transform);
+      transition: var(--media-menu-item-icon-transition);
+      fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
+    }
+
+    [part~="indicator"],
+    ::slotted([part~="indicator"]) {
+      fill: var(--media-menu-item-indicator-fill,
+        var(--media-icon-color, var(--media-primary-color, rgb(238 238 238))));
+      height: var(--media-menu-item-indicator-height, 1.25em);
+    }
+
+    [part~="checked-indicator"],
+    slot[name="checked-indicator"]::slotted(*) {
+      margin-right: .5ch;
+    }
+
+    [part~="checked-indicator"] {
+      visibility: hidden;
+    }
+
+    :host([aria-checked="true"]) [part~="checked-indicator"] {
+      visibility: visible;
+    }
   </style>
+  <slot name="checked-indicator">
+    <svg aria-hidden="true" viewBox="0 1 24 24" part="checked-indicator indicator">
+      <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
+    </svg>
+  </slot>
+  <slot name="prefix"></slot>
   <slot></slot>
+  <slot name="description"></slot>
+  <slot name="suffix"></slot>
   <slot name="submenu"></slot>
 `;
 
@@ -138,7 +211,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     if (attrName === Attributes.CHECKED && isCheckable(this) && !this.#dirty) {
       this.setAttribute('aria-checked', newValue != null ? 'true' : 'false');
     } else if (attrName === Attributes.TYPE && newValue !== oldValue) {
-      this.setAttribute('role', 'menuitem' + newValue);
+      this.role = 'menuitem' + newValue;
     } else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
@@ -153,7 +226,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
       this.enable();
     }
 
-    this.setAttribute('role', 'menuitem' + this.type);
+    this.role = 'menuitem' + this.type;
 
     this.#ownerElement = closestMenuItemsContainer(this, this.parentNode);
     this.#reset();
@@ -166,12 +239,35 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     this.#ownerElement = null;
   }
 
+  get invokeTarget() {
+    return this.getAttribute('invoketarget');
+  }
+
+  set invokeTarget(value) {
+    this.setAttribute('invoketarget', `${value}`);
+  }
+
   /**
-   * Returns the slotted element with the `slot="submenu"` attribute.
-   * @return {HTMLElement | null}
+   * Returns the element with the id specified by the `invoketarget` attribute
+   * or the slotted submenu element.
+   * @return {MediaChromeMenu | null}
    */
   get invokeTargetElement() {
-    return this.querySelector('[slot="submenu"]');
+    if (this.invokeTarget) {
+      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.invokeTarget}`);
+    }
+    return this.submenuElement;
+  }
+
+  /**
+   * Returns the slotted submenu element.
+   */
+  get submenuElement() {
+    /** @type {HTMLSlotElement} */
+    const submenuSlot = this.shadowRoot.querySelector('slot[name="submenu"]');
+    return /** @type {MediaChromeMenu | null} */ (
+      submenuSlot.assignedElements({ flatten: true })[0]
+    );
   }
 
   get type() {
@@ -224,21 +320,57 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
           node.remove();
         }
       }
+    }
 
-      // Add an empty class to the default slot if there are no nodes left.
+    for (const slot of Array.from(this.shadowRoot.querySelectorAll('slot'))) {
+      // Add a empty class to the slots that have no nodes.
       slot.classList.toggle('empty', !slot.assignedNodes({ flatten: true }).length);
-      return;
     }
 
-    if (slot.name === 'submenu' && this.invokeTargetElement) {
-      this.setAttribute('aria-haspopup', 'menu');
-      this.setAttribute('aria-expanded', `${!this.invokeTargetElement.hidden}`);
+    if (slot.name === 'submenu') {
+      if (this.submenuElement) {
+        this.#submenuConnected();
+      } else {
+        this.#submenuDisconnected();
+      }
     }
+  }
+
+  async #submenuConnected() {
+    this.setAttribute('aria-haspopup', 'menu');
+    this.setAttribute('aria-expanded', `${!this.submenuElement.hidden}`);
+
+    this.submenuElement.addEventListener('change', this.#handleMenuItem);
+    this.submenuElement.addEventListener('addmenuitem', this.#handleMenuItem);
+    this.submenuElement.addEventListener('removemenuitem', this.#handleMenuItem);
+  }
+
+  #submenuDisconnected() {
+    this.removeAttribute('aria-haspopup');
+    this.removeAttribute('aria-expanded');
+
+    this.submenuElement.removeEventListener('change', this.#handleMenuItem);
+    this.submenuElement.removeEventListener('addmenuitem', this.#handleMenuItem);
+    this.submenuElement.removeEventListener('removemenuitem', this.#handleMenuItem);
+  }
+
+  /**
+   * If there is a slotted submenu the fallback content of the description slot
+   * is populated with the text of the first checked item.
+   */
+  #handleMenuItem = () => {
+    const descriptionSlot = this.shadowRoot.querySelector('slot[name="description"]');
+    const description = this.submenuElement.checkedItems?.[0]?.text;
+    descriptionSlot.textContent = description ?? '';
   }
 
   handleClick(event) {
     // Checkable menu items are handled in media-chrome-menu.
     if (isCheckable(this)) return;
+
+    // Add the menu item height to use for offsetting the submenu top position.
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty('--_menu-item-height', `${this.offsetHeight}px`);
 
     if (this.invokeTargetElement && event.target === this) {
       this.invokeTargetElement.dispatchEvent(
@@ -286,11 +418,9 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     if (!checkedItem) checkedItem = items[0];
 
     for (const item of items) {
-      item.setAttribute('tabindex', '-1');
       item.setAttribute('aria-checked', 'false');
     }
 
-    checkedItem?.setAttribute('tabindex', '0');
     checkedItem?.setAttribute('aria-checked', 'true');
   }
 }

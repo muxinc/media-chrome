@@ -90,8 +90,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       (a, b) => b.height - a.height
     );
 
-    const container = this.shadowRoot.querySelector('#container');
-    container.textContent = '';
+    this.defaultSlot.textContent = '';
 
     let isAuto = !this.mediaRenditionSelected;
 
@@ -108,8 +107,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
         checked: rendition.selected && !isAuto,
       });
       item.prepend(createIndicator(this, 'checked-indicator'));
-
-      container.append(item);
+      this.defaultSlot.append(item);
     }
 
     const item = createMenuItem({
@@ -119,7 +117,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       checked: isAuto,
     });
     item.prepend(createIndicator(this, 'checked-indicator'));
-    container.append(item);
+    this.defaultSlot.append(item);
   }
 
   #onChange() {

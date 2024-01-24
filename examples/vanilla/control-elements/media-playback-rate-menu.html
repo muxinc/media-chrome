@@ -34,7 +34,7 @@
 
       <h2>Column layout w/ custom icon</h2>
 
-      <media-controller id="mc">
+      <media-controller>
         <video
           id="video"
           slot="media"
@@ -127,9 +127,9 @@
 
     <media-playback-rate-menu mediacontroller="mc">
       <!-- Custom checked indicator icon -->
-      <span slot="checked-indicator" class="check-icon">
+      <span slot="checked-indicator" class="checked-icon">
         <style>
-          .check-icon {
+          .checked-icon {
             box-sizing: border-box;
             display: inline-flex;
             justify-content: center;
@@ -142,7 +142,7 @@
             border-radius: 50%;
           }
 
-          [aria-checked="true"] .check-icon::after {
+          [aria-checked="true"] .checked-icon::after {
             content: '';
             display: block;
             width: 4px;

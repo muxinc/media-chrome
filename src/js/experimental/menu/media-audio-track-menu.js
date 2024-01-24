@@ -92,8 +92,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
 
     const audioTrackList = this.mediaAudioTrackList;
 
-    const container = this.shadowRoot.querySelector('#container');
-    container.textContent = '';
+    this.defaultSlot.textContent = '';
 
     for (const audioTrack of audioTrackList) {
       const text = this.formatMenuItemText(audioTrack.label, audioTrack);
@@ -105,7 +104,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
         checked: audioTrack.enabled,
       });
       item.prepend(createIndicator(this, 'checked-indicator'));
-      container.append(item);
+      this.defaultSlot.append(item);
     }
   }
 
