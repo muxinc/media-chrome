@@ -684,7 +684,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   get keysUsed() {
-    return ['Enter', 'Escape', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
+    return ['Enter', 'Escape', 'Tab', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
   }
 
   #handleKeyDown(event) {
@@ -701,7 +701,11 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     event.preventDefault();
     event.stopPropagation();
 
-    if (key === 'Escape') {
+    if (key === 'Tab') {
+      // Close all menus when tabbing out.
+      this.hidden = true;
+    } else if (key === 'Escape') {
+      // Go back to the previous menu or close the menu.
       this.#previouslyFocused?.focus();
       this.hidden = true;
     } else if (key === 'Enter' || key === ' ') {

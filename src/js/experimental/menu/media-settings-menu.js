@@ -7,6 +7,7 @@ const template = document.createElement('template');
 template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <style>
     :host {
+      ${/* Bottom fix setting menu items for animation when the height expands. */ ''}
       justify-content: var(--media-settings-menu-justify-content, flex-end);
       border-radius: 2px 2px 0 0;
       overflow: hidden;
