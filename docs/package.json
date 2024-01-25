@@ -21,7 +21,7 @@
     "@astrojs/tailwind": "5.1.0",
     "@astrojs/vercel": "^7.1.0",
     "@astropub/md": "^0.4.0",
-    "@codesandbox/sandpack-react": "^2.11.3",
+    "@codesandbox/sandpack-react": "2.10.0",
     "@codesandbox/sandpack-themes": "^2.0.21",
     "@docsearch/css": "^3.5.2",
     "@docsearch/react": "^3.5.2",
@@ -48,6 +48,7 @@
     "rehype-slug": "^6.0.0"
   },
   "resolutions": {
-    "vite": "5.0.10"
+    "vite": "5.0.10",
+    "@codesandbox/sandpack-client": "2.10.0"
   }
 }
