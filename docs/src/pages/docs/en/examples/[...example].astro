@@ -1,0 +1,174 @@
+---
+import { parse, serialize } from "parse5"
+import type { GetStaticPathsOptions, Page } from "astro"
+import ExamplesLayout from "/src/layouts/ExamplesLayout.astro"
+import * as path from "node:path"
+import { getImportedUrls } from "/src/scripts/get-imported-urls.js"
+import * as esbuild from 'esbuild'
+
+export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  return [
+    {
+      params: { example: undefined },
+      props: {
+        title: 'Basic Audio and Video',
+        group: 'Introduction',
+        sourcePath: 'examples/vanilla/basic.html',
+      }
+    },
+    {
+      params: { example: 'advanced' },
+      props: {
+        title: 'Advanced Example',
+        group: 'Introduction',
+        sourcePath: 'examples/vanilla/advanced.html',
+      }
+    },
+    // {
+    //   params: { example: 'casting' },
+    //   props: {
+    //     title: 'Casting Example',
+    //     group: 'Introduction',
+    //     sourcePath: 'examples/vanilla/casting.html',
+    //   }
+    // },
+    {
+      params: { example: 'minimal-theme' },
+      props: {
+        title: 'Minimal Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/minimal-theme.html',
+      }
+    },
+    {
+      params: { example: 'microvideo-theme' },
+      props: {
+        title: 'Microvideo Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/microvideo-theme.html',
+      }
+    },
+    {
+      params: { example: 'youtube-theme' },
+      props: {
+        title: 'Youtube Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/youtube-theme.html',
+      }
+    },
+    {
+      params: { example: 'netflix-theme' },
+      props: {
+        title: 'Netflix Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/netflix-theme.html',
+      }
+    },
+  ]
+}
+
+let leftSidebar =
+  groupBy(getStaticPaths({}).map(({ params, props }) => {
+    return {
+      link: `docs/en/examples${params.example ? `/${params.example}` : ''}`,
+      text: props.title,
+      group: props.group,
+    }
+  }), 'group')
+
+function groupBy(xs, key) {
+  return xs.reduce((rv, x) => {
+    (rv[x[key]] = rv[x[key]] || []).push(x)
+    return rv
+  }, {})
+}
+
+let { example } = Astro.params;
+let { title, description, sourcePath } = Astro.props
+
+title = title ?? "Examples"
+description = description ?? "Editable examples of Media Chrome"
+
+const exampleFilePath = path.resolve(`../${sourcePath}`)
+const exampleFileBase = path.basename(exampleFilePath)
+
+const htmlString = String(await fs.promises.readFile(exampleFilePath))
+const document = parse(htmlString)
+
+const html = document.childNodes.find(node => node.nodeName === 'html')
+const head = html.childNodes.find(node => node.nodeName === 'head')
+const body = html.childNodes.find(node => node.nodeName === 'body')
+const main = body.childNodes.find(node => node.nodeName === 'main')
+
+const scripts = head.childNodes
+  .filter(node => node.nodeName === 'script' && node.attrs.find(attr => attr.name === 'src' && attr.value))
+  .map(node => node.attrs.find(attr => attr.name === 'src' && attr.value).value)
+
+const css = head.childNodes
+  .filter(node => node.nodeName === 'style')
+  .map(node => node.childNodes[0].value)
+  .join('\n')
+
+const validScripts = scripts.filter(src => {
+  return !src.endsWith('/dist/index.js') && /^\.(\.?)\//.test(src)
+})
+
+const externalResources = scripts.filter(src => /^https?:\/\//.test(src))
+
+const files = {};
+try {
+  for (let src of validScripts) {
+    let result = await esbuild.build({
+      entryPoints: [path.join(path.dirname(exampleFilePath), src)],
+      bundle: true,
+      write: false,
+      outdir: 'dist/tmp',
+    })
+
+    for (let out of result.outputFiles) {
+      files[`${path.basename(src)}`] = {
+        code: out.text,
+        hidden: true,
+      }
+    }
+  }
+} catch (err) {
+  console.error(err);
+}
+
+let trimSpaces = 6;
+let content = main;
+
+if (!content) {
+  content = body;
+  trimSpaces = 4;
+}
+
+// Remove div.examples tag
+const examplesDivIndex = content.childNodes.findIndex(node => node.nodeName === 'div' && node.attrs.find(attr => attr.name === 'class' && attr.value === 'examples'));
+if (examplesDivIndex !== -1) {
+  content.childNodes.splice(examplesDivIndex, 1);
+}
+
+const contentHTML = serialize(content)
+  ?.replace(new RegExp(`^ {${trimSpaces}}`, 'gm'), '')
+  ?.trim();
+---
+
+<ExamplesLayout
+  title={title}
+  description={description}
+  rightSidebar={false}
+  leftSidebar={leftSidebar}
+  externalResources={externalResources}
+  files={files}
+  html={contentHTML}
+  css={css}
+>
+  <nav aria-labelledby="grid-left" slot="left-sidebar"></nav>
+
+</ExamplesLayout>
+
+<style>
+
+</style>

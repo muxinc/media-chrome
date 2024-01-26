@@ -55,6 +55,11 @@ export default function ComponentSandpack({
   css,
   hiddenCss = '',
   editorHeight,
+  editorWidthPercentage = 50,
+  showLineNumbers = false,
+  showNavigator = false,
+  showTabs = false,
+  externalResources = [],
   files = {},
   dependencies = {},
   active = Active.HTML,
@@ -114,7 +119,7 @@ export default function ComponentSandpack({
     ...Object.keys(files).reduce((importPaths, fileAbsPath) => {
       // Only automatically import .css or .js files for now
       if (fileAbsPath.endsWith('.css') | fileAbsPath.endsWith('.js')) {
-        importPaths.push(`.${fileAbsPath}`);
+        importPaths.push(`./${fileAbsPath}`);
       }
       return importPaths;
     }, css ? ['./custom-styles.css'] : [])
@@ -126,7 +131,11 @@ export default function ComponentSandpack({
       theme={theme}
       options={{
         editorHeight,
-        editorWidthPercentage: 50,
+        showLineNumbers,
+        showNavigator,
+        showTabs,
+        editorWidthPercentage,
+        externalResources,
       }}
       customSetup={{
         dependencies: {
@@ -160,7 +169,7 @@ export default function ComponentSandpack({
           code: `body {
   margin: 0;
 }
-media-controller,
+media-controller:not([audio]),
 video {
   width: 100%;
   aspect-ratio: 2.4;

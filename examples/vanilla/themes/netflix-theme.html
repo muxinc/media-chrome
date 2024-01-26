@@ -5,11 +5,11 @@
     <title>Media Chrome Netflix Theme Example</title>
     <script type="module" src="../../../dist/index.js"></script>
     <script type="module" src="../../../src/js/themes/netflix.js"></script>
-  </head>
-  <body>
+
     <style>
       body {
-        margin: 0px;
+        margin: 0;
+        padding: 0;
       }
 
       media-theme-netflix {
@@ -17,28 +17,27 @@
         height: 100vh;
       }
     </style>
-
-    <main aria-label="Media Chrome Netflix Theme Example">
-      <media-theme-netflix>
-        <video
-          slot="media"
-          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
-          crossorigin
-          muted
-          playsinline
-        >
-          <track
-            label="thumbnails"
-            default
-            kind="metadata"
-            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
-          />
-        </video>
-        <h3 slot="title">
-          <b>My Title</b>
-          <span>P2:E4 Episode 4</span>
-        </h3>
-      </media-theme-netflix>
-    </main>
+  </head>
+  <body>
+    <media-theme-netflix aria-label="Media Chrome Netflix Theme Example">
+      <video
+        slot="media"
+        src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+        crossorigin
+        muted
+        playsinline
+      >
+        <track
+          label="thumbnails"
+          default
+          kind="metadata"
+          src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+        />
+      </video>
+      <h3 slot="title">
+        <b>My Title</b>
+        <span>P2:E4 Episode 4</span>
+      </h3>
+    </media-theme-netflix>
   </body>
 </html>

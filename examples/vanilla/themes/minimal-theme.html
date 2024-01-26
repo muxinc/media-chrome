@@ -10,23 +10,27 @@
     <script src="https://cdn.jsdelivr.net/npm/@mux/mux-video@0"></script>
     <script type="module" src="../../../dist/index.js"></script>
     <script type="module" src="../../../src/js/themes/minimal.js"></script>
-  </head>
-  <body>
+
     <style>
       html {
         height: 100%;
       }
+
       body {
         padding-bottom: 3rem;
       }
+
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-theme-minimal {
-        display: block; /* expands the container if preload=none */
-        max-width: 800px;
-        line-height: 0;
+        display: block;         /* expands the container if preload=none */
+        max-width: 720px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
+
       label {
         display: block;
       }
+
       .auto-grid {
         --auto-grid-min-size: 20rem;
         display: grid;
@@ -37,9 +41,11 @@
         grid-gap: 1rem;
       }
     </style>
+  </head>
+  <body>
+    <!-- The main tag is used to exclude other body content in https://www.media-chrome.org/docs/en/examples -->
     <main>
       <h1>Media Chrome - Minimal Theme</h1>
-      <br />
 
       <media-theme-minimal id="theme1">
         <video
@@ -63,17 +69,17 @@
           />
         </video>
       </media-theme-minimal>
-
-      <br /><br />
-
-      <media-theme-minimal id="theme2">
-        <mux-video
-          playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
-          metadata-video-title="Big Buck Bunny"
-          stream-type="live"
-          slot="media"
-        ></mux-video>
-      </media-theme-minimal>
     </main>
+
+    <br><br>
+
+    <media-theme-minimal id="theme2">
+      <mux-video
+        playback-id="v69RSHhFelSm4701snP22dYz2jICy4E4FUyk02rW4gxRM"
+        metadata-video-title="Big Buck Bunny"
+        stream-type="live"
+        slot="media"
+      ></mux-video>
+    </media-theme-minimal>
   </body>
 </html>

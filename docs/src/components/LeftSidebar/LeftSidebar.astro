@@ -6,10 +6,10 @@ type Props = {
   currentPage: string;
 };
 
-const { currentPage } = Astro.props as Props;
+let { currentPage, sidebar } = Astro.props as Props;
 const currentPageMatch = currentPage.slice(1).replace(/\/$/, '');
 const langCode = getLanguageFromURL(currentPage);
-const sidebar = SIDEBAR[langCode];
+sidebar ??= SIDEBAR[langCode];
 ---
 
 <nav aria-labelledby="grid-left">
