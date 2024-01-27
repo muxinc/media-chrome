@@ -1,102 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta name="viewport" content="width=device-width">
-  <title>Media Chrome Audio Track Menu</title>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@canary/+esm"></script>
-  <script type="module" src="../../../dist/index.js"></script>
-  <script type="module" src="../../../../dist/experimental/menu/index.js"></script>
-  <style>
-    /** add styles to prevent CLS (Cumulative Layout Shift) */
-    media-controller:not([audio]) {
-      display: block;         /* expands the container if preload=none */
-      max-width: 540px;       /* allows the container to shrink if small */
-      aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
-    }
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <title>Media Chrome Audio Track Menu</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@canary/+esm"></script>
+    <script type="module" src="../../../dist/index.js"></script>
+    <script type="module" src="../../../dist/experimental/menu/index.js"></script>
+    <style>
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 540px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
 
-    video {
-      width: 100%;      /* prevents video to expand beyond its container */
-    }
+      video {
+        width: 100%;      /* prevents video to expand beyond its container */
+      }
 
-    media-audio-track-menu[mediaaudiotrackunavailable],
-    media-audio-track-menu-button[mediaaudiotrackunavailable],
-    media-rendition-menu[mediarenditionunavailable],
-    media-rendition-menu-button[mediarenditionunavailable],
-    media-fullscreen-button[mediafullscreenunavailable],
-    media-pip-button[mediapipunavailable] {
-      display: none;
-    }
+      media-audio-track-menu[mediaaudiotrackunavailable],
+      media-audio-track-menu-button[mediaaudiotrackunavailable],
+      media-rendition-menu[mediarenditionunavailable],
+      media-rendition-menu-button[mediarenditionunavailable],
+      media-fullscreen-button[mediafullscreenunavailable],
+      media-pip-button[mediapipunavailable] {
+        display: none;
+      }
 
-    .examples {
-      margin-top: 20px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Audio Track Menu</h1>
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- The main tag is used to exclude other body content in https://www.media-chrome.org/docs/en/examples -->
+    <main>
+      <h1>Audio Track Menu</h1>
 
-  <media-controller id="mc">
-    <mux-video
-      id="video"
-      slot="media"
-      src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
-      poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
-      stream-type="on-demand"
-      preload="metadata"
-      playsinline
-      crossorigin
-    ></mux-video>
-    <media-audio-track-menu hidden>
-      <div slot="header">Audio</div>
-    </media-audio-track-menu>
-    <media-control-bar>
-      <media-play-button></media-play-button>
-      <media-time-display showduration></media-time-display>
-      <media-time-range></media-time-range>
-      <media-mute-button></media-mute-button>
-      <media-audio-track-menu-button></media-audio-track-menu-button>
-      <media-pip-button></media-pip-button>
-      <media-fullscreen-button></media-fullscreen-button>
-    </media-control-bar>
-  </media-controller>
-  <br>
+      <media-controller id="mc">
+        <mux-video
+          id="video"
+          slot="media"
+          src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
+          poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
+          stream-type="on-demand"
+          preload="metadata"
+          playsinline
+          crossorigin
+        ></mux-video>
+        <media-audio-track-menu hidden>
+          <div slot="header">Audio</div>
+        </media-audio-track-menu>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-time-display showduration></media-time-display>
+          <media-time-range></media-time-range>
+          <media-mute-button></media-mute-button>
+          <media-audio-track-menu-button></media-audio-track-menu-button>
+          <media-pip-button></media-pip-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+    </main>
 
-  <media-audio-track-menu mediacontroller="mc"></media-audio-track-menu>
+    <br>
 
-  <p>
-    Quality: <span id="renditionactive">N/A</span>
-  </p>
+    <media-audio-track-menu mediacontroller="mc"></media-audio-track-menu>
 
-  <p>
-    Audio: <span id="audioactive">N/A</span>
-  </p>
+    <p>
+      Quality: <span id="renditionactive">N/A</span>
+    </p>
 
-  <p>
-    <button id="loadbtn">Load new clip</button>
-  </p>
+    <p>
+      Audio: <span id="audioactive">N/A</span>
+    </p>
 
-  <script type="module">
-    video.addEventListener('emptied', () => {
-      renditionactive.textContent = 'N/A';
-      audioactive.textContent = 'N/A';
-    });
+    <p>
+      <button id="loadbtn">Load new clip</button>
+    </p>
 
-    video.addEventListener('resize', () => {
-      renditionactive.textContent = `${Math.min(video.videoWidth, video.videoHeight)}p`;
-    });
+    <script type="module">
+      video.addEventListener('emptied', () => {
+        renditionactive.textContent = 'N/A';
+        audioactive.textContent = 'N/A';
+      });
 
-    video.audioTracks.addEventListener('change', () => {
-      audioactive.textContent = [...video.audioTracks ?? []].find(a => a.enabled)?.label;
-    });
+      video.addEventListener('resize', () => {
+        renditionactive.textContent = `${Math.min(video.videoWidth, video.videoHeight)}p`;
+      });
 
-    loadbtn.onclick = () => {
-      video.poster = '';
-      video.src = 'https://stream.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM.m3u8';
-    };
-  </script>
+      video.audioTracks.addEventListener('change', () => {
+        audioactive.textContent = [...video.audioTracks ?? []].find(a => a.enabled)?.label;
+      });
 
-  <div class="examples">
-    <a href="../">View more examples</a>
-  </div>
-</body>
+      loadbtn.onclick = () => {
+        video.poster = '';
+        video.src = 'https://stream.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM.m3u8';
+      };
+    </script>
+
+    <div class="examples">
+      <a href="../">View more examples</a>
+    </div>
+  </body>
 </html>

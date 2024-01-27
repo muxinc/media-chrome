@@ -9,6 +9,7 @@ const {
   headings,
   leftSidebar,
   externalResources,
+  dependencies,
   files,
   html,
   css,
@@ -35,12 +36,12 @@ const currentPage = Astro.url.pathname;
     showNavigator={false}
     showTabs={true}
     previewAspectRatio={frontmatter?.previewAspectRatio ?? frontmatter?.aspectRatio}
-    dependencies={frontmatter?.dependencies}
+    dependencies={frontmatter?.dependencies ?? dependencies}
     hiddenCss={`
       body {
         font-family: system-ui, sans-serif;
         font-size: .9rem;
-        padding: 0 1rem;
+        padding: .5rem 1.2rem 3rem;
       }
       ${frontmatter?.css ?? css ?? ``}
     `}

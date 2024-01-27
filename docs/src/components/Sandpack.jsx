@@ -151,6 +151,13 @@ export default function ComponentSandpack({
         },
       }}
       files={{
+        "sandbox.config.json": {
+          hidden: true,
+          // Required for the changes to take effect on the live page.
+          code: `{
+  "hardReloadOnChange": true
+}`
+        },
         "/node_modules/@internals/media-chrome/package.json": {
           hidden: true,
           code: JSON.stringify({
