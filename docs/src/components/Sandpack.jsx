@@ -117,8 +117,9 @@ export default function ComponentSandpack({
     './styles.css',
     ...Object.keys(dependencies),
     ...Object.keys(files).reduce((importPaths, fileAbsPath) => {
+      const disableImport = files[fileAbsPath].disableImport === true;
       // Only automatically import .css or .js files for now
-      if (fileAbsPath.endsWith('.css') | fileAbsPath.endsWith('.js')) {
+      if (!disableImport && (fileAbsPath.endsWith('.css') || fileAbsPath.endsWith('.js'))) {
         importPaths.push(`./${fileAbsPath}`);
       }
       return importPaths;
@@ -130,6 +131,10 @@ export default function ComponentSandpack({
       template="vanilla"
       theme={theme}
       options={{
+        // recompileMode: "delayed",
+        // recompileDelay: 500,
+        // autorun: true,
+        // autoReload: true,
         editorHeight,
         showLineNumbers,
         showNavigator,
@@ -162,18 +167,21 @@ export default function ComponentSandpack({
           code: `${html}`
         },
         '/index.js': {
-          code: importPaths.map(path => `import '${path}';`).join(' '),
           hidden: true,
+          code: importPaths.map(path => `import '${path}';`).join('\n'),
         },
         '/styles.css': {
-          code: `body {
+          code: `
+body {
   margin: 0;
 }
+
 media-controller:not([audio]),
 video {
   width: 100%;
   aspect-ratio: 2.4;
 }
+
 ${hiddenCss}`,
           hidden: true,
         },

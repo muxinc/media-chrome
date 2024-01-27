@@ -4,7 +4,6 @@ import type { GetStaticPathsOptions, Page } from "astro"
 import ExamplesLayout from "/src/layouts/ExamplesLayout.astro"
 import * as path from "node:path"
 import { getImportedUrls } from "/src/scripts/get-imported-urls.js"
-import * as esbuild from 'esbuild'
 
 export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   return [
@@ -49,6 +48,14 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
       }
     },
     {
+      params: { example: 'demuxed-2022-theme' },
+      props: {
+        title: 'Demuxed 2022 Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/demuxed-2022-theme.html',
+      }
+    },
+    {
       params: { example: 'youtube-theme' },
       props: {
         title: 'Youtube Theme',
@@ -62,6 +69,14 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
         title: 'Netflix Theme',
         group: 'Themes',
         sourcePath: 'examples/vanilla/themes/netflix-theme.html',
+      }
+    },
+    {
+      params: { example: 'spotify-theme' },
+      props: {
+        title: 'Spotify Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/spotify-theme.html',
       }
     },
   ]
@@ -83,7 +98,7 @@ function groupBy(xs, key) {
   }, {})
 }
 
-let { example } = Astro.params;
+let { example } = Astro.params
 let { title, description, sourcePath } = Astro.props
 
 title = title ?? "Examples"
@@ -115,44 +130,46 @@ const validScripts = scripts.filter(src => {
 
 const externalResources = scripts.filter(src => /^https?:\/\//.test(src))
 
-const files = {};
+const repoRootDir = path.resolve('../')
+const srcJsDir = path.resolve(process.cwd(), '../src/js/')
+
+const files = {}
 try {
   for (let src of validScripts) {
-    let result = await esbuild.build({
-      entryPoints: [path.join(path.dirname(exampleFilePath), src)],
-      bundle: true,
-      write: false,
-      outdir: 'dist/tmp',
-    })
+    const urls = await getImportedUrls(path.join(path.dirname(exampleFilePath), src), srcJsDir)
 
-    for (let out of result.outputFiles) {
-      files[`${path.basename(src)}`] = {
-        code: out.text,
-        hidden: true,
+    for (let [index, url] of Object.entries([...urls])) {
+      const filePath = path.join(srcJsDir, url)
+
+      files[url] = {
+        code: String(await fs.promises.readFile(filePath)),
+        hidden: index > 0,
+        disableImport: index > 0,
       }
     }
   }
 } catch (err) {
-  console.error(err);
+  console.error(err)
 }
 
-let trimSpaces = 6;
-let content = main;
+let trimSpaces = 6
+let content = main
 
 if (!content) {
-  content = body;
-  trimSpaces = 4;
+  content = body
+  trimSpaces = 4
 }
 
 // Remove div.examples tag
-const examplesDivIndex = content.childNodes.findIndex(node => node.nodeName === 'div' && node.attrs.find(attr => attr.name === 'class' && attr.value === 'examples'));
+const examplesDivIndex = content.childNodes.findIndex(node => node.nodeName === 'div' &&
+  node.attrs.find(attr => attr.name === 'class' && attr.value === 'examples'))
 if (examplesDivIndex !== -1) {
-  content.childNodes.splice(examplesDivIndex, 1);
+  content.childNodes.splice(examplesDivIndex, 1)
 }
 
 const contentHTML = serialize(content)
   ?.replace(new RegExp(`^ {${trimSpaces}}`, 'gm'), '')
-  ?.trim();
+  ?.trim()
 ---
 
 <ExamplesLayout
