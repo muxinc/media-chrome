@@ -10,15 +10,23 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
     {
       params: { example: undefined },
       props: {
-        title: 'Basic Audio and Video',
+        title: 'Basic Video Example',
         group: 'Introduction',
-        sourcePath: 'examples/vanilla/basic.html',
+        sourcePath: 'examples/vanilla/basic-video.html',
       }
     },
     {
-      params: { example: 'advanced' },
+      params: { example: 'basic-audio' },
       props: {
-        title: 'Advanced Example',
+        title: 'Basic Audio Example',
+        group: 'Introduction',
+        sourcePath: 'examples/vanilla/basic-audio.html',
+      }
+    },
+    {
+      params: { example: 'advanced-video' },
+      props: {
+        title: 'Advanced Video Example',
         group: 'Introduction',
         sourcePath: 'examples/vanilla/advanced.html',
       }
