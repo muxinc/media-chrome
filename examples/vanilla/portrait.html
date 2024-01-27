@@ -20,10 +20,6 @@
         margin-top: 20px;
       }
 
-      media-loading-indicator {
-        --media-loading-indicator-icon-width: 100px;
-      }
-
       media-airplay-button[mediaairplayunavailable] {
         display: none;
       }
@@ -35,7 +31,6 @@
       media-pip-button[mediapipunavailable] {
         display: none;
       }
-
     </style>
   </head>
   <body>
@@ -61,9 +56,7 @@
           slot="poster"
           src="https://image.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM/thumbnail.jpg"
         ></media-poster-image>
-        <div slot="centered-chrome" no-auto-hide>
-          <media-loading-indicator></media-loading-indicator>
-        </div>
+        <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-mute-button></media-mute-button>
