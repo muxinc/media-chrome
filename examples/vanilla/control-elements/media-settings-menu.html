@@ -43,7 +43,7 @@
         playsinline
         crossorigin
       ></mux-video>
-      <media-settings-menu hidden>
+      <media-settings-menu anchor="auto" hidden>
         <media-settings-menu-item>
           Speed
           <media-playback-rate-menu slot="submenu" hidden>
@@ -85,7 +85,11 @@
         muted
         crossorigin
       ></mux-video>
-      <media-settings-menu id="settings" hidden style="--media-settings-menu-flex-direction: row;">
+      <media-settings-menu
+        id="settings"
+        hidden
+        style="--media-settings-menu-flex-direction: row;"
+      >
         <media-rendition-menu role="menu">
           <div slot="header">
             Quality
