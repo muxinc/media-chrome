@@ -9,11 +9,16 @@ template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
     :host {
       ${/* Bottom fix setting menu items for animation when the height expands. */ ''}
       justify-content: var(--media-settings-menu-justify-content, flex-end);
+      background: var(--media-settings-menu-background,
+        var(--media-menu-background,
+        var(--media-control-background,
+        var(--media-secondary-color, rgb(20 20 30 / .8)))));
       border-radius: 2px 2px 0 0;
       overflow: hidden;
     }
 
     slot:not([name]) {
+      flex-direction: var(--media-settings-menu-flex-direction, column);
       overflow: visible;
     }
 
