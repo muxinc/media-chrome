@@ -7,8 +7,6 @@ const template = document.createElement('template');
 template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <style>
     :host {
-      ${/* Bottom fix setting menu items for animation when the height expands. */ ''}
-      justify-content: var(--media-settings-menu-justify-content, flex-end);
       background: var(--media-settings-menu-background,
         var(--media-menu-background,
         var(--media-control-background,
@@ -17,7 +15,13 @@ template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
       overflow: hidden;
     }
 
+    :host([role="menu"]) {
+      ${/* Bottom fix setting menu items for animation when the height expands. */ ''}
+      justify-content: end;
+    }
+
     slot:not([name]) {
+      justify-content: var(--media-settings-menu-justify-content);
       flex-direction: var(--media-settings-menu-flex-direction, column);
       overflow: visible;
     }
@@ -39,8 +43,7 @@ class MediaSettingsMenu extends MediaChromeMenu {
    * @return {HTMLElement}
    */
   get anchorElement() {
-    if (this.anchor != undefined) return super.anchorElement;
-    if (this.anchor !== 'auto') return null;
+    if (this.anchor !== 'auto') return super.anchorElement;
     return getMediaController(this).querySelector('media-settings-menu-button');
   }
 }

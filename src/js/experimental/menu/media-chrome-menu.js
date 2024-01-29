@@ -361,6 +361,13 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       this.enable();
     }
 
+    if (!this.role) {
+      // set menu role on the media-chrome-menu element itself
+      // this is to make sure that SRs announce items as being part
+      // of a menu when focused
+      this.role = 'menu';
+    }
+
     this.#mediaController = getAttributeMediaController(this);
     this.#mediaController?.associateElement?.(this);
 
@@ -494,14 +501,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     if (!slot.name) {
       this.#handleMenuItems();
-
-      // Set the role to menu if there are valid menu items and no role is set.
-      if (!this.role && this.items.length) {
-        // set menu role on the media-chrome-menu element itself
-        // this is to make sure that SRs announce items as being part
-        // of a menu when focused
-        this.role = 'menu';
-      }
     }
   }
 
