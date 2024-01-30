@@ -387,11 +387,19 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === Attributes.HIDDEN && newValue !== oldValue) {
-        if (this.hidden) {
-          this.#handleClosed();
-        } else {
-          this.#handleOpen();
-        }
+      if (this.hidden) {
+        this.#handleClosed();
+      } else {
+        this.#handleOpen();
+      }
+
+      this.dispatchEvent(
+        new ToggleEvent({
+          oldState: this.hidden ? 'open' : 'closed',
+          newState: this.hidden ? 'closed' : 'open',
+          bubbles: true,
+        })
+      );
     } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -415,23 +423,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   formatMenuItemText(text, data) {
     // @ts-ignore
     return this.constructor.formatMenuItemText(text, data);
-  }
-
-  get hidden() {
-    return super.hidden;
-  }
-
-  set hidden(value) {
-    const hidden = !!value;
-    super.hidden = hidden;
-
-    this.dispatchEvent(
-      new ToggleEvent({
-        oldState: hidden ? 'open' : 'closed',
-        newState: hidden ? 'closed' : 'open',
-        bubbles: true,
-      })
-    );
   }
 
   get anchor() {
