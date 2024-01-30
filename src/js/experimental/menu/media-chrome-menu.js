@@ -291,6 +291,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #clearKeysTimeout = null;
   #previousItems = new Set();
   #mutationObserver;
+  #isPopover = false;
 
   constructor() {
     super();
@@ -387,6 +388,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === Attributes.HIDDEN && newValue !== oldValue) {
+      if (!this.#isPopover) this.#isPopover = true;
+
       if (this.hidden) {
         this.#handleClosed();
       } else {
@@ -581,8 +584,15 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     if (this.items.length) {
       this.#setTabItem(this.items[0]);
-      this.items[0]?.focus();
+      this.items[0].focus();
+      return;
     }
+
+    // If there are no menu items, focus on the first focusable child.
+
+    /** @type {HTMLElement} */
+    const focusable = this.querySelector('[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]');
+    focusable?.focus();
   }
 
   #handleClick(event) {
@@ -672,7 +682,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
   #handleFocusOut(event) {
     if (!containsComposedNode(this, event.relatedTarget)) {
-      this.#previouslyFocused?.focus();
+      if (this.#isPopover) {
+        this.#previouslyFocused?.focus();
+      }
 
       // If the menu was opened by a click, close it when selecting an item.
       if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && !this.hidden) {
@@ -700,12 +712,30 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     event.stopPropagation();
 
     if (key === 'Tab') {
-      // Close all menus when tabbing out.
-      this.hidden = true;
+      if (this.#isPopover) {
+        // Close all menus when tabbing out.
+        this.hidden = true;
+        return;
+      }
+
+      // Move focus to the previous focusable element.
+      if (event.shiftKey) {
+        /** @type {HTMLElement} */ (this.previousElementSibling)?.focus?.();
+      } else {
+        // Move focus to the next focusable element.
+        /** @type {HTMLElement} */ (this.nextElementSibling)?.focus?.();
+      }
+
+      // Go back to the previous focused element.
+      this.blur();
+
     } else if (key === 'Escape') {
       // Go back to the previous menu or close the menu.
       this.#previouslyFocused?.focus();
-      this.hidden = true;
+
+      if (this.#isPopover) {
+        this.hidden = true;
+      }
     } else if (key === 'Enter' || key === ' ') {
       this.handleSelect(event);
     } else {
