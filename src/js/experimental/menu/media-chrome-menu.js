@@ -373,12 +373,12 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.#mediaController?.associateElement?.(this);
 
     if (!this.hidden) {
-      observeResize(getBoundsElement(this), this.#updateMenuPosition);
+      observeResize(getBoundsElement(this), this.#handleResize);
     }
   }
 
   disconnectedCallback() {
-    unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
+    unobserveResize(getBoundsElement(this), this.#handleResize);
     this.disable();
 
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
@@ -543,15 +543,20 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     // Focus when the transition ends.
     this.addEventListener('transitionend', () => this.focus(), { once: true });
 
-    observeResize(getBoundsElement(this), this.#updateMenuPosition);
+    observeResize(getBoundsElement(this), this.#handleResize);
   }
 
   #handleClosed() {
     this.#invokerElement?.setAttribute('aria-expanded', 'false');
-    unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
+    unobserveResize(getBoundsElement(this), this.#handleResize);
   }
 
-  #updateMenuPosition = () => {
+  #handleResize = () => {
+    this.#updateMenuPosition();
+    this.#resizeSubmenu();
+  }
+
+  #updateMenuPosition() {
     // Can't position if the menu doesn't have an anchor and isn't a child of a media controller.
     if (this.hasAttribute('mediacontroller') && !this.anchor) return;
 
@@ -577,7 +582,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     style.setProperty('right', `${Math.max(0, right)}px`);
     style.setProperty('bottom', `${bottom}px`);
     style.setProperty('--_menu-max-height', `${maxHeight}px`);
-  };
+  }
 
   focus() {
     this.#previouslyFocused = getActiveElement();
@@ -637,17 +642,15 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     // Only handle events of submenus.
     if (event.target === this) return;
 
-    /** @type {MediaChromeMenuItem[]} */
-    const menuItemsWithSubmenu = Array.from(
-      this.querySelectorAll('[role="menuitem"][aria-haspopup]')
-    );
-
     /** @type {MediaChromeMenuItem} */
     const expandedMenuItem = this.querySelector(
       '[role="menuitem"][aria-haspopup][aria-expanded="true"]'
     );
-    /** @type {MediaChromeMenu} */
-    const expandedSubmenu = expandedMenuItem?.querySelector('[role="menu"]');
+
+    /** @type {MediaChromeMenuItem[]} */
+    const menuItemsWithSubmenu = Array.from(
+      this.querySelectorAll('[role="menuitem"][aria-haspopup]')
+    );
 
     this.container.classList.toggle('has-expanded', !!expandedMenuItem);
 
@@ -666,6 +669,24 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       }
     }
 
+    this.#resizeSubmenu(true);
+  }
+
+  #resizeSubmenu(animate) {
+    /** @type {MediaChromeMenuItem} */
+    const expandedMenuItem = this.querySelector(
+      '[role="menuitem"][aria-haspopup][aria-expanded="true"]'
+    );
+
+    /** @type {MediaChromeMenu} */
+    const expandedSubmenu = expandedMenuItem?.querySelector('[role="menu"]');
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+
+    if (!animate) {
+      style.setProperty('--media-menu-transition-in', 'none');
+    }
+
     if (expandedSubmenu) {
       const height = expandedSubmenu.offsetHeight;
       const width = Math.max(expandedSubmenu.offsetWidth, expandedMenuItem.offsetWidth);
@@ -678,6 +699,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       this.style.setProperty('min-width', `0`);
       this.style.setProperty('min-height', `0`);
     }
+
+    style.removeProperty('--media-menu-transition-in');
   }
 
   #handleFocusOut(event) {
