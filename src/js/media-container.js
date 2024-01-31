@@ -170,7 +170,8 @@ template.innerHTML = /*html*/`
       display: none;
     }
 
-    ::slotted([role=menu]) {
+    ::slotted([role="menu"]),
+    ::slotted([role="dialog"]) {
       align-self: end;
     }
   </style>

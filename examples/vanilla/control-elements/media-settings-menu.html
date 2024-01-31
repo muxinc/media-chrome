@@ -85,13 +85,7 @@
         muted
         crossorigin
       ></mux-video>
-      <media-settings-menu
-        id="settings"
-        role="dialog"
-        anchor="auto"
-        hidden
-        style="--media-settings-menu-flex-direction: row;"
-      >
+      <media-chrome-dialog id="settings" hidden>
         <media-captions-menu>
           <div slot="header">Captions</div>
         </media-captions-menu>
@@ -101,7 +95,7 @@
         <media-playback-rate-menu>
           <div slot="header">Playback Speed</div>
         </media-playback-rate-menu>
-      </media-settings-menu>
+      </media-chrome-dialog>
       <media-control-bar>
         <media-play-button></media-play-button>
         <media-mute-button></media-mute-button>
