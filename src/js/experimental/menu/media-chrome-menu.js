@@ -499,6 +499,10 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
   }
 
+  /**
+   * Fires an event when a menu item is added or removed.
+   * This is needed to update the description slot of an ancestor menu item.
+   */
   #handleMenuItems = () => {
     const previousItems = this.#previousItems;
     const currentItems = new Set(this.items);
@@ -518,6 +522,10 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.#previousItems = currentItems;
   }
 
+  /**
+   * Sets the layout style for the menu.
+   * It can be a row or column layout. e.g. playback-rate-menu
+   */
   #updateLayoutStyle() {
     const layoutRowStyle = this.shadowRoot.querySelector('#layout-row');
     const menuLayout = getComputedStyle(this)
@@ -554,9 +562,12 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
   #handleResize = () => {
     this.#updateMenuPosition();
-    this.#resizeSubmenu();
+    this.#resizeMenu(false);
   }
 
+  /**
+   * Updates the popover menu position based on the anchor element.
+   */
   #updateMenuPosition() {
     // Can't position if the menu doesn't have an anchor and isn't a child of a media controller.
     if (this.hasAttribute('mediacontroller') && !this.anchor) return;
@@ -639,6 +650,13 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
   }
 
+  /**
+   * Handle the toggle event of submenus.
+   * Closes all other open submenus when opening a submenu.
+   * Resizes this menu to fit the submenu.
+   *
+   * @param  {ToggleEvent} event
+   */
   #handleToggle(event) {
     // Only handle events of submenus.
     if (event.target === this) return;
@@ -671,7 +689,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       item.setAttribute('aria-expanded', `${!item.submenuElement.hidden}`);
     }
 
-    this.#resizeSubmenu(true);
+    this.#resizeMenu(true);
   }
 
   /**
@@ -684,7 +702,11 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.container.classList.toggle('has-expanded', !!expandedMenuItem);
   }
 
-  #resizeSubmenu(animate) {
+  /**
+   * Resize this menu to fit the submenu.
+   * @param  {boolean} animate
+   */
+  #resizeMenu(animate) {
     /** @type {MediaChromeMenuItem} */
     const expandedMenuItem = this.querySelector(
       '[role="menuitem"][aria-haspopup][aria-expanded="true"]'
