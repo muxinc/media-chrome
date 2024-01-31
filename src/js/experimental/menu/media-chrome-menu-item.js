@@ -370,10 +370,6 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     // Checkable menu items are handled in media-chrome-menu.
     if (isCheckable(this)) return;
 
-    // Add the menu item height to use for offsetting the submenu top position.
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('--_menu-item-height', `${this.offsetHeight}px`);
-
     if (this.invokeTargetElement && event.target === this) {
       this.invokeTargetElement.dispatchEvent(
         new InvokeEvent({ relatedTarget: this })

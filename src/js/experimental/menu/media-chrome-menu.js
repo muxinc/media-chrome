@@ -396,6 +396,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
         this.#handleOpen();
       }
 
+      // Fire a toggle event from a submenu which can be used in a parent menu.
       this.dispatchEvent(
         new ToggleEvent({
           oldState: this.hidden ? 'open' : 'closed',
@@ -642,17 +643,12 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     // Only handle events of submenus.
     if (event.target === this) return;
 
-    /** @type {MediaChromeMenuItem} */
-    const expandedMenuItem = this.querySelector(
-      '[role="menuitem"][aria-haspopup][aria-expanded="true"]'
-    );
+    this.#checkSubmenuHasExpanded();
 
     /** @type {MediaChromeMenuItem[]} */
     const menuItemsWithSubmenu = Array.from(
       this.querySelectorAll('[role="menuitem"][aria-haspopup]')
     );
-
-    this.container.classList.toggle('has-expanded', !!expandedMenuItem);
 
     // Close all other open submenus.
     for (const item of menuItemsWithSubmenu) {
@@ -669,7 +665,23 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       }
     }
 
+    // Keep the aria-expanded attribute in sync with the hidden state of the submenu.
+    // This is needed when loading media-chrome with an unhidden submenu.
+    for (const item of menuItemsWithSubmenu) {
+      item.setAttribute('aria-expanded', `${!item.submenuElement.hidden}`);
+    }
+
     this.#resizeSubmenu(true);
+  }
+
+  /**
+   * Check if any submenu is expanded and update the container class accordingly.
+   * When the CSS :has() selector is supported, this can be done with CSS only.
+   */
+  #checkSubmenuHasExpanded() {
+    const selector = '[role="menuitem"] > [role="menu"]:not([hidden])';
+    const expandedMenuItem = this.querySelector(selector);
+    this.container.classList.toggle('has-expanded', !!expandedMenuItem);
   }
 
   #resizeSubmenu(animate) {
@@ -696,8 +708,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       this.style.setProperty('min-width', `${width}px`);
       this.style.setProperty('min-height', `${height}px`);
     } else {
-      this.style.setProperty('min-width', `0`);
-      this.style.setProperty('min-height', `0`);
+      this.style.removeProperty('min-width');
+      this.style.removeProperty('min-height');
     }
 
     style.removeProperty('--media-menu-transition-in');
