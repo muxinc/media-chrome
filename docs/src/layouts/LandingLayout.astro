@@ -4,15 +4,15 @@ import HeadCommon from '../components/HeadCommon.astro';
 import HeadSEO from '../components/HeadSEO.astro';
 import * as CONFIG from '../config';
 import type { MarkdownHeading } from 'astro';
+import { Analytics } from '@vercel/analytics/react';
 
-const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(/\/$/, '');
+const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(
+  /\/$/,
+  ''
+);
 ---
 
-<html
-  dir={'ltr'}
-  lang={'en-us'}
-  class="initial"
->
+<html dir={'ltr'} lang={'en-us'} class="initial">
   <head>
     <HeadCommon />
     <HeadSEO frontmatter={{}} canonicalUrl={canonicalURL} />
@@ -24,5 +24,6 @@ const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(/\/$/,
   </head>
   <body class="font-mono">
     <slot />
+    <Analytics />
   </body>
 </html>
