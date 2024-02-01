@@ -22,7 +22,7 @@ template.innerHTML = /*html*/`
       white-space: nowrap;
       white-space-collapse: collapse;
       text-wrap: nowrap;
-      padding: .4em .8em;
+      padding: .4em .8em .4em 1em;
     }
 
     :host(:focus-visible) {
@@ -58,15 +58,18 @@ template.innerHTML = /*html*/`
       opacity: var(--media-menu-item-opacity, 1);
     }
 
-    slot[name="description"]:not(.empty) {
+    slot[name="description"] {
       justify-content: end;
       text-align: right;
-      min-width: 45px;
       margin-inline: 1em .2em;
       font-size: .8em;
       position: relative;
       top: .04em;
       font-weight: 400;
+    }
+
+    slot[name="description"]:not(:empty) {
+      min-width: 45px;
     }
 
     slot[name="checked-indicator"] {
@@ -322,11 +325,6 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
           node.remove();
         }
       }
-    }
-
-    for (const slot of Array.from(this.shadowRoot.querySelectorAll('slot'))) {
-      // Add a empty class to the slots that have no nodes.
-      slot.classList.toggle('empty', !slot.assignedNodes({ flatten: true }).length);
     }
 
     if (slot.name === 'submenu') {
