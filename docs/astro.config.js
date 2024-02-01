@@ -38,6 +38,7 @@ const createSROnlyLabel = (text) => {
 
 // https://astro.build/config
 export default defineConfig({
+  output: 'server',
   site: `https://www.media-chrome.org/`,
   redirects: {
     '/showcase/submit':
