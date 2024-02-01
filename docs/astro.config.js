@@ -1,4 +1,5 @@
 import { defineConfig } from 'astro/config';
+import vercel from '@astrojs/vercel/static';
 import preact from '@astrojs/preact';
 import react from '@astrojs/react';
 import { toString } from 'hast-util-to-string';
@@ -38,6 +39,11 @@ const createSROnlyLabel = (text) => {
 // https://astro.build/config
 export default defineConfig({
   site: `https://www.media-chrome.org/`,
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+  }),
   redirects: {
     '/showcase/submit': 'https://github.com/muxinc/media-chrome/discussions/760'
   },
