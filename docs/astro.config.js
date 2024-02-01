@@ -12,7 +12,6 @@ import remarkSmartypants from 'remark-smartypants';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
 import markdownIntegration from '@astropub/md';
-// import vercel from '@astrojs/vercel/serverless';
 import vercel from '@astrojs/vercel/static';
 
 const AnchorLinkIcon = h(
