@@ -5,10 +5,7 @@ import HeadSEO from '../components/HeadSEO.astro';
 import * as CONFIG from '../config';
 import type { MarkdownHeading } from 'astro';
 
-const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(
-  /\/$/,
-  ''
-);
+const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(/\/$/, '');
 ---
 
 <html dir={'ltr'} lang={'en-us'} class="initial">
