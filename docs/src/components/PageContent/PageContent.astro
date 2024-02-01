@@ -16,7 +16,7 @@ const title = frontmatter.title;
 
 <article id="article" class="content">
   <section class="main-section">
-    <h1 class="content-title" id="overview">{title}</h1>
+    {title ? <h1 class="content-title" id="overview">{title}</h1> : ''}
     <nav class="block sm:hidden">
       <TableOfContents client:media="(max-width: 50em)" headings={headings} />
     </nav>

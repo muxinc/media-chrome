@@ -55,6 +55,11 @@ export default function ComponentSandpack({
   css,
   hiddenCss = '',
   editorHeight,
+  editorWidthPercentage = 50,
+  showLineNumbers = false,
+  showNavigator = false,
+  showTabs = false,
+  externalResources = [],
   files = {},
   dependencies = {},
   active = Active.HTML,
@@ -112,9 +117,10 @@ export default function ComponentSandpack({
     './styles.css',
     ...Object.keys(dependencies),
     ...Object.keys(files).reduce((importPaths, fileAbsPath) => {
+      const disableImport = files[fileAbsPath].disableImport === true;
       // Only automatically import .css or .js files for now
-      if (fileAbsPath.endsWith('.css') | fileAbsPath.endsWith('.js')) {
-        importPaths.push(`.${fileAbsPath}`);
+      if (!disableImport && (fileAbsPath.endsWith('.css') || fileAbsPath.endsWith('.js'))) {
+        importPaths.push(`./${fileAbsPath}`);
       }
       return importPaths;
     }, css ? ['./custom-styles.css'] : [])
@@ -125,8 +131,16 @@ export default function ComponentSandpack({
       template="vanilla"
       theme={theme}
       options={{
+        // recompileMode: "delayed",
+        // recompileDelay: 500,
+        // autorun: true,
+        // autoReload: true,
         editorHeight,
-        editorWidthPercentage: 50,
+        showLineNumbers,
+        showNavigator,
+        showTabs,
+        editorWidthPercentage,
+        externalResources,
       }}
       customSetup={{
         dependencies: {
@@ -137,6 +151,13 @@ export default function ComponentSandpack({
         },
       }}
       files={{
+        "sandbox.config.json": {
+          hidden: true,
+          // Required for the changes to take effect on the live page.
+          code: `{
+  "hardReloadOnChange": true
+}`
+        },
         "/node_modules/@internals/media-chrome/package.json": {
           hidden: true,
           code: JSON.stringify({
@@ -153,18 +174,21 @@ export default function ComponentSandpack({
           code: `${html}`
         },
         '/index.js': {
-          code: importPaths.map(path => `import '${path}';`).join(' '),
           hidden: true,
+          code: importPaths.map(path => `import '${path}';`).join('\n'),
         },
         '/styles.css': {
-          code: `body {
+          code: `
+body {
   margin: 0;
 }
-media-controller,
+
+media-controller:not([audio]),
 video {
   width: 100%;
   aspect-ratio: 2.4;
 }
+
 ${hiddenCss}`,
           hidden: true,
         },

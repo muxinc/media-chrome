@@ -8,8 +8,7 @@
     <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
     <script type="module" src="https://cdn.jsdelivr.net/npm/castable-video@0"></script>
     <link rel="stylesheet" href="https://use.typekit.net/dbt1sbf.css">
-  </head>
-  <body>
+
     <style>
       .examples {
         margin-top: 20px;
@@ -27,31 +26,31 @@
         width: 100%;  /* prevents video to expand beyond its container */
       }
     </style>
-    <main>
-      <h1>Media Chrome Demuxed 2022 Theme Example</h1>
+  </head>
+  <body>
+    <h1>Media Chrome Demuxed 2022 Theme</h1>
 
-      <media-theme-demuxed-2022 mediastreamtype="on-demand">
-      <!-- <media-theme-demuxed-2022 mediastreamtype="live"> -->
-        <video
-          is="castable-video"
-          slot="media"
-          src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
-          poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=23"
-          crossorigin
-          playsinline
-        >
-          <track
-            label="thumbnails"
-            default
-            kind="metadata"
-            src="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.vtt"
-          />
-        </video>
-      </media-theme-demuxed-2022>
+    <media-theme-demuxed-2022 mediastreamtype="on-demand">
+    <!-- <media-theme-demuxed-2022 mediastreamtype="live"> -->
+      <video
+        is="castable-video"
+        slot="media"
+        src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+        poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.jpg?time=23"
+        crossorigin
+        playsinline
+      >
+        <track
+          label="thumbnails"
+          default
+          kind="metadata"
+          src="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.vtt"
+        />
+      </video>
+    </media-theme-demuxed-2022>
 
-      <div class="examples">
-        <a href="../">View more examples</a>
-      </div>
-    </main>
+    <div class="examples">
+      <a href="../">View more examples</a>
+    </div>
   </body>
 </html>

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Media Chrome Vertical Video Usage Example</title>
+    <title>Media Chrome Portrait Video Usage Example</title>
     <script type="module" src="../../dist/index.js"></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
@@ -20,10 +20,6 @@
         margin-top: 20px;
       }
 
-      media-loading-indicator {
-        --media-loading-indicator-icon-width: 100px;
-      }
-
       media-airplay-button[mediaairplayunavailable] {
         display: none;
       }
@@ -35,12 +31,12 @@
       media-pip-button[mediapipunavailable] {
         display: none;
       }
-
     </style>
   </head>
   <body>
     <main>
-      <h1>Media Chrome Vertical Video Usage Example</h1>
+      <h1>Media Chrome Portrait Video Usage Example</h1>
+
       <media-controller>
         <video
           slot="media"

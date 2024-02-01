@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Media Chrome Advanced Video Usage Example</title>
+    <title>Media Chrome Basic Video Usage Example</title>
     <script type="module" src="../../dist/index.js"></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
@@ -16,13 +16,6 @@
         width: 100%;      /* prevents video to expand beyond its container */
       }
 
-      media-airplay-button[mediaairplayunavailable],
-      media-fullscreen-button[mediafullscreenunavailable],
-      media-volume-range[mediavolumeunavailable],
-      media-pip-button[mediapipunavailable] {
-        display: none;
-      }
-
       .examples {
         margin-top: 20px;
       }
@@ -30,30 +23,14 @@
   </head>
   <body>
     <main>
-      <h1>Media Chrome - Advanced Video Usage Example</h1>
+      <h1>Media Chrome - Basic Video Usage Example</h1>
 
-      <media-controller defaultsubtitles defaultduration="134">
+      <media-controller>
         <video
+          playsinline
           slot="media"
           src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
-          muted
-          crossorigin
-          playsinline
-          preload="none"
-        >
-          <track
-            label="thumbnails"
-            default
-            kind="metadata"
-            src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"
-          />
-          <track
-            label="English"
-            kind="captions"
-            srclang="en"
-            src="./vtt/en-cc.vtt"
-          />
-        </video>
+        ></video>
         <media-poster-image
           slot="poster"
           src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg"
@@ -62,17 +39,13 @@
         <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-seek-backward-button seekoffset="30"></media-seek-backward-button>
-          <media-seek-forward-button seekoffset="30"></media-seek-forward-button>
           <media-mute-button></media-mute-button>
           <media-volume-range></media-volume-range>
+          <media-time-display></media-time-display>
           <media-time-range></media-time-range>
-          <media-time-display showduration remaining></media-time-display>
-          <media-captions-button></media-captions-button>
+          <media-duration-display></media-duration-display>
           <media-playback-rate-button></media-playback-rate-button>
-          <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>
-          <media-airplay-button></media-airplay-button>
         </media-control-bar>
       </media-controller>
 
