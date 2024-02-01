@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width">
     <title>Media Chrome Advanced Video Usage Example</title>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"></script>
-    <script type="module" src="../../../dist/index.js"></script>
-    <script type="module" src="../../../dist/experimental/menu/index.js"></script>
+    <script type="module" src="../../dist/index.js"></script>
+    <script type="module" src="../../dist/experimental/menu/index.js"></script>
     <style>
       /* Hide custom elements that are not defined yet */
       :not(:defined) {
@@ -24,8 +24,10 @@
         height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
       }
 
-      media-audio-track-selectmenu[mediaaudiotrackunavailable],
-      media-rendition-selectmenu[mediarenditionunavailable],
+      media-audio-track-menu[mediaaudiotrackunavailable],
+      media-audio-track-menu-button[mediaaudiotrackunavailable],
+      media-rendition-menu[mediarenditionunavailable],
+      media-rendition-menu-button[mediarenditionunavailable],
       media-fullscreen-button[mediafullscreenunavailable],
       media-airplay-button[mediaairplayunavailable],
       media-pip-button[mediapipunavailable] {
@@ -57,27 +59,41 @@
             src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/storyboard.vtt" />
           <track default kind="chapters" src="./vtt/elephantsdream/chapters.vtt" />
         </mux-video>
-        <media-playback-rate-menu anchor="auto" hidden>
-          <div slot="header">Speed</div>
-        </media-playback-rate-menu>
-        <media-rendition-menu anchor="auto" hidden>
-          <div slot="header">Quality</div>
-        </media-rendition-menu>
-        <media-audio-track-menu anchor="auto" hidden>
-          <div slot="header">Audio</div>
-        </media-audio-track-menu>
+        <media-settings-menu anchor="auto" hidden>
+          <media-settings-menu-item>
+            Speed
+            <media-playback-rate-menu slot="submenu" hidden>
+              <div slot="title">Speed</div>
+            </media-playback-rate-menu>
+          </media-settings-menu-item>
+          <media-settings-menu-item>
+            Quality
+            <media-rendition-menu slot="submenu" hidden>
+              <div slot="title">Quality</div>
+            </media-rendition-menu>
+          </media-settings-menu-item>
+          <media-settings-menu-item>
+            Captions
+            <media-captions-menu slot="submenu" hidden>
+              <div slot="title">Captions</div>
+            </media-captions-menu>
+          </media-settings-menu-item>
+          <media-settings-menu-item>
+            Audio
+            <media-audio-track-menu slot="submenu" hidden>
+              <div slot="title">Audio</div>
+            </media-audio-track-menu>
+          </media-settings-menu-item>
+        </media-settings-menu>
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-seek-backward-button></media-seek-backward-button>
           <media-seek-forward-button></media-seek-forward-button>
           <media-mute-button></media-mute-button>
-          <media-volume-range></media-volume-range>
           <media-time-display></media-time-display>
           <media-time-range></media-time-range>
           <media-duration-display></media-duration-display>
-          <media-playback-rate-menu-button></media-playback-rate-menu-button>
-          <media-rendition-menu-button></media-rendition-menu-button>
-          <media-audio-track-menu-button></media-audio-track-menu-button>
+          <media-settings-menu-button></media-settings-menu-button>
           <media-pip-button></media-pip-button>
           <media-airplay-button></media-airplay-button>
           <media-fullscreen-button></media-fullscreen-button>
@@ -93,10 +109,6 @@
       Audio: <span id="audioactive">N/A</span>
     </p>
 
-    <p>
-      <button id="loadbtn">Load new clip</button>
-    </p>
-
     <script type="module">
       video.addEventListener('emptied', () => {
         renditionactive.textContent = 'N/A';
@@ -110,11 +122,6 @@
       video.audioTracks.addEventListener('change', () => {
         audioactive.textContent = [...video.audioTracks ?? []].find(a => a.enabled)?.label;
       });
-
-      loadbtn.onclick = () => {
-        video.poster = '';
-        video.src = 'https://stream.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM.m3u8';
-      };
     </script>
 
     <div class="examples">
