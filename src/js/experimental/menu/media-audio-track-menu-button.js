@@ -1,6 +1,7 @@
 import { MediaUIAttributes } from '../../constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { globalThis, document } from '../../utils/server-safe-globals.js';
+import { nouns } from '../../labels/labels.js';
 import {
   getStringAttr,
   setStringAttr,
@@ -34,6 +35,11 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
 
   constructor() {
     super({ slotTemplate });
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.setAttribute('aria-label', nouns.AUDIO_TRACKS());
   }
 
   /**
