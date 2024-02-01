@@ -12,7 +12,8 @@ import remarkSmartypants from 'remark-smartypants';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
 import markdownIntegration from '@astropub/md';
-import vercel from '@astrojs/vercel/serverless';
+// import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel/static';
 
 const AnchorLinkIcon = h(
   'svg',
@@ -38,7 +39,7 @@ const createSROnlyLabel = (text) => {
 
 // https://astro.build/config
 export default defineConfig({
-  output: 'server',
+  output: 'static',
   site: `https://www.media-chrome.org/`,
   redirects: {
     '/showcase/submit':
