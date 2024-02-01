@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@algolia/client-search": "^4.20.0",
-    "@astrojs/mdx": "2.1.0",
+    "@astrojs/mdx": "2.1.1",
     "@astrojs/preact": "3.1.0",
     "@astrojs/react": "3.0.9",
     "@astrojs/tailwind": "5.1.0",
@@ -28,7 +28,7 @@
     "@types/react": "^18.2.34",
     "acorn": "^8.11.3",
     "acorn-walk": "^8.3.2",
-    "astro": "4.2.4",
+    "astro": "4.3.0",
     "clsx": "^2.0.0",
     "hastscript": "^8.0.0",
     "html-escaper": "^3.0.3",
@@ -44,7 +44,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@types/node": "^20.8.10",
+    "@types/node": "^20.11.15",
     "@types/react-dom": "^18.2.14",
     "prettier": "^3.0.3",
     "rehype-autolink-headings": "^7.0.0",

@@ -197,10 +197,10 @@
   resolved "https://registry.yarnpkg.com/@astrojs/internal-helpers/-/internal-helpers-0.2.1.tgz#4e2e6aabaa9819f17119aa10f413c4d6122c94cf"
   integrity sha512-06DD2ZnItMwUnH81LBLco3tWjcZ1lGU9rLCCBaeUCGYe9cI0wKyY2W3kDyoW1I6GmcWgt1fu+D1CTvz+FIKf8A==
 
-"@astrojs/markdown-remark@4.2.0":
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/@astrojs/markdown-remark/-/markdown-remark-4.2.0.tgz#82b13d32899547900fcfb1618d9cf29d13c88fc6"
-  integrity sha512-qQB+LoxmIqzkhLXaQAzfzlBxZU1jeQYailsifurz89WeY0Q8ywIj8uQQSyqxb7rPPg3ZfdNdxsN9lF5UaCRn0w==
+"@astrojs/markdown-remark@4.2.1":
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/@astrojs/markdown-remark/-/markdown-remark-4.2.1.tgz#2fba4aba6563914675cca759b635144b6c53e704"
+  integrity sha512-2RQBIwrq+2qPYtp99bH+eL5hfbK0BoxXla85lHsRpIX/IsGqFrPX6pXI2cbWPihBwGbKCdxS6uZNX2QerZWwpQ==
   dependencies:
     "@astrojs/prism" "^3.0.0"
     github-slugger "^2.0.0"
@@ -217,12 +217,12 @@
     unist-util-visit "^5.0.0"
     vfile "^6.0.1"
 
-"@astrojs/mdx@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-2.1.0.tgz#18b9591bdeb62b33dee87ab486155f2a9f44ed6b"
-  integrity sha512-QIH2BLYWz2/QVChE4W7Z8a2SOhDmMDvL89rOoZkZ8CnSneu03+VvUse1K8ObrC877SPSct9cNWe55K05vgQ+VQ==
+"@astrojs/mdx@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@astrojs/mdx/-/mdx-2.1.1.tgz#0c9c9f46a19901b6ca436527e95093af5f90abc9"
+  integrity sha512-AgGFdE7HOGmoFooGvMSatkA9FiSKwyVW7ImHot/bXJ6uAbFfu6iG2ht18Cf1pT22Hda/6iSCGWusFvBv0/EnKQ==
   dependencies:
-    "@astrojs/markdown-remark" "4.2.0"
+    "@astrojs/markdown-remark" "4.2.1"
     "@mdx-js/mdx" "^3.0.0"
     acorn "^8.11.2"
     es-module-lexer "^1.4.1"
@@ -1330,10 +1330,10 @@
   dependencies:
     "@types/unist" "^2"
 
-"@types/node@^20.8.10":
-  version "20.11.6"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.6.tgz#6adf4241460e28be53836529c033a41985f85b6e"
-  integrity sha512-+EOokTnksGVgip2PbYbr3xnR7kZigh4LbybAfBAw5BpnQ+FqBYUsvCEjYd70IXKlbohQ64mzEYmMtlWUY8q//Q==
+"@types/node@^20.11.15":
+  version "20.11.15"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-20.11.15.tgz#b853a86cfedbc768360c552b4653302b4e7417bf"
+  integrity sha512-gscmuADZfvNULx1eyirVbr3kVOVZtpQtzKMCZpeSZcN6MfbkRXAR4s9/gsQ4CzxLHw6EStDtKLNtSDL3vbq05A==
   dependencies:
     undici-types "~5.26.4"
 
@@ -1568,14 +1568,14 @@ astring@^1.8.0:
   resolved "https://registry.yarnpkg.com/astring/-/astring-1.8.6.tgz#2c9c157cf1739d67561c56ba896e6948f6b93731"
   integrity sha512-ISvCdHdlTDlH5IpxQJIex7BWBywFWgjJSVdwst+/iQCoEYnyOaQ95+X1JGshuBjGp6nxKUy1jMgE3zPqN7fQdg==
 
-astro@4.2.4:
-  version "4.2.4"
-  resolved "https://registry.yarnpkg.com/astro/-/astro-4.2.4.tgz#f8878fd91f888425d6d58f8bd86e71b619b04ff1"
-  integrity sha512-z1f52lXkHf71M5HSLKrd5G1PH5/Zfq4kMp0iUT7Na5VHcPDma/NYFPFPewDxqV6UPmyxupj3xuooFaN3j8zaow==
+astro@4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/astro/-/astro-4.3.0.tgz#5d13c00aaaaf16e6832a53cd4c924454df24e4b8"
+  integrity sha512-DSn7q7KJ9lmA7B3faz6uaIIRTzJduKNYRAsgXDn+wH1Jso33PFOU3ZcI4knlMAqhFW3MX8WorB8Hg6kR+waQXg==
   dependencies:
     "@astrojs/compiler" "^2.5.0"
     "@astrojs/internal-helpers" "0.2.1"
-    "@astrojs/markdown-remark" "4.2.0"
+    "@astrojs/markdown-remark" "4.2.1"
     "@astrojs/telemetry" "3.0.4"
     "@babel/core" "^7.23.3"
     "@babel/generator" "^7.23.3"
@@ -1593,6 +1593,7 @@ astro@4.2.4:
     clsx "^2.0.0"
     common-ancestor-path "^1.0.1"
     cookie "^0.6.0"
+    cssesc "^3.0.0"
     debug "^4.3.4"
     deterministic-object-hash "^2.0.1"
     devalue "^4.3.2"
