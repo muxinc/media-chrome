@@ -11,7 +11,8 @@ import remarkGfm from 'remark-gfm';
 import remarkSmartypants from 'remark-smartypants';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
-import markdownIntegration from '@astropub/md'
+import markdownIntegration from '@astropub/md';
+import vercel from '@astrojs/vercel/serverless';
 
 const AnchorLinkIcon = h(
   'svg',
@@ -39,7 +40,8 @@ const createSROnlyLabel = (text) => {
 export default defineConfig({
   site: `https://www.media-chrome.org/`,
   redirects: {
-    '/showcase/submit': 'https://github.com/muxinc/media-chrome/discussions/760'
+    '/showcase/submit':
+      'https://github.com/muxinc/media-chrome/discussions/760',
   },
   integrations: [
     // Enable Preact to support Preact JSX components.
@@ -48,7 +50,7 @@ export default defineConfig({
         './src/components/Header/SidebarToggle.tsx',
         './src/components/Header/ThemeToggleButton.tsx',
         './src/components/RightSidebar/TableOfContents.tsx',
-      ]
+      ],
     }),
     // Enable React for the Algolia search component.
     react({
@@ -57,7 +59,7 @@ export default defineConfig({
         './src/components/Header/SidebarToggle.tsx',
         './src/components/Header/ThemeToggleButton.tsx',
         './src/components/RightSidebar/TableOfContents.tsx',
-      ]
+      ],
     }),
     tailwind({
       // Example: Disable injecting a basic `base.css` import on every page.
@@ -105,4 +107,9 @@ export default defineConfig({
       ],
     ],
   },
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+  }),
 });

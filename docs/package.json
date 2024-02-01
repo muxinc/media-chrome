@@ -25,7 +25,6 @@
     "@docsearch/css": "^3.5.2",
     "@docsearch/react": "^3.5.2",
     "@types/react": "^18.2.34",
-    "@vercel/analytics": "^1.1.2",
     "astro": "3.4.3",
     "clsx": "^2.0.0",
     "hastscript": "^8.0.0",
