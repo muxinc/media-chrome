@@ -1,4 +1,3 @@
-import './media-chrome-menu-item.js';
 import { globalThis } from '../../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
 import { getMediaController, getStringAttr, setStringAttr } from '../../utils/element-utils.js';
@@ -58,7 +57,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
    * @return {HTMLElement}
    */
   get anchorElement() {
-    if (this.anchor != undefined) return super.anchorElement;
+    if (this.anchor !== 'auto') return super.anchorElement;
     return getMediaController(this).querySelector('media-rendition-menu-button');
   }
 
@@ -91,8 +90,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       (a, b) => b.height - a.height
     );
 
-    const container = this.shadowRoot.querySelector('#container');
-    container.textContent = '';
+    this.defaultSlot.textContent = '';
 
     let isAuto = !this.mediaRenditionSelected;
 
@@ -109,8 +107,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
         checked: rendition.selected && !isAuto,
       });
       item.prepend(createIndicator(this, 'checked-indicator'));
-
-      container.append(item);
+      this.defaultSlot.append(item);
     }
 
     const item = createMenuItem({
@@ -120,7 +117,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       checked: isAuto,
     });
     item.prepend(createIndicator(this, 'checked-indicator'));
-    container.append(item);
+    this.defaultSlot.append(item);
   }
 
   #onChange() {

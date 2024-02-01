@@ -1,4 +1,3 @@
-import './media-chrome-menu-item.js';
 import { globalThis } from '../../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
 import { AttributeTokenList } from '../../utils/attribute-token-list.js';
@@ -72,7 +71,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
    * @return {HTMLElement}
    */
   get anchorElement() {
-    if (this.anchor != undefined) return super.anchorElement;
+    if (this.anchor !== 'auto') return super.anchorElement;
     return getMediaController(this).querySelector('media-playback-rate-menu-button');
   }
 
@@ -109,8 +108,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   }
 
   #render() {
-    const container = this.shadowRoot.querySelector('#container');
-    container.textContent = '';
+    this.defaultSlot.textContent = '';
 
     for (const rate of this.rates) {
       const item = createMenuItem({
@@ -120,7 +118,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
         checked: this.mediaPlaybackRate == rate,
       });
       item.prepend(createIndicator(this, 'checked-indicator'));
-      container.append(item);
+      this.defaultSlot.append(item);
     }
   }
 

@@ -1,4 +1,3 @@
-import './media-chrome-menu-item.js';
 import { globalThis } from '../../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
 import { parseAudioTrackList } from '../../utils/utils.js';
@@ -62,7 +61,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
    * @return {HTMLElement}
    */
   get anchorElement() {
-    if (this.anchor != undefined) return super.anchorElement;
+    if (this.anchor !== 'auto') return super.anchorElement;
     return getMediaController(this).querySelector('media-audio-track-menu-button');
   }
 
@@ -93,8 +92,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
 
     const audioTrackList = this.mediaAudioTrackList;
 
-    const container = this.shadowRoot.querySelector('#container');
-    container.textContent = '';
+    this.defaultSlot.textContent = '';
 
     for (const audioTrack of audioTrackList) {
       const text = this.formatMenuItemText(audioTrack.label, audioTrack);
@@ -106,7 +104,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
         checked: audioTrack.enabled,
       });
       item.prepend(createIndicator(this, 'checked-indicator'));
-      container.append(item);
+      this.defaultSlot.append(item);
     }
   }
 
