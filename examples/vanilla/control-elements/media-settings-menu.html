@@ -43,6 +43,7 @@
         playsinline
         crossorigin
       ></mux-video>
+      <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
       <media-settings-menu anchor="auto" hidden>
         <media-settings-menu-item>
           Speed
@@ -74,6 +75,8 @@
       </media-control-bar>
     </media-controller>
 
+    <h1>MediaChromeDialog</h1>
+
     <h2>menu children</h2>
 
     <media-controller defaultsubtitles>
@@ -85,7 +88,12 @@
         muted
         crossorigin
       ></mux-video>
-      <media-chrome-dialog id="settings" hidden>
+      <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+      <media-chrome-dialog
+        id="settings"
+        style="position: absolute; top: 5%;"
+        hidden
+      >
         <media-captions-menu>
           <div slot="header">Captions</div>
         </media-captions-menu>

@@ -102,7 +102,7 @@ template.innerHTML = /*html*/`
        * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
        */ ''
     }
-    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator)) {
+    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([hidden])) {
       pointer-events: auto;
     }
 
@@ -170,9 +170,12 @@ template.innerHTML = /*html*/`
       display: none;
     }
 
-    ::slotted([role="menu"]),
-    ::slotted([role="dialog"]) {
+    ::slotted([role="menu"]) {
       align-self: end;
+    }
+
+    ::slotted([role="dialog"]) {
+      align-self: center;
     }
   </style>
 
