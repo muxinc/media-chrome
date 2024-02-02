@@ -1,5 +1,9 @@
 import { document, globalThis } from '../utils/server-safe-globals.js';
-import { AvailabilityStates, StreamTypes } from '../constants.js';
+import {
+  AvailabilityStates,
+  StreamTypes,
+  TextTrackKinds,
+} from '../constants.js';
 import { containsComposedNode } from '../utils/element-utils.js';
 import { fullscreenApi } from '../utils/fullscreen-api.js';
 import {
@@ -536,72 +540,26 @@ export const stateMediator = {
     textTracksEvents: ['addtrack', 'removetrack'],
   },
   mediaSubtitlesShowing: {
-    get: function (stateOwners) {
+    get: function (stateOwners, event) {
+      /** @TODO Attemt to re-implement this fix as a stateOwnersUpdateHandlers callback (CJP) */
+      const { options } = stateOwners;
+      if (
+        options.defaultSubtitles &&
+        ['addtrack', 'removetrack'].includes(event?.type) &&
+        [TextTrackKinds.CAPTIONS, TextTrackKinds.SUBTITLES].includes(
+          /** @TODO Handle this in better Event types cleanup (CJP) */
+          // @ts-ignore
+          event?.track?.kind
+        )
+      ) {
+        toggleSubtitleTracks(stateOwners, true);
+      }
       return getShowingSubtitleTracks(stateOwners).map(
         ({ kind, label, language }) => ({ kind, label, language })
       );
     },
     mediaEvents: ['loadstart'],
     textTracksEvents: ['addtrack', 'removetrack', 'change'],
-    stateOwnersUpdateHandlers: [
-      // This update handler is responsible for handling "defaultSubtitles" logic
-      (handler, stateOwners) => {
-        const { media } = stateOwners;
-        if (!media?.textTracks) return;
-        const checkAndUpdateShowingTracksCallback = () => {
-          // If we do not currently want `defaultSubtitles`, there's nothing to do here.
-          // NOTE: We do not destructure the `defaultSubtitles` value so that we can rely
-          // on updates to the `stateOwners` object, allowing us to support
-          // changes to `defaultSubtitles` after initialization and its value will still
-          // be respected. This is only a concern with `stateOwnersUpdateHandlers`, since,
-          // unlike e.g. our `get()`/`set()` methods, `stateOwnersUpdateHandlers` are only
-          // invoked during initialization/updates to the state owners in the media store.
-          // See `optionschangerequest` handling logic in the media store's
-          // `dispatch()`, below, for more context. (CJP)
-          if (!stateOwners.options.defaultSubtitles) return false;
-          toggleSubtitleTracks(stateOwners, true);
-          /** @TODO Can improve this for async cases to continue updating until preferred (localStorage) lang is selected (CJP) */
-          const nextMediaSubtitlesShowing =
-            stateMediator.mediaSubtitlesShowing.get(stateOwners);
-          const defaultSelectionPending = !nextMediaSubtitlesShowing.length;
-          if (!defaultSelectionPending) {
-            handler(nextMediaSubtitlesShowing);
-          }
-          // If true, this means we still may need to set a subtitle/captions track to "showing"
-          return defaultSelectionPending;
-        };
-
-        const trackAddedCallback = () => {
-          const defaultSelectionPending = checkAndUpdateShowingTracksCallback();
-          if (defaultSelectionPending) return;
-
-          // If we selected a default subtitle (via side effect), we can now remove this event handler.
-          // If the media's src is changed, we will re-add it when "loadstart" is handled (See below)
-          media.textTracks.removeEventListener('addtrack', trackAddedCallback);
-        };
-
-        const mediaLoadStartCallback = () => {
-          // Either a subtitle/captions track was already showing, or we've already selected one (via side effect),
-          // so nothing left to do for this media src.
-          const defaultSelectionPending = checkAndUpdateShowingTracksCallback();
-          if (!defaultSelectionPending) return;
-
-          // However, we may still get tracks added asynchronously (e.g. for HAS media such as HLS/DASH),
-          // so monitor for a subtitle/captions track being added.
-          // NOTE: Since there may be tracks other than subtitless/captions added, we cannot rely on `{ once: true }` option. (CJP)
-          media.textTracks.addEventListener('addtrack', trackAddedCallback);
-        };
-
-        media.addEventListener('loadstart', mediaLoadStartCallback);
-
-        // Since the media src may have already been loaded, we should also check/update immediately.
-        checkAndUpdateShowingTracksCallback();
-        return () => {
-          media.removeEventListener('loadstart', mediaLoadStartCallback);
-          media.textTracks.removeEventListener('addtrack', trackAddedCallback);
-        };
-      },
-    ],
   },
   // Modeling state tied to root node
   mediaIsPip: {

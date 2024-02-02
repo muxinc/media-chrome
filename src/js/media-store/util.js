@@ -26,25 +26,24 @@ export const toggleSubtitleTracks = (stateOwners, force) => {
   // or "off" (aka disabled, even if all tracks are currently disabled).
   // See, e.g.: https://developer.mozilla.org/en-US/docs/Web/API/Element/toggleAttribute#force (CJP)
 
+  // NOTE: Like Element::toggleAttribute(), this event uses the detail for an optional "force"
+  // value. When present, this means "toggle to" "on" (aka showing, even if something's already showing)
+  // or "off" (aka disabled, even if all tracks are currently disabled).
+  // See, e.g.: https://developer.mozilla.org/en-US/docs/Web/API/Element/toggleAttribute#force (CJP)
   const tracks = getSubtitleTracks(stateOwners);
   const showingSubitleTracks = getShowingSubtitleTracks(stateOwners);
   const subtitlesShowing = !!showingSubitleTracks.length;
   // If there are no tracks, this request doesn't matter, so we're done.
-  // If we already have showing subtitles and we want to force toggle "on", there's nothing left to do.
-  // If there are no showing subtitles and we want to force toggle "off", we're already done.
-  if (
-    !tracks.length ||
-    (subtitlesShowing && force) ||
-    (!subtitlesShowing && force === false)
-  )
-    return;
+  if (!tracks.length) return;
 
-  if (subtitlesShowing) {
+  // NOTE: not early bailing on forced cases so we may pick up async cases of toggling on, particularly for HAS-style
+  // (e.g. HLS) media where we may not get our preferred subtitles lang until later (CJP)
+  if (force === false || (subtitlesShowing && force !== true)) {
     updateTracksModeTo(TextTrackModes.DISABLED, tracks, showingSubitleTracks);
-  } else {
-    const { options } = stateOwners;
+  } else if (force === true || (!subtitlesShowing && force !== false)) {
     let subTrack = tracks[0];
-    if (!options.noSubtitlesLangPref) {
+    const { options } = stateOwners;
+    if (!options?.noSubtitlesLangPref) {
       const subtitlesPref = globalThis.localStorage.getItem(
         'media-chrome-pref-subtitles-lang'
       );
@@ -75,6 +74,7 @@ export const toggleSubtitleTracks = (stateOwners, force) => {
       }
     }
     const { language, label, kind } = subTrack;
+    updateTracksModeTo(TextTrackModes.DISABLED, tracks, showingSubitleTracks);
     updateTracksModeTo(TextTrackModes.SHOWING, tracks, [
       { language, label, kind },
     ]);
