@@ -74,6 +74,7 @@ template.innerHTML = /*html*/`
         visibility 0s,
         opacity .2s ease-out,
         transform .15s ease-out,
+        left .2s ease-in-out,
         min-width .2s ease-in-out,
         min-height .2s ease-in-out
       ) !important;
@@ -174,6 +175,9 @@ template.innerHTML = /*html*/`
 
     media-chrome-menu-item > span {
       margin-right: .5ch;
+      max-width: var(--media-menu-item-max-width);
+      text-overflow: ellipsis;
+      overflow: hidden;
     }
   </style>
   <style id="layout-row" media="width:0">
@@ -266,6 +270,8 @@ export const Attributes = {
  * @cssproperty --media-icon-color - `fill` color of icon.
  * @cssproperty --media-menu-icon-height - `height` of icon.
  * @cssproperty --media-menu-item-checked-indicator-display - `display` of check indicator.
+ * @cssproperty --media-menu-item-checked-background - `background` of checked menu item.
+ * @cssproperty --media-menu-item-max-width - `max-width` of menu item text.
  */
 class MediaChromeMenu extends globalThis.HTMLElement {
   static template = template;
@@ -373,12 +379,15 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.#mediaController?.associateElement?.(this);
 
     if (!this.hidden) {
-      observeResize(getBoundsElement(this), this.#handleResize);
+      observeResize(getBoundsElement(this), this.#handleBoundsResize);
+      observeResize(this, this.#handleMenuResize);
     }
   }
 
   disconnectedCallback() {
-    unobserveResize(getBoundsElement(this), this.#handleResize);
+    unobserveResize(getBoundsElement(this), this.#handleBoundsResize);
+    unobserveResize(this, this.#handleMenuResize);
+
     this.disable();
 
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
@@ -547,28 +556,37 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.#invokerElement?.setAttribute('aria-expanded', 'true');
 
     // Wait one animation frame so the element dimensions are updated.
-    requestAnimationFrame(() => this.#updateMenuPosition());
+    requestAnimationFrame(() => this.#positionMenu(false));
 
     // Focus when the transition ends.
     this.addEventListener('transitionend', () => this.focus(), { once: true });
 
-    observeResize(getBoundsElement(this), this.#handleResize);
+    observeResize(getBoundsElement(this), this.#handleBoundsResize);
+    observeResize(this, this.#handleMenuResize);
   }
 
   #handleClosed() {
     this.#invokerElement?.setAttribute('aria-expanded', 'false');
-    unobserveResize(getBoundsElement(this), this.#handleResize);
+
+    unobserveResize(getBoundsElement(this), this.#handleBoundsResize);
+    unobserveResize(this, this.#handleMenuResize);
   }
 
-  #handleResize = () => {
-    this.#updateMenuPosition();
+  #handleBoundsResize = () => {
+    this.#positionMenu(false);
     this.#resizeMenu(false);
+  }
+
+  #handleMenuResize = () => {
+    this.#positionMenu(false);
   }
 
   /**
    * Updates the popover menu position based on the anchor element.
+   * @param  {boolean} animate
+   * @param  {number} [menuWidth]
    */
-  #updateMenuPosition() {
+  #positionMenu(animate, menuWidth) {
     // Can't position if the menu doesn't have an anchor and isn't a child of a media controller.
     if (this.hasAttribute('mediacontroller') && !this.anchor) return;
 
@@ -581,19 +599,67 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       placement: 'top-start',
     });
 
+    menuWidth ??= this.offsetWidth;
+
     const bounds = getBoundsElement(this);
     const boundsRect = bounds.getBoundingClientRect();
     const anchorRect = this.anchorElement.getBoundingClientRect();
 
-    const right = boundsRect.width - x - this.offsetWidth;
+    const right = boundsRect.width - x - menuWidth;
     const bottom = boundsRect.height - y - this.offsetHeight;
     const maxHeight = boundsRect.height - anchorRect.height;
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+
+    if (!animate) {
+      style.setProperty('--media-menu-transition-in', 'none');
+    }
+
     style.setProperty('position', 'absolute');
     style.setProperty('right', `${Math.max(0, right)}px`);
     style.setProperty('bottom', `${bottom}px`);
     style.setProperty('--_menu-max-height', `${maxHeight}px`);
+
+    style.removeProperty('--media-menu-transition-in');
+  }
+
+  /**
+   * Resize this menu to fit the submenu.
+   * @param  {boolean} animate
+   */
+  #resizeMenu(animate) {
+    /** @type {MediaChromeMenuItem} */
+    const expandedMenuItem = this.querySelector(
+      '[role="menuitem"][aria-haspopup][aria-expanded="true"]'
+    );
+
+    /** @type {MediaChromeMenu} */
+    const expandedSubmenu = expandedMenuItem?.querySelector('[role="menu"]');
+
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+
+    if (!animate) {
+      style.setProperty('--media-menu-transition-in', 'none');
+    }
+
+    if (expandedSubmenu) {
+      const height = expandedSubmenu.offsetHeight;
+      const width = Math.max(expandedSubmenu.offsetWidth, expandedMenuItem.offsetWidth);
+
+      // Safari required directly setting the style property instead of
+      // updating the style node for the min-width or min-height to work.
+      this.style.setProperty('min-width', `${width}px`);
+      this.style.setProperty('min-height', `${height}px`);
+
+      this.#positionMenu(animate, width);
+    } else {
+      this.style.removeProperty('min-width');
+      this.style.removeProperty('min-height');
+
+      this.#positionMenu(animate);
+    }
+
+    style.removeProperty('--media-menu-transition-in');
   }
 
   focus() {
@@ -700,41 +766,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     const selector = '[role="menuitem"] > [role="menu"]:not([hidden])';
     const expandedMenuItem = this.querySelector(selector);
     this.container.classList.toggle('has-expanded', !!expandedMenuItem);
-  }
-
-  /**
-   * Resize this menu to fit the submenu.
-   * @param  {boolean} animate
-   */
-  #resizeMenu(animate) {
-    /** @type {MediaChromeMenuItem} */
-    const expandedMenuItem = this.querySelector(
-      '[role="menuitem"][aria-haspopup][aria-expanded="true"]'
-    );
-
-    /** @type {MediaChromeMenu} */
-    const expandedSubmenu = expandedMenuItem?.querySelector('[role="menu"]');
-
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-
-    if (!animate) {
-      style.setProperty('--media-menu-transition-in', 'none');
-    }
-
-    if (expandedSubmenu) {
-      const height = expandedSubmenu.offsetHeight;
-      const width = Math.max(expandedSubmenu.offsetWidth, expandedMenuItem.offsetWidth);
-
-      // Safari required directly setting the style property instead of
-      // updating the style node for the min-width or min-height to work.
-      this.style.setProperty('min-width', `${width}px`);
-      this.style.setProperty('min-height', `${height}px`);
-    } else {
-      this.style.removeProperty('min-width');
-      this.style.removeProperty('min-height');
-    }
-
-    style.removeProperty('--media-menu-transition-in');
   }
 
   #handleFocusOut(event) {
