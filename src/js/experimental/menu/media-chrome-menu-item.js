@@ -22,7 +22,7 @@ template.innerHTML = /*html*/`
       white-space: nowrap;
       white-space-collapse: collapse;
       text-wrap: nowrap;
-      padding: .4em .8em;
+      padding: .4em .8em .4em 1em;
     }
 
     :host(:focus-visible) {
@@ -53,20 +53,25 @@ template.innerHTML = /*html*/`
 
     slot:not([name="submenu"]) {
       display: inline-flex;
-      align-items: center;
       transition: inherit;
       opacity: var(--media-menu-item-opacity, 1);
     }
 
-    slot[name="description"]:not(.empty) {
+    slot[name="description"] {
       justify-content: end;
-      text-align: right;
-      min-width: 45px;
+    }
+
+    slot[name="description"] > span {
+      display: inline-block;
       margin-inline: 1em .2em;
+      max-width: var(--media-menu-item-description-max-width, 100px);
+      text-overflow: ellipsis;
+      overflow: hidden;
       font-size: .8em;
+      font-weight: 400;
+      text-align: right;
       position: relative;
       top: .04em;
-      font-weight: 400;
     }
 
     slot[name="checked-indicator"] {
@@ -136,6 +141,9 @@ export const Attributes = {
  * @cssproperty --media-menu-item-hover-outline - `outline` of hovered menu-item.
  * @cssproperty --media-menu-item-hover-outline-offset - `outline-offset` of hovered menu-item.
  * @cssproperty --media-menu-item-focus-shadow - `box-shadow` of the :focus-visible state.
+ * @cssproperty --media-menu-item-icon-height - `height` of icon.
+ * @cssproperty --media-menu-item-description-max-width - `max-width` of description.
+ * @cssproperty --media-menu-item-checked-indicator-display - `display` of checked indicator.
  *
  * @cssproperty --media-icon-color - `fill` color of icon.
  * @cssproperty --media-menu-icon-height - `height` of icon.
@@ -324,11 +332,6 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
       }
     }
 
-    for (const slot of Array.from(this.shadowRoot.querySelectorAll('slot'))) {
-      // Add a empty class to the slots that have no nodes.
-      slot.classList.toggle('empty', !slot.assignedNodes({ flatten: true }).length);
-    }
-
     if (slot.name === 'submenu') {
       if (this.submenuElement) {
         this.#submenuConnected();
@@ -363,7 +366,9 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   #handleMenuItem = () => {
     const descriptionSlot = this.shadowRoot.querySelector('slot[name="description"]');
     const description = this.submenuElement.checkedItems?.[0]?.text;
-    descriptionSlot.textContent = description ?? '';
+    const span = document.createElement('span');
+    span.textContent = description ?? '';
+    descriptionSlot.replaceChildren(span);
   }
 
   handleClick(event) {
