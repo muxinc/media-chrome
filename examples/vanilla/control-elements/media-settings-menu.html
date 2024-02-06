@@ -21,6 +21,15 @@
 
       mux-video {
         width: 100%;      /* prevents video to expand beyond its container */
+        height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
+      }
+
+      media-settings-menu-item[aria-haspopup]:is(
+        :not([submenusize]),
+        [submenusize="0"],
+        [submenusize="1"]
+      ) {
+        display: none;
       }
 
       .examples {
@@ -39,7 +48,7 @@
         src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
         poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
         stream-type="on-demand"
-        preload="metadata"
+        preload="none"
         playsinline
         crossorigin
       ></mux-video>

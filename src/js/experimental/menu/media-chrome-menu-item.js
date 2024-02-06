@@ -42,6 +42,10 @@ template.innerHTML = /*html*/`
       background: var(--media-menu-item-checked-background);
     }
 
+    :host([hidden]) {
+      display: none;
+    }
+
     :host([disabled]) {
       pointer-events: none;
       color: rgba(255, 255, 255, .3);
@@ -364,10 +368,14 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
    * is populated with the text of the first checked item.
    */
   #handleMenuItem = () => {
+    this.setAttribute('submenusize', `${this.submenuElement.items.length}`);
+
     const descriptionSlot = this.shadowRoot.querySelector('slot[name="description"]');
     const description = this.submenuElement.checkedItems?.[0]?.text;
+
     const span = document.createElement('span');
     span.textContent = description ?? '';
+
     descriptionSlot.replaceChildren(span);
   }
 
