@@ -30,7 +30,22 @@ import {
  */
 
 /**
- * @typedef {Partial<HTMLVideoElement> & Pick<HTMLMediaElement,'play'> & {
+ *
+ * MediaStateOwner is in a sense both a subset and a superset of `HTMLVideoElement` and is used as the primary
+ * "source of truth" for media state, as well as the primary target for state change requests.
+ *
+ * It is a subset insofar as only the `play()` method, the `paused` property, and the `addEventListener()`/`removeEventListener()` methods
+ * are *required* and required to conform to their definition of `HTMLMediaElement` on the entity used. All other interfaces
+ * (properties, methods, events, etc.) are optional, but, when present, *must* conform to `HTMLMediaElement`/`HTMLVideoElement`
+ * to avoid unexpected state behavior. This includes, for example, ensuring state updates occur *before* related events are fired
+ * that are used to monitor for potential state changes.
+ *
+ * It is a superset insofar as it supports an extended interface for media state that may be browser-specific (e.g. `webkit`-prefixed
+ * properties/methods) or are not immediately derivable from primary media state or other state owners. These include things like
+ * `videoRenditions` for e.g. HTTP Adaptive Streaming media (such as HLS or MPEG-DASH), `audioTracks`, or `streamType`, which identifies
+ * whether the media ("stream") is "live" or "on demand". Several of these are specified and formalized on https://github.com/video-dev/media-ui-extensions.
+ *
+ * @typedef {Partial<HTMLVideoElement> & Pick<HTMLMediaElement, 'play' | 'paused' | 'addEventListener' | 'removeEventListener'> & {
  *  streamType?: StreamTypeValue;
  *  targetLiveWindow?: number;
  *  liveEdgeStart?: number;
@@ -428,7 +443,7 @@ export const stateMediator = {
     mediaEvents: ['progress', 'emptied'],
   },
   mediaStreamType: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const {
         media,
         options: { defaultStreamType },
@@ -471,7 +486,7 @@ export const stateMediator = {
     ],
   },
   mediaTargetLiveWindow: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
 
       if (!media) return Number.NaN;
@@ -497,7 +512,7 @@ export const stateMediator = {
     ],
   },
   mediaTimeIsLive: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const {
         media,
         // Default to 10 seconds
@@ -540,7 +555,7 @@ export const stateMediator = {
     textTracksEvents: ['addtrack', 'removetrack'],
   },
   mediaSubtitlesShowing: {
-    get: function (stateOwners, event) {
+    get(stateOwners, event) {
       /** @TODO Attemt to re-implement this fix as a stateOwnersUpdateHandlers callback (CJP) */
       const { options } = stateOwners;
       if (
@@ -563,7 +578,7 @@ export const stateMediator = {
   },
   // Modeling state tied to root node
   mediaIsPip: {
-    get: function (stateOwners, event) {
+    get(stateOwners, event) {
       const { media, rootNode = document } = stateOwners;
 
       if (!media || !rootNode) return false;
@@ -573,7 +588,7 @@ export const stateMediator = {
 
       return containsComposedNode(media, rootNode.pictureInPictureElement);
     },
-    set: function (value, stateOwners) {
+    set(value, stateOwners) {
       const { media } = stateOwners;
       if (value) {
         if (!document.pictureInPictureEnabled) {
@@ -642,7 +657,7 @@ export const stateMediator = {
     mediaEvents: ['enterpictureinpicture', 'leavepictureinpicture'],
   },
   mediaRenditionList: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
       // NOTE: Copying for reference considerations (should be an array of POJOs from a state perspective) (CJP)
       return [...(media?.videoRenditions ?? [])].map((videoRendition) => ({
@@ -654,11 +669,11 @@ export const stateMediator = {
   },
   /** @TODO Model this as a derived value? (CJP) */
   mediaRenditionSelected: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
       return media?.videoRenditions?.[media.videoRenditions?.selectedIndex]?.id;
     },
-    set: function (value, stateOwners) {
+    set(value, stateOwners) {
       const { media } = stateOwners;
       if (!media?.videoRenditions) {
         console.warn(
@@ -682,7 +697,7 @@ export const stateMediator = {
     videoRenditionsEvents: ['addrendition', 'removerendition', 'change'],
   },
   mediaAudioTrackList: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
       return [...(media?.audioTracks ?? [])];
     },
@@ -690,13 +705,13 @@ export const stateMediator = {
     audioTracksEvents: ['addtrack', 'removetrack'],
   },
   mediaAudioTrackEnabled: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
       return [...(media?.audioTracks ?? [])].find(
         (audioTrack) => audioTrack.enabled
       )?.id;
     },
-    set: function (value, stateOwners) {
+    set(value, stateOwners) {
       const { media } = stateOwners;
       if (!media?.audioTracks) {
         console.warn(
@@ -715,7 +730,7 @@ export const stateMediator = {
     audioTracksEvents: ['addtrack', 'removetrack', 'change'],
   },
   mediaIsFullscreen: {
-    get: function (stateOwners, event) {
+    get(stateOwners, event) {
       const {
         media,
         rootNode = document,
@@ -749,7 +764,7 @@ export const stateMediator = {
 
       return containsComposedNode(fullscreenElement, currentFullscreenEl);
     },
-    set: function (value, stateOwners) {
+    set(value, stateOwners) {
       const { media, fullscreenElement } = stateOwners;
       if (!value) {
         // NOTE: Must be document, not whatever "rootNode" stateOwner is identified as (CJP)
@@ -772,7 +787,7 @@ export const stateMediator = {
   },
   mediaIsCasting: {
     // Note this relies on a customized castable-video element.
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
 
       if (!media?.remote || media.remote?.state === 'disconnected')
@@ -780,7 +795,7 @@ export const stateMediator = {
 
       return !!media.remote.state;
     },
-    set: function (value, stateOwners) {
+    set(value, stateOwners) {
       const { media } = stateOwners;
       if (value && media.remote?.state !== 'disconnected') return;
       if (!value && media.remote?.state !== 'connected') return;
@@ -804,10 +819,10 @@ export const stateMediator = {
   // NOTE: Newly added state for tracking airplaying
   mediaIsAirplaying: {
     // NOTE: Cannot know if airplaying since Safari doesn't fully support HTMLMediaElement::remote yet (e.g. remote::state) (CJP)
-    get: function () {
+    get() {
       return false;
     },
-    set: function (_value, stateOwners) {
+    set(_value, stateOwners) {
       const { media } = stateOwners;
       if (!media) return;
       if (
@@ -826,7 +841,7 @@ export const stateMediator = {
     mediaEvents: ['webkitcurrentplaybacktargetiswirelesschanged'],
   },
   mediaFullscreenUnavailable: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
       if (!fullscreenSupported || !hasFullscreenSupport(media))
         return AvailabilityStates.UNSUPPORTED;
@@ -834,14 +849,14 @@ export const stateMediator = {
     },
   },
   mediaPipUnavailable: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
       if (!pipSupported || !hasPipSupport(media))
         return AvailabilityStates.UNSUPPORTED;
     },
   },
   mediaVolumeUnavailable: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
 
       if (volumeSupported === false || media?.volume == undefined) {
@@ -865,7 +880,7 @@ export const stateMediator = {
   },
   mediaCastUnavailable: {
     // @ts-ignore
-    get: function (stateOwners, { availability = false } = {}) {
+    get(stateOwners, { availability = false } = {}) {
       const { media } = stateOwners;
 
       if (!castSupported || !media?.remote?.state) {
@@ -890,7 +905,7 @@ export const stateMediator = {
     ],
   },
   mediaAirplayUnavailable: {
-    get: function (_stateOwners, event) {
+    get(_stateOwners, event) {
       if (!airplaySupported) return AvailabilityStates.UNSUPPORTED;
       // @ts-ignore
       if (event?.availability === 'not-available') {
@@ -902,7 +917,7 @@ export const stateMediator = {
     mediaEvents: ['webkitplaybacktargetavailabilitychanged'],
   },
   mediaRenditionUnavailable: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
 
       if (!media?.videoRenditions) {
@@ -919,7 +934,7 @@ export const stateMediator = {
     videoRenditionsEvents: ['addrendition', 'removerendition'],
   },
   mediaAudioTrackUnavailable: {
-    get: function (stateOwners) {
+    get(stateOwners) {
       const { media } = stateOwners;
 
       if (!media?.audioTracks) {
