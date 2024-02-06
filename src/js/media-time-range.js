@@ -8,7 +8,6 @@ import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
 import { isElementVisible, cachedBoundingClientRect } from './utils/element-utils.js';
 import { RangeAnimation } from './utils/range-animation.js';
-import { RangeSegmentsMixin } from './utils/range-segments-mixin.js';
 import {
   getOrInsertCSSRule,
   containsComposedNode,
@@ -258,7 +257,7 @@ const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
  * @cssproperty --media-preview-time-margin - `margin` of range preview time display.
  * @cssproperty --media-preview-time-text-shadow - `text-shadow` of range preview time display.
  */
-class MediaTimeRange extends RangeSegmentsMixin(MediaChromeRange) {
+class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
