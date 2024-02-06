@@ -4,7 +4,8 @@ import { observeResize, unobserveResize } from './resize-observer.js';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/`
-  <style>
+  <style id="segments-style">
+
     .segments #appearance {
       height: var(--media-range-segment-hover-height, 7px);
     }
@@ -67,7 +68,12 @@ export const RangeSegmentsMixin = (superclass) =>
     }
 
     updateSegments(segments) {
-      if (!segments?.length) return;
+
+      if (!segments?.length) {
+        this.shadowRoot.querySelector('#segments-style')?.remove();
+        this.shadowRoot.querySelector('#segments')?.remove();
+        return;
+      }
 
       let clipping = this.shadowRoot.querySelector('#segments-clipping');
 
