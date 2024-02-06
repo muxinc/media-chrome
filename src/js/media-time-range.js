@@ -284,7 +284,7 @@ class MediaTimeRange extends RangeSegmentsMixin(MediaChromeRange) {
   #currentBox;
   #boxPaddingLeft;
   #boxPaddingRight;
-  #cues;
+  #mediaChaptersCues;
 
   constructor() {
     super();
@@ -353,7 +353,7 @@ class MediaTimeRange extends RangeSegmentsMixin(MediaChromeRange) {
     }
 
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
-      this.mediaChaptersCues = this.#cues;
+      this.mediaChaptersCues = this.#mediaChaptersCues;
     }
   }
 
@@ -381,13 +381,13 @@ class MediaTimeRange extends RangeSegmentsMixin(MediaChromeRange) {
   }
 
   get mediaChaptersCues() {
-    return this.#cues;
+    return this.#mediaChaptersCues;
   }
 
   set mediaChaptersCues(value) {
-    this.#cues = value;
+    this.#mediaChaptersCues = value;
 
-    this.updateSegments(this.#cues?.map(c => ({
+    this.updateSegments(this.#mediaChaptersCues?.map(c => ({
       start: calcRangeValueFromTime(this, c.startTime),
       end: calcRangeValueFromTime(this, c.endTime),
     })));
