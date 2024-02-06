@@ -1,3 +1,4 @@
+export { MediaChromeDialog } from './media-chrome-dialog.js';
 export { MediaChromeMenu } from './media-chrome-menu.js';
 export { MediaChromeMenuItem } from './media-chrome-menu-item.js';
 export { MediaSettingsMenu } from './media-settings-menu.js';
