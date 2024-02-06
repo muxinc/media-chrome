@@ -524,7 +524,10 @@ export const MediaUIStates = {
       if (!media) return [];
 
       const [chaptersTrack] = getTextTracksList(media, { kind: TextTrackKinds.CHAPTERS });
-      if (chaptersTrack) chaptersTrack.mode = 'hidden';
+
+      if (chaptersTrack && chaptersTrack.mode === TextTrackModes.DISABLED) {
+        chaptersTrack.mode = 'hidden';
+      }
 
       return Array.from(chaptersTrack?.cues  ?? [])
         .map((/** @type VTTCue */{ text, startTime, endTime }) => ({ text, startTime, endTime }));
