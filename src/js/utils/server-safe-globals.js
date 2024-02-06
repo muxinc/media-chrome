@@ -16,6 +16,9 @@ const documentShim = {
   createElement: function () {
     return new globalThisShim.HTMLElement();
   },
+  createElementNS: function () {
+    return new globalThisShim.HTMLElement();
+  },
   addEventListener() {},
   removeEventListener() {},
 };
