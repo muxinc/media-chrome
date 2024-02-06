@@ -792,8 +792,7 @@ export const MediaUIRequestHandlers = {
     const chapterCue = /** @type VTTCue */ (Array.from(chaptersTrack?.cues ?? [])
       .find((c) => c.startTime <= time && c.endTime > time));
 
-    const chapterText = !chaptersTrack?.cues.length ? undefined : (chapterCue?.text ?? '');
-    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_CHAPTER, chapterText);
+    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_CHAPTER, chapterCue?.text);
 
     const [thumbsTrack] = getTextTracksList(media, {
       kind: TextTrackKinds.METADATA,
