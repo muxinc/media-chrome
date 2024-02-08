@@ -16,7 +16,7 @@
 
       /* Needed in the docs Codesandbox which uses JS to build HTML
         and shows the animations on page load */
-      [userinactive] * {
+      media-controller[userinactive] [slot="icon"] * {
         transition: none !important;
         animation-duration: 0.001s !important;
       }
@@ -34,124 +34,6 @@
         width: 100%;
       }
 
-      :is(media-time-range, media-volume-range)::part(appearance) {
-        transition: transform .15s ease-out, width .15s ease-out;
-      }
-
-      :is(media-time-range, media-volume-range)[dragging]::part(appearance) {
-        width: calc(100% + 8px);
-        transform: translate(-4px) scaleY(1.4);
-      }
-
-      :is(media-time-range, media-volume-range):not([dragging]):active {
-        --media-range-track-transition: width .15s ease-out;
-      }
-
-      media-play-button {
-        width: 42px;
-      }
-
-      /* https://codepen.io/crapulence/pen/jGZeop */
-      .play-icon {
-        margin-inline: 3px;
-        width: 0;
-        height: 16px;
-        border-style: double;
-        border-width: 0 0 0 16px;
-        border-color: transparent transparent transparent currentColor;
-        transition: all .15s ease-out;
-      }
-
-      media-play-button[mediapaused] .play-icon {
-        border-style: solid;
-        border-width: 9px 0 9px 16px;
-      }
-
-      media-mute-button #icon-muted,
-      media-mute-button #icon-volume {
-        display: none;
-      }
-
-      media-mute-button[mediavolumelevel="off"] #icon-muted {
-        display: block;
-      }
-
-      media-mute-button:not([mediavolumelevel="off"]) #icon-volume {
-        display: block;
-      }
-
-      :is(.volume-low, .volume-medium, .volume-high) {
-        opacity: 1;
-        transition: opacity .5s;
-      }
-
-      media-mute-button[mediavolumelevel="off"] :is(.volume-low, .volume-medium, .volume-high),
-      media-mute-button[mediavolumelevel="low"] :is(.volume-medium, .volume-high),
-      media-mute-button[mediavolumelevel="medium"] :is(.volume-high) {
-        opacity: .2;
-      }
-
-      #icon-muted-slash {
-        transition: clip-path .15s ease-out;
-        clip-path: inset(0 0 100% 0);
-      }
-
-      media-mute-button[mediavolumelevel="off"] #icon-muted-slash {
-        clip-path: inset(0);
-      }
-
-      media-fullscreen-button path {
-        transition: transform .15s cubic-bezier(.175, .885, .32, 1.275);
-      }
-
-      media-fullscreen-button[mediaisfullscreen] .top-left {
-        transform: translate(54%, 54%);
-      }
-
-      media-fullscreen-button[mediaisfullscreen] .top-right {
-        transform: translate(-54%, 54%);
-      }
-
-      media-fullscreen-button[mediaisfullscreen] .bottom-right {
-        transform: translate(-54%, -54%);
-      }
-
-      media-fullscreen-button[mediaisfullscreen] .bottom-left {
-        transform: translate(54%, -54%);
-      }
-
-      @property --fs-icon-offset {
-        syntax: '<percentage>';
-        initial-value: 0%;
-        inherits: false;
-      }
-
-      @keyframes bounce-offset {
-        0%   { --fs-icon-offset: 0%; }
-        50%  { --fs-icon-offset: 5%; }
-        100% { --fs-icon-offset: 0%; }
-      }
-
-      media-fullscreen-button:hover path {
-        animation: .35s bounce-offset cubic-bezier(.34, 1.56, .64, 1);
-      }
-
-      media-fullscreen-button:hover .top-left {
-        translate: calc(-1 * var(--fs-icon-offset)) calc(-1 * var(--fs-icon-offset));
-      }
-
-      media-fullscreen-button:hover .top-right {
-        translate: var(--fs-icon-offset) calc(-1 * var(--fs-icon-offset));
-      }
-
-      media-fullscreen-button:hover .bottom-right {
-        translate: var(--fs-icon-offset) var(--fs-icon-offset);
-      }
-
-      media-fullscreen-button:hover .bottom-left {
-        translate: calc(-1 * var(--fs-icon-offset)) var(--fs-icon-offset);
-      }
-
       .examples {
         margin-top: 20px;
       }
@@ -159,7 +41,150 @@
   </head>
   <body>
     <main>
-      <h1>Media Chrome Animated Icons Usage Example</h1>
+      <h1>Media Chrome - Animated Icons Example</h1>
+
+      <style>
+        :is(media-time-range, media-volume-range)::part(appearance) {
+          transition: all .15s ease-out;
+        }
+
+        :is(media-time-range, media-volume-range)[dragging]::part(appearance) {
+          height: calc(var(--media-range-track-height) + 4px);
+          width: calc(100% + 6px);
+          transform: translate(-3px, 0);
+        }
+
+        media-volume-range:not([dragging]) {
+          --media-range-track-transition: width .15s ease-out;
+        }
+
+        media-time-range:not([dragging]):active {
+          --media-range-track-transition: width .15s ease-out;
+        }
+
+        media-play-button {
+          width: 42px;
+        }
+
+        /* https://codepen.io/crapulence/pen/jGZeop */
+        .play-icon {
+          margin-inline: 3px;
+          width: 0;
+          height: 16px;
+          border-style: double;
+          border-width: 0 0 0 16px;
+          border-color: transparent transparent transparent currentColor;
+          transition: all .15s ease-out;
+        }
+
+        media-play-button[mediapaused] .play-icon {
+          border-style: solid;
+          border-width: 9px 0 9px 16px;
+        }
+
+        media-mute-button #icon-muted,
+        media-mute-button #icon-volume {
+          display: none;
+        }
+
+        media-mute-button[mediavolumelevel="off"] #icon-muted {
+          display: block;
+        }
+
+        media-mute-button:not([mediavolumelevel="off"]) #icon-volume {
+          display: block;
+        }
+
+        :is(.volume-low, .volume-medium, .volume-high) {
+          opacity: 1;
+          transition: opacity .5s;
+        }
+
+        media-mute-button[mediavolumelevel="off"] :is(.volume-low, .volume-medium, .volume-high),
+        media-mute-button[mediavolumelevel="low"] :is(.volume-medium, .volume-high),
+        media-mute-button[mediavolumelevel="medium"] :is(.volume-high) {
+          opacity: .2;
+        }
+
+        #icon-muted-slash {
+          transition: clip-path .15s ease-out;
+          clip-path: inset(0 0 100% 0);
+        }
+
+        media-mute-button[mediavolumelevel="off"] #icon-muted-slash {
+          clip-path: inset(0);
+        }
+
+        @keyframes bass-bounce {
+          0%   { opacity: 0; translate: 0; }
+          50%  { opacity: 1; translate: 1px; }
+          100% { opacity: 1; translate: 0; }
+        }
+
+        media-mute-button:not([mediavolumelevel="off"]) .volume-low {
+          animation: .35s bass-bounce cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        media-mute-button:is([mediavolumelevel="medium"], [mediavolumelevel="high"]) .volume-medium {
+          animation: .35s .04s bass-bounce cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        media-mute-button[mediavolumelevel="high"] .volume-high {
+          animation: .35s .08s bass-bounce cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        media-fullscreen-button path {
+          transition: transform .15s cubic-bezier(.175, .885, .32, 1.275);
+        }
+
+        media-fullscreen-button[mediaisfullscreen] .top-left {
+          transform: translate(54%, 54%);
+        }
+
+        media-fullscreen-button[mediaisfullscreen] .top-right {
+          transform: translate(-54%, 54%);
+        }
+
+        media-fullscreen-button[mediaisfullscreen] .bottom-right {
+          transform: translate(-54%, -54%);
+        }
+
+        media-fullscreen-button[mediaisfullscreen] .bottom-left {
+          transform: translate(54%, -54%);
+        }
+
+        @property --fs-icon-offset {
+          syntax: '<percentage>';
+          initial-value: 0%;
+          inherits: false;
+        }
+
+        @keyframes offset-bounce {
+          0%   { --fs-icon-offset: 0%; }
+          50%  { --fs-icon-offset: 5%; }
+          100% { --fs-icon-offset: 0%; }
+        }
+
+        media-fullscreen-button:hover path {
+          animation: .35s offset-bounce cubic-bezier(.34, 1.56, .64, 1);
+        }
+
+        media-fullscreen-button:hover .top-left {
+          translate: calc(-1 * var(--fs-icon-offset)) calc(-1 * var(--fs-icon-offset));
+        }
+
+        media-fullscreen-button:hover .top-right {
+          translate: var(--fs-icon-offset) calc(-1 * var(--fs-icon-offset));
+        }
+
+        media-fullscreen-button:hover .bottom-right {
+          translate: var(--fs-icon-offset) var(--fs-icon-offset);
+        }
+
+        media-fullscreen-button:hover .bottom-left {
+          translate: calc(-1 * var(--fs-icon-offset)) var(--fs-icon-offset);
+        }
+      </style>
 
       <media-controller>
         <video
