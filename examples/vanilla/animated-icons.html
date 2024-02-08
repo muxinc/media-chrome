@@ -14,6 +14,13 @@
         display: none;
       }
 
+      /* Needed in the docs Codesandbox which uses JS to build HTML
+        and shows the animations on page load */
+      [userinactive] * {
+        transition: none !important;
+        animation-duration: 0.001s !important;
+      }
+
       media-controller:not([audio]) {
         display: block;
         max-width: 640px;
@@ -38,6 +45,10 @@
 
       :is(media-time-range, media-volume-range):not([dragging]):active {
         --media-range-track-transition: width .15s ease-out;
+      }
+
+      media-play-button {
+        width: 42px;
       }
 
       /* https://codepen.io/crapulence/pen/jGZeop */
