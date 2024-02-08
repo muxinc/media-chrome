@@ -255,8 +255,7 @@ const contentHTML = `${esmScripts ?
 ---
 
 <ExamplesLayout
-  title={title}
-  description={description}
+  frontmatter={{ title, description }}
   rightSidebar={false}
   leftSidebar={leftSidebar}
   externalResources={externalResources}
@@ -266,5 +265,4 @@ const contentHTML = `${esmScripts ?
   css={css}
 >
   <nav aria-labelledby="grid-left" slot="left-sidebar"></nav>
-
 </ExamplesLayout>
