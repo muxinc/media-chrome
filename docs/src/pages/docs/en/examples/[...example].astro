@@ -10,7 +10,7 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
     {
       params: { example: undefined },
       props: {
-        title: 'Basic Video Example',
+        title: 'Basic Video',
         group: 'Introduction',
         sourcePath: 'examples/vanilla/basic-video.html',
       }
@@ -18,7 +18,7 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
     {
       params: { example: 'basic-audio' },
       props: {
-        title: 'Basic Audio Example',
+        title: 'Basic Audio',
         group: 'Introduction',
         sourcePath: 'examples/vanilla/basic-audio.html',
       }
@@ -26,15 +26,23 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
     {
       params: { example: 'advanced-video' },
       props: {
-        title: 'Advanced Video Example',
+        title: 'Advanced Video',
         group: 'Introduction',
         sourcePath: 'examples/vanilla/advanced.html',
       }
     },
     {
+      params: { example: 'animated-controls' },
+      props: {
+        title: 'Animated Controls',
+        group: 'Introduction',
+        sourcePath: 'examples/vanilla/animated-icons.html',
+      }
+    },
+    {
       params: { example: 'casting' },
       props: {
-        title: 'Casting Example',
+        title: 'Casting',
         group: 'Introduction',
         sourcePath: 'examples/vanilla/casting.html',
       }
@@ -42,7 +50,7 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
     {
       params: { example: 'portrait' },
       props: {
-        title: 'Portrait Example',
+        title: 'Portrait',
         group: 'Introduction',
         sourcePath: 'examples/vanilla/portrait.html',
       }

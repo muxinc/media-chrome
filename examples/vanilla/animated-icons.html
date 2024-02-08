@@ -1,118 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width">
     <title>Media Chrome Animated Icons</title>
     <script type="module" src="../../dist/index.js"></script>
     <style>
+      * {
+        box-sizing: border-box;
+      }
+
+      /* Hide custom elements that are not defined yet */
+      :not(:defined) {
+        display: none;
+      }
+
       media-controller:not([audio]) {
         display: block;
-        max-width: 960px;
+        max-width: 640px;
         aspect-ratio: 2.4;
+        --media-range-track-height: 6px;
+        --media-range-track-border-radius: 9999px;
+        --media-range-thumb-opacity: 0;
       }
 
       video {
         width: 100%;
       }
 
-      .examples {
-        margin-top: 20px;
+      :is(media-time-range, media-volume-range)::part(appearance) {
+        transition: transform .15s ease-out, width .15s ease-out;
       }
 
-      .mute-icon {
-        display: inline-block;
-        
+      :is(media-time-range, media-volume-range)[dragging]::part(appearance) {
+        width: calc(100% + 8px);
+        transform: translate(-4px) scaleY(1.4);
       }
 
-      .mute-icon :is(path, g) {
+      :is(media-time-range, media-volume-range):not([dragging]):active {
+        --media-range-track-transition: width .15s ease-out;
+      }
+
+      /* https://codepen.io/crapulence/pen/jGZeop */
+      .play-icon {
+        margin-inline: 3px;
+        width: 0;
+        height: 16px;
+        border-style: double;
+        border-width: 0 0 0 16px;
+        border-color: transparent transparent transparent currentColor;
+        transition: all .15s ease-out;
+      }
+
+      media-play-button[mediapaused] .play-icon {
+        border-style: solid;
+        border-width: 9px 0 9px 16px;
+      }
+
+      media-mute-button #icon-muted,
+      media-mute-button #icon-volume {
+        display: none;
+      }
+
+      media-mute-button[mediavolumelevel="off"] #icon-muted {
+        display: block;
+      }
+
+      media-mute-button:not([mediavolumelevel="off"]) #icon-volume {
+        display: block;
+      }
+
+      :is(.volume-low, .volume-medium, .volume-high) {
+        opacity: 1;
         transition: opacity .5s;
       }
 
-      .muted {
-        opacity: 0;
+      media-mute-button[mediavolumelevel="off"] :is(.volume-low, .volume-medium, .volume-high),
+      media-mute-button[mediavolumelevel="low"] :is(.volume-medium, .volume-high),
+      media-mute-button[mediavolumelevel="medium"] :is(.volume-high) {
+        opacity: .2;
       }
 
-      media-mute-button[mediavolumelevel='low'] :is(.volume-medium, .volume-high),
-      media-mute-button[mediavolumelevel='medium'] :is(.volume-high) {
-        opacity: .4;
+      #icon-muted-slash {
+        transition: clip-path .15s ease-out;
+        clip-path: inset(0 0 100% 0);
       }
 
-      media-mute-button[mediavolumelevel='off'] .unmuted {
-        opacity: 0;
+      media-mute-button[mediavolumelevel="off"] #icon-muted-slash {
+        clip-path: inset(0);
       }
 
-      media-mute-button[mediavolumelevel='off'] .muted {
-        opacity: 1;
+      media-fullscreen-button path {
+        transition: transform .15s cubic-bezier(.175, .885, .32, 1.275);
       }
 
-      .captions-icon {
-        transition: all .5s;
-        font-weight: 400;
-        border-radius: 5px;
+      media-fullscreen-button[mediaisfullscreen] .top-left {
+        transform: translate(54%, 54%);
       }
 
-      media-captions-button[aria-checked=true] .captions-icon {
-        font-weight: 700;
-        text-decoration: underline;
-        color: red;
+      media-fullscreen-button[mediaisfullscreen] .top-right {
+        transform: translate(-54%, 54%);
       }
 
-      .cast-icon {
-        border-radius: 4px;
-        outline: 2px solid #fff;
-        padding: 0 6px;
-        transition: all .4s;
+      media-fullscreen-button[mediaisfullscreen] .bottom-right {
+        transform: translate(-54%, -54%);
       }
 
-      media-cast-button[mediaiscasting] .cast-icon {
-        outline: 2px solid green;
-        color: green;
+      media-fullscreen-button[mediaisfullscreen] .bottom-left {
+        transform: translate(54%, -54%);
       }
 
-      .fullscreen-icon {
-        font-size: 16px;
-        font-weight: 700;
-        transition: color .4s;
+      @property --fs-icon-offset {
+        syntax: '<percentage>';
+        initial-value: 0%;
+        inherits: false;
       }
 
-      media-fullscreen-button:not([mediaisfullscreen]) .fullscreen-icon span:last-child,
-      media-fullscreen-button[mediaisfullscreen] .fullscreen-icon span:first-child {
-        display: none;
+      @keyframes bounce-offset {
+        0%   { --fs-icon-offset: 0%; }
+        50%  { --fs-icon-offset: 5%; }
+        100% { --fs-icon-offset: 0%; }
       }
 
-      media-fullscreen-button[mediaisfullscreen] .fullscreen-icon {
-        color: coral;
+      media-fullscreen-button:hover path {
+        animation: .35s bounce-offset cubic-bezier(.34, 1.56, .64, 1);
       }
 
-      .pip-icon {
-        background: darkcyan;
-        border-radius: 50%;
-        width: 24px;
-        transition: all .5s;
+      media-fullscreen-button:hover .top-left {
+        translate: calc(-1 * var(--fs-icon-offset)) calc(-1 * var(--fs-icon-offset));
       }
 
-      media-pip-button[mediaispip] .pip-icon {
-        background: maroon;
+      media-fullscreen-button:hover .top-right {
+        translate: var(--fs-icon-offset) calc(-1 * var(--fs-icon-offset));
       }
 
-      .play-icon {
-        font-weight: bold;
+      media-fullscreen-button:hover .bottom-right {
+        translate: var(--fs-icon-offset) var(--fs-icon-offset);
       }
 
-      media-play-button:not([mediapaused]) .play-icon span:first-child,
-      media-play-button[mediapaused] .play-icon span:last-child {
-        display: none;
+      media-fullscreen-button:hover .bottom-left {
+        translate: calc(-1 * var(--fs-icon-offset)) var(--fs-icon-offset);
       }
 
-      media-play-button:not([mediapaused]) .play-icon {
-        color: purple;
+      .examples {
+        margin-top: 20px;
       }
     </style>
   </head>
   <body>
     <main>
       <h1>Media Chrome Animated Icons Usage Example</h1>
-      <media-controller defaultsubtitles>
+
+      <media-controller>
         <video
           slot="media"
           src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
@@ -120,57 +158,44 @@
           crossorigin
           playsinline
         >
-          <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
+          <track default kind="metadata" label="thumbnails" src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt">
         </video>
         <media-control-bar>
-          <media-play-button>
-            <span class="play-icon" slot="icon">
-              <span>play</span>
-              <span>pause</span>
-            </span>
+          <media-play-button mediapaused>
+            <span slot="icon" aria-hidden="true" class="play-icon"></span>
           </media-play-button>
-          <media-mute-button>
-            <svg viewBox="0 0 18 14" slot="icon" class="mute-icon">
-              <g class="unmuted">
-                <path
-                  d="M6.76786 1.21233L3.98606 3.98924H1.19937C0.593146 3.98924 0.101743 4.51375 0.101743 5.1607V6.96412L0 6.99998L0.101743 7.03583V8.83926C0.101743 9.48633 0.593146 10.0108 1.19937 10.0108H3.98606L6.76773 12.7877C7.23561 13.2547 8 12.9007 8 12.2171V1.78301C8 1.09925 7.23574 0.745258 6.76786 1.21233Z"
-                />
-                <path class="volume-low"
-                  d="M10 3.54781C10.7452 4.55141 11.1393 5.74511 11.1393 6.99991C11.1393 8.25471 10.7453 9.44791 10 10.4515L10.7988 11.0496C11.6734 9.87201 12.1356 8.47161 12.1356 6.99991C12.1356 5.52821 11.6735 4.12731 10.7988 2.94971L10 3.54781Z"
-                />
-                <path class="volume-medium"
-                  d="M12.3778 2.40086C13.2709 3.76756 13.7428 5.35806 13.7428 7.00026C13.7428 8.64246 13.2709 10.233 12.3778 11.5992L13.2106 12.1484C14.2107 10.6185 14.739 8.83796 14.739 7.00016C14.739 5.16236 14.2107 3.38236 13.2106 1.85156L12.3778 2.40086Z"
-                />
-                <path class="volume-high"
-                  d="M15.5981 0.75L14.7478 1.2719C15.7937 2.9919 16.3468 4.9723 16.3468 7C16.3468 9.0277 15.7937 11.0082 14.7478 12.7281L15.5981 13.25C16.7398 11.3722 17.343 9.211 17.343 7C17.343 4.789 16.7398 2.6268 15.5981 0.75Z"
-                />
+          <media-mute-button mediavolumelevel="off">
+            <svg slot="icon" aria-hidden="true" viewBox="0 0 24 24">
+              <path id="icon-muted-slash" d="M3 2.69434 20.5607 20.255 19.5 21.3157 1.93934 3.755 3 2.69434Z"/>
+              <g id="icon-muted">
+                <path id="icon-muted-speaker-small" d="M8.55 6.13531 12 3.38v6.20484L8.55 6.13531Z"/>
+                <path id="icon-muted-speaker-big" d="M1.5 15.7503V8.25969h2.83453L12 15.9252V20.63l-6.11016-4.8797H1.5Z"/>
+                <path class="volume-low" d="M16.5 12.005c0-1.1512-.2723-2.24437-.832-3.34078l-.3399-.66844-1.3368.6811.3407.66796c.4496.88176.668 1.75176.668 2.66016-.0003.1838-.0101.3675-.0295.5503l1.2806 1.2806c.1638-.5965.2475-1.2122.2489-1.8309Zm0 0c0-1.1512-.2723-2.24437-.832-3.34078l-.3399-.66844-1.3368.6811.3407.66796c.4496.88176.668 1.75176.668 2.66016-.0003.1838-.0101.3675-.0295.5503l1.2806 1.2806c.1638-.5965.2475-1.2122.2489-1.8309Z"/>
+                <path class="volume-medium" d="M17.8978 6.37719C18.8869 8.07266 19.5 9.60547 19.5 12.005c0 1.7072-.3192 2.985-.8672 4.2113l-1.1484-1.149c.3333-.8962.5156-1.8468.5156-3.0623 0-2.07047-.5123-3.35437-1.3978-4.87219l-.3778-.64781 1.2956-.75562.3778.64781Z"/>
+                <path class="volume-high" d="M22.5 12.005c0-3.48094-.9464-5.67703-2.3677-7.90359l-.4035-.63235-1.2657.80719.4036.63234C20.1478 6.91344 21 8.88781 21 12.005c0 2.2856-.4406 3.9375-1.1634 5.4164l1.1109 1.1109C22.0388 16.4764 22.5 14.4894 22.5 12.005Zm0 0c0-3.48094-.9464-5.67703-2.3677-7.90359l-.4035-.63235-1.2657.80719M22.5 12.005c0-3.48094-.9464-5.67703-2.3677-7.90359l-.4035-.63235-1.2657.80719.4036.63234C20.1478 6.91344 21 8.88781 21 12.005c0 2.2856-.4406 3.9375-1.1634 5.4164"/>
               </g>
-              <g class="muted">
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M4.39976 4.98924H1.19937C1.19429 4.98924 1.17777 4.98961 1.15296 5.01609C1.1271 5.04369 1.10174 5.09245 1.10174 5.1607V8.83926C1.10174 8.90761 1.12714 8.95641 1.15299 8.984C1.17779 9.01047 1.1943 9.01084 1.19937 9.01084H4.39977L7 11.6066V2.39357L4.39976 4.98924ZM7.47434 1.92006C7.4743 1.9201 7.47439 1.92002 7.47434 1.92006V1.92006ZM6.76773 12.7877L3.98606 10.0108H1.19937C0.593146 10.0108 0.101743 9.48633 0.101743 8.83926V7.03583L0 6.99998L0.101743 6.96412V5.1607C0.101743 4.51375 0.593146 3.98924 1.19937 3.98924H3.98606L6.76786 1.21233C7.23574 0.745258 8 1.09925 8 1.78301V12.2171C8 12.9007 7.23561 13.2547 6.76773 12.7877Z"/>
-                  <path fill-rule="evenodd" clip-rule="evenodd" d="M15.2677 9.30323C15.463 9.49849 15.7796 9.49849 15.9749 9.30323C16.1701 9.10796 16.1701 8.79138 15.9749 8.59612L14.2071 6.82841L15.9749 5.06066C16.1702 4.8654 16.1702 4.54882 15.9749 4.35355C15.7796 4.15829 15.4631 4.15829 15.2678 4.35355L13.5 6.1213L11.7322 4.35348C11.537 4.15822 11.2204 4.15822 11.0251 4.35348C10.8298 4.54874 10.8298 4.86532 11.0251 5.06058L12.7929 6.82841L11.0251 8.59619C10.8299 8.79146 10.8299 9.10804 11.0251 9.3033C11.2204 9.49856 11.537 9.49856 11.7323 9.3033L13.5 7.53552L15.2677 9.30323Z"/>
+              <g id="icon-volume">
+                <path class="volume-low" d="m15.3268 7.99094.3411.66793C16.1822 9.66585 16.5 10.7636 16.5 12c0 1.2241-.3314 2.3449-.8299 3.3368l-.3368.6701-1.3402-.6736.3368-.6701C14.7445 13.8382 15 12.9471 15 12c0-.9648-.2447-1.8302-.6679-2.65887l-.3412-.66793 1.3359-.68226Z"/>
+                <path class="volume-medium" d="m17.5196 5.72417.3781.64772C18.8818 8.05755 19.5 9.58453 19.5 12c0 2.4191-.6451 3.9614-1.5996 5.6235l-.3735.6504-1.3008-.747.3735-.6504C17.4713 15.3586 18 14.0753 18 12c0-2.0789-.5068-3.34567-1.3977-4.87189l-.3781-.64771 1.2954-.75623Z"/>
+                <path class="volume-high" d="m19.7287 3.46428.4035.63219C21.5988 6.39414 22.5 8.61481 22.5 12c0 3.3817-.899 5.6514-2.3718 7.9097l-.4097.6282-1.2564-.8194.4097-.6282C20.2115 17.0361 21 15.0467 21 12c0-3.04324-.7863-4.98789-2.1322-7.09647l-.4035-.6322 1.2644-.80705Z"/>
+                <path id="icon-volume-speaker" d="M5.88984 8.25469H1.5v7.49061h4.38984L12 20.625V3.375L5.88984 8.25469Z"/>
               </g>
             </svg>
           </media-mute-button>
           <media-volume-range></media-volume-range>
           <media-time-range></media-time-range>
-          <media-time-display showduration remaining></media-time-display>
-          <media-captions-button>
-            <span class="captions-icon" slot="icon">CC</span>
-          </media-captions-button>
-          <media-cast-button>
-            <span class="cast-icon" slot="icon">[ ]</span>
-          </media-cast-button>
-          <media-pip-button>
-            <span class="pip-icon" slot="icon">PiP</span>
-          </media-pip-button>
+          <media-time-display showduration></media-time-display>
           <media-fullscreen-button>
-            <span class="fullscreen-icon" slot="icon">
-              <span>+</span>
-              <span>-</span>
-            </span>
+            <svg slot="icon" aria-hidden="true" viewBox="8 8 20 20">
+              <path d="M10 16h2v-4h4v-2h-6v6z" class="top-left" />
+              <path d="M20 10v2h4v4h2v-6h-6z" class="top-right" />
+              <path d="M24 24h-4v2h6v-6h-2v4z" class="bottom-right" />
+              <path d="M12 20h-2v6h6v-2h-4v-4z" class="bottom-left" />
+            </svg>
           </media-fullscreen-button>
         </media-control-bar>
       </media-controller>
+
       <div class="examples">
         <a href="./">View more examples</a>
       </div>
