@@ -81,7 +81,6 @@ template.innerHTML = /*html*/`
     <media-seek-backward-button></media-seek-backward-button>
     <media-seek-forward-button></media-seek-forward-button>
     <media-mute-button></media-mute-button>
-    <media-volume-range></media-volume-range>
     <media-text-display class="control-bar-title">
       <slot name="title"></slot>
     </media-text-display>

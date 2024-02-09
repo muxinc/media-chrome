@@ -4,6 +4,10 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Winamp Theme Example</title>
     <script type="module" src="../../../dist/index.js"></script>
+  </head>
+  <body>
+    <h1>Media Chrome - Winamp Theme Example</h1>
+
     <style>
       body {
         --media-range-background: transparent;
@@ -526,43 +530,40 @@
         background-image: url(./winamp-theme/WINDOWR.png);
       }
     </style>
-  </head>
-  <body>
-    <h1>Media Chrome Winamp Theme Example</h1>
 
     <div class="wrapper">
       <div class="controls">
-        <media-seek-backward-button media-controller="controller">
+        <media-seek-backward-button mediacontroller="controller">
           <div slot="icon"></div>
         </media-seek-backward-button>
-        <media-play-button class="play" media-controller="controller">
+        <media-play-button class="play" mediacontroller="controller">
           <div slot="play"></div>
           <div slot="pause"></div>
         </media-play-button>
-        <media-play-button class="pause" media-controller="controller">
+        <media-play-button class="pause" mediacontroller="controller">
           <div slot="play"></div>
           <div slot="pause"></div>
         </media-play-button>
-        <media-play-button class="stop" media-controller="controller">
+        <media-play-button class="stop" mediacontroller="controller">
           <div slot="play"></div>
           <div slot="pause"></div>
         </media-play-button>
-        <media-seek-forward-button media-controller="controller">
+        <media-seek-forward-button mediacontroller="controller">
           <div slot="icon"></div>
         </media-seek-forward-button>
-        <media-fullscreen-button media-controller="controller">
+        <media-fullscreen-button mediacontroller="controller">
           <div slot="enter"></div>
         </media-fullscreen-button>
       </div>
-      <media-time-display media-controller="controller"></media-time-display>
-      <media-time-range media-controller="controller"></media-time-range>
-      <media-volume-range media-controller="controller"></media-volume-range>
+      <media-time-display mediacontroller="controller"></media-time-display>
+      <media-time-range mediacontroller="controller"></media-time-range>
+      <media-volume-range mediacontroller="controller"></media-volume-range>
       <div class="titlebar"></div>
       <div class="display"></div>
       <div class="eq"></div>
       <div class="pl"></div>
       <div class="loop"></div>
-      <media-captions-button media-controller="controller">
+      <media-captions-button mediacontroller="controller">
         <div slot="on"></div>
         <div slot="off"></div>
       </media-captions-button>
@@ -577,13 +578,13 @@
       <div class="kbps">192</div>
       <div class="khz">44</div>
       <media-play-button
-        media-controller="controller"
+        mediacontroller="controller"
         class="play-pause-indicator"
       >
         <div slot="play"></div>
         <div slot="pause"></div>
       </media-play-button>
-      <media-play-button media-controller="controller" class="vu-meter">
+      <media-play-button mediacontroller="controller" class="vu-meter">
         <div slot="play"></div>
         <div slot="pause"></div>
       </media-play-button>

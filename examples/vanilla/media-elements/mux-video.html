@@ -8,9 +8,14 @@
       src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"
     ></script>
     <script type="module" src="../../../dist/index.js"></script>
+    <script type="module" src="../../../../dist/experimental/menu/index.js"></script>
     <style>
       .examples {
         margin-top: 20px;
+      }
+
+      mux-video {
+        width: 50vw;
       }
     </style>
   </head>
@@ -20,13 +25,12 @@
       <media-controller defaultsubtitles>
         <mux-video
           slot="media"
+          crossorigin
           preload="auto"
           playback-id="ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s"
-          metadata-video-id="video-id-12345"
-          metadata-video-title="Mad Max: Fury Road Trailer"
-          metadata-viewer-user-id="user-id-6789"
-          stream-type="on-demand"
           muted
+          crossorigin
+          autoplay
         >
           <track
             label="thumbnails"
@@ -35,6 +39,18 @@
             src="https://image.mux.com/ihZa7qP1zY8oyLSQW9TS602VgwQvNdyIvlk9LInEGU2s/storyboard.vtt"
           />
         </mux-video>
+        <!-- <media-audio-track-menu hidden>
+          <div slot="header">Audio</div>
+        </media-audio-track-menu> -->
+        <media-rendition-menu hidden>
+          <div slot="header">Quality</div>
+        </media-rendition-menu>
+        <media-playback-rate-menu hidden>
+          <div slot="header">Playback Rate</div>
+        </media-playback-rate-menu>
+        <media-captions-menu hidden>
+          <div slot="header">Subtitles</div>
+        </media-captions-menu>
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-seek-backward-button></media-seek-backward-button>
@@ -42,9 +58,11 @@
           <media-mute-button></media-mute-button>
           <media-volume-range></media-volume-range>
           <media-time-range></media-time-range>
-          <media-time-display showduration remaining></media-time-display>
-          <media-captions-button></media-captions-button>
-          <media-playback-rate-button></media-playback-rate-button>
+          <media-time-display showduration></media-time-display>
+          <!-- <media-audio-track-menu-button></media-audio-track-menu-button> -->
+          <media-rendition-menu-button></media-rendition-menu-button>
+          <media-captions-menu-button></media-captions-menu-button>
+          <media-playback-rate-menu-button></media-playback-rate-menu-button>
           <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>
         </media-control-bar>

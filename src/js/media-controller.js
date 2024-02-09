@@ -858,4 +858,5 @@ if (!globalThis.customElements.get('media-controller')) {
   globalThis.customElements.define('media-controller', MediaController);
 }
 
+export { MediaController };
 export default MediaController;

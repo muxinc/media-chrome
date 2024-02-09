@@ -3,13 +3,16 @@
   <head>
     <title>Media Chrome Spotify Theme Example</title>
     <script type="module" src="../../../dist/index.js"></script>
-  </head>
-  <body>
     <style>
       .examples {
         margin-top: 20px;
       }
+    </style>
+  </head>
+  <body>
+    <h1>Media Chrome - Spotify Theme Example</h1>
 
+    <style>
       .media-theme-spotify {
         display: inline-block;
         min-width: 250px;
@@ -104,35 +107,31 @@
         height: 36px;
       }
     </style>
-    <main>
-      <h1>The Spotify player theme</h1>
-      <p>The Spotify player built with media-chrome.</p>
 
-      <media-controller class="media-theme-spotify" audio>
-        <audio
-          slot="media"
-          src="https://stream.mux.com/O4h5z00885HEucNNa1rV02wZapcGp01FXXoJd35AHmGX7g/audio.m4a"
-        ></audio>
-        <span class="custom-chrome">
-          <span class="media-poster">
-            <media-play-button></media-play-button>
-          </span>
-          <span class="content-area">
-            <media-text-display><b>Emotion (Deluxe)</b></media-text-display>
-            <media-text-display>Carly Rae Jepsen</media-text-display>
-            <media-control-bar>
-              <media-time-range>
-                <media-preview-time-display slot="preview"></media-preview-time-display>
-              </media-time-range>
-              <media-time-display remaining></media-time-display>
-            </media-control-bar>
-          </span>
+    <media-controller class="media-theme-spotify" audio>
+      <audio
+        slot="media"
+        src="https://stream.mux.com/O4h5z00885HEucNNa1rV02wZapcGp01FXXoJd35AHmGX7g/audio.m4a"
+      ></audio>
+      <span class="custom-chrome">
+        <span class="media-poster">
+          <media-play-button></media-play-button>
         </span>
-      </media-controller>
+        <span class="content-area">
+          <media-text-display><b>Emotion (Deluxe)</b></media-text-display>
+          <media-text-display>Carly Rae Jepsen</media-text-display>
+          <media-control-bar>
+            <media-time-range>
+              <media-preview-time-display slot="preview"></media-preview-time-display>
+            </media-time-range>
+            <media-time-display remaining></media-time-display>
+          </media-control-bar>
+        </span>
+      </span>
+    </media-controller>
 
-      <div class="examples">
-        <a href="../">View more examples</a>
-      </div>
-    </main>
+    <div class="examples">
+      <a href="../">View more examples</a>
+    </div>
   </body>
 </html>

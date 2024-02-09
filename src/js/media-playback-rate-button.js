@@ -2,8 +2,8 @@ import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
-import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
+import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
 
 export const Attributes = {
   RATES: 'rates',
@@ -17,10 +17,10 @@ slotTemplate.innerHTML = /*html*/`
   <style>
     :host {
       min-width: 5ch;
-      padding: var(--media-control-padding, 10px 5px);
+      padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
     }
   </style>
-  <span id="container"></span>
+  <slot name="icon"></slot>
 `;
 
 /**
@@ -42,7 +42,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
-    this.container = this.shadowRoot.querySelector('#container');
+    this.container = this.shadowRoot.querySelector('slot[name="icon"]');
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }
 

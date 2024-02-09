@@ -65,6 +65,28 @@ if (typeof editorHeight === 'number') editorHeight = `${editorHeight}px`;
     -webkit-font-smoothing: antialiased;
   }
 
+  .sp-tabs {
+    background: var(--theme-code-bg) !important;
+    border-bottom: 1px solid var(--sp-colors-surface2, var(--theme-divider));
+  }
+
+  .sp-tabs-scrollable-container {
+    padding: 0 var(--sp-space-2, 8px);
+    overflow: auto;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    min-height: 40px;
+    margin-bottom: -1px;
+  }
+
+  .sp-tab-button {
+    padding: 0 var(--sp-space-2, 8px);
+    height: var(--sp-layout-headerHeight, 40px);
+    white-space: nowrap;
+    font-size: 12px !important;
+  }
+
   div:where(.sp-preview-actions) {
     display: none; /* hide until Sandpack JS styles are loaded */
   }

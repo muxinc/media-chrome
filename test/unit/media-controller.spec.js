@@ -87,8 +87,8 @@ describe('<media-controller>', () => {
       <media-time-range mediacontroller="ctrl"></media-time-range>
     `);
 
-    // Also includes media-gesture-receiver, media-preview-thumbnail, media-preview-time-display
-    assert.equal(mediaController.mediaStateReceivers.length, 5);
+    // Also includes media-gesture-receiver, media-preview-thumbnail, media-preview-chapter-display, media-preview-time-display
+    assert.equal(mediaController.mediaStateReceivers.length, 6);
     assert(
       mediaController.mediaStateReceivers.indexOf(mediaController) >= 0,
       'registers itself'

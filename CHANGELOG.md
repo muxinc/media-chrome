@@ -1,3 +1,26 @@
+# [2.1.0](https://github.com/muxinc/media-chrome/compare/v2.0.1...v2.1.0) (2024-01-18)
+
+
+### Bug Fixes
+
+* default subs async complexities ([#789](https://github.com/muxinc/media-chrome/issues/789)) ([0270892](https://github.com/muxinc/media-chrome/commit/027089255686c9f562e461a501927797383f3cc5))
+
+
+### Features
+
+* add role menu elements ([#785](https://github.com/muxinc/media-chrome/issues/785)) ([c9a6980](https://github.com/muxinc/media-chrome/commit/c9a698033ea37ddb6b47961cd031babd5ca1f079))
+
+
+
+## [2.0.1](https://github.com/muxinc/media-chrome/compare/v2.0.0...v2.0.1) (2023-12-11)
+
+
+### Bug Fixes
+
+* prevent unset callback if there is no media ([#782](https://github.com/muxinc/media-chrome/issues/782)) ([4198832](https://github.com/muxinc/media-chrome/commit/4198832a625d6145fa3fa5fbf9454c77e2ac0f7d))
+
+
+
 # [2.0.0](https://github.com/muxinc/media-chrome/compare/v1.7.0...v2.0.0) (2023-12-06)
 
 

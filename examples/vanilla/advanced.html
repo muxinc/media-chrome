@@ -1,25 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width">
     <title>Media Chrome Advanced Video Usage Example</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/hls-video-element/+esm"></script>
     <script type="module" src="../../dist/index.js"></script>
+    <script type="module" src="../../dist/experimental/menu/index.js"></script>
     <style>
+      /* Hide custom elements that are not defined yet */
+      :not(:defined) {
+        display: none;
+      }
+
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
         display: block;         /* expands the container if preload=none */
         max-width: 960px;       /* allows the container to shrink if small */
-        aspect-ratio: 2.4;   /* set container aspect ratio if preload=none */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
 
-      video {
-        width: 100%;      /* prevents video to expand beyond its container */
+      mux-video {
+        width: 100%;          /* prevents video to expand beyond its container */
+        height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
       }
 
-      media-airplay-button[mediaairplayunavailable],
+      media-audio-track-menu[mediaaudiotrackunavailable],
+      media-audio-track-menu-button[mediaaudiotrackunavailable],
+      media-rendition-menu[mediarenditionunavailable],
+      media-rendition-menu-button[mediarenditionunavailable],
       media-fullscreen-button[mediafullscreenunavailable],
-      media-volume-range[mediavolumeunavailable],
+      media-airplay-button[mediaairplayunavailable],
       media-pip-button[mediapipunavailable] {
+        display: none;
+      }
+
+      media-settings-menu-item[aria-haspopup]:is(
+        :not([submenusize]),
+        [submenusize="0"],
+        [submenusize="1"]
+      ) {
         display: none;
       }
 
@@ -29,54 +48,94 @@
     </style>
   </head>
   <body>
+    <!-- The main tag is used to exclude other body content in https://www.media-chrome.org/docs/en/examples -->
     <main>
-      <h1>Media Chrome Advanced Video Usage Example</h1>
-      <media-controller defaultsubtitles defaultduration="134">
-        <video
+      <h1>Media Chrome - Advanced Video Usage Example</h1>
+
+      <media-controller id="mc">
+        <hls-video
+          id="video"
           slot="media"
-          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
-          muted
-          crossorigin
+          src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
+          poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
+          stream-type="on-demand"
+          preload="metadata"
           playsinline
-          preload="none"
+          crossorigin
         >
-          <track
-            label="thumbnails"
-            default
-            kind="metadata"
-            src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"
-          />
-          <track
-            label="English"
-            kind="captions"
-            srclang="en"
-            src="./vtt/en-cc.vtt"
-          />
-        </video>
-        <media-poster-image
-          slot="poster"
-          src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg"
-          placeholdersrc="data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAUADADASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAECBAP/xAAdEAEBAAEEAwAAAAAAAAAAAAAAARECAxITFCFR/8QAGQEAAwADAAAAAAAAAAAAAAAAAAEDAgQF/8QAGBEBAQEBAQAAAAAAAAAAAAAAAAETERL/2gAMAwEAAhEDEQA/ANeC4ldyI1b2EtIzzrrIqYZLvl5FGkGdbfQzGPvo76WsPxXLlfqbaA5va2iVJADgPELACsD/2Q=="
-        ></media-poster-image>
+          <track default kind="metadata" label="thumbnails"
+            src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/storyboard.vtt">
+          <track default kind="chapters" src="./vtt/elephantsdream/chapters.vtt">
+        </hls-video>
         <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+        <media-settings-menu anchor="auto" hidden>
+          <media-settings-menu-item>
+            Speed
+            <media-playback-rate-menu slot="submenu" hidden>
+              <div slot="title">Speed</div>
+            </media-playback-rate-menu>
+          </media-settings-menu-item>
+          <media-settings-menu-item>
+            Quality
+            <media-rendition-menu slot="submenu" hidden>
+              <div slot="title">Quality</div>
+            </media-rendition-menu>
+          </media-settings-menu-item>
+          <media-settings-menu-item>
+            Captions
+            <media-captions-menu slot="submenu" hidden>
+              <div slot="title">Captions</div>
+            </media-captions-menu>
+          </media-settings-menu-item>
+          <media-settings-menu-item>
+            Audio
+            <media-audio-track-menu slot="submenu" hidden>
+              <div slot="title">Audio</div>
+            </media-audio-track-menu>
+          </media-settings-menu-item>
+        </media-settings-menu>
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-seek-backward-button seekoffset="30"></media-seek-backward-button>
-          <media-seek-forward-button seekoffset="30"></media-seek-forward-button>
+          <media-seek-backward-button></media-seek-backward-button>
+          <media-seek-forward-button></media-seek-forward-button>
           <media-mute-button></media-mute-button>
-          <media-volume-range></media-volume-range>
+          <media-time-display></media-time-display>
           <media-time-range></media-time-range>
-          <media-time-display showduration remaining></media-time-display>
-          <media-captions-button></media-captions-button>
-          <media-playback-rate-button></media-playback-rate-button>
+          <media-duration-display></media-duration-display>
+          <media-settings-menu-button></media-settings-menu-button>
           <media-pip-button></media-pip-button>
-          <media-fullscreen-button></media-fullscreen-button>
+          <media-cast-button></media-cast-button>
           <media-airplay-button></media-airplay-button>
+          <media-fullscreen-button></media-fullscreen-button>
         </media-control-bar>
       </media-controller>
-      <div class="examples">
-        <a href="./">View more examples</a>
-      </div>
     </main>
+
+    <p>
+      Quality: <span id="renditionactive">N/A</span>
+    </p>
+
+    <p>
+      Audio: <span id="audioactive">N/A</span>
+    </p>
+
+    <script type="module">
+      video.addEventListener('emptied', () => {
+        renditionactive.textContent = 'N/A';
+        audioactive.textContent = 'N/A';
+      });
+
+      video.addEventListener('resize', () => {
+        renditionactive.textContent = `${Math.min(video.videoWidth, video.videoHeight)}p`;
+      });
+
+      video.audioTracks.addEventListener('change', () => {
+        audioactive.textContent = [...video.audioTracks ?? []].find(a => a.enabled)?.label;
+      });
+    </script>
+
+    <div class="examples">
+      <a href="./">View more examples</a>
+    </div>
   </body>
 </html>

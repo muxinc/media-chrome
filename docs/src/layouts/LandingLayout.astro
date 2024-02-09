@@ -8,11 +8,7 @@ import type { MarkdownHeading } from 'astro';
 const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(/\/$/, '');
 ---
 
-<html
-  dir={'ltr'}
-  lang={'en-us'}
-  class="initial"
->
+<html dir={'ltr'} lang={'en-us'} class="initial">
   <head>
     <HeadCommon />
     <HeadSEO frontmatter={{}} canonicalUrl={canonicalURL} />

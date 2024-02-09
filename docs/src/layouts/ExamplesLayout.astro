@@ -1,0 +1,128 @@
+---
+import { Markdown } from '@astropub/md';
+import MainLayout from './MainLayout.astro';
+import LeftSidebar from '../components/LeftSidebar/LeftSidebar.astro';
+import SandpackContainer from "../components/SandpackContainer.astro";
+
+const {
+  headings,
+  leftSidebar,
+  externalResources,
+  dependencies,
+  files,
+  html,
+  css,
+} = Astro.props as Props;
+
+const currentPage = Astro.url.pathname;
+---
+
+<MainLayout {...Astro.props}>
+  <LeftSidebar slot="left-sidebar" currentPage={currentPage} sidebar={leftSidebar} />
+
+  <slot />
+
+  <SandpackContainer
+    reversed
+    editorHeight="var(--editor-height, 100%)"
+    editorWidthPercentage={45}
+    showLineNumbers={true}
+    showNavigator={false}
+    showTabs={true}
+    dependencies={dependencies}
+    hiddenCss={`
+      body {
+        font-family: system-ui, sans-serif;
+        font-size: .9rem;
+        padding: .5rem 1.2rem 3rem;
+      }
+      ${css ?? ``}
+    `}
+    externalResources={externalResources}
+    files={files}
+    html={html ?? ``}
+  />
+</MainLayout>
+
+<style>
+  .left-sidebar {
+    width: 100%;
+    height: 100%;
+    border-right: 1px solid var(--theme-divider);
+  }
+</style>
+
+<style is:global>
+  :root:not(.theme-dark) {
+    --theme-code-bg: white;
+  }
+
+  .content-title {
+    display: none;
+  }
+
+  #layout {
+    --max-width: 100%;
+    grid-template-columns: 0 minmax(0, var(--max-width)) 0;
+  }
+
+  #layout #grid-main {
+    padding: 0;
+  }
+
+  #layout .sp-container {
+    margin: 0;
+  }
+
+  #layout .sp-preview {
+    height: 100vh;
+  }
+
+  #layout .sp-preview-iframe {
+    aspect-ratio: initial;
+    flex: initial;
+  }
+
+  @media (width < 50em) {
+    .sp-layout {
+      flex-direction: column-reverse;
+      min-width: 100%;
+    }
+
+    .sp-resize-handler {
+      display: none;
+    }
+
+    .sp-editor {
+      flex: 0 1 var(--editor-height) !important;
+      min-width: 100%;
+    }
+
+    #layout .sp-preview {
+      border-bottom: 1px solid var(--theme-divider);
+      overflow: visible;
+      min-width: 100%;
+    }
+  }
+
+  @media (width >= 50em) {
+    #layout {
+      --editor-height: calc(100vh - 80px);
+      grid-template-columns: 18rem minmax(0, var(--max-width));
+      gap: 0;
+    }
+
+    #layout .main-section {
+      height: 100%;
+      margin: 0;
+    }
+
+    .sp-resize-handler {
+      border-left: 1px solid var(--theme-divider);
+    }
+
+    .sp-preview {
+      height: 100%;
+    }
+  }
+</style>

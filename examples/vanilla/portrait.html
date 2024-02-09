@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Portrait Video Usage Example</title>
+    <script type="module" src="../../dist/index.js"></script>
+    <style>
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 360px;       /* allows the container to shrink if small */
+        aspect-ratio: 9 / 16;   /* set container aspect ratio if preload=none */
+      }
+
+      video {
+        width: 100%;      /* prevents video to expand beyond its container */
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+
+      media-airplay-button[mediaairplayunavailable] {
+        display: none;
+      }
+
+      media-volume-range[mediavolumeunavailable] {
+        display: none;
+      }
+
+      media-pip-button[mediapipunavailable] {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome Portrait Video Usage Example</h1>
+
+      <media-controller>
+        <video
+          slot="media"
+          src="https://stream.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM/high.mp4"
+          muted
+          crossorigin
+          playsinline
+        >
+          <track
+            label="thumbnails"
+            default
+            kind="metadata"
+            src="https://image.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM/storyboard.vtt"
+          />
+        </video>
+        <media-poster-image
+          slot="poster"
+          src="https://image.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM/thumbnail.jpg"
+        ></media-poster-image>
+        <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-mute-button></media-mute-button>
+          <media-time-range></media-time-range>
+          <media-time-display remaining></media-time-display>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+      <div class="examples">
+        <a href="./">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>

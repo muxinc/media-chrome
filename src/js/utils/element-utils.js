@@ -1,3 +1,37 @@
+import { MediaStateReceiverAttributes } from '../constants.js';
+
+/** @typedef {import('../media-controller.js').MediaController} MediaController */
+
+/**
+ * Get the media controller element from the `mediacontroller` attribute or closest ancestor.
+ * @param  {HTMLElement} host
+ * @return {MediaController | undefined}
+ */
+export function getMediaController(host) {
+  return (
+    getAttributeMediaController(host) ??
+    closestComposedNode(host, 'media-controller')
+  );
+}
+
+/**
+ * Get the media controller element from the `mediacontroller` attribute.
+ * @param  {HTMLElement} host
+ * @return {MediaController | undefined}
+ */
+export function getAttributeMediaController(host) {
+  const { MEDIA_CONTROLLER } = MediaStateReceiverAttributes;
+  const mediaControllerId = host.getAttribute(MEDIA_CONTROLLER);
+
+  if (mediaControllerId) {
+    return /** @type MediaController */ (
+      /** @type {unknown} */ (
+        getDocumentOrShadowRoot(host)?.getElementById(mediaControllerId)
+      )
+    );
+  }
+}
+
 export const updateIconText = (svg, value, selector = '.value') => {
   const node = svg.querySelector(selector);
 
@@ -64,13 +98,20 @@ export function isElementVisible(element, depth = 3) {
   // @ts-ignore
   if (element.checkVisibility) {
     // @ts-ignore
-    return element.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
+    return element.checkVisibility({
+      checkOpacity: true,
+      checkVisibilityCSS: true,
+    });
   }
   // Check if the element or its ancestors are hidden.
   let el = element;
   while (el && depth > 0) {
     const style = getComputedStyle(el);
-    if (style.opacity === '0' || style.visibility === 'hidden' || style.display === 'none') {
+    if (
+      style.opacity === '0' ||
+      style.visibility === 'hidden' ||
+      style.display === 'none'
+    ) {
       return false;
     }
     el = el.parentElement;
@@ -103,20 +144,34 @@ export function distance(p1, p2) {
 }
 
 /**
- * Get or insert a CSS rule with a selector in an element containing <style> tags.
+ * Get or insert a CSSStyleRule with a selector in an element containing <style> tags.
  * @param  {Element|ShadowRoot} styleParent
  * @param  {string} selectorText
- * @return {CSSStyleRule |
- * { style: {
- * setProperty: () => void,
- * removeProperty: () => void,
- * width?: string,
- * height?: string,
- * display?: string,
- * transform?: string,
- * }}}
+ * @return {CSSStyleRule | {
+ *   style: {
+ *     setProperty: () => void,
+ *     removeProperty: () => void,
+ *     width?: string,
+ *     height?: string,
+ *     display?: string,
+ *     transform?: string,
+ *   },
+ *   selectorText: string,
+ * }}
  */
 export function getOrInsertCSSRule(styleParent, selectorText) {
+  const cssRule = getCSSRule(styleParent, (st) => st === selectorText);
+  if (cssRule) return cssRule;
+  return insertCSSRule(styleParent, selectorText);
+}
+
+/**
+ * Get a CSSStyleRule with a selector in an element containing <style> tags.
+ * @param  {Element|ShadowRoot} styleParent
+ * @param  {(selectorText) => boolean} predicate
+ * @return {CSSStyleRule | undefined}
+ */
+export function getCSSRule(styleParent, predicate) {
   let style;
   // @ts-ignore
   for (style of styleParent.querySelectorAll('style')) {
@@ -129,21 +184,24 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
     } catch {
       continue;
     }
-    for (let rule of cssRules ?? [])
-      if (rule.selectorText === selectorText) return rule;
+    for (let rule of cssRules ?? []) {
+      if (predicate(rule.selectorText)) return rule;
+    }
   }
-  // If there is no style sheet return an empty style rule.
-  if (!style?.sheet) {
-    return {
-      style: {
-        setProperty: () => {},
-        removeProperty: () => {},
-      },
-    };
-  }
+}
 
-  style.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
-  return style.sheet.cssRules[style.sheet.cssRules.length - 1];
+/**
+ * Insert a CSSStyleRule with a selector in an element containing <style> tags.
+ * @param  {Element|ShadowRoot} styleParent
+ * @param  {string} selectorText
+ * @return {CSSStyleRule | undefined}
+ */
+export function insertCSSRule(styleParent, selectorText) {
+  const styles = styleParent.querySelectorAll('style') ?? [];
+  const style = styles?.[styles.length - 1];
+
+  style?.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
+  return /** @type {CSSStyleRule} */(style.sheet.cssRules?.[style.sheet.cssRules.length - 1]);
 }
 
 /**

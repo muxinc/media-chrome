@@ -102,7 +102,7 @@ template.innerHTML = /*html*/`
        * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
        */ ''
     }
-    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator)) {
+    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([hidden])) {
       pointer-events: auto;
     }
 
@@ -144,7 +144,7 @@ template.innerHTML = /*html*/`
     }
 
     ${/* Only add these if auto hide is not disabled */ ''}
-    ::slotted(:not([slot=media]):not([${Attributes.NO_AUTOHIDE}])) {
+    ::slotted(:not([slot=media]):not([${Attributes.NO_AUTOHIDE}]):not([hidden])) {
       opacity: 1;
       transition: opacity 0.25s;
     }
@@ -168,6 +168,14 @@ template.innerHTML = /*html*/`
     ${/* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''}
     :host(:not([${Attributes.AUDIO}])[${MediaUIAttributes.MEDIA_HAS_PLAYED}]) slot[name=poster] {
       display: none;
+    }
+
+    ::slotted([role="menu"]) {
+      align-self: end;
+    }
+
+    ::slotted([role="dialog"]) {
+      align-self: center;
     }
   </style>
 
@@ -260,6 +268,7 @@ class MediaContainer extends globalThis.HTMLElement {
       .filter(name => ![
         MediaUIAttributes.MEDIA_RENDITION_LIST,
         MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST,
+        MediaUIAttributes.MEDIA_CHAPTERS_CUES,
       ].includes(name));
   }
 
@@ -363,7 +372,9 @@ class MediaContainer extends globalThis.HTMLElement {
       chainedSlot.addEventListener('slotchange', () => {
         const slotEls = chainedSlot.assignedElements({ flatten: true });
         if (!slotEls.length) {
-          this.mediaUnsetCallback(this.#currentMedia);
+          if (this.#currentMedia) {
+            this.mediaUnsetCallback(this.#currentMedia);
+          }
           return;
         }
         if (this.media && this.media !== this.#currentMedia) {

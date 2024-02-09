@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Settings Menu</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"></script>
+    <script type="module" src="../../../dist/index.js"></script>
+    <script type="module" src="../../../dist/experimental/menu/index.js"></script>
+    <style>
+      /* Hide custom elements that are not defined yet */
+      :not(:defined) {
+        display: none;
+      }
+
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 540px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
+      mux-video {
+        width: 100%;      /* prevents video to expand beyond its container */
+        height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
+      }
+
+      media-settings-menu-item[aria-haspopup]:is(
+        :not([submenusize]),
+        [submenusize="0"],
+        [submenusize="1"]
+      ) {
+        display: none;
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>MediaSettingsMenu</h1>
+
+    <h2>Toggling menu-item children</h2>
+
+    <media-controller defaultsubtitles>
+      <mux-video
+        slot="media"
+        src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
+        poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
+        stream-type="on-demand"
+        preload="none"
+        playsinline
+        crossorigin
+      ></mux-video>
+      <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+      <media-settings-menu anchor="auto" hidden>
+        <media-settings-menu-item>
+          Speed
+          <media-playback-rate-menu slot="submenu" hidden>
+            <div slot="title">Speed</div>
+          </media-playback-rate-menu>
+        </media-settings-menu-item>
+        <media-settings-menu-item>
+          Quality
+          <media-rendition-menu slot="submenu" hidden>
+            <div slot="title">Quality</div>
+          </media-rendition-menu>
+        </media-settings-menu-item>
+        <media-settings-menu-item>
+          Captions
+          <media-captions-menu slot="submenu" hidden>
+            <div slot="title">Captions</div>
+          </media-captions-menu>
+        </media-settings-menu-item>
+      </media-settings-menu>
+      <media-control-bar>
+        <media-play-button></media-play-button>
+        <media-mute-button></media-mute-button>
+        <media-time-range></media-time-range>
+        <media-time-display></media-time-display>
+        <media-settings-menu-button></media-settings-menu-button>
+        <media-pip-button></media-pip-button>
+        <media-fullscreen-button></media-fullscreen-button>
+      </media-control-bar>
+    </media-controller>
+
+    <h1>MediaChromeDialog</h1>
+
+    <h2>menu children</h2>
+
+    <media-controller defaultsubtitles>
+      <mux-video
+        slot="media"
+        src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
+        poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
+        preload="metadata"
+        muted
+        crossorigin
+      ></mux-video>
+      <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+      <media-chrome-dialog
+        id="settings"
+        style="position: absolute; top: 5%;"
+        hidden
+      >
+        <media-captions-menu>
+          <div slot="header">Captions</div>
+        </media-captions-menu>
+        <media-rendition-menu>
+          <div slot="header">Quality</div>
+        </media-rendition-menu>
+        <media-playback-rate-menu>
+          <div slot="header">Playback Speed</div>
+        </media-playback-rate-menu>
+      </media-chrome-dialog>
+      <media-control-bar>
+        <media-play-button></media-play-button>
+        <media-mute-button></media-mute-button>
+        <media-time-range></media-time-range>
+        <media-time-display></media-time-display>
+        <media-rendition-selectmenu></media-rendition-selectmenu>
+        <!-- Link menu button and menu with invoketarget<->id -->
+        <media-settings-menu-button invoketarget="settings"></media-settings-menu-button>
+        <media-fullscreen-button></media-fullscreen-button>
+      </media-control-bar>
+    </media-controller>
+
+    <div class="examples">
+      <a href="../">View more examples</a>
+    </div>
+  </body>
+</html>

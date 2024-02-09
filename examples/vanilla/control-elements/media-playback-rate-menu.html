@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <title>Media Chrome Playback Rate Menu</title>
+    <script type="module" src="../../../dist/index.js"></script>
+    <script type="module" src="../../../dist/experimental/menu/index.js"></script>
+    <style>
+      /* Hide custom elements that are not defined yet */
+      :not(:defined) {
+        display: none;
+      }
+
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 540px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
+      video {
+        width: 100%;      /* prevents video to expand beyond its container */
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- The main tag is used to exclude other body content in https://www.media-chrome.org/docs/en/examples -->
+    <main>
+      <h1>Playback Rate Menu</h1>
+
+      <h2>Column layout w/ custom icon</h2>
+
+      <media-controller>
+        <video
+          id="video"
+          slot="media"
+          src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+          poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.webp"
+          preload="metadata"
+          muted
+          crossorigin
+        ></video>
+        <media-playback-rate-menu anchor="auto" hidden>
+          <!-- Custom checked indicator icon -->
+          <span slot="checked-indicator" class="checked-icon">
+            <style>
+              .checked-icon {
+                box-sizing: border-box;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                border: 1.5px solid currentcolor;
+                width: 9px;
+                height: 9px;
+                margin-top: -.14em;
+                vertical-align: middle;
+                border-radius: 50%;
+              }
+
+              [aria-checked="true"] .checked-icon::after {
+                content: '';
+                display: block;
+                width: 4px;
+                height: 4px;
+                border-radius: 8px;
+                background: currentcolor;
+              }
+            </style>
+          </span>
+        </media-playback-rate-menu>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-time-display showduration></media-time-display>
+          <media-time-range></media-time-range>
+          <media-mute-button></media-mute-button>
+          <media-playback-rate-menu-button></media-playback-rate-menu-button>
+          <media-pip-button></media-pip-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+
+      <br>
+
+      <h2>Row layout w/ header</h2>
+
+      <media-controller id="mc">
+        <video
+          id="video"
+          slot="media"
+          src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"
+          poster="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/thumbnail.webp"
+          preload="metadata"
+          muted
+          crossorigin
+        ></video>
+        <media-playback-rate-menu anchor="auto" hidden style="--media-menu-layout: row;">
+          <div slot="header">
+            <style>
+              kbd {
+                color: #000;
+                background-color: #fff;
+                padding-inline: .3em;
+                line-height: 1;
+                border-radius: 3px;
+              }
+            </style>
+            Playback Speed <kbd>s</kbd>
+          </div>
+        </media-playback-rate-menu>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-time-display showduration></media-time-display>
+          <media-time-range></media-time-range>
+          <media-mute-button></media-mute-button>
+          <media-playback-rate-menu-button></media-playback-rate-menu-button>
+          <media-pip-button></media-pip-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+    </main>
+
+    <br>
+
+    <media-playback-rate-menu mediacontroller="mc">
+      <!-- Custom checked indicator icon -->
+      <span slot="checked-indicator" class="checked-icon">
+        <style>
+          .checked-icon {
+            box-sizing: border-box;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border: 1.5px solid currentcolor;
+            width: 9px;
+            height: 9px;
+            margin-top: -.14em;
+            vertical-align: middle;
+            border-radius: 50%;
+          }
+
+          [aria-checked="true"] .checked-icon::after {
+            content: '';
+            display: block;
+            width: 4px;
+            height: 4px;
+            border-radius: 8px;
+            background: currentcolor;
+          }
+        </style>
+      </span>
+    </media-playback-rate-menu>
+
+    <div class="examples">
+      <a href="../">View more examples</a>
+    </div>
+  </body>
+</html>

@@ -4,32 +4,25 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome - Microvideo Theme</title>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
-
     <script type="module" src="../../../dist/index.js"></script>
     <script type="module" src="../../../src/js/themes/microvideo.js"></script>
-  </head>
-  <body>
+
     <style>
-      html {
-        height: 100%;
-      }
       body {
-        min-height: 80%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        padding-bottom: 3rem;
+        max-width: 800px;
       }
+
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-theme-microvideo {
         display: block;         /* expands the container if preload=none */
-        max-width: 800px;
-        line-height: 0;
+        max-width: 720px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
+
       label {
         display: block;
       }
+
       .auto-grid {
         --auto-grid-min-size: 20rem;
         display: grid;
@@ -37,9 +30,11 @@
         grid-gap: 1rem;
       }
     </style>
+  </head>
+  <body>
+    <!-- The main tag is used to exclude other body content in https://www.media-chrome.org/docs/en/examples -->
     <main>
       <h1>Media Chrome - Microvideo Theme</h1>
-      <br>
 
       <media-theme-microvideo id="theme">
         <video
@@ -63,120 +58,119 @@
           />
         </video>
       </media-theme-microvideo>
+    </main>
 
-      <div class="auto-grid">
-        <div>
-          <h3>Choose <code>streamtype</code>:</h3>
-          <label>
-            <input type="radio" name="streamtype" value="on-demand" checked>
-            on-demand
-          </label>
-          <label>
-            <input type="radio" name="streamtype" value="live">
-            live
-          </label>
-        </div>
-
-        <div>
-          <h3>Choose <code>targetlivewindow</code>:</h3>
-          <label>
-            <input type="radio" name="targetlivewindow" value="0" checked>
-            0
-          </label>
-          <label>
-            <input type="radio" name="targetlivewindow" value="1">
-            1
-          </label>
-        </div>
-
-        <div>
-          <h3>Choose <code>controlbarvertical</code>:</h3>
-          <label>
-            <input type="radio" name="controlbarvertical" value="" checked>
-            false
-          </label>
-          <label>
-            <input type="radio" name="controlbarvertical" value="1">
-            true
-          </label>
-        </div>
-
-        <div>
-          <h3>Choose <code>controlbarplace</code>:</h3>
-          <label>
-            <input type="radio" name="controlbarplace" value="start start">
-            start start
-          </label>
-          <label>
-            <input type="radio" name="controlbarplace" value="start center">
-            start center
-          </label>
-          <label>
-            <input type="radio" name="controlbarplace" value="start end">
-            start end
-          </label>
-          <label>
-            <input type="radio" name="controlbarplace" value="center start">
-            center start
-          </label>
-          <label>
-            <input type="radio" name="controlbarplace" value="center center">
-            center center
-          </label>
-          <label>
-            <input type="radio" name="controlbarplace" value="center end">
-            center end
-          </label>
-          <label>
-            <input type="radio" name="controlbarplace" value="end start">
-            end start
-          </label>
-          <label>
-            <input type="radio" name="controlbarplace" value="end center" checked>
-            end center
-          </label>
-          <label>
-            <input type="radio" name="controlbarplace" value="end end">
-            end end
-          </label>
-        </div>
+    <div class="auto-grid">
+      <div>
+        <h3>Choose <code>streamtype</code>:</h3>
+        <label>
+          <input type="radio" name="streamtype" value="on-demand" checked>
+          on-demand
+        </label>
+        <label>
+          <input type="radio" name="streamtype" value="live">
+          live
+        </label>
       </div>
 
-      <script>
+      <div>
+        <h3>Choose <code>targetlivewindow</code>:</h3>
+        <label>
+          <input type="radio" name="targetlivewindow" value="0" checked>
+          0
+        </label>
+        <label>
+          <input type="radio" name="targetlivewindow" value="1">
+          1
+        </label>
+      </div>
+
+      <div>
+        <h3>Choose <code>controlbarvertical</code>:</h3>
+        <label>
+          <input type="radio" name="controlbarvertical" value="" checked>
+          false
+        </label>
+        <label>
+          <input type="radio" name="controlbarvertical" value="1">
+          true
+        </label>
+      </div>
+
+      <div>
+        <h3>Choose <code>controlbarplace</code>:</h3>
+        <label>
+          <input type="radio" name="controlbarplace" value="start start">
+          start start
+        </label>
+        <label>
+          <input type="radio" name="controlbarplace" value="start center">
+          start center
+        </label>
+        <label>
+          <input type="radio" name="controlbarplace" value="start end">
+          start end
+        </label>
+        <label>
+          <input type="radio" name="controlbarplace" value="center start">
+          center start
+        </label>
+        <label>
+          <input type="radio" name="controlbarplace" value="center center">
+          center center
+        </label>
+        <label>
+          <input type="radio" name="controlbarplace" value="center end">
+          center end
+        </label>
+        <label>
+          <input type="radio" name="controlbarplace" value="end start">
+          end start
+        </label>
+        <label>
+          <input type="radio" name="controlbarplace" value="end center" checked>
+          end center
+        </label>
+        <label>
+          <input type="radio" name="controlbarplace" value="end end">
+          end end
+        </label>
+      </div>
+    </div>
+
+    <script>
+      const search = new URLSearchParams(location.search);
+      search.forEach((value, key) => {
+        if (key.startsWith('--')) {
+          theme.style.setProperty(key, value);
+        } else if (value) {
+          theme.setAttribute(key, value);
+        } else {
+          theme.removeAttribute(key);
+        }
+        document.querySelector(`[name="${key}"][value="${value}"]`).checked = !!value;
+      });
+
+      document.addEventListener('change', (e) => {
         const search = new URLSearchParams(location.search);
-        search.forEach((value, key) => {
-          if (key.startsWith('--')) {
-            theme.style.setProperty(key, value);
-          } else if (value) {
-            theme.setAttribute(key, value);
-          } else {
-            theme.removeAttribute(key);
-          }
-          document.querySelector(`[name="${key}"][value="${value}"]`).checked = !!value;
-        });
 
-        document.addEventListener('change', (e) => {
-          const search = new URLSearchParams(location.search);
+        if (e.target.name.startsWith('--')) {
+          theme.style.setProperty(e.target.name, e.target.value);
+          search.set(e.target.name, e.target.value);
 
-          if (e.target.name.startsWith('--')) {
-            theme.style.setProperty(e.target.name, e.target.value);
-            search.set(e.target.name, e.target.value);
+        } else if (e.target.value) {
+          theme.setAttribute(e.target.name, e.target.value);
+          search.set(e.target.name, e.target.value);
 
-          } else if (e.target.value) {
-            theme.setAttribute(e.target.name, e.target.value);
-            search.set(e.target.name, e.target.value);
+        } else {
+          theme.removeAttribute(e.target.name);
+          search.delete(e.target.name);
+        }
 
-          } else {
-            theme.removeAttribute(e.target.name);
-            search.delete(e.target.name);
-          }
-
-          const url = new URL(window.location.href);
-          url.search = search;
-          history.pushState({}, '', url);
-        });
-      </script>
-
-    </main>
+        const url = new URL(window.location.href);
+        url.search = search;
+        history.pushState({}, '', url);
+      });
+    </script>
   </body>
 </html>

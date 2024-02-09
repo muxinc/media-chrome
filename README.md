@@ -10,7 +10,7 @@
 
 [![npm version](https://img.shields.io/npm/v/media-chrome?style=flat-square&color=success)](http://npmjs.org/media-chrome) 
 [![size](https://img.shields.io/bundlephobia/minzip/media-chrome?label=size&style=flat-square)](https://bundlephobia.com/result?p=media-chrome) 
-[![slack](https://img.shields.io/badge/slack-%23media--chrome-pink?style=flat-square)](https://video-dev.fly.dev/)
+[![slack](https://img.shields.io/badge/slack-%23media--chrome-pink?style=flat-square)](https://www.video-dev.org/)
 
 Your media player's dancing suit. :man_dancing:
 

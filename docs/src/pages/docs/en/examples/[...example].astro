@@ -1,0 +1,268 @@
+---
+import { parse, serialize } from "parse5"
+import type { GetStaticPathsOptions, Page } from "astro"
+import ExamplesLayout from "/src/layouts/ExamplesLayout.astro"
+import * as path from "node:path"
+import { getImportedUrls } from "/src/scripts/get-imported-urls.js"
+
+export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
+  return [
+    {
+      params: { example: undefined },
+      props: {
+        title: 'Basic Video',
+        group: 'Introduction',
+        sourcePath: 'examples/vanilla/basic-video.html',
+      }
+    },
+    {
+      params: { example: 'basic-audio' },
+      props: {
+        title: 'Basic Audio',
+        group: 'Introduction',
+        sourcePath: 'examples/vanilla/basic-audio.html',
+      }
+    },
+    {
+      params: { example: 'advanced-video' },
+      props: {
+        title: 'Advanced Video',
+        group: 'Introduction',
+        sourcePath: 'examples/vanilla/advanced.html',
+      }
+    },
+    {
+      params: { example: 'animated-controls' },
+      props: {
+        title: 'Animated Controls',
+        group: 'Introduction',
+        sourcePath: 'examples/vanilla/animated-icons.html',
+      }
+    },
+    {
+      params: { example: 'casting' },
+      props: {
+        title: 'Casting',
+        group: 'Introduction',
+        sourcePath: 'examples/vanilla/casting.html',
+      }
+    },
+    {
+      params: { example: 'portrait' },
+      props: {
+        title: 'Portrait',
+        group: 'Introduction',
+        sourcePath: 'examples/vanilla/portrait.html',
+      }
+    },
+    // TODO: import VTT files in Sandpack
+    // {
+    //   params: { example: 'captions-menu' },
+    //   props: {
+    //     title: 'Captions Menu',
+    //     group: 'Controls',
+    //     sourcePath: 'examples/vanilla/control-elements/media-captions-menu.html',
+    //   }
+    // },
+    {
+      params: { example: 'rendition-menu' },
+      props: {
+        title: 'Rendition Menu',
+        group: 'Controls',
+        sourcePath: 'examples/vanilla/control-elements/media-rendition-menu.html',
+      }
+    },
+    {
+      params: { example: 'audio-track-menu' },
+      props: {
+        title: 'Audio Track Menu',
+        group: 'Controls',
+        sourcePath: 'examples/vanilla/control-elements/media-audio-track-menu.html',
+      }
+    },
+    {
+      params: { example: 'playback-rate-menu' },
+      props: {
+        title: 'Playback Rate Menu',
+        group: 'Controls',
+        sourcePath: 'examples/vanilla/control-elements/media-playback-rate-menu.html',
+      }
+    },
+    {
+      params: { example: 'minimal-theme' },
+      props: {
+        title: 'Minimal Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/minimal-theme.html',
+      }
+    },
+    {
+      params: { example: 'microvideo-theme' },
+      props: {
+        title: 'Microvideo Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/microvideo-theme.html',
+      }
+    },
+    {
+      params: { example: 'demuxed-2022-theme' },
+      props: {
+        title: 'Demuxed 2022 Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/demuxed-2022-theme.html',
+      }
+    },
+    {
+      params: { example: 'youtube-theme' },
+      props: {
+        title: 'Youtube Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/youtube-theme.html',
+      }
+    },
+    {
+      params: { example: 'netflix-theme' },
+      props: {
+        title: 'Netflix Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/netflix-theme.html',
+      }
+    },
+    {
+      params: { example: 'spotify-theme' },
+      props: {
+        title: 'Spotify Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/spotify-theme.html',
+      }
+    },
+  ]
+}
+
+let leftSidebar =
+  groupBy(getStaticPaths({}).map(({ params, props }) => {
+    return {
+      link: `docs/en/examples${params.example ? `/${params.example}` : ''}`,
+      text: props.title,
+      group: props.group,
+    }
+  }), 'group')
+
+function groupBy(xs, key) {
+  return xs.reduce((rv, x) => {
+    (rv[x[key]] = rv[x[key]] || []).push(x)
+    return rv
+  }, {})
+}
+
+let { example } = Astro.params
+let { title, description, sourcePath } = Astro.props
+
+title = title ?? "Examples"
+description = description ?? "Editable examples of Media Chrome"
+
+const exampleFilePath = path.resolve(`../${sourcePath}`)
+const exampleFileBase = path.basename(exampleFilePath)
+
+const htmlString = String(await fs.promises.readFile(exampleFilePath))
+const document = parse(htmlString)
+
+const html = document.childNodes.find(node => node.nodeName === 'html')
+const head = html.childNodes.find(node => node.nodeName === 'head')
+const body = html.childNodes.find(node => node.nodeName === 'body')
+const main = body.childNodes.find(node => node.nodeName === 'main')
+
+const scripts = head.childNodes
+  .filter(node => node.nodeName === 'script' && node.attrs.find(attr => attr.name === 'src' && attr.value))
+  .map(node => ({
+    type: node.attrs.find(attr => attr.name === 'type')?.value,
+    src: node.attrs.find(attr => attr.name === 'src').value,
+  }))
+
+const css = head.childNodes
+  .filter(node => node.nodeName === 'style')
+  .map(node => node.childNodes[0].value)
+  .join('\n')
+
+const validScripts = scripts.filter(({ src }) => {
+  return !src.endsWith('/dist/index.js') && /^\.(\.?)\//.test(src)
+})
+
+const externalModules = scripts.filter(({ type, src }) => {
+  return type === 'module' && /^https?:\/\//.test(src)
+}).map(({ src }) => src)
+
+const externalResources = scripts.filter(({ type, src }) => {
+  return !type && /^https?:\/\//.test(src)
+}).map(({ src }) => src)
+
+const repoRootDir = path.resolve('../')
+
+const files = {}
+try {
+  for (let { src } of validScripts) {
+    const baseDir = src.includes('/src/js/') ? path.resolve(process.cwd(), '../src/js/') :
+      src.includes('/dist/') ? path.resolve(process.cwd(), '../dist/') :
+      path.resolve(process.cwd(), '../');
+
+    const urls = await getImportedUrls(path.join(path.dirname(exampleFilePath), src), baseDir)
+
+    for (let [index, url] of Object.entries([...urls])) {
+      const filePath = path.join(baseDir, url)
+
+      files[url] = {
+        code: String(await fs.promises.readFile(filePath)),
+        hidden: index > 0,
+        disableImport: index > 0,
+      }
+    }
+  }
+} catch (err) {
+  console.error(err)
+}
+
+let trimSpaces = 6
+let content = main
+
+if (!content) {
+  content = body
+  trimSpaces = 4
+}
+
+// Remove div.examples tag
+const examplesDivIndex = content.childNodes.findIndex(node => node.nodeName === 'div' &&
+  node.attrs.find(attr => attr.name === 'class' && attr.value === 'examples'))
+
+if (examplesDivIndex !== -1) {
+  content.childNodes.splice(examplesDivIndex, 1)
+}
+
+const dependencies = {};
+for (const url of externalModules) {
+  const matches = url.match(/\/npm\/(@?[^/]*?\/?[^@]+)@?([^/]*?)\//)
+  const [, name, version] = matches ?? []
+  if (name) dependencies[name] = version ?? 'latest'
+}
+
+const esmScripts = externalModules
+  .map(url => `<script type="module" src="${url}"></script>`)
+  .join('\n')
+
+const contentHTML = `${esmScripts ?
+  `${esmScripts}\n\n` : ''}${serialize(content)
+    ?.replace(new RegExp(`^ {${trimSpaces}}`, 'gm'), '')
+    ?.trim()}`
+---
+
+<ExamplesLayout
+  frontmatter={{ title, description }}
+  rightSidebar={false}
+  leftSidebar={leftSidebar}
+  externalResources={externalResources}
+  dependencies={dependencies}
+  files={files}
+  html={contentHTML}
+  css={css}
+>
+  <nav aria-labelledby="grid-left" slot="left-sidebar"></nav>
+</ExamplesLayout>

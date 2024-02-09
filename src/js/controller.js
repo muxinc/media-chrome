@@ -503,20 +503,33 @@ export const MediaUIStates = {
     textTracksEvents: ['addtrack', 'removetrack'],
   },
   MEDIA_SUBTITLES_SHOWING: {
-    get: function (controller) {
+    get: function (controller, event) {
       // NOTE: A bit hacky, but this ensures that HAS-style textTracks (e.g. from mux-video)
       // will also respect `defaultsubtitles` (CJP)
       if (
         controller.hasAttribute('defaultsubtitles') &&
-        !controller.hasAttribute(MediaUIAttributes.MEDIA_HAS_PLAYED) &&
-        !controller.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING)
+        ['addtrack', 'removetrack'].includes(event?.type) &&
+        [TextTrackKinds.CAPTIONS, TextTrackKinds.SUBTITLES].includes(event?.track?.kind)
       ) {
-        MediaUIRequestHandlers.MEDIA_TOGGLE_SUBTITLES_REQUEST(undefined, undefined, controller);
+        MediaUIRequestHandlers.MEDIA_TOGGLE_SUBTITLES_REQUEST(undefined, { detail: true }, controller);
       }
       return getShowingSubtitleTracks(controller).map(({ kind, label, language }) => ({ kind, label, language }));
     },
     mediaEvents: ['loadstart'],
     textTracksEvents: ['addtrack', 'removetrack', 'change'],
+  },
+  MEDIA_CHAPTERS_CUES: {
+    get: function (controller) {
+      const { media } = controller;
+      if (!media) return [];
+
+      const [chaptersTrack] = getTextTracksList(media, { kind: TextTrackKinds.CHAPTERS });
+
+      return Array.from(chaptersTrack?.cues  ?? [])
+        .map((/** @type VTTCue */{ text, startTime, endTime }) => ({ text, startTime, endTime }));
+    },
+    mediaEvents: ['loadstart'],
+    textTracksEvents: ['addtrack', 'removetrack'],
   },
   MEDIA_RENDITION_LIST: {
     get: function (controller) {
@@ -763,57 +776,44 @@ export const MediaUIRequestHandlers = {
 
     // if time is null, then we're done previewing and want to remove the attributes
     if (time === null) {
-      controller.propagateMediaState(
-        MediaUIAttributes.MEDIA_PREVIEW_TIME,
-        undefined
-      );
-    }
-    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, time);
-
-    const [track] = getTextTracksList(media, {
-      kind: TextTrackKinds.METADATA,
-      label: 'thumbnails',
-    });
-    // No thumbnails track (yet) or no cues available in thumbnails track, so bail early.
-    if (!(track && track.cues)) return;
-
-    // if time is null, then we're done previewing and want to remove the attributes
-    if (time === null) {
-      controller.propagateMediaState(
-        MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
-        undefined
-      );
-      controller.propagateMediaState(
-        MediaUIAttributes.MEDIA_PREVIEW_COORDS,
-        undefined
-      );
+      controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, undefined);
+      controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, undefined);
+      controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, undefined);
       return;
     }
 
-    const cue = Array.prototype.find.call(
-      track.cues,
-      (c) => c.startTime >= time
-    );
+    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, time);
 
-    // No corresponding cue, so bail early
-    if (!cue) return;
+    const [chaptersTrack] = getTextTracksList(media, {
+      kind: TextTrackKinds.CHAPTERS
+    });
+
+    const chapterCue = /** @type VTTCue */ (Array.from(chaptersTrack?.cues ?? [])
+      .find((c) => c.startTime <= time && c.endTime > time));
+
+    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_CHAPTER, chapterCue?.text);
+
+    const [thumbsTrack] = getTextTracksList(media, {
+      kind: TextTrackKinds.METADATA,
+      label: 'thumbnails',
+    });
+
+    const thumbCue = /** @type VTTCue */ (Array.from(thumbsTrack?.cues ?? [])
+      .find((c) => c.startTime >= time));
+
+    if (!thumbCue) return;
 
     // Since this isn't really "global state", we may want to consider moving this "down" to the component level,
     // probably pulled out into its own module/set of functions (CJP)
-    const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
+    const base = !/'^(?:[a-z]+:)?\/\//i.test(thumbCue?.text ?? '')
       ? // @ts-ignore
         media.querySelector('track[label="thumbnails"]')?.src
       : undefined;
-    const url = new URL(cue.text, base);
-    const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-    controller.propagateMediaState(
-      MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
-      url.href
-    );
-    controller.propagateMediaState(
-      MediaUIAttributes.MEDIA_PREVIEW_COORDS,
-      previewCoordsStr.split(',')
-    );
+
+    const url = new URL(thumbCue?.text ?? './', base);
+    const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh') ?? '';
+    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, url.href);
+    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, previewCoordsStr.split(','));
   },
   MEDIA_SHOW_SUBTITLES_REQUEST: (_media, event, controller) => {
     const tracks = getSubtitleTracks(controller);
@@ -843,13 +843,13 @@ export const MediaUIRequestHandlers = {
     const showingSubitleTracks = getShowingSubtitleTracks(controller);
     const subtitlesShowing = !!showingSubitleTracks.length;
     // If there are no tracks, this request doesn't matter, so we're done.
-    // If we already have showing subtitles and we want to force toggle "on", there's nothing left to do.
-    // If there are no showing subtitles and we want to force toggle "off", we're already done.
-    if (!tracks.length || (subtitlesShowing && force) || (!subtitlesShowing && force === false)) return;
+    if (!tracks.length) return;
 
-    if (subtitlesShowing) {
+    // NOTE: not early bailing on forced cases so we may pick up async cases of toggling on, particularly for HAS-style
+    // (e.g. HLS) media where we may not get our preferred subtitles lang until later (CJP)
+    if (force === false || (subtitlesShowing && force !== true)) {
       updateTracksModeTo(TextTrackModes.DISABLED, tracks, showingSubitleTracks);
-    } else {
+    } else if (force === true || (!subtitlesShowing && force !== false)) {
       let subTrack = tracks[0];
       if (!controller?.hasAttribute('nosubtitleslangpref')) {
         const subtitlesPref = globalThis.localStorage.getItem('media-chrome-pref-subtitles-lang');
@@ -872,6 +872,7 @@ export const MediaUIRequestHandlers = {
         }
       }
       const { language, label, kind } = subTrack;
+      updateTracksModeTo(TextTrackModes.DISABLED, tracks, showingSubitleTracks);
       updateTracksModeTo(
         TextTrackModes.SHOWING,
         tracks,

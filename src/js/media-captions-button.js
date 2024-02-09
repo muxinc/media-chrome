@@ -73,11 +73,11 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
       updateAriaChecked(this);
     }
-
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**
