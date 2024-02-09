@@ -9,29 +9,11 @@
         box-sizing: border-box;
       }
 
-      /* Hide custom elements that are not defined yet */
-      :not(:defined) {
-        display: none;
-      }
-
       /* Needed in the docs Codesandbox which uses JS to build HTML
         and shows the animations on page load */
       media-controller[userinactive] [slot="icon"] * {
         transition: none !important;
         animation-duration: 0.001s !important;
-      }
-
-      media-controller:not([audio]) {
-        display: block;
-        max-width: 640px;
-        aspect-ratio: 2.4;
-        --media-range-track-height: 6px;
-        --media-range-track-border-radius: 9999px;
-        --media-range-thumb-opacity: 0;
-      }
-
-      video {
-        width: 100%;
       }
 
       .examples {
@@ -44,6 +26,32 @@
       <h1>Media Chrome - Animated Icons Example</h1>
 
       <style>
+        /* Hide custom elements that are not defined yet */
+        :not(:defined) {
+          display: none;
+        }
+
+        media-controller:not([audio]) {
+          display: block;
+          max-width: 640px;
+          aspect-ratio: 2.4;
+          --media-range-track-height: 6px;
+          --media-range-track-border-radius: 9999px;
+          --media-range-thumb-opacity: 0;
+        }
+
+        video {
+          width: 100%;
+        }
+
+        media-volume-range[mediavolumeunavailable],
+        media-airplay-button[mediaairplayunavailable],
+        media-fullscreen-button[mediafullscreenunavailable],
+        media-cast-button[mediacastunavailable],
+        media-pip-button[mediapipunavailable] {
+          display: none;
+        }
+
         :is(media-time-range, media-volume-range)::part(appearance) {
           transition: all .15s ease-out;
         }
