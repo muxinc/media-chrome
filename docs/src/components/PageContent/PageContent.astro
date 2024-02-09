@@ -10,16 +10,16 @@ type Props = {
   githubEditUrl: string;
 };
 
-const { frontmatter, headings, githubEditUrl } = Astro.props as Props;
+const { frontmatter, headings, githubEditUrl, rightSidebar } = Astro.props as Props;
 const title = frontmatter.title;
 ---
 
 <article id="article" class="content">
   <section class="main-section">
     {title ? <h1 class="content-title" id="overview">{title}</h1> : ''}
-    <nav class="block sm:hidden">
+    {rightSidebar !== false && <nav class="block sm:hidden">
       <TableOfContents client:media="(max-width: 50em)" headings={headings} />
-    </nav>
+    </nav>}
     <slot />
   </section>
   <nav class="block sm:hidden">
@@ -42,6 +42,7 @@ const title = frontmatter.title;
 
   .block {
     display: block;
+    margin-bottom: 2rem;
   }
 
   @media (min-width: 50em) {
