@@ -1,3 +1,12 @@
+## [2.2.1](https://github.com/muxinc/media-chrome/compare/v2.2.0...v2.2.1) (2024-02-09)
+
+
+### Bug Fixes
+
+* missing sheet typeerror ([#812](https://github.com/muxinc/media-chrome/issues/812)) ([9f119fc](https://github.com/muxinc/media-chrome/commit/9f119fc4705c7276cb7ebf99e962215c9171e422))
+
+
+
 # [2.2.0](https://github.com/muxinc/media-chrome/compare/v2.1.0...v2.2.0) (2024-02-09)
 
 
