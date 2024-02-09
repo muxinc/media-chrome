@@ -22,6 +22,7 @@ import MediaPosterImage from './media-poster-image.js';
 import MediaSeekBackwardButton from './media-seek-backward-button.js';
 import MediaPreviewTimeDisplay from './media-preview-time-display.js';
 import MediaPreviewThumbnail from './media-preview-thumbnail.js';
+import MediaPreviewChapterDisplay from './media-preview-chapter-display.js';
 import MediaTimeRange from './media-time-range.js';
 import MediaLoadingIndicator from './media-loading-indicator.js';
 import MediaVolumeRange from './media-volume-range.js';
@@ -48,6 +49,7 @@ export {
   MediaSeekBackwardButton,
   MediaPreviewTimeDisplay,
   MediaPreviewThumbnail,
+  MediaPreviewChapterDisplay,
   MediaTimeRange,
   MediaLoadingIndicator,
   MediaVolumeRange,

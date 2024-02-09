@@ -1,5 +1,8 @@
-import { MediaChromeRange } from './media-chrome-range.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
+import { MediaChromeRange } from './media-chrome-range.js';
+import './media-preview-thumbnail.js';
+import './media-preview-time-display.js';
+import './media-preview-chapter-display.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
@@ -50,6 +53,7 @@ template.innerHTML = /*html*/`
       left: 0;
       bottom: 100%;
       pointer-events: none;
+      will-change: transform;
     }
 
     [part~="box"] {
@@ -121,8 +125,40 @@ template.innerHTML = /*html*/`
       }
     }
 
+    media-preview-chapter-display,
+    ::slotted(media-preview-chapter-display) {
+      display: none;
+      line-height: 1.3;
+      min-width: 0;
+      ${/* delay changing these CSS props until the preview box transition is ended */''}
+      transition: min-width 0s, border-radius 0s, margin 0s, padding 0s;
+      transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
+      background: var(--media-preview-chapter-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      border-radius: var(--media-preview-chapter-border-radius,
+        var(--media-preview-border-radius) var(--media-preview-border-radius)
+        var(--media-preview-border-radius) var(--media-preview-border-radius));
+      padding: var(--media-preview-chapter-padding, 4px 10px);
+      margin: var(--media-preview-chapter-margin, 0 0 5px);
+      text-shadow: var(--media-preview-chapter-text-shadow, 0 0 4px rgb(0 0 0 / .75));
+    }
+
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-chapter-display,
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) ::slotted(media-preview-chapter-display) {
+      transition-delay: var(--media-preview-transition-delay-in, .25s);
+      border-radius: var(--media-preview-chapter-border-radius, 0);
+      padding: var(--media-preview-chapter-padding, 4px 10px 0);
+      margin: var(--media-preview-chapter-margin, 0);
+      min-width: 100%;
+    }
+
+    media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}]:not([${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}=""]),
+    ::slotted(media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}]:not([${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}=""])) {
+      display: initial;
+    }
+
     media-preview-time-display,
     ::slotted(media-preview-time-display) {
+      line-height: 1.3;
       min-width: 0;
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: min-width 0s, border-radius 0s;
@@ -131,7 +167,7 @@ template.innerHTML = /*html*/`
       border-radius: var(--media-preview-time-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));
-      padding: var(--media-preview-time-padding, 1px 10px 0);
+      padding: var(--media-preview-time-padding, 4px 10px);
       margin: var(--media-preview-time-margin, 0 0 10px);
       text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / .75));
     }
@@ -139,14 +175,19 @@ template.innerHTML = /*html*/`
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-time-display,
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) ::slotted(media-preview-time-display) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
-      min-width: 100%;
       border-radius: var(--media-preview-time-border-radius,
         0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
+      min-width: 100%;
+    }
+
+    :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
+      --media-time-range-hover-display: block;
     }
   </style>
   <div id="preview-rail">
     <slot name="preview" part="box preview-box">
       <media-preview-thumbnail></media-preview-thumbnail>
+      <media-preview-chapter-display></media-preview-chapter-display>
       <media-preview-time-display></media-preview-time-display>
     </slot>
   </div>
@@ -204,6 +245,12 @@ const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
  * @cssproperty --media-preview-thumbnail-border-radius - `border-radius` of range preview thumbnail.
  * @cssproperty --media-preview-thumbnail-border - `border` of range preview thumbnail.
  *
+ * @cssproperty --media-preview-chapter-background - `background` of range preview chapter display.
+ * @cssproperty --media-preview-chapter-border-radius - `border-radius` of range preview chapter display.
+ * @cssproperty --media-preview-chapter-padding - `padding` of range preview chapter display.
+ * @cssproperty --media-preview-chapter-margin - `margin` of range preview chapter display.
+ * @cssproperty --media-preview-chapter-text-shadow - `text-shadow` of range preview chapter display.
+ *
  * @cssproperty --media-preview-time-background - `background` of range preview time display.
  * @cssproperty --media-preview-time-border-radius - `border-radius` of range preview time display.
  * @cssproperty --media-preview-time-padding - `padding` of range preview time display.
@@ -220,6 +267,7 @@ class MediaTimeRange extends MediaChromeRange {
       MediaUIAttributes.MEDIA_CURRENT_TIME,
       MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
       MediaUIAttributes.MEDIA_PREVIEW_TIME,
+      MediaUIAttributes.MEDIA_PREVIEW_CHAPTER,
       MediaUIAttributes.MEDIA_BUFFERED,
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
       MediaUIAttributes.MEDIA_LOADING,
@@ -230,10 +278,12 @@ class MediaTimeRange extends MediaChromeRange {
   #rootNode;
   #animation;
   #boxes;
+  #previewTime;
   #previewBox;
   #currentBox;
   #boxPaddingLeft;
   #boxPaddingRight;
+  #mediaChaptersCues;
 
   constructor() {
     super();
@@ -300,6 +350,10 @@ class MediaTimeRange extends MediaChromeRange {
     else if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
       this.updateBufferedBar();
     }
+
+    if (attrName === MediaUIAttributes.MEDIA_DURATION) {
+      this.mediaChaptersCues = this.#mediaChaptersCues;
+    }
   }
 
   #toggleRangeAnimation() {
@@ -323,6 +377,19 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.range.valueAsNumber = value;
     this.updateBar();
+  }
+
+  get mediaChaptersCues() {
+    return this.#mediaChaptersCues;
+  }
+
+  set mediaChaptersCues(value) {
+    this.#mediaChaptersCues = value;
+
+    this.updateSegments(this.#mediaChaptersCues?.map(c => ({
+      start: calcRangeValueFromTime(this, c.startTime),
+      end: calcRangeValueFromTime(this, c.endTime),
+    })));
   }
 
   /**
@@ -579,7 +646,12 @@ class MediaTimeRange extends MediaChromeRange {
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
     style.transform = `translateX(${boxPos})`;
 
-    this.#previewRequest(pointerRatio * duration);
+    // At least require a 1s difference before requesting a new preview thumbnail.
+    const diff = Math.round(this.#previewTime) - Math.round(pointerRatio * duration);
+    if (Math.abs(diff) < 1) return;
+
+    this.#previewTime = pointerRatio * duration;
+    this.#previewRequest(this.#previewTime);
   }
 
   #previewRequest(detail) {

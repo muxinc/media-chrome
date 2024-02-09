@@ -58,6 +58,7 @@ export const MediaUIProps = {
   MEDIA_PREVIEW_TIME: 'mediaPreviewTime',
   MEDIA_PREVIEW_IMAGE: 'mediaPreviewImage',
   MEDIA_PREVIEW_COORDS: 'mediaPreviewCoords',
+  MEDIA_PREVIEW_CHAPTER: 'mediaPreviewChapter',
   MEDIA_LOADING: 'mediaLoading',
   MEDIA_BUFFERED: 'mediaBuffered',
   MEDIA_STREAM_TYPE: 'mediaStreamType',
@@ -67,6 +68,7 @@ export const MediaUIProps = {
   MEDIA_RENDITION_SELECTED: 'mediaRenditionSelected',
   MEDIA_AUDIO_TRACK_LIST: 'mediaAudioTrackList',
   MEDIA_AUDIO_TRACK_ENABLED: 'mediaAudioTrackEnabled',
+  MEDIA_CHAPTERS_CUES: 'mediaChaptersCues',
 };
 
 const MediaUIPropsEntries = /** @type {[keyof MediaUIProps, string][]} */ (

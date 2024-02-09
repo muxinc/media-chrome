@@ -268,6 +268,7 @@ class MediaContainer extends globalThis.HTMLElement {
       .filter(name => ![
         MediaUIAttributes.MEDIA_RENDITION_LIST,
         MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST,
+        MediaUIAttributes.MEDIA_CHAPTERS_CUES,
       ].includes(name));
   }
 

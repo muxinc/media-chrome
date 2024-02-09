@@ -16,6 +16,9 @@ const documentShim = {
   createElement: function () {
     return new globalThisShim.HTMLElement();
   },
+  createElementNS: function () {
+    return new globalThisShim.HTMLElement();
+  },
   addEventListener() {},
   removeEventListener() {},
 };
@@ -74,6 +77,7 @@ export const GlobalThis = isServer && !isShimmed ? globalThisShim : globalThis;
 /**
   * @type { document & { webkitExitFullscreen? } |
   * {createElement,
+  * createElementNS?,
   * activeElement?,
   * fullscreenElement?,
   * webkitExitFullscreen?,

@@ -518,6 +518,19 @@ export const MediaUIStates = {
     mediaEvents: ['loadstart'],
     textTracksEvents: ['addtrack', 'removetrack', 'change'],
   },
+  MEDIA_CHAPTERS_CUES: {
+    get: function (controller) {
+      const { media } = controller;
+      if (!media) return [];
+
+      const [chaptersTrack] = getTextTracksList(media, { kind: TextTrackKinds.CHAPTERS });
+
+      return Array.from(chaptersTrack?.cues  ?? [])
+        .map((/** @type VTTCue */{ text, startTime, endTime }) => ({ text, startTime, endTime }));
+    },
+    mediaEvents: ['loadstart'],
+    textTracksEvents: ['addtrack', 'removetrack'],
+  },
   MEDIA_RENDITION_LIST: {
     get: function (controller) {
       const { media } = controller;
@@ -763,57 +776,44 @@ export const MediaUIRequestHandlers = {
 
     // if time is null, then we're done previewing and want to remove the attributes
     if (time === null) {
-      controller.propagateMediaState(
-        MediaUIAttributes.MEDIA_PREVIEW_TIME,
-        undefined
-      );
-    }
-    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, time);
-
-    const [track] = getTextTracksList(media, {
-      kind: TextTrackKinds.METADATA,
-      label: 'thumbnails',
-    });
-    // No thumbnails track (yet) or no cues available in thumbnails track, so bail early.
-    if (!(track && track.cues)) return;
-
-    // if time is null, then we're done previewing and want to remove the attributes
-    if (time === null) {
-      controller.propagateMediaState(
-        MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
-        undefined
-      );
-      controller.propagateMediaState(
-        MediaUIAttributes.MEDIA_PREVIEW_COORDS,
-        undefined
-      );
+      controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, undefined);
+      controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, undefined);
+      controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, undefined);
       return;
     }
 
-    const cue = Array.prototype.find.call(
-      track.cues,
-      (c) => c.startTime >= time
-    );
+    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_TIME, time);
 
-    // No corresponding cue, so bail early
-    if (!cue) return;
+    const [chaptersTrack] = getTextTracksList(media, {
+      kind: TextTrackKinds.CHAPTERS
+    });
+
+    const chapterCue = /** @type VTTCue */ (Array.from(chaptersTrack?.cues ?? [])
+      .find((c) => c.startTime <= time && c.endTime > time));
+
+    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_CHAPTER, chapterCue?.text);
+
+    const [thumbsTrack] = getTextTracksList(media, {
+      kind: TextTrackKinds.METADATA,
+      label: 'thumbnails',
+    });
+
+    const thumbCue = /** @type VTTCue */ (Array.from(thumbsTrack?.cues ?? [])
+      .find((c) => c.startTime >= time));
+
+    if (!thumbCue) return;
 
     // Since this isn't really "global state", we may want to consider moving this "down" to the component level,
     // probably pulled out into its own module/set of functions (CJP)
-    const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
+    const base = !/'^(?:[a-z]+:)?\/\//i.test(thumbCue?.text ?? '')
       ? // @ts-ignore
         media.querySelector('track[label="thumbnails"]')?.src
       : undefined;
-    const url = new URL(cue.text, base);
-    const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-    controller.propagateMediaState(
-      MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
-      url.href
-    );
-    controller.propagateMediaState(
-      MediaUIAttributes.MEDIA_PREVIEW_COORDS,
-      previewCoordsStr.split(',')
-    );
+
+    const url = new URL(thumbCue?.text ?? './', base);
+    const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh') ?? '';
+    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_IMAGE, url.href);
+    controller.propagateMediaState(MediaUIAttributes.MEDIA_PREVIEW_COORDS, previewCoordsStr.split(','));
   },
   MEDIA_SHOW_SUBTITLES_REQUEST: (_media, event, controller) => {
     const tracks = getSubtitleTracks(controller);

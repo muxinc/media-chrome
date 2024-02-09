@@ -1,6 +1,7 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { getOrInsertCSSRule, getPointProgressOnLine } from './utils/element-utils.js';
+import { insertCSSRule, getOrInsertCSSRule, getPointProgressOnLine } from './utils/element-utils.js';
+import { observeResize, unobserveResize } from './utils/resize-observer.js';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/`
@@ -113,6 +114,8 @@ template.innerHTML = /*html*/`
       justify-content: center;
       width: 100%;
       position: absolute;
+      ${/* Required for Safari to stop glitching track height on hover */''}
+      will-change: transform;
     }
 
     #background,
@@ -139,35 +142,33 @@ template.innerHTML = /*html*/`
       overflow: hidden;
     }
 
-    #progress {
-      background: var(--media-range-bar-color, var(--media-primary-color, rgb(238 238 238)));
-      border-radius: var(--media-range-track-border-radius, 1px);
-      transition: var(--media-range-track-transition);
+    #progress,
+    #highlight,
+    #pointer {
       position: absolute;
       height: 100%;
+      will-change: width;
     }
 
-    #highlight {
-      border-radius: var(--media-range-track-border-radius, 1px);
-      position: absolute;
-      height: 100%;
+    #progress {
+      background: var(--media-range-bar-color, var(--media-primary-color, rgb(238 238 238)));
+      transition: var(--media-range-track-transition);
     }
 
     #pointer {
       background: var(--media-range-track-pointer-background);
       border-right: var(--media-range-track-pointer-border-right);
-      border-radius: var(--media-range-track-border-radius, 1px);
       transition: visibility .25s, opacity .25s;
       visibility: hidden;
       opacity: 0;
-      position: absolute;
-      height: 100%;
     }
 
-    :host(:hover) #pointer {
-      transition: visibility .5s, opacity .5s;
-      visibility: visible;
-      opacity: 1;
+    @media (hover: hover) {
+      :host(:hover) #pointer {
+        transition: visibility .5s, opacity .5s;
+        visibility: visible;
+        opacity: 1;
+      }
     }
 
     #thumb {
@@ -189,6 +190,38 @@ template.innerHTML = /*html*/`
     :host([disabled]) #thumb {
       background-color: #777;
     }
+
+    .segments #appearance {
+      height: var(--media-range-segment-hover-height, 7px);
+    }
+
+    #background,
+    #track {
+      clip-path: url(#segments-clipping);
+    }
+
+    #segments {
+      --segments-gap: var(--media-range-segments-gap, 2px);
+      position: absolute;
+      width: 100%;
+      height: 100%;
+    }
+
+    #segments-clipping {
+      transform: translateX(calc(var(--segments-gap) / 2));
+    }
+
+    #segments-clipping:empty {
+      display: none;
+    }
+
+    #segments-clipping rect {
+      height: var(--media-range-track-height, 4px);
+      y: calc((var(--media-range-segment-hover-height, 7px) - var(--media-range-track-height, 4px)) / 2);
+      transition: var(--media-range-segment-transition, transform .1s ease-in-out);
+      transform: var(--media-range-segment-transform, scaleY(1));
+      transform-origin: center;
+    }
   </style>
   <div id="leftgap"></div>
   <div id="container">
@@ -202,6 +235,7 @@ template.innerHTML = /*html*/`
         <div id="progress"></div>
       </div>
       <div id="thumb"></div>
+      <svg id="segments"><clipPath id="segments-clipping"></clipPath></svg>
     </div>
     <input id="range" type="range" min="0" max="1" step="any" value="0">
   </div>
@@ -268,6 +302,8 @@ class MediaChromeRange extends globalThis.HTMLElement {
   #isInputTarget;
   #startpoint;
   #endpoint;
+  #cssRules = {};
+  #segments = [];
 
   static get observedAttributes() {
     return [
@@ -288,6 +324,10 @@ class MediaChromeRange extends globalThis.HTMLElement {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
 
+    this.#cssRules.pointer = getOrInsertCSSRule(this.shadowRoot, '#pointer');
+    this.#cssRules.progress = getOrInsertCSSRule(this.shadowRoot, '#progress');
+    this.#cssRules.thumb = getOrInsertCSSRule(this.shadowRoot, '#thumb');
+
     this.container = this.shadowRoot.querySelector('#container');
     this.#startpoint = this.shadowRoot.querySelector('#startpoint');
     this.#endpoint = this.shadowRoot.querySelector('#endpoint');
@@ -295,6 +335,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
     /** @type {Omit<HTMLInputElement, "value" | "min" | "max"> &
       * {value: number, min: number, max: number}} */
     this.range = this.shadowRoot.querySelector('#range');
+    this.appearance = this.shadowRoot.querySelector('#appearance');
   }
 
   #onFocusIn = () => {
@@ -351,6 +392,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.shadowRoot.addEventListener('focusout', this.#onFocusOut);
 
     this.#enableUserEvents();
+    observeResize(this.container, this.#updateComputedStyles);
   }
 
   disconnectedCallback() {
@@ -362,27 +404,87 @@ class MediaChromeRange extends globalThis.HTMLElement {
 
     this.shadowRoot.removeEventListener('focusin', this.#onFocusIn);
     this.shadowRoot.removeEventListener('focusout', this.#onFocusOut);
+    unobserveResize(this.container, this.#updateComputedStyles);
+  }
+
+  #updateComputedStyles = () => {
+    // This fixes a Chrome bug where it doesn't refresh the clip-path on content resize.
+    const clipping = this.shadowRoot.querySelector('#segments-clipping');
+    if (clipping) clipping.parentNode.append(clipping);
   }
 
   updatePointerBar(evt) {
-    // Get mouse position percent
-    const rangeRect = this.range.getBoundingClientRect();
-    let mousePercent = (evt.clientX - rangeRect.left) / rangeRect.width;
-    // Lock between 0 and 1
-    mousePercent = Math.max(0, Math.min(1, mousePercent)) * 100;
-
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#pointer');
-    style.setProperty('width', `${mousePercent}%`);
+    this.#cssRules.pointer.style.setProperty('width', `${this.getPointerRatio(evt) * 100}%`);
   }
 
   updateBar() {
     const rangePercent = this.range.valueAsNumber * 100;
+    this.#cssRules.progress.style.setProperty('width', `${rangePercent}%`);
+    this.#cssRules.thumb.style.setProperty('left', `${rangePercent}%`);
+  }
 
-    const progressRule = getOrInsertCSSRule(this.shadowRoot, '#progress');
-    const thumbRule = getOrInsertCSSRule(this.shadowRoot, '#thumb');
+  updateSegments(segments) {
+    const clipping = this.shadowRoot.querySelector('#segments-clipping');
+    clipping.textContent = '';
 
-    progressRule.style.setProperty('width', `${rangePercent}%`);
-    thumbRule.style.setProperty('left', `${rangePercent}%`);
+    if (!segments?.length) return;
+
+    this.#cssRules.activeSegment = insertCSSRule(this.shadowRoot, '#segments-clipping rect:nth-child(0)');
+
+    this.container.classList.toggle('segments', !!segments.length);
+
+    const normalized = [...new Set([
+      +this.range.min,
+      ...segments.flatMap(s => [s.start, s.end]),
+      +this.range.max
+    ])];
+
+    this.#segments = [...normalized];
+
+    const lastMarker = normalized.pop();
+    for (const [i, marker] of normalized.entries()) {
+      const [isFirst, isLast] = [i === 0, i === normalized.length - 1];
+      const x = isFirst ? 'calc(var(--segments-gap) / -1)' : `${marker * 100}%`;
+      const x2 = isLast ? lastMarker : normalized[i + 1];
+      const width = `calc(${(x2 - marker) * 100}%${isFirst || isLast ? '' : ` - var(--segments-gap)`})`;
+
+      const segmentEl = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      const cssRule = getOrInsertCSSRule(this.shadowRoot, `#segments-clipping rect:nth-child(${i + 1})`);
+      cssRule.style.setProperty('x', x);
+      cssRule.style.setProperty('width', width);
+      clipping.append(segmentEl);
+    }
+  }
+
+  #updateActiveSegment(evt) {
+    const rule = this.#cssRules.activeSegment;
+    if (!rule) return;
+
+    const pointerRatio = this.getPointerRatio(evt);
+    const segmentIndex = this.#segments.findIndex((start, i, arr) => {
+      const end = arr[i + 1];
+      return end != null && pointerRatio >= start && pointerRatio <= end;
+    });
+
+    const selectorText = `#segments-clipping rect:nth-child(${segmentIndex + 1})`;
+
+    if (rule.selectorText != selectorText || !rule.style.transform) {
+      rule.selectorText = selectorText;
+      rule.style.setProperty(
+        'transform',
+        'var(--media-range-segment-hover-transform, scaleY(2))'
+      );
+    }
+  }
+
+  getPointerRatio(evt) {
+    let pointerRatio = getPointProgressOnLine(
+      evt.clientX,
+      evt.clientY,
+      this.#startpoint.getBoundingClientRect(),
+      this.#endpoint.getBoundingClientRect(),
+    );
+    return Math.max(0, Math.min(1, pointerRatio));
   }
 
   get dragging() {
@@ -407,6 +509,9 @@ class MediaChromeRange extends globalThis.HTMLElement {
 
   handleEvent(evt) {
     switch (evt.type) {
+      case 'pointermove':
+        this.#handlePointerMove(evt);
+        break;
       case 'input':
         this.updateBar();
         break;
@@ -415,9 +520,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
         break;
       case 'pointerdown':
         this.#handlePointerDown(evt);
-        break;
-      case 'pointermove':
-        this.#handlePointerMove(evt);
         break;
       case 'pointerup':
         this.#handlePointerUp();
@@ -454,26 +556,20 @@ class MediaChromeRange extends globalThis.HTMLElement {
     globalThis.window?.removeEventListener('pointermove', this);
     this.toggleAttribute('dragging', false);
     this.range.disabled = this.hasAttribute('disabled');
+    this.#cssRules.activeSegment?.style.removeProperty('transform');
   }
 
   #handlePointerMove(evt) {
     this.toggleAttribute('dragging', evt.buttons === 1 || evt.pointerType !== 'mouse');
     this.updatePointerBar(evt);
+    this.#updateActiveSegment(evt);
 
     // If the native input target & events are used don't fire manual input events.
     if (this.dragging && (evt.pointerType !== 'mouse' || !this.#isInputTarget)) {
       // Disable native input events if manual events are fired.
       this.range.disabled = true;
 
-      let pointerRatio = getPointProgressOnLine(
-        evt.clientX,
-        evt.clientY,
-        this.#startpoint.getBoundingClientRect(),
-        this.#endpoint.getBoundingClientRect(),
-      );
-      pointerRatio = Math.max(0, Math.min(1, pointerRatio));
-
-      this.range.valueAsNumber = pointerRatio;
+      this.range.valueAsNumber = this.getPointerRatio(evt);
       this.range.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
     }
   }
