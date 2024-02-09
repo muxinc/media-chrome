@@ -366,10 +366,11 @@ class MediaTimeRange extends MediaChromeRange {
 
   #shouldRangeAnimate() {
     return this.isConnected
-      && isElementVisible(this)
       && !this.mediaPaused
       && !this.mediaLoading
-      && !this.mediaEnded;
+      && !this.mediaEnded
+      && this.mediaDuration > 0
+      && isElementVisible(this);
   }
 
   #updateRange = (value) => {
