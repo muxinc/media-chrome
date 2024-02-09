@@ -404,10 +404,16 @@ export const MediaUIStates = {
       return AvailabilityStates.UNAVAILABLE;
     },
     mediaSetCallback(media, callback) {
-      media.remote?.watchAvailability((availability) => callback({ availability }));
+      const isRemotePlaybackDisabled = media.getAttribute('disableRemotePlayback');
+      if(!isRemotePlaybackDisabled) {
+        media.remote?.watchAvailability((availability) => callback({ availability }));
+      }
     },
     mediaUnsetCallback(media) {
-      media.remote?.cancelWatchAvailability();
+      const isRemotePlaybackDisabled = media.getAttribute('disableRemotePlayback');
+      if(!isRemotePlaybackDisabled) {
+        media.remote?.cancelWatchAvailability();
+      }
     },
   },
   MEDIA_CAST_UNAVAILABLE: {
@@ -423,10 +429,16 @@ export const MediaUIStates = {
       return AvailabilityStates.UNAVAILABLE;
     },
     mediaSetCallback(media, callback) {
-      media.remote?.watchAvailability((availability) => callback({ availability }));
+      const isRemotePlaybackDisabled = media.getAttribute('disableRemotePlayback');
+      if(!isRemotePlaybackDisabled) {
+        media.remote?.watchAvailability((availability) => callback({ availability }));
+      }
     },
     mediaUnsetCallback(media) {
-      media.remote?.cancelWatchAvailability();
+      const isRemotePlaybackDisabled = media.getAttribute('disableRemotePlayback');
+      if(!isRemotePlaybackDisabled) {
+        media.remote?.cancelWatchAvailability();
+      }
     },
   },
   MEDIA_FULLSCREEN_UNAVAILABLE: {
