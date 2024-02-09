@@ -1,3 +1,25 @@
+# [2.2.0](https://github.com/muxinc/media-chrome/compare/v2.1.0...v2.2.0) (2024-02-09)
+
+
+### Bug Fixes
+
+* add menu button aria labels ([#800](https://github.com/muxinc/media-chrome/issues/800)) ([2b2843d](https://github.com/muxinc/media-chrome/commit/2b2843d3f1e8589bbf247ee357cbb49059e1b4ab))
+* add way to hide menuitems w/ unfilled submenu ([#801](https://github.com/muxinc/media-chrome/issues/801)) ([cc066c5](https://github.com/muxinc/media-chrome/commit/cc066c56a44701597edf155a5bb952aeb68b6df8))
+* mobile docs nav ([#804](https://github.com/muxinc/media-chrome/issues/804)) ([545d9b8](https://github.com/muxinc/media-chrome/commit/545d9b8d94caa024802f07f5c51acc02e846c4b0)), closes [#772](https://github.com/muxinc/media-chrome/issues/772)
+* **pip-unsupported-apple-pwa:** Detect Apple+Safari+PWA for no PiP su… ([#781](https://github.com/muxinc/media-chrome/issues/781)) ([e17c11e](https://github.com/muxinc/media-chrome/commit/e17c11e6857079c8e481259b9a72aa6a25d599e0))
+* range bug ([#811](https://github.com/muxinc/media-chrome/issues/811)) ([188794a](https://github.com/muxinc/media-chrome/commit/188794a3584bd02b6cb541ac9c01dfa68f9a2050))
+* Safari disableRemotePlayback errors ([#810](https://github.com/muxinc/media-chrome/issues/810)) ([d665e8f](https://github.com/muxinc/media-chrome/commit/d665e8f83a085bbe218535b33a2f30a2531cd553))
+* update animated controls ([#808](https://github.com/muxinc/media-chrome/issues/808)) ([bc7cea3](https://github.com/muxinc/media-chrome/commit/bc7cea35c170d6e0cb652026c058d50770d3e1c0)), closes [#792](https://github.com/muxinc/media-chrome/issues/792)
+
+
+### Features
+
+* add media-chrome-dialog element ([#795](https://github.com/muxinc/media-chrome/issues/795)) ([776a34d](https://github.com/muxinc/media-chrome/commit/776a34d3cd8d67ee580b41f3feaef813b0dab988))
+* add range preview chapters ([#755](https://github.com/muxinc/media-chrome/issues/755)) ([a04fa23](https://github.com/muxinc/media-chrome/commit/a04fa237feefb9e57d0e12c470b33e1e1612c185))
+* add settings-menu ([#788](https://github.com/muxinc/media-chrome/issues/788)) ([a944513](https://github.com/muxinc/media-chrome/commit/a944513575fc26d7363ae43f0d59d0541d23f7d7))
+
+
+
 # [2.1.0](https://github.com/muxinc/media-chrome/compare/v2.0.1...v2.1.0) (2024-01-18)
 
 
