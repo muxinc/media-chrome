@@ -194,7 +194,7 @@ template.innerHTML = /*html*/`
   <div id="container">
     <div id="startpoint"></div>
     <div id="endpoint"></div>
-    <div id="appearance">
+    <div id="appearance" part="appearance">
       <div id="background"></div>
       <div id="track">
         <div id="highlight"></div>
@@ -213,6 +213,8 @@ template.innerHTML = /*html*/`
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
+ *
+ * @csspart appearance - The appearance of the range containing the background, track and thumb.
  *
  * @cssproperty --media-primary-color - Default color of range bar.
  * @cssproperty --media-secondary-color - Default color of range background.
