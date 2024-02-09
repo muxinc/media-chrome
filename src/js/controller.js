@@ -404,15 +404,13 @@ export const MediaUIStates = {
       return AvailabilityStates.UNAVAILABLE;
     },
     mediaSetCallback(media, callback) {
-      const isRemotePlaybackDisabled = media.disableRemotePlayback 
- || media.hasAttribute('disableremoteplayback');
+      const isRemotePlaybackDisabled = media.disableRemotePlayback || media.hasAttribute('disableremoteplayback');
       if (!isRemotePlaybackDisabled) {
         media.remote?.watchAvailability((availability) => callback({ availability }));
       }
     },
     mediaUnsetCallback(media) {
-      const isRemotePlaybackDisabled = media.disableRemotePlayback 
- || media.hasAttribute('disableremoteplayback');
+      const isRemotePlaybackDisabled = media.disableRemotePlayback || media.hasAttribute('disableremoteplayback');
       if (!isRemotePlaybackDisabled) {
         media.remote?.cancelWatchAvailability();
       }
@@ -431,15 +429,13 @@ export const MediaUIStates = {
       return AvailabilityStates.UNAVAILABLE;
     },
     mediaSetCallback(media, callback) {
-      const isRemotePlaybackDisabled = media.disableRemotePlayback 
- || media.hasAttribute('disableremoteplayback');
+      const isRemotePlaybackDisabled = media.disableRemotePlayback || media.hasAttribute('disableremoteplayback');
       if (!isRemotePlaybackDisabled) {
         media.remote?.watchAvailability((availability) => callback({ availability }));
       }
     },
     mediaUnsetCallback(media) {
-      const isRemotePlaybackDisabled = media.disableRemotePlayback 
- || media.hasAttribute('disableremoteplayback');
+      const isRemotePlaybackDisabled = media.disableRemotePlayback || media.hasAttribute('disableremoteplayback');
       if (!isRemotePlaybackDisabled) {
         media.remote?.cancelWatchAvailability();
       }
