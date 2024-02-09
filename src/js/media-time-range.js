@@ -6,7 +6,7 @@ import './media-preview-chapter-display.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { formatAsTimePhrase } from './utils/time.js';
-import { isElementVisible, cachedBoundingClientRect } from './utils/element-utils.js';
+import { isElementVisible } from './utils/element-utils.js';
 import { RangeAnimation } from './utils/range-animation.js';
 import {
   getOrInsertCSSRule,
@@ -591,8 +591,8 @@ class MediaTimeRange extends MediaChromeRange {
         ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
         : this.parentElement) ?? this;
 
-    const rangeRect = cachedBoundingClientRect(this.range);
-    const mediaBoundsRect = cachedBoundingClientRect(bounds);
+    const rangeRect = this.range.getBoundingClientRect();
+    const mediaBoundsRect = bounds.getBoundingClientRect();
     const boxMin = (this.#boxPaddingLeft - (rangeRect.left - mediaBoundsRect.left - boxWidth / 2)) / rangeRect.width * 100;
     const boxMax = (mediaBoundsRect.right - rangeRect.left - boxWidth / 2 - this.#boxPaddingRight) / rangeRect.width * 100;
 
@@ -638,7 +638,7 @@ class MediaTimeRange extends MediaChromeRange {
     // If no duration we can't calculate which time to show
     if (!duration) return;
 
-    const rangeRect = cachedBoundingClientRect(this.range);
+    const rangeRect = this.range.getBoundingClientRect();
     let pointerRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
     pointerRatio = Math.max(0, Math.min(1, pointerRatio));
 

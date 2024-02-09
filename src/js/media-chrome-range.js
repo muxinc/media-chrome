@@ -1,6 +1,6 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { insertCSSRule, getOrInsertCSSRule, getPointProgressOnLine, cachedBoundingClientRect } from './utils/element-utils.js';
+import { insertCSSRule, getOrInsertCSSRule, getPointProgressOnLine } from './utils/element-utils.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
 
 const template = document.createElement('template');
@@ -479,8 +479,8 @@ class MediaChromeRange extends globalThis.HTMLElement {
     let pointerRatio = getPointProgressOnLine(
       evt.clientX,
       evt.clientY,
-      cachedBoundingClientRect(this.#startpoint),
-      cachedBoundingClientRect(this.#endpoint),
+      this.#startpoint.getBoundingClientRect(),
+      this.#endpoint.getBoundingClientRect(),
     );
     return Math.max(0, Math.min(1, pointerRatio));
   }
