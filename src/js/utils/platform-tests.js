@@ -14,7 +14,7 @@ export const getTestMediaEl = () => {
 
 /**
  * Test for volume support
- * 
+ *
  * @param {HTMLMediaElement} mediaEl
  * @returns {Promise<boolean>}
  */
@@ -32,18 +32,27 @@ export const hasVolumeSupportAsync = async (mediaEl = getTestMediaEl()) => {
 //   return volumeSupported;
 // });
 
+// NOTE: This also matches at least some non-Safari UAs on e.g. iOS, such as Chrome, perhaps since
+// these browsers are built on top of the OS-level WebKit browser, so use accordingly (CJP).
+// See, e.g.: https://www.whatismybrowser.com/guides/the-latest-user-agent/chrome
+const isSafari = /.*Version\/.*Safari\/.*/.test(globalThis.navigator.userAgent);
 /**
  * Test for PIP support
- * 
+ *
  * @param {HTMLVideoElement} mediaEl
  * @returns {boolean}
  */
-export const hasPipSupport = (mediaEl = getTestMediaEl()) =>
-  typeof mediaEl?.requestPictureInPicture === 'function';
+export const hasPipSupport = (mediaEl = getTestMediaEl()) => {
+  // NOTE: PWAs for Apple that rely on Safari don't support picture in picture but still have `requestPictureInPicture()`
+  // (which will result in a failed promise). Checking for those conditions here (CJP).
+  // This should still work for macOS PWAs installed using Chrome, where PiP is supported.
+  if (globalThis.matchMedia('(display-mode: standalone)').matches && isSafari) return false;
+  return typeof mediaEl?.requestPictureInPicture === 'function';
+}
 
 /**
  * Test for Fullscreen support
- * 
+ *
  * @param {HTMLVideoElement} mediaEl
  * @returns {boolean}
  */
