@@ -92,9 +92,6 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
-
     this.init?.();
 
     this.#button = this.shadowRoot.querySelector('[part=button]');
@@ -284,6 +281,9 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   }
 
   connectedCallback() {
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
+
     const mediaControllerId = this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
     if (mediaControllerId) {
       // @ts-ignore

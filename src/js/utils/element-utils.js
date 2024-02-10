@@ -202,6 +202,10 @@ export function insertCSSRule(styleParent, selectorText) {
 
   // If there is no style sheet return an empty style rule.
   if (!style?.sheet) {
+    // The style tag must be connected to the DOM before it has a sheet.
+    // This could indicate a bug. Should the code be moved to connectedCallback?
+    console.warn('Media Chrome: No style sheet found on style tag of', styleParent);
+
     return {
       // @ts-ignore
       style: {

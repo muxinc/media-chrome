@@ -96,7 +96,9 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
     this.#slot = this.shadowRoot.querySelector('slot');
     this.#slot.innerHTML = `${formatTimesLabel(this)}`;
+  }
 
+  connectedCallback() {
     const { style } = getOrInsertCSSRule(
       this.shadowRoot,
       ':host(:hover:not([notoggle]))'
@@ -106,9 +108,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
       'background',
       'var(--media-control-hover-background, rgba(50 50 70 / .7))'
     );
-  }
 
-  connectedCallback() {
     if (!this.hasAttribute('disabled')) {
       this.enable();
     }

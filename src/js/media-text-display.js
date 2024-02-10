@@ -80,9 +80,6 @@ class MediaTextDisplay extends globalThis.HTMLElement {
       this.attachShadow({ mode: 'open' });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
-
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -100,6 +97,9 @@ class MediaTextDisplay extends globalThis.HTMLElement {
   }
 
   connectedCallback() {
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
+
     const mediaControllerId = this.getAttribute(
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
