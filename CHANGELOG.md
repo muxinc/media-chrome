@@ -1,3 +1,12 @@
+## [2.2.2](https://github.com/muxinc/media-chrome/compare/v2.2.1...v2.2.2) (2024-02-10)
+
+
+### Bug Fixes
+
+* access sheet before connected to DOM ([#813](https://github.com/muxinc/media-chrome/issues/813)) ([8450868](https://github.com/muxinc/media-chrome/commit/8450868e48280d405b299934fd291c66b009b80e))
+
+
+
 ## [2.2.1](https://github.com/muxinc/media-chrome/compare/v2.2.0...v2.2.1) (2024-02-09)
 
 
