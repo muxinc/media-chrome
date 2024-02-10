@@ -321,13 +321,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
-
-    this.#cssRules.pointer = getOrInsertCSSRule(this.shadowRoot, '#pointer');
-    this.#cssRules.progress = getOrInsertCSSRule(this.shadowRoot, '#progress');
-    this.#cssRules.thumb = getOrInsertCSSRule(this.shadowRoot, '#thumb');
-
     this.container = this.shadowRoot.querySelector('#container');
     this.#startpoint = this.shadowRoot.querySelector('#startpoint');
     this.#endpoint = this.shadowRoot.querySelector('#endpoint');
@@ -377,6 +370,13 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   connectedCallback() {
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
+
+    this.#cssRules.pointer = getOrInsertCSSRule(this.shadowRoot, '#pointer');
+    this.#cssRules.progress = getOrInsertCSSRule(this.shadowRoot, '#progress');
+    this.#cssRules.thumb = getOrInsertCSSRule(this.shadowRoot, '#thumb');
+
     const mediaControllerId = this.getAttribute(
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );

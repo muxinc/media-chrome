@@ -102,7 +102,6 @@ svg, img, ::slotted(svg), ::slotted(img) {
 class MediaLoadingIndicator extends globalThis.HTMLElement {
   #mediaController;
   #delay = DEFAULT_LOADING_DELAY;
-  #style;
 
   static get observedAttributes() {
     return [
@@ -122,9 +121,6 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
       const indicatorHTML = template.content.cloneNode(true);
       shadow.appendChild(indicatorHTML);
     }
-
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    this.#style = style;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -170,7 +166,8 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
   set loadingDelay(delay) {
     this.#delay = delay;
 
-    this.#style.setProperty(
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    style.setProperty(
       '--_loading-indicator-delay',
       `var(--media-loading-indicator-transition-delay, ${delay}ms)`
     );
