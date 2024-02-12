@@ -1,6 +1,6 @@
 import { globalThis, document } from '../../utils/server-safe-globals.js';
 import { InvokeEvent } from '../../utils/events.js';
-import { getDocumentOrShadowRoot } from '../../utils/element-utils.js';
+import { getDocumentOrShadowRoot, containsComposedNode } from '../../utils/element-utils.js';
 
 /** @typedef {import('./media-chrome-menu.js').MediaChromeMenu} MediaChromeMenu */
 
@@ -383,7 +383,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     // Checkable menu items are handled in media-chrome-menu.
     if (isCheckable(this)) return;
 
-    if (this.invokeTargetElement && event.target === this) {
+    if (this.invokeTargetElement && containsComposedNode(this, event.target)) {
       this.invokeTargetElement.dispatchEvent(
         new InvokeEvent({ relatedTarget: this })
       );
