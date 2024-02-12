@@ -1,3 +1,13 @@
+## [2.2.3](https://github.com/muxinc/media-chrome/compare/v2.2.2...v2.2.3) (2024-02-12)
+
+
+### Bug Fixes
+
+* cached CSSStyleRule type error in React ([#816](https://github.com/muxinc/media-chrome/issues/816)) ([616e420](https://github.com/muxinc/media-chrome/commit/616e42089f83c988b08a443cb26a202e22b7ee5b))
+* clicking settings menu items with children ([#815](https://github.com/muxinc/media-chrome/issues/815)) ([92d6d7e](https://github.com/muxinc/media-chrome/commit/92d6d7ebbca83ad9816155a2ed50e0afcdbc9161)), closes [#814](https://github.com/muxinc/media-chrome/issues/814)
+
+
+
 ## [2.2.2](https://github.com/muxinc/media-chrome/compare/v2.2.1...v2.2.2) (2024-02-10)
 
 
