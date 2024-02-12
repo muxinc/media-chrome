@@ -414,13 +414,13 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   updatePointerBar(evt) {
-    this.#cssRules.pointer.style.setProperty('width', `${this.getPointerRatio(evt) * 100}%`);
+    this.#cssRules.pointer?.style.setProperty('width', `${this.getPointerRatio(evt) * 100}%`);
   }
 
   updateBar() {
     const rangePercent = this.range.valueAsNumber * 100;
-    this.#cssRules.progress.style.setProperty('width', `${rangePercent}%`);
-    this.#cssRules.thumb.style.setProperty('left', `${rangePercent}%`);
+    this.#cssRules.progress?.style.setProperty('width', `${rangePercent}%`);
+    this.#cssRules.thumb?.style.setProperty('left', `${rangePercent}%`);
   }
 
   updateSegments(segments) {
