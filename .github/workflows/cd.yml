@@ -47,13 +47,12 @@ jobs:
       CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Fetch all history for all tags and branches
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20
           # this line is required for the setup-node action to be able to run the npm publish below.
           registry-url: 'https://registry.npmjs.org'
       - uses: fregante/setup-git-user@v1
