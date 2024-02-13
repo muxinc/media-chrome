@@ -93,6 +93,9 @@
     "sinon": "^14.0.1",
     "typescript": "^4.8.4"
   },
+  "resolutions": {
+    "source-map": "^0.7.4"
+  },
   "prettier": {
     "trailingComma": "es5",
     "tabWidth": 2,

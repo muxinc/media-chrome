@@ -101,7 +101,7 @@ class MediaController extends MediaContainer {
         e.stopPropagation();
 
         if (!this.media) {
-          console.warn('MediaController: No media available.');
+          console.warn('Media Chrome: No media available.');
           return;
         }
 
@@ -136,7 +136,7 @@ class MediaController extends MediaContainer {
     if (attrName === Attributes.NO_HOTKEYS) {
       if (newValue !== oldValue && newValue === '') {
         if (this.hasAttribute(Attributes.HOTKEYS)) {
-          console.warn('Both `hotkeys` and `nohotkeys` have been set. All hotkeys will be disabled.');
+          console.warn('Media Chrome: Both `hotkeys` and `nohotkeys` have been set. All hotkeys will be disabled.');
         }
         this.disableHotkeys();
 
@@ -170,13 +170,13 @@ class MediaController extends MediaContainer {
   }
 
   connectedCallback() {
-    // mediaSetCallback() is called in super.connectedCallback();
-    super.connectedCallback();
-
     // getRootNode() in disconnectedCallback returns the media-controller element itself
     // but we need the HTMLDocument or ShadowRoot if media-controller is in a shadow DOM.
     // We store the correct root node here so we can access it later.
     this.#rootNode = /** @type HTMLDocument | ShadowRoot */ (this.getRootNode());
+
+    // mediaSetCallback() is called in super.connectedCallback();
+    super.connectedCallback();
 
     this.enableHotkeys();
   }
@@ -267,7 +267,7 @@ class MediaController extends MediaContainer {
         const volPref = globalThis.localStorage.getItem('media-chrome-pref-volume');
         if (volPref !== null) media.volume = volPref;
       } catch (e) {
-        console.debug('Error getting volume pref', e);
+        console.debug('Media Chrome: Error getting volume pref', e);
       }
     }
   }
