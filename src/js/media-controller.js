@@ -232,12 +232,7 @@ class MediaController extends MediaContainer {
       });
 
       rootEvents?.forEach((eventName) => {
-        // If there is no root node something is wrong.
-        if (this.#rootNode) {
-          this.#rootNode.addEventListener(eventName, handler);
-        } else {
-          console.warn('Media Chrome: Could not add event listeners to root node.', eventName);
-        }
+        this.#rootNode?.addEventListener(eventName, handler);
         handler();
       });
 
@@ -303,12 +298,7 @@ class MediaController extends MediaContainer {
       });
 
       rootEvents?.forEach((eventName) => {
-        // If there is no root node something is wrong.
-        if (this.#rootNode) {
-          this.#rootNode.removeEventListener(eventName, handler);
-        } else {
-          console.warn('Media Chrome: Could not remove event listeners from root node.', eventName);
-        }
+        this.#rootNode?.removeEventListener(eventName, handler);
       });
 
       textTracksEvents?.forEach((eventName) => {

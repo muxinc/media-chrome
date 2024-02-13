@@ -418,21 +418,18 @@ class MediaContainer extends globalThis.HTMLElement {
     // Anything "falsy" couldn't act as a media element.
     if (!media) return;
 
+    this.#currentMedia = media;
+
     // Custom element. Wait until it's defined before resolving
     if (media.localName.includes('-')) {
       await globalThis.customElements.whenDefined(media.localName);
     }
 
-    // If we are not connected to the DOM after this await we don't need to
-    // call mediaSetCallback because the UI is not visible.
-    if (!this.isConnected) {
-      return;
-    }
+    // Even if we are not connected to the DOM after this await still call mediaSetCallback
+    // so the media state is already computed once, then when the container is connected
+    // to the DOM mediaSetCallback is called again to attach the root node event listeners.
 
-    if (media !== this.#currentMedia) {
-      this.#currentMedia = media;
-      this.mediaSetCallback(media);
-    }
+    this.mediaSetCallback(media);
   }
 
   connectedCallback() {
