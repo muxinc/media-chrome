@@ -419,7 +419,7 @@ class MediaContainer extends globalThis.HTMLElement {
     if (!media) return;
 
     // Custom element. Wait until it's defined before resolving
-    if (media.localName.includes('-') && !globalThis.customElements.get(media.localName)) {
+    if (media.localName.includes('-')) {
       await globalThis.customElements.whenDefined(media.localName);
     }
 
