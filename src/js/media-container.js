@@ -324,10 +324,9 @@ class MediaContainer extends globalThis.HTMLElement {
           // No need to inject anything if media=null
           if (media) {
             mutation.addedNodes.forEach((node) => {
-              if (node === media && media !== this.#currentMedia) {
+              if (node === media) {
                 // Update all controls with new media if this is the new media
-                this.handleMediaUpdated(media)
-                  .then((media) => this.mediaSetCallback(media));
+                this.handleMediaUpdated(media);
               }
             });
           }
@@ -377,10 +376,7 @@ class MediaContainer extends globalThis.HTMLElement {
           }
           return;
         }
-        if (this.media && this.media !== this.#currentMedia) {
-          this.handleMediaUpdated(this.media)
-            .then((media) => this.mediaSetCallback(media));
-        }
+        this.handleMediaUpdated(this.media);
       });
     }
   }
@@ -419,29 +415,24 @@ class MediaContainer extends globalThis.HTMLElement {
    * @param {HTMLMediaElement} media
    */
   async handleMediaUpdated(media) {
-    this.#currentMedia = media;
-
-    const rejectMediaPromise = (media) => {
-      this.#currentMedia = null;
-
-      console.error(
-        'Media Chrome: Media element set with slot="media" does not appear to be compatible.',
-        media
-      );
-      return Promise.reject(media);
-    };
-
-    // Anything "falsy" couldn't act as a media element. Reject.
-    if (!media) {
-      return rejectMediaPromise(media);
-    }
+    // Anything "falsy" couldn't act as a media element.
+    if (!media) return;
 
     // Custom element. Wait until it's defined before resolving
-    if (media.localName.includes('-')) {
+    if (media.localName.includes('-') && !globalThis.customElements.get(media.localName)) {
       await globalThis.customElements.whenDefined(media.localName);
     }
 
-    return media;
+    // If we are not connected to the DOM after this await we don't need to
+    // call mediaSetCallback because the UI is not visible.
+    if (!this.isConnected) {
+      return;
+    }
+
+    if (media !== this.#currentMedia) {
+      this.#currentMedia = media;
+      this.mediaSetCallback(media);
+    }
   }
 
   connectedCallback() {
@@ -450,10 +441,7 @@ class MediaContainer extends globalThis.HTMLElement {
     this.setAttribute('role', 'region');
     this.setAttribute('aria-label', label);
 
-    if (this.media && this.media !== this.#currentMedia) {
-      this.handleMediaUpdated(this.media)
-        .then((media) => this.mediaSetCallback(media));
-    }
+    this.handleMediaUpdated(this.media);
 
     // Assume user is inactive until they're not (aka userinactive by default is true)
     // This allows things like autoplay and programmatic playing to also initiate hiding controls (CJP)
@@ -485,10 +473,11 @@ class MediaContainer extends globalThis.HTMLElement {
   mediaSetCallback(media) {} // eslint-disable-line
 
   /**
-   * @abstract
    * @param {HTMLMediaElement} media
    */
-  mediaUnsetCallback(media) {} // eslint-disable-line
+  mediaUnsetCallback(media) { // eslint-disable-line
+    this.#currentMedia = null;
+  }
 
   handleEvent(event) {
     switch (event.type) {
