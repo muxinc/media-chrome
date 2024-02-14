@@ -17,10 +17,10 @@ jobs:
       - run: yarn lint
 
       # Install playwright after linting, so that we have a faster linting process.
-      # Caching logic from https://github.com/microsoft/playwright/issues/7249#issuecomment-1385567519
+      # Caching logic adapted from https://github.com/microsoft/playwright/issues/7249#issuecomment-1385567519
       - name: Store Playwright's Version
         run: |
-          PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//')
+          PLAYWRIGHT_VERSION=$(npm view @web/test-runner-playwright dependencies.playwright)
           echo "Playwright's Version: $PLAYWRIGHT_VERSION"
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
