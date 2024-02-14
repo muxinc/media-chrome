@@ -6,7 +6,7 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
     inputs:
-      version_type:
+      version:
         type: choice
         required: true
         description: Version
@@ -15,32 +15,29 @@ on:
         - patch
         - minor
         - major
-        - prepatch
-        - preminor
-        - premajor
         - prerelease
-      tag_type:
+        - from-package
+        - from-git
+      prerelease:
         type: choice
-        required: true
-        description: npm release tag
+        description: Pre-release
         options:
-        - latest
+        -
         - canary
-        - next
-      preid_type:
-        type: choice
-        required: true
-        description: Prerelease identifier
-        options:
-        - none
-        - rc
         - beta
-        - alpha
+      dryrun:
+        description: 'Dry-run'
+        type: boolean
+
+run-name: Deploy ${{ inputs.version }} ${{ inputs.dryrun && '--dry-run' || '' }} ${{ inputs.prerelease && format('--prerelease {0}', inputs.prerelease) || '' }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: production
+    permissions:
+      contents: write
+      id-token: write
 
     env:
       NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -61,7 +58,9 @@ jobs:
       - run: yarn test
       - run: yarn manifest
       - run: yarn build
-      - run: npm run publish-release -- ${{ inputs.version_type }} --tag ${{ inputs.tag_type }} --preid ${{ inputs.preid_type }}
-        if: ${{ inputs.version_type != 'conventional' }}
-      - run: npm run publish-release -- --tag ${{ inputs.tag_type }} --preid ${{ inputs.preid_type }}
-        if: ${{ inputs.version_type == 'conventional' }}
+      - run: npx --yes wet-run@1.0.3 release ${{ inputs.version }} ${{ inputs.dryrun && '--dry-run' || '' }} ${{ inputs.prerelease && format('--prerelease {0}', inputs.prerelease) || '' }} --provenance --changelog --github-release --verbose
+      - name: Get NPM version
+        id: npm-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+      - name: Released ${{ steps.npm-version.outputs.current-version}} ✨
+        run: echo ${{ steps.npm-version.outputs.current-version}}
