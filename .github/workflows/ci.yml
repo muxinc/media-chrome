@@ -3,9 +3,8 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -16,17 +15,61 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: yarn install --frozen-lockfile
       - run: yarn lint
-      # install playwright after linting, so that we have a faster linting process
-      - name: Install playwright browsers
-        run: npx playwright install --with-deps
+
+      # Install Playwright after linting, so that we have a faster linting process.
+      # Caching logic adapted from https://github.com/microsoft/playwright/issues/7249#issuecomment-1385567519
+      - name: Store Playwright's Version
+        run: |
+          PLAYWRIGHT_VERSION=$(npm view @web/test-runner-playwright dependencies.playwright)
+          echo "Playwright's Version: $PLAYWRIGHT_VERSION"
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+
+      - name: Cache Playwright Browsers for Playwright's Version
+        id: cache-playwright-browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
+
+      - run: npx playwright install --with-deps
+        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+      - run: npx playwright install-deps
+        if: steps.cache-playwright-browsers.outputs.cache-hit == 'true'
+
       - run: yarn test --all
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         with:
           verbose: true
       - run: yarn manifest
       - run: yarn build
-      - run: npm run publish-release -- canary
-        if: ${{ github.ref == 'refs/heads/main' }}
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  canary:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: test
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          # this line is required for the setup-node action to be able to run the npm publish below.
+          registry-url: 'https://registry.npmjs.org'
+      - run: yarn install --frozen-lockfile
+      - run: yarn manifest
+      - run: yarn build
+      - run: npx --yes wet-run@1.0.3 release prerelease --prerelease canary --provenance --verbose
+      - name: Get NPM version
+        id: npm-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+      - name: Released ${{ steps.npm-version.outputs.current-version}} ✨
+        run: echo ${{ steps.npm-version.outputs.current-version}}
