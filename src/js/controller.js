@@ -564,7 +564,7 @@ export const MediaUIStates = {
       return Array.from(chaptersTrack?.cues  ?? [])
         .map((/** @type VTTCue */{ text, startTime, endTime }) => ({ text, startTime, endTime }));
     },
-    mediaEvents: ['loadstart'],
+    mediaEvents: ['loadstart', 'loadedmetadata'],
     textTracksEvents: ['addtrack', 'removetrack'],
   },
   MEDIA_RENDITION_LIST: {
