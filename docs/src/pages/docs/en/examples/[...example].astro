@@ -55,15 +55,14 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
         sourcePath: 'examples/vanilla/portrait.html',
       }
     },
-    // TODO: import VTT files in Sandpack
-    // {
-    //   params: { example: 'captions-menu' },
-    //   props: {
-    //     title: 'Captions Menu',
-    //     group: 'Controls',
-    //     sourcePath: 'examples/vanilla/control-elements/media-captions-menu.html',
-    //   }
-    // },
+    {
+      params: { example: 'captions-menu' },
+      props: {
+        title: 'Captions Menu',
+        group: 'Controls',
+        sourcePath: 'examples/vanilla/control-elements/media-captions-menu.html',
+      }
+    },
     {
       params: { example: 'rendition-menu' },
       props: {
@@ -195,6 +194,26 @@ const externalModules = scripts.filter(({ type, src }) => {
 const externalResources = scripts.filter(({ type, src }) => {
   return !type && /^https?:\/\//.test(src)
 }).map(({ src }) => src)
+
+// Recursively transform all local VTT URLs to public URLs because
+// in the vanilla Sandpack template I can't get a correct VTT URL response.
+// It might be related to the Parcel bundler not copying static files.
+const transformVttSrc = (node) => {
+  if (node.nodeName === 'track') {
+    const src = node.attrs.find(attr => attr.name === 'src')?.value
+
+    if (src && !/^https?:\/\//.test(src)) {
+      const externalSrc = new URL(src, `https://media-chrome.mux.dev/${sourcePath}`).href
+      node.attrs.find(attr => attr.name === 'src').value = externalSrc
+    }
+  }
+  if (node.childNodes) {
+    for (let child of node.childNodes) {
+      transformVttSrc(child)
+    }
+  }
+}
+transformVttSrc(body)
 
 const repoRootDir = path.resolve('../')
 

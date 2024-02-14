@@ -14,12 +14,14 @@
 
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: block;         /* expands the container if preload=none */
+        display: grid;          /* expands the container if preload=none */
         max-width: 960px;       /* allows the container to shrink if small */
         aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
 
-      mux-video {
+      hls-video,
+      img[slot="poster"] {
+        grid-area: 1 / 1;     /* position poster img on top of video element */
         width: 100%;          /* prevents video to expand beyond its container */
         height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
       }
@@ -57,16 +59,25 @@
           id="video"
           slot="media"
           src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
-          poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
           stream-type="on-demand"
           preload="metadata"
           playsinline
           crossorigin
         >
-          <track default kind="metadata" label="thumbnails"
-            src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/storyboard.vtt">
+          <track default kind="metadata" label="thumbnails" src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/storyboard.vtt">
           <track default kind="chapters" src="./vtt/elephantsdream/chapters.vtt">
         </hls-video>
+        <img
+          slot="poster"
+          srcset="
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=640 640w,
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=960 960w,
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=1280 1280w,
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13 1920w
+          "
+          alt="Elephants Dream"
+          decoding="async"
+        >
         <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
         <media-settings-menu anchor="auto" hidden>
           <media-settings-menu-item>
