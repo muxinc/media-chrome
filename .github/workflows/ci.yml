@@ -16,7 +16,7 @@ jobs:
       - run: yarn install --frozen-lockfile
       - run: yarn lint
 
-      # Install playwright after linting, so that we have a faster linting process.
+      # Install Playwright after linting, so that we have a faster linting process.
       # Caching logic adapted from https://github.com/microsoft/playwright/issues/7249#issuecomment-1385567519
       - name: Store Playwright's Version
         run: |
