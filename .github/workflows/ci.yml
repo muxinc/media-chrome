@@ -17,21 +17,22 @@ jobs:
       - run: yarn lint
 
       # Install playwright after linting, so that we have a faster linting process.
-      # Caching logic from https://github.com/microsoft/playwright/issues/7249#issuecomment-1154603556
-      - name: Get installed Playwright version
-        id: playwright-version
-        run: echo "::set-output name=version::$(yarn why --json @playwright/test | grep -h 'workspace:.' | jq --raw-output '.children[].locator' | sed -e 's/@playwright\/test@.*://')"
+      # Caching logic from https://github.com/microsoft/playwright/issues/7249#issuecomment-1385567519
+      - name: Store Playwright's Version
+        run: |
+          PLAYWRIGHT_VERSION=$(npm ls @playwright/test | grep @playwright | sed 's/.*@//')
+          echo "Playwright's Version: $PLAYWRIGHT_VERSION"
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
-      - uses: actions/cache@v4
-        id: playwright-cache
+      - name: Cache Playwright Browsers for Playwright's Version
+        id: cache-playwright-browsers
+        uses: actions/cache@v4
         with:
-          path: '~/.cache/ms-playwright'
-          key: '${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}'
-          restore-keys: |
-            ${{ runner.os }}-playwright-
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
 
-      - name: Install Playwright's browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
+      - name: Setup Playwright
+        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
       - run: yarn test --all
