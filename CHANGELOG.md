@@ -1,3 +1,12 @@
+## [2.2.4](https://github.com/muxinc/media-chrome/compare/v2.2.3...v2.2.4) (2024-02-14)
+
+
+### Bug Fixes
+
+* **fullscreen:** handleMediaUpdated / rootNode race condition ([#817](https://github.com/muxinc/media-chrome/issues/817)) ([3ea80df](https://github.com/muxinc/media-chrome/commit/3ea80df70230be10dd1f3468d6f4ab87c1b31718))
+
+
+
 ## [2.2.3](https://github.com/muxinc/media-chrome/compare/v2.2.2...v2.2.3) (2024-02-12)
 
 
