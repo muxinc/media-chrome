@@ -406,7 +406,19 @@ export const MediaUIStates = {
     mediaSetCallback(media, callback) {
       const isRemotePlaybackDisabled = media.disableRemotePlayback || media.hasAttribute('disableremoteplayback');
       if (!isRemotePlaybackDisabled) {
-        media.remote?.watchAvailability((availability) => callback({ availability }));
+        media.remote
+          ?.watchAvailability((availability) => callback({ availability }))
+          .catch((error) => {
+            if (error.name === 'NotSupportedError') {
+              // Availability monitoring is not supported by the platform, so discovery of
+              // remote playback devices will happen only after remote.prompt() is called.
+              callback({ availability: null });
+            } else {
+              // Thrown if disableRemotePlayback is true for the media element
+              // or if the source can't be played remotely.
+              callback({ availability: false });
+            }
+          });
       }
     },
     mediaUnsetCallback(media) {
@@ -431,7 +443,19 @@ export const MediaUIStates = {
     mediaSetCallback(media, callback) {
       const isRemotePlaybackDisabled = media.disableRemotePlayback || media.hasAttribute('disableremoteplayback');
       if (!isRemotePlaybackDisabled) {
-        media.remote?.watchAvailability((availability) => callback({ availability }));
+        media.remote
+          ?.watchAvailability((availability) => callback({ availability }))
+          .catch((error) => {
+            if (error.name === 'NotSupportedError') {
+              // Availability monitoring is not supported by the platform, so discovery of
+              // remote playback devices will happen only after remote.prompt() is called.
+              callback({ availability: null });
+            } else {
+              // Thrown if disableRemotePlayback is true for the media element
+              // or if the source can't be played remotely.
+              callback({ availability: false });
+            }
+          });
       }
     },
     mediaUnsetCallback(media) {
@@ -540,7 +564,7 @@ export const MediaUIStates = {
       return Array.from(chaptersTrack?.cues  ?? [])
         .map((/** @type VTTCue */{ text, startTime, endTime }) => ({ text, startTime, endTime }));
     },
-    mediaEvents: ['loadstart'],
+    mediaEvents: ['loadstart', 'loadedmetadata'],
     textTracksEvents: ['addtrack', 'removetrack'],
   },
   MEDIA_RENDITION_LIST: {
