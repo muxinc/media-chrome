@@ -56,6 +56,14 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
       }
     },
     {
+      params: { example: 'settings-menu' },
+      props: {
+        title: 'Settings Menu',
+        group: 'Controls',
+        sourcePath: 'examples/vanilla/control-elements/media-settings-menu.html',
+      }
+    },
+    {
       params: { example: 'captions-menu' },
       props: {
         title: 'Captions Menu',
