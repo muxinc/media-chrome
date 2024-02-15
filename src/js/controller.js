@@ -565,7 +565,15 @@ export const MediaUIStates = {
         .map((/** @type VTTCue */{ text, startTime, endTime }) => ({ text, startTime, endTime }));
     },
     mediaEvents: ['loadstart', 'loadedmetadata'],
-    textTracksEvents: ['addtrack', 'removetrack'],
+    textTracksEvents: ['addtrack', 'removetrack', 'change'],
+    mediaSetCallback(media, callback) {
+      const chaptersTrack = media.querySelector('track[kind="chapters"][default][src]');
+      chaptersTrack?.addEventListener('load', callback);
+    },
+    mediaUnsetCallback(media, callback) {
+      const chaptersTrack = media.querySelector('track[kind="chapters"][default][src]');
+      chaptersTrack?.removeEventListener('load', callback);
+    }
   },
   MEDIA_RENDITION_LIST: {
     get: function (controller) {
