@@ -1,3 +1,13 @@
+## [2.2.5](https://github.com/muxinc/media-chrome/compare/v2.2.4...v2.2.5) (2024-02-15)
+
+
+### Bug Fixes
+
+* poster slot fade after play before playing ([#824](https://github.com/muxinc/media-chrome/issues/824)) ([39ba757](https://github.com/muxinc/media-chrome/commit/39ba757c681fff8d5c14e96d7489a4eb41c4e212)), closes [#823](https://github.com/muxinc/media-chrome/issues/823)
+* safari InvalidStateError remote playback API error ([#821](https://github.com/muxinc/media-chrome/issues/821)) ([1d484d8](https://github.com/muxinc/media-chrome/commit/1d484d846dcf256838edf4ebf0f5130e98cad119)), closes [#820](https://github.com/muxinc/media-chrome/issues/820)
+
+
+
 ## [2.2.4](https://github.com/muxinc/media-chrome/compare/v2.2.3...v2.2.4) (2024-02-14)
 
 
