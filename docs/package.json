@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "format": "prettier --write .",
-    "dev": "(cd .. && yarn build:esm --watch=forever) & astro dev",
+    "dev": "(cd .. && yarn watch) & astro dev",
     "start": "astro dev",
     "check": "astro check && tsc",
     "prebuild": "cd .. && yarn && yarn manifest && yarn build",
