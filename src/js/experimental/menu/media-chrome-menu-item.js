@@ -57,6 +57,7 @@ template.innerHTML = /*html*/`
 
     slot:not([name="submenu"]) {
       display: inline-flex;
+      align-items: center;
       transition: inherit;
       opacity: var(--media-menu-item-opacity, 1);
     }
