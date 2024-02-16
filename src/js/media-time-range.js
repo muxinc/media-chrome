@@ -178,6 +178,7 @@ template.innerHTML = /*html*/`
       border-radius: var(--media-preview-time-border-radius,
         0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
       min-width: 100%;
+      transform: translateX(0);
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
@@ -281,6 +282,8 @@ class MediaTimeRange extends MediaChromeRange {
   #previewTime;
   #previewBox;
   #currentBox;
+  /** @type {HTMLElement} */
+  #previewTimeDisplay;
   #boxPaddingLeft;
   #boxPaddingRight;
   #mediaChaptersCues;
@@ -300,6 +303,7 @@ class MediaTimeRange extends MediaChromeRange {
     this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
     this.#currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
+    this.#previewTimeDisplay = this.#previewBox.querySelector('media-preview-time-display');
 
     const computedStyle = getComputedStyle(this);
     this.#boxPaddingLeft = parseInt(computedStyle.getPropertyValue('--media-box-padding-left'));
@@ -353,6 +357,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
       this.mediaChaptersCues = this.#mediaChaptersCues;
+      this.updateBar();
     }
   }
 
@@ -574,33 +579,67 @@ class MediaTimeRange extends MediaChromeRange {
     // @ts-ignore
     if (!this.#currentBox.assignedElements().length) return;
 
-    const boxPos = this.#getBoxPosition(this.#currentBox, this.range.valueAsNumber);
+    const rects = this.#getElementRects(this.#currentBox);
+    const boxPos = this.#getBoxPosition(rects, this.range.valueAsNumber);
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#current-rail');
     style.transform = `translateX(${boxPos})`;
   }
 
-  #getBoxPosition(box, ratio) {
-    let position = `${ratio * 100 * 100}%`;
-
-    // Use offset dimensions to include borders.
-    const boxWidth = box.offsetWidth;
-    if (!boxWidth) return position;
-
+  #getElementRects(box) {
     // Get the element that enforces the bounds for the time range boxes.
     const bounds =
       (this.getAttribute('bounds')
         ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
         : this.parentElement) ?? this;
 
+    const boundsRect = bounds.getBoundingClientRect();
     const rangeRect = this.range.getBoundingClientRect();
-    const mediaBoundsRect = bounds.getBoundingClientRect();
-    const boxMin = (this.#boxPaddingLeft - (rangeRect.left - mediaBoundsRect.left - boxWidth / 2)) / rangeRect.width * 100;
-    const boxMax = (mediaBoundsRect.right - rangeRect.left - boxWidth / 2 - this.#boxPaddingRight) / rangeRect.width * 100;
 
-    if (!Number.isNaN(boxMin)) position = `max(${boxMin * 100}%, ${position})`;
-    if (!Number.isNaN(boxMax)) position = `min(${position}, ${boxMax * 100}%)`;
+    // Use offset dimensions to include borders.
+    const width = box.offsetWidth;
+    const min = 100 * (this.#boxPaddingLeft - (rangeRect.left - boundsRect.left - width / 2)) / rangeRect.width * 100;
+    const max = 100 * (boundsRect.right - rangeRect.left - width / 2 - this.#boxPaddingRight) / rangeRect.width * 100;
+
+    return {
+      box: { width, min, max },
+      bounds: boundsRect,
+      range: rangeRect,
+    };
+  }
+
+  #getBoxPosition(rects, ratio) {
+    let position = `${ratio * 100 * 100}%`;
+    const { width, min, max } = rects.box;
+
+    if (!width) return position;
+
+    if (!Number.isNaN(min)) position = `max(${min}%, ${position})`;
+    if (!Number.isNaN(max)) position = `min(${position}, ${max}%)`;
 
     return position;
+  }
+
+  #getPreviewTimePosition(rects, ratio) {
+    let position = ratio * 100 * 100;
+    const { width, min, max } = rects.box;
+
+    const timeWidth = this.#previewTimeDisplay.offsetWidth;
+    if (timeWidth >= width) return 0;
+
+    if (position < min) {
+      position /= min / 100;
+      const maxLeft = (-timeWidth + this.#boxPaddingLeft);
+      return `max(${maxLeft}px, ${position - 100}%)`;
+    }
+
+    if (position > max) {
+      const diff = position - max;
+      position = diff / min * 100;
+      const minRight = (timeWidth - this.#boxPaddingRight);
+      return `min(${minRight}px, ${position}%)`;
+    }
+
+    return 0;
   }
 
   handleEvent(evt) {
@@ -639,13 +678,19 @@ class MediaTimeRange extends MediaChromeRange {
     // If no duration we can't calculate which time to show
     if (!duration) return;
 
-    const rangeRect = this.range.getBoundingClientRect();
-    let pointerRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
+    const rects = this.#getElementRects(this.#previewBox);
+
+    let pointerRatio = (evt.clientX - rects.range.left) / rects.range.width;
     pointerRatio = Math.max(0, Math.min(1, pointerRatio));
 
-    const boxPos = this.#getBoxPosition(this.#previewBox, pointerRatio);
+    const boxPos = this.#getBoxPosition(rects, pointerRatio);
     const { style } = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
     style.transform = `translateX(${boxPos})`;
+
+    const previewTimePos = this.#getPreviewTimePosition(rects, pointerRatio);
+    const previewTimeSelector = 'media-preview-time-display, ::slotted(media-preview-time-display)';
+    const { style: previewStyle } = getOrInsertCSSRule(this.shadowRoot, previewTimeSelector);
+    previewStyle.transform = `translateX(${previewTimePos})`;
 
     // At least require a 1s difference before requesting a new preview thumbnail.
     const diff = Math.round(this.#previewTime) - Math.round(pointerRatio * duration);
