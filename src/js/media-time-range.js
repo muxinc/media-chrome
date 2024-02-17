@@ -36,9 +36,11 @@ const template = document.createElement('template');
 template.innerHTML = /*html*/`
   <style>
     :host {
-      --media-preview-border-radius: 3px;
+      --media-box-border-radius: 3px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;
+      --media-preview-border-radius: var(--media-box-border-radius);
+      --media-box-arrow-offset: var(--media-box-border-radius);
     }
 
     #highlight {
@@ -64,6 +66,10 @@ template.innerHTML = /*html*/`
       flex-direction: column;
       align-items: center;
       transform: translateX(-50%);
+    }
+
+    [part~="current-box"] {
+      visibility: hidden;
     }
 
     [part~="preview-box"] {
@@ -157,7 +163,9 @@ template.innerHTML = /*html*/`
     }
 
     media-preview-time-display,
-    ::slotted(media-preview-time-display) {
+    ::slotted(media-preview-time-display),
+    media-time-display,
+    ::slotted(media-time-display) {
       line-height: 1.3;
       min-width: 0;
       ${/* delay changing these CSS props until the preview box transition is ended */''}
@@ -170,6 +178,11 @@ template.innerHTML = /*html*/`
       padding: var(--media-preview-time-padding, 4px 10px);
       margin: var(--media-preview-time-margin, 0 0 10px);
       text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / .75));
+      transform: translateX(min(
+        max(calc(50% - var(--_box-width) / 2),
+          calc(var(--_box-shift, 0))),
+        calc(var(--_box-width) / 2 - 50%)
+      ));
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-time-display,
@@ -184,19 +197,54 @@ template.innerHTML = /*html*/`
     :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
       --media-time-range-hover-display: block;
     }
+
+    .arrow,
+    slot[name="preview-arrow"]::slotted(*),
+    slot[name="current-arrow"]::slotted(*) {
+      display: var(--media-box-arrow-display, flex);
+      transform: translateX(min(
+        max(calc(50% - var(--_box-width) / 2 + var(--media-box-arrow-offset)),
+          calc(var(--_box-shift, 0))),
+        calc(var(--_box-width) / 2 - 50% - var(--media-box-arrow-offset))
+      ));
+      justify-content: center;
+      height: 0;
+    }
+
+    .arrow::before {
+      border-color: transparent;
+      border-top-color: var(--media-box-arrow-background,
+        var(--media-box-background,
+        var(--media-control-background,
+        var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      border-width: var(--media-box-arrow-border-width, 5px 6px 0);
+      top: var(--media-box-arrow-top, -10px);
+      content: '';
+      display: block;
+      width: 0;
+      height: 0;
+      position: relative;
+      border-style: solid;
+    }
   </style>
   <div id="preview-rail">
-    <slot name="preview" part="box preview-box">
-      <media-preview-thumbnail></media-preview-thumbnail>
-      <media-preview-chapter-display></media-preview-chapter-display>
-      <media-preview-time-display></media-preview-time-display>
-    </slot>
+    <div part="box preview-box">
+      <slot name="preview">
+        <media-preview-thumbnail></media-preview-thumbnail>
+        <media-preview-chapter-display></media-preview-chapter-display>
+        <media-preview-time-display></media-preview-time-display>
+      </slot>
+      <slot name="preview-arrow"><div class="arrow"></div></slot>
+    </div>
   </div>
   <div id="current-rail">
-    <slot name="current" part="box current-box">
-      ${/* Example: add the current time to the playhead
-        <media-time-display></media-time-display> */''}
-    </slot>
+    <div part="box current-box">
+      <slot name="current">
+        ${/* Example: add the current time to the playhead
+          <media-time-display></media-time-display> */''}
+      </slot>
+      <slot name="current-arrow"><div class="arrow"></div></slot>
+    </div>
   </div>
 `;
 
@@ -279,12 +327,15 @@ class MediaTimeRange extends MediaChromeRange {
   #rootNode;
   #animation;
   #boxes;
+  /** @type {number} */
   #previewTime;
-  #previewBox;
-  #currentBox;
   /** @type {HTMLElement} */
-  #previewTimeDisplay;
+  #previewBox;
+  /** @type {HTMLElement} */
+  #currentBox;
+  /** @type {number} */
   #boxPaddingLeft;
+  /** @type {number} */
   #boxPaddingRight;
   #mediaChaptersCues;
 
@@ -293,17 +344,9 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.container.appendChild(template.content.cloneNode(true));
 
-    // Come back to this feature
-    // this.playIfNotReady = e => {
-    //   this.range.removeEventListener('change', this.playIfNotReady);
-    //   const media = this.media;
-    //   media.play().then(this.setMediaTimeWithRange);
-    // };
-
     this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
     this.#currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
-    this.#previewTimeDisplay = this.#previewBox.querySelector('media-preview-time-display');
 
     const computedStyle = getComputedStyle(this);
     this.#boxPaddingLeft = parseInt(computedStyle.getPropertyValue('--media-box-padding-left'));
@@ -576,13 +619,22 @@ class MediaTimeRange extends MediaChromeRange {
 
   updateCurrentBox() {
     // If there are no elements in the current box no need for expensive style updates.
-    // @ts-ignore
-    if (!this.#currentBox.assignedElements().length) return;
+    /** @type {HTMLSlotElement} */
+    const currentSlot = this.shadowRoot.querySelector('slot[name="current"]');
+    if (!currentSlot.assignedElements().length) return;
+
+    const currentRailRule = getOrInsertCSSRule(this.shadowRoot, '#current-rail');
+    const currentBoxRule = getOrInsertCSSRule(this.shadowRoot, '[part~="current-box"]');
 
     const rects = this.#getElementRects(this.#currentBox);
     const boxPos = this.#getBoxPosition(rects, this.range.valueAsNumber);
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#current-rail');
-    style.transform = `translateX(${boxPos})`;
+    const boxShift = this.#getBoxShiftPosition(rects, this.range.valueAsNumber);
+
+    currentRailRule.style.transform = `translateX(${boxPos})`;
+    currentRailRule.style.setProperty('--_range-width', `${rects.range.width}`);
+    currentBoxRule.style.setProperty('--_box-shift', `${boxShift}`);
+    currentBoxRule.style.setProperty('--_box-width', `${rects.box.width}px`);
+    currentBoxRule.style.setProperty('visibility', 'initial');
   }
 
   #getElementRects(box) {
@@ -597,8 +649,8 @@ class MediaTimeRange extends MediaChromeRange {
 
     // Use offset dimensions to include borders.
     const width = box.offsetWidth;
-    const min = 100 * (this.#boxPaddingLeft - (rangeRect.left - boundsRect.left - width / 2)) / rangeRect.width * 100;
-    const max = 100 * (boundsRect.right - rangeRect.left - width / 2 - this.#boxPaddingRight) / rangeRect.width * 100;
+    const min = -(rangeRect.left - boundsRect.left - width / 2);
+    const max = boundsRect.right - rangeRect.left - width / 2;
 
     return {
       box: { width, min, max },
@@ -607,36 +659,46 @@ class MediaTimeRange extends MediaChromeRange {
     };
   }
 
+  /**
+   * Get the position, max and min for the box in percentage.
+   * It's important this is in percentage so when the player is resized
+   * the box will move accordingly.
+   *
+   * @param  {{ box: { width: number, min: number, max: number }}} rects
+   * @param  {number} ratio
+   * @return {string}
+   */
   #getBoxPosition(rects, ratio) {
     let position = `${ratio * 100 * 100}%`;
     const { width, min, max } = rects.box;
 
     if (!width) return position;
 
-    if (!Number.isNaN(min)) position = `max(${min}%, ${position})`;
-    if (!Number.isNaN(max)) position = `min(${position}, ${max}%)`;
+    if (!Number.isNaN(min)) {
+      const pad = `var(--media-box-padding-left)`;
+      const minPos = `calc(1 / var(--_range-width) * 100 * 100 * ${min}% + ${pad})`;
+      position = `max(${minPos}, ${position})`;
+    }
+
+    if (!Number.isNaN(max)) {
+      const pad = `var(--media-box-padding-right)`;
+      const maxPos = `calc(1 / var(--_range-width) * 100 * 100 * ${max}% - ${pad})`;
+      position = `min(${position}, ${maxPos})`;
+    }
 
     return position;
   }
 
-  #getPreviewTimePosition(rects, ratio) {
-    let position = ratio * 100 * 100;
+  #getBoxShiftPosition(rects, ratio) {
     const { width, min, max } = rects.box;
+    const pointerX = ratio * rects.range.width;
 
-    const timeWidth = this.#previewTimeDisplay.offsetWidth;
-    if (timeWidth >= width) return 0;
-
-    if (position < min) {
-      position /= min / 100;
-      const maxLeft = (-timeWidth + this.#boxPaddingLeft);
-      return `max(${maxLeft}px, ${position - 100}%)`;
+    if (pointerX < min + this.#boxPaddingLeft) {
+      return `${pointerX - width / 2}px`;
     }
 
-    if (position > max) {
-      const diff = position - max;
-      position = diff / min * 100;
-      const minRight = (timeWidth - this.#boxPaddingRight);
-      return `min(${minRight}px, ${position}%)`;
+    if (pointerX > max - this.#boxPaddingRight) {
+      return `${(pointerX + width / 2) - rects.range.width}px`;
     }
 
     return 0;
@@ -678,23 +740,26 @@ class MediaTimeRange extends MediaChromeRange {
     // If no duration we can't calculate which time to show
     if (!duration) return;
 
+    const previewRailRule = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
+    const previewBoxRule = getOrInsertCSSRule(this.shadowRoot, '[part~="preview-box"]');
+
     const rects = this.#getElementRects(this.#previewBox);
 
     let pointerRatio = (evt.clientX - rects.range.left) / rects.range.width;
     pointerRatio = Math.max(0, Math.min(1, pointerRatio));
 
     const boxPos = this.#getBoxPosition(rects, pointerRatio);
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
-    style.transform = `translateX(${boxPos})`;
+    const boxShift = this.#getBoxShiftPosition(rects, pointerRatio);
 
-    const previewTimePos = this.#getPreviewTimePosition(rects, pointerRatio);
-    const previewTimeSelector = 'media-preview-time-display, ::slotted(media-preview-time-display)';
-    const { style: previewStyle } = getOrInsertCSSRule(this.shadowRoot, previewTimeSelector);
-    previewStyle.transform = `translateX(${previewTimePos})`;
+    previewRailRule.style.transform = `translateX(${boxPos})`;
+    previewRailRule.style.setProperty('--_range-width', `${rects.range.width}`);
+    previewBoxRule.style.setProperty('--_box-shift', `${boxShift}`);
+    previewBoxRule.style.setProperty('--_box-width', `${rects.box.width}px`);
 
-    // At least require a 1s difference before requesting a new preview thumbnail.
+    // At least require a 1s difference before requesting a new preview thumbnail,
+    // unless it's at the beginning or end of the timeline.
     const diff = Math.round(this.#previewTime) - Math.round(pointerRatio * duration);
-    if (Math.abs(diff) < 1) return;
+    if (Math.abs(diff) < 1 && pointerRatio > .01 && pointerRatio < 0.99) return;
 
     this.#previewTime = pointerRatio * duration;
     this.#previewRequest(this.#previewTime);

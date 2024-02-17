@@ -112,7 +112,7 @@ the timeline as the video progresses.
 
 ## Remove preview elements
 
-Set the `preview` slot to an empty element to remove the default preview elements.
+Set the `preview` and `preview-arrow` slot to an empty element to remove the default preview elements.
 
 <SandpackContainer
   editorHeight={270}
@@ -125,6 +125,7 @@ Set the `preview` slot to an empty element to remove the default preview element
   <media-control-bar>
     <media-time-range>
       <span slot="preview"></span>
+      <span slot="preview-arrow"></span>
     </media-time-range>
   </media-control-bar>
 </media-controller>`}
