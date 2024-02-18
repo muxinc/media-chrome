@@ -36,13 +36,17 @@ const template = document.createElement('template');
 template.innerHTML = /*html*/`
   <style>
     :host {
-      --media-box-border-radius: 3px;
+      --media-box-border-radius: 4px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;
       --media-preview-border-radius: var(--media-box-border-radius);
       --media-box-arrow-offset: var(--media-box-border-radius);
       --_control-background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
       --_preview-background: var(--media-preview-background, var(--_control-background));
+
+      ${/* 1% rail width trick was off in Safari, contain: layout seems to
+        prevent the horizontal overflow as well. */ ''}
+      contain: layout;
     }
 
     #highlight {
@@ -51,8 +55,7 @@ template.innerHTML = /*html*/`
 
     #preview-rail,
     #current-rail {
-      ${/* 1% of parent element and upscale by 100 in the translateX() */ ''}
-      width: 1%;
+      width: 100%;
       position: absolute;
       left: 0;
       bottom: 100%;
@@ -63,10 +66,10 @@ template.innerHTML = /*html*/`
     [part~="box"] {
       display: var(--media-box-display, flex);
       margin: var(--media-box-margin, 0 0 5px);
+      width: min-content;
       ${/* absolute position is needed here so the box doesn't overflow the bounds */''}
       position: absolute;
       bottom: 100%;
-      display: flex;
       flex-direction: column;
       align-items: center;
       transform: translateX(-50%);
@@ -139,8 +142,9 @@ template.innerHTML = /*html*/`
 
     media-preview-chapter-display,
     ::slotted(media-preview-chapter-display) {
+      font-size: var(--media-font-size, 13px);
+      line-height: 17px;
       display: none;
-      line-height: 1.3;
       min-width: 0;
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: min-width 0s, border-radius 0s, margin 0s, padding 0s;
@@ -149,7 +153,7 @@ template.innerHTML = /*html*/`
       border-radius: var(--media-preview-chapter-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));
-      padding: var(--media-preview-chapter-padding, 4px 10px);
+      padding: var(--media-preview-chapter-padding, 4px 9px);
       margin: var(--media-preview-chapter-margin, 0 0 5px);
       text-shadow: var(--media-preview-chapter-text-shadow, 0 0 4px rgb(0 0 0 / .75));
     }
@@ -158,7 +162,7 @@ template.innerHTML = /*html*/`
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) ::slotted(media-preview-chapter-display) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       border-radius: var(--media-preview-chapter-border-radius, 0);
-      padding: var(--media-preview-chapter-padding, 4px 10px 0);
+      padding: var(--media-preview-chapter-padding, 4px 9px 0);
       margin: var(--media-preview-chapter-margin, 0);
       min-width: 100%;
     }
@@ -172,7 +176,8 @@ template.innerHTML = /*html*/`
     ::slotted(media-preview-time-display),
     media-time-display,
     ::slotted(media-time-display) {
-      line-height: 1.3;
+      font-size: var(--media-font-size, 13px);
+      line-height: 17px;
       min-width: 0;
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: min-width 0s, border-radius 0s;
@@ -181,7 +186,7 @@ template.innerHTML = /*html*/`
       border-radius: var(--media-preview-time-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));
-      padding: var(--media-preview-time-padding, 4px 10px);
+      padding: var(--media-preview-time-padding, 4px 9px);
       margin: var(--media-preview-time-margin, 0);
       text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / .75));
       transform: translateX(min(
@@ -206,7 +211,7 @@ template.innerHTML = /*html*/`
 
     [part~="arrow"],
     ::slotted([part~="arrow"]) {
-      display: var(--media-box-arrow-display, flex);
+      display: var(--media-box-arrow-display, inline-block);
       transform: translateX(min(
         max(calc(50% - var(--_box-width) / 2 + var(--media-box-arrow-offset)),
         calc(var(--_box-shift, 0))),
@@ -674,20 +679,20 @@ class MediaTimeRange extends MediaChromeRange {
    * @return {string}
    */
   #getBoxPosition(rects, ratio) {
-    let position = `${ratio * 100 * 100}%`;
+    let position = `${ratio * 100}%`;
     const { width, min, max } = rects.box;
 
     if (!width) return position;
 
     if (!Number.isNaN(min)) {
       const pad = `var(--media-box-padding-left)`;
-      const minPos = `calc(1 / var(--_range-width) * 100 * 100 * ${min}% + ${pad})`;
+      const minPos = `calc(1 / var(--_range-width) * 100 * ${min}% + ${pad})`;
       position = `max(${minPos}, ${position})`;
     }
 
     if (!Number.isNaN(max)) {
       const pad = `var(--media-box-padding-right)`;
-      const maxPos = `calc(1 / var(--_range-width) * 100 * 100 * ${max}% - ${pad})`;
+      const maxPos = `calc(1 / var(--_range-width) * 100 * ${max}% - ${pad})`;
       position = `min(${position}, ${maxPos})`;
     }
 
