@@ -1,4 +1,4 @@
-import { globalThis } from '../../utils/server-safe-globals.js';
+import { globalThis, document } from '../../utils/server-safe-globals.js';
 import { MediaChromeMenu } from './media-chrome-menu.js';
 import { getMediaController } from '../../utils/element-utils.js';
 

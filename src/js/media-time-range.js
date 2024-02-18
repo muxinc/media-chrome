@@ -64,8 +64,6 @@ template.innerHTML = /*html*/`
     }
 
     [part~="box"] {
-      display: var(--media-box-display, flex);
-      margin: var(--media-box-margin, 0 0 5px);
       width: min-content;
       ${/* absolute position is needed here so the box doesn't overflow the bounds */''}
       position: absolute;
@@ -76,12 +74,14 @@ template.innerHTML = /*html*/`
     }
 
     [part~="current-box"] {
-      display: var(--media-current-box-display, flex);
+      display: var(--media-current-box-display, var(--media-box-display, flex));
+      margin: var(--media-current-box-margin, var(--media-box-margin, 0 0 5px));
       visibility: hidden;
     }
 
     [part~="preview-box"] {
-      display: var(--media-preview-box-display, flex);
+      display: var(--media-preview-box-display, var(--media-box-display, flex));
+      margin: var(--media-preview-box-margin, var(--media-box-margin, 0 0 5px));
       transition-property: var(--media-preview-transition-property, visibility, opacity);
       transition-duration: var(--media-preview-transition-duration-out, .25s);
       transition-delay: var(--media-preview-transition-delay-out, 0s);
@@ -153,7 +153,7 @@ template.innerHTML = /*html*/`
       border-radius: var(--media-preview-chapter-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));
-      padding: var(--media-preview-chapter-padding, 4px 9px);
+      padding: var(--media-preview-chapter-padding, 3.5px 9px);
       margin: var(--media-preview-chapter-margin, 0 0 5px);
       text-shadow: var(--media-preview-chapter-text-shadow, 0 0 4px rgb(0 0 0 / .75));
     }
@@ -162,7 +162,7 @@ template.innerHTML = /*html*/`
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) ::slotted(media-preview-chapter-display) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       border-radius: var(--media-preview-chapter-border-radius, 0);
-      padding: var(--media-preview-chapter-padding, 4px 9px 0);
+      padding: var(--media-preview-chapter-padding, 3.5px 9px 0);
       margin: var(--media-preview-chapter-margin, 0);
       min-width: 100%;
     }
@@ -186,7 +186,7 @@ template.innerHTML = /*html*/`
       border-radius: var(--media-preview-time-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));
-      padding: var(--media-preview-time-padding, 4px 9px);
+      padding: var(--media-preview-time-padding, 3.5px 9px);
       margin: var(--media-preview-time-margin, 0);
       text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / .75));
       transform: translateX(min(
@@ -232,7 +232,7 @@ template.innerHTML = /*html*/`
       <media-preview-thumbnail></media-preview-thumbnail>
       <media-preview-chapter-display></media-preview-chapter-display>
       <media-preview-time-display></media-preview-time-display>
-      <slot name="preview-arrow" part="arrow"></slot>
+      <slot name="preview-arrow"><div part="arrow"></div></slot>
     </slot>
   </div>
   <div id="current-rail">
@@ -308,6 +308,13 @@ const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
  * @cssproperty --media-box-margin - `margin` of range box.
  * @cssproperty --media-box-padding-left - `padding-left` of range box.
  * @cssproperty --media-box-padding-right - `padding-right` of range box.
+ * @cssproperty --media-box-border-radius - `border-radius` of range box.
+ *
+ * @cssproperty --media-preview-box-display - `display` of range preview box.
+ * @cssproperty --media-preview-box-margin - `margin` of range preview box.
+ *
+ * @cssproperty --media-current-box-display - `display` of range current box.
+ * @cssproperty --media-current-box-margin - `margin` of range current box.
  *
  * @cssproperty --media-box-arrow-display - `display` of range box arrow.
  * @cssproperty --media-box-arrow-background - `border-top-color` of range box arrow.

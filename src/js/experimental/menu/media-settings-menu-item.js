@@ -1,4 +1,4 @@
-import { globalThis } from '../../utils/server-safe-globals.js';
+import { globalThis, document } from '../../utils/server-safe-globals.js';
 import { MediaChromeMenuItem } from './media-chrome-menu-item.js';
 
 const template = document.createElement('template');
