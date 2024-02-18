@@ -41,6 +41,8 @@ template.innerHTML = /*html*/`
       --media-box-padding-right: 10px;
       --media-preview-border-radius: var(--media-box-border-radius);
       --media-box-arrow-offset: var(--media-box-border-radius);
+      --_control-background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
+      --_preview-background: var(--media-preview-background, var(--_control-background));
     }
 
     #highlight {
@@ -59,6 +61,8 @@ template.innerHTML = /*html*/`
     }
 
     [part~="box"] {
+      display: var(--media-box-display, flex);
+      margin: var(--media-box-margin, 0 0 5px);
       ${/* absolute position is needed here so the box doesn't overflow the bounds */''}
       position: absolute;
       bottom: 100%;
@@ -69,10 +73,12 @@ template.innerHTML = /*html*/`
     }
 
     [part~="current-box"] {
+      display: var(--media-current-box-display, flex);
       visibility: hidden;
     }
 
     [part~="preview-box"] {
+      display: var(--media-preview-box-display, flex);
       transition-property: var(--media-preview-transition-property, visibility, opacity);
       transition-duration: var(--media-preview-transition-duration-out, .25s);
       transition-delay: var(--media-preview-transition-delay-out, 0s);
@@ -102,7 +108,7 @@ template.innerHTML = /*html*/`
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: visibility 0s .25s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-thumbnail-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      background: var(--media-preview-thumbnail-background, var(--_preview-background));
       box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 4px rgb(0 0 0 / .2));
       max-width: var(--media-preview-thumbnail-max-width, 180px);
       max-height: var(--media-preview-thumbnail-max-height, 160px);
@@ -139,7 +145,7 @@ template.innerHTML = /*html*/`
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: min-width 0s, border-radius 0s, margin 0s, padding 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-chapter-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      background: var(--media-preview-chapter-background, var(--_preview-background));
       border-radius: var(--media-preview-chapter-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));
@@ -171,16 +177,16 @@ template.innerHTML = /*html*/`
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: min-width 0s, border-radius 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-time-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      background: var(--media-preview-time-background, var(--_preview-background));
       border-radius: var(--media-preview-time-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));
       padding: var(--media-preview-time-padding, 4px 10px);
-      margin: var(--media-preview-time-margin, 0 0 10px);
+      margin: var(--media-preview-time-margin, 0);
       text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / .75));
       transform: translateX(min(
         max(calc(50% - var(--_box-width) / 2),
-          calc(var(--_box-shift, 0))),
+        calc(var(--_box-shift, 0))),
         calc(var(--_box-width) / 2 - 50%)
       ));
     }
@@ -198,53 +204,38 @@ template.innerHTML = /*html*/`
       --media-time-range-hover-display: block;
     }
 
-    .arrow,
-    slot[name="preview-arrow"]::slotted(*),
-    slot[name="current-arrow"]::slotted(*) {
+    [part~="arrow"],
+    ::slotted([part~="arrow"]) {
       display: var(--media-box-arrow-display, flex);
       transform: translateX(min(
         max(calc(50% - var(--_box-width) / 2 + var(--media-box-arrow-offset)),
-          calc(var(--_box-shift, 0))),
+        calc(var(--_box-shift, 0))),
         calc(var(--_box-width) / 2 - 50% - var(--media-box-arrow-offset))
       ));
+      ${/* border-color has to come before border-top-color! */''}
+      border-color: transparent;
+      border-top-color: var(--media-box-arrow-background, var(--_control-background));
+      border-width: var(--media-box-arrow-border-width,
+        var(--media-box-arrow-height, 5px) var(--media-box-arrow-width, 6px) 0);
+      border-style: solid;
       justify-content: center;
       height: 0;
     }
-
-    .arrow::before {
-      border-color: transparent;
-      border-top-color: var(--media-box-arrow-background,
-        var(--media-box-background,
-        var(--media-control-background,
-        var(--media-secondary-color, rgb(20 20 30 / .7)))));
-      border-width: var(--media-box-arrow-border-width, 5px 6px 0);
-      top: var(--media-box-arrow-top, -10px);
-      content: '';
-      display: block;
-      width: 0;
-      height: 0;
-      position: relative;
-      border-style: solid;
-    }
   </style>
   <div id="preview-rail">
-    <div part="box preview-box">
-      <slot name="preview">
-        <media-preview-thumbnail></media-preview-thumbnail>
-        <media-preview-chapter-display></media-preview-chapter-display>
-        <media-preview-time-display></media-preview-time-display>
-      </slot>
-      <slot name="preview-arrow"><div class="arrow"></div></slot>
-    </div>
+    <slot name="preview" part="box preview-box">
+      <media-preview-thumbnail></media-preview-thumbnail>
+      <media-preview-chapter-display></media-preview-chapter-display>
+      <media-preview-time-display></media-preview-time-display>
+      <slot name="preview-arrow" part="arrow"></slot>
+    </slot>
   </div>
   <div id="current-rail">
-    <div part="box current-box">
-      <slot name="current">
-        ${/* Example: add the current time to the playhead
-          <media-time-display></media-time-display> */''}
-      </slot>
-      <slot name="current-arrow"><div class="arrow"></div></slot>
-    </div>
+    <slot name="current" part="box current-box">
+      ${/* Example: add the current time w/ arrow to the playhead
+        <media-time-display slot="current"></media-time-display>
+        <div part="arrow" slot="current"></div> */''}
+    </slot>
   </div>
 `;
 
@@ -261,6 +252,7 @@ const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
 
 /**
  * @slot preview - An element that slides along the timeline to the position of the pointer hovering.
+ * @slot preview-arrow - An arrow element that slides along the timeline to the position of the pointer hovering.
  * @slot current - An element that slides along the timeline to the position of the current time.
  *
  * @attr {string} mediabuffered - (read-only) Set to the buffered time ranges.
@@ -276,6 +268,7 @@ const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
  * @csspart box - A CSS part that selects both the preview and current box elements.
  * @csspart preview-box - A CSS part that selects the preview box element.
  * @csspart current-box - A CSS part that selects the current box element.
+ * @csspart arrow - A CSS part that selects the arrow element.
  *
  * @cssproperty [--media-time-range-display = inline-block] - `display` property of range.
  *
@@ -305,6 +298,18 @@ const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
  * @cssproperty --media-preview-time-padding - `padding` of range preview time display.
  * @cssproperty --media-preview-time-margin - `margin` of range preview time display.
  * @cssproperty --media-preview-time-text-shadow - `text-shadow` of range preview time display.
+ *
+ * @cssproperty --media-box-display - `display` of range box.
+ * @cssproperty --media-box-margin - `margin` of range box.
+ * @cssproperty --media-box-padding-left - `padding-left` of range box.
+ * @cssproperty --media-box-padding-right - `padding-right` of range box.
+ *
+ * @cssproperty --media-box-arrow-display - `display` of range box arrow.
+ * @cssproperty --media-box-arrow-background - `border-top-color` of range box arrow.
+ * @cssproperty --media-box-arrow-border-width - `border-width` of range box arrow.
+ * @cssproperty --media-box-arrow-height - `height` of range box arrow.
+ * @cssproperty --media-box-arrow-width - `width` of range box arrow.
+ * @cssproperty --media-box-arrow-offset - `translateX` offset of range box arrow.
  */
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
