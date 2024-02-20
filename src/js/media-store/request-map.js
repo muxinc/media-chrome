@@ -55,7 +55,7 @@ export const requestMap = {
    * @TODO Consider adding state to `StateMediator` for e.g. `mediaThumbnailCues` and use that for derived state here (CJP)
    */
   [MediaUIEvents.MEDIA_PREVIEW_REQUEST](
-    _stateMediator,
+    stateMediator,
     stateOwners,
     { detail }
   ) {
@@ -90,11 +90,19 @@ export const requestMap = {
       }
     }
 
+    // chapters cues
+    const mediaPreviewChapter = stateMediator.mediaChaptersCues
+      .get(stateOwners)
+      .find(
+        (c) => c.startTime <= mediaPreviewTime && c.endTime > mediaPreviewTime
+      )?.text;
+
     // NOTE: Example of directly updating state from a request action/event (CJP)
     return {
       mediaPreviewTime,
       mediaPreviewImage,
       mediaPreviewCoords,
+      mediaPreviewChapter,
     };
   },
   [MediaUIEvents.MEDIA_PAUSE_REQUEST](stateMediator, stateOwners) {

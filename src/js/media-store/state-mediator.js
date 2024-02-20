@@ -792,7 +792,6 @@ export const stateMediator = {
       }
 
       let currentFullscreenEl = rootNode[fullscreenApi.element];
-
       if (event) {
         // Safari < 16.4 doesn't support ShadowRoot.fullscreenElement.
         // document.fullscreenElement could be several ancestors up the tree.
