@@ -106,11 +106,6 @@ class MediaController extends MediaContainer {
       prevState = nextState;
     };
 
-    if (!this.media) {
-      console.warn('Media Chrome: No media available.');
-      return;
-    }
-
     if (!this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
       this.#setupDefaultStore();
     }

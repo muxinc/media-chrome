@@ -567,6 +567,7 @@ export const stateMediator = {
     stateOwnersUpdateHandlers: [
       (_handler, stateOwners) => {
         const { media, options } = stateOwners;
+        if (!media) return;
 
         const updateDefaultSubtitlesCallback = (event) => {
           if (!options.defaultSubtitles) return;
@@ -631,6 +632,8 @@ export const stateMediator = {
     stateOwnersUpdateHandlers: [
       (handler, stateOwners) => {
         const { media } = stateOwners;
+        if (!media) return;
+
         /** @TODO account for adds/removes/replacements of <track> (CJP) */
         const chaptersTrack = media.querySelector(
           'track[kind="chapters"][default][src]'
@@ -964,6 +967,8 @@ export const stateMediator = {
     stateOwnersUpdateHandlers: [
       (handler, stateOwners) => {
         const { media } = stateOwners;
+        if (!media) return;
+
         const remotePlaybackDisabled =
           media.disableRemotePlayback ||
           media.hasAttribute('disableremoteplayback');
@@ -1015,6 +1020,8 @@ export const stateMediator = {
     stateOwnersUpdateHandlers: [
       (handler, stateOwners) => {
         const { media } = stateOwners;
+        if (!media) return;
+
         const remotePlaybackDisabled =
           media.disableRemotePlayback ||
           media.hasAttribute('disableremoteplayback');

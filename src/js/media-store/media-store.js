@@ -292,28 +292,28 @@ const createMediaStore = ({
     // * it changed -OR-
     // * we are configured to start monitoring due to the subscriber "head count".
     const setupMedia =
-      (!!nextStateOwners.media && mediaChanged) ||
-      shouldSetupFromSubscriberCount;
+      !!nextStateOwners.media &&
+      (mediaChanged || shouldSetupFromSubscriberCount);
 
     const setupTextTracks =
-      (!!nextStateOwners.media?.textTracks && textTracksChanged) ||
-      shouldSetupFromSubscriberCount;
+      !!nextStateOwners.media?.textTracks &&
+      (textTracksChanged || shouldSetupFromSubscriberCount);
 
     const setupVideoRenditions =
-      (!!nextStateOwners.media?.videoRenditions && videoRenditionsChanged) ||
-      shouldSetupFromSubscriberCount;
+      !!nextStateOwners.media?.videoRenditions &&
+      (videoRenditionsChanged || shouldSetupFromSubscriberCount);
 
     const setupAudioTracks =
-      (!!nextStateOwners.media?.audioTracks && audioTracksChanged) ||
-      shouldSetupFromSubscriberCount;
+      !!nextStateOwners.media?.audioTracks &&
+      (audioTracksChanged || shouldSetupFromSubscriberCount);
 
     const setupRemote =
-      (!!nextStateOwners.media?.remote && remoteChanged) ||
-      shouldSetupFromSubscriberCount;
+      !!nextStateOwners.media?.remote &&
+      (remoteChanged || shouldSetupFromSubscriberCount);
 
     const setupRootNode =
-      (!!nextStateOwners.rootNode && rootNodeChanged) ||
-      shouldSetupFromSubscriberCount;
+      !!nextStateOwners.rootNode &&
+      (rootNodeChanged || shouldSetupFromSubscriberCount);
 
     // This is simply a convenience definition saying we should be setting up *something*
     // used for short circuiting conditions.
