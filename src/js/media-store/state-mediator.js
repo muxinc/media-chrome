@@ -880,14 +880,15 @@ export const stateMediator = {
   },
   mediaCastUnavailable: {
     // @ts-ignore
-    get(stateOwners, { availability = false } = {}) {
+    get(stateOwners, { availability = 'not-available' } = {}) {
       const { media } = stateOwners;
 
       if (!castSupported || !media?.remote?.state) {
         return AvailabilityStates.UNSUPPORTED;
       }
 
-      if (availability == null || availability === true) return undefined;
+      if (availability == null || availability === 'available')
+        return undefined;
 
       return AvailabilityStates.UNAVAILABLE;
     },
@@ -899,10 +900,14 @@ export const stateMediator = {
           media.hasAttribute('disableremoteplayback');
         if (!remotePlaybackDisabled) {
           media?.remote
-            ?.watchAvailability((availability) =>
+            ?.watchAvailability((availabilityBool) => {
+              // Normalizing to `webkitplaybacktargetavailabilitychanged` for consistency.
+              const availability = availabilityBool
+                ? 'available'
+                : 'not-available';
               // @ts-ignore
-              handler({ availability })
-            )
+              handler({ availability });
+            })
             .catch((error) => {
               if (error.name === 'NotSupportedError') {
                 // Availability monitoring is not supported by the platform, so discovery of
@@ -912,8 +917,9 @@ export const stateMediator = {
               } else {
                 // Thrown if disableRemotePlayback is true for the media element
                 // or if the source can't be played remotely.
+                // Normalizing to `webkitplaybacktargetavailabilitychanged` for consistency.
                 // @ts-ignore
-                handler({ availability: false });
+                handler({ availability: 'not-available' });
               }
             });
         }
@@ -945,10 +951,14 @@ export const stateMediator = {
           media.hasAttribute('disableremoteplayback');
         if (!remotePlaybackDisabled) {
           media?.remote
-            ?.watchAvailability((availability) =>
+            ?.watchAvailability((availabilityBool) => {
+              // Normalizing to `webkitplaybacktargetavailabilitychanged` for consistency.
+              const availability = availabilityBool
+                ? 'available'
+                : 'not-available';
               // @ts-ignore
-              handler({ availability })
-            )
+              handler({ availability });
+            })
             .catch((error) => {
               if (error.name === 'NotSupportedError') {
                 // Availability monitoring is not supported by the platform, so discovery of
@@ -958,8 +968,9 @@ export const stateMediator = {
               } else {
                 // Thrown if disableRemotePlayback is true for the media element
                 // or if the source can't be played remotely.
+                // Normalizing to `webkitplaybacktargetavailabilitychanged` for consistency.
                 // @ts-ignore
-                handler({ availability: false });
+                handler({ availability: 'not-available' });
               }
             });
         }
