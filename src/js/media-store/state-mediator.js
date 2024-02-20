@@ -20,6 +20,7 @@ import {
   getSubtitleTracks,
   toggleSubtitleTracks,
 } from './util.js';
+import { getTextTracksList } from '../utils/captions.js';
 
 /**
  * @typedef {'on-demand'|'live'|'unknown'} StreamTypeValue
@@ -176,6 +177,7 @@ import {
  *   mediaTimeIsLive: ReadonlyFacadeProp<boolean>;
  *   mediaSubtitlesList: ReadonlyFacadeProp<Pick<TextTrack,'kind'|'label'|'language'>[]>;
  *   mediaSubtitlesShowing: ReadonlyFacadeProp<Pick<TextTrack,'kind'|'label'|'language'>[]>;
+ *   mediaChaptersCues: ReadonlyFacadeProp<Pick<VTTCue,'text'|'startTime'|'endTime'>[]>;
  *   mediaIsPip: FacadeProp<boolean>;
  *   mediaRenditionList: ReadonlyFacadeProp<{ id?: string }[]>;
  *   mediaRenditionSelected: FacadeProp<{ id?: string }[],string>;
@@ -575,6 +577,43 @@ export const stateMediator = {
     },
     mediaEvents: ['loadstart'],
     textTracksEvents: ['addtrack', 'removetrack', 'change'],
+  },
+  mediaChaptersCues: {
+    get(stateOwners) {
+      const { media } = stateOwners;
+      if (!media) return [];
+
+      const [chaptersTrack] = getTextTracksList(media, {
+        kind: TextTrackKinds.CHAPTERS,
+      });
+
+      return Array.from(chaptersTrack?.cues ?? []).map(
+        (/** @type VTTCue */ { text, startTime, endTime }) => ({
+          text,
+          startTime,
+          endTime,
+        })
+      );
+    },
+    mediaEvents: ['loadstart', 'loadedmetadata'],
+    textTracksEvents: ['addtrack', 'removetrack', 'change'],
+    stateOwnersUpdateHandlers: [
+      (handler, stateOwners) => {
+        const { media } = stateOwners;
+        /** @TODO account for adds/removes/replacements of <track> (CJP) */
+        const chaptersTrack = media.querySelector(
+          'track[kind="chapters"][default][src]'
+        );
+
+        /** @ts-ignore */
+        chaptersTrack?.addEventListener('load', handler);
+
+        return () => {
+          /** @ts-ignore */
+          chaptersTrack?.removeEventListener('load', handler);
+        };
+      },
+    ],
   },
   // Modeling state tied to root node
   mediaIsPip: {
