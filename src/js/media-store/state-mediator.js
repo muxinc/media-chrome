@@ -894,10 +894,13 @@ export const stateMediator = {
     stateOwnersUpdateHandlers: [
       (handler, stateOwners) => {
         const { media } = stateOwners;
-        media?.remote?.watchAvailability((availability) =>
-          // @ts-ignore
-          handler({ availability })
-        );
+        const remotePlaybackDisabled = media.disableRemotePlayback || media.hasAttribute('disableremoteplayback');
+        if (!remotePlaybackDisabled) {
+          media?.remote?.watchAvailability((availability) =>
+            // @ts-ignore
+            handler({ availability })
+          );
+        }
         return () => {
           media?.remote?.cancelWatchAvailability();
         };
@@ -914,7 +917,25 @@ export const stateMediator = {
       // Either available via `availability` state or not yet known
       return undefined;
     },
+    // NOTE: Keeping this event, as it's still the documented way of monitoring
+    // for AirPlay availability from Apple.
+    // See: https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls#2940021 (CJP)
     mediaEvents: ['webkitplaybacktargetavailabilitychanged'],
+    stateOwnersUpdateHandlers: [
+      (handler, stateOwners) => {
+        const { media } = stateOwners;
+        const remotePlaybackDisabled = media.disableRemotePlayback || media.hasAttribute('disableremoteplayback');
+        if (!remotePlaybackDisabled) {
+          media?.remote?.watchAvailability((availability) =>
+            // @ts-ignore
+            handler({ availability })
+          );
+        }
+        return () => {
+          media?.remote?.cancelWatchAvailability();
+        };
+      },
+    ],
   },
   mediaRenditionUnavailable: {
     get(stateOwners) {
