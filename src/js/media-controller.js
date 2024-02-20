@@ -127,9 +127,6 @@ class MediaController extends MediaContainer {
         noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
         noSubtitlesLangPref: this.hasAttribute(Attributes.NO_SUBTITLES_LANG_PREF),
       },
-      // NOTE: When using a default store, we're going to assume that we should stop monitoring the state owners whenever
-      // there are no subscribers. This allows us to do proper teardown/GC when the media-controller is no longer in use.
-      monitorStateOwnersOnlyWithSubscriptions: true,
     });
   }
 

@@ -141,7 +141,7 @@ const createMediaStore = ({
   stateMediator = defaultStateMediator,
   requestMap = defaultRequestMap,
   options = {},
-  monitorStateOwnersOnlyWithSubscriptions = false,
+  monitorStateOwnersOnlyWithSubscriptions = true,
 }) => {
   const callbacks = [];
 
