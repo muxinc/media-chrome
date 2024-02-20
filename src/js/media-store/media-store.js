@@ -162,6 +162,7 @@ const createMediaStore = ({
     mediaPreviewTime: undefined,
     mediaPreviewImage: undefined,
     mediaPreviewCoords: undefined,
+    mediaPreviewChapter: undefined,
   });
 
   const updateState = (nextStateDelta) => {
