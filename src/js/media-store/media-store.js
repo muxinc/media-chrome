@@ -377,14 +377,14 @@ const createMediaStore = ({
         prevHandler = stateUpdateHandlers[stateName].textTracksEvents;
         textTracksEvents.forEach((eventType) => {
           if (prevHandler && teardownTextTracks) {
-            stateOwners.media.textTracks.removeEventListener(
+            stateOwners.media.textTracks?.removeEventListener(
               eventType,
               prevHandler
             );
             stateUpdateHandlers[stateName].textTracksEvents = undefined;
           }
           if (setupTextTracks) {
-            nextStateOwners.media.textTracks.addEventListener(
+            nextStateOwners.media.textTracks?.addEventListener(
               eventType,
               handler
             );
