@@ -557,26 +557,57 @@ export const stateMediator = {
     textTracksEvents: ['addtrack', 'removetrack'],
   },
   mediaSubtitlesShowing: {
-    get(stateOwners, event) {
-      /** @TODO Attemt to re-implement this fix as a stateOwnersUpdateHandlers callback (CJP) */
-      const { options } = stateOwners;
-      if (
-        options.defaultSubtitles &&
-        ['addtrack', 'removetrack'].includes(event?.type) &&
-        [TextTrackKinds.CAPTIONS, TextTrackKinds.SUBTITLES].includes(
-          /** @TODO Handle this in better Event types cleanup (CJP) */
-          // @ts-ignore
-          event?.track?.kind
-        )
-      ) {
-        toggleSubtitleTracks(stateOwners, true);
-      }
+    get(stateOwners) {
       return getShowingSubtitleTracks(stateOwners).map(
         ({ kind, label, language }) => ({ kind, label, language })
       );
     },
     mediaEvents: ['loadstart'],
     textTracksEvents: ['addtrack', 'removetrack', 'change'],
+    stateOwnersUpdateHandlers: [
+      (_handler, stateOwners) => {
+        const { media, options } = stateOwners;
+
+        const updateDefaultSubtitlesCallback = (event) => {
+          if (!options.defaultSubtitles) return;
+
+          const nonSubsEvent =
+            event &&
+            ![TextTrackKinds.CAPTIONS, TextTrackKinds.SUBTITLES].includes(
+              // @ts-ignore
+              event?.track?.kind
+            );
+
+          if (nonSubsEvent) return;
+
+          // NOTE: In this use case, since we're causing a side effect, no need to invoke `handler()`. (CJP)
+          toggleSubtitleTracks(stateOwners, true);
+        };
+
+        media.textTracks?.addEventListener(
+          'addtrack',
+          updateDefaultSubtitlesCallback
+        );
+        media.textTracks?.addEventListener(
+          'removetrack',
+          updateDefaultSubtitlesCallback
+        );
+
+        // Invoke immediately as well, in case subs/cc tracks are already added
+        updateDefaultSubtitlesCallback();
+
+        return () => {
+          media.textTracks?.removeEventListener(
+            'addtrack',
+            updateDefaultSubtitlesCallback
+          );
+          media.textTracks?.removeEventListener(
+            'removetrack',
+            updateDefaultSubtitlesCallback
+          );
+        };
+      },
+    ],
   },
   mediaChaptersCues: {
     get(stateOwners) {

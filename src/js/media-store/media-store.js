@@ -394,14 +394,14 @@ const createMediaStore = ({
         prevHandler = stateUpdateHandlers[stateName].videoRenditionsEvents;
         videoRenditionsEvents.forEach((eventType) => {
           if (prevHandler && teardownVideoRenditions) {
-            stateOwners.media.videoRenditions.removeEventListener(
+            stateOwners.media.videoRenditions?.removeEventListener(
               eventType,
               prevHandler
             );
             stateUpdateHandlers[stateName].videoRenditionsEvents = undefined;
           }
           if (setupVideoRenditions) {
-            nextStateOwners.media.videoRenditions.addEventListener(
+            nextStateOwners.media.videoRenditions?.addEventListener(
               eventType,
               handler
             );
@@ -411,14 +411,14 @@ const createMediaStore = ({
         prevHandler = stateUpdateHandlers[stateName].audioTracksEvents;
         audioTracksEvents.forEach((eventType) => {
           if (prevHandler && teardownAudioTracks) {
-            stateOwners.media.audioTracks.removeEventListener(
+            stateOwners.media.audioTracks?.removeEventListener(
               eventType,
               prevHandler
             );
             stateUpdateHandlers[stateName].audioTracksEvents = undefined;
           }
           if (setupAudioTracks) {
-            nextStateOwners.media.audioTracks.addEventListener(
+            nextStateOwners.media.audioTracks?.addEventListener(
               eventType,
               handler
             );
@@ -428,14 +428,14 @@ const createMediaStore = ({
         prevHandler = stateUpdateHandlers[stateName].remoteEvents;
         remoteEvents.forEach((eventType) => {
           if (prevHandler && teardownRemote) {
-            stateOwners.media.remote.removeEventListener(
+            stateOwners.media.remote?.removeEventListener(
               eventType,
               prevHandler
             );
             stateUpdateHandlers[stateName].remoteEvents = undefined;
           }
           if (setupRemote) {
-            nextStateOwners.media.remote.addEventListener(eventType, handler);
+            nextStateOwners.media.remote?.addEventListener(eventType, handler);
             stateUpdateHandlers[stateName].remoteEvents = handler;
           }
         });
