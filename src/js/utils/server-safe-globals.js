@@ -6,6 +6,8 @@ class EventTarget {
   }
 }
 
+class Node extends EventTarget {}
+
 class ResizeObserver {
   observe() {}
   unobserve() {}
@@ -32,7 +34,8 @@ const documentShim = {
 const globalThisShim = {
   ResizeObserver,
   document: documentShim,
-  HTMLElement: class HTMLElement extends EventTarget {},
+  Node: Node,
+  HTMLElement: class HTMLElement extends Node {},
   DocumentFragment: class DocumentFragment extends EventTarget {},
   customElements: {
     get: function () {},
@@ -89,7 +92,8 @@ const isShimmed = Object.keys(globalThisShim)
   *   getComputedStyle,
   *   CastableVideoElement?
   * } |
-  * {HTMLElement,
+  * {Node,
+  * HTMLElement,
   * customElements,
   * CustomEvent,
   * getComputedStyle,

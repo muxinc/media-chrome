@@ -17,7 +17,7 @@
  */
 
 import { document } from '../utils/server-safe-globals.js';
-import { stateMediator as defaultStateMediator } from './state-mediator.js';
+import { stateMediator as defaultStateMediator, prepareStateOwners } from './state-mediator.js';
 import { areValuesEq } from './util.js';
 import { requestMap as defaultRequestMap } from './request-map.js';
 
@@ -215,6 +215,8 @@ const createMediaStore = ({
       ...stateOwners,
       ...nextStateOwnersDelta,
     };
+
+    prepareStateOwners(...Object.values(nextStateOwnersDelta));
 
     // Define all of the disparate stateOwner monitoring teardown/setup once, up front.
 

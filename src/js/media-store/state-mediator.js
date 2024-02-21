@@ -243,6 +243,20 @@ export const volumeSupportPromise = hasVolumeSupportAsync().then(
   }
 );
 
+export const prepareStateOwners = (
+  /** @type {(StateOwners[keyof StateOwners])[]} */ ...stateOwners
+) => {
+  stateOwners
+    .filter((x) => x)
+    .forEach((stateOwner) => {
+      if (!('nodeName' in stateOwner)) return;
+      const name = stateOwner?.nodeName.toLowerCase();
+      if (name.includes('-') && stateOwner instanceof globalThis.Node) {
+        globalThis.customElements.upgrade(stateOwner);
+      }
+    });
+};
+
 /** @type {StateMediator} */
 export const stateMediator = {
   mediaPaused: {
