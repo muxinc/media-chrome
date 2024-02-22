@@ -250,7 +250,7 @@ export const prepareStateOwners = async (
     .filter((x) => x)
     .forEach(async (stateOwner) => {
       if (
-        !('nodeName' in stateOwner && stateOwner instanceof globalThis.Node)
+        !('nodeName' in stateOwner && stateOwner instanceof globalThis.HTMLElement)
       ) {
         return;
       }
@@ -411,7 +411,7 @@ export const stateMediator = {
     get(stateOwners) {
       const {
         media,
-        options: { defaultDuration },
+        options: { defaultDuration } = {},
       } = stateOwners;
 
       // If `defaultduration` is set and we don't yet have a usable `duration`
@@ -471,7 +471,7 @@ export const stateMediator = {
     get(stateOwners) {
       const {
         media,
-        options: { defaultStreamType },
+        options: { defaultStreamType } = {},
       } = stateOwners;
 
       const usedDefaultStreamType = [
@@ -541,7 +541,7 @@ export const stateMediator = {
       const {
         media,
         // Default to 10 seconds
-        options: { liveEdgeOffset = 10 },
+        options: { liveEdgeOffset = 10 } = {},
       } = stateOwners;
 
       if (!media) return false;
@@ -686,6 +686,7 @@ export const stateMediator = {
     },
     set(value, stateOwners) {
       const { media } = stateOwners;
+      if (!media) return;
       if (value) {
         if (!document.pictureInPictureEnabled) {
           console.warn('MediaChrome: Picture-in-picture is not enabled');
@@ -892,6 +893,7 @@ export const stateMediator = {
     },
     set(value, stateOwners) {
       const { media } = stateOwners;
+      if (!media) return;
       if (value && media.remote?.state !== 'disconnected') return;
       if (!value && media.remote?.state !== 'connected') return;
 
