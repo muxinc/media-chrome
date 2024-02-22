@@ -256,7 +256,7 @@ export const prepareStateOwners = async (
       }
 
       const name = stateOwner?.nodeName.toLowerCase();
-      if (!name.includes('-')) return;
+      if (name.startsWith('#') || !name.includes('-')) return;
 
       const classDef = globalThis.customElements.get(name);
       if (classDef && stateOwner instanceof classDef) return;
