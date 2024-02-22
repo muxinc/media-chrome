@@ -251,15 +251,15 @@ export const prepareStateOwners = async (
     .forEach(async (stateOwner) => {
       if (
         !(
-          'nodeName' in stateOwner &&
+          'localName' in stateOwner &&
           stateOwner instanceof globalThis.HTMLElement
         )
       ) {
         return;
       }
 
-      const name = stateOwner?.nodeName.toLowerCase();
-      if (name.startsWith('#') || !name.includes('-')) return;
+      const name = stateOwner.localName;
+      if (!name.includes('-')) return;
 
       const classDef = globalThis.customElements.get(name);
       if (classDef && stateOwner instanceof classDef) return;
@@ -864,11 +864,21 @@ export const stateMediator = {
       const { media, fullscreenElement } = stateOwners;
       if (!value) {
         // NOTE: Must be document, not whatever "rootNode" stateOwner is identified as (CJP)
-        document?.[fullscreenApi.exit]?.();
+        const maybePromise = document?.[fullscreenApi.exit]?.();
+        // NOTE: Since the "official" exit fullscreen method yields a Promise that rejects
+        // if not in fullscreen, this accounts for those cases.
+        if (maybePromise instanceof Promise) {
+          maybePromise.catch(() => {});
+        }
         return;
       }
       if (fullscreenElement?.[fullscreenApi.enter]) {
-        fullscreenElement[fullscreenApi.enter]?.();
+        // NOTE: Since the "official" enter fullscreen method yields a Promise that rejects
+        // if already in fullscreen, this accounts for those cases.
+        const maybePromise = fullscreenElement[fullscreenApi.enter]?.();
+        if (maybePromise instanceof Promise) {
+          maybePromise.catch(() => {});
+        }
       } else if (media?.webkitEnterFullscreen) {
         // Media element fullscreen using iOS API
         media.webkitEnterFullscreen();
