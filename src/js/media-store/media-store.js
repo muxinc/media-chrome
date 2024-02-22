@@ -218,7 +218,6 @@ const createMediaStore = ({
     nextStateOwnersDelta,
     nextSubscriberCount
   ) => {
-
     const pendingUpdate = !!nextStateOwners;
     nextStateOwners = {
       ...stateOwners,
@@ -346,12 +345,13 @@ const createMediaStore = ({
     // If there's nothing to do (teardown- or setup-wise), we're done here.
     if (!somethingToDo) {
       // Except make sure we actually update the stateOwners, if changed
-      Object.entries(nextStateOwnersDelta).forEach(
+      Object.entries(nextStateOwners).forEach(
         ([stateOwnerName, stateOwner]) => {
           stateOwners[stateOwnerName] = stateOwner;
         }
       );
       updateStateFromFacade();
+      nextStateOwners = undefined;
       return;
     }
 
@@ -488,11 +488,9 @@ const createMediaStore = ({
       }
     );
 
-    Object.entries(nextStateOwnersDelta).forEach(
-      ([stateOwnerName, stateOwner]) => {
-        stateOwners[stateOwnerName] = stateOwner;
-      }
-    );
+    Object.entries(nextStateOwners).forEach(([stateOwnerName, stateOwner]) => {
+      stateOwners[stateOwnerName] = stateOwner;
+    });
     updateStateFromFacade();
     nextStateOwners = undefined;
   };

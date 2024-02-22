@@ -226,6 +226,7 @@ class MediaController extends MediaContainer {
 
     if (this.#mediaStore && !this.#mediaStoreUnsubscribe) {
       this.#mediaStore.dispatch({ type: 'rootnodechangerequest', detail: this.#rootNode });
+      this.#mediaStoreUnsubscribe = this.#mediaStore?.subscribe(this.#mediaStateCallback);
     }
 
     this.enableHotkeys();

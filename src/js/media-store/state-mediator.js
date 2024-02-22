@@ -250,7 +250,10 @@ export const prepareStateOwners = async (
     .filter((x) => x)
     .forEach(async (stateOwner) => {
       if (
-        !('nodeName' in stateOwner && stateOwner instanceof globalThis.HTMLElement)
+        !(
+          'nodeName' in stateOwner &&
+          stateOwner instanceof globalThis.HTMLElement
+        )
       ) {
         return;
       }
@@ -411,10 +414,7 @@ export const stateMediator = {
   },
   mediaDuration: {
     get(stateOwners) {
-      const {
-        media,
-        options: { defaultDuration } = {},
-      } = stateOwners;
+      const { media, options: { defaultDuration } = {} } = stateOwners;
 
       // If `defaultduration` is set and we don't yet have a usable `duration`
       // available, use the default duration.
@@ -471,10 +471,7 @@ export const stateMediator = {
   },
   mediaStreamType: {
     get(stateOwners) {
-      const {
-        media,
-        options: { defaultStreamType } = {},
-      } = stateOwners;
+      const { media, options: { defaultStreamType } = {} } = stateOwners;
 
       const usedDefaultStreamType = [
         StreamTypes.LIVE,
@@ -845,13 +842,14 @@ export const stateMediator = {
       ) {
         // For some reason webkitDisplayingFullscreen is true when in PiP,
         // add an extra presentation mode is fullscreen check.
+
         return (
           media.webkitDisplayingFullscreen &&
           media.webkitPresentationMode === 'fullscreen'
         );
       }
 
-      let currentFullscreenEl = rootNode[fullscreenApi.element];
+      let currentFullscreenEl = document[fullscreenApi.element];
       if (event) {
         // Safari < 16.4 doesn't support ShadowRoot.fullscreenElement.
         // document.fullscreenElement could be several ancestors up the tree.
