@@ -315,7 +315,8 @@ export const stateMediator = {
     set(value, stateOwners) {
       const { media } = stateOwners;
       if (!media) return;
-      media.playbackRate = value;
+      if (!Number.isFinite(+value)) return;
+      media.playbackRate = +value;
     },
     mediaEvents: ['ratechange', 'loadstart'],
   },
@@ -355,7 +356,8 @@ export const stateMediator = {
       } catch (err) {
         // ignore
       }
-      media.volume = value;
+      if (!Number.isFinite(+value)) return;
+      media.volume = +value;
     },
     mediaEvents: ['volumechange'],
     stateOwnersUpdateHandlers: [
@@ -869,10 +871,10 @@ export const stateMediator = {
       }
       if (fullscreenElement?.[fullscreenApi.enter]) {
         fullscreenElement[fullscreenApi.enter]?.();
-      } else if (media.webkitEnterFullscreen) {
+      } else if (media?.webkitEnterFullscreen) {
         // Media element fullscreen using iOS API
         media.webkitEnterFullscreen();
-      } else if (media.requestFullscreen) {
+      } else if (media?.requestFullscreen) {
         // So media els don't have to implement multiple APIs.
         media.requestFullscreen();
       }

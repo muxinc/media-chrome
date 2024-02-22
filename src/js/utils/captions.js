@@ -69,6 +69,7 @@ export const parseTextTracksStr = (
  * @returns {Array<Object>} An array of TextTrack-like objects.
  */
 export const parseTracks = (trackOrTracks) => {
+  if (!trackOrTracks) return [];
   // Already an array, but might be an array of strings, objects, or both.
   if (Array.isArray(trackOrTracks)) {
     return trackOrTracks.map((trackObjOrStr) => {
