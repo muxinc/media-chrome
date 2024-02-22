@@ -17,7 +17,10 @@
  */
 
 import { document } from '../utils/server-safe-globals.js';
-import { stateMediator as defaultStateMediator, prepareStateOwners } from './state-mediator.js';
+import {
+  stateMediator as defaultStateMediator,
+  prepareStateOwners,
+} from './state-mediator.js';
 import { areValuesEq } from './util.js';
 import { requestMap as defaultRequestMap } from './request-map.js';
 
@@ -210,13 +213,22 @@ const createMediaStore = ({
   // and will re-compute the general next state whenever any "state owner" is set or updated,
   // which includes the media element, but also the rootNode and the fullscreenElement
   // This is roughly equivalent to what used to be in `mediaSetCallback`/`mediaUnsetCallback` (CJP)
-  const updateStateOwners = (nextStateOwnersDelta, nextSubscriberCount) => {
-    const nextStateOwners = {
+  let nextStateOwners = undefined;
+  const updateStateOwners = async (
+    nextStateOwnersDelta,
+    nextSubscriberCount
+  ) => {
+
+    const pendingUpdate = !!nextStateOwners;
+    nextStateOwners = {
       ...stateOwners,
+      ...(nextStateOwners ?? {}),
       ...nextStateOwnersDelta,
     };
 
-    prepareStateOwners(...Object.values(nextStateOwnersDelta));
+    if (pendingUpdate) return;
+
+    await prepareStateOwners(...Object.values(nextStateOwnersDelta));
 
     // Define all of the disparate stateOwner monitoring teardown/setup once, up front.
 
@@ -225,7 +237,9 @@ const createMediaStore = ({
     // that means they should teardown pre-existing monitoring (e.g. event handlers)
     // whenever the subscribers "head count" goes from > 0 to 0.
     const shouldTeardownFromSubscriberCount =
-      nextSubscriberCount === 0 && monitorStateOwnersOnlyWithSubscriptions;
+      callbacks.length > 0 &&
+      nextSubscriberCount === 0 &&
+      monitorStateOwnersOnlyWithSubscriptions;
 
     // These define whether a particular `stateOwner` (or "sub-owner", e.g. media.textTracks)
     // has changed since the last time this function was invoked. Relevant for both
@@ -337,6 +351,7 @@ const createMediaStore = ({
           stateOwners[stateOwnerName] = stateOwner;
         }
       );
+      updateStateFromFacade();
       return;
     }
 
@@ -479,6 +494,7 @@ const createMediaStore = ({
       }
     );
     updateStateFromFacade();
+    nextStateOwners = undefined;
   };
 
   updateStateOwners({ media, fullscreenElement, rootNode, options });

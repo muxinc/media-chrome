@@ -243,17 +243,26 @@ export const volumeSupportPromise = hasVolumeSupportAsync().then(
   }
 );
 
-export const prepareStateOwners = (
+export const prepareStateOwners = async (
   /** @type {(StateOwners[keyof StateOwners])[]} */ ...stateOwners
 ) => {
-  stateOwners
+  await stateOwners
     .filter((x) => x)
-    .forEach((stateOwner) => {
-      if (!('nodeName' in stateOwner)) return;
-      const name = stateOwner?.nodeName.toLowerCase();
-      if (name.includes('-') && stateOwner instanceof globalThis.Node) {
-        globalThis.customElements.upgrade(stateOwner);
+    .forEach(async (stateOwner) => {
+      if (
+        !('nodeName' in stateOwner && stateOwner instanceof globalThis.Node)
+      ) {
+        return;
       }
+
+      const name = stateOwner?.nodeName.toLowerCase();
+      if (!name.includes('-')) return;
+
+      const classDef = globalThis.customElements.get(name);
+      if (classDef && stateOwner instanceof classDef) return;
+
+      await globalThis.customElements.whenDefined(name);
+      globalThis.customElements.upgrade(stateOwner);
     });
 };
 
