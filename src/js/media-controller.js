@@ -82,7 +82,9 @@ class MediaController extends MediaContainer {
   constructor() {
     super();
 
-    this.#rootNode = /** @type {Document|ShadowRoot} */ (/** @type {unknown} */ (this.getRootNode()));
+    if (this.isConnected) {
+      this.#rootNode = /** @type {Document|ShadowRoot} */ (/** @type {unknown} */ (this.getRootNode()));
+    }
     // Track externally associated control elements
     this.mediaStateReceivers = [];
     this.associatedElementSubscriptions = new Map();
