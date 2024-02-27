@@ -860,7 +860,7 @@ export const stateMediator = {
     audioTracksEvents: ['addtrack', 'removetrack', 'change'],
   },
   mediaIsFullscreen: {
-    get(stateOwners, event) {
+    get(stateOwners) {
       const {
         media,
         rootNode = document,

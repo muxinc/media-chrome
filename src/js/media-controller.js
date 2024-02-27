@@ -8,7 +8,7 @@
   * Auto-hide controls on inactivity while playing
 */
 import { MediaContainer } from './media-container.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { delay, stringifyRenditionList, stringifyAudioTrackList } from './utils/utils.js';
 import { stringifyTextTrackList } from './utils/captions.js';
