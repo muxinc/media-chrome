@@ -8,7 +8,7 @@
   * Auto-hide controls on inactivity while playing
 */
 import { MediaContainer } from './media-container.js';
-import { globalThis } from './utils/server-safe-globals.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { delay, stringifyRenditionList, stringifyAudioTrackList } from './utils/utils.js';
 import { stringifyTextTrackList } from './utils/captions.js';
@@ -70,8 +70,6 @@ class MediaController extends MediaContainer {
 
   #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
   #fullscreenElement;
-  /** @type {Document|ShadowRoot} */
-  #rootNode;
   #mediaStore;
   #mediaStateCallback;
   #mediaStoreUnsubscribe;
@@ -82,9 +80,6 @@ class MediaController extends MediaContainer {
   constructor() {
     super();
 
-    if (this.isConnected) {
-      this.#rootNode = /** @type {Document|ShadowRoot} */ (/** @type {unknown} */ (this.getRootNode()));
-    }
     // Track externally associated control elements
     this.mediaStateReceivers = [];
     this.associatedElementSubscriptions = new Map();
@@ -118,7 +113,6 @@ class MediaController extends MediaContainer {
   #setupDefaultStore() {
     this.mediaStore = createMediaStore({
       media: this.media,
-      rootNode: this.#rootNode,
       fullscreenElement: this.fullscreenElement,
       options: {
         defaultSubtitles: this.hasAttribute(Attributes.DEFAULT_SUBTITLES),
@@ -208,8 +202,11 @@ class MediaController extends MediaContainer {
         },
       });
     } else if (attrName === Attributes.FULLSCREEN_ELEMENT) {
-      const el = newValue ? this.#rootNode?.getElementById(newValue) : undefined;
-      // NOTE: Setting the internal private prop here to not
+      const el = newValue
+        ? (/** @type {Document|ShadowRoot} */ (/** @type {unknown} */ this.getRootNode()))?.getElementById(newValue)
+        : undefined;
+
+      // NOTE: Setting the internal private prop here instead of using the setter to not
       // clear the attribute that was just set (CJP).
       this.#fullscreenElement = el;
       // Use the getter in case the fullscreen element was reset to "`this`"
@@ -218,16 +215,11 @@ class MediaController extends MediaContainer {
   }
 
   connectedCallback() {
-    // getRootNode() in disconnectedCallback returns the media-controller element itself
-    // but we need the HTMLDocument or ShadowRoot if media-controller is in a shadow DOM.
-    // We store the correct root node here so we can access it later.
-    this.#rootNode = /** @type HTMLDocument | ShadowRoot */ (this.getRootNode());
 
     // mediaSetCallback() is called in super.connectedCallback();
     super.connectedCallback();
 
     if (this.#mediaStore && !this.#mediaStoreUnsubscribe) {
-      this.#mediaStore.dispatch({ type: 'rootnodechangerequest', detail: this.#rootNode });
       this.#mediaStoreUnsubscribe = this.#mediaStore?.subscribe(this.#mediaStateCallback);
     }
 
@@ -247,10 +239,7 @@ class MediaController extends MediaContainer {
       });
     }
 
-    this.#rootNode = undefined;
-
     if (this.#mediaStoreUnsubscribe) {
-      this.#mediaStore?.dispatch({ type: 'rootnodechangerequest', detail: this.#rootNode });
       this.#mediaStoreUnsubscribe?.();
       this.#mediaStoreUnsubscribe = undefined;
     }

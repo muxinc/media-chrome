@@ -3,6 +3,7 @@ import {
   AvailabilityStates,
   StreamTypes,
   TextTrackKinds,
+  WebkitPresentationModes,
 } from '../constants.js';
 import { containsComposedNode } from '../utils/element-utils.js';
 import { fullscreenApi } from '../utils/fullscreen-api.js';
@@ -673,15 +674,42 @@ export const stateMediator = {
   },
   // Modeling state tied to root node
   mediaIsPip: {
-    get(stateOwners, event) {
+    get(stateOwners) {
       const { media, rootNode = document } = stateOwners;
 
+      // Need a rootNode and a media StateOwner to be in PiP, so we're not PiP
       if (!media || !rootNode) return false;
-      if (event) {
-        return event.type == 'enterpictureinpicture';
+
+      // Need a rootNode.pictureInPictureElement to be in PiP, so we're not PiP
+      if (!rootNode.pictureInPictureElement) return false;
+
+      // If rootNode.pictureInPictureElement is the media StateOwner, we're definitely in PiP
+      if (rootNode.pictureInPictureElement === media) return true;
+
+      // In this case (e.g. Safari), the pictureInPictureElement may be
+      // the underlying <video> or <audio> element of a media StateOwner
+      // that is a web component, even if it's not "visible" from the
+      // rootNode, so check for that.
+      if (rootNode.pictureInPictureElement instanceof HTMLMediaElement) {
+        if (!media.localName?.includes('-')) return false;
+        return containsComposedNode(media, rootNode.pictureInPictureElement);
       }
 
-      return containsComposedNode(media, rootNode.pictureInPictureElement);
+      // In this case (e.g. Chrome), the pictureInPictureElement may be
+      // a web component that is "visible" from the rootNode, but should
+      // have its own pictureInPictureElement on its shadowRoot for whatever
+      // is "visible" at that level. Since the media StateOwner may be nested
+      // inside an indeterminite number of web components, traverse each layer
+      // until we either find the media StateOwner or complete the recursive check.
+      if (rootNode.pictureInPictureElement.localName.includes('-')) {
+        let currentRoot = rootNode.pictureInPictureElement.shadowRoot;
+        while (currentRoot?.pictureInPictureElement) {
+          if (currentRoot.pictureInPictureElement === media) return true;
+          currentRoot = currentRoot.pictureInPictureElement?.shadowRoot;
+        }
+      }
+
+      return false;
     },
     set(value, stateOwners) {
       const { media } = stateOwners;
@@ -710,6 +738,12 @@ export const stateMediator = {
         media.requestPictureInPicture().catch((err) => {
           // InvalidStateError, readyState == 0 (Not ready)
           if (err.code === 11) {
+            if (!media.src) {
+              console.warn(
+                'MediaChrome: The media is not ready for picture-in-picture. It must have a src set.'
+              );
+              return;
+            }
             // We can assume the viewer wants the video to load, so attempt to
             // if we can rely on readyState and preload
             // Only works in Chrome currently. Safari doesn't allow triggering
@@ -833,38 +867,71 @@ export const stateMediator = {
         fullscreenElement = media,
       } = stateOwners;
 
-      // iOS has a specialized fullscreen API on the video element.
-      // https://developer.apple.com/documentation/webkitjs/htmlvideoelement/1630493-webkitdisplayingfullscreen
-      if (
-        media &&
-        rootNode[fullscreenApi.element] === undefined &&
-        'webkitDisplayingFullscreen' in media
-      ) {
-        // For some reason webkitDisplayingFullscreen is true when in PiP,
-        // add an extra presentation mode is fullscreen check.
+      // Need a rootNode and a media StateOwner to be in fullscreen, so we're not fullscreen
+      if (!media || !rootNode) return false;
 
-        return (
-          media.webkitDisplayingFullscreen &&
-          media.webkitPresentationMode === 'fullscreen'
-        );
+      // Need a rootNode.fullscreenElement to be in fullscreen, so we're not fullscreen
+      if (!rootNode[fullscreenApi.element]) {
+        // Except for iOS, which doesn't conform to the standard API
+        // See: https://developer.apple.com/documentation/webkitjs/htmlvideoelement/1630493-webkitdisplayingfullscreen
+        if (
+          'webkitDisplayingFullscreen' in media &&
+          'webkitPresentationMode' in media
+        ) {
+          // Unfortunately, webkitDisplayingFullscreen is also true when in PiP, so we also check if webkitPresentationMode is 'fullscreen'.
+          return (
+            media.webkitDisplayingFullscreen &&
+            media.webkitPresentationMode === WebkitPresentationModes.FULLSCREEN
+          );
+        }
+        return false;
       }
 
-      let currentFullscreenEl = document[fullscreenApi.element];
-      if (event) {
-        // Safari < 16.4 doesn't support ShadowRoot.fullscreenElement.
-        // document.fullscreenElement could be several ancestors up the tree.
-        // Use event.target instead.
-        const isSomeElementFullscreen = document[fullscreenApi.element];
-        currentFullscreenEl = isSomeElementFullscreen ? event.target : null;
+      // If rootNode.fullscreenElement is the media StateOwner, we're definitely in fullscreen
+      if (rootNode[fullscreenApi.element] === fullscreenElement) return true;
+
+      // In this case (most modern browsers, sans e.g. iOS), the fullscreenElement may be
+      // a web component that is "visible" from the rootNode, but should
+      // have its own fullscreenElement on its shadowRoot for whatever
+      // is "visible" at that level. Since the (also named) fullscreenElement StateOwner
+      // may be nested inside an indeterminite number of web components, traverse each layer
+      // until we either find the media StateOwner or complete the recursive check.
+      if (rootNode[fullscreenApi.element].localName.includes('-')) {
+        let currentRoot = rootNode[fullscreenApi.element].shadowRoot;
+
+        // NOTE: This is for (non-iOS) Safari < 16.4, which did not support ShadowRoot::fullscreenElement.
+        // We can remove this if/when we decide those versions are old enough/not used enough to handle
+        // (e.g. at the time of writing, < 16.4 ~= 1% of global market, per caniuse https://caniuse.com/mdn-api_shadowroot_fullscreenelement) (CJP)
+
+        // We can simply check if the fullscreenElement key (typically 'fullscreenElement') is defined on the shadowRoot to determine whether or not
+        // it is supported.
+        if (!(fullscreenApi.element in currentRoot)) {
+          // For these cases, if rootNode.fullscreenElement (aka document.fullscreenElement) contains our fullscreenElement StateOwner,
+          // we'll assume that means we're in fullscreen. That should be valid for all current actual and planned supported
+          // web component use cases.
+          return containsComposedNode(
+            rootNode[fullscreenApi.element],
+            /** @TODO clean up type assumptions (e.g. Node) (CJP) */
+            // @ts-ignore
+            fullscreenElement
+          );
+        }
+
+        while (currentRoot?.[fullscreenApi.element]) {
+          if (currentRoot[fullscreenApi.element] === fullscreenElement)
+            return true;
+          currentRoot = currentRoot[fullscreenApi.element]?.shadowRoot;
+        }
       }
 
-      return containsComposedNode(fullscreenElement, currentFullscreenEl);
+      return false;
     },
     set(value, stateOwners) {
-      const { media, fullscreenElement } = stateOwners;
-      if (!value) {
-        // NOTE: Must be document, not whatever "rootNode" stateOwner is identified as (CJP)
-        const maybePromise = document?.[fullscreenApi.exit]?.();
+      const { media, fullscreenElement, rootNode } = stateOwners;
+
+      // Exiting fullscreen case (generic)
+      if (!value && rootNode?.[fullscreenApi.exit]) {
+        const maybePromise = rootNode?.[fullscreenApi.exit]?.();
         // NOTE: Since the "official" exit fullscreen method yields a Promise that rejects
         // if not in fullscreen, this accounts for those cases.
         if (maybePromise instanceof Promise) {
@@ -872,6 +939,8 @@ export const stateMediator = {
         }
         return;
       }
+
+      // Entering fullscreen cases (browser-specific)
       if (fullscreenElement?.[fullscreenApi.enter]) {
         // NOTE: Since the "official" enter fullscreen method yields a Promise that rejects
         // if already in fullscreen, this accounts for those cases.
@@ -939,7 +1008,7 @@ export const stateMediator = {
         )
       ) {
         console.warn(
-          'received a request to select AirPlay but AirPlay is not supported in this environment'
+          'MediaChrome: received a request to select AirPlay but AirPlay is not supported in this environment'
         );
         return;
       }

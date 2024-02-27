@@ -177,3 +177,16 @@ export const StreamTypes = {
   ON_DEMAND: 'on-demand',
   UNKNOWN: 'unknown',
 };
+
+/**
+ * @type {{
+*   INLINE: 'inline';
+*   FULLSCREEN: 'fullscreen';
+*   PICTURE_IN_PICTURE: 'picture-in-picture';
+* }}
+*/
+export const WebkitPresentationModes = {
+  INLINE: 'inline',
+  FULLSCREEN: 'fullscreen',
+  PICTURE_IN_PICTURE: 'picture-in-picture',
+};
