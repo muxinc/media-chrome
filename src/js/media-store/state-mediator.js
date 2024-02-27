@@ -895,7 +895,7 @@ export const stateMediator = {
       // have its own fullscreenElement on its shadowRoot for whatever
       // is "visible" at that level. Since the (also named) fullscreenElement StateOwner
       // may be nested inside an indeterminite number of web components, traverse each layer
-      // until we either find the media StateOwner or complete the recursive check.
+      // until we either find the fullscreen StateOwner or complete the recursive check.
       if (rootNode[fullscreenApi.element].localName.includes('-')) {
         let currentRoot = rootNode[fullscreenApi.element].shadowRoot;
 
