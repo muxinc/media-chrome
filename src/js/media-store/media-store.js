@@ -88,7 +88,7 @@ import { requestMap as defaultRequestMap } from './request-map.js';
  * const mediaStore = createStore({
  *   media: myVideoElement,
  *   fullscreenElement: myMediaUIContainerElement,
- *   // rootNode: advancedRootNodeCase // Will default to `document`
+ *   // documentElement: advancedRootNodeCase // Will default to `document`
  *   options: {
  *     defaultSubtitles: true // enable subtitles/captions by default
  *   },
@@ -128,7 +128,7 @@ import { requestMap as defaultRequestMap } from './request-map.js';
  * @param {{
  *   media?: MediaStateOwner;
  *   fullscreenElement?: FullScreenElementStateOwner;
- *   rootNode?: RootNodeStateOwner;
+ *   documentElement?: RootNodeStateOwner;
  *   stateMediator?: StateMediator;
  *   requestMap?: RequestMap;
  *   options?: StateOption;
@@ -139,7 +139,7 @@ import { requestMap as defaultRequestMap } from './request-map.js';
 const createMediaStore = ({
   media,
   fullscreenElement,
-  rootNode,
+  documentElement,
   stateMediator = defaultStateMediator,
   requestMap = defaultRequestMap,
   options = {},
@@ -210,7 +210,7 @@ const createMediaStore = ({
 
   // This function will handle all wiring up of event handlers/monitoring of state
   // and will re-compute the general next state whenever any "state owner" is set or updated,
-  // which includes the media element, but also the rootNode and the fullscreenElement
+  // which includes the media element, but also the documentElement and the fullscreenElement
   // This is roughly equivalent to what used to be in `mediaSetCallback`/`mediaUnsetCallback` (CJP)
   let nextStateOwners = undefined;
   const updateStateOwners = async (
@@ -252,7 +252,7 @@ const createMediaStore = ({
       stateOwners.media?.audioTracks !== nextStateOwners.media?.audioTracks;
     const remoteChanged =
       stateOwners.media?.remote !== nextStateOwners.media?.remote;
-    const rootNodeChanged = stateOwners.rootNode !== nextStateOwners.rootNode;
+    const rootNodeChanged = stateOwners.documentElement !== nextStateOwners.documentElement;
 
     // For any particular `stateOwner` (or "sub-owner"), we should teardown if and only if:
     // * the `stateOwner` existed -AND-
@@ -279,7 +279,7 @@ const createMediaStore = ({
       (remoteChanged || shouldTeardownFromSubscriberCount);
 
     const teardownRootNode =
-      !!stateOwners.rootNode &&
+      !!stateOwners.documentElement &&
       (rootNodeChanged || shouldTeardownFromSubscriberCount);
 
     // This is simply a convenience definition saying we should be tearing down *something*
@@ -326,7 +326,7 @@ const createMediaStore = ({
       (remoteChanged || shouldSetupFromSubscriberCount);
 
     const setupRootNode =
-      !!nextStateOwners.rootNode &&
+      !!nextStateOwners.documentElement &&
       (rootNodeChanged || shouldSetupFromSubscriberCount);
 
     // This is simply a convenience definition saying we should be setting up *something*
@@ -460,11 +460,11 @@ const createMediaStore = ({
         prevHandler = stateUpdateHandlers[stateName].rootEvents;
         rootEvents.forEach((eventType) => {
           if (prevHandler && teardownRootNode) {
-            stateOwners.rootNode.removeEventListener(eventType, prevHandler);
+            stateOwners.documentElement.removeEventListener(eventType, prevHandler);
             stateUpdateHandlers[stateName].rootEvents = undefined;
           }
           if (setupRootNode) {
-            nextStateOwners.rootNode.addEventListener(eventType, handler);
+            nextStateOwners.documentElement.addEventListener(eventType, handler);
             stateUpdateHandlers[stateName].rootEvents = handler;
           }
         });
@@ -494,7 +494,7 @@ const createMediaStore = ({
     nextStateOwners = undefined;
   };
 
-  updateStateOwners({ media, fullscreenElement, rootNode, options });
+  updateStateOwners({ media, fullscreenElement, documentElement, options });
 
   return {
     // note that none of these cases directly interact with the media element, root node, full screen element, etc.
@@ -526,8 +526,8 @@ const createMediaStore = ({
         updateStateOwners({ media: detail });
       } else if (type === 'fullscreenelementchangerequest') {
         updateStateOwners({ fullscreenElement: detail });
-      } else if (type === 'rootnodechangerequest') {
-        updateStateOwners({ rootNode: detail });
+      } else if (type === 'documentelementchangerequest') {
+        updateStateOwners({ documentElement: detail });
       }
       // and we can update our default/options values
       else if (type === 'optionschangerequest') {

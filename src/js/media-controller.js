@@ -218,7 +218,7 @@ class MediaController extends MediaContainer {
       this.#setupDefaultStore();
     }
 
-    this.#mediaStore?.dispatch({ type: 'rootnodechangerequest', detail: document });
+    this.#mediaStore?.dispatch({ type: 'documentelementchangerequest', detail: document });
 
     // mediaSetCallback() is called in super.connectedCallback();
     super.connectedCallback();
@@ -235,7 +235,7 @@ class MediaController extends MediaContainer {
     super.disconnectedCallback?.();
 
     if (this.#mediaStore) {
-      this.#mediaStore?.dispatch({ type: 'rootnodechangerequest', detail: null });
+      this.#mediaStore?.dispatch({ type: 'documentelementchangerequest', detail: undefined });
       /** @TODO Revisit: may not be necessary anymore or better solved via unsubscribe behavior? (CJP) */
       // Disable captions on disconnect to prevent a memory leak if they stay enabled.
       this.#mediaStore?.dispatch({

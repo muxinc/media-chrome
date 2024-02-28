@@ -87,12 +87,12 @@ import { getTextTracksList } from '../utils/captions.js';
  *
  * - media - the media element
  * - fullscreenElement - the element that will be used when in full screen (e.g. for Media Chrome, this will typically be the MediaController)
- * - rootNode - top level node for DOM context (usually document and defaults to `document` in `createMediaStore()`)
+ * - documentElement - top level node for DOM context (usually document and defaults to `document` in `createMediaStore()`)
  * - options - state behavior/user preferences (e.g. defaultSubtitles to enable subtitles by default as the relevant state or state owners change)
  *
  * @typedef {object} StateOwners
  * @property {MediaStateOwner} [media]
- * @property {RootNodeStateOwner} [rootNode]
+ * @property {RootNodeStateOwner} [documentElement]
  * @property {FullScreenElementStateOwner} [fullscreenElement]
  * @property {StateOption} [options]
  */
@@ -157,7 +157,7 @@ import { getTextTracksList } from '../utils/captions.js';
  * - `videoRenditionsEvents[]` (Optional) - An array of event types to monitor on `stateOwners.media.videoRenditions` for potential changes in the state of K.
  * - `audioTracksEvents[]` (Optional) - An array of event types to monitor on `stateOwners.media.audioTracks` for potential changes in the state of K.
  * - `remoteEvents[]` (Optional) - An array of event types to monitor on `stateOwners.media.remote` for potential changes in the state of K.
- * - `rootEvents[]` (Optional) - An array of event types to monitor on `stateOwners.rootNode` for potential changes in the state of K.
+ * - `rootEvents[]` (Optional) - An array of event types to monitor on `stateOwners.documentElement` for potential changes in the state of K.
  * - `stateOwnersUpdateHandlers[]` (Optional) - An array of functions that define arbitrary code for monitoring or causing state changes, optionally returning a "teardown" function for cleanup.
  *
  * @typedef {{
@@ -202,7 +202,7 @@ import { getTextTracksList } from '../utils/captions.js';
  * const stateOwners = {
  *   media: myVideoElement,
  *   fullscreenElement: myMediaUIContainerElement,
- *   rootNode: document,
+ *   documentElement: document,
  * };
  *
  * // Current mediaPaused state
@@ -675,34 +675,34 @@ export const stateMediator = {
   // Modeling state tied to root node
   mediaIsPip: {
     get(stateOwners) {
-      const { media, rootNode } = stateOwners;
+      const { media, documentElement } = stateOwners;
 
-      // Need a rootNode and a media StateOwner to be in PiP, so we're not PiP
-      if (!media || !rootNode) return false;
+      // Need a documentElement and a media StateOwner to be in PiP, so we're not PiP
+      if (!media || !documentElement) return false;
 
-      // Need a rootNode.pictureInPictureElement to be in PiP, so we're not PiP
-      if (!rootNode.pictureInPictureElement) return false;
+      // Need a documentElement.pictureInPictureElement to be in PiP, so we're not PiP
+      if (!documentElement.pictureInPictureElement) return false;
 
-      // If rootNode.pictureInPictureElement is the media StateOwner, we're definitely in PiP
-      if (rootNode.pictureInPictureElement === media) return true;
+      // If documentElement.pictureInPictureElement is the media StateOwner, we're definitely in PiP
+      if (documentElement.pictureInPictureElement === media) return true;
 
       // In this case (e.g. Safari), the pictureInPictureElement may be
       // the underlying <video> or <audio> element of a media StateOwner
       // that is a web component, even if it's not "visible" from the
-      // rootNode, so check for that.
-      if (rootNode.pictureInPictureElement instanceof HTMLMediaElement) {
+      // documentElement, so check for that.
+      if (documentElement.pictureInPictureElement instanceof HTMLMediaElement) {
         if (!media.localName?.includes('-')) return false;
-        return containsComposedNode(media, rootNode.pictureInPictureElement);
+        return containsComposedNode(media, documentElement.pictureInPictureElement);
       }
 
       // In this case (e.g. Chrome), the pictureInPictureElement may be
-      // a web component that is "visible" from the rootNode, but should
+      // a web component that is "visible" from the documentElement, but should
       // have its own pictureInPictureElement on its shadowRoot for whatever
       // is "visible" at that level. Since the media StateOwner may be nested
       // inside an indeterminite number of web components, traverse each layer
       // until we either find the media StateOwner or complete the recursive check.
-      if (rootNode.pictureInPictureElement.localName.includes('-')) {
-        let currentRoot = rootNode.pictureInPictureElement.shadowRoot;
+      if (documentElement.pictureInPictureElement.localName.includes('-')) {
+        let currentRoot = documentElement.pictureInPictureElement.shadowRoot;
         while (currentRoot?.pictureInPictureElement) {
           if (currentRoot.pictureInPictureElement === media) return true;
           currentRoot = currentRoot.pictureInPictureElement?.shadowRoot;
@@ -863,15 +863,15 @@ export const stateMediator = {
     get(stateOwners) {
       const {
         media,
-        rootNode,
+        documentElement,
         fullscreenElement = media,
       } = stateOwners;
 
-      // Need a rootNode and a media StateOwner to be in fullscreen, so we're not fullscreen
-      if (!media || !rootNode) return false;
+      // Need a documentElement and a media StateOwner to be in fullscreen, so we're not fullscreen
+      if (!media || !documentElement) return false;
 
-      // Need a rootNode.fullscreenElement to be in fullscreen, so we're not fullscreen
-      if (!rootNode[fullscreenApi.element]) {
+      // Need a documentElement.fullscreenElement to be in fullscreen, so we're not fullscreen
+      if (!documentElement[fullscreenApi.element]) {
         // Except for iOS, which doesn't conform to the standard API
         // See: https://developer.apple.com/documentation/webkitjs/htmlvideoelement/1630493-webkitdisplayingfullscreen
         if (
@@ -887,17 +887,17 @@ export const stateMediator = {
         return false;
       }
 
-      // If rootNode.fullscreenElement is the media StateOwner, we're definitely in fullscreen
-      if (rootNode[fullscreenApi.element] === fullscreenElement) return true;
+      // If documentElement.fullscreenElement is the media StateOwner, we're definitely in fullscreen
+      if (documentElement[fullscreenApi.element] === fullscreenElement) return true;
 
       // In this case (most modern browsers, sans e.g. iOS), the fullscreenElement may be
-      // a web component that is "visible" from the rootNode, but should
+      // a web component that is "visible" from the documentElement, but should
       // have its own fullscreenElement on its shadowRoot for whatever
       // is "visible" at that level. Since the (also named) fullscreenElement StateOwner
       // may be nested inside an indeterminite number of web components, traverse each layer
       // until we either find the fullscreen StateOwner or complete the recursive check.
-      if (rootNode[fullscreenApi.element].localName.includes('-')) {
-        let currentRoot = rootNode[fullscreenApi.element].shadowRoot;
+      if (documentElement[fullscreenApi.element].localName.includes('-')) {
+        let currentRoot = documentElement[fullscreenApi.element].shadowRoot;
 
         // NOTE: This is for (non-iOS) Safari < 16.4, which did not support ShadowRoot::fullscreenElement.
         // We can remove this if/when we decide those versions are old enough/not used enough to handle
@@ -906,11 +906,11 @@ export const stateMediator = {
         // We can simply check if the fullscreenElement key (typically 'fullscreenElement') is defined on the shadowRoot to determine whether or not
         // it is supported.
         if (!(fullscreenApi.element in currentRoot)) {
-          // For these cases, if rootNode.fullscreenElement (aka document.fullscreenElement) contains our fullscreenElement StateOwner,
+          // For these cases, if documentElement.fullscreenElement (aka document.fullscreenElement) contains our fullscreenElement StateOwner,
           // we'll assume that means we're in fullscreen. That should be valid for all current actual and planned supported
           // web component use cases.
           return containsComposedNode(
-            rootNode[fullscreenApi.element],
+            documentElement[fullscreenApi.element],
             /** @TODO clean up type assumptions (e.g. Node) (CJP) */
             // @ts-ignore
             fullscreenElement
@@ -927,11 +927,11 @@ export const stateMediator = {
       return false;
     },
     set(value, stateOwners) {
-      const { media, fullscreenElement, rootNode } = stateOwners;
+      const { media, fullscreenElement, documentElement } = stateOwners;
 
       // Exiting fullscreen case (generic)
-      if (!value && rootNode?.[fullscreenApi.exit]) {
-        const maybePromise = rootNode?.[fullscreenApi.exit]?.();
+      if (!value && documentElement?.[fullscreenApi.exit]) {
+        const maybePromise = documentElement?.[fullscreenApi.exit]?.();
         // NOTE: Since the "official" exit fullscreen method yields a Promise that rejects
         // if not in fullscreen, this accounts for those cases.
         if (maybePromise instanceof Promise) {
