@@ -8,7 +8,7 @@
   * Auto-hide controls on inactivity while playing
 */
 import { MediaContainer } from './media-container.js';
-import { globalThis } from './utils/server-safe-globals.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { delay, stringifyRenditionList, stringifyAudioTrackList } from './utils/utils.js';
 import { stringifyTextTrackList } from './utils/captions.js';
@@ -103,10 +103,6 @@ class MediaController extends MediaContainer {
       prevState = nextState;
     };
 
-    if (!this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
-      this.#setupDefaultStore();
-    }
-
     this.enableHotkeys();
   }
 
@@ -155,7 +151,7 @@ class MediaController extends MediaContainer {
     }
     this.#fullscreenElement = element;
     // Use the getter in case the fullscreen element was reset to "`this`"
-    this.#mediaStore.dispatch({ type: 'fullscreenelementchangerequest', detail: this.fullscreenElement });
+    this.#mediaStore?.dispatch({ type: 'fullscreenelementchangerequest', detail: this.fullscreenElement });
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -216,6 +212,14 @@ class MediaController extends MediaContainer {
 
   connectedCallback() {
 
+    // NOTE: Need to defer default MediaStore creation until connected for use cases that
+    // rely on createElement('media-controller') (like many frameworks "under the hood") (CJP).
+    if (!this.#mediaStore && !this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
+      this.#setupDefaultStore();
+    }
+
+    this.#mediaStore?.dispatch({ type: 'rootnodechangerequest', detail: document });
+
     // mediaSetCallback() is called in super.connectedCallback();
     super.connectedCallback();
 
@@ -231,9 +235,10 @@ class MediaController extends MediaContainer {
     super.disconnectedCallback?.();
 
     if (this.#mediaStore) {
+      this.#mediaStore?.dispatch({ type: 'rootnodechangerequest', detail: null });
       /** @TODO Revisit: may not be necessary anymore or better solved via unsubscribe behavior? (CJP) */
       // Disable captions on disconnect to prevent a memory leak if they stay enabled.
-      this.#mediaStore.dispatch({
+      this.#mediaStore?.dispatch({
         type: MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
         detail: false
       });

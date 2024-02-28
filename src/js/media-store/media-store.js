@@ -140,7 +140,7 @@ import { requestMap as defaultRequestMap } from './request-map.js';
 const createMediaStore = ({
   media,
   fullscreenElement,
-  rootNode = document,
+  rootNode,
   stateMediator = defaultStateMediator,
   requestMap = defaultRequestMap,
   options = {},

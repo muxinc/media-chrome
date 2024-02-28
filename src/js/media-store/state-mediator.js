@@ -675,7 +675,7 @@ export const stateMediator = {
   // Modeling state tied to root node
   mediaIsPip: {
     get(stateOwners) {
-      const { media, rootNode = document } = stateOwners;
+      const { media, rootNode } = stateOwners;
 
       // Need a rootNode and a media StateOwner to be in PiP, so we're not PiP
       if (!media || !rootNode) return false;
@@ -863,7 +863,7 @@ export const stateMediator = {
     get(stateOwners) {
       const {
         media,
-        rootNode = document,
+        rootNode,
         fullscreenElement = media,
       } = stateOwners;
 
