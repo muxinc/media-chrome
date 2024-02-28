@@ -92,10 +92,9 @@ class MediaController extends MediaContainer {
         if (stateName in prevState && prevState[stateName] === stateValue) return;
         this.propagateMediaState(stateName, stateValue);
         const attrName = stateName.toLowerCase();
-        // TODO: I don't think we want these events to bubble? Video element states don't. (heff)
         const evt = new globalThis.CustomEvent(
           AttributeToStateChangeEventMap[attrName],
-          { composed: true, bubbles: true, detail: stateValue }
+          { composed: true, detail: stateValue }
         );
 
         this.dispatchEvent(evt);
