@@ -16,7 +16,6 @@
  * @module media-store
  */
 
-import { document } from '../utils/server-safe-globals.js';
 import {
   stateMediator as defaultStateMediator,
   prepareStateOwners,
