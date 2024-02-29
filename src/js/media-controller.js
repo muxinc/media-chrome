@@ -8,9 +8,9 @@
   * Auto-hide controls on inactivity while playing
 */
 import { MediaContainer } from './media-container.js';
-import { globalThis } from './utils/server-safe-globals.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
-import { constToCamel, delay, stringifyRenditionList, stringifyAudioTrackList } from './utils/utils.js';
+import { delay, stringifyRenditionList, stringifyAudioTrackList } from './utils/utils.js';
 import { stringifyTextTrackList } from './utils/captions.js';
 import {
   MediaUIEvents,
@@ -19,12 +19,11 @@ import {
   AttributeToStateChangeEventMap,
   MediaUIProps,
 } from './constants.js';
-import { MediaUIRequestHandlers, MediaUIStates, volumeSupportPromise } from './controller.js';
 import { setBooleanAttr, setNumericAttr, setStringAttr } from './utils/element-utils.js';
+import createMediaStore from './media-store/media-store.js';
 
 const ButtonPressedKeys = ['ArrowLeft', 'ArrowRight', 'Enter', ' ', 'f', 'm', 'k', 'c'];
 const DEFAULT_SEEK_OFFSET = 10;
-const DEFAULT_TIME = 0;
 
 export const Attributes = {
   DEFAULT_SUBTITLES: 'defaultsubtitles',
@@ -36,6 +35,9 @@ export const Attributes = {
   LIVE_EDGE_OFFSET: 'liveedgeoffset',
   NO_AUTO_SEEK_TO_LIVE: 'noautoseektolive',
   NO_HOTKEYS: 'nohotkeys',
+  NO_VOLUME_PREF: 'novolumepref',
+  NO_SUBTITLES_LANG_PREF: 'nosubtitleslangpref',
+  NO_DEFAULT_STORE: 'nodefaultstore',
 };
 
 /**
@@ -51,6 +53,9 @@ export const Attributes = {
  * @attr {string} keysused
  * @attr {string} liveedgeoffset
  * @attr {boolean} noautoseektolive
+ * @attr {boolean} novolumepref
+ * @attr {boolean} nosubtitleslangpref
+ * @attr {boolean} nodefaultstore
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {
@@ -65,58 +70,74 @@ class MediaController extends MediaContainer {
 
   #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
   #fullscreenElement;
-  /** @type {HTMLDocument|ShadowRoot} */
-  #rootNode;
+  #mediaStore;
+  #mediaStateCallback;
+  #mediaStoreUnsubscribe;
+  #mediaStateEventHandler = (event) => {
+    this.#mediaStore?.dispatch(event);
+  };
 
   constructor() {
     super();
-
-    // Update volume support ASAP
-    if (MediaUIStates.MEDIA_VOLUME_UNAVAILABLE.get(this) === undefined) {
-      // NOTE: In order to propagate ASAP, we currently need to ensure that
-      // the volume support promise has resolved. Given the async nature of
-      // some of these environment state values, we may want to model this
-      // a bit better (CJP).
-      volumeSupportPromise.then(() => {
-        this.propagateMediaState(
-          MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE,
-          MediaUIStates.MEDIA_VOLUME_UNAVAILABLE.get(this)
-        );
-      });
-    }
 
     // Track externally associated control elements
     this.mediaStateReceivers = [];
     this.associatedElementSubscriptions = new Map();
     this.associateElement(this);
 
-    // Apply ui event listeners to self
-    // Should apply to any UI container, not just controller
-    Object.keys(MediaUIRequestHandlers).forEach((key) => {
-      const handlerName = `_handle${constToCamel(key, true)}`;
+    let prevState = {};
+    this.#mediaStateCallback = (nextState) => {
+      Object.entries(nextState).forEach(([stateName, stateValue]) => {
+        // Make sure to propagate initial state, even if still undefined (CJP)
+        if (stateName in prevState && prevState[stateName] === stateValue) return;
+        this.propagateMediaState(stateName, stateValue);
+        const attrName = stateName.toLowerCase();
+        const evt = new globalThis.CustomEvent(
+          AttributeToStateChangeEventMap[attrName],
+          { composed: true, detail: stateValue }
+        );
 
-      // TODO: Move to map, not obj root property
-      this[handlerName] = (e) => {
-        // Stop media UI events from continuing to bubble
-        e.stopPropagation();
+        this.dispatchEvent(evt);
+      });
+      prevState = nextState;
+    };
 
-        if (!this.media) {
-          console.warn('Media Chrome: No media available.');
-          return;
-        }
+    this.enableHotkeys();
+  }
 
-        MediaUIRequestHandlers[key](this.media, e, this);
-      };
-      this.addEventListener(MediaUIEvents[key], this[handlerName]);
+  #setupDefaultStore() {
+    this.mediaStore = createMediaStore({
+      media: this.media,
+      fullscreenElement: this.fullscreenElement,
+      options: {
+        defaultSubtitles: this.hasAttribute(Attributes.DEFAULT_SUBTITLES),
+        defaultDuration: this.hasAttribute(Attributes.DEFAULT_DURATION) ? +this.getAttribute(Attributes.DEFAULT_DURATION) : undefined,
+        defaultStreamType: /** @type {import('./media-store/state-mediator.js').StreamTypeValue} */ (this.getAttribute(Attributes.DEFAULT_STREAM_TYPE)) ?? undefined,
+        liveEdgeOffset: this.hasAttribute(Attributes.LIVE_EDGE_OFFSET) ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET) : undefined,
+        // NOTE: This wasn't updated if it was changed later. Should it be? (CJP)
+        noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
+        noSubtitlesLangPref: this.hasAttribute(Attributes.NO_SUBTITLES_LANG_PREF),
+      },
     });
+  }
 
-    // Build event listeners for media states
-    this._mediaStatePropagators = {};
-    Object.keys(MediaUIStates).forEach((key) => {
-      this._mediaStatePropagators[key] = e => {
-        this.propagateMediaState(MediaUIProps[key], MediaUIStates[key].get(this, e));
-      };
-    });
+  get mediaStore() {
+    return this.#mediaStore;
+  }
+
+  set mediaStore(value) {
+    if (this.#mediaStore) {
+      this.#mediaStoreUnsubscribe?.();
+      this.#mediaStoreUnsubscribe = undefined;
+    }
+    this.#mediaStore = value;
+
+    if (!this.#mediaStore && !this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
+      this.#setupDefaultStore();
+      return;
+    }
+
+    this.#mediaStoreUnsubscribe = this.#mediaStore?.subscribe(this.#mediaStateCallback);
   }
 
   get fullscreenElement() {
@@ -128,6 +149,8 @@ class MediaController extends MediaContainer {
       this.removeAttribute(Attributes.FULLSCREEN_ELEMENT);
     }
     this.#fullscreenElement = element;
+    // Use the getter in case the fullscreen element was reset to "`this`"
+    this.#mediaStore?.dispatch({ type: 'fullscreenelementchangerequest', detail: this.fullscreenElement });
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -148,51 +171,82 @@ class MediaController extends MediaContainer {
 
     } else if (
       attrName === Attributes.DEFAULT_SUBTITLES &&
-      newValue !== oldValue &&
-      newValue === ''
+      newValue !== oldValue
     ) {
-      this.dispatchEvent(
-        new globalThis.CustomEvent(
-          MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
-          { composed: true, bubbles: true, detail: true }
-        )
-      );
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          defaultSubtitles: this.hasAttribute(Attributes.DEFAULT_SUBTITLES),
+        },
+      });
 
     } else if (attrName === Attributes.DEFAULT_STREAM_TYPE) {
-      this.propagateMediaState(MediaUIProps.MEDIA_STREAM_TYPE);
-
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          defaultStreamType: this.getAttribute(Attributes.DEFAULT_STREAM_TYPE) ?? undefined,
+        },
+      });
+    } else if (attrName === Attributes.LIVE_EDGE_OFFSET) {
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          liveEdgeOffset: this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)
+            ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
+            : undefined,
+        },
+      });
     } else if (attrName === Attributes.FULLSCREEN_ELEMENT) {
-      const el = newValue ? this.#rootNode?.getElementById(newValue) : undefined;
-      // NOTE: Setting the internal private prop here to not
+      const el = newValue
+        ? (/** @type {Document|ShadowRoot} */ (/** @type {unknown} */ this.getRootNode()))?.getElementById(newValue)
+        : undefined;
+
+      // NOTE: Setting the internal private prop here instead of using the setter to not
       // clear the attribute that was just set (CJP).
       this.#fullscreenElement = el;
+      // Use the getter in case the fullscreen element was reset to "`this`"
+      this.#mediaStore?.dispatch({ type: 'fullscreenelementchangerequest', detail: this.fullscreenElement });
     }
   }
 
   connectedCallback() {
-    // getRootNode() in disconnectedCallback returns the media-controller element itself
-    // but we need the HTMLDocument or ShadowRoot if media-controller is in a shadow DOM.
-    // We store the correct root node here so we can access it later.
-    this.#rootNode = /** @type HTMLDocument | ShadowRoot */ (this.getRootNode());
+
+    // NOTE: Need to defer default MediaStore creation until connected for use cases that
+    // rely on createElement('media-controller') (like many frameworks "under the hood") (CJP).
+    if (!this.#mediaStore && !this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
+      this.#setupDefaultStore();
+    }
+
+    this.#mediaStore?.dispatch({ type: 'documentelementchangerequest', detail: document });
 
     // mediaSetCallback() is called in super.connectedCallback();
     super.connectedCallback();
+
+    if (this.#mediaStore && !this.#mediaStoreUnsubscribe) {
+      this.#mediaStoreUnsubscribe = this.#mediaStore?.subscribe(this.#mediaStateCallback);
+    }
 
     this.enableHotkeys();
   }
 
   disconnectedCallback() {
     // mediaUnsetCallback() is called in super.disconnectedCallback();
-    super.disconnectedCallback();
-    this.disableHotkeys();
+    super.disconnectedCallback?.();
 
-    // Disable captions on disconnect to prevent a memory leak if they stay enabled.
-    this.dispatchEvent(
-      new globalThis.CustomEvent(
-        MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
-        { composed: true, bubbles: true, detail: false }
-      )
-    );
+    if (this.#mediaStore) {
+      this.#mediaStore?.dispatch({ type: 'documentelementchangerequest', detail: undefined });
+      /** @TODO Revisit: may not be necessary anymore or better solved via unsubscribe behavior? (CJP) */
+      // Disable captions on disconnect to prevent a memory leak if they stay enabled.
+      this.#mediaStore?.dispatch({
+        type: MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
+        detail: false
+      });
+    }
+
+    if (this.#mediaStoreUnsubscribe) {
+      this.#mediaStoreUnsubscribe?.();
+      this.#mediaStoreUnsubscribe = undefined;
+    }
   }
 
   /**
@@ -201,74 +255,11 @@ class MediaController extends MediaContainer {
    */
   mediaSetCallback(media) {
     super.mediaSetCallback(media);
+    this.#mediaStore?.dispatch({ type: 'mediaelementchangerequest', detail: media });
 
     // TODO: What does this do? At least add comment, maybe move to media-container
     if (!media.hasAttribute('tabindex')) {
       media.tabIndex = -1;
-    }
-
-    // Listen for media state changes and propagate them to children and associated els
-    Object.keys(MediaUIStates).forEach((key) => {
-      const {
-        mediaSetCallback,
-        mediaEvents,
-        rootEvents,
-        textTracksEvents,
-        videoRenditionsEvents,
-        audioTracksEvents,
-        remoteEvents,
-      } = MediaUIStates[key];
-
-      const handler = this._mediaStatePropagators[key];
-
-      if (mediaSetCallback) {
-        mediaSetCallback(media, handler);
-        handler();
-      }
-
-      mediaEvents?.forEach((eventName) => {
-        media.addEventListener(eventName, handler);
-        handler();
-      });
-
-      rootEvents?.forEach((eventName) => {
-        this.#rootNode?.addEventListener(eventName, handler);
-        handler();
-      });
-
-      textTracksEvents?.forEach((eventName) => {
-        media.textTracks?.addEventListener(eventName, handler);
-        handler();
-      });
-
-      videoRenditionsEvents?.forEach((eventName) => {
-        // @ts-ignore
-        media.videoRenditions?.addEventListener(eventName, handler);
-        handler();
-      });
-
-      audioTracksEvents?.forEach((eventName) => {
-        // @ts-ignore
-        media.audioTracks?.addEventListener(eventName, handler);
-        handler();
-      });
-
-      remoteEvents?.forEach((eventName) => {
-        media.remote?.addEventListener(eventName, handler);
-        handler();
-      });
-    });
-
-    // don't get from localStorage if novolumepref attribute is set
-    if (!this.hasAttribute('novolumepref')) {
-      // Update the media with the last set volume preference
-      // This would preferably live with the media element, not a control.
-      try {
-        const volPref = globalThis.localStorage.getItem('media-chrome-pref-volume');
-        if (volPref !== null) media.volume = volPref;
-      } catch (e) {
-        console.debug('Media Chrome: Error getting volume pref', e);
-      }
     }
   }
 
@@ -278,77 +269,11 @@ class MediaController extends MediaContainer {
    */
   mediaUnsetCallback(media) {
     super.mediaUnsetCallback(media);
-
-    // Remove all state change propagators
-    Object.keys(MediaUIStates).forEach((key) => {
-      const {
-        mediaUnsetCallback,
-        mediaEvents,
-        rootEvents,
-        textTracksEvents,
-        videoRenditionsEvents,
-        audioTracksEvents,
-        remoteEvents,
-      } = MediaUIStates[key];
-
-      const handler = this._mediaStatePropagators[key];
-
-      mediaEvents?.forEach((eventName) => {
-        media.removeEventListener(eventName, handler);
-      });
-
-      rootEvents?.forEach((eventName) => {
-        this.#rootNode?.removeEventListener(eventName, handler);
-      });
-
-      textTracksEvents?.forEach((eventName) => {
-        media.textTracks?.removeEventListener(eventName, handler);
-      });
-
-      videoRenditionsEvents?.forEach((eventName) => {
-        // @ts-ignore
-        media.videoRenditions?.removeEventListener(eventName, handler);
-        handler();
-      });
-
-      audioTracksEvents?.forEach((eventName) => {
-        // @ts-ignore
-        media.audioTracks?.removeEventListener(eventName, handler);
-        handler();
-      });
-
-      remoteEvents?.forEach((eventName) => {
-        media.remote?.removeEventListener(eventName, handler);
-        handler();
-      });
-
-      if (mediaUnsetCallback) {
-        mediaUnsetCallback(media, handler);
-        handler();
-      }
-    });
-
-    // Reset to paused state
-    // TODO: Can we just reset all state here?
-    // Should hasPlayed refer to the media element or the controller?
-    // i.e. the poster might re-show if not handled by the poster el
-    this.propagateMediaState(MediaUIProps.MEDIA_PAUSED, true);
+    this.#mediaStore?.dispatch({ type: 'mediaelementchangerequest', detail: undefined });
   }
 
   propagateMediaState(stateName, state) {
-    const previousState = getStateValue(this.mediaStateReceivers, stateName);
-
     propagateMediaState(this.mediaStateReceivers, stateName, state);
-
-    if (previousState === getStateValue(this.mediaStateReceivers, stateName)) return;
-
-    const attrName = stateName.toLowerCase();
-    // TODO: I don't think we want these events to bubble? Video element states don't. (heff)
-    const evt = new globalThis.CustomEvent(
-      AttributeToStateChangeEventMap[attrName],
-      { composed: true, bubbles: true, detail: state }
-    );
-    this.dispatchEvent(evt);
   }
 
   associateElement(element) {
@@ -372,11 +297,10 @@ class MediaController extends MediaContainer {
     // Add all media request event listeners to the Associated Element. This allows any DOM element that
     // is a descendant of any Associated Element (including the <media-controller/> itself) to make requests
     // for media state changes rather than constraining that exclusively to a Media State Receivers.
-    Object.keys(MediaUIEvents).forEach((key) => {
-      element.addEventListener(
-        MediaUIEvents[key],
-        this[`_handle${constToCamel(key, true)}`]
-      );
+    // Still generically setup events -> mediaStore dispatch, since it will
+    // forward the events on to whichever store is defined (CJP)
+    Object.values(MediaUIEvents).forEach(eventName => {
+      element.addEventListener(eventName, this.#mediaStateEventHandler);
     });
 
     associatedElementSubscriptions.set(element, unsubscribe);
@@ -391,11 +315,8 @@ class MediaController extends MediaContainer {
     associatedElementSubscriptions.delete(element);
 
     // Remove all media UI event listeners
-    Object.keys(MediaUIEvents).forEach((key) => {
-      element.removeEventListener(
-        MediaUIEvents[key],
-        this[`_handle${constToCamel(key, true)}`]
-      );
+    Object.values(MediaUIEvents).forEach(eventName => {
+      element.removeEventListener(eventName, this.#mediaStateEventHandler);
     });
   }
 
@@ -407,15 +328,11 @@ class MediaController extends MediaContainer {
 
     els.push(el);
 
-    Object.keys(MediaUIStates).forEach((stateConstName)=>{
-      const stateDetails = MediaUIStates[stateConstName];
-
-      propagateMediaState(
-        [el],
-        MediaUIProps[stateConstName],
-        stateDetails.get(this)
-      );
-    });
+    if (this.#mediaStore) {
+      Object.entries(this.#mediaStore.getState()).forEach(([stateName, stateValue]) => {
+        propagateMediaState([el], stateName, stateValue);
+      });
+    }
   }
 
   unregisterMediaStateReceiver(el) {
@@ -485,9 +402,7 @@ class MediaController extends MediaContainer {
       return;
     }
 
-    let eventName, currentTimeStr, currentTime, detail, evt;
-    const seekOffset = DEFAULT_SEEK_OFFSET;
-
+    let eventName, detail, evt;
     // if the blocklist contains the key, skip handling it.
     if (this.#hotKeys.contains(`no${e.key.toLowerCase()}`)) return;
     if (e.key === ' ' && this.#hotKeys.contains(`nospace`)) return;
@@ -496,18 +411,16 @@ class MediaController extends MediaContainer {
     switch (e.key) {
       case ' ':
       case 'k':
-        eventName =
-          this.getAttribute(MediaUIAttributes.MEDIA_PAUSED) != null
-            ? MediaUIEvents.MEDIA_PLAY_REQUEST
-            : MediaUIEvents.MEDIA_PAUSE_REQUEST;
+        eventName = this.#mediaStore.getState().mediaPaused
+          ? MediaUIEvents.MEDIA_PLAY_REQUEST
+          : MediaUIEvents.MEDIA_PAUSE_REQUEST;
         this.dispatchEvent(
           new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
         );
         break;
 
       case 'm':
-        eventName =
-          this.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL) === 'off'
+        eventName = this.mediaStore.getState().mediaVolumeLevel === 'off'
             ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
             : MediaUIEvents.MEDIA_MUTE_REQUEST;
         this.dispatchEvent(
@@ -516,8 +429,7 @@ class MediaController extends MediaContainer {
         break;
 
       case 'f':
-        eventName =
-          this.getAttribute(MediaUIAttributes.MEDIA_IS_FULLSCREEN) != null
+        eventName = this.mediaStore.getState().mediaIsFullscreen
             ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
             : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
         this.dispatchEvent(
@@ -535,14 +447,7 @@ class MediaController extends MediaContainer {
         break;
 
       case 'ArrowLeft':
-        currentTimeStr = this.getAttribute(
-          MediaUIAttributes.MEDIA_CURRENT_TIME
-        );
-        currentTime =
-          currentTimeStr && !Number.isNaN(+currentTimeStr)
-            ? +currentTimeStr
-            : DEFAULT_TIME;
-        detail = Math.max(currentTime - seekOffset, 0);
+        detail = Math.max((this.mediaStore.getState().mediaCurrentTime ?? 0) - DEFAULT_SEEK_OFFSET, 0);
         evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
           composed: true,
           bubbles: true,
@@ -552,14 +457,7 @@ class MediaController extends MediaContainer {
         break;
 
       case 'ArrowRight':
-        currentTimeStr = this.getAttribute(
-          MediaUIAttributes.MEDIA_CURRENT_TIME
-        );
-        currentTime =
-          currentTimeStr && !Number.isNaN(+currentTimeStr)
-            ? +currentTimeStr
-            : DEFAULT_TIME;
-        detail = Math.max(currentTime + seekOffset, 0);
+        detail = Math.max((this.mediaStore.getState().mediaCurrentTime ?? 0) + DEFAULT_SEEK_OFFSET, 0);
         evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
           composed: true,
           bubbles: true,
@@ -723,18 +621,6 @@ const propagateMediaState = (els, stateName, val) => {
     setAttr(el, attrName, val);
   });
 };
-
-const getStateValue = (els, stateName) => {
-  for (const el of els) {
-    if (stateName in el) {
-      return el[stateName];
-    }
-    const relevantAttrs = getMediaUIAttributesFrom(el);
-    const attrName = stateName.toLowerCase();
-    if (!relevantAttrs.includes(attrName)) continue;
-    return el.getAttribute(attrName);
-  }
-}
 
 /**
  *

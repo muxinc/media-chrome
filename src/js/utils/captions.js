@@ -69,6 +69,7 @@ export const parseTextTracksStr = (
  * @returns {Array<Object>} An array of TextTrack-like objects.
  */
 export const parseTracks = (trackOrTracks) => {
+  if (!trackOrTracks) return [];
   // Already an array, but might be an array of strings, objects, or both.
   if (Array.isArray(trackOrTracks)) {
     return trackOrTracks.map((trackObjOrStr) => {
@@ -190,7 +191,7 @@ export const updateTracksModeTo = (mode, tracks = [], tracksToUpdate = []) => {
  * Takes an `HTMLMediaElement media` and yields an array of `TextTracks` that match the provided `filterPredOrObj` criteria (or all `TextTracks` by default).
  * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/textTracks
  * @see {@link textTrackObjAsPred}
- * @param {HTMLMediaElement} media - An HTMLMediaElement with an expected textTracks value
+ * @param {Partial<HTMLMediaElement>} media - An HTMLMediaElement with an expected textTracks value
  * (NOTE: This uses "structural polymorphism", so as long as `media` has an Array-like `textTracks` value of TextTrack-like objects, this function will work).
  * @param {Function|Object} [filterPredOrObj] Either a predicate function or an object that can be translated into a predicate function of matching key/value pairs.
  * @returns {Array<TextTrack>} An array of TextTracks that match the given `filterPredOrObj` (or all TextTracks on `media` by default)
@@ -234,11 +235,11 @@ export const getTextTracksList = (media, filterPredOrObj = () => true) => {
 /**
  * Are captions or subtitles enabled?
  *
- * @param {HTMLElement} el - An HTMLElement that has caption related attributes on it.
+ * @param {HTMLElement & { mediaSubtitlesShowing?: any[] }} el - An HTMLElement that has caption related attributes on it.
  * @returns {boolean} Whether captions are enabled or not
  */
 export const areSubsOn = (el) => {
-  const showingSubtitles = !!el.getAttribute(
+  const showingSubtitles = !!el.mediaSubtitlesShowing?.length || el.hasAttribute(
     MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
   );
   return showingSubtitles;

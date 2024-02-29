@@ -5,7 +5,10 @@
     <title>Media Chrome &lt;mux-video&gt; Example</title>
     <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"></script>
     <script type="module" src="../../../dist/index.js"></script>
-    <script type="module" src="../../../../dist/experimental/menu/index.js"></script>
+    <script
+      type="module"
+      src="../../../../dist/experimental/menu/index.js"
+    ></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
@@ -15,7 +18,13 @@
       }
 
       mux-video {
-        width: 100%;
+        width: calc(100vmax - (8px * 2));
+      }
+
+      @media (min-width: 768px) {
+        mux-video {
+          width: 50vw;
+        }
       }
 
       .examples {
@@ -30,6 +39,7 @@
         <mux-video
           slot="media"
           crossorigin
+          playsinline
           preload="auto"
           playback-id="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008"
           muted

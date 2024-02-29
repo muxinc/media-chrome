@@ -39,7 +39,7 @@ const isSafari = /.*Version\/.*Safari\/.*/.test(globalThis.navigator.userAgent);
 /**
  * Test for PIP support
  *
- * @param {HTMLVideoElement} mediaEl
+ * @param {Partial<HTMLVideoElement>} mediaEl
  * @returns {boolean}
  */
 export const hasPipSupport = (mediaEl = getTestMediaEl()) => {
@@ -53,7 +53,7 @@ export const hasPipSupport = (mediaEl = getTestMediaEl()) => {
 /**
  * Test for Fullscreen support
  *
- * @param {HTMLVideoElement} mediaEl
+ * @param {Partial<HTMLVideoElement>} mediaEl
  * @returns {boolean}
  */
 export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {

@@ -6,6 +6,8 @@ class EventTarget {
   }
 }
 
+class Node extends EventTarget {}
+
 class ResizeObserver {
   observe() {}
   unobserve() {}
@@ -21,17 +23,40 @@ const documentShim = {
   },
   addEventListener() {},
   removeEventListener() {},
+  /**
+   *
+   * @param {Event} event
+   * @returns {boolean}
+   */
+  dispatchEvent(event) { return false; }, // eslint-disable-line no-unused-vars
 };
 
 const globalThisShim = {
   ResizeObserver,
   document: documentShim,
-  HTMLElement: class HTMLElement extends EventTarget {},
+  Node: Node,
+  HTMLElement: class HTMLElement extends Node {},
   DocumentFragment: class DocumentFragment extends EventTarget {},
   customElements: {
     get: function () {},
     define: function () {},
     whenDefined: function () {},
+  },
+  localStorage: {
+    /**
+     * @param {string} key
+     * @returns {string|null}
+    */
+    getItem(key) { return null; }, // eslint-disable-line no-unused-vars
+    /**
+     * @param {string} key
+     * @param {string} value
+     */
+    setItem(key, value) {}, // eslint-disable-line no-unused-vars
+    /**
+     * @param {string} key
+    */
+    removeItem(key) {}, // eslint-disable-line no-unused-vars
   },
   CustomEvent: function CustomEvent() {},
   getComputedStyle: function () {},
@@ -67,7 +92,8 @@ const isShimmed = Object.keys(globalThisShim)
   *   getComputedStyle,
   *   CastableVideoElement?
   * } |
-  * {HTMLElement,
+  * {Node,
+  * HTMLElement,
   * customElements,
   * CustomEvent,
   * getComputedStyle,

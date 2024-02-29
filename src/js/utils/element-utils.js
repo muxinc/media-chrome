@@ -49,10 +49,16 @@ export const getAllSlotted = (el, name) => {
 
 export const getSlotted = (el, name) => getAllSlotted(el, name)[0];
 
+/**
+ *
+ * @param {{ contains?: Node['contains'] }} [rootNode]
+ * @param {Node} [childNode]
+ * @returns boolean
+ */
 export const containsComposedNode = (rootNode, childNode) => {
   if (!rootNode || !childNode) return false;
-  if (rootNode.contains(childNode)) return true;
-  return containsComposedNode(rootNode, childNode.getRootNode().host);
+  if (rootNode?.contains(childNode)) return true;
+  return containsComposedNode(rootNode, /** @type {ShadowRoot} */ (childNode.getRootNode()).host);
 };
 
 export const closestComposedNode = (childNode, selector) => {

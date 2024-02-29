@@ -154,13 +154,39 @@ export const PointerTypes = {
   TOUCH: 'touch',
 };
 
+/**
+ * @type {{
+ *   UNAVAILABLE: 'unavailable';
+ *   UNSUPPORTED: 'unsupported';
+ * }}
+ */
 export const AvailabilityStates = {
   UNAVAILABLE: 'unavailable',
   UNSUPPORTED: 'unsupported',
 };
 
+/**
+ * @type {{
+*   LIVE: 'live';
+*   ON_DEMAND: 'on-demand';
+*   UNKNOWN: 'unknown';
+* }}
+*/
 export const StreamTypes = {
   LIVE: 'live',
   ON_DEMAND: 'on-demand',
   UNKNOWN: 'unknown',
+};
+
+/**
+ * @type {{
+*   INLINE: 'inline';
+*   FULLSCREEN: 'fullscreen';
+*   PICTURE_IN_PICTURE: 'picture-in-picture';
+* }}
+*/
+export const WebkitPresentationModes = {
+  INLINE: 'inline',
+  FULLSCREEN: 'fullscreen',
+  PICTURE_IN_PICTURE: 'picture-in-picture',
 };

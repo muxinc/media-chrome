@@ -29,8 +29,11 @@ const chromeStyles = {
   color: primaryColor,
 };
 
+const toggleBool = (prev: boolean|undefined) => !prev;
+
 const Home: NextPage = () => {
-  const [mounted, setMounted] = useState(true);
+  const [mounted, setMounted] = useState<boolean>(true);
+  const [noDefaultStore, setNoDefaultStore] = useState(false);
 
   return (
     <div className={styles.container}>
@@ -48,14 +51,21 @@ const Home: NextPage = () => {
           </a>
         </h1>
         <br/>
-        <button id="mount-btn" onClick={() => setMounted(prev => !prev)}>
-          {mounted ? "Unmount": "Mount"}
-        </button>
+        <div>
+          <button id="mount-btn" onClick={() => setMounted(toggleBool)}>
+            {mounted ? "Unmount": "Mount"}
+          </button>
+          <span style={{ padding: '10px' }}>
+            <label htmlFor='toggleNoDefaultStore'><code>noDefaultStore</code> (applies only on (re)creation)</label>
+            <input id='toggleNoDefaultStore' type="checkbox" onChange={() => setNoDefaultStore(toggleBool)}></input>
+          </span>
+        </div>
         <br/>
         <div className={styles.grid}>
           {mounted && (<MediaController
             style={chromeStyles}
             defaultSubtitles
+            noDefaultStore={noDefaultStore}
           >
             <video
               slot="media"

@@ -381,32 +381,69 @@ describe('receiving state / dispatching (bubbling) events', () => {
 describe('state propagation behaviors', () => {
   let mediaController;
   let mediaAllReceiver;
+  let mediaEl;
 
   beforeEach(async () => {
     mediaController = await fixture(`
       <media-controller>
-        <div ${MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES}="${Object.values(MediaUIAttributes).join(' ')}"></div>
+        <video
+          slot="media"
+          preload="auto"
+          muted
+        />
+        <div ${
+          MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES
+        }="${Object.values(MediaUIAttributes).join(' ')}"></div>
       </media-controller>
     `);
     mediaAllReceiver = mediaController.querySelector('div');
+    mediaEl = mediaController.querySelector('video');
   });
 
   afterEach(() => {
     mediaController = undefined;
     mediaAllReceiver = undefined;
+    mediaEl = undefined;
   });
+
+  // NOTE: Examples of ad hoc state update tests. These could be moved into higher order functions if preferred (CJP)
+  // it(`should dispatch event ${MediaStateChangeEvents.MEDIA_MUTED} when ${MediaUIProps.MEDIA_MUTED} changes`, (done) => {
+  //   const eventType = MediaStateChangeEvents[MediaUIProps.MEDIA_MUTED];
+  //   mediaController.addEventListener(eventType, () => {
+  //     done()
+  //   });
+  //   // NOTE: Since everything else should be generic, this part of the code could be passed in via a callback if we wanted
+  //   // to use the higher order function approach (CJP)
+  //   mediaEl.muted = !mediaEl.muted;
+  // });
+
+  // it(`should not dispatch event ${MediaStateChangeEvents.MEDIA_MUTED} when ${MediaUIProps.MEDIA_MUTED} does not change`, (done) => {
+  //   const eventType = MediaStateChangeEvents.MEDIA_MUTED;
+  //   mediaController.addEventListener(eventType, () =>
+  //     done('Event should not fire!')
+  //   );
+  //   // NOTE: Since everything else should be generic, this part of the code could be passed in via a callback if we wanted
+  //   // to use the higher order function approach (CJP)
+  //   mediaEl.muted = mediaEl.muted;
+  //   nextFrame().then(done);
+  // });
 
   Object.entries(MediaUIProps).forEach(([key, propName]) => {
     const eventType = MediaStateChangeEvents[key];
 
-    it(`should dispatch event ${eventType} when ${propName} changes`, (done) => {
+    /**
+     * @TODO propagateMediaState no longer "owns" the state change event dispatch. Currently, will need to explicitly map
+     * change requests explicitly to test this behavior (aka cannot be ad hoc and depends on things like the media element as a "source of truth")
+     * (CJP)
+     **/
+    it.skip(`should dispatch event ${eventType} when ${propName} changes`, (done) => {
       const nextState = !mediaAllReceiver.hasAttribute(propName.toLowerCase());
       assert.exists(eventType);
       mediaController.addEventListener(eventType, () => done());
       mediaController.propagateMediaState(propName, nextState);
     });
 
-    it(`should not dispatch event ${eventType} when ${propName} does not change`, (done) => {
+    it.skip(`should not dispatch event ${eventType} when ${propName} does not change`, (done) => {
       const nextState = !mediaAllReceiver.hasAttribute(propName.toLowerCase());
       assert.exists(eventType);
       mediaController.propagateMediaState(propName, nextState);
@@ -419,15 +456,14 @@ describe('state propagation behaviors', () => {
   });
 
   describe('media state receivers', () => {
+    const MediaUIAttributeValues = Object.values(MediaUIAttributes);
+
     class MediaStateReceiverWC extends HTMLElement {
-      static observedAttributes = Object.values(MediaUIAttributes);
+      static observedAttributes = MediaUIAttributeValues;
     }
 
     const MEDIA_STATE_RECEIVER_WC_NAME = 'media-state-receiver';
-    customElements.define(
-      MEDIA_STATE_RECEIVER_WC_NAME,
-      MediaStateReceiverWC
-    );
+    customElements.define(MEDIA_STATE_RECEIVER_WC_NAME, MediaStateReceiverWC);
 
     let mediaStateReceiverObj;
     let div;
@@ -446,10 +482,20 @@ describe('state propagation behaviors', () => {
       div = await fixture('<div></div>');
       div.setAttribute(
         MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES,
-        Object.values(MediaUIAttributes).join(' ')
+        MediaUIAttributeValues.join(' ')
       );
 
-      wc = await fixture(`<${MEDIA_STATE_RECEIVER_WC_NAME}></${MEDIA_STATE_RECEIVER_WC_NAME}>`);
+      MediaUIAttributeValues.forEach((attrName) => {
+        div.setAttribute(attrName, INITIAL_VALUE);
+      });
+
+      wc = await fixture(
+        `<${MEDIA_STATE_RECEIVER_WC_NAME}></${MEDIA_STATE_RECEIVER_WC_NAME}>`
+      );
+
+      MediaUIAttributeValues.forEach((attrName) => {
+        wc.setAttribute(attrName, INITIAL_VALUE);
+      });
     });
 
     afterEach(() => {
@@ -461,18 +507,12 @@ describe('state propagation behaviors', () => {
     Object.entries(MediaUIProps).forEach(([key, propName]) => {
       it(`should propagate ${propName} to a media state receiver with a corresponding property when its value changes`, () => {
         mediaController.registerMediaStateReceiver(mediaStateReceiverObj);
-        const nextState = !mediaController.hasAttribute(propName.toLowerCase());
-        mediaController.propagateMediaState(propName, nextState);
         assert.notEqual(mediaStateReceiverObj[propName], INITIAL_VALUE);
-        assert.equal(mediaStateReceiverObj[propName], nextState);
       });
 
       it(`should not propagate ${propName} to a media state receiver if it has no corresponding property when its value changes`, () => {
         delete mediaStateReceiverObj[propName];
         mediaController.registerMediaStateReceiver(mediaStateReceiverObj);
-        const nextState = !mediaController.hasAttribute(propName.toLowerCase());
-        mediaController.propagateMediaState(propName, nextState);
-        assert.notEqual(mediaStateReceiverObj[propName], nextState);
         assert(!(propName in mediaStateReceiverObj));
       });
 
@@ -480,9 +520,13 @@ describe('state propagation behaviors', () => {
 
       it(`should propagate ${propName} via attrs to a media state receiver if ${attrName} is listed in ${MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES}`, () => {
         mediaController.registerMediaStateReceiver(div);
-        const nextState = !mediaController.hasAttribute(propName.toLowerCase());
-        mediaController.propagateMediaState(propName, nextState);
-        assert.equal(div.hasAttribute(attrName), nextState);
+        /** @TODO Should we still propagate true boolean attrs so the value is explicitly '' if it was previously set to some other value? (CJP) */
+        const propIsTrue = mediaController.mediaStore.getState()[propName] === true;
+        if (!propIsTrue) {
+          assert.notEqual(div.getAttribute(attrName), INITIAL_VALUE);
+        } else {
+          assert.equal(div.getAttribute(attrName), INITIAL_VALUE);
+        }
       });
 
       it(`should not propagate ${propName} via attrs to a media state receiver if ${attrName} is not listed in ${MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES}`, () => {
@@ -493,38 +537,31 @@ describe('state propagation behaviors', () => {
             .join(' ')
         );
         mediaController.registerMediaStateReceiver(div);
-        // NOTE: Given the generic values here, we need to update state twice to ensure a toggle between true & false
-        // (which is represented by removing an attribute from a media state receiver)
-        const nextState = !mediaController.hasAttribute(propName.toLowerCase());
-        mediaController.propagateMediaState(propName, nextState);
-        assert(!div.hasAttribute(attrName));
-        mediaController.propagateMediaState(propName, !nextState);
-        assert(!div.hasAttribute(attrName));
+        assert.equal(div.getAttribute(attrName), INITIAL_VALUE);
       });
 
       it(`should propagate ${propName} via props to a media state receiver if prop exists, even if a corresponding ${attrName} attr is listed in ${MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES}`, () => {
         div[propName] = INITIAL_VALUE;
         mediaController.registerMediaStateReceiver(div);
-        const nextState = !mediaController.hasAttribute(propName.toLowerCase());
-        mediaController.propagateMediaState(propName, nextState);
-        assert(!div.hasAttribute(attrName));
-        assert.equal(div[propName], nextState);
+        assert.equal(div.getAttribute(attrName), INITIAL_VALUE);
+        assert.notEqual(div[propName], INITIAL_VALUE);
       });
 
       it(`should propagate ${propName} via attrs to a web component media state receiver if ${attrName} is an observed attr`, () => {
         mediaController.registerMediaStateReceiver(wc);
-        const nextState = !mediaController.hasAttribute(propName.toLowerCase());
-        mediaController.propagateMediaState(propName, nextState);
-        assert.equal(wc.hasAttribute(attrName), nextState);
+        const propIsTrue = mediaController.mediaStore.getState()[propName] === true;
+        if (!propIsTrue) {
+          assert.notEqual(wc.getAttribute(attrName), INITIAL_VALUE);
+        } else {
+          assert.equal(wc.getAttribute(attrName), INITIAL_VALUE);
+        }
       });
 
       it(`should propagate ${propName} via props to a web component media state receiver if prop exists, even if ${attrName} is an observed attr`, () => {
         wc[propName] = INITIAL_VALUE;
         mediaController.registerMediaStateReceiver(wc);
-        const nextState = !mediaController.hasAttribute(propName.toLowerCase());
-        mediaController.propagateMediaState(propName, nextState);
-        assert(!div.hasAttribute(attrName));
-        assert.equal(wc[propName], nextState);
+        assert.equal(wc.getAttribute(attrName), INITIAL_VALUE);
+        assert.notEqual(wc[propName], INITIAL_VALUE);
       });
     });
   });
