@@ -1,0 +1,66 @@
+---
+title: <media-captions-menu>
+description: Media Captions Menu
+layout: ../../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-captions-menu.js
+---
+
+import SandpackContainer from "../../../../components/SandpackContainer.astro";
+
+A menu for subtitles and captions.
+
+### Default usage
+
+<SandpackContainer
+  editorHeight={250}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+    <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
+  </video>
+  <media-captions-menu hidden anchor="auto"></media-captions-menu>
+  <media-captions-menu-button></media-captions-menu-button>
+</media-controller>`}
+/>
+
+### Explicit linking
+
+<SandpackContainer
+  editorHeight={250}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+    <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
+  </video>
+  <media-captions-menu hidden id="menu1" anchor="menu-button1"></media-captions-menu>
+  <media-captions-menu-button id="menu-button1" invoketarget="menu1"></media-captions-menu-button>
+</media-controller>`}
+/>
+
+### Alternate button content
+
+For alternative content for the button, there are the `on` and `off` slots.
+
+<SandpackContainer
+  editorHeight={250}
+  html={`<media-controller defaultsubtitles>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  >
+    <track label="English" kind="captions" srclang="en" src='https://media-chrome.mux.dev/examples/vanilla/vtt/en-cc.vtt' />
+  </video>
+  <media-captions-menu hidden anchor="auto"></media-captions-menu>
+  <media-captions-menu-button>
+    <span slot="on"><b><u>CC</u></b></span>
+    <span slot="off">CC</span>
+  </media-captions-menu-button>
+</media-controller>`}
+/>
