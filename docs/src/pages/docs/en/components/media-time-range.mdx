@@ -87,7 +87,7 @@ with a valid VTT file as `src` will add hoverable chapters segments to the time 
 />
 
 
-## Custom current slot
+## Custom current slot with arrow
 
 Add a time display component in the current slot that will slide along 
 the timeline as the video progresses.
@@ -103,6 +103,7 @@ the timeline as the video progresses.
   <media-control-bar>
     <media-time-range>
       <media-time-display slot="current"></media-time-display>
+      <div part="arrow" slot="current"></div>
     </media-time-range>
   </media-control-bar>
 </media-controller>`}

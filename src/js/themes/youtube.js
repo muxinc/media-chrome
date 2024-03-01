@@ -30,7 +30,7 @@ template.innerHTML = /*html*/`
     --media-range-thumb-border-radius: 13px;
     --media-preview-thumbnail-border: 2px solid #fff;
     --media-preview-thumbnail-border-radius: 2px;
-    --media-preview-time-margin: 10px 0;
+    --media-preview-time-margin: 5px 0 0;
 
   }
 

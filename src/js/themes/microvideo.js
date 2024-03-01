@@ -188,7 +188,7 @@ template.innerHTML = /*html*/`
     --media-range-padding-left: 0;
     --media-range-padding-right: 0;
     --media-preview-time-background: var(--_secondary-color);
-    --media-preview-time-margin: 0 0 8px;
+    --media-preview-box-margin: 0 0 3px;
 
     display: var(--controls, var(--time-range, inline-block));
     width: 100%;

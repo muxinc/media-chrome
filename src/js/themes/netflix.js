@@ -19,8 +19,8 @@ template.innerHTML = /*html*/`
     --media-range-track-transition: height 0.2s ease;
     --media-range-track-background: #555;
     --media-range-bar-color: rgb(229, 9, 20);
-    --media-control-hover-background: none;
-    --media-control-background: none;
+    --media-control-hover-background: transparent;
+    --media-control-background: transparent;
 
     --media-button-icon-height: 35px;
     --media-button-icon-transform: scale(1);

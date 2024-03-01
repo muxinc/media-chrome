@@ -36,9 +36,17 @@ const template = document.createElement('template');
 template.innerHTML = /*html*/`
   <style>
     :host {
-      --media-preview-border-radius: 3px;
+      --media-box-border-radius: 4px;
       --media-box-padding-left: 10px;
       --media-box-padding-right: 10px;
+      --media-preview-border-radius: var(--media-box-border-radius);
+      --media-box-arrow-offset: var(--media-box-border-radius);
+      --_control-background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
+      --_preview-background: var(--media-preview-background, var(--_control-background));
+
+      ${/* 1% rail width trick was off in Safari, contain: layout seems to
+        prevent the horizontal overflow as well. */ ''}
+      contain: layout;
     }
 
     #highlight {
@@ -47,8 +55,7 @@ template.innerHTML = /*html*/`
 
     #preview-rail,
     #current-rail {
-      ${/* 1% of parent element and upscale by 100 in the translateX() */ ''}
-      width: 1%;
+      width: 100%;
       position: absolute;
       left: 0;
       bottom: 100%;
@@ -57,16 +64,24 @@ template.innerHTML = /*html*/`
     }
 
     [part~="box"] {
+      width: min-content;
       ${/* absolute position is needed here so the box doesn't overflow the bounds */''}
       position: absolute;
       bottom: 100%;
-      display: flex;
       flex-direction: column;
       align-items: center;
       transform: translateX(-50%);
     }
 
+    [part~="current-box"] {
+      display: var(--media-current-box-display, var(--media-box-display, flex));
+      margin: var(--media-current-box-margin, var(--media-box-margin, 0 0 5px));
+      visibility: hidden;
+    }
+
     [part~="preview-box"] {
+      display: var(--media-preview-box-display, var(--media-box-display, flex));
+      margin: var(--media-preview-box-margin, var(--media-box-margin, 0 0 5px));
       transition-property: var(--media-preview-transition-property, visibility, opacity);
       transition-duration: var(--media-preview-transition-duration-out, .25s);
       transition-delay: var(--media-preview-transition-delay-out, 0s);
@@ -96,7 +111,7 @@ template.innerHTML = /*html*/`
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: visibility 0s .25s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-thumbnail-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      background: var(--media-preview-thumbnail-background, var(--_preview-background));
       box-shadow: var(--media-preview-thumbnail-box-shadow, 0 0 4px rgb(0 0 0 / .2));
       max-width: var(--media-preview-thumbnail-max-width, 180px);
       max-height: var(--media-preview-thumbnail-max-height, 160px);
@@ -127,17 +142,18 @@ template.innerHTML = /*html*/`
 
     media-preview-chapter-display,
     ::slotted(media-preview-chapter-display) {
+      font-size: var(--media-font-size, 13px);
+      line-height: 17px;
       display: none;
-      line-height: 1.3;
       min-width: 0;
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: min-width 0s, border-radius 0s, margin 0s, padding 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-chapter-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      background: var(--media-preview-chapter-background, var(--_preview-background));
       border-radius: var(--media-preview-chapter-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));
-      padding: var(--media-preview-chapter-padding, 4px 10px);
+      padding: var(--media-preview-chapter-padding, 3.5px 9px);
       margin: var(--media-preview-chapter-margin, 0 0 5px);
       text-shadow: var(--media-preview-chapter-text-shadow, 0 0 4px rgb(0 0 0 / .75));
     }
@@ -146,7 +162,7 @@ template.innerHTML = /*html*/`
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) ::slotted(media-preview-chapter-display) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       border-radius: var(--media-preview-chapter-border-radius, 0);
-      padding: var(--media-preview-chapter-padding, 4px 10px 0);
+      padding: var(--media-preview-chapter-padding, 3.5px 9px 0);
       margin: var(--media-preview-chapter-margin, 0);
       min-width: 100%;
     }
@@ -157,19 +173,27 @@ template.innerHTML = /*html*/`
     }
 
     media-preview-time-display,
-    ::slotted(media-preview-time-display) {
-      line-height: 1.3;
+    ::slotted(media-preview-time-display),
+    media-time-display,
+    ::slotted(media-time-display) {
+      font-size: var(--media-font-size, 13px);
+      line-height: 17px;
       min-width: 0;
       ${/* delay changing these CSS props until the preview box transition is ended */''}
       transition: min-width 0s, border-radius 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
-      background: var(--media-preview-time-background, var(--media-preview-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)))));
+      background: var(--media-preview-time-background, var(--_preview-background));
       border-radius: var(--media-preview-time-border-radius,
         var(--media-preview-border-radius) var(--media-preview-border-radius)
         var(--media-preview-border-radius) var(--media-preview-border-radius));
-      padding: var(--media-preview-time-padding, 4px 10px);
-      margin: var(--media-preview-time-margin, 0 0 10px);
+      padding: var(--media-preview-time-padding, 3.5px 9px);
+      margin: var(--media-preview-time-margin, 0);
       text-shadow: var(--media-preview-time-text-shadow, 0 0 4px rgb(0 0 0 / .75));
+      transform: translateX(min(
+        max(calc(50% - var(--_box-width) / 2),
+        calc(var(--_box-shift, 0))),
+        calc(var(--_box-width) / 2 - 50%)
+      ));
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-time-display,
@@ -178,10 +202,29 @@ template.innerHTML = /*html*/`
       border-radius: var(--media-preview-time-border-radius,
         0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
       min-width: 100%;
+      transform: translateX(0);
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
       --media-time-range-hover-display: block;
+    }
+
+    [part~="arrow"],
+    ::slotted([part~="arrow"]) {
+      display: var(--media-box-arrow-display, inline-block);
+      transform: translateX(min(
+        max(calc(50% - var(--_box-width) / 2 + var(--media-box-arrow-offset)),
+        calc(var(--_box-shift, 0))),
+        calc(var(--_box-width) / 2 - 50% - var(--media-box-arrow-offset))
+      ));
+      ${/* border-color has to come before border-top-color! */''}
+      border-color: transparent;
+      border-top-color: var(--media-box-arrow-background, var(--_control-background));
+      border-width: var(--media-box-arrow-border-width,
+        var(--media-box-arrow-height, 5px) var(--media-box-arrow-width, 6px) 0);
+      border-style: solid;
+      justify-content: center;
+      height: 0;
     }
   </style>
   <div id="preview-rail">
@@ -189,12 +232,14 @@ template.innerHTML = /*html*/`
       <media-preview-thumbnail></media-preview-thumbnail>
       <media-preview-chapter-display></media-preview-chapter-display>
       <media-preview-time-display></media-preview-time-display>
+      <slot name="preview-arrow"><div part="arrow"></div></slot>
     </slot>
   </div>
   <div id="current-rail">
     <slot name="current" part="box current-box">
-      ${/* Example: add the current time to the playhead
-        <media-time-display></media-time-display> */''}
+      ${/* Example: add the current time w/ arrow to the playhead
+        <media-time-display slot="current"></media-time-display>
+        <div part="arrow" slot="current"></div> */''}
     </slot>
   </div>
 `;
@@ -212,6 +257,7 @@ const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
 
 /**
  * @slot preview - An element that slides along the timeline to the position of the pointer hovering.
+ * @slot preview-arrow - An arrow element that slides along the timeline to the position of the pointer hovering.
  * @slot current - An element that slides along the timeline to the position of the current time.
  *
  * @attr {string} mediabuffered - (read-only) Set to the buffered time ranges.
@@ -227,6 +273,7 @@ const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
  * @csspart box - A CSS part that selects both the preview and current box elements.
  * @csspart preview-box - A CSS part that selects the preview box element.
  * @csspart current-box - A CSS part that selects the current box element.
+ * @csspart arrow - A CSS part that selects the arrow element.
  *
  * @cssproperty [--media-time-range-display = inline-block] - `display` property of range.
  *
@@ -256,6 +303,25 @@ const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
  * @cssproperty --media-preview-time-padding - `padding` of range preview time display.
  * @cssproperty --media-preview-time-margin - `margin` of range preview time display.
  * @cssproperty --media-preview-time-text-shadow - `text-shadow` of range preview time display.
+ *
+ * @cssproperty --media-box-display - `display` of range box.
+ * @cssproperty --media-box-margin - `margin` of range box.
+ * @cssproperty --media-box-padding-left - `padding-left` of range box.
+ * @cssproperty --media-box-padding-right - `padding-right` of range box.
+ * @cssproperty --media-box-border-radius - `border-radius` of range box.
+ *
+ * @cssproperty --media-preview-box-display - `display` of range preview box.
+ * @cssproperty --media-preview-box-margin - `margin` of range preview box.
+ *
+ * @cssproperty --media-current-box-display - `display` of range current box.
+ * @cssproperty --media-current-box-margin - `margin` of range current box.
+ *
+ * @cssproperty --media-box-arrow-display - `display` of range box arrow.
+ * @cssproperty --media-box-arrow-background - `border-top-color` of range box arrow.
+ * @cssproperty --media-box-arrow-border-width - `border-width` of range box arrow.
+ * @cssproperty --media-box-arrow-height - `height` of range box arrow.
+ * @cssproperty --media-box-arrow-width - `width` of range box arrow.
+ * @cssproperty --media-box-arrow-offset - `translateX` offset of range box arrow.
  */
 class MediaTimeRange extends MediaChromeRange {
   static get observedAttributes() {
@@ -278,10 +344,15 @@ class MediaTimeRange extends MediaChromeRange {
   #rootNode;
   #animation;
   #boxes;
+  /** @type {number} */
   #previewTime;
+  /** @type {HTMLElement} */
   #previewBox;
+  /** @type {HTMLElement} */
   #currentBox;
+  /** @type {number} */
   #boxPaddingLeft;
+  /** @type {number} */
   #boxPaddingRight;
   #mediaChaptersCues;
 
@@ -289,13 +360,6 @@ class MediaTimeRange extends MediaChromeRange {
     super();
 
     this.container.appendChild(template.content.cloneNode(true));
-
-    // Come back to this feature
-    // this.playIfNotReady = e => {
-    //   this.range.removeEventListener('change', this.playIfNotReady);
-    //   const media = this.media;
-    //   media.play().then(this.setMediaTimeWithRange);
-    // };
 
     this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
@@ -353,6 +417,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
       this.mediaChaptersCues = this.#mediaChaptersCues;
+      this.updateBar();
     }
   }
 
@@ -571,36 +636,89 @@ class MediaTimeRange extends MediaChromeRange {
 
   updateCurrentBox() {
     // If there are no elements in the current box no need for expensive style updates.
-    // @ts-ignore
-    if (!this.#currentBox.assignedElements().length) return;
+    /** @type {HTMLSlotElement} */
+    const currentSlot = this.shadowRoot.querySelector('slot[name="current"]');
+    if (!currentSlot.assignedElements().length) return;
 
-    const boxPos = this.#getBoxPosition(this.#currentBox, this.range.valueAsNumber);
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#current-rail');
-    style.transform = `translateX(${boxPos})`;
+    const currentRailRule = getOrInsertCSSRule(this.shadowRoot, '#current-rail');
+    const currentBoxRule = getOrInsertCSSRule(this.shadowRoot, '[part~="current-box"]');
+
+    const rects = this.#getElementRects(this.#currentBox);
+    const boxPos = this.#getBoxPosition(rects, this.range.valueAsNumber);
+    const boxShift = this.#getBoxShiftPosition(rects, this.range.valueAsNumber);
+
+    currentRailRule.style.transform = `translateX(${boxPos})`;
+    currentRailRule.style.setProperty('--_range-width', `${rects.range.width}`);
+    currentBoxRule.style.setProperty('--_box-shift', `${boxShift}`);
+    currentBoxRule.style.setProperty('--_box-width', `${rects.box.width}px`);
+    currentBoxRule.style.setProperty('visibility', 'initial');
   }
 
-  #getBoxPosition(box, ratio) {
-    let position = `${ratio * 100 * 100}%`;
-
-    // Use offset dimensions to include borders.
-    const boxWidth = box.offsetWidth;
-    if (!boxWidth) return position;
-
+  #getElementRects(box) {
     // Get the element that enforces the bounds for the time range boxes.
     const bounds =
       (this.getAttribute('bounds')
         ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
         : this.parentElement) ?? this;
 
+    const boundsRect = bounds.getBoundingClientRect();
     const rangeRect = this.range.getBoundingClientRect();
-    const mediaBoundsRect = bounds.getBoundingClientRect();
-    const boxMin = (this.#boxPaddingLeft - (rangeRect.left - mediaBoundsRect.left - boxWidth / 2)) / rangeRect.width * 100;
-    const boxMax = (mediaBoundsRect.right - rangeRect.left - boxWidth / 2 - this.#boxPaddingRight) / rangeRect.width * 100;
 
-    if (!Number.isNaN(boxMin)) position = `max(${boxMin * 100}%, ${position})`;
-    if (!Number.isNaN(boxMax)) position = `min(${position}, ${boxMax * 100}%)`;
+    // Use offset dimensions to include borders.
+    const width = box.offsetWidth;
+    const min = -(rangeRect.left - boundsRect.left - width / 2);
+    const max = boundsRect.right - rangeRect.left - width / 2;
+
+    return {
+      box: { width, min, max },
+      bounds: boundsRect,
+      range: rangeRect,
+    };
+  }
+
+  /**
+   * Get the position, max and min for the box in percentage.
+   * It's important this is in percentage so when the player is resized
+   * the box will move accordingly.
+   *
+   * @param  {{ box: { width: number, min: number, max: number }}} rects
+   * @param  {number} ratio
+   * @return {string}
+   */
+  #getBoxPosition(rects, ratio) {
+    let position = `${ratio * 100}%`;
+    const { width, min, max } = rects.box;
+
+    if (!width) return position;
+
+    if (!Number.isNaN(min)) {
+      const pad = `var(--media-box-padding-left)`;
+      const minPos = `calc(1 / var(--_range-width) * 100 * ${min}% + ${pad})`;
+      position = `max(${minPos}, ${position})`;
+    }
+
+    if (!Number.isNaN(max)) {
+      const pad = `var(--media-box-padding-right)`;
+      const maxPos = `calc(1 / var(--_range-width) * 100 * ${max}% - ${pad})`;
+      position = `min(${position}, ${maxPos})`;
+    }
 
     return position;
+  }
+
+  #getBoxShiftPosition(rects, ratio) {
+    const { width, min, max } = rects.box;
+    const pointerX = ratio * rects.range.width;
+
+    if (pointerX < min + this.#boxPaddingLeft) {
+      return `${pointerX - width / 2}px`;
+    }
+
+    if (pointerX > max - this.#boxPaddingRight) {
+      return `${(pointerX + width / 2) - rects.range.width}px`;
+    }
+
+    return 0;
   }
 
   handleEvent(evt) {
@@ -639,17 +757,26 @@ class MediaTimeRange extends MediaChromeRange {
     // If no duration we can't calculate which time to show
     if (!duration) return;
 
-    const rangeRect = this.range.getBoundingClientRect();
-    let pointerRatio = (evt.clientX - rangeRect.left) / rangeRect.width;
+    const previewRailRule = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
+    const previewBoxRule = getOrInsertCSSRule(this.shadowRoot, '[part~="preview-box"]');
+
+    const rects = this.#getElementRects(this.#previewBox);
+
+    let pointerRatio = (evt.clientX - rects.range.left) / rects.range.width;
     pointerRatio = Math.max(0, Math.min(1, pointerRatio));
 
-    const boxPos = this.#getBoxPosition(this.#previewBox, pointerRatio);
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
-    style.transform = `translateX(${boxPos})`;
+    const boxPos = this.#getBoxPosition(rects, pointerRatio);
+    const boxShift = this.#getBoxShiftPosition(rects, pointerRatio);
 
-    // At least require a 1s difference before requesting a new preview thumbnail.
+    previewRailRule.style.transform = `translateX(${boxPos})`;
+    previewRailRule.style.setProperty('--_range-width', `${rects.range.width}`);
+    previewBoxRule.style.setProperty('--_box-shift', `${boxShift}`);
+    previewBoxRule.style.setProperty('--_box-width', `${rects.box.width}px`);
+
+    // At least require a 1s difference before requesting a new preview thumbnail,
+    // unless it's at the beginning or end of the timeline.
     const diff = Math.round(this.#previewTime) - Math.round(pointerRatio * duration);
-    if (Math.abs(diff) < 1) return;
+    if (Math.abs(diff) < 1 && pointerRatio > .01 && pointerRatio < 0.99) return;
 
     this.#previewTime = pointerRatio * duration;
     this.#previewRequest(this.#previewTime);
