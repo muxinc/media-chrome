@@ -353,6 +353,8 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     this.submenuElement.addEventListener('change', this.#handleMenuItem);
     this.submenuElement.addEventListener('addmenuitem', this.#handleMenuItem);
     this.submenuElement.addEventListener('removemenuitem', this.#handleMenuItem);
+
+    this.#handleMenuItem();
   }
 
   #submenuDisconnected() {
@@ -362,6 +364,8 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     this.submenuElement.removeEventListener('change', this.#handleMenuItem);
     this.submenuElement.removeEventListener('addmenuitem', this.#handleMenuItem);
     this.submenuElement.removeEventListener('removemenuitem', this.#handleMenuItem);
+
+    this.#handleMenuItem();
   }
 
   /**
