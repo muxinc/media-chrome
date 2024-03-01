@@ -34,6 +34,8 @@ template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
 `;
 
 /**
+ * @extends {MediaChromeMenu}
+ *
  * @cssproperty --media-settings-menu-justify-content - `justify-content` of the menu.
  */
 class MediaSettingsMenu extends MediaChromeMenu {

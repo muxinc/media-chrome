@@ -19,10 +19,11 @@
       }
 
       mux-video {
-        width: 100%;      /* prevents video to expand beyond its container */
+        width: 100%;          /* prevents video to expand beyond its container */
         height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
       }
 
+      /* reconsider when :has() is fully browser supported */
       media-settings-menu-item[aria-haspopup]:is(
         :not([submenusize]),
         [submenusize="0"],

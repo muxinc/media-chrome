@@ -22,6 +22,11 @@ template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <slot name="captions-indicator" hidden>${ccIcon}</slot>`;
 
 /**
+ * @extends {MediaChromeMenu}
+ *
+ * @slot - Default slotted elements.
+ * @slot header - An element shown at the top of the menu.
+ * @slot checked-indicator - An icon element indicating a checked menu-item.
  * @slot captions-indicator - An icon element indicating an item with closed captions.
  *
  * @attr {string} mediasubtitleslist - (read-only) A list of all subtitles and captions.

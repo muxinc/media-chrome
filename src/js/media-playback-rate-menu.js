@@ -21,6 +21,12 @@ export const Attributes = {
 };
 
 /**
+ * @extends {MediaChromeMenu}
+ *
+ * @slot - Default slotted elements.
+ * @slot header - An element shown at the top of the menu.
+ * @slot checked-indicator - An icon element indicating a checked menu-item.
+ *
  * @attr {string} rates - Set custom playback rates for the user to choose from.
  * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
  */

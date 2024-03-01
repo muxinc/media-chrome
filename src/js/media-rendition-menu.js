@@ -9,6 +9,12 @@ import {
 } from './media-chrome-menu.js';
 
 /**
+ * @extends {MediaChromeMenu}
+ *
+ * @slot - Default slotted elements.
+ * @slot header - An element shown at the top of the menu.
+ * @slot checked-indicator - An icon element indicating a checked menu-item.
+ *
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
  * @attr {string} mediarenditionlist - (read-only) Set to the rendition list.
  */

@@ -13,6 +13,12 @@ import {
 } from './utils/element-utils.js';
 
 /**
+ * @extends {MediaChromeMenu}
+ *
+ * @slot - Default slotted elements.
+ * @slot header - An element shown at the top of the menu.
+ * @slot checked-indicator - An icon element indicating a checked menu-item.
+ *
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the enabled audio track.
  * @attr {string} mediaaudiotracklist - (read-only) Set to the audio track list.
  */
