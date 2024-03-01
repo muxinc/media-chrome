@@ -73,20 +73,35 @@ export const requestMap = {
         kind: TextTrackKinds.METADATA,
         label: 'thumbnails',
       });
-      const cue = Array.prototype.find.call(
-        track?.cues ?? [],
-        (cue) => cue.startTime >= mediaPreviewTime
-      );
-      if (cue) {
-        const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
-          ? /** @type {HTMLTrackElement | null} */ (
-              media?.querySelector('track[label="thumbnails"]')
-            )?.src
-          : undefined;
-        const url = new URL(cue.text, base);
-        const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-        mediaPreviewCoords = previewCoordsStr.split(',');
-        mediaPreviewImage = url.href;
+      if (track?.cues?.length) {
+        let cue;
+        // If our first preview image cue starts after mediaPreviewTime, use it.
+        if (track.cues[0].startTime > mediaPreviewTime) {
+          cue = track.cues[0];
+          // If our last preview image cue ends at or before mediaPreviewTime, use it.
+        } else if (
+          track.cues[track.cues.length - 1].endTime <= mediaPreviewTime
+        ) {
+          cue = track.cues[track.cues.length - 1];
+          // Otherwise, use the cue that contains mediaPreviewTime
+        } else {
+          cue = Array.prototype.find.call(
+            track?.cues ?? [],
+            (c) =>
+              c.startTime <= mediaPreviewTime && c.endTime > mediaPreviewTime
+          );
+        }
+        if (cue) {
+          const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
+            ? /** @type {HTMLTrackElement | null} */ (
+                media?.querySelector('track[label="thumbnails"]')
+              )?.src
+            : undefined;
+          const url = new URL(cue.text, base);
+          const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
+          mediaPreviewCoords = previewCoordsStr.split(',');
+          mediaPreviewImage = url.href;
+        }
       }
     }
 
