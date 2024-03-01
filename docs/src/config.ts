@@ -93,6 +93,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Rendition menu', link: 'docs/en/components/media-rendition-menu' },
       { text: 'Seek backward button', link: 'docs/en/components/media-seek-backward-button' },
       { text: 'Seek forward button', link: 'docs/en/components/media-seek-forward-button' },
+      { text: 'Settings menu', link: 'docs/en/components/media-settings-menu' },
       { text: 'Time display', link: 'docs/en/components/media-time-display' },
       { text: 'Time range', link: 'docs/en/components/media-time-range' },
       { text: 'Volume range', link: 'docs/en/components/media-volume-range' },

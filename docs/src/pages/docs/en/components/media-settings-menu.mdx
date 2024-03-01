@@ -1,0 +1,37 @@
+---
+title: <media-settings-menu>
+description: Media Settings Menu
+layout: ../../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-settings-menu.js
+---
+
+import SandpackContainer from "../../../../components/SandpackContainer.astro";
+
+A menu for nested submenu items. This is used for settings like quality, speed, and captions.
+
+### Default usage
+
+<SandpackContainer
+  editorHeight={300}
+  dependencies={{ "@mux/mux-video": "latest" }}
+  html={`<media-controller>
+  <mux-video
+    playsinline crossorigin
+    slot="media"
+    playback-id="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008"
+  ></mux-video>
+  <media-settings-menu hidden anchor="auto">
+    <media-settings-menu-item>
+      Speed
+      <media-playback-rate-menu slot="submenu" hidden>
+        <div slot="title">Speed</div>
+      </media-playback-rate-menu>
+    </media-settings-menu-item>
+  </media-settings-menu>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-range></media-time-range>
+    <media-settings-menu-button></media-settings-menu-button>
+  </media-control-bar>
+</media-controller>`}
+/>
