@@ -1,15 +1,15 @@
-import { globalThis } from '../../utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
-import { AttributeTokenList } from '../../utils/attribute-token-list.js';
+import { globalThis } from './utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
+import { AttributeTokenList } from './utils/attribute-token-list.js';
 import {
   getNumericAttr,
   setNumericAttr,
   getMediaController,
-} from '../../utils/element-utils.js';
+} from './utils/element-utils.js';
 import {
   DEFAULT_RATES,
   DEFAULT_RATE,
-} from '../../media-playback-rate-button.js';
+} from './media-playback-rate-button.js';
 import {
   MediaChromeMenu,
   createMenuItem,

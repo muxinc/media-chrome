@@ -1,5 +1,5 @@
-import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { containsComposedNode, getActiveElement } from '../../utils/element-utils.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
+import { containsComposedNode, getActiveElement } from './utils/element-utils.js';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/`

@@ -2,7 +2,7 @@
 title: <media-captions-menu> (Experimental)
 description: Experimental Media Captions Menu
 layout: ../../../../layouts/ComponentLayout.astro
-source: https://github.com/muxinc/media-chrome/tree/main/src/js/experimental/menu/media-captions-menu.js
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-captions-menu.js
 ---
 
 A menu for subtitles and captions.

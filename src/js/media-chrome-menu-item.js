@@ -1,6 +1,6 @@
-import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { InvokeEvent } from '../../utils/events.js';
-import { getDocumentOrShadowRoot, containsComposedNode } from '../../utils/element-utils.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
+import { InvokeEvent } from './utils/events.js';
+import { getDocumentOrShadowRoot, containsComposedNode } from './utils/element-utils.js';
 
 /** @typedef {import('./media-chrome-menu.js').MediaChromeMenu} MediaChromeMenu */
 

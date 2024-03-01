@@ -1,8 +1,8 @@
-import { MediaStateReceiverAttributes } from '../../constants.js';
-import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { computePosition } from '../../utils/anchor-utils.js';
-import { observeResize, unobserveResize } from '../../utils/resize-observer.js';
-import { ToggleEvent, InvokeEvent } from '../../utils/events.js';
+import { MediaStateReceiverAttributes } from './constants.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
+import { computePosition } from './utils/anchor-utils.js';
+import { observeResize, unobserveResize } from './utils/resize-observer.js';
+import { ToggleEvent, InvokeEvent } from './utils/events.js';
 import {
   getActiveElement,
   containsComposedNode,
@@ -11,7 +11,7 @@ import {
   getMediaController,
   getAttributeMediaController,
   getDocumentOrShadowRoot,
-} from '../../utils/element-utils.js';
+} from './utils/element-utils.js';
 
 /** @typedef {import('./media-chrome-menu-item.js').MediaChromeMenuItem} MediaChromeMenuItem */
 

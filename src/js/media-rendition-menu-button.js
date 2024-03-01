@@ -1,12 +1,12 @@
-import { MediaUIAttributes } from '../../constants.js';
+import { MediaUIAttributes } from './constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
-import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { nouns } from '../../labels/labels.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
+import { nouns } from './labels/labels.js';
 import {
   getStringAttr,
   setStringAttr,
   getMediaController,
-} from '../../utils/element-utils.js';
+} from './utils/element-utils.js';
 
 const renditionIcon = /*html*/`<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M13.5 2.5h2v6h-2v-2h-11v-2h11v-2Zm4 2h4v2h-4v-2Zm-12 4h2v6h-2v-2h-3v-2h3v-2Zm4 2h12v2h-12v-2Zm1 4h2v6h-2v-2h-8v-2h8v-2Zm4 2h7v2h-7v-2Z" />
