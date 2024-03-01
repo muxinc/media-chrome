@@ -73,6 +73,7 @@ export const SIDEBAR: Sidebar = {
     ],
     Components: [
       { text: 'Airplay button', link: 'docs/en/components/media-airplay-button' },
+      { text: 'Audio track menu', link: 'docs/en/components/media-audio-track-menu' },
       { text: 'Captions button', link: 'docs/en/components/media-captions-button' },
       { text: 'Captions menu', link: 'docs/en/components/media-captions-menu' },
       { text: 'Cast button', link: 'docs/en/components/media-cast-button' },
@@ -89,6 +90,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Playback rate menu', link: 'docs/en/components/media-playback-rate-menu' },
       { text: 'Poster image', link: 'docs/en/components/media-poster-image' },
       { text: 'Preview thumbnail', link: 'docs/en/components/media-preview-thumbnail' },
+      { text: 'Rendition menu', link: 'docs/en/components/media-rendition-menu' },
       { text: 'Seek backward button', link: 'docs/en/components/media-seek-backward-button' },
       { text: 'Seek forward button', link: 'docs/en/components/media-seek-forward-button' },
       { text: 'Time display', link: 'docs/en/components/media-time-display' },
