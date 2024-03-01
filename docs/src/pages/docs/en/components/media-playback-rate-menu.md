@@ -1,6 +1,6 @@
 ---
-title: <media-playback-rate-menu> (Experimental)
-description: Experimental Media Playback Rate Menu
+title: <media-playback-rate-menu>
+description: Media Playback Rate Menu
 layout: ../../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-playback-rate-menu.js
 ---

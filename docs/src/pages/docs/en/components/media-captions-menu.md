@@ -1,6 +1,6 @@
 ---
-title: <media-captions-menu> (Experimental)
-description: Experimental Media Captions Menu
+title: <media-captions-menu>
+description: Media Captions Menu
 layout: ../../../../layouts/ComponentLayout.astro
 source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-captions-menu.js
 ---
