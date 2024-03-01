@@ -110,6 +110,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Styling Reference', link: 'docs/en/reference/styling' },
       { text: 'Migrating to 1.0', link: 'docs/en/migration/from-0.x-to-1.0' },
       { text: 'Migrating to 2.0', link: 'docs/en/migration/from-1.x-to-2.0' },
+      { text: 'Migrating to 3.0', link: 'docs/en/migration/from-2.x-to-3.0' },
       { text: 'Showcase', link: 'docs/en/showcase' },
     ],
   },
