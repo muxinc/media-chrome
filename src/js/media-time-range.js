@@ -711,11 +711,13 @@ class MediaTimeRange extends MediaChromeRange {
     const pointerX = ratio * rects.range.width;
 
     if (pointerX < min + this.#boxPaddingLeft) {
-      return `${pointerX - width / 2}px`;
+      const offset = rects.range.left - rects.bounds.left - this.#boxPaddingLeft;
+      return `${pointerX - width / 2 + offset}px`;
     }
 
     if (pointerX > max - this.#boxPaddingRight) {
-      return `${(pointerX + width / 2) - rects.range.width}px`;
+      const offset = rects.bounds.right - rects.range.right - this.#boxPaddingRight;
+      return `${pointerX + width / 2 - offset - rects.range.width}px`;
     }
 
     return 0;
