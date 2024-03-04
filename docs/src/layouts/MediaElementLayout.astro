@@ -26,7 +26,7 @@ headings.push({ depth: 2, slug: 'installing', text: 'Installing' });
     previewAspectRatio={frontmatter.previewAspectRatio ?? frontmatter.aspectRatio}
     dependencies={frontmatter.dependencies}
     hiddenCss={`
-      media-controller,
+      media-controller:not([audio]),
       ${frontmatter.tagName} {
         aspect-ratio: ${frontmatter.aspectRatio ?? '16 / 9'};
       }`

@@ -14,11 +14,18 @@ A menu for nested submenu items. This is used for settings like quality, speed, 
 <SandpackContainer
   editorHeight={300}
   dependencies={{ "@mux/mux-video": "latest" }}
+  hiddenCss={`
+    media-controller:not([audio]),
+    mux-video {
+      aspect-ratio: ${frontmatter.aspectRatio ?? '16 / 9'};
+    }`
+  }
   html={`<media-controller>
   <mux-video
     playsinline crossorigin
     slot="media"
     playback-id="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008"
+    poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
   ></mux-video>
   <media-settings-menu hidden anchor="auto">
     <media-settings-menu-item>
@@ -26,6 +33,18 @@ A menu for nested submenu items. This is used for settings like quality, speed, 
       <media-playback-rate-menu slot="submenu" hidden>
         <div slot="title">Speed</div>
       </media-playback-rate-menu>
+    </media-settings-menu-item>
+    <media-settings-menu-item>
+      Quality
+      <media-rendition-menu slot="submenu" hidden>
+        <div slot="title">Quality</div>
+      </media-rendition-menu>
+    </media-settings-menu-item>
+    <media-settings-menu-item>
+      Captions
+      <media-captions-menu slot="submenu" hidden>
+        <div slot="title">Captions</div>
+      </media-captions-menu>
     </media-settings-menu-item>
   </media-settings-menu>
   <media-control-bar>
