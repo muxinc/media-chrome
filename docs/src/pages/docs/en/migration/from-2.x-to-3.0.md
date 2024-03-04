@@ -12,6 +12,12 @@ Here's a high level overview:
 **Media state change events**
 - Media state change events no longer bubble.
 
+**Menu related components moved to stable**
+- All components formerly in `./experimental/menu` are now stable in `./`.
+
+**Time range boxes (tooltips) visual change**
+- The time range boxes (tooltips) have been visually updated to include an arrow by default.
+
 ### New features
 
 The primary reason for this major version bump is because we've completely reworked our media state management architecture under the hood. All of the ways you currently use Media Chrome should be identical, but this will unlock some new possibilities going forward. Stay tuned!
