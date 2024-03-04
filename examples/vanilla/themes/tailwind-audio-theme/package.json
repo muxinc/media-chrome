@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "start": "npm run dev",
+    "build": "tailwindcss -i ./input.css -o ./output.css",
+    "dev": "npm run build -- --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/container-queries": "^0.1.0",
+    "tailwindcss": "^3.2.4"
+  }
+}
