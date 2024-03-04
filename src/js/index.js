@@ -1,6 +1,10 @@
 export * as constants from './constants.js';
 export { default as labels } from './labels/labels.js';
 export * as timeUtils from './utils/time.js';
+
+// Import media-controller first to ensure it's available for other components
+// when calling `associateElement(this)` in connectedCallback.
+import MediaController from './media-controller.js';
 import MediaAirplayButton from './media-airplay-button.js';
 import MediaAudioTrackMenu from './media-audio-track-menu.js';
 import MediaAudioTrackMenuButton from './media-audio-track-menu-button.js';
@@ -14,7 +18,6 @@ import MediaChromeMenu from './media-chrome-menu.js';
 import MediaChromeMenuItem from './media-chrome-menu-item.js';
 import MediaChromeRange from './media-chrome-range.js';
 import MediaControlBar from './media-control-bar.js';
-import MediaController from './media-controller.js';
 import MediaDurationDisplay from './media-duration-display.js';
 import MediaFullscreenButton from './media-fullscreen-button.js';
 import MediaGestureReceiver from './media-gesture-receiver.js';
