@@ -1,9 +1,9 @@
-import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { MediaUIAttributes } from '../../constants.js';
-import { nouns } from '../../labels/labels.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
+import { MediaUIAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
-import { AttributeTokenList } from '../../utils/attribute-token-list.js';
-import { getNumericAttr, setNumericAttr, getMediaController } from '../../utils/element-utils.js';
+import { AttributeTokenList } from './utils/attribute-token-list.js';
+import { getNumericAttr, setNumericAttr, getMediaController } from './utils/element-utils.js';
 
 export const Attributes = {
   RATES: 'rates',

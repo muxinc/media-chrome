@@ -1,7 +1,7 @@
 /*
-  <media-fullscreen-button media="#myVideo" fullscreen-element="#myContainer">
+  <media-fullscreen-button media="#myVideo" fullscreenelement="#myContainer">
 
-  The fullscreen-element attribute can be used to say which element
+  The fullscreenelement attribute can be used to say which element
   to make fullscreen.
   If none, the button will look for the closest media-container element to the media.
   If none, the button will make the media fullscreen.
@@ -75,15 +75,16 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   connectedCallback() {
-    updateAriaLabel(this);
     super.connectedCallback();
+    updateAriaLabel(this);
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (attrName === MediaUIAttributes.MEDIA_IS_FULLSCREEN) {
       updateAriaLabel(this);
     }
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**

@@ -1,6 +1,6 @@
-import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
-import { getMediaController } from '../../utils/element-utils.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
+import { getMediaController } from './utils/element-utils.js';
 import {
   MediaChromeMenu,
   createMenuItem,
@@ -10,7 +10,7 @@ import {
   parseTextTracksStr,
   stringifyTextTrackList,
   formatTextTrackObj,
-} from '../../utils/captions.js';
+} from './utils/captions.js';
 
 const ccIcon = /*html*/`
   <svg aria-hidden="true" viewBox="0 0 26 24" part="captions-indicator indicator">
@@ -22,6 +22,11 @@ template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <slot name="captions-indicator" hidden>${ccIcon}</slot>`;
 
 /**
+ * @extends {MediaChromeMenu}
+ *
+ * @slot - Default slotted elements.
+ * @slot header - An element shown at the top of the menu.
+ * @slot checked-indicator - An icon element indicating a checked menu-item.
  * @slot captions-indicator - An icon element indicating an item with closed captions.
  *
  * @attr {string} mediasubtitleslist - (read-only) A list of all subtitles and captions.
