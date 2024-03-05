@@ -144,10 +144,10 @@ template.innerHTML = /*html*/`
     ::slotted(media-preview-chapter-display) {
       font-size: var(--media-font-size, 13px);
       line-height: 17px;
-      display: none;
       min-width: 0;
+      visibility: hidden;
       ${/* delay changing these CSS props until the preview box transition is ended */''}
-      transition: min-width 0s, border-radius 0s, margin 0s, padding 0s;
+      transition: min-width 0s, border-radius 0s, margin 0s, padding 0s, visibility 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-chapter-background, var(--_preview-background));
       border-radius: var(--media-preview-chapter-border-radius,
@@ -167,9 +167,14 @@ template.innerHTML = /*html*/`
       min-width: 100%;
     }
 
-    media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}]:not([${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}=""]),
-    ::slotted(media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}]:not([${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}=""])) {
-      display: initial;
+    media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}],
+    ::slotted(media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}]) {
+      visibility: visible;
+    }
+
+    media-preview-chapter-display:not([aria-valuetext]),
+    ::slotted(media-preview-chapter-display:not([aria-valuetext])) {
+      display: none;
     }
 
     media-preview-time-display,

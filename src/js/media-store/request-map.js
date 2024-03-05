@@ -99,7 +99,7 @@ export const requestMap = {
     const mediaDuration = stateMediator.mediaDuration.get(stateOwners);
     // chapters cue text
     const mediaChaptersCues = stateMediator.mediaChaptersCues.get(stateOwners);
-    const mediaPreviewChapter = mediaChaptersCues.find((c, i, cs) => {
+    let mediaPreviewChapter = mediaChaptersCues.find((c, i, cs) => {
       // Since Chapters may be "gappy", only treat the endtime as inclusive
       // if it is the last chapter cue and that cue ends when the entire media ends
       if (i === cs.length - 1 && mediaDuration === c.endTime) {
@@ -107,6 +107,13 @@ export const requestMap = {
       }
       return c.startTime <= mediaPreviewTime && c.endTime > mediaPreviewTime;
     })?.text;
+
+    // If the chapter is not found but the detail (preview time) is defined
+    // and there are chapters, then we are in a gap between chapters.
+    // Set the chapter to an empty string to differentiate it from undefined.
+    if (detail && mediaPreviewChapter == null && mediaChaptersCues.length > 0) {
+      mediaPreviewChapter = '';
+    }
 
     // NOTE: Example of directly updating state from a request action/event (CJP)
     return {
