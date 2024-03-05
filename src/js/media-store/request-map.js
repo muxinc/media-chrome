@@ -73,44 +73,40 @@ export const requestMap = {
         kind: TextTrackKinds.METADATA,
         label: 'thumbnails',
       });
-      if (track?.cues?.length) {
-        let cue;
-        // If our first preview image cue starts after mediaPreviewTime, use it.
-        if (track.cues[0].startTime > mediaPreviewTime) {
-          cue = track.cues[0];
-          // If our last preview image cue ends at or before mediaPreviewTime, use it.
-        } else if (
-          track.cues[track.cues.length - 1].endTime <= mediaPreviewTime
-        ) {
-          cue = track.cues[track.cues.length - 1];
-          // Otherwise, use the cue that contains mediaPreviewTime
-        } else {
-          cue = Array.prototype.find.call(
-            track?.cues ?? [],
-            (c) =>
-              c.startTime <= mediaPreviewTime && c.endTime > mediaPreviewTime
-          );
-        }
-        if (cue) {
-          const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
-            ? /** @type {HTMLTrackElement | null} */ (
-                media?.querySelector('track[label="thumbnails"]')
-              )?.src
-            : undefined;
-          const url = new URL(cue.text, base);
-          const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-          mediaPreviewCoords = previewCoordsStr.split(',');
-          mediaPreviewImage = url.href;
-        }
+
+      const cue = Array.prototype.find.call(track?.cues ?? [], (c, i, cs) => {
+        // If our first preview image cue ends after mediaPreviewTime, use it.
+        if (i === 0) return c.endTime > mediaPreviewTime;
+        // If our last preview image cue ends at or before mediaPreviewTime, use it.
+        if (i === cs.length - 1) return c.startTime <= mediaPreviewTime;
+        // Otherwise, use the cue that contains mediaPreviewTime
+        return c.startTime <= mediaPreviewTime && c.endTime > mediaPreviewTime;
+      });
+
+      if (cue) {
+        const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
+          ? /** @type {HTMLTrackElement | null} */ (
+              media?.querySelector('track[label="thumbnails"]')
+            )?.src
+          : undefined;
+        const url = new URL(cue.text, base);
+        const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
+        mediaPreviewCoords = previewCoordsStr.split(',');
+        mediaPreviewImage = url.href;
       }
     }
 
-    // chapters cues
-    const mediaPreviewChapter = stateMediator.mediaChaptersCues
-      .get(stateOwners)
-      .find(
-        (c) => c.startTime <= mediaPreviewTime && c.endTime > mediaPreviewTime
-      )?.text;
+    const mediaDuration = stateMediator.mediaDuration.get(stateOwners);
+    // chapters cue text
+    const mediaChaptersCues = stateMediator.mediaChaptersCues.get(stateOwners);
+    const mediaPreviewChapter = mediaChaptersCues.find((c, i, cs) => {
+      // Since Chapters may be "gappy", only treat the endtime as inclusive
+      // if it is the last chapter cue and that cue ends when the entire media ends
+      if (i === cs.length - 1 && mediaDuration === c.endTime) {
+        return c.startTime <= mediaPreviewTime && c.endTime >= mediaPreviewTime;
+      }
+      return c.startTime <= mediaPreviewTime && c.endTime > mediaPreviewTime;
+    })?.text;
 
     // NOTE: Example of directly updating state from a request action/event (CJP)
     return {
@@ -128,14 +124,21 @@ export const requestMap = {
   [MediaUIEvents.MEDIA_PLAY_REQUEST](stateMediator, stateOwners) {
     const key = 'mediaPaused';
     const value = false;
-    /** @TODO Only do this for non-dvr live (CJP) */
-    if (stateMediator.mediaStreamType.get(stateOwners) === StreamTypes.LIVE) {
+
+    const live =
+      stateMediator.mediaStreamType.get(stateOwners) === StreamTypes.LIVE;
+
+    if (live) {
+      const notDvr = !(
+        stateMediator.mediaTargetLiveWindow.get(stateOwners) > 0
+      );
       const liveEdgeTime = stateMediator.mediaSeekable.get(stateOwners)?.[1];
-      // Only seek to live if we are live and have a known seekable end
-      if (liveEdgeTime) {
+      // Only seek to live if we are live, not DVR, and have a known seekable end
+      if (notDvr && liveEdgeTime) {
         stateMediator.mediaCurrentTime.set(liveEdgeTime, stateOwners);
       }
     }
+
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST](
