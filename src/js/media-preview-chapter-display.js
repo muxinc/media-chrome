@@ -33,23 +33,24 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
-      [
-        MediaUIAttributes.MEDIA_PREVIEW_CHAPTER,
-        MediaUIAttributes.MEDIA_PREVIEW_TIME,
-      ].includes(attrName) &&
+      attrName === MediaUIAttributes.MEDIA_PREVIEW_CHAPTER &&
       newValue !== oldValue
     ) {
-      // If the mediaPreviewChapter has a value, update it here
+      this.#update();
+    }
+  }
+
+  #update() {
+    // Defer since state is updated one attr/prop at a time.
+    queueMicrotask(() => {
       if (this.mediaPreviewChapter != null) {
         this.#slot.textContent = this.mediaPreviewChapter;
-        this.setAttribute('aria-valuetext', `chapter: ${newValue}`);
-        // But clear the value if we still have a mediaPreviewTime and the chapter has been unset
-        // (e.g. because there is no chapter cue for a given time)
-      } else if (this.mediaPreviewTime != null) {
+        this.setAttribute('aria-valuetext', `chapter: ${this.mediaPreviewChapter}`);
+      } else if (!Number.isNaN(this.mediaPreviewTime)) {
         this.#slot.textContent = '';
         this.removeAttribute('aria-valuetext');
       }
-    }
+    })
   }
 
   /**
