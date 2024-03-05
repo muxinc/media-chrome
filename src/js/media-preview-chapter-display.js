@@ -43,14 +43,20 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
   #update() {
     // Defer since state is updated one attr/prop at a time.
     queueMicrotask(() => {
+      // Like other preview components, only update the actual UI state with set values
       if (this.mediaPreviewChapter != null) {
         this.#slot.textContent = this.mediaPreviewChapter;
-        this.setAttribute('aria-valuetext', `chapter: ${this.mediaPreviewChapter}`);
+        this.setAttribute(
+          'aria-valuetext',
+          `chapter: ${this.mediaPreviewChapter}`
+        );
+        // Except (unlike other preview components), clear state if there is no preview chapter
+        // when there still is a preview time (aka there isn't a corresponding preview chapter for this time)
       } else if (!Number.isNaN(this.mediaPreviewTime)) {
         this.#slot.textContent = '';
         this.removeAttribute('aria-valuetext');
       }
-    })
+    });
   }
 
   /**
