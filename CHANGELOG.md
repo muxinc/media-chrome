@@ -1,3 +1,21 @@
+# [3.0.0](https://github.com/muxinc/media-chrome/compare/v2.2.5...v3.0.0) (2024-03-06)
+
+
+### Bug Fixes
+
+* buggy chapter segments rendering ([#825](https://github.com/muxinc/media-chrome/issues/825)) ([80c04fc](https://github.com/muxinc/media-chrome/commit/80c04fc91ba08c5423ba4bb0868c45006e82f540))
+* cc icon vertical alignment ([#828](https://github.com/muxinc/media-chrome/issues/828)) ([3518818](https://github.com/muxinc/media-chrome/commit/3518818eeb1822bc3e8b953fc8b169a1d1a9b438))
+* chapter preview fine tuning ([#840](https://github.com/muxinc/media-chrome/issues/840)) ([6d28ab8](https://github.com/muxinc/media-chrome/commit/6d28ab8be577f4a5a445d03cfb5eeebf143d9ab6))
+* make more exact logic for preview cue identification. ([#837](https://github.com/muxinc/media-chrome/issues/837)) ([2ff878b](https://github.com/muxinc/media-chrome/commit/2ff878b27cc7f694b5dfed6067ddb64375a31c98))
+
+
+### Features
+
+* move menu components to stable ([#836](https://github.com/muxinc/media-chrome/issues/836)) ([b987f3d](https://github.com/muxinc/media-chrome/commit/b987f3dcb84bdd668cace563f33672641f98c95b))
+* shifting time box elements with arrow ([#829](https://github.com/muxinc/media-chrome/issues/829)) ([3bc02dc](https://github.com/muxinc/media-chrome/commit/3bc02dc7ce4444cc48ca99c91d51cb1c4fd861aa))
+
+
+
 ## [2.2.5](https://github.com/muxinc/media-chrome/compare/v2.2.4...v2.2.5) (2024-02-15)
 
 
