@@ -27,18 +27,15 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_PREVIEW_CHAPTER) {
-
       // Only update if it changed, preview events are called a few times per second.
-      if (newValue !== oldValue) {
-
-        if (newValue == null) {
-          this.#slot.textContent = '';
-          this.removeAttribute('aria-valuetext');
-          return;
-        }
-
+      if (newValue !== oldValue && newValue != null) {
         this.#slot.textContent = newValue;
-        this.setAttribute('aria-valuetext', `chapter: ${newValue}`);
+
+        if (newValue !== '') {
+          this.setAttribute('aria-valuetext', `chapter: ${newValue}`);
+        } else {
+          this.removeAttribute('aria-valuetext');
+        }
       }
     }
   }

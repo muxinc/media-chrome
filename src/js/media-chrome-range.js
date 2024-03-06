@@ -427,11 +427,11 @@ class MediaChromeRange extends globalThis.HTMLElement {
     const clipping = this.shadowRoot.querySelector('#segments-clipping');
     clipping.textContent = '';
 
+    this.container.classList.toggle('segments', !!segments.length);
+
     if (!segments?.length) return;
 
     this.#cssRules.activeSegment = insertCSSRule(this.shadowRoot, '#segments-clipping rect:nth-child(0)');
-
-    this.container.classList.toggle('segments', !!segments.length);
 
     const normalized = [...new Set([
       +this.range.min,
