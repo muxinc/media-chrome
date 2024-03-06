@@ -109,9 +109,8 @@ export const requestMap = {
     })?.text;
 
     // If the chapter is not found but the detail (preview time) is defined
-    // and there are chapters, then we are in a gap between chapters.
-    // Set the chapter to an empty string to differentiate it from undefined.
-    if (detail && mediaPreviewChapter == null && mediaChaptersCues.length > 0) {
+    // set the chapter to an empty string to differentiate it from undefined.
+    if (detail && mediaPreviewChapter == null) {
       mediaPreviewChapter = '';
     }
 
