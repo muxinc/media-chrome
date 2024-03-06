@@ -110,7 +110,7 @@ export const requestMap = {
 
     // If the chapter is not found but the detail (preview time) is defined
     // set the chapter to an empty string to differentiate it from undefined.
-    if (detail && mediaPreviewChapter == null) {
+if (detail != null && mediaPreviewChapter == null) {
       mediaPreviewChapter = '';
     }
 
