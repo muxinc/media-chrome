@@ -1,3 +1,12 @@
+## [3.0.1](https://github.com/muxinc/media-chrome/compare/v3.0.0...v3.0.1) (2024-03-07)
+
+
+### Bug Fixes
+
+* segments.length typerror ([#846](https://github.com/muxinc/media-chrome/issues/846)) ([e436f6a](https://github.com/muxinc/media-chrome/commit/e436f6a5a237f389c5932b8decef11d82794cf5b))
+
+
+
 # [3.0.0](https://github.com/muxinc/media-chrome/compare/v2.2.5...v3.0.0) (2024-03-06)
 
 
