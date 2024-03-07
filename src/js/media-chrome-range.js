@@ -427,7 +427,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
     const clipping = this.shadowRoot.querySelector('#segments-clipping');
     clipping.textContent = '';
 
-    this.container.classList.toggle('segments', !!segments.length);
+    this.container.classList.toggle('segments', !!segments?.length);
 
     if (!segments?.length) return;
 
