@@ -1,3 +1,12 @@
+## [3.0.2](https://github.com/muxinc/media-chrome/compare/v3.0.1...v3.0.2) (2024-03-11)
+
+
+### Bug Fixes
+
+* clean up media-time-display conditions for duration vs. seekableEnd usage… ([#850](https://github.com/muxinc/media-chrome/issues/850)) ([23643f0](https://github.com/muxinc/media-chrome/commit/23643f0f83a1d9ab6128e3ea961d38c92178749e))
+
+
+
 ## [3.0.1](https://github.com/muxinc/media-chrome/compare/v3.0.0...v3.0.1) (2024-03-07)
 
 
