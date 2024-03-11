@@ -35,7 +35,12 @@ const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
   const showDuration = el.hasAttribute(Attributes.SHOW_DURATION);
   const currentTime = el.mediaCurrentTime ?? 0;
   const [, seekableEnd] = el.mediaSeekable ?? [];
-  const endTime = el.mediaDuration ?? seekableEnd ?? 0;
+  let endTime = 0;
+  if (Number.isFinite(el.mediaDuration)) {
+    endTime = el.mediaDuration
+  } else if (Number.isFinite(seekableEnd)) {
+    endTime = seekableEnd;
+  }
 
   const timeLabel = showRemaining
     ? formatTime(0 - (endTime - currentTime))
@@ -50,8 +55,13 @@ const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 const updateAriaValueText = (el) => {
   const currentTime = el.mediaCurrentTime;
   const [, seekableEnd] = el.mediaSeekable ?? [];
-  const endTime = el.mediaDuration || seekableEnd;
-  if (currentTime == null || endTime == null) {
+  let endTime = null;
+  if (Number.isFinite(el.mediaDuration)) {
+    endTime = el.mediaDuration
+  } else if (Number.isFinite(seekableEnd)) {
+    endTime = seekableEnd;
+  }
+  if (currentTime == null || endTime === null) {
     el.setAttribute('aria-valuetext', DEFAULT_MISSING_TIME_PHRASE);
     return;
   }
