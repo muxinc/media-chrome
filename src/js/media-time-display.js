@@ -55,13 +55,13 @@ const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 const updateAriaValueText = (el) => {
   const currentTime = el.mediaCurrentTime;
   const [, seekableEnd] = el.mediaSeekable ?? [];
-  let endTime;
+  let endTime = null;
   if (Number.isFinite(el.mediaDuration)) {
     endTime = el.mediaDuration
   } else if (Number.isFinite(seekableEnd)) {
     endTime = seekableEnd;
   }
-  if (currentTime == null || endTime == null) {
+  if (currentTime == null || endTime === null) {
     el.setAttribute('aria-valuetext', DEFAULT_MISSING_TIME_PHRASE);
     return;
   }
