@@ -160,6 +160,34 @@ Example (disallow seeking shortcuts):
 </media-controller>
 ```
 
+### keyboardforwardseekoffset
+
+`keyboardforwardseekoffset` (positive number, seconds)
+
+Use this to override the default seek forward offset (10s) when using `hotkeys` (right arrow).
+
+Example (right arrow key press seeks forward 15 seconds):
+
+```html
+<media-controller keyboardforwardseekoffset="15">
+  ...
+</media-controller>
+```
+
+### keyboardbackwardseekoffset
+
+`keyboardbackwardseekoffset` (positive number, seconds)
+
+Use this to override the default seek backward offset (10s) when using `hotkeys` (left arrow).
+
+Example (left arrow key press seeks backward 5 seconds):
+
+```html
+<media-controller keyboardbackwardseekoffset="5">
+  ...
+</media-controller>
+```
+
 ### liveedgeoffset
 
 `liveedgeoffset` (positive number, seconds)
