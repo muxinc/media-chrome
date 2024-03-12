@@ -27,28 +27,17 @@ export const Provider = ({
   children: ReactNode;
   mediaStore?: MediaStore;
 }) => {
-  const value = useMemo(() => mediaStore ?? createMediaStore({ documentElement: globalThis.document }), [mediaStore]);
-  // const value = useMemo(
-  //   () =>
-  //     mediaStore ?? {
-  //       getState() {
-  //         return {};
-  //       },
-  //       dispatch: console.log,
-  //       subscribe: () => {},
-  //     },
-  //   [mediaStore]
-  // );
-  // useEffect(() => {
-  //   return () => {
-  //     value?.dispatch({ type: 'mediaelementchangerequest', detail: undefined });
-  //     value?.dispatch({
-  //       type: 'fullscreenelementchangerequest',
-  //       detail: undefined,
-  //     });
-  //     value?.dispatch({ type: 'rootnodechangerequest', detail: undefined });
-  //   };
-  // }, []);
+  const value = useMemo(
+    () =>
+      mediaStore ?? createMediaStore({ documentElement: globalThis.document }),
+    [mediaStore]
+  );
+  useEffect(() => {
+    value?.dispatch({ type: 'documentelementchangerequest', detail: globalThis.document });
+    return () => {
+      value?.dispatch({ type: 'documentelementchangerequest', detail: undefined });
+    };
+  }, []);
   return (
     <MediaContext.Provider value={value}>{children}</MediaContext.Provider>
   );
@@ -69,7 +58,6 @@ export const useMediaDispatch = () => {
   const store = useContext(MediaContext);
   const dispatch = store?.dispatch ?? console.log.bind(null, 'fake dispatch!');
   return ((value) => {
-    console.log(value);
     return dispatch(value);
   }) as MediaStore['dispatch'];
 };
@@ -97,7 +85,6 @@ export const useMediaSelector = <S = any,>(
     equalityFn
   ) as S;
 
-  console.log('selectedState', selectedState);
   return selectedState;
 };
 
@@ -105,13 +92,9 @@ export const useMediaSelector = <S = any,>(
 // Also, "Name Are Hard TM"
 export const useMediaRefCallback = () => {
   const dispatch = useMediaDispatch();
-  // useEffect(() => {
-  //   return () => {
-  //     dispatch({ type: 'mediaelementchangerequest', detail: undefined });
-  //   };
-  // }, []);
   return (mediaEl: MediaStateOwner | null | undefined) => {
-    console.log('invoking mediaRefCallback', mediaEl);
+    // NOTE: This should get invoked with `null` when using as a `ref` callback whenever
+    // the corresponding react media element instance (e.g. a `<video>`) is being removed.
     dispatch({ type: 'mediaelementchangerequest', detail: mediaEl });
   };
 };
@@ -120,13 +103,9 @@ export const useMediaRefCallback = () => {
 // Also, "Name Are Hard TM"
 export const useFullscreenRefCallback = () => {
   const dispatch = useMediaDispatch();
-  // useEffect(() => {
-  //   return () => {
-  //     dispatch({ type: 'fullscreenelementchangerequest', detail: undefined });
-  //   };
-  // }, []);
   return (fullscreenEl: FullScreenElementStateOwner | null | undefined) => {
-    console.log('invoking fullscreenRefCallback', fullscreenEl);
+    // NOTE: This should get invoked with `null` when using as a `ref` callback whenever
+    // the corresponding react element instance (e.g. a `<div>`) is being removed.
     dispatch({ type: 'fullscreenelementchangerequest', detail: fullscreenEl });
   };
 };
