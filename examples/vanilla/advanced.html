@@ -54,7 +54,12 @@
     <main>
       <h1>Media Chrome - Advanced Video Usage Example</h1>
 
-      <media-controller id="mc" defaultsubtitles>
+      <media-controller
+        id="mc"
+        defaultsubtitles
+        keyboardforwardseekoffset="15"
+        keyboardbackwardseekoffset="5"
+      >
         <hls-video
           id="video"
           slot="media"
@@ -107,8 +112,8 @@
         </media-settings-menu>
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-seek-backward-button></media-seek-backward-button>
-          <media-seek-forward-button></media-seek-forward-button>
+          <media-seek-backward-button seekoffset="5"></media-seek-backward-button>
+          <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
           <media-mute-button></media-mute-button>
           <media-time-display></media-time-display>
           <media-time-range></media-time-range>
