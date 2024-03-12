@@ -38,6 +38,8 @@ export const Attributes = {
   NO_VOLUME_PREF: 'novolumepref',
   NO_SUBTITLES_LANG_PREF: 'nosubtitleslangpref',
   NO_DEFAULT_STORE: 'nodefaultstore',
+  KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
+  KEYBOARD_BACKWARD_SEEK_OFFSET: 'keyboardbackwardseekoffset',
 };
 
 /**
@@ -447,7 +449,10 @@ class MediaController extends MediaContainer {
         break;
 
       case 'ArrowLeft':
-        detail = Math.max((this.mediaStore.getState().mediaCurrentTime ?? 0) - DEFAULT_SEEK_OFFSET, 0);
+        const backwardOffsetValue = this.hasAttribute(Attributes.KEYBOARD_BACKWARD_SEEK_OFFSET)
+          ? +this.getAttribute(Attributes.KEYBOARD_BACKWARD_SEEK_OFFSET)
+          : DEFAULT_SEEK_OFFSET;
+        detail = Math.max((this.mediaStore.getState().mediaCurrentTime ?? 0) - backwardOffsetValue, 0);
         evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
           composed: true,
           bubbles: true,
@@ -457,7 +462,10 @@ class MediaController extends MediaContainer {
         break;
 
       case 'ArrowRight':
-        detail = Math.max((this.mediaStore.getState().mediaCurrentTime ?? 0) + DEFAULT_SEEK_OFFSET, 0);
+        const forwardOffsetValue = this.hasAttribute(Attributes.KEYBOARD_FORWARD_SEEK_OFFSET)
+          ? +this.getAttribute(Attributes.KEYBOARD_FORWARD_SEEK_OFFSET)
+          : DEFAULT_SEEK_OFFSET;
+        detail = Math.max((this.mediaStore.getState().mediaCurrentTime ?? 0) + forwardOffsetValue, 0);
         evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
           composed: true,
           bubbles: true,
