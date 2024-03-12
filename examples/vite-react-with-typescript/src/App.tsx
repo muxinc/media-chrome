@@ -1,11 +1,10 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import './App.css';
 import {
   Provider as MediaChromeProvider,
   useMediaDispatch as useDispatch,
   useFullscreenRefCallback,
   useMediaRefCallback,
-  // useMediaStore,
   useMediaSelector as useSelector,
 } from './components/media-chrome-react/stateMgmt';
 import { MediaUIEvents } from '../../../dist/constants';
@@ -21,7 +20,7 @@ const PlayButton = () => {
         dispatch({ type });
       }}
     >
-      {mediaPaused ? 'Play' : 'Pause'} React Only!
+      {mediaPaused ? 'Play' : 'Pause'}
     </button>
   );
 };
@@ -35,7 +34,6 @@ const PlaybackRateButton = () => {
       onClick={() => {
         const type = MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST;
         const detail = mediaPlaybackRate === 1 ? 2 : 1;
-        console.log('toggle', type, detail);
         dispatch({ type, detail });
       }}
     >
@@ -59,7 +57,7 @@ const MuteButton = () => {
         dispatch({ type });
       }}
     >
-      {mediaPseudoMuted ? 'Unmute' : 'Mute'} React Only!
+      {mediaPseudoMuted ? 'Unmute' : 'Mute'}
     </button>
   );
 };
@@ -86,7 +84,7 @@ const CaptionsToggleButton = () => {
         dispatch({ type, detail });
       }}
     >
-      {showingSubtitles ? 'Disable Captions' : 'Enable Captions'} React Only!
+      {showingSubtitles ? 'Disable Captions' : 'Enable Captions'}
     </button>
   );
 };
@@ -104,7 +102,7 @@ const PipButton = () => {
         dispatch({ type });
       }}
     >
-      {!mediaIsPip ? 'Enter Pip' : 'Exit Pip'} React Only!
+      {!mediaIsPip ? 'Enter Pip' : 'Exit Pip'}
     </button>
   );
 };
@@ -122,7 +120,7 @@ const FullscreenButton = () => {
         dispatch({ type });
       }}
     >
-      {!mediaIsFullscreen ? 'Enter Fullscreen' : 'Exit Fullscreen'} React Only!
+      {!mediaIsFullscreen ? 'Enter Fullscreen' : 'Exit Fullscreen'}
     </button>
   );
 };
@@ -132,21 +130,19 @@ const TimeRange = () => {
   const mediaCurrentTime = useSelector((state) => state.mediaCurrentTime);
   const mediaDuration = useSelector((state) => state.mediaDuration);
   return (
-    <div>
-      <span>Time Range</span>
-      <input
-        type="range"
-        min={0}
-        max={Number.isNaN(mediaDuration) ? 0 : mediaDuration}
-        value={mediaCurrentTime}
-        step={0.1}
-        onChange={(event) => {
-          const type = MediaUIEvents.MEDIA_SEEK_REQUEST;
-          const detail = +event.target.value;
-          dispatch({ type, detail });
-        }}
-      />
-    </div>
+    <input
+      style={{ flexGrow: 1 }}
+      type="range"
+      min={0}
+      max={Number.isNaN(mediaDuration) ? 0 : mediaDuration}
+      value={mediaCurrentTime ?? 0}
+      step={0.1}
+      onChange={(event) => {
+        const type = MediaUIEvents.MEDIA_SEEK_REQUEST;
+        const detail = +event.target.value;
+        dispatch({ type, detail });
+      }}
+    />
   );
 };
 
@@ -154,21 +150,18 @@ const VolumeRange = () => {
   const dispatch = useDispatch();
   const mediaVolume = useSelector((state) => state.mediaVolume);
   return (
-    <div>
-      <span>Volume Range</span>
-      <input
-        type="range"
-        min={0}
-        max={1}
-        value={mediaVolume}
-        step={0.1}
-        onChange={(event) => {
-          const type = MediaUIEvents.MEDIA_VOLUME_REQUEST;
-          const detail = +event.target.value;
-          dispatch({ type, detail });
-        }}
-      />
-    </div>
+    <input
+      type="range"
+      min={0}
+      max={1}
+      value={mediaVolume ?? 0.5}
+      step={0.1}
+      onChange={(event) => {
+        const type = MediaUIEvents.MEDIA_VOLUME_REQUEST;
+        const detail = +event.target.value;
+        dispatch({ type, detail });
+      }}
+    />
   );
 };
 
@@ -203,14 +196,13 @@ const Video = ({ src }: { src?: string }) => {
 
 const Container = ({ children }: { children: ReactNode }) => {
   const fullscreenRefCallback = useFullscreenRefCallback();
-  // const store = useMediaStore();
   return (
     <div
-      style={{ maxWidth: '50vw' }}
+      id="fullscreen"
+      style={{ width: '100vw', display: 'flex', flexDirection: 'column' }}
       ref={fullscreenRefCallback}
     >
       {children}
-      {/* @ts-ignore */}
     </div>
   );
 };
@@ -224,23 +216,34 @@ const Logger = () => {
 };
 
 const ReactPlayer = ({ src }: { src?: string }) => {
+  const [attachVideo, setAttachVideo] = useState(true);
   return (
     <MediaChromeProvider>
-      <Logger />
+      <div>
+        <label htmlFor="toggleAttachVideo">Attach Video?</label>
+        <input
+          id="toggleAttachVideo"
+          type="checkbox"
+          checked={attachVideo}
+          onChange={() => setAttachVideo(!attachVideo)}
+        />
+      </div>
+      {/* Uncomment this to log out the latest mediaState as it changes */}
+      {/* <Logger /> */}
       <Container>
-        <Video src={src} />
-        <div>
+        {attachVideo ? <Video src={src} /> : null}
+        <div style={{ display: 'flex', background: 'black' }}>
+          <TimeRange />
+        </div>
+        <div style={{ display: 'flex', background: 'black' }}>
           <PlayButton />
-          {/* <MediaPlayButton /> */}
-          {/* @ts-ignore */}
-          {/* <media-play-button></media-play-button> */}
-          <PlaybackRateButton />
           <MuteButton />
+          <VolumeRange />
+          <div style={{ flexGrow: 1 }} />
           <CaptionsToggleButton />
+          <PlaybackRateButton />
           <PipButton />
           <FullscreenButton />
-          <TimeRange />
-          <VolumeRange />
         </div>
       </Container>
     </MediaChromeProvider>
