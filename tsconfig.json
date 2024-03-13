@@ -9,6 +9,7 @@
     "module": "es2020",
     "allowJs": true,
     "checkJs": true,
+    "jsx": "react",
     "declaration": true,
     "emitDeclarationOnly": true,
     "sourceMap": true,

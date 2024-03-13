@@ -6,8 +6,9 @@ import {
   useFullscreenRefCallback,
   useMediaRefCallback,
   useMediaSelector as useSelector,
-} from './components/media-chrome-react/stateMgmt';
-import { MediaUIEvents } from '../../../dist/constants';
+} from 'media-chrome/react/media-store';
+import { constants } from 'media-chrome';
+const { MediaUIEvents } = constants;
 
 const PlayButton = () => {
   const dispatch = useDispatch();
