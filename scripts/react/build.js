@@ -34,7 +34,7 @@ const toReactComponentStr = (config) => {
   const ReactComponentName = toPascalCase(elementName);
   return `/** @type { import("react").HTMLElement } */
 const ${ReactComponentName} = React.forwardRef(({ children = [], ...props }, ref) => {
-  return React.createElement('${elementName}', toNativeProps({ ...props, ref }), children);
+  return React.createElement('${elementName}', toNativeProps({ ...props, suppressHydrationWarning: true, ref }), children);
 });`;
 };
 
