@@ -17,7 +17,9 @@ const PlayButton = () => {
     <button
       style={{ cursor: 'pointer' }}
       onClick={() => {
-        const type = mediaPaused ? 'mediaplayrequest' : 'mediapauserequest';
+        const type = mediaPaused
+          ? MediaUIEvents.MEDIA_PLAY_REQUEST
+          : MediaUIEvents.MEDIA_PAUSE_REQUEST;
         dispatch({ type });
       }}
     >
