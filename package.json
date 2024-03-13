@@ -32,6 +32,7 @@
     "./react/media-store": {
       "types": "./dist/react/media-store.d.ts",
       "import": "./dist/react/media-store.js",
+      "require": "./dist/cjs/react/index.js",
       "default": "./dist/react/media-store.js"
     },
     "./dist/react": {
@@ -63,10 +64,8 @@
     "premanifest": "cp -R src/js/ dist/",
     "manifest": "npx @custom-elements-manifest/analyzer analyze --config scripts/custom-elements-manifest.config.js",
     "build:types": "tsc",
-    "build:esm": "esbuild \"src/js/**/*.js\" --target=es2019 --format=esm --outdir=dist",
-    "foo": "esbuild src/react/media-store.tsx --bundle --target=es2019 --sourcemap --format=esm --outdir=dist/react --external:react --external:use-sync-external-store",
-    "bar": "npx tsc ./src/react/media-store.tsx --jsx react --esModuleInterop --skipLibCheck --declaration --emitDeclarationOnly --outDir dist/react",
-    "build:cjs": "esbuild \"src/js/**/*.js\" --target=es2019 --format=cjs --outdir=dist/cjs",
+    "build:esm": "esbuild \"src/js/**/*.js\" src/js/react/media-store.tsx --target=es2019 --format=esm --outdir=dist",
+    "build:cjs": "esbuild \"src/js/**/*.js\" src/js/react/media-store.tsx --target=es2019 --format=cjs --outdir=dist/cjs",
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
     "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome",
     "build:react": "node ./scripts/react/build.js",
@@ -88,7 +87,6 @@
     "@custom-elements-manifest/analyzer": "^0.8.4",
     "@open-wc/testing": "^3.1.6",
     "@types/react": "^18.2.65",
-    "@types/use-sync-external-store": "^0.0.6",
     "@web/test-runner": "^0.15.0",
     "@web/test-runner-playwright": "^0.9.0",
     "cem-plugin-vs-code-custom-data-generator": "^1.4.1",
@@ -100,7 +98,6 @@
     "rimraf": "^3.0.2",
     "sinon": "^14.0.1",
     "typescript": "^4.8.4",
-    "use-sync-external-store": "^1.2.0",
     "wet-run": "^1.2.0"
   },
   "resolutions": {
