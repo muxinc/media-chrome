@@ -1,0 +1,15 @@
+.ul {
+  list-style: none;
+}
+
+.link {
+  margin: 1.5rem;
+  color: var(--text-main);
+  font-family: monospace;
+  font-size: 16px;
+  padding: 2rem;
+  height: calc(100% - 4rem);
+  display: flex;
+  align-items: center;
+  background: rgba(28, 160, 253, 0.1);
+}
