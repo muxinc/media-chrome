@@ -250,14 +250,20 @@ template.innerHTML = /*html*/`
 `;
 
 const calcRangeValueFromTime = (el, time = el.mediaCurrentTime) => {
-  if (Number.isNaN(el.mediaSeekableEnd)) return 0;
-  const value = (time - el.mediaSeekableStart) / (el.mediaSeekableEnd - el.mediaSeekableStart);
+  const startTime = Number.isFinite(el.mediaSeekableStart) ? el.mediaSeekableStart : 0;
+  // Prefer `mediaDuration` when available and finite.
+  const endTime = Number.isFinite(el.mediaDuration) ? el.mediaDuration : el.mediaSeekableEnd;
+  if (Number.isNaN(endTime)) return 0;
+  const value = (time - startTime) / (endTime - startTime);
   return Math.max(0, Math.min(value, 1));
 }
 
 const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
-  if (Number.isNaN(el.mediaSeekableEnd)) return 0;
-  return (value * (el.mediaSeekableEnd - el.mediaSeekableStart)) + el.mediaSeekableStart;
+  const startTime = Number.isFinite(el.mediaSeekableStart) ? el.mediaSeekableStart : 0;
+  // Prefer `mediaDuration` when available and finite.
+  const endTime = Number.isFinite(el.mediaDuration) ? el.mediaDuration : el.mediaSeekableEnd;
+  if (Number.isNaN(endTime)) return 0;
+  return (value * (endTime - startTime)) + startTime;
 }
 
 /**
