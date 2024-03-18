@@ -38,7 +38,8 @@ export class RangeAnimation {
     // 1. Always allow increases.
     // 2. Allow a relatively large decrease (user action or Safari jumping back :s).
     const increase = start - this.#range.valueAsNumber;
-    if (increase > 0 || increase < -.03) {
+    const durationDelta = Math.abs(duration - this.duration);
+    if (increase > 0 || increase < -.03 || durationDelta >= 0.5) {
       this.callback(start);
     }
 
