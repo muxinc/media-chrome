@@ -454,7 +454,7 @@ export const stateMediator = {
       if (!start && !end) return undefined;
       return [Number(start.toFixed(3)), Number(end.toFixed(3))];
     },
-    mediaEvents: ['loadedmetadata', 'emptied', 'progress'],
+    mediaEvents: ['loadedmetadata', 'emptied', 'progress', 'seekablechange'],
   },
   mediaBuffered: {
     get(stateOwners) {
