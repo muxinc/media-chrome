@@ -426,7 +426,10 @@ class MediaTimeRange extends MediaChromeRange {
       this.updateBufferedBar();
     }
 
-    if (attrName === MediaUIAttributes.MEDIA_DURATION) {
+    if (
+      attrName === MediaUIAttributes.MEDIA_DURATION ||
+      attrName === MediaUIAttributes.MEDIA_SEEKABLE
+    ) {
       this.mediaChaptersCues = this.#mediaChaptersCues;
       this.updateBar();
     }
@@ -445,7 +448,7 @@ class MediaTimeRange extends MediaChromeRange {
       && !this.mediaPaused
       && !this.mediaLoading
       && !this.mediaEnded
-      && this.mediaDuration > 0
+      && this.mediaSeekableEnd > 0
       && isElementVisible(this);
   }
 
@@ -766,7 +769,7 @@ class MediaTimeRange extends MediaChromeRange {
       return;
     }
 
-    const duration = this.mediaDuration;
+    const duration = this.mediaSeekableEnd;
     // If no duration we can't calculate which time to show
     if (!duration) return;
 
