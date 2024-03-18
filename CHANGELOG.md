@@ -1,3 +1,18 @@
+# [3.1.0](https://github.com/muxinc/media-chrome/compare/v3.0.2...v3.1.0) (2024-03-18)
+
+
+### Bug Fixes
+
+* defer to mediaDuration when finite for media-time-range time com… ([#855](https://github.com/muxinc/media-chrome/issues/855)) ([f9c59b7](https://github.com/muxinc/media-chrome/commit/f9c59b79dcadae879e49195cf0f21352a90031bf))
+* monitor for extended 'seekablechange' event for more reliable mediaSeekable updates. ([#856](https://github.com/muxinc/media-chrome/issues/856)) ([0bb7c03](https://github.com/muxinc/media-chrome/commit/0bb7c03e43021d55130ab1dd7554da0cca272c3b))
+
+
+### Features
+
+* configurable keyboard seek offsets ([#852](https://github.com/muxinc/media-chrome/issues/852)) ([f991456](https://github.com/muxinc/media-chrome/commit/f991456e245e66fb7f515076453c701040f4b106))
+
+
+
 ## [3.0.2](https://github.com/muxinc/media-chrome/compare/v3.0.1...v3.0.2) (2024-03-11)
 
 
