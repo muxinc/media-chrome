@@ -1,3 +1,12 @@
+## [3.1.1](https://github.com/muxinc/media-chrome/compare/v3.1.0...v3.1.1) (2024-03-18)
+
+
+### Bug Fixes
+
+* account for some dynamic changes to media-time-range ([#859](https://github.com/muxinc/media-chrome/issues/859)) ([bea8fca](https://github.com/muxinc/media-chrome/commit/bea8fca521ce43914dfa1927dd896d5af00de0f6))
+
+
+
 # [3.1.0](https://github.com/muxinc/media-chrome/compare/v3.0.2...v3.1.0) (2024-03-18)
 
 
