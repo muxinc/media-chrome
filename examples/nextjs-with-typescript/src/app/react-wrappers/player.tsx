@@ -19,12 +19,8 @@ import {
 } from 'media-chrome/react';
 import { useState } from 'react';
 
-const primaryColor = 'white';
 const chromeStyles = {
-  '--media-icon-color': primaryColor,
-  '--media-range-thumb-background': primaryColor,
-  '--media-range-bar-color': primaryColor,
-  color: primaryColor,
+  '--media-primary-color': 'white',
 };
 
 const toggleBool = (prev: boolean|undefined) => !prev;
