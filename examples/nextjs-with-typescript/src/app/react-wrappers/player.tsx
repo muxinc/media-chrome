@@ -1,3 +1,4 @@
+'use client';
 import {
   MediaController,
   MediaControlBar,
@@ -16,7 +17,7 @@ import {
   MediaFullscreenButton,
   MediaPosterImage,
 } from 'media-chrome/react';
-import WebComponentRegistration from './web-component-registration';
+import { useState } from 'react';
 
 const primaryColor = 'white';
 const chromeStyles = {
@@ -26,11 +27,30 @@ const chromeStyles = {
   color: primaryColor,
 };
 
+const toggleBool = (prev: boolean|undefined) => !prev;
+
 export const Player = () => {
+  const [mounted, setMounted] = useState<boolean>(true);
+  const [noDefaultStore, setNoDefaultStore] = useState(false);
   return (
     <>
-      <WebComponentRegistration />
-      <MediaController style={chromeStyles} defaultSubtitles>
+      <div>
+        <button id="mount-btn" onClick={() => setMounted(toggleBool)}>
+          {mounted ? 'Unmount' : 'Mount'}
+        </button>
+        <span style={{ padding: '10px' }}>
+          <label htmlFor="toggleNoDefaultStore">
+            <code>noDefaultStore</code> (applies only on (re)creation)
+          </label>
+          <input
+            id="toggleNoDefaultStore"
+            type="checkbox"
+            onChange={() => setNoDefaultStore(toggleBool)}
+          ></input>
+        </span>
+      </div>
+      <br />
+      {mounted && (<MediaController style={chromeStyles} defaultSubtitles noDefaultStore={noDefaultStore}>
         <video
           suppressHydrationWarning
           slot="media"
@@ -77,7 +97,7 @@ export const Player = () => {
           <MediaPipButton></MediaPipButton>
           <MediaFullscreenButton></MediaFullscreenButton>
         </MediaControlBar>
-      </MediaController>
+      </MediaController>)}
     </>
   );
 };
