@@ -17,7 +17,7 @@ export const MediaContext: Context<MediaStore | null> =
 
 // The Provider is a (non-visual) React Element that... provides a context for any descendant in the Component tree that may
 // want to use it. As such, it must be an ancestor in the Component Tree for anything that wants to "consume" the context.
-export const Provider = ({
+export const MediaProvider = ({
   children,
   mediaStore,
 }: {
@@ -65,9 +65,7 @@ export const useMediaDispatch = () => {
   }) as MediaStore['dispatch'];
 };
 
-// We could make something like this official.
-// Also, "Name Are Hard TM"
-export const useMediaRefCallback = () => {
+export const useMediaRef = () => {
   const dispatch = useMediaDispatch();
   return (mediaEl: MediaStateOwner | null | undefined) => {
     // NOTE: This should get invoked with `null` when using as a `ref` callback whenever
@@ -76,9 +74,7 @@ export const useMediaRefCallback = () => {
   };
 };
 
-// We could make something like this official.
-// Also, "Name Are Hard TM"
-export const useFullscreenRefCallback = () => {
+export const useMediaFullscreenRef = () => {
   const dispatch = useMediaDispatch();
   return (fullscreenEl: FullScreenElementStateOwner | null | undefined) => {
     // NOTE: This should get invoked with `null` when using as a `ref` callback whenever
