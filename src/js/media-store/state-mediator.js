@@ -247,9 +247,9 @@ export const volumeSupportPromise = hasVolumeSupportAsync().then(
 export const prepareStateOwners = async (
   /** @type {(StateOwners[keyof StateOwners])[]} */ ...stateOwners
 ) => {
-  await stateOwners
+  await Promise.all(stateOwners
     .filter((x) => x)
-    .forEach(async (stateOwner) => {
+    .map(async (stateOwner) => {
       if (
         !(
           'localName' in stateOwner &&
@@ -267,7 +267,8 @@ export const prepareStateOwners = async (
 
       await globalThis.customElements.whenDefined(name);
       globalThis.customElements.upgrade(stateOwner);
-    });
+    })
+  );
 };
 
 /** @type {StateMediator} */

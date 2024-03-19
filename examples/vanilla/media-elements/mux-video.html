@@ -3,8 +3,8 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome &lt;mux-video&gt; Example</title>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"></script>
     <script type="module" src="../../../dist/index.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
@@ -24,6 +24,25 @@
         width: 100%;
       }
 
+      media-audio-track-menu[mediaaudiotrackunavailable],
+      media-audio-track-menu-button[mediaaudiotrackunavailable],
+      media-rendition-menu[mediarenditionunavailable],
+      media-rendition-menu-button[mediarenditionunavailable],
+      media-fullscreen-button[mediafullscreenunavailable],
+      media-airplay-button[mediaairplayunavailable],
+      media-cast-button[mediacastunavailable],
+      media-pip-button[mediapipunavailable] {
+        display: none;
+      }
+
+      media-settings-menu-item[aria-haspopup]:is(
+        :not([submenusize]),
+        [submenusize="0"],
+        [submenusize="1"]
+      ) {
+        display: none;
+      }
+
       .examples {
         margin-top: 20px;
       }
@@ -37,11 +56,10 @@
           slot="media"
           crossorigin
           playsinline
-          preload="auto"
+          preload="metadata"
           playback-id="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008"
           muted
           crossorigin
-          autoplay
         >
           <track
             label="thumbnails"
