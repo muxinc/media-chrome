@@ -9,6 +9,15 @@ import type {
   MediaStateOwner,
   MediaStore,
 } from '../media-store/media-store';
+import { MediaUIEvents } from '../constants';
+
+export const MediaActionTypes = {
+  ...MediaUIEvents,
+  MEDIA_ELEMENT_CHANGE_REQUEST: 'mediaelementchangerequest',
+  FULLSCREEN_ELEMENT_CHANGE_REQUEST: 'fullscreenelementchangerequest',
+} as const;
+
+const identity = (x?: any) => x;
 
 // The context is the thing that allows for a shared... context that propagates outside of the (V)DOM/Component tree.
 // Contexts have values. Our value will be the the media ui store (aka the "guts" of Media Controller state mgmt)
@@ -59,7 +68,7 @@ export const useMediaStore = () => {
 // the ancestor Provider) and return the dispatch. Simple.
 export const useMediaDispatch = () => {
   const store = useContext(MediaContext);
-  const dispatch = store?.dispatch ?? console.log.bind(null, 'fake dispatch!');
+  const dispatch = store?.dispatch ?? identity;
   return ((value) => {
     return dispatch(value);
   }) as MediaStore['dispatch'];
@@ -70,7 +79,7 @@ export const useMediaRef = () => {
   return (mediaEl: MediaStateOwner | null | undefined) => {
     // NOTE: This should get invoked with `null` when using as a `ref` callback whenever
     // the corresponding react media element instance (e.g. a `<video>`) is being removed.
-    dispatch({ type: 'mediaelementchangerequest', detail: mediaEl });
+    dispatch({ type: MediaActionTypes.MEDIA_ELEMENT_CHANGE_REQUEST, detail: mediaEl });
   };
 };
 
@@ -79,7 +88,7 @@ export const useMediaFullscreenRef = () => {
   return (fullscreenEl: FullScreenElementStateOwner | null | undefined) => {
     // NOTE: This should get invoked with `null` when using as a `ref` callback whenever
     // the corresponding react element instance (e.g. a `<div>`) is being removed.
-    dispatch({ type: 'fullscreenelementchangerequest', detail: fullscreenEl });
+    dispatch({ type: MediaActionTypes.FULLSCREEN_ELEMENT_CHANGE_REQUEST, detail: fullscreenEl });
   };
 };
 
@@ -95,15 +104,15 @@ const refEquality = (a: any, b: any) => a === b;
 // selector.
 // NOTE: Moved this to the bottom bc JSX/TSX <Component> and TS <Generic> get confused by syntax highlighting (and there
 // are even casses where the compiler may not be able to successfully disambiguate the two) (CJP)
-export const useMediaSelector = <S = any>(
+export const useMediaSelector = <S = any,>(
   selector: (state: Partial<MediaState>) => S,
   equalityFn = refEquality
 ) => {
   const store = useContext(MediaContext) as MediaStore;
   const selectedState = useSyncExternalStoreWithSelector(
-    store?.subscribe ?? (() => () => {}),
-    store?.getState ?? (() => ({})),
-    store?.getState ?? (() => ({})),
+    store?.subscribe ?? identity,
+    store?.getState ?? identity,
+    store?.getState ?? identity,
     selector,
     equalityFn
   ) as S;
