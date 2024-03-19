@@ -4,18 +4,18 @@ import { useState } from 'react';
 /* Uncomment this to log out the latest mediaState as it changes */
 // import { useEffect, useState } from 'react';
 import {
-  Provider as MediaChromeProvider,
-  useMediaDispatch as useDispatch,
-  useFullscreenRefCallback,
-  useMediaRefCallback,
-  useMediaSelector as useSelector,
+  MediaProvider,
+  useMediaDispatch,
+  useMediaFullscreenRef,
+  useMediaRef,
+  useMediaSelector,
 } from 'media-chrome/react/media-store';
 import { constants } from 'media-chrome';
 const { MediaUIEvents } = constants;
 
 const PlayButton = () => {
-  const dispatch = useDispatch();
-  const mediaPaused = useSelector((state) => state.mediaPaused);
+  const dispatch = useMediaDispatch();
+  const mediaPaused = useMediaSelector((state) => state.mediaPaused);
   return (
     <button
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
@@ -32,8 +32,8 @@ const PlayButton = () => {
 };
 
 const PlaybackRateButton = () => {
-  const dispatch = useDispatch();
-  const mediaPlaybackRate = useSelector((state) => state.mediaPlaybackRate);
+  const dispatch = useMediaDispatch();
+  const mediaPlaybackRate = useMediaSelector((state) => state.mediaPlaybackRate);
   return (
     <button
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
@@ -49,8 +49,8 @@ const PlaybackRateButton = () => {
 };
 
 const MuteButton = () => {
-  const dispatch = useDispatch();
-  const mediaPseudoMuted = useSelector(
+  const dispatch = useMediaDispatch();
+  const mediaPseudoMuted = useMediaSelector(
     (state) => state.mediaVolumeLevel === 'off'
   );
   return (
@@ -69,10 +69,10 @@ const MuteButton = () => {
 };
 
 const CaptionsToggleButton = () => {
-  const dispatch = useDispatch();
+  const dispatch = useMediaDispatch();
   const mediaSubtitlesList =
-    useSelector((state) => state.mediaSubtitlesList) ?? [];
-  const mediaSubtitlesShowing = useSelector(
+    useMediaSelector((state) => state.mediaSubtitlesList) ?? [];
+  const mediaSubtitlesShowing = useMediaSelector(
     (state) => state.mediaSubtitlesShowing
   );
   const showingSubtitles = !!mediaSubtitlesShowing?.length;
@@ -96,8 +96,8 @@ const CaptionsToggleButton = () => {
 };
 
 const PipButton = () => {
-  const dispatch = useDispatch();
-  const mediaIsPip = useSelector((state) => state.mediaIsPip);
+  const dispatch = useMediaDispatch();
+  const mediaIsPip = useMediaSelector((state) => state.mediaIsPip);
   return (
     <button
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
@@ -114,8 +114,8 @@ const PipButton = () => {
 };
 
 const FullscreenButton = () => {
-  const dispatch = useDispatch();
-  const mediaIsFullscreen = useSelector((state) => state.mediaIsFullscreen);
+  const dispatch = useMediaDispatch();
+  const mediaIsFullscreen = useMediaSelector((state) => state.mediaIsFullscreen);
   return (
     <button
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
@@ -132,9 +132,9 @@ const FullscreenButton = () => {
 };
 
 const TimeRange = () => {
-  const dispatch = useDispatch();
-  const mediaCurrentTime = useSelector((state) => state.mediaCurrentTime);
-  const mediaDuration = useSelector((state) => state.mediaDuration);
+  const dispatch = useMediaDispatch();
+  const mediaCurrentTime = useMediaSelector((state) => state.mediaCurrentTime);
+  const mediaDuration = useMediaSelector((state) => state.mediaDuration);
   return (
     <input
       style={{ flexGrow: 1 }}
@@ -153,8 +153,8 @@ const TimeRange = () => {
 };
 
 const VolumeRange = () => {
-  const dispatch = useDispatch();
-  const mediaVolume = useSelector((state) => state.mediaVolume);
+  const dispatch = useMediaDispatch();
+  const mediaVolume = useMediaSelector((state) => state.mediaVolume);
   return (
     <input
       type="range"
@@ -172,7 +172,7 @@ const VolumeRange = () => {
 };
 
 const Video = ({ src }: { src?: string }) => {
-  const mediaRefCallback = useMediaRefCallback();
+  const mediaRefCallback = useMediaRef();
   return (
     <video
       ref={mediaRefCallback}
@@ -201,7 +201,7 @@ const Video = ({ src }: { src?: string }) => {
 };
 
 const Container = ({ children }: { children: ReactNode }) => {
-  const fullscreenRefCallback = useFullscreenRefCallback();
+  const fullscreenRefCallback = useMediaFullscreenRef();
   return (
     <div
       id="fullscreen"
@@ -215,7 +215,7 @@ const Container = ({ children }: { children: ReactNode }) => {
 
 /* Uncomment this to log out the latest mediaState as it changes */
 // const Logger = () => {
-//   const mediaState = useSelector((state) => state);
+//   const mediaState = useMediaSelector((state) => state);
 //   useEffect(() => {
 //     console.log('mediaState?', mediaState);
 //   }, [mediaState]);
@@ -225,7 +225,7 @@ const Container = ({ children }: { children: ReactNode }) => {
 export const ReactPlayer = ({ src }: { src?: string }) => {
   const [attachVideo, setAttachVideo] = useState(true);
   return (
-    <MediaChromeProvider>
+    <MediaProvider>
       <div>
         <label htmlFor="toggleAttachVideo">Attach Video?</label>
         <input
@@ -253,6 +253,6 @@ export const ReactPlayer = ({ src }: { src?: string }) => {
           <FullscreenButton />
         </div>
       </Container>
-    </MediaChromeProvider>
+    </MediaProvider>
   );
 };

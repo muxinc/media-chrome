@@ -7,7 +7,7 @@ function HomePage() {
       <ul className={styles.ul}>
         <li>
           <Link className={styles.link} href="/media-store-hooks">
-            <code>MediaStore</code> react hooks + React components example
+            <code>MediaStore</code>&nbsp;react hooks + React components example
           </Link>
         </li>
         <li>
