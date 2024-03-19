@@ -9,9 +9,8 @@ import {
   useMediaFullscreenRef,
   useMediaRef,
   useMediaSelector,
+  MediaActionTypes,
 } from 'media-chrome/react/media-store';
-import { constants } from 'media-chrome';
-const { MediaUIEvents } = constants;
 
 const PlayButton = () => {
   const dispatch = useMediaDispatch();
@@ -21,8 +20,8 @@ const PlayButton = () => {
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
       onClick={() => {
         const type = mediaPaused
-          ? MediaUIEvents.MEDIA_PLAY_REQUEST
-          : MediaUIEvents.MEDIA_PAUSE_REQUEST;
+          ? MediaActionTypes.MEDIA_PLAY_REQUEST
+          : MediaActionTypes.MEDIA_PAUSE_REQUEST;
         dispatch({ type });
       }}
     >
@@ -38,7 +37,7 @@ const PlaybackRateButton = () => {
     <button
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
       onClick={() => {
-        const type = MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST;
+        const type = MediaActionTypes.MEDIA_PLAYBACK_RATE_REQUEST;
         const detail = mediaPlaybackRate === 1 ? 2 : 1;
         dispatch({ type, detail });
       }}
@@ -58,8 +57,8 @@ const MuteButton = () => {
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
       onClick={() => {
         const type = mediaPseudoMuted
-          ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
-          : MediaUIEvents.MEDIA_MUTE_REQUEST;
+          ? MediaActionTypes.MEDIA_UNMUTE_REQUEST
+          : MediaActionTypes.MEDIA_MUTE_REQUEST;
         dispatch({ type });
       }}
     >
@@ -82,8 +81,8 @@ const CaptionsToggleButton = () => {
       disabled={!mediaSubtitlesList?.length}
       onClick={() => {
         const type = showingSubtitles
-          ? MediaUIEvents.MEDIA_DISABLE_SUBTITLES_REQUEST
-          : MediaUIEvents.MEDIA_SHOW_SUBTITLES_REQUEST;
+          ? MediaActionTypes.MEDIA_DISABLE_SUBTITLES_REQUEST
+          : MediaActionTypes.MEDIA_SHOW_SUBTITLES_REQUEST;
         const detail = showingSubtitles
           ? mediaSubtitlesShowing
           : [mediaSubtitlesList[0]];
@@ -103,8 +102,8 @@ const PipButton = () => {
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
       onClick={() => {
         const type = mediaIsPip
-          ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
-          : MediaUIEvents.MEDIA_ENTER_PIP_REQUEST;
+          ? MediaActionTypes.MEDIA_EXIT_PIP_REQUEST
+          : MediaActionTypes.MEDIA_ENTER_PIP_REQUEST;
         dispatch({ type });
       }}
     >
@@ -121,8 +120,8 @@ const FullscreenButton = () => {
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
       onClick={() => {
         const type = mediaIsFullscreen
-          ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
-          : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
+          ? MediaActionTypes.MEDIA_EXIT_FULLSCREEN_REQUEST
+          : MediaActionTypes.MEDIA_ENTER_FULLSCREEN_REQUEST;
         dispatch({ type });
       }}
     >
@@ -144,7 +143,7 @@ const TimeRange = () => {
       value={mediaCurrentTime ?? 0}
       step={0.1}
       onChange={(event) => {
-        const type = MediaUIEvents.MEDIA_SEEK_REQUEST;
+        const type = MediaActionTypes.MEDIA_SEEK_REQUEST;
         const detail = +event.target.value;
         dispatch({ type, detail });
       }}
@@ -163,7 +162,7 @@ const VolumeRange = () => {
       value={mediaVolume ?? 0.5}
       step={0.1}
       onChange={(event) => {
-        const type = MediaUIEvents.MEDIA_VOLUME_REQUEST;
+        const type = MediaActionTypes.MEDIA_VOLUME_REQUEST;
         const detail = +event.target.value;
         dispatch({ type, detail });
       }}
