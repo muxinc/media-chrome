@@ -407,9 +407,8 @@ export const stateMediator = {
     },
     set(value, stateOwners) {
       const { media } = stateOwners;
-      // Can't set the time before the media is ready
-      // Ignore if readyState isn't supported
-      if (!media?.readyState) return;
+      // If the media supports readyState and it's not ready, don't set currentTime
+      if (!media || media.readyState === 0) return;
       media.currentTime = value;
     },
     mediaEvents: ['timeupdate', 'loadedmetadata'],
