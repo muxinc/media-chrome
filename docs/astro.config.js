@@ -41,6 +41,7 @@ const createSROnlyLabel = (text) => {
 export default defineConfig({
   output: 'static',
   site: `https://www.media-chrome.org/`,
+  trailingSlash: 'never',
   redirects: {
     '/showcase/submit':
       'https://github.com/muxinc/media-chrome/discussions/760',
