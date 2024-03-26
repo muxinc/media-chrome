@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Spotify Media Example</title>
+    <style>
+      media-controller {
+        display: block;
+        max-width: 600px;
+        height: 44px;
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/spotify-audio-element@0/+esm"></script>
+    <script type="module" src="../../../dist/index.js"></script>
+  </head>
+  <body>
+    <main>
+      <h1>Media Chrome Spotify Media Example</h1>
+
+      <media-controller audio>
+        <spotify-audio
+          src="https://open.spotify.com/artist/246dkjvS1zLTtiykXe5h60"
+          slot="media"
+          crossorigin
+          muted
+        ></spotify-audio>
+        <media-control-bar style="width: 100%">
+          <media-play-button></media-play-button>
+          <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+          <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+          <media-time-range></media-time-range>
+          <media-time-display showduration remaining></media-time-display>
+        </media-control-bar>
+      </media-controller>
+    </main>
+
+    <div class="examples">
+      <a href="../">View more examples</a>
+    </div>
+  </body>
+</html>
