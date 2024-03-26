@@ -13,6 +13,7 @@ import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import rehypeSlug from 'rehype-slug';
 import markdownIntegration from '@astropub/md';
 import vercel from '@astrojs/vercel/static';
+import sitemap from '@astrojs/sitemap';
 
 const AnchorLinkIcon = h(
   'svg',
@@ -69,6 +70,7 @@ export default defineConfig({
     }),
     mdx(),
     markdownIntegration(),
+    sitemap(),
   ],
   markdown: {
     remarkPlugins: [

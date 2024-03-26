@@ -18,6 +18,7 @@
     "@astrojs/mdx": "2.1.1",
     "@astrojs/preact": "3.1.0",
     "@astrojs/react": "3.0.9",
+    "@astrojs/sitemap": "^3.1.1",
     "@astrojs/tailwind": "5.1.0",
     "@astrojs/vercel": "^7.1.0",
     "@astropub/md": "^0.4.0",
