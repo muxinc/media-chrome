@@ -36,6 +36,8 @@ export const COMMUNITY_INVITE_URL = `https://github.com/muxinc/media-chrome/disc
 export const ALGOLIA = {
   indexName: 'media-chrome',
   appId: 'NJ7A3MEPOW',
+  // This is a search-only API key, which is safe to include in the client-side JS.
+  // https://docsearch.algolia.com/docs/docsearch-program/#can-i-share-the-apikey-in-my-repo
   apiKey: '6407505886c20678488d1379bff30b8f',
 };
 
