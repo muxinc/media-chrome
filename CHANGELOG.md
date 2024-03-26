@@ -1,3 +1,19 @@
+# [3.2.0](https://github.com/muxinc/media-chrome/compare/v3.1.1...v3.2.0) (2024-03-26)
+
+
+### Bug Fixes
+
+* await custom media defined ([#860](https://github.com/muxinc/media-chrome/issues/860)) ([0ca6e98](https://github.com/muxinc/media-chrome/commit/0ca6e984bd073db24168916ed7756f8239f437ac)), closes [#857](https://github.com/muxinc/media-chrome/issues/857)
+* cancelWatchAvailability promise catch ([#862](https://github.com/muxinc/media-chrome/issues/862)) ([a80ed4b](https://github.com/muxinc/media-chrome/commit/a80ed4b9b9751eb0dfbccb10f1d2e7c2a5c533fc)), closes [#854](https://github.com/muxinc/media-chrome/issues/854)
+* seek on custom media w/o readyState ([#861](https://github.com/muxinc/media-chrome/issues/861)) ([5a96ba1](https://github.com/muxinc/media-chrome/commit/5a96ba11aa3789d31a396970bccb3a04b48b8860)), closes [#858](https://github.com/muxinc/media-chrome/issues/858) [/github.com/muxinc/media-chrome/pull/835/files#diff-f47c60f82e0b188cc72db120e2829c4473753d20186183b4c2e1492169d61321L806-L810](https://github.com//github.com/muxinc/media-chrome/pull/835/files/issues/diff-f47c60f82e0b188cc72db120e2829c4473753d20186183b4c2e1492169d61321L806-L810)
+
+
+### Features
+
+* React MediaStore ([#851](https://github.com/muxinc/media-chrome/issues/851)) ([737cf45](https://github.com/muxinc/media-chrome/commit/737cf457ed83293e1a01152c4382a164c9541e53))
+
+
+
 ## [3.1.1](https://github.com/muxinc/media-chrome/compare/v3.1.0...v3.1.1) (2024-03-18)
 
 
