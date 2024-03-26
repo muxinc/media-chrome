@@ -285,7 +285,8 @@ export const stateMediator = {
       if (value) {
         media.pause();
       } else {
-        media.play().catch(() => {});
+        // Not all custom media elements return a promise from `play()`.
+        media.play()?.catch(() => {});
       }
     },
     mediaEvents: ['play', 'playing', 'pause', 'emptied'],
@@ -1102,7 +1103,9 @@ export const stateMediator = {
             });
         }
         return () => {
-          media?.remote?.cancelWatchAvailability();
+          media?.remote
+            ?.cancelWatchAvailability()
+            .catch(() => {});
         };
       },
     ],
@@ -1155,7 +1158,9 @@ export const stateMediator = {
             });
         }
         return () => {
-          media?.remote?.cancelWatchAvailability();
+          media?.remote
+            ?.cancelWatchAvailability()
+            .catch(() => {});
         };
       },
     ],
