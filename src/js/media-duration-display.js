@@ -26,7 +26,7 @@ class MediaDurationDisplay extends MediaTextDisplay {
 
   attributeChangedCallback(attrName, oldValue, newValue) {
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
-      this.#slot.textContent = formatTime(newValue);
+      this.#slot.textContent = formatTime(+newValue);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
