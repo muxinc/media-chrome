@@ -1,4 +1,4 @@
-import { ReactPlayer } from "@/app/media-store-hooks/ReactPlayer";
+import { ReactPlayer } from "@/app/material-ui-player-chrome/ReactPlayer";
 
 export default function Page() {
   return (
