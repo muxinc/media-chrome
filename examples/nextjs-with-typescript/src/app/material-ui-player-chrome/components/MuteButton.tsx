@@ -1,4 +1,4 @@
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import VolumeOffIcon from '@mui/icons-material/VolumeOff';
 import VolumeDownIcon from '@mui/icons-material/VolumeDown';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
@@ -28,19 +28,22 @@ const MuteButton = () => {
   const mediaVolumeLevel = useMediaSelector((state) => state.mediaVolumeLevel);
   const mediaPseudoMuted = mediaVolumeLevel === 'off';
   const IconComponent = VolumeIconComponentMap[mediaVolumeLevel ?? 'DEFAULT'];
+  const label = mediaPseudoMuted ? 'Unmute' : 'Mute';
   return (
-    <IconButton
-      aria-label={mediaPseudoMuted ? 'unmute' : 'mute'}
-      color="primary"
-      onClick={() => {
-        const type = mediaPseudoMuted
-          ? MediaActionTypes.MEDIA_UNMUTE_REQUEST
-          : MediaActionTypes.MEDIA_MUTE_REQUEST;
-        dispatch({ type });
-      }}
-    >
-      <IconComponent />
-    </IconButton>
+    <Tooltip title={label} placement="top">
+      <IconButton
+        aria-label={label}
+        color="primary"
+        onClick={() => {
+          const type = mediaPseudoMuted
+            ? MediaActionTypes.MEDIA_UNMUTE_REQUEST
+            : MediaActionTypes.MEDIA_MUTE_REQUEST;
+          dispatch({ type });
+        }}
+      >
+        <IconComponent />
+      </IconButton>
+    </Tooltip>
   );
 };
 

@@ -1,4 +1,4 @@
-import { IconButton } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import ClosedCaptionIcon from '@mui/icons-material/ClosedCaption';
 import ClosedCaptionDisabledIcon from '@mui/icons-material/ClosedCaptionDisabled';
 import {
@@ -7,6 +7,7 @@ import {
   MediaActionTypes,
 } from 'media-chrome/react/media-store';
 
+const label = 'Subtitles/closed captions';
 const CaptionsButton = () => {
   const dispatch = useMediaDispatch();
   const mediaSubtitlesList =
@@ -19,21 +20,26 @@ const CaptionsButton = () => {
     ? ClosedCaptionIcon
     : ClosedCaptionDisabledIcon;
   return (
-    <IconButton
-      color="primary"
-      disabled={!mediaSubtitlesList?.length}
-      onClick={() => {
-        const type = showingSubtitles
-          ? MediaActionTypes.MEDIA_DISABLE_SUBTITLES_REQUEST
-          : MediaActionTypes.MEDIA_SHOW_SUBTITLES_REQUEST;
-        const detail = showingSubtitles
-          ? mediaSubtitlesShowing
-          : [mediaSubtitlesList[0]];
-        dispatch({ type, detail });
-      }}
-    >
-      <IconComponent />
-    </IconButton>
+    <Tooltip title={label} placement="top">
+      <IconButton
+        color="primary"
+        role="switch"
+        aria-checked={showingSubtitles}
+        aria-label={label}
+        // disabled={!mediaSubtitlesList?.length}
+        onClick={() => {
+          const type = showingSubtitles
+            ? MediaActionTypes.MEDIA_DISABLE_SUBTITLES_REQUEST
+            : MediaActionTypes.MEDIA_SHOW_SUBTITLES_REQUEST;
+          const detail = showingSubtitles
+            ? mediaSubtitlesShowing
+            : [mediaSubtitlesList[0]];
+          dispatch({ type, detail });
+        }}
+      >
+        <IconComponent />
+      </IconButton>
+    </Tooltip>
   );
 };
 

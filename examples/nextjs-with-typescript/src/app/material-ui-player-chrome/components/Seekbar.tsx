@@ -24,7 +24,7 @@ const Seekbar = () => {
       sx={{
         mx: 2,
       }}
-    ></Slider>
+    />
   );
 };
 
