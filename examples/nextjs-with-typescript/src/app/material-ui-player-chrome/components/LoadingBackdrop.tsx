@@ -4,13 +4,23 @@ import { useEffect, useState } from 'react';
 
 const LOADING_DELAY = 500;
 
+/**
+ * @description This is a backdrop/overlay to show the loading indicator while media is loading (but only when not paused, and with a delay).
+ * @param { loadingDelay } - The loadingDelay prop provides some "mild fanciness" for delaying showing the loading indicator
+ * @returns A react component for showing a backdrop/overlay with a loading indicator when the media is loading
+ */
 const LoadingBackdrop = ({ loadingDelay = LOADING_DELAY }) => {
-  // Here we're saying we only want to visually indicate loading if we're unpaused
+  /**
+   * The useMediaSelector() hook is how you get the latest bit(s) of media state you care about in your component.
+   * NOTE: in this case, we're actually combining two bits of media state (mediaLoading and mediaPaused), since,
+   * in our implementation, we only want to indicate that media is loading when media is loading *and* the media is not paused,
+   * so we'll only get an updated value/rerender when the *resultant* boolean value changes.
+   */
   const mediaLoading = useMediaSelector(
     (state) => state.mediaLoading && !state.mediaPaused
   );
 
-  // Example implementation of a delay in showing loading indicator
+  // Example implementation of a delay in showing loading indicator when loading media starts (but quickly hiding it when it's done)
   const [mediaLoadingWithDelay, setMediaLoadingWithDelay] = useState(false);
   const [loadingDelayTimeoutId, setLoadingDelayTimeoutId] = useState<number>();
   useEffect(() => {
