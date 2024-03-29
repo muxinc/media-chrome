@@ -266,7 +266,7 @@ if (examplesDivIndex !== -1) {
 
 const dependencies = {};
 for (const url of externalModules) {
-  const matches = url.match(/\/npm\/(@?[^/]*?\/?[^@]+)@?([^/]*?)\//)
+  const matches = url.match(/\/npm\/(@?[^/]*?\/?[^@]+)@?([^/]*?)(\/|$)/)
   const [, name, version] = matches ?? []
   if (name) dependencies[name] = version ?? 'latest'
 }
