@@ -11,6 +11,11 @@ function HomePage() {
           </Link>
         </li>
         <li>
+          <Link className={styles.link} href="/material-ui-player-chrome">
+            <code>MediaStore</code>&nbsp;react hooks + Material UI example
+          </Link>
+        </li>
+        <li>
           <Link className={styles.link} href="/react-wrappers">
             Media Chrome react wrapper components example
           </Link>

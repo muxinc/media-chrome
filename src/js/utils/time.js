@@ -57,6 +57,13 @@ export const formatAsTimePhrase = (seconds) => {
   return `${timeString}${negativeSuffix}`;
 };
 
+/**
+ * @description Converts a time, in numeric seconds, to a formatted string representation of the form [HH:[MM:]]SS, where hours and minutes
+ * are optional, either based on the value of `seconds` or (optionally) based on the value of `guide`.
+ * @param {number} seconds - The total time you'd like formatted, in seconds
+ * @param {number} [guide] - A number in seconds that represents how many units you'd want to show. This ensures consistent formatting between e.g. 35s and 4834s.
+ * @returns {string} A string representation of the time, with expected units
+ */
 export function formatTime(seconds, guide) {
   // Handle negative values at the end
   let negative = false;

@@ -10,6 +10,7 @@ import type {
   MediaStore,
 } from '../media-store/media-store';
 import { MediaUIEvents } from '../constants';
+export * as timeUtils from '../utils/time';
 
 /**
  * @description A lookup object for all well-defined action types that can be dispatched
