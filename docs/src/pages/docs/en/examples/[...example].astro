@@ -266,7 +266,8 @@ if (examplesDivIndex !== -1) {
 
 const dependencies = {};
 for (const url of externalModules) {
-  const matches = url.match(/\/npm\/(@?[^/]*?\/?[^@]+)@?([^/]*?)(\/|$)/)
+  // Match /npm/package-name@version, regexr.com/7ua2i
+  const matches = url.match(/\/npm\/((?:@[^/]+\/)?[^/@]+)@?([^/]+)?/)
   const [, name, version] = matches ?? []
   if (name) dependencies[name] = version ?? 'latest'
 }
