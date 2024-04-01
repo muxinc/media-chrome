@@ -780,7 +780,7 @@
     outvariant "^1.4.0"
     strict-event-emitter "^0.4.3"
 
-"@codesandbox/sandpack-client@2.10.0", "@codesandbox/sandpack-client@^2.10.0":
+"@codesandbox/sandpack-client@2.10.0", "@codesandbox/sandpack-client@^2.13.7":
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-client/-/sandpack-client-2.10.0.tgz#01363b827195ab54c74834b420983d732e342327"
   integrity sha512-1vLN0j8ElzTmTG43yoBj1dsOyuw6SqRH9rRa13D32jtM4v2qPFLWIFElcyNpH/YbWsCRZTUCN6ku6U4Yw/Xdvg==
@@ -791,10 +791,10 @@
     outvariant "1.4.0"
     static-browser-server "1.0.3"
 
-"@codesandbox/sandpack-react@2.10.0":
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-react/-/sandpack-react-2.10.0.tgz#66b43013adb71982057ddcd93ef775645098710f"
-  integrity sha512-XDUOJMPp97FK9YUjHlgFQQqWJY77ih215wFz2CWEzJTalRIM6yneexcTs62Jv1VtgHmRkUxdsgZPqT6KCqKAEA==
+"@codesandbox/sandpack-react@^2.13.7":
+  version "2.13.7"
+  resolved "https://registry.yarnpkg.com/@codesandbox/sandpack-react/-/sandpack-react-2.13.7.tgz#3e78b1c9eb0fa4c9d6b1e0e341a90babdf68258b"
+  integrity sha512-oAz699gM0L/O+09QCDEmEgkne6QbtkeM3NdAz8cQblqkJxMs0xGSKT4gC8320ulY5ofOfQqOOA5ck0WjGsVlkQ==
   dependencies:
     "@codemirror/autocomplete" "^6.4.0"
     "@codemirror/commands" "^6.1.3"
@@ -804,13 +804,12 @@
     "@codemirror/language" "^6.3.2"
     "@codemirror/state" "^6.2.0"
     "@codemirror/view" "^6.7.1"
-    "@codesandbox/sandpack-client" "^2.10.0"
+    "@codesandbox/sandpack-client" "^2.13.7"
     "@lezer/highlight" "^1.1.3"
     "@react-hook/intersection-observer" "^3.1.1"
     "@stitches/core" "^1.2.6"
     anser "^2.1.1"
     clean-set "^1.1.2"
-    codesandbox-import-util-types "^2.2.3"
     dequal "^2.0.2"
     escape-carriage "^1.3.1"
     lz-string "^1.4.4"
@@ -1948,11 +1947,6 @@ clsx@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-2.0.0.tgz#12658f3fd98fafe62075595a5c30e43d18f3d00b"
   integrity sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==
-
-codesandbox-import-util-types@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/codesandbox-import-util-types/-/codesandbox-import-util-types-2.2.3.tgz#b354b2f732ad130e119ebd9ead3bda3be5981a54"
-  integrity sha512-Qj00p60oNExthP2oR3vvXmUGjukij+rxJGuiaKM6tyUmSyimdZsqHI/TUvFFClAffk9s7hxGnQgWQ8KCce27qQ==
 
 collapse-white-space@^2.0.0:
   version "2.1.0"
