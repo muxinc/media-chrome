@@ -1,0 +1,129 @@
+---
+title: MediaStore React Hooks
+description: MediaStore React Hooks
+layout: ../../../../layouts/MainLayout.astro
+---
+
+import SandpackContainer from "../../../../components/SandpackContainerReact.astro";
+import { MediaActionTypes, MediaStateNames } from '../../../../../../dist/react/media-store';
+
+If you would rather write your own react components, Media Chrome has a React [`<Context.Provider>`](https://react.dev/reference/react/createContext#provider) and corresponding [hooks](https://react.dev/reference/react/hooks) to directly integrate with its `MediaStore` state management API. These are included in our standard [npm package](https://www.npmjs.com/package/media-chrome).
+
+To use, simply import these from `"media-chrome/react/media-store"`.
+
+## Basic Usage
+
+Media Chrome has a `MediaStore` "under the hood" that manages all media state and media state change requests.
+
+If you're familiar with [React Redux](https://react-redux.js.org/introduction/getting-started) and its [`useSelector()`](https://react-redux.js.org/api/hooks#useselector) and [`useDispatch()`](https://react-redux.js.org/api/hooks#usedispatch) hooks, working with Media Chrome's `MediaStore` React
+integration should feel familiar.
+
+<SandpackContainer
+  client:load
+  stacked
+  reversed
+  editorHeight={760}
+  previewAspectRatio={1920 / (1080 + 20)}
+  customSetup={{
+    dependencies: {
+      "media-chrome": "latest"
+    }
+  }}
+  template="vite-react-ts"
+  files={{
+    'App.tsx': `import {
+  MediaProvider,
+  useMediaDispatch,
+  useMediaSelector,
+  useMediaRef,
+  useMediaFullscreenRef,
+  MediaActionTypes,
+} from 'media-chrome/react/media-store';
+
+const Video = () => {
+  // "Wire up" the <video/> element to the MediaStore using useMediaRef()
+  const mediaRef = useMediaRef();
+  return (
+    <video
+      ref={mediaRef}
+      style={{ width: '100vw' }}
+      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+      preload="auto"
+      muted
+      crossOrigin=""
+    />
+  );
+};
+
+const PlayerContainer = ({ children }) => {
+  // "Wire up" the element you want the MediaStore to target for fullscreen using useMediaFullscreenRef()
+  const mediaFullscreenRef = useMediaFullscreenRef();
+  return (<div ref={mediaFullscreenRef}>{children }</div>);
+};
+
+const PlayButton = () => {
+  // Dispatch media state change requests using useDispatch()
+  const dispatch = useMediaDispatch();
+  // Get the latest media state you care about in your component using useMediaSelector()
+  const mediaPaused = useMediaSelector(state => state.mediaPaused);
+  return (
+    <button
+      onClick={() => {
+        // Select from a set of well-defined actions for state change requests
+        // using MediaActionTypes
+        const type = mediaPaused
+          ? MediaActionTypes.MEDIA_PLAY_REQUEST
+          : MediaActionTypes.MEDIA_PAUSE_REQUEST;
+        dispatch({ type });
+      }}
+    >
+      {mediaPaused ? 'Play' : 'Pause'}
+    </button>
+  );
+};
+
+const FullscreenButton = () => {
+  // Dispatch media state change requests using useDispatch()
+  const dispatch = useMediaDispatch();
+  // Get the latest media state you care about in your component using useMediaSelector()
+  const mediaIsFullscreen = useMediaSelector(state => state.mediaIsFullscreen);
+  return (
+    <button
+      onClick={() => {
+        // Select from a set of well-defined actions for state change requests
+        // using MediaActionTypes
+        const type = mediaIsFullscreen
+          ? MediaActionTypes.MEDIA_EXIT_FULLSCREEN_REQUEST
+          : MediaActionTypes.MEDIA_ENTER_FULLSCREEN_REQUEST;
+        dispatch({ type });
+      }}
+    >
+      {mediaIsFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+    </button>
+  );
+};
+
+const Player = () => {
+  // Get access to Media Chrome's state management in your components using <MediaProvider/>
+  // NOTE: Unlike other providers (including react-redux's Provider), you'll likely want to keep
+  // your <MediaProvider/> in or close to your <Player/> component)
+  return (
+    <MediaProvider>
+      <PlayerContainer>
+        <Video />
+        <div>
+          <PlayButton />
+          <FullscreenButton />
+        </div>
+      </PlayerContainer>
+    </MediaProvider>
+  );
+};
+
+export default Player;`}}
+/>
+
+For a full simple example of working with `MediaStore` in React, check out our [NextJS example page](https://media-chrome-demo-nextjs-mux.vercel.app/media-store-hooks) ([source](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/media-store-hooks/page.tsx)).
+
+For a slightly more advanced example that uses [Material UI](https://mui.com/material-ui/getting-started/), you can check out this other
+[NextJS Example page](https://media-chrome-demo-nextjs-mux.vercel.app/material-ui-player-chrome) ([source](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/material-ui-player-chrome/page.tsx)).
