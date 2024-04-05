@@ -254,6 +254,21 @@ export const StreamTypes = {
 
 /**
  * @type {{
+ *   HIGH: 'high';
+ *   MEDIUM: 'medium';
+ *   LOW: 'low';
+ *   OFF: 'off';
+ * }}
+ */
+export const VolumeLevels = {
+  HIGH: 'high',
+  MEDIUM: 'medium',
+  LOW: 'low',
+  OFF: 'off',
+};
+
+/**
+ * @type {{
  *   INLINE: 'inline';
  *   FULLSCREEN: 'fullscreen';
  *   PICTURE_IN_PICTURE: 'picture-in-picture';

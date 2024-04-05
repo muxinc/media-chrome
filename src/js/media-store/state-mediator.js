@@ -24,11 +24,11 @@ import {
 import { getTextTracksList } from '../utils/captions.js';
 
 /**
- * @typedef {'on-demand'|'live'|'unknown'} StreamTypeValue
+ * @typedef {StreamTypes[keyof StreamTypes]} StreamTypeValue
  */
 
 /**
- * @typedef {'unavailable'|'unsupported'} AvailabilityTypeValue
+ * @typedef {AvailabilityStates[keyof AvailabilityStates]} AvailabilityTypeValue
  */
 
 /**

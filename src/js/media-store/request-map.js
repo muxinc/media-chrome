@@ -37,7 +37,7 @@ import { getSubtitleTracks, toggleSubtitleTracks } from './util.js';
  * } & {
  *   mediaPreviewTime: number;
  *   mediaPreviewImage: string;
- *   mediaPreviewCoords: [string,string,string,string]
+ *   mediaPreviewCoords: [number,number,number,number]
  * }} MediaState
  */
 
@@ -101,8 +101,8 @@ export const requestMap = {
           : undefined;
         const url = new URL(cue.text, base);
         const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-        mediaPreviewCoords = /** @type {[string, string, string, string]} */ (
-          previewCoordsStr.split(',')
+        mediaPreviewCoords = /** @type {[number, number, number, number]} */ (
+          previewCoordsStr.split(',').map(numStr => +numStr)
         );
         mediaPreviewImage = url.href;
       }
