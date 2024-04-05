@@ -53,7 +53,6 @@ export const SIDEBAR: Sidebar = {
     ],
     Guides: [
       { text: 'Media element', link: 'docs/en/media-element' },
-      { text: 'React usage', link: 'docs/en/react' },
       { text: 'Prevent layout shift', link: 'docs/en/prevent-layout-shift' },
       { text: 'Position controls', link: 'docs/en/position-controls' },
       { text: 'Responsive controls', link: 'docs/en/responsive-controls' },
@@ -113,7 +112,11 @@ export const SIDEBAR: Sidebar = {
       { text: 'Design Principles', link: 'docs/en/design-principles' },
       { text: 'Architecture', link: 'docs/en/architecture' },
     ],
-    "Resources": [
+    React: [
+      { text: 'Get started', link: 'docs/en/react/get-started' },
+      { text: 'MediaStore hooks', link: 'docs/en/react/hooks' },
+    ],
+    Resources: [
       { text: 'Styling Reference', link: 'docs/en/reference/styling' },
       { text: 'Migrating to 1.0', link: 'docs/en/migration/from-0.x-to-1.0' },
       { text: 'Migrating to 2.0', link: 'docs/en/migration/from-1.x-to-2.0' },
