@@ -156,14 +156,14 @@ For a slightly more advanced example that uses [Material UI](https://mui.com/mat
 |`mediaPreviewImage`|`string`| The URL for a preview image tiles source, derived from a [TextTrack](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack) that conforms with [this implementation](https://docs.mux.com/guides/create-timeline-hover-previews#add-timeline-hover-previews-to-your-player), determined by the currently set `mediaPreviewTime`.|
 |`mediaPreviewCoords`|`[number, number, number, number]`| The `[x, y, width, height]` coordinates within the `mediaPreviewImage`'s tiles for the specific tile image to preview, determined by the currently set `mediaPreviewTime`.|
 |`mediaPreviewChapter`|`string`| The text from the `mediaPreviewChaptersCues` cue to preview, determined by the currently set `mediaPreviewTime` |
-|`mediaStreamType`|[`StreamTypes[]`](#stream-types)| A value representing whether the currently loaded media is `"live"` or `"on-demand"`, with `"unknown"` meaning that not enough information has been loaded for the media to determine the stream typeof. Helpful for displaying different UIs for `"live"` vs. `"on-demand"`. <br/><br/> \* Best with a custom media element like [`<mux-video>`](/docs/en/media-elements/mux-video), with a fallback of inferring `"live"` when duration is `Infinity`. |
-|`mediaTargetLiveWindow`|`number`| A number representing how far back from the live edge (`mediaSeekable` end) a user should be allowed to seek, in seconds, for "DVR"-style functionality, where `Infinity` means users can seek back to `mediaSeekable` start. Only applicable when `mediaStreamType` is `"live"`. Helpful for customizing different UIs for "DVR" vs. "non-DVR" `"live"`. <br/><br/> \* Requires a custom media element like [`<mux-video>`](/docs/en/media-elements/mux-video). |
-|`mediaTimeIsLive`|`boolean`| A boolean representing when playback at a particular playhead be treated as "playing live". Only applicable when `mediaStreamType` is `"live"`. Helpful for live indicator UIs. <br/><br/> \* Best with a custom media element like [`<mux-video>`](/docs/en/media-elements/mux-video), with a fallback of playing 10 within ten seconds of the live edge (`mediaSeekable` end) as playing live. |
-|`mediaRenditionList`|[`Rendition[]`](#rendition-objects)| A list of the available video renditions, or quality levels, for the currently loaded media. Helpful for rendition/quality selector UIs. <br/><br/> \* Requires a custom media element like [`<mux-video>`](/docs/en/media-elements/mux-video). |
+|`mediaStreamType`|[`StreamTypes[]`](#stream-types)| A value representing whether the currently loaded media is `"live"` or `"on-demand"`, with `"unknown"` meaning that not enough information has been loaded for the media to determine the stream typeof. Helpful for displaying different UIs for `"live"` vs. `"on-demand"`. <br/><br/> \* Best with a custom media element like [`<mux-video>`](../media-elements/mux-video), with a fallback of inferring `"live"` when duration is `Infinity`. |
+|`mediaTargetLiveWindow`|`number`| A number representing how far back from the live edge (`mediaSeekable` end) a user should be allowed to seek, in seconds, for "DVR"-style functionality, where `Infinity` means users can seek back to `mediaSeekable` start. Only applicable when `mediaStreamType` is `"live"`. Helpful for customizing different UIs for "DVR" vs. "non-DVR" `"live"`. <br/><br/> \* Requires a custom media element like [`<mux-video>`](../media-elements/mux-video). |
+|`mediaTimeIsLive`|`boolean`| A boolean representing when playback at a particular playhead be treated as "playing live". Only applicable when `mediaStreamType` is `"live"`. Helpful for live indicator UIs. <br/><br/> \* Best with a custom media element like [`<mux-video>`](../media-elements/mux-video), with a fallback of playing 10 within ten seconds of the live edge (`mediaSeekable` end) as playing live. |
+|`mediaRenditionList`|[`Rendition[]`](#rendition-objects)| A list of the available video renditions, or quality levels, for the currently loaded media. Helpful for rendition/quality selector UIs. <br/><br/> \* Requires a custom media element like [`<mux-video>`](../media-elements/mux-video). |
 |`mediaRenditionSelected`|`string`\|`undefined`| `id` of the currently selected video rendition, where `undefined` means renditions will be automatically selected/changed, typically based on things like network conditions. Helpful for rendition/quality selector UIs. <br/><br/> \* Requires a custom media element like [`<mux-video>`](/docs/en/media-elements/mux-video). |
-|`mediaAudioTrackList`|[`AudioTrack[]`]|A list of the available audio tracks for the currently loaded media. Helpful for audio selector UIs. <br/><br/> \* Requires a custom media element like [`<mux-video>`](/docs/en/media-elements/mux-video). |
-|`mediaAudioTrackEnabled`|`string`| `id` of the currently enabled (aka audible when playing with volume) audio track <br/><br/> \* Requires a custom media element like [`<mux-video>`](/docs/en/media-elements/mux-video). |
-|`mediaIsCasting`|`boolean`|`true` when playback is currently being played on a remote device using [Google Cast](https://developers.google.com/cast). Not available in all playback environments. <br/><br/> \* Requires a custom media element like [`<mux-video>`](/docs/en/media-elements/mux-video). |
+|`mediaAudioTrackList`|[`AudioTrack[]`]|A list of the available audio tracks for the currently loaded media. Helpful for audio selector UIs. <br/><br/> \* Requires a custom media element like [`<mux-video>`](../media-elements/mux-video). |
+|`mediaAudioTrackEnabled`|`string`| `id` of the currently enabled (aka audible when playing with volume) audio track <br/><br/> \* Requires a custom media element like [`<mux-video>`](../media-elements/mux-video). |
+|`mediaIsCasting`|`boolean`|`true` when playback is currently being played on a remote device using [Google Cast](https://developers.google.com/cast). Not available in all playback environments. <br/><br/> \* Requires a custom media element like [`<mux-video>`](../media-elements/mux-video). |
 |`mediaIsAirplaying`|`boolean`|`true` when playback is currently being played on a remote device using [Apple AirPlay](https://developer.apple.com/airplay/). Not available in all playback environments.|
 |`mediaVolumeUnavailable`|[`AvailabilityStates`](#availability-states)\|`undefined`|Describes the availability of volume control in your current playback environment. `undefined` means feature is available.|
 |`mediaFullscreenUnavailable`|[`AvailabilityStates`](#availability-states)\|`undefined`|Describes the availability of watching in fullscreen mode in your current playback environment. `undefined` means feature is available.|
@@ -194,7 +194,7 @@ Below are the different categories of unavailability. As mentioned above, `undef
 
 ### Volume levels
 
-Volume levels, provided via the [`mediaVolumeLevel` state](#mediastate-properties), are a convenience state based on the `mediaVolume` and `mediaMuted` states which indicate how loud the "effective volume" currently. For convenience, we provide the `AvailabilityStates` constants object as one of our exports in the `media-chrome/react/media-store` module, with the following key/value pairs:
+Volume levels, provided via the [`mediaVolumeLevel` state](#mediastate-properties), are a convenience state based on the `mediaVolume` and `mediaMuted` states which indicate how loud the "effective volume" currently. For convenience, we provide the `VolumeLevels` constants object as one of our exports in the `media-chrome/react/media-store` module, with the following key/value pairs:
 
 | Key | Value | Description |
 |------|-------|-------------|
@@ -205,7 +205,15 @@ Volume levels, provided via the [`mediaVolumeLevel` state](#mediastate-propertie
 
 ### Stream types
 
-Stream types description and table
+Stream types describe whether the currently loaded media is a live stream or on demand. This can be helpful if your UI will potentially be used for both live and on demand content, and you want to be able to show different controls for each (e.g. hiding your seek bar for live). For full functionality, this relies on custom media elements like `<mux-video>`, though the `MediaStore` will fall back to checking if the media element has a `duration` of `Infinity` just in case you're just using e.g. a `<video>` element with [`hls.js`](https://github.com/video-dev/hls.js/blob/master/docs/API.md#livedurationinfinity). Since this is determined based on the loaded media, which is an asynchronous process, there is also an `"unknown"` value for initial load cases. For convenience, we provide the `StreamTypes` constants object as one of our exports in the `media-chrome/react/media-store` module, with the following key/value pairs:
+
+| Key | Value | Description |
+|------|-------|-------------|
+|`LIVE`|`"live"`| Means the currently loaded media is a live stream.|
+|`ON_DEMAND`|`"on-demand"`| Means the currently loaded media is on demand or "static" content (e.g. a simple mp4 source).|
+|`UNKNOWN`|`"unknown"`| Means the media hasn't loaded enough information yet to determine whether it's live or on demand.|
+
+For more on stream types, check out [the docs](../stream-type).
 
 {/** @TODO Add working usage example, either here, in our next example(s), or both (CJP) */}
 
