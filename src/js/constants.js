@@ -1,3 +1,34 @@
+/**
+ * @typedef {{
+ *   MEDIA_PLAY_REQUEST: 'mediaplayrequest',
+ *   MEDIA_PAUSE_REQUEST: 'mediapauserequest',
+ *   MEDIA_MUTE_REQUEST: 'mediamuterequest',
+ *   MEDIA_UNMUTE_REQUEST: 'mediaunmuterequest',
+ *   MEDIA_VOLUME_REQUEST: 'mediavolumerequest',
+ *   MEDIA_SEEK_REQUEST: 'mediaseekrequest',
+ *   MEDIA_AIRPLAY_REQUEST: 'mediaairplayrequest',
+ *   MEDIA_ENTER_FULLSCREEN_REQUEST: 'mediaenterfullscreenrequest',
+ *   MEDIA_EXIT_FULLSCREEN_REQUEST: 'mediaexitfullscreenrequest',
+ *   MEDIA_PREVIEW_REQUEST: 'mediapreviewrequest',
+ *   MEDIA_ENTER_PIP_REQUEST: 'mediaenterpiprequest',
+ *   MEDIA_EXIT_PIP_REQUEST: 'mediaexitpiprequest',
+ *   MEDIA_ENTER_CAST_REQUEST: 'mediaentercastrequest',
+ *   MEDIA_EXIT_CAST_REQUEST: 'mediaexitcastrequest',
+ *   MEDIA_SHOW_TEXT_TRACKS_REQUEST: 'mediashowtexttracksrequest',
+ *   MEDIA_HIDE_TEXT_TRACKS_REQUEST: 'mediahidetexttracksrequest',
+ *   MEDIA_SHOW_SUBTITLES_REQUEST: 'mediashowsubtitlesrequest',
+ *   MEDIA_DISABLE_SUBTITLES_REQUEST: 'mediadisablesubtitlesrequest',
+ *   MEDIA_TOGGLE_SUBTITLES_REQUEST: 'mediatogglesubtitlesrequest',
+ *   MEDIA_PLAYBACK_RATE_REQUEST: 'mediaplaybackraterequest',
+ *   MEDIA_RENDITION_REQUEST: 'mediarenditionrequest',
+ *   MEDIA_AUDIO_TRACK_REQUEST: 'mediaaudiotrackrequest',
+ *   MEDIA_SEEK_TO_LIVE_REQUEST: 'mediaseektoliverequest',
+ *   REGISTER_MEDIA_STATE_RECEIVER: 'registermediastatereceiver',
+ *   UNREGISTER_MEDIA_STATE_RECEIVER: 'unregistermediastatereceiver',
+ * }} MediaUIEvents
+ */
+
+/** @type {MediaUIEvents} */
 export const MediaUIEvents = {
   MEDIA_PLAY_REQUEST: 'mediaplayrequest',
   MEDIA_PAUSE_REQUEST: 'mediapauserequest',
@@ -31,6 +62,49 @@ export const MediaStateReceiverAttributes = {
   MEDIA_CONTROLLER: 'mediacontroller',
 };
 
+/**
+ * @typedef {{
+ *   MEDIA_AIRPLAY_UNAVAILABLE: 'mediaAirplayUnavailable',
+ *   MEDIA_FULLSCREEN_UNAVAILABLE: 'mediaFullscreenUnavailable',
+ *   MEDIA_PIP_UNAVAILABLE: 'mediaPipUnavailable',
+ *   MEDIA_CAST_UNAVAILABLE: 'mediaCastUnavailable',
+ *   MEDIA_RENDITION_UNAVAILABLE: 'mediaRenditionUnavailable',
+ *   MEDIA_AUDIO_TRACK_UNAVAILABLE: 'mediaAudioTrackUnavailable',
+ *   MEDIA_PAUSED: 'mediaPaused',
+ *   MEDIA_HAS_PLAYED: 'mediaHasPlayed',
+ *   MEDIA_ENDED: 'mediaEnded',
+ *   MEDIA_MUTED: 'mediaMuted',
+ *   MEDIA_VOLUME_LEVEL: 'mediaVolumeLevel',
+ *   MEDIA_VOLUME: 'mediaVolume',
+ *   MEDIA_VOLUME_UNAVAILABLE: 'mediaVolumeUnavailable',
+ *   MEDIA_IS_PIP: 'mediaIsPip',
+ *   MEDIA_IS_CASTING: 'mediaIsCasting',
+ *   MEDIA_IS_AIRPLAYING: 'mediaIsAirplaying',
+ *   MEDIA_SUBTITLES_LIST: 'mediaSubtitlesList',
+ *   MEDIA_SUBTITLES_SHOWING: 'mediaSubtitlesShowing',
+ *   MEDIA_IS_FULLSCREEN: 'mediaIsFullscreen',
+ *   MEDIA_PLAYBACK_RATE: 'mediaPlaybackRate',
+ *   MEDIA_CURRENT_TIME: 'mediaCurrentTime',
+ *   MEDIA_DURATION: 'mediaDuration',
+ *   MEDIA_SEEKABLE: 'mediaSeekable',
+ *   MEDIA_PREVIEW_TIME: 'mediaPreviewTime',
+ *   MEDIA_PREVIEW_IMAGE: 'mediaPreviewImage',
+ *   MEDIA_PREVIEW_COORDS: 'mediaPreviewCoords',
+ *   MEDIA_PREVIEW_CHAPTER: 'mediaPreviewChapter',
+ *   MEDIA_LOADING: 'mediaLoading',
+ *   MEDIA_BUFFERED: 'mediaBuffered',
+ *   MEDIA_STREAM_TYPE: 'mediaStreamType',
+ *   MEDIA_TARGET_LIVE_WINDOW: 'mediaTargetLiveWindow',
+ *   MEDIA_TIME_IS_LIVE: 'mediaTimeIsLive',
+ *   MEDIA_RENDITION_LIST: 'mediaRenditionList',
+ *   MEDIA_RENDITION_SELECTED: 'mediaRenditionSelected',
+ *   MEDIA_AUDIO_TRACK_LIST: 'mediaAudioTrackList',
+ *   MEDIA_AUDIO_TRACK_ENABLED: 'mediaAudioTrackEnabled',
+ *   MEDIA_CHAPTERS_CUES: 'mediaChaptersCues',
+ * }} MediaUIProps
+ */
+
+/** @type {MediaUIProps} */
 export const MediaUIProps = {
   MEDIA_AIRPLAY_UNAVAILABLE: 'mediaAirplayUnavailable',
   MEDIA_FULLSCREEN_UNAVAILABLE: 'mediaFullscreenUnavailable',
@@ -167,11 +241,11 @@ export const AvailabilityStates = {
 
 /**
  * @type {{
-*   LIVE: 'live';
-*   ON_DEMAND: 'on-demand';
-*   UNKNOWN: 'unknown';
-* }}
-*/
+ *   LIVE: 'live';
+ *   ON_DEMAND: 'on-demand';
+ *   UNKNOWN: 'unknown';
+ * }}
+ */
 export const StreamTypes = {
   LIVE: 'live',
   ON_DEMAND: 'on-demand',
@@ -180,11 +254,11 @@ export const StreamTypes = {
 
 /**
  * @type {{
-*   INLINE: 'inline';
-*   FULLSCREEN: 'fullscreen';
-*   PICTURE_IN_PICTURE: 'picture-in-picture';
-* }}
-*/
+ *   INLINE: 'inline';
+ *   FULLSCREEN: 'fullscreen';
+ *   PICTURE_IN_PICTURE: 'picture-in-picture';
+ * }}
+ */
 export const WebkitPresentationModes = {
   INLINE: 'inline',
   FULLSCREEN: 'fullscreen',

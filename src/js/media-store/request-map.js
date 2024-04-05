@@ -13,6 +13,16 @@ import {
 import { getSubtitleTracks, toggleSubtitleTracks } from './util.js';
 
 /**
+ * @typedef {Omit<
+ *  MediaUIEvents,
+ *  'REGISTER_MEDIA_STATE_RECEIVER' |
+ *  'UNREGISTER_MEDIA_STATE_RECEIVER' |
+ *  'MEDIA_SHOW_TEXT_TRACKS_REQUEST' |
+ *  'MEDIA_HIDE_TEXT_TRACKS_REQUEST'
+ * >} MediaRequestTypes
+ */
+
+/**
  * @typedef {import('./state-mediator.js').StateMediator} StateMediator
  */
 
@@ -42,7 +52,7 @@ import { getSubtitleTracks, toggleSubtitleTracks } from './util.js';
  * For any modeled state change request, the RequestMap defines a key, K, which directly maps to the state change request type (e.g. `mediapauserequest`, `mediaseekrequest`, etc.),
  * whose value is a function that defines the appropriate side effects of the request that will, under normal circumstances, (eventually) result in actual state changes.
  *
- * @typedef {{ [k: string]: (
+ * @typedef {{ [k in MediaRequestTypes[keyof MediaRequestTypes]]: (
  *  stateMediator: StateMediator,
  *  stateOwners: StateOwners,
  *  action: Partial<Pick<CustomEvent<any>, 'type' | 'detail'>>
@@ -91,7 +101,9 @@ export const requestMap = {
           : undefined;
         const url = new URL(cue.text, base);
         const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-        mediaPreviewCoords = previewCoordsStr.split(',');
+        mediaPreviewCoords = /** @type {[string, string, string, string]} */ (
+          previewCoordsStr.split(',')
+        );
         mediaPreviewImage = url.href;
       }
     }

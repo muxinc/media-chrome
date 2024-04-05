@@ -9,8 +9,8 @@ import type {
   MediaStateOwner,
   MediaStore,
 } from '../media-store/media-store';
-import { MediaUIEvents } from '../constants';
 export * as timeUtils from '../utils/time';
+import { MediaUIEvents, MediaUIProps } from '../constants';
 
 /**
  * @description A lookup object for all well-defined action types that can be dispatched
@@ -37,11 +37,22 @@ export * as timeUtils from '../utils/time';
  *
  * @see {@link useMediaDispatch}
  */
+
+export { MediaState };
+
+const {
+  REGISTER_MEDIA_STATE_RECEIVER,
+  UNREGISTER_MEDIA_STATE_RECEIVER,
+  ...StateChangeRequests
+} = MediaUIEvents;
+
 export const MediaActionTypes = {
-  ...MediaUIEvents,
+  ...StateChangeRequests,
   MEDIA_ELEMENT_CHANGE_REQUEST: 'mediaelementchangerequest',
   FULLSCREEN_ELEMENT_CHANGE_REQUEST: 'fullscreenelementchangerequest',
 } as const;
+
+export const MediaStateNames = { ...MediaUIProps } as const;
 
 const identity = (x?: any) => x;
 
