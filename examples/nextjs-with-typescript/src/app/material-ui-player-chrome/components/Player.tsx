@@ -5,7 +5,7 @@ import PlayerContainer from './PlayerContainer';
 import theme from './theme';
 import LoadingBackdrop from './LoadingBackdrop';
 import ControlsContainer from './ControlsContainer';
-import Video from './Video';
+import Video, { MuxVideoProps } from './Video';
 import { DetailedHTMLProps, VideoHTMLAttributes } from 'react';
 
 /**
@@ -17,7 +17,7 @@ const Player = (
   props: DetailedHTMLProps<
     VideoHTMLAttributes<HTMLVideoElement>,
     HTMLVideoElement
-  >
+  > & MuxVideoProps
 ) => {
   return (
     /**
@@ -44,7 +44,7 @@ const Player = (
           {/**
            * <Video/> is a thin wrapper around your actual media component (e.g. a <video/>) that also wires it up to the <MediaProvider/>'s MediaStore.
            */}
-          <Video {...props} />
+          <Video {...props} style={{ minWidth: '100%'}} />
           {/**
            * <LoadingBackdrop/> is a backdrop/overlay over the UI that shows a loading indicator while media is loading.
            */}

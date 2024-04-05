@@ -1,5 +1,7 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
+import { IconButton, Tooltip } from '@mui/material';
+import ClosedCaptionIcon from '@mui/icons-material/ClosedCaption';
+import ClosedCaptionDisabledIcon from '@mui/icons-material/ClosedCaptionDisabled';
 import CheckIcon from '@mui/icons-material/Check';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -16,7 +18,7 @@ export const DEFAULT_RATE = 1;
  * A menu button that shows/hides the playback rate options and allows a user to select between them, with
  * the option to provide different playback rates options via the "rates" prop
  */
-const PlaybackRateMenuButton = ({ rates = DEFAULT_RATES }) => {
+const CaptionsMenuButton = () => {
   /**
    * This is typical/boilerplate MUI menu button code, so we won't focus on it, but
    * you can check out its {@link https://mui.com/material-ui/react-menu/|Menu docs}
@@ -41,13 +43,17 @@ const PlaybackRateMenuButton = ({ rates = DEFAULT_RATES }) => {
    * This is a simple use case of grabbing a single bit of state (in this case mediaPlaybackRate) and a pattern that
    * you'd likely use a lot.
    */
-  const mediaPlaybackRate = useMediaSelector(
-    (state) => state.mediaPlaybackRate
+  const mediaSubtitlesList = useMediaSelector(
+    (state) => state.mediaSubtitlesList ?? []
   );
+  const mediaSubtitlesShowing = useMediaSelector(
+    (state) => state.mediaSubtitlesShowing ?? []
+  );
+  const subtitlesOff = !mediaSubtitlesShowing?.length;
 
   return (
     <>
-      <Button
+      <IconButton
         id="playback-rate"
         aria-controls={open ? 'close playback rate' : 'select playback rate'}
         aria-haspopup="true"
@@ -55,9 +61,8 @@ const PlaybackRateMenuButton = ({ rates = DEFAULT_RATES }) => {
         color="primary"
         onClick={handleClick}
       >
-        {/* This show the current playback rate for the button's text */}
-        {`${mediaPlaybackRate ?? 1}×`}
-      </Button>
+        {subtitlesOff ? <ClosedCaptionDisabledIcon /> : <ClosedCaptionIcon />}
+      </IconButton>
       <Menu
         id="playback-rate"
         aria-labelledby="playback-rate"
@@ -73,35 +78,49 @@ const PlaybackRateMenuButton = ({ rates = DEFAULT_RATES }) => {
           horizontal: 'right',
         }}
       >
-        {/* This creates a list of <MenuItem/>s with a corresponding playback rate value */}
-        {rates.map((rate) => {
-          const selected = rate === mediaPlaybackRate;
+        <MenuItem
+          key={'auto'}
+          selected={subtitlesOff}
+          onClick={() => {
+            dispatch({
+              type: MediaActionTypes.MEDIA_TOGGLE_SUBTITLES_REQUEST,
+              detail: false,
+            });
+            handleClose();
+          }}
+        >
+          <CheckIcon
+            sx={{
+              opacity: subtitlesOff ? 1 : 0,
+            }}
+          />
+          None
+        </MenuItem>
+        {mediaSubtitlesList.map((subtitleTrack) => {
+          const selected = mediaSubtitlesShowing.some(
+            (showingSubtitle) => showingSubtitle.label === subtitleTrack.label
+          );
           return (
             <MenuItem
-              key={rate}
-              // Indicate the menu item is selected if its rate matches the current playback rate
+              key={`${subtitleTrack.kind}-${subtitleTrack.label}-${subtitleTrack.language}`}
               selected={selected}
-              /**
-               * This is an example of using dispatch() to make a state change request. In this case, whenever
-               * someone clicks on one of the <MenuItem/>s (thus causing an onClick event), we want to make a MEDIA_PLAYBACK_RATE_REQUEST
-               * to the <MediaProvider/>'s MediaStore to change the playback rate to the rate associated with the component.
-               * This is an example of a state change request that requires a "detail" (in this case, a numeric "playback rate")
-               * for it to make sense, since making a request to change the playback rate in the media begs the question: *What* rate?
-               */
               onClick={() => {
-                const type = MediaActionTypes.MEDIA_PLAYBACK_RATE_REQUEST;
-                const detail = rate;
+                dispatch({
+                  type: MediaActionTypes.MEDIA_TOGGLE_SUBTITLES_REQUEST,
+                  detail: false,
+                });
+                const type = MediaActionTypes.MEDIA_SHOW_SUBTITLES_REQUEST;
+                const detail = subtitleTrack;
                 dispatch({ type, detail });
                 handleClose();
               }}
-              // Display the playback rate that corresponds to this <MenuItem/>
             >
               <CheckIcon
                 sx={{
                   opacity: selected ? 1 : 0,
                 }}
               />
-              {`${rate}×`}
+              {`${subtitleTrack.label}`}
             </MenuItem>
           );
         })}
@@ -110,4 +129,4 @@ const PlaybackRateMenuButton = ({ rates = DEFAULT_RATES }) => {
   );
 };
 
-export default PlaybackRateMenuButton;
+export default CaptionsMenuButton;
