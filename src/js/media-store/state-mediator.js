@@ -24,6 +24,29 @@ import {
 import { getTextTracksList } from '../utils/captions.js';
 
 /**
+ * @typedef {{
+ *  src?: string;
+ *  id?: string;
+ *  width?: number;
+ *  height?: number;
+ *  bitrate?: number;
+ *  frameRate?: number;
+ *  codec?: string;
+ *  readonly selected: boolean;
+ * }} Rendition
+ */
+
+/**
+ * @typedef {{
+ *  id?: string;
+ *  kind?: string;
+ *  label: string;
+ *  language: string;
+ *  enabled: boolean;
+ * }} AudioTrack
+ */
+
+/**
  * @typedef {StreamTypes[keyof StreamTypes]} StreamTypeValue
  */
 
@@ -51,8 +74,8 @@ import { getTextTracksList } from '../utils/captions.js';
  *  streamType?: StreamTypeValue;
  *  targetLiveWindow?: number;
  *  liveEdgeStart?: number;
- *  videoRenditions?: { id?: any; }[] & EventTarget & { selectedIndex?: number };
- *  audioTracks?: { id?: any; enabled?: boolean; }[] & EventTarget;
+ *  videoRenditions?: Rendition[] & EventTarget & { selectedIndex?: number };
+ *  audioTracks?: AudioTrack[] & EventTarget;
  *  requestCast?: () => any;
  *  webkitDisplayingFullscreen?: boolean;
  *  webkitPresentationMode?: 'fullscreen'|'picture-in-picture';
@@ -180,7 +203,7 @@ import { getTextTracksList } from '../utils/captions.js';
  *   mediaSubtitlesShowing: ReadonlyFacadeProp<Pick<TextTrack,'kind'|'label'|'language'>[]>;
  *   mediaChaptersCues: ReadonlyFacadeProp<Pick<VTTCue,'text'|'startTime'|'endTime'>[]>;
  *   mediaIsPip: FacadeProp<boolean>;
- *   mediaRenditionList: ReadonlyFacadeProp<{ id?: string }[]>;
+ *   mediaRenditionList: ReadonlyFacadeProp<Rendition[]>;
  *   mediaRenditionSelected: FacadeProp<string,string>;
  *   mediaAudioTrackList: ReadonlyFacadeProp<{ id?: string }[]>;
  *   mediaAudioTrackEnabled: FacadeProp<string,string>;
@@ -247,27 +270,28 @@ export const volumeSupportPromise = hasVolumeSupportAsync().then(
 export const prepareStateOwners = async (
   /** @type {(StateOwners[keyof StateOwners])[]} */ ...stateOwners
 ) => {
-  await Promise.all(stateOwners
-    .filter((x) => x)
-    .map(async (stateOwner) => {
-      if (
-        !(
-          'localName' in stateOwner &&
-          stateOwner instanceof globalThis.HTMLElement
-        )
-      ) {
-        return;
-      }
+  await Promise.all(
+    stateOwners
+      .filter((x) => x)
+      .map(async (stateOwner) => {
+        if (
+          !(
+            'localName' in stateOwner &&
+            stateOwner instanceof globalThis.HTMLElement
+          )
+        ) {
+          return;
+        }
 
-      const name = stateOwner.localName;
-      if (!name.includes('-')) return;
+        const name = stateOwner.localName;
+        if (!name.includes('-')) return;
 
-      const classDef = globalThis.customElements.get(name);
-      if (classDef && stateOwner instanceof classDef) return;
+        const classDef = globalThis.customElements.get(name);
+        if (classDef && stateOwner instanceof classDef) return;
 
-      await globalThis.customElements.whenDefined(name);
-      globalThis.customElements.upgrade(stateOwner);
-    })
+        await globalThis.customElements.whenDefined(name);
+        globalThis.customElements.upgrade(stateOwner);
+      })
   );
 };
 
@@ -693,7 +717,10 @@ export const stateMediator = {
       // documentElement, so check for that.
       if (documentElement.pictureInPictureElement instanceof HTMLMediaElement) {
         if (!media.localName?.includes('-')) return false;
-        return containsComposedNode(media, documentElement.pictureInPictureElement);
+        return containsComposedNode(
+          media,
+          documentElement.pictureInPictureElement
+        );
       }
 
       // In this case (e.g. Chrome), the pictureInPictureElement may be
@@ -862,11 +889,7 @@ export const stateMediator = {
   },
   mediaIsFullscreen: {
     get(stateOwners) {
-      const {
-        media,
-        documentElement,
-        fullscreenElement = media,
-      } = stateOwners;
+      const { media, documentElement, fullscreenElement = media } = stateOwners;
 
       // Need a documentElement and a media StateOwner to be in fullscreen, so we're not fullscreen
       if (!media || !documentElement) return false;
@@ -889,7 +912,8 @@ export const stateMediator = {
       }
 
       // If documentElement.fullscreenElement is the media StateOwner, we're definitely in fullscreen
-      if (documentElement[fullscreenApi.element] === fullscreenElement) return true;
+      if (documentElement[fullscreenApi.element] === fullscreenElement)
+        return true;
 
       // In this case (most modern browsers, sans e.g. iOS), the fullscreenElement may be
       // a web component that is "visible" from the documentElement, but should
@@ -1103,9 +1127,7 @@ export const stateMediator = {
             });
         }
         return () => {
-          media?.remote
-            ?.cancelWatchAvailability()
-            .catch(() => {});
+          media?.remote?.cancelWatchAvailability().catch(() => {});
         };
       },
     ],
@@ -1158,9 +1180,7 @@ export const stateMediator = {
             });
         }
         return () => {
-          media?.remote
-            ?.cancelWatchAvailability()
-            .catch(() => {});
+          media?.remote?.cancelWatchAvailability().catch(() => {});
         };
       },
     ],
