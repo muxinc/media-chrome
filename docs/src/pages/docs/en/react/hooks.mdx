@@ -125,11 +125,88 @@ export default Player;`}}
 
 For a full simple example of working with `MediaStore` in React, check out our [NextJS example page](https://media-chrome-demo-nextjs-mux.vercel.app/media-store-hooks) ([source](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/media-store-hooks/page.tsx)).
 
-For a slightly more advanced example that uses [Material UI](https://mui.com/material-ui/getting-started/), you can check out this other
+For a slightly more advanced example that uses [Material UI](https://mui.com/material-ui/getting-started/) and the [`<mux-video>` custom media element](https://github.com/muxinc/elements/tree/main/packages/mux-video), you can check out this other
 [NextJS Example page](https://media-chrome-demo-nextjs-mux.vercel.app/material-ui-player-chrome) ([source](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/material-ui-player-chrome/page.tsx)).
 
-## Get the latest media state with `useMediaSelector()`
+## `<MediaProvider>`
 
+This is the context provider for media state and media state change requests. Use it like you would other [react context providers](https://react.dev/reference/react/createContext#provider), i.e.:
+
+```tsx
+return (
+  <MediaProvider>
+    {/* descendant components that
+      - use media state,
+      - make media state change requests, or
+      - are the source of media state, e.g. a <video> component
+    */}
+  </MediaProvider>
+);
+```
+
+## `useMediaRef()`
+
+This is the primary way to wire up a media element to both get the latest media state using [`useMediaSelector()`](#usemediaselector) and make state change requests using [`useMediaDispatch()`](#useMediaDispatch). For most use cases, it's as simple as:
+
+```tsx
+const mediaRef = useMediaRef();
+// ... additional code
+return (
+  <video
+    ref={mediaRef}
+    // ... additional props
+  />
+);
+```
+
+Note that the `MediaStore` also supports extended state like [video renditions](#rendition-objects) and [audio tracks](#audiotrack-objects) that are not available "out of the box" with e.g. a `<video>` element. To take advantage of these, you can rely on a web-component based custom media element like the [`<mux-video>` custom media element](https://github.com/muxinc/elements/tree/main/packages/mux-video), where you'd wire it up in exactly the same way, e.g.:
+
+```tsx
+// import the custom element
+import '@mux/mux-video';
+
+// ...
+
+const mediaRef = useMediaRef();
+// ... additional code
+return (
+  <mux-video
+    ref={mediaRef}
+    // ... additional props
+  />
+);
+```
+
+You can find a slightly advanced example of this usage [here](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/material-ui-player-chrome/components/Video.tsx).
+
+## `useMediaFullscreenRef()`
+
+In order to make sure your custom controls show up while the video is in fullscreen, you'll need to wrap your UI up in a component that will serve as your root fullscreen element. To wire this up to the `MediaStore`, use `useMediaFullscreenRef()`. For most use cases, it's as simple as:
+
+```tsx
+const fullscreenRef = useMediaFullscreenRef();
+// ... additional code
+return (
+  <div
+    ref={fullscreenRef}
+    // ... additional props
+  >
+  {/* UI controls, video element, etc. should be descendent components in here */}
+  </div>
+);
+```
+
+You can find a simple example of using `useMediaFullscreenRef()` [here](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/media-store-hooks/ReactPlayer.tsx), or a slightly more advanced example [here](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/material-ui-player-chrome/components/PlayerContainer.tsx).
+
+## `useMediaSelector()`
+
+This is the primary way to get the latest media state from the `MediaStore`. To use it, you simply pass in a "selector function" to grab the state you need for a particular component, like this:
+
+```tsx
+const mediaMuted = useMediaSelector(state => state.mediaMuted);
+```
+
+Below is a list of all available `MediaState` properties with descriptions.
 
 ### `MediaState` properties
 
@@ -147,8 +224,8 @@ For a slightly more advanced example that uses [Material UI](https://mui.com/mat
 |`mediaMuted`|`boolean`|`true` if the media is muted, otherwise `false`.|
 |`mediaVolume`|`number`|A number from 0 to 1 representing the current volume of the media. Not available in all playback environments.|
 |`mediaVolumeLevel`|[`VolumeLevels`](#volume-levels)|A convenience state that combines the muted and volume states and translates it into a set of well-defined "levels". Helpful for things like dynamic icons on mute/volume buttons indicating the current effective volume.|
-|`mediaIsPip`|`boolean`|`true` when playback is in picture-in-picture mode, otherwise `false`. Not available in all playback environments.|
 |`mediaIsFullscreen`|`boolean`|`true` when playback is in fullscreen mode, otherwise `false`. Not available in all playback environments.|
+|`mediaIsPip`|`boolean`|`true` when playback is in picture-in-picture mode, otherwise `false`. Not available in all playback environments.|
 |`mediaSubtitlesList`|[`TextTrackLike[]`](#subtitles-objects)|A list of all subtitle and closed caption tracks available for the currently loaded media. If empty, that means no subtitles/captions are currently available for the media.|
 |`mediaSubtitlesShowing`|[`TextTrackLike[]`](#subtitles-objects)|A list of all subtitle and closed caption tracks currently showing. Typically will be at most one.|
 |`mediaChaptersCues`|[`CueLike[]`](#cue-objects)|A list of all available chapter objects for the currently loaded media, based on the first ["chapters" `TextTrack`](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/kind) available.|
@@ -190,8 +267,6 @@ Below are the different categories of unavailability. As mentioned above, `undef
 |`UNAVAILABLE`|`"unavailable"`|This means the corresponding state and functionality is *currently* unavailable in this playback context, but may become available at a later point. Examples include AirPlay in Safari while no remote playback targets are detected on the network or using a custom media element that supports multiple audio tracks but playing media that only has one (or no) audio tracks.|
 |`UNSUPPORTED`|`"unsupported"`|This means the corresponding state and functionality will never be available in this playback context. Examples include picture-in-picture on FireFox or AirPlay on non-Safari browsers.|
 
-{/** @TODO Add working usage example, either here, in our next example(s), or both (CJP) */}
-
 ### Volume levels
 
 Volume levels, provided via the [`mediaVolumeLevel` state](#mediastate-properties), are a convenience state based on the `mediaVolume` and `mediaMuted` states which indicate how loud the "effective volume" currently. For convenience, we provide the `VolumeLevels` constants object as one of our exports in the `media-chrome/react/media-store` module, with the following key/value pairs:
@@ -215,53 +290,91 @@ Stream types describe whether the currently loaded media is a live stream or on 
 
 For more on stream types, check out [the docs](../stream-type).
 
-{/** @TODO Add working usage example, either here, in our next example(s), or both (CJP) */}
-
 ### Subtitles objects
 
-Subtitles objects description and table
-
-{/** @TODO Add working usage example, either here, in our next example(s), or both (CJP) */}
+Subtitles objects are the sorts of values provided by captions/subtitles state modeled by the `MediaStore` (e.g. `mediaSubtitlesList`). They're intentionally "shaped" like a [`TextTrack`](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack) object, specifically the `kind`, `label`, and `language` properties.
 
 ### Cue objects
 
-Cue objects description and table
-
-{/** @TODO Add working usage example, either here, in our next example(s), or both (CJP) */}
+Cue objects are the sorts of values provided by state modeled by the `MediaStore` provided by a text track's cues (e.g. `mediaChaptersCues`). They're intentionally "shaped" like a [`VTTCue`](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue) object, specifically the `text`, `startTime`, and `endTime` properties.
 
 ### Rendition objects
 
-https://github.com/muxinc/media-tracks/tree/main?tab=readme-ov-file#interfaces
+Rendition objects are the sorts of values provided to represent different video renditions, or "qualities" for a media stream for `MediaStore` state like `mediaRenditionList`. This information isn't natively supported by an `HTMLMediaElement`, so it will require a custom media element like [`<mux-video>`](../media-elements/mux-video). The object looks like this:
 
-src?: string;
-id?: string;
-width?: number;
-height?: number;
-bitrate?: number;
-frameRate?: number;
-codec?: string;
-get selected(): boolean;
+```ts
+type Rendition = {
+  src?: string;
+  id?: string;
+  width?: number;
+  height?: number;
+  bitrate?: number;
+  frameRate?: number;
+  codec?: string;
+  readonly selected: boolean;
+};
+```
 
-{/** @TODO Add working usage example, either here, in our next example(s), or both (CJP) */}
+For more information and a "mixin" implementation, see the [media-tracks](https://github.com/muxinc/media-tracks/tree/main?tab=readme-ov-file#interfaces) project.
 
 ### AudioTrack objects
 
-https://github.com/muxinc/media-tracks/tree/main?tab=readme-ov-file#interfaces
 
-id?: string;
-kind?: string;
-label: string;
-language: string;
-get enabled(): boolean;
+Audio Track objects are the sorts of values provided to represent different audio tracks such as alternative languages or descriptive audio for visually impaired folks. This information isn't natively supported by an `HTMLMediaElement`, so it will require a custom media element like [`<mux-video>`](../media-elements/mux-video). The object looks like this:
 
-{/** @TODO Add working usage example, either here, in our next example(s), or both (CJP) */}
+```ts
+type AudioTrack = {
+  id?: string;
+  kind?: string;
+  label: string;
+  language: string;
+  enabled: boolean;
+};
+```
 
-## Make media state change requests with `useMediaDispatch()`
+For more information and a "mixin" implementation, see the [media-tracks](https://github.com/muxinc/media-tracks/tree/main?tab=readme-ov-file#interfaces) project.
+
+## `useMediaDispatch()`
+
+This is the primary way to make media state change requests to the `MediaStore`. To use it, you simply invoke the `dispatch` function returned from `useMediaDispatch()` with the action `type` (and `detail`, where relevant), like this:
+
+```tsx
+const dispatch = useMediaDispatch();
+// ... additional code
+return (
+  <button onClick={() => {
+    const type = MediaActionTypes.MEDIA_TOGGLE_SUBTITLES_REQUEST;
+    dispatch({ type });
+  }}>Toggle Subtitles</button>
+);
+```
+
+Below is a list of all available `MediaActionTypes` for media state change requests with descriptions.
 
 ### MediaActionTypes
 
-DESCRIPTION + DESCRIPTION OF `MediaActionTypes`
+For convience, we provide a `MediaActionTypes` constants object for all well defined media state change request types. Our naming convention is to use "CONSTANT_CASE" (aka UPPERCASE_SNAKE_CASE) for the keys, so e.g. `'mediaplayrequest'` would be `MediaActionTypes.MEDIA_PLAY_REQUEST`.
 
-| `type` | `detail` | Description |
-|--------|----------|-------------|
-|
+| `key` |`type` | `detail` | Description |
+|-------|-------|----------|-------------|
+|`MEDIA_PLAY_REQUEST`|`'mediaplayrequest'`|N/A|Request beginning/renewing playback.|
+|`MEDIA_PAUSE_REQUEST`|`'mediapauserequest'`|N/A|Request pausing playback.|
+|`MEDIA_MUTE_REQUEST`|`'mediamuterequest'`|N/A|Request muting volume.|
+|`MEDIA_UNMUTE_REQUEST`|`'mediaunmuterequest'`|N/A|Request unmuting volume.|
+|`MEDIA_VOLUME_REQUEST`|`'mediavolumerequest'`|`number` (0,1)|Request changing the volume.|
+|`MEDIA_SEEK_REQUEST`|`'mediaseekrequest'`|`number`|Request seeking to some time on the media timeline.|
+|`MEDIA_SEEK_TO_LIVE_REQUEST`|`'mediaseektoliverequest'`|N/A|Request seeking to the live edge of the media. Only relevant for live/DVR.|
+|`MEDIA_PLAYBACK_RATE_REQUEST`|`'mediaplaybackraterequest'`|`number` (0,3)|Request changing the rate of media playback.|
+|`MEDIA_ENTER_FULLSCREEN_REQUEST`|`'mediaenterfullscreenrequest'`|N/A|Request entering fullscreen mode.|
+|`MEDIA_EXIT_FULLSCREEN_REQUEST`|`'mediaexitfullscreenrequest'`|N/A|Request exiting fullscreen mode.|
+|`MEDIA_ENTER_PIP_REQUEST`|`'mediaenterpiprequest'`|N/A|Request entering picture-in-picture mode.|
+|`MEDIA_EXIT_PIP_REQUEST`|`'mediaexitpiprequest'`|N/A|Request exiting picture-in-picture mode.|
+|`MEDIA_SHOW_SUBTITLES_REQUEST`|`'mediashowsubtitlesrequest'`|[`TextTrackLike\|TextTrackLike[]`](#subtitles-objects)|Request to show one or more of the available subtitles during playback.|
+|`MEDIA_DISABLE_SUBTITLES_REQUEST`|`'mediadisablesubtitlesrequest'`|[`TextTrackLike\|TextTrackLike[]`](#subtitles-objects)|Request to disable one or more of the currently showing subtitles.|
+|`MEDIA_TOGGLE_SUBTITLES_REQUEST`|`'mediatogglesubtitlesrequest'`|`boolean?`|Request to toggle between showing or disabling subtitles, with an optional `detail` to expicitly request showing (`true`) or disabled (`false`). When more than one subtitle/caption track is available, `MediaStore` will rely on heuristics like prior user selections and [`navigator.languages`](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/languages) to pick which subtitle to show.|
+|`MEDIA_PREVIEW_REQUEST`|`'mediapreviewrequest'`|`number`|Request available preview state for some time on the media timeline.|
+|`MEDIA_AIRPLAY_REQUEST`|`'mediaairplayrequest'`|N/A|Request [Apple AirPlay](https://developer.apple.com/airplay/) remote playback.|
+|`MEDIA_ENTER_CAST_REQUEST`|`'mediaentercastrequest'`|N/A|Request starting [Google Cast](https://developers.google.com/cast) remote playback.|
+|`MEDIA_EXIT_CAST_REQUEST`|`'mediaexitcastrequest'`|N/A|Request ending [Google Cast](https://developers.google.com/cast) remote playback.|
+|`MEDIA_RENDITION_REQUEST`|`'mediarenditionrequest'`|`string` (id)|Request playing a specific video rendition. A value of `undefined` means the media element should automatically select renditions (typically based on e.g. network conditions and the like).|
+|`MEDIA_AUDIO_TRACK_REQUEST`|`'mediaaudiotrackrequest'`|`string` (id)|Request playing a specific audio track (e.g. audio in a different language).|
