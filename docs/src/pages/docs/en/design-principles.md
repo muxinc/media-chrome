@@ -17,7 +17,7 @@ Web components allow us to "extend the browser", and in this project we take tha
 
 ## Elements should be independently usable
 
-A goal of this project is that each UI element could be used independently of the project, in the same way an HTML Button can be used independently of an HTML Form. This will make it possible for other players to share these base elements, and open the door for unpredicable uses.
+A goal of this project is that each UI element could be used independently of the project, in the same way an HTML Button can be used independently of an HTML Form. This will make it possible for other players to share these base elements, and open the door for unpredictable uses.
 
 ## The architecture should be compatible with unidirectional data flow
 
