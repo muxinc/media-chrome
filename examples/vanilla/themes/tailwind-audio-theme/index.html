@@ -4,15 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
     <title>Media Theme TailwindCSS Audio</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preload" fetchpriority="high" as="style" href="https://media-chrome.mux.dev/examples/vanilla/themes/tailwind-audio-theme/output.css">
     <script type="module" src="../../../../dist/index.js"></script>
     <script type="module" src="../../../../dist/media-theme-element.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="max-w-screen-md h-5/6 flex flex-col items-center justify-center p-5 mx-auto">
 
     <template id="media-theme-tailwind-audio">
       <style>
-        @import "./output.css";
+        @import "https://media-chrome.mux.dev/examples/vanilla/themes/tailwind-audio-theme/output.css";
       </style>
 
       <svg class="hidden">

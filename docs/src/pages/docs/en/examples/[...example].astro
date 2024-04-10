@@ -96,6 +96,14 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
       }
     },
     {
+      params: { example: 'tailwind-audio-theme' },
+      props: {
+        title: 'Tailwind Audio Theme',
+        group: 'Themes',
+        sourcePath: 'examples/vanilla/themes/tailwind-audio-theme/index.html',
+      }
+    },
+    {
       params: { example: 'minimal-theme' },
       props: {
         title: 'Minimal Theme',
@@ -179,6 +187,11 @@ const head = html.childNodes.find(node => node.nodeName === 'head')
 const body = html.childNodes.find(node => node.nodeName === 'body')
 const main = body.childNodes.find(node => node.nodeName === 'main')
 
+const htmlClass = html.attrs.find(attr => attr.name === 'class')?.value ?? ''
+const htmlClassArgs = htmlClass.split(' ').map(c => `'${c}'`).join(', ')
+const bodyClass = body.attrs.find(attr => attr.name === 'class')?.value ?? ''
+const bodyClassArgs = bodyClass.split(' ').map(c => `'${c}'`).join(', ')
+
 const scripts = head.childNodes
   .filter(node => node.nodeName === 'script' && node.attrs.find(attr => attr.name === 'src' && attr.value))
   .map(node => ({
@@ -226,6 +239,15 @@ transformVttSrc(body)
 const repoRootDir = path.resolve('../')
 
 const files = {}
+
+files['copy.js'] = {
+  code: `
+    ${htmlClass ? `document.documentElement.classList.add(${htmlClassArgs});` : ''}
+    ${bodyClass ? `document.body.classList.add(${bodyClassArgs});` : ''}
+  `,
+  hidden: true,
+}
+
 try {
   for (let { src } of validScripts) {
     const baseDir = src.includes('/src/js/') ? path.resolve(process.cwd(), '../src/js/') :
