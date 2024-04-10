@@ -24,7 +24,7 @@ Since audio players don’t use the same visual layout as video players do, we c
 </media-controller>
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@1/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@3/+esm"></script>
 
 <media-controller audio>
   <audio
