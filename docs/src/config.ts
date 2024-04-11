@@ -107,10 +107,6 @@ export const SIDEBAR: Sidebar = {
       { text: 'Share themes', link: 'docs/en/themes/share' },
 
     ],
-    React: [
-      { text: 'Get started', link: 'docs/en/react/get-started' },
-      { text: 'MediaStore Hooks', link: 'docs/en/react/hooks' },
-    ],
     Advanced: [
       { text: 'Stream Type', link: 'docs/en/stream-type' },
       { text: 'Design Principles', link: 'docs/en/design-principles' },
