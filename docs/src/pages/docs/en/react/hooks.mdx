@@ -61,7 +61,7 @@ const PlayerContainer = ({ children }) => {
 };
 
 const PlayButton = () => {
-  // Dispatch media state change requests using useDispatch()
+  // Dispatch media state change requests using useMediaDispatch()
   const dispatch = useMediaDispatch();
   // Get the latest media state you care about in your component using useMediaSelector()
   const mediaPaused = useMediaSelector(state => state.mediaPaused);
@@ -82,7 +82,7 @@ const PlayButton = () => {
 };
 
 const FullscreenButton = () => {
-  // Dispatch media state change requests using useDispatch()
+  // Dispatch media state change requests using useMediaDispatch()
   const dispatch = useMediaDispatch();
   // Get the latest media state you care about in your component using useMediaSelector()
   const mediaIsFullscreen = useMediaSelector(state => state.mediaIsFullscreen);
