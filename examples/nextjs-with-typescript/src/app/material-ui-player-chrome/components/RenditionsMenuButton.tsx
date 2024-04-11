@@ -49,18 +49,22 @@ const RenditionsMenuButton = () => {
     (state) => state.mediaRenditionSelected
   );
 
+  const label = open ? 'close renditions menu' : 'select rendition';
+
   return (
     <>
-      <IconButton
-        id="renditions"
-        aria-controls={open ? 'close renditions' : 'select rendition'}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        color="primary"
-        onClick={handleClick}
-      >
-        <GraphicEqIcon />
-      </IconButton>
+      <Tooltip title={label} placement="top">
+        <IconButton
+          id="renditions"
+          aria-controls={label}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          color="primary"
+          onClick={handleClick}
+        >
+          <GraphicEqIcon />
+        </IconButton>
+      </Tooltip>
       <Menu
         id="renditions"
         aria-labelledby="renditions"

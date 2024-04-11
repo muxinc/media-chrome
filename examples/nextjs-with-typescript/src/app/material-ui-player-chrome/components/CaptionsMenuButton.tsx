@@ -51,21 +51,25 @@ const CaptionsMenuButton = () => {
   );
   const subtitlesOff = !mediaSubtitlesShowing?.length;
 
+  const label = open ? 'close subtitles menu' : 'select subtitles';
+
   return (
     <>
-      <IconButton
-        id="playback-rate"
-        aria-controls={open ? 'close playback rate' : 'select playback rate'}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        color="primary"
-        onClick={handleClick}
-      >
-        {subtitlesOff ? <ClosedCaptionDisabledIcon /> : <ClosedCaptionIcon />}
-      </IconButton>
+      <Tooltip title={label} placement="top">
+        <IconButton
+          id="subtitles"
+          aria-controls={label}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          color="primary"
+          onClick={handleClick}
+        >
+          {subtitlesOff ? <ClosedCaptionDisabledIcon /> : <ClosedCaptionIcon />}
+        </IconButton>
+      </Tooltip>
       <Menu
-        id="playback-rate"
-        aria-labelledby="playback-rate"
+        id="subtitles"
+        aria-labelledby="subtitles"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}

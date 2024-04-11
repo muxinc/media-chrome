@@ -49,21 +49,25 @@ const AudioMenuButton = () => {
     (state) => state.mediaAudioTrackEnabled
   );
 
+  const label = open ? 'close audio tracks menu' : 'select audio track';
+
   return (
     <>
-      <IconButton
-        id="renditions"
-        aria-controls={open ? 'close renditions' : 'select rendition'}
-        aria-haspopup="true"
-        aria-expanded={open ? 'true' : undefined}
-        color="primary"
-        onClick={handleClick}
-      >
-        <TuneIcon />
-      </IconButton>
+      <Tooltip title={label} placement="top">
+        <IconButton
+          id="audio-tracks"
+          aria-controls={label}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+          color="primary"
+          onClick={handleClick}
+        >
+          <TuneIcon />
+        </IconButton>
+      </Tooltip>
       <Menu
-        id="renditions"
-        aria-labelledby="renditions"
+        id="audio-tracks"
+        aria-labelledby="subtitles"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}

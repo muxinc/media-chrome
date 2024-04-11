@@ -1,8 +1,5 @@
 import { Box, Stack } from '@mui/material';
-import {
-  useMediaDispatch,
-  useMediaSelector,
-} from 'media-chrome/react/media-store';
+import { useMediaSelector } from 'media-chrome/react/media-store';
 import CurrentTimeDisplay from './CurrentTimeDisplay';
 import Seekbar from './Seekbar';
 import DurationDisplay from './DurationDisplay';
