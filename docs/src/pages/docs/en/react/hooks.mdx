@@ -1,0 +1,379 @@
+---
+title: MediaStore React Hooks
+description: MediaStore React Hooks
+layout: ../../../../layouts/MainLayout.astro
+---
+
+import SandpackContainer from "../../../../components/SandpackContainerReact.astro";
+import { MediaActionTypes, MediaStateNames } from '../../../../../../dist/react/media-store';
+
+If you would rather write your own react components, Media Chrome has a React [`<Context.Provider>`](https://react.dev/reference/react/createContext#provider) and corresponding [hooks](https://react.dev/reference/react/hooks) to directly integrate with its `MediaStore` state management API. These are included in our standard [npm package](https://www.npmjs.com/package/media-chrome).
+
+To use, simply import these from `"media-chrome/react/media-store"`.
+
+## Basic Usage
+
+Media Chrome has a `MediaStore` "under the hood" that manages all media state and media state change requests.
+
+If you're familiar with [React Redux](https://react-redux.js.org/introduction/getting-started) and its [`useSelector()`](https://react-redux.js.org/api/hooks#useselector) and [`useDispatch()`](https://react-redux.js.org/api/hooks#usedispatch) hooks, working with Media Chrome's `MediaStore` React
+integration should feel familiar. Here's a basic example of using the provider and hooks:
+
+<SandpackContainer
+  stacked
+  reversed
+  editorHeight={760}
+  previewAspectRatio={1920 / (1080 + 20)}
+  customSetup={{
+    dependencies: {
+      "media-chrome": "latest"
+    }
+  }}
+  template="vite-react-ts"
+  files={{
+    'App.tsx': `import {
+  MediaProvider,
+  useMediaDispatch,
+  useMediaSelector,
+  useMediaRef,
+  useMediaFullscreenRef,
+  MediaActionTypes,
+} from 'media-chrome/react/media-store';
+
+const Video = () => {
+  // "Wire up" the <video/> element to the MediaStore using useMediaRef()
+  const mediaRef = useMediaRef();
+  return (
+    <video
+      ref={mediaRef}
+      style={{ width: '100vw' }}
+      src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+      preload="auto"
+      muted
+      crossOrigin=""
+    />
+  );
+};
+
+const PlayerContainer = ({ children }) => {
+  // "Wire up" the element you want the MediaStore to target for fullscreen using useMediaFullscreenRef()
+  const mediaFullscreenRef = useMediaFullscreenRef();
+  return (<div ref={mediaFullscreenRef}>{children }</div>);
+};
+
+const PlayButton = () => {
+  // Dispatch media state change requests using useMediaDispatch()
+  const dispatch = useMediaDispatch();
+  // Get the latest media state you care about in your component using useMediaSelector()
+  const mediaPaused = useMediaSelector(state => state.mediaPaused);
+  return (
+    <button
+      onClick={() => {
+        // Select from a set of well-defined actions for state change requests
+        // using MediaActionTypes
+        const type = mediaPaused
+          ? MediaActionTypes.MEDIA_PLAY_REQUEST
+          : MediaActionTypes.MEDIA_PAUSE_REQUEST;
+        dispatch({ type });
+      }}
+    >
+      {mediaPaused ? 'Play' : 'Pause'}
+    </button>
+  );
+};
+
+const FullscreenButton = () => {
+  // Dispatch media state change requests using useMediaDispatch()
+  const dispatch = useMediaDispatch();
+  // Get the latest media state you care about in your component using useMediaSelector()
+  const mediaIsFullscreen = useMediaSelector(state => state.mediaIsFullscreen);
+  return (
+    <button
+      onClick={() => {
+        // Select from a set of well-defined actions for state change requests
+        // using MediaActionTypes
+        const type = mediaIsFullscreen
+          ? MediaActionTypes.MEDIA_EXIT_FULLSCREEN_REQUEST
+          : MediaActionTypes.MEDIA_ENTER_FULLSCREEN_REQUEST;
+        dispatch({ type });
+      }}
+    >
+      {mediaIsFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+    </button>
+  );
+};
+
+const Player = () => {
+  // Get access to Media Chrome's state management in your components using <MediaProvider/>
+  // NOTE: Unlike many other providers (including react-redux's Provider), you'll likely want to keep
+  // your <MediaProvider/> in or close to your <Player/> component)
+  return (
+    <MediaProvider>
+      <PlayerContainer>
+        <Video />
+        <div>
+          <PlayButton />
+          <FullscreenButton />
+        </div>
+      </PlayerContainer>
+    </MediaProvider>
+  );
+};
+
+export default Player;`}}
+/>
+
+For a full simple example of working with `MediaStore` in React, check out our [NextJS example page](https://media-chrome-demo-nextjs-mux.vercel.app/media-store-hooks) ([source](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/media-store-hooks/page.tsx)).
+
+For a slightly more advanced example that uses [Material UI](https://mui.com/material-ui/getting-started/) and the [`<mux-video>` custom media element](https://github.com/muxinc/elements/tree/main/packages/mux-video), you can check out this other
+[NextJS Example page](https://media-chrome-demo-nextjs-mux.vercel.app/material-ui-player-chrome) ([source](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/material-ui-player-chrome/page.tsx)).
+
+## `<MediaProvider>`
+
+This is the context provider for media state and media state change requests. Use it like you would other [react context providers](https://react.dev/reference/react/createContext#provider), i.e.:
+
+```tsx
+return (
+  <MediaProvider>
+    {/* descendant components that
+      - use media state,
+      - make media state change requests, or
+      - are the source of media state, e.g. a <video> component
+    */}
+  </MediaProvider>
+);
+```
+
+## `useMediaRef()`
+
+This is the primary way to wire up a media element to both get the latest media state using [`useMediaSelector()`](#usemediaselector) and make state change requests using [`useMediaDispatch()`](#useMediaDispatch). For most use cases, it's as simple as:
+
+```tsx
+const mediaRef = useMediaRef();
+// ... additional code
+return (
+  <video
+    ref={mediaRef}
+    // ... additional props
+  />
+);
+```
+
+Note that the `MediaStore` also supports extended state like [video renditions](#rendition-objects) and [audio tracks](#audiotrack-objects) that are not available "out of the box" with e.g. a `<video>` element. To take advantage of these, you can rely on a web-component based custom media element like the [`<mux-video>` custom media element](https://github.com/muxinc/elements/tree/main/packages/mux-video), where you'd wire it up in exactly the same way, e.g.:
+
+```tsx
+// import the custom element
+import '@mux/mux-video';
+
+// ...
+
+const mediaRef = useMediaRef();
+// ... additional code
+return (
+  <mux-video
+    ref={mediaRef}
+    // ... additional props
+  />
+);
+```
+
+You can find a slightly advanced example of this usage [here](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/material-ui-player-chrome/components/Video.tsx).
+
+## `useMediaFullscreenRef()`
+
+In order to make sure your custom controls show up while the video is in fullscreen, you'll need to wrap your UI up in a component that will serve as your root fullscreen element. To wire this up to the `MediaStore`, use `useMediaFullscreenRef()`. For most use cases, it's as simple as:
+
+```tsx
+const fullscreenRef = useMediaFullscreenRef();
+// ... additional code
+return (
+  <div
+    ref={fullscreenRef}
+    // ... additional props
+  >
+  {/* UI controls, video element, etc. should be descendent components in here */}
+  </div>
+);
+```
+
+You can find a simple example of using `useMediaFullscreenRef()` [here](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/media-store-hooks/ReactPlayer.tsx), or a slightly more advanced example [here](https://github.com/muxinc/media-chrome/blob/main/examples/nextjs-with-typescript/src/app/material-ui-player-chrome/components/PlayerContainer.tsx).
+
+## `useMediaSelector()`
+
+This is the primary way to get the latest media state from the `MediaStore`. To use it, you simply pass in a "selector function" to grab the state you need for a particular component, like this:
+
+```tsx
+const mediaMuted = useMediaSelector(state => state.mediaMuted);
+```
+
+Below is a list of all available `MediaState` properties with descriptions.
+
+### `MediaState` properties
+
+| Name | Type | Description |
+|------|------|-------------|
+|`mediaPaused`|`boolean`|`true` if the media is paused, otherwise `false` (i.e. when attempting to play).|
+|`mediaHasPlayed`|`boolean`|`true` if the currently loaded media has played, otherwise `false`. Helpful for things like initial UI transitions or gating whether or not to show a loading indicator on initial media load.|
+|`mediaLoading`|`boolean`|`true` if the media is loading content needed to play for the current playhead time, otherwise `false`. Helpful for conditionally showing a loading indicator and possibly hiding/disabling other UI components.|
+|`mediaEnded`|`boolean`|`true` if the media has ended, otherwise `false`. Gets reset from things like replaying the media.|
+|`mediaPlaybackRate`|`number`|A number representing a multiplier for how fast media is playing or will play. The majority of playback environments have a minimum value of `0` and a maximum value of no more than `3`.|
+|`mediaCurrentTime`|`number`|A number representing the current playhead time of the media.|
+|`mediaDuration`|`number`|A number representing the total duration of the currently loaded media. For live content that has not ended, this value should be `Infinity`.|
+|`mediaSeekable`|`[number,number]`|A tuple representing the earliest and latest media time, respectively, that can be played or seeked to for the media. For non-live media, this will typically be `[0, mediaDuration]`.|
+|`mediaBuffered`|`[number,number][]`|An array of tuples representing the media currently loaded and buffered for playback. Helpful for "fancier" seek bar UIs that indicate what's in the buffer.|
+|`mediaMuted`|`boolean`|`true` if the media is muted, otherwise `false`.|
+|`mediaVolume`|`number`|A number from 0 to 1 representing the current volume of the media. Not available in all playback environments.|
+|`mediaVolumeLevel`|[`VolumeLevels`](#volume-levels)|A convenience state that combines the muted and volume states and translates it into a set of well-defined "levels". Helpful for things like dynamic icons on mute/volume buttons indicating the current effective volume.|
+|`mediaIsFullscreen`|`boolean`|`true` when playback is in fullscreen mode, otherwise `false`. Not available in all playback environments.|
+|`mediaIsPip`|`boolean`|`true` when playback is in picture-in-picture mode, otherwise `false`. Not available in all playback environments.|
+|`mediaSubtitlesList`|[`TextTrackLike[]`](#subtitles-objects)|A list of all subtitle and closed caption tracks available for the currently loaded media. If empty, that means no subtitles/captions are currently available for the media.|
+|`mediaSubtitlesShowing`|[`TextTrackLike[]`](#subtitles-objects)|A list of all subtitle and closed caption tracks currently showing. Typically will be at most one.|
+|`mediaChaptersCues`|[`CueLike[]`](#cue-objects)|A list of all available chapter objects for the currently loaded media, based on the first ["chapters" `TextTrack`](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/kind) available.|
+|`mediaPreviewTime`|`number`| A number representing the the media time to "preview". Helpful for things like "fancier" seek bar UIs that display preview information when e.g. hovering over a particular position. Used to derive other preview state properties. Setting to `undefined` will clear all preview state properties. See the [`mediapreviewrequest` state change request type](#mediaactiontypes) for more.|
+|`mediaPreviewImage`|`string`| The URL for a preview image tiles source, derived from a [TextTrack](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack) that conforms with [this implementation](https://docs.mux.com/guides/create-timeline-hover-previews#add-timeline-hover-previews-to-your-player), determined by the currently set `mediaPreviewTime`.|
+|`mediaPreviewCoords`|`[number, number, number, number]`| The `[x, y, width, height]` coordinates within the `mediaPreviewImage`'s tiles for the specific tile image to preview, determined by the currently set `mediaPreviewTime`.|
+|`mediaPreviewChapter`|`string`| The text from the `mediaPreviewChaptersCues` cue to preview, determined by the currently set `mediaPreviewTime` |
+|`mediaStreamType`|[`StreamTypes[]`](#stream-types)| A value representing whether the currently loaded media is `"live"` or `"on-demand"`, with `"unknown"` meaning that not enough information has been loaded for the media to determine the stream typeof. Helpful for displaying different UIs for `"live"` vs. `"on-demand"`. <br/><br/> \* Best with a custom media element like [`<mux-video>`](../media-elements/mux-video), with a fallback of inferring `"live"` when duration is `Infinity`. |
+|`mediaTargetLiveWindow`|`number`| A number representing how far back from the live edge (`mediaSeekable` end) a user should be allowed to seek, in seconds, for "DVR"-style functionality, where `Infinity` means users can seek back to `mediaSeekable` start. Only applicable when `mediaStreamType` is `"live"`. Helpful for customizing different UIs for "DVR" vs. "non-DVR" `"live"`. <br/><br/> \* Requires a custom media element like [`<mux-video>`](../media-elements/mux-video). |
+|`mediaTimeIsLive`|`boolean`| A boolean representing when playback at a particular playhead be treated as "playing live". Only applicable when `mediaStreamType` is `"live"`. Helpful for live indicator UIs. <br/><br/> \* Best with a custom media element like [`<mux-video>`](../media-elements/mux-video), with a fallback of playing 10 within ten seconds of the live edge (`mediaSeekable` end) as playing live. |
+|`mediaRenditionList`|[`Rendition[]`](#rendition-objects)| A list of the available video renditions, or quality levels, for the currently loaded media. Helpful for rendition/quality selector UIs. <br/><br/> \* Requires a custom media element like [`<mux-video>`](../media-elements/mux-video). |
+|`mediaRenditionSelected`|`string`\|`undefined`| `id` of the currently selected video rendition, where `undefined` means renditions will be automatically selected/changed, typically based on things like network conditions. Helpful for rendition/quality selector UIs. <br/><br/> \* Requires a custom media element like [`<mux-video>`](/docs/en/media-elements/mux-video). |
+|`mediaAudioTrackList`|[`AudioTrack[]`]|A list of the available audio tracks for the currently loaded media. Helpful for audio selector UIs. <br/><br/> \* Requires a custom media element like [`<mux-video>`](../media-elements/mux-video). |
+|`mediaAudioTrackEnabled`|`string`| `id` of the currently enabled (aka audible when playing with volume) audio track <br/><br/> \* Requires a custom media element like [`<mux-video>`](../media-elements/mux-video). |
+|`mediaIsCasting`|`boolean`|`true` when playback is currently being played on a remote device using [Google Cast](https://developers.google.com/cast). Not available in all playback environments. <br/><br/> \* Requires a custom media element like [`<mux-video>`](../media-elements/mux-video). |
+|`mediaIsAirplaying`|`boolean`|`true` when playback is currently being played on a remote device using [Apple AirPlay](https://developer.apple.com/airplay/). Not available in all playback environments.|
+|`mediaVolumeUnavailable`|[`AvailabilityStates`](#availability-states)\|`undefined`|Describes the availability of volume control in your current playback environment. `undefined` means feature is available.|
+|`mediaFullscreenUnavailable`|[`AvailabilityStates`](#availability-states)\|`undefined`|Describes the availability of watching in fullscreen mode in your current playback environment. `undefined` means feature is available.|
+|`mediaPipUnavailable`|[`AvailabilityStates`](#availability-states)\|`undefined`|Describes the availability of watching in picture-in-picture mode in your current playback environment. `undefined` means feature is available.|
+|`mediaRenditionUnavailable`|[`AvailabilityStates`](#availability-states)\|`undefined`|Describes the availability of renditions (i.e. different quality/resolution versions of the media) in your current playback environment. `undefined` means feature is available.|
+|`mediaAudioTrackUnavailable`|[`AvailabilityStates`](#availability-states)\|`undefined`|Describes the availability of multiple/alternate audio tracks in your current playback environment. `undefined` means feature is available.|
+|`mediaCastUnavailable`|[`AvailabilityStates`](#availability-states)\|`undefined`|Describes the availability of [Google Cast](https://developers.google.com/cast) in your current playback environment. `undefined` means feature is available.|
+|`mediaAirplayUnavailable`|[`AvailabilityStates`](#availability-states)\|`undefined`|Describes the availability of [AirPlay](https://developer.apple.com/airplay/) in your current playback environment. `undefined` means feature is available.|
+
+### Availability states
+
+Availability states describe whether or not a particular feature or state is usable in the current context. By convention, the availability media state property's name corresponds to the other, related [media state(s)](#mediastate-properties) and [state change request types](#mediaactiontypes) it describes. So e.g. `mediaVolumeUnavailable` corresponds to the `mediaVolume` state and the `"mediavolumerequest"` state change request type; `"mediaCastUnavailable"` corresponds to the `mediaIsCasting` state and the `"mediaentercastrequest"` and `"mediaexitcastrequest"` state change request types; and so on.
+
+Also by convention, these state properties will all describe different kinds of *unavailability*. This allows users to ignore availability states for simple UI implementations. It also allows users to treat availability states as "truthy" values when they don't need to distinguish between different types of (un)availability. For example:
+
+```ts
+const airplayAvailable = useSelector(state => !state.mediaAirplayUnavailable);
+```
+
+Below are the different categories of unavailability. As mentioned above, `undefined` means the feature is available in the current playback context. For convenience, we provide the `AvailabilityStates` constants object as one of our exports in the `media-chrome/react/media-store` module, with the following key/value pairs:
+
+| Key | Value | Description |
+|------|-------|-------------|
+|`UNAVAILABLE`|`"unavailable"`|This means the corresponding state and functionality is *currently* unavailable in this playback context, but may become available at a later point. Examples include AirPlay in Safari while no remote playback targets are detected on the network or using a custom media element that supports multiple audio tracks but playing media that only has one (or no) audio tracks.|
+|`UNSUPPORTED`|`"unsupported"`|This means the corresponding state and functionality will never be available in this playback context. Examples include picture-in-picture on FireFox or AirPlay on non-Safari browsers.|
+
+### Volume levels
+
+Volume levels, provided via the [`mediaVolumeLevel` state](#mediastate-properties), are a convenience state based on the `mediaVolume` and `mediaMuted` states which indicate how loud the "effective volume" currently. For convenience, we provide the `VolumeLevels` constants object as one of our exports in the `media-chrome/react/media-store` module, with the following key/value pairs:
+
+| Key | Value | Description |
+|------|-------|-------------|
+|`HIGH`|`"high"`| Means the media is unmuted and the volume is >= 75% (0.75).|
+|`MEDIUM`|`"medium"`| Means the media is unmuted and the volume is >= 50% and \<75% (0.5, 0.75 respectively).|
+|`LOW`|`"low"`| Means the media is unmuted and the volume is \< 50% but not 0% (0.5, 0 respectively).|
+|`OFF`|`"off"`| Means the media is either muted or set to 0% (0).|
+
+### Stream types
+
+Stream types describe whether the currently loaded media is a live stream or on demand. This can be helpful if your UI will potentially be used for both live and on demand content, and you want to be able to show different controls for each (e.g. hiding your seek bar for live). For full functionality, this relies on custom media elements like `<mux-video>`, though the `MediaStore` will fall back to checking if the media element has a `duration` of `Infinity` just in case you're just using e.g. a `<video>` element with [`hls.js`](https://github.com/video-dev/hls.js/blob/master/docs/API.md#livedurationinfinity). Since this is determined based on the loaded media, which is an asynchronous process, there is also an `"unknown"` value for initial load cases. For convenience, we provide the `StreamTypes` constants object as one of our exports in the `media-chrome/react/media-store` module, with the following key/value pairs:
+
+| Key | Value | Description |
+|------|-------|-------------|
+|`LIVE`|`"live"`| Means the currently loaded media is a live stream.|
+|`ON_DEMAND`|`"on-demand"`| Means the currently loaded media is on demand or "static" content (e.g. a simple mp4 source).|
+|`UNKNOWN`|`"unknown"`| Means the media hasn't loaded enough information yet to determine whether it's live or on demand.|
+
+For more on stream types, check out [the docs](../stream-type).
+
+### Subtitles objects
+
+Subtitles objects are the sorts of values provided by captions/subtitles state modeled by the `MediaStore` (e.g. `mediaSubtitlesList`). They're intentionally "shaped" like a [`TextTrack`](https://developer.mozilla.org/en-US/docs/Web/API/TextTrack) object, specifically the `kind`, `label`, and `language` properties.
+
+### Cue objects
+
+Cue objects are the sorts of values provided by state modeled by the `MediaStore` provided by a text track's cues (e.g. `mediaChaptersCues`). They're intentionally "shaped" like a [`VTTCue`](https://developer.mozilla.org/en-US/docs/Web/API/VTTCue) object, specifically the `text`, `startTime`, and `endTime` properties.
+
+### Rendition objects
+
+Rendition objects are the sorts of values provided to represent different video renditions, or "qualities" for a media stream for `MediaStore` state like `mediaRenditionList`. This information isn't natively supported by an `HTMLMediaElement`, so it will require a custom media element like [`<mux-video>`](../media-elements/mux-video). The object looks like this:
+
+```ts
+type Rendition = {
+  src?: string;
+  id?: string;
+  width?: number;
+  height?: number;
+  bitrate?: number;
+  frameRate?: number;
+  codec?: string;
+  readonly selected: boolean;
+};
+```
+
+For more information and a "mixin" implementation, see the [media-tracks](https://github.com/muxinc/media-tracks/tree/main?tab=readme-ov-file#interfaces) project.
+
+### AudioTrack objects
+
+
+Audio Track objects are the sorts of values provided to represent different audio tracks such as alternative languages or descriptive audio for visually impaired folks. This information isn't natively supported by an `HTMLMediaElement`, so it will require a custom media element like [`<mux-video>`](../media-elements/mux-video). The object looks like this:
+
+```ts
+type AudioTrack = {
+  id?: string;
+  kind?: string;
+  label: string;
+  language: string;
+  enabled: boolean;
+};
+```
+
+For more information and a "mixin" implementation, see the [media-tracks](https://github.com/muxinc/media-tracks/tree/main?tab=readme-ov-file#interfaces) project.
+
+## `useMediaDispatch()`
+
+This is the primary way to make media state change requests to the `MediaStore`. To use it, you simply invoke the `dispatch` function returned from `useMediaDispatch()` with the action `type` (and `detail`, where relevant), like this:
+
+```tsx
+const dispatch = useMediaDispatch();
+// ... additional code
+return (
+  <button onClick={() => {
+    const type = MediaActionTypes.MEDIA_TOGGLE_SUBTITLES_REQUEST;
+    dispatch({ type });
+  }}>Toggle Subtitles</button>
+);
+```
+
+Below is a list of all available `MediaActionTypes` for media state change requests with descriptions.
+
+### MediaActionTypes
+
+For convience, we provide a `MediaActionTypes` constants object for all well defined media state change request types. Our naming convention is to use "CONSTANT_CASE" (aka UPPERCASE_SNAKE_CASE) for the keys, so e.g. `'mediaplayrequest'` would be `MediaActionTypes.MEDIA_PLAY_REQUEST`.
+
+| `key` |`type` | `detail` | Description |
+|-------|-------|----------|-------------|
+|`MEDIA_PLAY_REQUEST`|`'mediaplayrequest'`|N/A|Request beginning/renewing playback.|
+|`MEDIA_PAUSE_REQUEST`|`'mediapauserequest'`|N/A|Request pausing playback.|
+|`MEDIA_MUTE_REQUEST`|`'mediamuterequest'`|N/A|Request muting volume.|
+|`MEDIA_UNMUTE_REQUEST`|`'mediaunmuterequest'`|N/A|Request unmuting volume.|
+|`MEDIA_VOLUME_REQUEST`|`'mediavolumerequest'`|`number` (0,1)|Request changing the volume.|
+|`MEDIA_SEEK_REQUEST`|`'mediaseekrequest'`|`number`|Request seeking to some time on the media timeline.|
+|`MEDIA_SEEK_TO_LIVE_REQUEST`|`'mediaseektoliverequest'`|N/A|Request seeking to the live edge of the media. Only relevant for live/DVR.|
+|`MEDIA_PLAYBACK_RATE_REQUEST`|`'mediaplaybackraterequest'`|`number` (0,3)|Request changing the rate of media playback.|
+|`MEDIA_ENTER_FULLSCREEN_REQUEST`|`'mediaenterfullscreenrequest'`|N/A|Request entering fullscreen mode.|
+|`MEDIA_EXIT_FULLSCREEN_REQUEST`|`'mediaexitfullscreenrequest'`|N/A|Request exiting fullscreen mode.|
+|`MEDIA_ENTER_PIP_REQUEST`|`'mediaenterpiprequest'`|N/A|Request entering picture-in-picture mode.|
+|`MEDIA_EXIT_PIP_REQUEST`|`'mediaexitpiprequest'`|N/A|Request exiting picture-in-picture mode.|
+|`MEDIA_SHOW_SUBTITLES_REQUEST`|`'mediashowsubtitlesrequest'`|[`TextTrackLike\|TextTrackLike[]`](#subtitles-objects)|Request to show one or more of the available subtitles during playback.|
+|`MEDIA_DISABLE_SUBTITLES_REQUEST`|`'mediadisablesubtitlesrequest'`|[`TextTrackLike\|TextTrackLike[]`](#subtitles-objects)|Request to disable one or more of the currently showing subtitles.|
+|`MEDIA_TOGGLE_SUBTITLES_REQUEST`|`'mediatogglesubtitlesrequest'`|`boolean?`|Request to toggle between showing or disabling subtitles, with an optional `detail` to expicitly request showing (`true`) or disabled (`false`). When more than one subtitle/caption track is available, `MediaStore` will rely on heuristics like prior user selections and [`navigator.languages`](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/languages) to pick which subtitle to show.|
+|`MEDIA_PREVIEW_REQUEST`|`'mediapreviewrequest'`|`number`|Request available preview state for some time on the media timeline.|
+|`MEDIA_AIRPLAY_REQUEST`|`'mediaairplayrequest'`|N/A|Request [Apple AirPlay](https://developer.apple.com/airplay/) remote playback.|
+|`MEDIA_ENTER_CAST_REQUEST`|`'mediaentercastrequest'`|N/A|Request starting [Google Cast](https://developers.google.com/cast) remote playback.|
+|`MEDIA_EXIT_CAST_REQUEST`|`'mediaexitcastrequest'`|N/A|Request ending [Google Cast](https://developers.google.com/cast) remote playback.|
+|`MEDIA_RENDITION_REQUEST`|`'mediarenditionrequest'`|`string` (id)|Request playing a specific video rendition. A value of `undefined` means the media element should automatically select renditions (typically based on e.g. network conditions and the like).|
+|`MEDIA_AUDIO_TRACK_REQUEST`|`'mediaaudiotrackrequest'`|`string` (id)|Request playing a specific audio track (e.g. audio in a different language).|

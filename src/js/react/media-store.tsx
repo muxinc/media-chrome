@@ -9,8 +9,14 @@ import type {
   MediaStateOwner,
   MediaStore,
 } from '../media-store/media-store';
-import { MediaUIEvents } from '../constants';
 export * as timeUtils from '../utils/time';
+import {
+  MediaUIEvents,
+  MediaUIProps,
+  AvailabilityStates,
+  StreamTypes,
+  VolumeLevels,
+} from '../constants';
 
 /**
  * @description A lookup object for all well-defined action types that can be dispatched
@@ -37,11 +43,27 @@ export * as timeUtils from '../utils/time';
  *
  * @see {@link useMediaDispatch}
  */
+
+export { MediaState };
+
+export { AvailabilityStates, StreamTypes, VolumeLevels };
+
+const {
+  REGISTER_MEDIA_STATE_RECEIVER,
+  UNREGISTER_MEDIA_STATE_RECEIVER,
+  // NOTE: These generic state change requests are not currently supported (CJP)
+  MEDIA_SHOW_TEXT_TRACKS_REQUEST,
+  MEDIA_HIDE_TEXT_TRACKS_REQUEST,
+  ...StateChangeRequests
+} = MediaUIEvents;
+
 export const MediaActionTypes = {
-  ...MediaUIEvents,
+  ...StateChangeRequests,
   MEDIA_ELEMENT_CHANGE_REQUEST: 'mediaelementchangerequest',
   FULLSCREEN_ELEMENT_CHANGE_REQUEST: 'fullscreenelementchangerequest',
 } as const;
+
+export const MediaStateNames = { ...MediaUIProps } as const;
 
 const identity = (x?: any) => x;
 
@@ -202,9 +224,9 @@ export const useMediaRef = () => {
 /**
  * @description This is the primary way to associate a component with the `MediaStore` provided
  * by {@link MediaProvider|`<MediaProvider/>`} to be used as the target for entering fullscreen.
- * To associate the media component, use `useMediaRef` just
+ * To associate the media component, use `useMediaFullscreenRef` just
  * like you would {@link https://react.dev/reference/react/useRef#manipulating-the-dom-with-a-ref|useRef}.
- * Unlike `useRef`, however, "under the hood" `useMediaRef` is actually a
+ * Unlike `useRef`, however, "under the hood" `useMediaFullscreenRef` is actually a
  * {@link https://react.dev/reference/react-dom/components/common#ref-callback|ref callback} function.
  *
  * @example

@@ -91,13 +91,16 @@ export function formatTime(seconds, guide) {
   }
 
   // Check if we need to show hours
+  // @ts-ignore
   h = h > 0 || gh > 0 ? h + ':' : '';
 
   // If hours are showing, we may need to add a leading zero.
   // Always show at least one digit of minutes.
+  // @ts-ignore
   m = ((h || gm >= 10) && m < 10 ? '0' + m : m) + ':';
 
   // Check if leading zero is need for seconds
+  // @ts-ignore
   s = s < 10 ? '0' + s : s;
 
   return (negative ? '-' : '') + h + m + s;

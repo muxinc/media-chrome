@@ -1,12 +1,14 @@
 ---
 title: Media Chrome in React
 description: Media Chrome in React
-layout: ../../../layouts/MainLayout.astro
+layout: ../../../../layouts/MainLayout.astro
 ---
+
+import SandpackContainer from "../../../../components/SandpackContainerReact.astro";
 
 Media Chrome provides a React version of every component to make using Media Chrome in your React app easy and idiomatic. These are included in our standard [npm package](https://www.npmjs.com/package/media-chrome).
 
-To use, simply import any components from `"media-chrome/dist/react"`.
+To use, simply import any components from `"media-chrome/react"`.
 
 ## Components
 
@@ -31,8 +33,18 @@ and so on.
 
 Here's a simple example of what it looks like to use Media Chrome in React with the wrapper components:
 
-```jsx
-import {
+<SandpackContainer
+  stacked
+  reversed
+  editorHeight={760}
+  customSetup={{
+    dependencies: {
+      "media-chrome": "latest"
+    }
+  }}
+  template="vite-react-ts"
+  files={{
+    'App.tsx': `import {
   MediaController,
   MediaControlBar,
   MediaTimeRange,
@@ -42,9 +54,9 @@ import {
   MediaSeekBackwardButton,
   MediaSeekForwardButton,
   MediaMuteButton,
-} from 'media-chrome/dist/react';
+} from 'media-chrome/react';
 
-export const MyComponent = () => {
+const SimplePlayer = () => {
   return (
     <MediaController>
       <video
@@ -66,6 +78,9 @@ export const MyComponent = () => {
     </MediaController>
   );
 };
-```
+
+export default SimplePlayer;`}}
+/>
+
 
 For a full demo, check out our [NextJS Demo App](https://github.com/muxinc/media-chrome/tree/main/examples/nextjs-with-typescript)

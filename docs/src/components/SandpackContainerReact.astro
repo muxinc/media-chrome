@@ -1,5 +1,6 @@
 ---
-import Sandpack from "./Sandpack";
+/** @jsxImportSource react */
+import Sandpack from './SandpackBase';
 
 let {
   editorHeight = 230,
@@ -11,7 +12,11 @@ let {
 
 if (typeof editorHeight === 'number') editorHeight = `${editorHeight}px`;
 ---
-
+<!--
+  @TODO This is basically a duplicate of SandpackContainer.astro but uses SandpackBase instead of the more opinionated Sandpack React component.
+  If we can parameterize which we use in the astro component (or some other way, hacky or otherwise of pivoting for e.g. react examples vs. web component ones),
+  we should refactor back to a single SandpackContainer (CJP)
+-->
 <style is:global define:vars={{ previewAspectRatio, editorHeight }}>
 
   .sp-container {
@@ -138,7 +143,7 @@ if (typeof editorHeight === 'number') editorHeight = `${editorHeight}px`;
   }
 
   .sp-bridge-frame {
-    display: none;
+    color: var(--theme-code-text) !important;
   }
 </style>
 

@@ -8,10 +8,16 @@ import SeekBackwardButton from './SeekBackwardButton';
 import SeekForwardButton from './SeekForwardButton';
 import MuteButton from './MuteButton';
 import VolumeSlider from './VolumeSlider';
-import CaptionsButton from './CaptionsButton';
 import PlaybackRateMenuButton from './PlaybackRateMenuButton';
 import PipButton from './PipButton';
 import FullscreenButton from './FullscreenButton';
+import RenditionsMenuButton from './RenditionsMenuButton';
+import CaptionsMenuButton from './CaptionsMenuButton';
+import { useEffect, useState } from 'react';
+import AudioMenuButton from './AudioMenuButton';
+import TogglePausedGestureRegion from './TogglePausedGestureRegion';
+import SeekBackwardGestureRegion from './SeekBackwardGestureRegion';
+import SeekForwardGestureRegion from './SeekForwardGestureRegion';
 
 /**
  * @description A mostly simple UI of control/display components integrated into the <MediaProvider/>'s MediaStore.
@@ -28,17 +34,24 @@ const ControlsContainer = () => {
   const mediaPaused = useMediaSelector(
     (state) => typeof state.mediaPaused !== 'boolean' || state.mediaPaused
   );
+
+  const [userActive, setUserActive] = useState(false);
+
+  useEffect(() => {});
   return (
     <Stack
+      onMouseMove={() => setUserActive(true)}
+      onMouseLeave={() => setUserActive(false)}
       sx={{
         position: 'absolute',
         top: 0,
         bottom: 0,
         right: 0,
         left: 0,
+        background: 'linear-gradient(to top, rgb(0, 0, 0, 0.5), transparent)',
         // Only show the controls UI when:
-        // 1. the media is paused
-        opacity: mediaPaused ? 1 : 0,
+        // 1. the media is paused or the user is "active" (NOTE: since hover may not apply while e.g. menus are open)
+        opacity: mediaPaused || userActive ? 1 : 0,
         // 2. we're hovering over the player UI *or*
         '&:hover': {
           opacity: 1,
@@ -51,8 +64,24 @@ const ControlsContainer = () => {
         // To do this, you'd want to also show/hide based on taps to the UI, likely with some kind of delay to autohide.
       }}
     >
-      {/* A vertical spacer */}
-      <Box sx={{ flexGrow: 1 }} />
+      {/* A vertical spacer and gesture target container */}
+      <Box sx={{ flexGrow: 1, display: 'flex' }}>
+        <SeekBackwardGestureRegion
+          sx={{
+            width: '10%',
+          }}
+        />
+        <TogglePausedGestureRegion
+          sx={{
+            flexGrow: 1,
+          }}
+        />
+        <SeekForwardGestureRegion
+          sx={{
+            width: '10%',
+          }}
+        />
+      </Box>
       <Stack direction="row" alignItems="center">
         <CurrentTimeDisplay />
         <Seekbar />
@@ -66,8 +95,10 @@ const ControlsContainer = () => {
         <VolumeSlider />
         {/* A horizontal spacer */}
         <Box sx={{ flexGrow: 1 }} />
-        <CaptionsButton />
+        <CaptionsMenuButton />
         <PlaybackRateMenuButton />
+        <RenditionsMenuButton />
+        <AudioMenuButton />
         <PipButton />
         <FullscreenButton />
       </Stack>

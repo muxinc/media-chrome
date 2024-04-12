@@ -24,6 +24,9 @@ const PlayerContainer = ({ children }: { children: ReactNode }) => {
       sx={{
         position: 'relative',
         backgroundColor: 'black',
+        width: '80vw',
+        aspectRatio: '16/9',
+        overflow: 'hidden',
       }}
     >
       {children}
