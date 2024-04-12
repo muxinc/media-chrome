@@ -1,3 +1,14 @@
+## [3.2.1](https://github.com/muxinc/media-chrome/compare/v3.2.0...v3.2.1) (2024-04-12)
+
+
+### Bug Fixes
+
+* jsdelivr pkg name, version regex ([#873](https://github.com/muxinc/media-chrome/issues/873)) ([484f6c3](https://github.com/muxinc/media-chrome/commit/484f6c30785d7ee4d8e41514a6a857ff04f3e7eb))
+* minimal example ([#869](https://github.com/muxinc/media-chrome/issues/869)) ([d32916c](https://github.com/muxinc/media-chrome/commit/d32916cea5ac9707b61880e2b55b15d4adfe6d7c))
+* react media store ([#880](https://github.com/muxinc/media-chrome/issues/880)) ([16e43f2](https://github.com/muxinc/media-chrome/commit/16e43f2a8dd8ce877e54c9243563d095ef9889ca))
+
+
+
 # [3.2.0](https://github.com/muxinc/media-chrome/compare/v3.1.1...v3.2.0) (2024-03-26)
 
 
