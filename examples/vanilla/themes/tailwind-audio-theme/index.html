@@ -68,37 +68,29 @@
 
         <slot name="media" slot="media"></slot>
 
-        <media-time-range class="block @md:hidden w-full h-2 min-h-0 p-0
-            bg-slate-50 focus-visible:ring-slate-700 focus-visible:ring-2" style="
+        <media-time-range class="block @md:hidden w-full h-2 min-h-0 p-0 bg-slate-50 focus-visible:ring-slate-700 focus-visible:ring-2" style="
             --media-range-track-background: transparent;
-            --media-time-buffered-color: rgb(0 0 0/0.02);
-            --media-range-bar-color: rgb(79 70 229/var(--tw-bg-opacity));
+            --media-time-range-buffered-color: rgb(0 0 0 / .02);
+            --media-range-bar-color: rgb(79 70 229);
             --media-range-track-height: .5rem;
-            --media-preview-time-text-shadow: transparent;
-            --media-preview-time-margin: 0 0 5px;
-            --media-range-thumb-background: rgb(79 70 229/var(--tw-bg-opacity));
+            --media-range-thumb-background: rgb(79 70 229);
+            --media-range-thumb-box-shadow: 0 0 0 2px rgb(255 255 255 / .9);
             --media-range-thumb-width: .25rem;
             --media-range-thumb-height: 1rem;
-            --media-range-thumb-box-shadow: 0 0 0 2px rgb(255 255 255 / .9);
+            --media-preview-time-text-shadow: transparent;
           ">
-          <media-preview-time-display slot="preview" class="text-slate-600 text-xs">
-          </media-preview-time-display>
+          <media-preview-time-display slot="preview" class="text-slate-600 text-xs"></media-preview-time-display>
         </media-time-range>
 
-        <media-control-bar class="h-20 @md:h-16 px-4 w-full bg-white flex items-center justify-between @md:rounded-md
-        @md:ring-1 @md:ring-slate-700/10">
+        <media-control-bar class="h-20 @md:h-16 px-4 w-full bg-white flex items-center justify-between @md:rounded-md @md:ring-1 @md:ring-slate-700/10">
 
-          <media-seek-backward-button seek-offset="10" class="w-8 h-8 p-0 group rounded-full
-            focus:outline-none focus-visible:ring-slate-700 focus-visible:ring-2">
-            <svg slot="icon" aria-hidden="true"
-              class="w-7 h-7 fill-none stroke-slate-500 group-hover:stroke-slate-700">
+          <media-seek-backward-button seek-offset="10" class="w-8 h-8 p-0 group rounded-full focus:outline-none focus-visible:ring-slate-700 focus-visible:ring-2">
+            <svg slot="icon" aria-hidden="true" class="w-7 h-7 fill-none stroke-slate-500 group-hover:stroke-slate-700">
               <use href="#backward" />
             </svg>
           </media-seek-backward-button>
 
-          <media-play-button class="h-10 w-10 p-2 mx-3 rounded-full
-            bg-slate-700 hover:bg-slate-900 focus:outline-none focus:ring-slate-700
-            focus:ring-2 focus:ring-offset-2">
+          <media-play-button class="h-10 w-10 p-2 mx-3 rounded-full bg-slate-700 hover:bg-slate-900 focus:outline-none focus:ring-slate-700 focus:ring-2 focus:ring-offset-2">
             <svg slot="play" aria-hidden="true" class="relative left-px">
               <use href="#play" />
             </svg>
@@ -107,51 +99,46 @@
             </svg>
           </media-play-button>
 
-          <media-seek-forward-button seek-offset="10" class="w-8 h-8 p-0
-            group relative rounded-full focus:outline-none focus-visible:ring-slate-700
-            focus-visible:ring-2">
-            <svg slot="icon" aria-hidden="true"
-              class="w-7 h-7 fill-none stroke-slate-500 group-hover:stroke-slate-700">
+          <media-seek-forward-button seek-offset="10" class="w-8 h-8 p-0 group relative rounded-full focus:outline-none focus-visible:ring-slate-700 focus-visible:ring-2">
+            <svg slot="icon" aria-hidden="true" class="w-7 h-7 fill-none stroke-slate-500 group-hover:stroke-slate-700">
               <use href="#forward" />
             </svg>
           </media-seek-forward-button>
 
           <div class="hidden @md:block h-full border-l border-slate-700/10 mx-4"></div>
 
-          <media-time-display class="hidden @md:block text-slate-500 text-sm rounded-md focus:outline-none
-            focus:ring-slate-700 focus:ring-2"></media-time-display>
+          <media-time-display class="hidden @md:block text-slate-500 text-sm rounded-md focus:outline-none focus:ring-slate-700 focus:ring-2"></media-time-display>
 
-          <media-time-range class="hidden @md:block h-2 min-h-0 p-0 m-2 rounded-md
-            bg-slate-50 focus-visible:ring-slate-700 focus-visible:ring-2" style="
+          <media-time-range class="hidden @md:block h-2 min-h-0 p-0 m-2 rounded-md bg-slate-50 focus-visible:ring-slate-700 focus-visible:ring-2" style="
             --media-range-track-background: transparent;
-            --media-time-buffered-color: rgb(0 0 0/0.02);
-            --media-range-bar-color: rgb(79 70 229/var(--tw-bg-opacity));
+            --media-time-buffered-color: rgb(0 0 0 / .02);
+            --media-range-bar-color: rgb(79 70 229);
             --media-range-track-border-radius: 4px;
             --media-range-track-height: .5rem;
-            --media-preview-time-text-shadow: transparent;
-            --media-preview-time-margin: 0 0 5px;
-            --media-range-thumb-background: rgb(79 70 229/var(--tw-bg-opacity));
+            --media-range-thumb-background: rgb(79 70 229);
+            --media-range-thumb-box-shadow: 0 0 0 2px rgb(255 255 255 / .9);
             --media-range-thumb-width: .25rem;
             --media-range-thumb-height: 1rem;
-            --media-range-thumb-box-shadow: 0 0 0 2px rgb(255 255 255 / .9);
-            --media-box-margin: 0 0 -3px;
+            --media-preview-time-text-shadow: transparent;
           ">
             <media-preview-time-display slot="preview" class="text-slate-600 text-xs"></media-preview-time-display>
           </media-time-range>
 
           <media-duration-display class="hidden @md:block text-slate-500 text-sm"></media-duration-display>
 
-          <media-playback-rate-button class="text-slate-500 rounded-md focus:outline-none
-            focus-visible:ring-slate-700 focus-visible:ring-2"></media-playback-rate-button>
+          <media-playback-rate-button class="text-slate-500 rounded-md focus:outline-none focus-visible:ring-slate-700 focus-visible:ring-2"></media-playback-rate-button>
 
-          <media-mute-button class="group relative order-first @md:order-none rounded-md focus:outline-none
-            focus-visible:ring-slate-700 focus-visible:ring-2">
-            <svg slot="high" aria-hidden="true" class="h-5 w-5 fill-slate-500 stroke-slate-500
-              group-hover:fill-slate-700 group-hover:stroke-slate-700">
+          <media-mute-button class="group relative order-first @md:order-none rounded-md focus:outline-none focus-visible:ring-slate-700 focus-visible:ring-2">
+            <svg slot="high" aria-hidden="true" class="h-5 w-5 fill-slate-500 stroke-slate-500 group-hover:fill-slate-700 group-hover:stroke-slate-700">
               <use href="#high" />
             </svg>
-            <svg slot="off" aria-hidden="true" class="h-5 w-5 fill-slate-500 stroke-slate-500
-              group-hover:fill-slate-700 group-hover:stroke-slate-700">
+            <svg slot="medium" aria-hidden="true" class="h-5 w-5 fill-slate-500 stroke-slate-500 group-hover:fill-slate-700 group-hover:stroke-slate-700">
+              <use href="#high" />
+            </svg>
+            <svg slot="low" aria-hidden="true" class="h-5 w-5 fill-slate-500 stroke-slate-500 group-hover:fill-slate-700 group-hover:stroke-slate-700">
+              <use href="#high" />
+            </svg>
+            <svg slot="off" aria-hidden="true" class="h-5 w-5 fill-slate-500 stroke-slate-500 group-hover:fill-slate-700 group-hover:stroke-slate-700">
               <use href="#off" />
             </svg>
           </media-mute-button>
