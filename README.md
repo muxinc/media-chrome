@@ -8,9 +8,11 @@
   </a>
 </h1>
 
-[![npm version](https://img.shields.io/npm/v/media-chrome?style=flat-square&color=success)](http://npmjs.org/media-chrome) 
-[![size](https://img.shields.io/bundlephobia/minzip/media-chrome?label=size&style=flat-square)](https://bundlephobia.com/result?p=media-chrome) 
-[![slack](https://img.shields.io/badge/slack-%23media--chrome-pink?style=flat-square)](https://www.video-dev.org/)
+[![NPM Version](https://img.shields.io/npm/v/media-chrome?style=flat-square&color=informational)](https://www.npmjs.com/package/media-chrome) 
+[![NPM Downloads](https://img.shields.io/npm/dm/media-chrome?style=flat-square&color=informational&label=npm)](https://www.npmjs.com/package/media-chrome) 
+[![jsDelivr hits (npm)](https://img.shields.io/jsdelivr/npm/hm/media-chrome?style=flat-square&color=informational)](https://www.jsdelivr.com/package/npm/media-chrome)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/media-chrome?style=flat-square&color=informational&label=gzip)](https://bundlephobia.com/result?p=media-chrome) 
+[![slack](https://img.shields.io/badge/slack-%23media--chrome-pink?style=flat-square&color=informational)](https://www.video-dev.org/)
 
 Your media player's dancing suit. :man_dancing:
 
