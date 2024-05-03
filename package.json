@@ -61,7 +61,7 @@
     "format": "prettier --write .",
     "clean": "rimraf dist",
     "lint": "eslint src/js",
-    "premanifest": "cp -R src/js/ dist/",
+    "premanifest": "mkdir -p dist/ && cp -R src/js/media-* dist/",
     "manifest": "npx @custom-elements-manifest/analyzer analyze --config scripts/custom-elements-manifest.config.js",
     "build:types": "tsc",
     "build:esm": "esbuild \"src/js/**/*.*s*\" --target=es2019 --format=esm --outdir=dist",
