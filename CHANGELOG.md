@@ -1,3 +1,12 @@
+## [3.2.2](https://github.com/muxinc/media-chrome/compare/v3.2.1...v3.2.2) (2024-05-03)
+
+
+### Bug Fixes
+
+* avoid dist artifacts in manifest generation ([#889](https://github.com/muxinc/media-chrome/issues/889)) ([3dc97ed](https://github.com/muxinc/media-chrome/commit/3dc97ede6c39ebcf2afb53c789d603a863b00fb4))
+
+
+
 ## [3.2.1](https://github.com/muxinc/media-chrome/compare/v3.2.0...v3.2.1) (2024-04-12)
 
 
