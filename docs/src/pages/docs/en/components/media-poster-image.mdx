@@ -14,6 +14,8 @@ For example, you can show a blurhash that mirrors the colors that will appear wi
 
 You can either use the `<media-poster-image>` component as a static image on its own, or, add the `slot="poster"` attribute to associate it with the underlying video element for click-to-play.
 
+> This component is reliant on Javascript to load the poster image. If better control or better performance is desired, you can use `<img slot="poster" src="...">` instead. However, it doesn't support a secondary placeholder.
+
 ## With `src`
 
 <SandpackContainer
