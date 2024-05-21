@@ -35,7 +35,7 @@ template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
 class MediaCaptionsMenu extends MediaChromeMenu {
   static template = template;
 
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
@@ -43,9 +43,9 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     ];
   }
 
-  #prevState;
+  #prevState: string | undefined;
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -61,12 +61,12 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener('change', this.#onChange);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener('change', this.#onChange);
   }
@@ -88,7 +88,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     return getSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
   }
 
-  set mediaSubtitlesList(list) {
+  set mediaSubtitlesList(list: Array<object>) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST, list);
   }
 
@@ -103,7 +103,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     );
   }
 
-  set mediaSubtitlesShowing(list) {
+  set mediaSubtitlesShowing(list: Array<object>) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
   }
 
@@ -186,7 +186,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
  * @param {string} attrName
  * @returns {Array<Object>} An array of TextTrack-like objects.
  */
-const getSubtitlesListAttr = (el, attrName) => {
+const getSubtitlesListAttr = (el: any, attrName: string): Array<object> => {
   const attrVal = el.getAttribute(attrName);
   return attrVal ? parseTextTracksStr(attrVal) : [];
 };
@@ -197,7 +197,7 @@ const getSubtitlesListAttr = (el, attrName) => {
  * @param {string} attrName
  * @param {Array<Object>} list An array of TextTrack-like objects
  */
-const setSubtitlesListAttr = (el, attrName, list) => {
+const setSubtitlesListAttr = (el: any, attrName: string, list: Array<object>) => {
   // null, undefined, and empty arrays are treated as "no value" here
   if (!list?.length) {
     el.removeAttribute(attrName);

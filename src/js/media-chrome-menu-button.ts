@@ -15,11 +15,11 @@ class MediaChromeMenuButton extends MediaChromeButton {
     }
   }
 
-  get invokeTarget() {
+  get invokeTarget(): string | null {
     return this.getAttribute('invoketarget');
   }
 
-  set invokeTarget(value) {
+  set invokeTarget(value: string | null) {
     this.setAttribute('invoketarget', `${value}`);
   }
 
@@ -27,15 +27,15 @@ class MediaChromeMenuButton extends MediaChromeButton {
    * Returns the element with the id specified by the `invoketarget` attribute.
    * @return {HTMLElement | null}
    */
-  get invokeTargetElement() {
+  get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget) {
-      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.invokeTarget}`);
+      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.invokeTarget}`) as HTMLElement | null;
     }
     return null;
   }
 
   handleClick() {
-    this.invokeTargetElement.dispatchEvent(
+    this.invokeTargetElement?.dispatchEvent(
       new InvokeEvent({ relatedTarget: this })
     );
   }

@@ -18,10 +18,10 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
     ];
   }
 
-  #audioTrackList = [];
-  #prevState;
+  #audioTrackList: Array<{id: string, label: string, enabled: boolean}> = [];
+  #prevState: string | null = null;
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED && oldValue !== newValue) {
@@ -48,7 +48,7 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
     return this.#audioTrackList;
   }
 
-  set mediaAudioTrackList(list) {
+  set mediaAudioTrackList(list: Array<{id: string, label: string, enabled: boolean}>) {
     this.#audioTrackList = list;
     this.#render();
   }
@@ -61,7 +61,7 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
     return getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED);
   }
 
-  set mediaAudioTrackEnabled(id) {
+  set mediaAudioTrackEnabled(id: string) {
     setStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED, id);
   }
 
@@ -93,7 +93,7 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
     }
   }
 
-  #onChange() {
+  #onChange = () => {
     if (this.value == null) return;
 
     const event = new globalThis.CustomEvent(

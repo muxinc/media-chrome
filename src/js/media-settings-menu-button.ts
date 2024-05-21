@@ -16,7 +16,7 @@ slotTemplate.innerHTML = /*html*/`
  * @attr {string} target - CSS id selector for the element to be targeted by the button.
  */
 class MediaSettingsMenuButton extends MediaChromeMenuButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       'target',
@@ -27,7 +27,7 @@ class MediaSettingsMenuButton extends MediaChromeMenuButton {
     super({ slotTemplate });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.setAttribute('aria-label', nouns.SETTINGS());
   }
@@ -36,7 +36,7 @@ class MediaSettingsMenuButton extends MediaChromeMenuButton {
    * Returns the element with the id specified by the `invoketarget` attribute.
    * @return {HTMLElement | null}
    */
-  get invokeTargetElement() {
+  get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
     return getMediaController(this).querySelector('media-settings-menu');
   }

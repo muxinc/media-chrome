@@ -19,7 +19,7 @@ slotTemplate.innerHTML = /*html*/`
  * @cssproperty [--media-rendition-button-display = inline-flex] - `display` property of button.
  */
 class MediaRenditionButton extends MediaChromeButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_RENDITION_SELECTED,
@@ -35,11 +35,11 @@ class MediaRenditionButton extends MediaChromeButton {
    * Get selected rendition id.
    * @return {string}
    */
-  get mediaRenditionSelected() {
+  get mediaRenditionSelected(): string {
     return getStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED);
   }
 
-  set mediaRenditionSelected(id) {
+  set mediaRenditionSelected(id: string) {
     setStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
   }
 }

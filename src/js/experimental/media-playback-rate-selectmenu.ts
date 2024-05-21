@@ -9,7 +9,7 @@ import { globalThis, document, } from '../utils/server-safe-globals.js';
  * @csspart option - A part that targets each option of the listbox.
  */
 class MediaPlaybackRateSelectMenu extends MediaChromeSelectMenu {
-  init() {
+  init(): void {
     const playbackRateButton = document.createElement('media-playback-rate-button');
     playbackRateButton.part.add('button');
     playbackRateButton.preventClick = true;

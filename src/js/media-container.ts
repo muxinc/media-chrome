@@ -197,11 +197,11 @@ const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 const defaultBreakpoints = 'sm:384 md:576 lg:768 xl:960';
 
-function resizeCallback(entry) {
-  setBreakpoints(entry.target, entry.contentRect.width);
+function resizeCallback(entry: ResizeObserverEntry) {
+  setBreakpoints(entry.target as HTMLElement, entry.contentRect.width);
 }
 
-function setBreakpoints(container, width) {
+function setBreakpoints(container: HTMLElement, width: number) {
   if (!container.isConnected) return;
 
   const breakpoints = container.getAttribute(Attributes.BREAKPOINTS) ?? defaultBreakpoints;
@@ -234,14 +234,14 @@ function setBreakpoints(container, width) {
   }
 }
 
-function createBreakpointMap(breakpoints) {
+function createBreakpointMap(breakpoints: string) {
   const pairs = breakpoints.split(/\s+/);
   return Object.fromEntries(pairs.map((pair) => pair.split(':')));
 }
 
-function getBreakpoints(breakpoints, width) {
+function getBreakpoints(breakpoints: Record<string, string>, width: number) {
   return Object.keys(breakpoints).filter((name) => {
-    return width >= breakpoints[name];
+    return width >= parseInt(breakpoints[name]);
   });
 }
 
@@ -273,7 +273,7 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   #pointerDownTimeStamp = 0;
-  #currentMedia;
+  #currentMedia: HTMLMediaElement | null = null;
   breakpointsComputed = false;
 
   constructor() {
@@ -286,7 +286,7 @@ class MediaContainer extends globalThis.HTMLElement {
     }
 
     // Watch for child adds/removes and update the media element if necessary
-    const mutationCallback = (mutationsList) => {
+    const mutationCallback = (mutationsList: MutationRecord[]) => {
       const media = this.media;
 
       for (let mutation of mutationsList) {
@@ -305,7 +305,7 @@ class MediaContainer extends globalThis.HTMLElement {
 
               // Must have been first if no prev sibling or new media
               if (!previousSibling || !media) {
-                this.mediaUnsetCallback(node);
+                this.mediaUnsetCallback(node as HTMLMediaElement);
               } else {
                 // Check if any prev siblings had a slot=media
                 // Should remain true otherwise
@@ -315,7 +315,7 @@ class MediaContainer extends globalThis.HTMLElement {
                 ) {
                   if (previousSibling.slot == 'media') wasFirst = false;
                 }
-                if (wasFirst) this.mediaUnsetCallback(node);
+                if (wasFirst) this.mediaUnsetCallback(node as HTMLMediaElement);
               }
             }
           });
@@ -338,7 +338,7 @@ class MediaContainer extends globalThis.HTMLElement {
     mutationObserver.observe(this, { childList: true, subtree: true });
 
     let pendingResizeCb = false;
-    const deferResizeCallback = (entry) => {
+    const deferResizeCallback = (entry: ResizeObserverEntry) => {
       // Already have a pending async breakpoint computation, so go ahead and bail
       if (pendingResizeCb) return;
       // Just in case it takes too long (which will cause an error to throw),
@@ -382,7 +382,7 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   // Could share this code with media-chrome-html-element instead
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string, newValue: string) {
     if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
       this.autohide = newValue;
     }
@@ -414,7 +414,7 @@ class MediaContainer extends globalThis.HTMLElement {
   /**
    * @param {HTMLMediaElement} media
    */
-  async handleMediaUpdated(media) {
+  async handleMediaUpdated(media: HTMLMediaElement) {
     // Anything "falsy" couldn't act as a media element.
     if (!media) return;
 
@@ -467,25 +467,25 @@ class MediaContainer extends globalThis.HTMLElement {
    * @abstract
    * @param {HTMLMediaElement} media
    */
-  mediaSetCallback(media) {} // eslint-disable-line
+  mediaSetCallback(media: HTMLMediaElement) {} // eslint-disable-line
 
   /**
    * @param {HTMLMediaElement} media
    */
-  mediaUnsetCallback(media) { // eslint-disable-line
+  mediaUnsetCallback(media: HTMLMediaElement) { // eslint-disable-line
     this.#currentMedia = null;
   }
 
-  handleEvent(event) {
+  handleEvent(event: Event) {
     switch (event.type) {
       case 'pointerdown':
-        this.#pointerDownTimeStamp = event.timeStamp;
+        this.#pointerDownTimeStamp = (event as PointerEvent).timeStamp;
         break;
       case 'pointermove':
-        this.#handlePointerMove(event);
+        this.#handlePointerMove(event as PointerEvent);
         break;
       case 'pointerup':
-        this.#handlePointerUp(event);
+        this.#handlePointerUp(event as PointerEvent);
         break;
       case 'mouseleave':
         // Immediately hide if mouse leaves the container.
@@ -503,7 +503,7 @@ class MediaContainer extends globalThis.HTMLElement {
     }
   }
 
-  #handlePointerMove(event) {
+  #handlePointerMove(event: PointerEvent) {
     if (event.pointerType !== 'mouse') {
       // On mobile we toggle the controls on a tap which is handled in pointerup,
       // but Android fires pointermove events even when the user is just tapping.
@@ -524,7 +524,7 @@ class MediaContainer extends globalThis.HTMLElement {
     }
   }
 
-  #handlePointerUp(event) {
+  #handlePointerUp(event: PointerEvent) {
     if (event.pointerType === 'touch') {
       const controlsVisible = !this.hasAttribute(Attributes.USER_INACTIVE);
 
@@ -580,9 +580,9 @@ class MediaContainer extends globalThis.HTMLElement {
     }, this.autohide * 1000);
   }
 
-  set autohide(seconds) {
-    seconds = Number(seconds);
-    this._autohide = isNaN(seconds) ? 0 : seconds;
+  set autohide(seconds: string) {
+    const parsedSeconds = Number(seconds);
+    this._autohide = isNaN(parsedSeconds) ? 0 : parsedSeconds;
   }
 
   get autohide() {

@@ -255,7 +255,7 @@ class MediaController extends MediaContainer {
    * @override
    * @param {HTMLMediaElement} media
    */
-  mediaSetCallback(media) {
+  mediaSetCallback(media: HTMLMediaElement) {
     super.mediaSetCallback(media);
     this.#mediaStore?.dispatch({ type: 'mediaelementchangerequest', detail: media });
 
@@ -269,16 +269,16 @@ class MediaController extends MediaContainer {
    * @override
    * @param {HTMLMediaElement} media
    */
-  mediaUnsetCallback(media) {
+  mediaUnsetCallback(media: HTMLMediaElement) {
     super.mediaUnsetCallback(media);
     this.#mediaStore?.dispatch({ type: 'mediaelementchangerequest', detail: undefined });
   }
 
-  propagateMediaState(stateName, state) {
+  propagateMediaState(stateName: string, state: any) {
     propagateMediaState(this.mediaStateReceivers, stateName, state);
   }
 
-  associateElement(element) {
+  associateElement(element: HTMLElement) {
     if (!element) return;
     const { associatedElementSubscriptions } = this;
 
@@ -308,7 +308,7 @@ class MediaController extends MediaContainer {
     associatedElementSubscriptions.set(element, unsubscribe);
   }
 
-  unassociateElement(element) {
+  unassociateElement(element: HTMLElement) {
     if (!element) return;
     const { associatedElementSubscriptions } = this;
     if (!associatedElementSubscriptions.has(element)) return;
@@ -322,7 +322,7 @@ class MediaController extends MediaContainer {
     });
   }
 
-  registerMediaStateReceiver(el) {
+  registerMediaStateReceiver(el: HTMLElement) {
     if (!el) return;
     const els = this.mediaStateReceivers;
     const index = els.indexOf(el);
@@ -337,7 +337,7 @@ class MediaController extends MediaContainer {
     }
   }
 
-  unregisterMediaStateReceiver(el) {
+  unregisterMediaStateReceiver(el: HTMLElement) {
     const els = this.mediaStateReceivers;
 
     const index = els.indexOf(el);
@@ -346,7 +346,7 @@ class MediaController extends MediaContainer {
     els.splice(index, 1);
   }
 
-  #keyUpHandler(e) {
+  #keyUpHandler(e: KeyboardEvent) {
     const { key } = e;
     if (!ButtonPressedKeys.includes(key)) {
       this.removeEventListener('keyup', this.#keyUpHandler);
@@ -356,7 +356,7 @@ class MediaController extends MediaContainer {
     this.keyboardShortcutHandler(e);
   }
 
-  #keyDownHandler(e) {
+  #keyDownHandler(e: KeyboardEvent) {
     const { metaKey, altKey, key } = e;
     if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
       this.removeEventListener('keyup', this.#keyUpHandler);
@@ -390,7 +390,7 @@ class MediaController extends MediaContainer {
     return this.#hotKeys;
   }
 
-  keyboardShortcutHandler(e) {
+  keyboardShortcutHandler(e: KeyboardEvent) {
     // TODO: e.target might need to be replaced w/ e.composedPath to account for shadow DOM.
     // if the event's key is already handled by the target, skip keyboard shortcuts
     // keysUsed is either an attribute or a property.
@@ -483,7 +483,7 @@ class MediaController extends MediaContainer {
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 const MEDIA_UI_PROP_NAMES = Object.values(MediaUIProps);
 
-const getMediaUIAttributesFrom = (child) => {
+const getMediaUIAttributesFrom = (child: HTMLElement): string[] => {
   let { observedAttributes } = child.constructor;
 
   // observedAttributes are only available if the custom element was upgraded.
@@ -503,7 +503,7 @@ const getMediaUIAttributesFrom = (child) => {
   );
 };
 
-const hasMediaUIProps = (mediaStateReceiverCandidate) => {
+const hasMediaUIProps = (mediaStateReceiverCandidate: HTMLElement): boolean => {
   if (
     mediaStateReceiverCandidate.nodeName?.includes('-')
     && !!globalThis.customElements.get(mediaStateReceiverCandidate.nodeName?.toLowerCase())
@@ -514,23 +514,23 @@ const hasMediaUIProps = (mediaStateReceiverCandidate) => {
   return MEDIA_UI_PROP_NAMES.some(propName => propName in mediaStateReceiverCandidate);
 };
 
-const isMediaStateReceiver = (child) => {
+const isMediaStateReceiver = (child: HTMLElement): boolean => {
   return hasMediaUIProps(child) || !!getMediaUIAttributesFrom(child).length;
 };
 
-const serializeTuple = (tuple) => tuple?.join?.(':');
+const serializeTuple = (tuple: any[]): string | undefined => tuple?.join?.(':');
 
-const CustomAttrSerializer = {
+const CustomAttrSerializer: Record<string, Function> = {
   [MediaUIAttributes.MEDIA_SUBTITLES_LIST]: stringifyTextTrackList,
   [MediaUIAttributes.MEDIA_SUBTITLES_SHOWING]: stringifyTextTrackList,
   [MediaUIAttributes.MEDIA_SEEKABLE]: serializeTuple,
-  [MediaUIAttributes.MEDIA_BUFFERED]: (tuples) => tuples?.map(serializeTuple).join(' '),
-  [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords) => coords?.join(' '),
+  [MediaUIAttributes.MEDIA_BUFFERED]: (tuples: any[][]): string => tuples?.map(serializeTuple).join(' '),
+  [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords: number[]): string => coords?.join(' '),
   [MediaUIAttributes.MEDIA_RENDITION_LIST]: stringifyRenditionList,
   [MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST]: stringifyAudioTrackList,
 };
 
-const setAttr = async (child, attrName, attrValue) => {
+const setAttr = async (child: HTMLElement, attrName: string, attrValue: any): Promise<void> => {
   // If the node is not connected to the DOM yet wait on macrotask. Fix for:
   //   Uncaught DOMException: Failed to construct 'CustomElement':
   //   The result must not have attributes
@@ -558,7 +558,7 @@ const setAttr = async (child, attrName, attrValue) => {
   return child.setAttribute(attrName, val);
 };
 
-const isMediaSlotElementDescendant = (el) => !!el.closest?.('*[slot="media"]');
+const isMediaSlotElementDescendant = (el: HTMLElement): boolean => !!el.closest?.('*[slot="media"]');
 
 /**
  *
@@ -570,9 +570,9 @@ const isMediaSlotElementDescendant = (el) => !!el.closest?.('*[slot="media"]');
  * @param {function} mediaStateReceiverCallback
  */
 const traverseForMediaStateReceivers = (
-  rootNode,
-  mediaStateReceiverCallback
-) => {
+  rootNode: HTMLElement,
+  mediaStateReceiverCallback: Function
+): void => {
   // We (currently) don't check if descendants of the `media` (e.g. <video/>) are Media State Receivers
   // See also: `propagateMediaState`
   if (isMediaSlotElementDescendant(rootNode)) {
@@ -580,9 +580,9 @@ const traverseForMediaStateReceivers = (
   }
 
   const traverseForMediaStateReceiversSync = (
-    rootNode,
-    mediaStateReceiverCallback
-  ) => {
+    rootNode: HTMLElement,
+    mediaStateReceiverCallback: Function
+  ): void => {
     // The rootNode is itself a Media State Receiver
     if (isMediaStateReceiver(rootNode)) {
       mediaStateReceiverCallback(rootNode);
@@ -594,7 +594,7 @@ const traverseForMediaStateReceivers = (
 
     // Traverse all children (including shadowRoot children) to see if they are/have Media State Receivers
     allChildren.forEach((child) =>
-      traverseForMediaStateReceivers(child, mediaStateReceiverCallback)
+      traverseForMediaStateReceivers(child as HTMLElement, mediaStateReceiverCallback)
     );
   };
 
@@ -617,7 +617,7 @@ const traverseForMediaStateReceivers = (
   traverseForMediaStateReceiversSync(rootNode, mediaStateReceiverCallback);
 };
 
-const propagateMediaState = (els, stateName, val) => {
+const propagateMediaState = (els: HTMLElement[], stateName: string, val: any): void => {
   els.forEach((el) => {
     if (stateName in el) {
       el[stateName] = val;
@@ -643,20 +643,20 @@ const propagateMediaState = (els, stateName, val) => {
  *
  */
 const monitorForMediaStateReceivers = (
-  rootNode,
-  registerMediaStateReceiver,
-  unregisterMediaStateReceiver
-) => {
+  rootNode: HTMLElement,
+  registerMediaStateReceiver: Function,
+  unregisterMediaStateReceiver: Function
+): Function => {
   // First traverse the tree to register any current Media State Receivers
   traverseForMediaStateReceivers(rootNode, registerMediaStateReceiver);
 
   // Monitor for any event-based requests from descendants to register/unregister as a Media State Receiver
-  const registerMediaStateReceiverHandler = (evt) => {
+  const registerMediaStateReceiverHandler = (evt: Event) => {
     const el = evt?.composedPath()[0] ?? evt.target;
     registerMediaStateReceiver(el);
   };
 
-  const unregisterMediaStateReceiverHandler = (evt) => {
+  const unregisterMediaStateReceiverHandler = (evt: Event) => {
     const el = evt?.composedPath()[0] ?? evt.target;
     unregisterMediaStateReceiver(el);
   };
@@ -672,7 +672,7 @@ const monitorForMediaStateReceivers = (
 
   // Observe any changes to the DOM for any descendants that are identifiable as Media State Receivers
   // and register or unregister them, depending on the change that occurred.
-  const mutationCallback = (mutationsList) => {
+  const mutationCallback = (mutationsList: MutationRecord[]) => {
     mutationsList.forEach((mutationRecord) => {
       const {
         addedNodes = [],
@@ -684,17 +684,17 @@ const monitorForMediaStateReceivers = (
       if (type === 'childList') {
         // For each added node, register any Media State Receiver descendants (including itself)
         Array.prototype.forEach.call(addedNodes, (node) =>
-          traverseForMediaStateReceivers(node, registerMediaStateReceiver)
+          traverseForMediaStateReceivers(node as HTMLElement, registerMediaStateReceiver)
         );
         // For each removed node, unregister any Media State Receiver descendants (including itself)
         Array.prototype.forEach.call(removedNodes, (node) =>
-          traverseForMediaStateReceivers(node, unregisterMediaStateReceiver)
+          traverseForMediaStateReceivers(node as HTMLElement, unregisterMediaStateReceiver)
         );
       } else if (
         type === 'attributes' &&
         attributeName === MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES
       ) {
-        if (isMediaStateReceiver(target)) {
+        if (isMediaStateReceiver(target as HTMLElement)) {
           // Changed from a "non-Media State Receiver" to a Media State Receiver: register it.
           registerMediaStateReceiver(target);
         } else {
@@ -706,8 +706,8 @@ const monitorForMediaStateReceivers = (
   };
 
   // Storing prevSlotted elements so we can cleanup if slotted elements change over time.
-  let prevSlotted = [];
-  const slotChangeHandler = (event) => {
+  let prevSlotted: HTMLElement[] = [];
+  const slotChangeHandler = (event: Event) => {
     const slotEl = /** @type {HTMLSlotElement} */ event.target;
     if (slotEl.name === "media") return;
     prevSlotted.forEach((node) =>

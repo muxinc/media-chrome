@@ -32,7 +32,7 @@ slotTemplate.innerHTML = /*html*/`
   </slot>
 `;
 
-const updateAriaLabel = (el) => {
+const updateAriaLabel = (el: MediaCastButton) => {
   const label = el.mediaIsCasting ? verbs.EXIT_CAST() : verbs.ENTER_CAST();
   el.setAttribute('aria-label', label);
 };
@@ -65,7 +65,7 @@ class MediaCastButton extends MediaChromeButton {
     updateAriaLabel(this);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_IS_CASTING) {
@@ -76,22 +76,22 @@ class MediaCastButton extends MediaChromeButton {
   /**
    * @type {boolean} Are we currently casting
    */
-  get mediaIsCasting() {
+  get mediaIsCasting(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_IS_CASTING);
   }
 
-  set mediaIsCasting(value) {
+  set mediaIsCasting(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_IS_CASTING, value);
   }
 
   /**
    * @type {string | undefined} Cast unavailability state
    */
-  get mediaCastUnavailable() {
+  get mediaCastUnavailable(): string | undefined {
     return getStringAttr(this, MediaUIAttributes.MEDIA_CAST_UNAVAILABLE);
   }
 
-  set mediaCastUnavailable(value) {
+  set mediaCastUnavailable(value: string | undefined) {
     setStringAttr(this, MediaUIAttributes.MEDIA_CAST_UNAVAILABLE, value);
   }
 

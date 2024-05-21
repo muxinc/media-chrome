@@ -36,8 +36,8 @@ slotTemplate.innerHTML = /*html*/`
   </slot>
 `;
 
-const updateAriaChecked = (el) => {
-  el.setAttribute('aria-checked', areSubsOn(el));
+const updateAriaChecked = (el: HTMLElement) => {
+  el.setAttribute('aria-checked', areSubsOn(el).toString());
 };
 
 /**
@@ -51,7 +51,7 @@ const updateAriaChecked = (el) => {
  * @cssproperty [--media-captions-menu-button-display = inline-flex] - `display` property of button.
  */
 class MediaCaptionsMenuButton extends MediaChromeMenuButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
@@ -59,21 +59,21 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
     ];
   }
 
-  constructor(options = {}) {
+  constructor(options: Record<string, any> = {}) {
     super({ slotTemplate, ...options });
     // Internal variable to keep track of when we have some or no captions (or subtitles, if using subtitles fallback)
     // Used for `default-showing` behavior.
     this._captionsReady = false;
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
 
     this.setAttribute('aria-label', nouns.CLOSED_CAPTIONS());
     updateAriaChecked(this);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string, newValue: string): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
@@ -85,20 +85,20 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
    * Returns the element with the id specified by the `invoketarget` attribute.
    * @return {HTMLElement | null}
    */
-  get invokeTargetElement() {
+  get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
-    return getMediaController(this).querySelector('media-captions-menu');
+    return getMediaController(this)?.querySelector('media-captions-menu');
   }
 
   /**
    * @type {Array<object>} An array of TextTrack-like objects.
    * Objects must have the properties: kind, language, and label.
    */
-  get mediaSubtitlesList() {
+  get mediaSubtitlesList(): Array<object> {
     return getSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
   }
 
-  set mediaSubtitlesList(list) {
+  set mediaSubtitlesList(list: Array<object>) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST, list);
   }
 
@@ -106,35 +106,35 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
    * @type {Array<object>} An array of TextTrack-like objects.
    * Objects must have the properties: kind, language, and label.
    */
-  get mediaSubtitlesShowing() {
+  get mediaSubtitlesShowing(): Array<object> {
     return getSubtitlesListAttr(
       this,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
     );
   }
 
-  set mediaSubtitlesShowing(list) {
+  set mediaSubtitlesShowing(list: Array<object>) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
   }
 }
 
 /**
- * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {HTMLElement} el Should be HTMLElement but issues with globalThis shim
  * @param {string} attrName
  * @returns {Array<Object>} An array of TextTrack-like objects.
  */
-const getSubtitlesListAttr = (el, attrName) => {
+const getSubtitlesListAttr = (el: HTMLElement, attrName: string): Array<object> => {
   const attrVal = el.getAttribute(attrName);
   return attrVal ? parseTextTracksStr(attrVal) : [];
 };
 
 /**
  *
- * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {HTMLElement} el Should be HTMLElement but issues with globalThis shim
  * @param {string} attrName
  * @param {Array<Object>} list An array of TextTrack-like objects
  */
-const setSubtitlesListAttr = (el, attrName, list) => {
+const setSubtitlesListAttr = (el: HTMLElement, attrName: string, list: Array<object>): void => {
   // null, undefined, and empty arrays are treated as "no value" here
   if (!list?.length) {
     el.removeAttribute(attrName);

@@ -13,9 +13,9 @@ import {
   getDocumentOrShadowRoot,
 } from './utils/element-utils.js';
 
-/** @typedef {import('./media-chrome-menu-item.js').MediaChromeMenuItem} MediaChromeMenuItem */
+import type { MediaChromeMenuItem } from './media-chrome-menu-item.js';
 
-export function createMenuItem({ type, text, value, checked }) {
+export function createMenuItem({ type, text, value, checked }: { type?: string, text: string, value: string, checked: boolean }) {
   const item = document.createElement('media-chrome-menu-item');
 
   item.type = type ?? '';
@@ -33,7 +33,7 @@ export function createMenuItem({ type, text, value, checked }) {
   return item;
 }
 
-export function createIndicator(el, name) {
+export function createIndicator(el: HTMLElement, name: string) {
   let customIndicator = el.querySelector(`:scope > [slot="${name}"]`);
 
   // Chaining slots
@@ -226,7 +226,7 @@ export const Attributes = {
   HIDDEN: 'hidden',
   DISABLED: 'disabled',
   ANCHOR: 'anchor',
-};
+} as const;
 
 /**
  * @extends {HTMLElement}
@@ -286,17 +286,17 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     ];
   }
 
-  static formatMenuItemText(text) {
+  static formatMenuItemText(text: string) {
     return text;
   }
 
-  #mediaController;
-  #previouslyFocused;
-  #invokerElement;
+  #mediaController: HTMLElement | null = null;
+  #previouslyFocused: HTMLElement | null = null;
+  #invokerElement: HTMLElement | null = null;
   #keysSoFar = '';
-  #clearKeysTimeout = null;
-  #previousItems = new Set();
-  #mutationObserver;
+  #clearKeysTimeout: number | null = null;
+  #previousItems = new Set<MediaChromeMenuItem>();
+  #mutationObserver: MutationObserver;
   #isPopover = false;
 
   constructor() {
@@ -312,9 +312,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
 
     /** @type {HTMLElement} */
-    this.container = this.shadowRoot.querySelector('#container');
+    this.container = this.shadowRoot.querySelector('#container') as HTMLElement;
     /** @type {HTMLSlotElement} */
-    this.defaultSlot = this.shadowRoot.querySelector('slot:not([name])');
+    this.defaultSlot = this.shadowRoot.querySelector('slot:not([name])') as HTMLSlotElement;
 
     this.shadowRoot.addEventListener('slotchange', this);
 
@@ -338,25 +338,25 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.removeEventListener('toggle', this);
   }
 
-  handleEvent(event) {
+  handleEvent(event: Event) {
     switch (event.type) {
       case 'slotchange':
-        this.#handleSlotChange(event);
+        this.#handleSlotChange(event as Event);
         break;
       case 'invoke':
-        this.#handleInvoke(event);
+        this.#handleInvoke(event as InvokeEvent);
         break;
       case 'click':
-        this.#handleClick(event);
+        this.#handleClick(event as MouseEvent);
         break;
       case 'toggle':
-        this.#handleToggle(event);
+        this.#handleToggle(event as ToggleEvent);
         break;
       case 'focusout':
-        this.#handleFocusOut(event);
+        this.#handleFocusOut(event as FocusEvent);
         break;
       case 'keydown':
-        this.#handleKeyDown(event);
+        this.#handleKeyDown(event as KeyboardEvent);
         break;
     }
   }
@@ -395,7 +395,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.#mediaController = null;
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string, newValue: string) {
     if (attrName === Attributes.HIDDEN && newValue !== oldValue) {
       if (!this.#isPopover) this.#isPopover = true;
 
@@ -433,7 +433,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
   }
 
-  formatMenuItemText(text, data) {
+  formatMenuItemText(text: string, data?: any) {
     // @ts-ignore
     return this.constructor.formatMenuItemText(text, data);
   }
@@ -442,7 +442,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     return this.getAttribute('anchor');
   }
 
-  set anchor(value) {
+  set anchor(value: string) {
     this.setAttribute('anchor', `${value}`);
   }
 
@@ -478,7 +478,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     return this.checkedItems[0]?.value ?? '';
   }
 
-  set value(newValue) {
+  set value(newValue: string) {
     const item = this.items.find((item) => item.value === newValue);
 
     if (!item) return;
@@ -486,8 +486,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.#selectItem(item);
   }
 
-  #handleSlotChange(event) {
-    const slot = event.target;
+  #handleSlotChange(event: Event) {
+    const slot = event.target as HTMLSlotElement;
 
     // @ts-ignore
     for (let node of slot.assignedNodes({ flatten: true })) {
@@ -544,7 +544,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     layoutRowStyle.setAttribute('media', menuLayout === 'row' ? '' : 'width:0');
   }
 
-  #handleInvoke(event) {
+  #handleInvoke(event: InvokeEvent) {
     this.#invokerElement = event.relatedTarget;
 
     if (!containsComposedNode(this, event.relatedTarget)) {
@@ -586,7 +586,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
    * @param  {boolean} animate
    * @param  {number} [menuWidth]
    */
-  #positionMenu(animate, menuWidth) {
+  #positionMenu(animate: boolean, menuWidth?: number) {
     // Can't position if the menu doesn't have an anchor and isn't a child of a media controller.
     if (this.hasAttribute('mediacontroller') && !this.anchor) return;
 
@@ -627,14 +627,14 @@ class MediaChromeMenu extends globalThis.HTMLElement {
    * Resize this menu to fit the submenu.
    * @param  {boolean} animate
    */
-  #resizeMenu(animate) {
+  #resizeMenu(animate: boolean) {
     /** @type {MediaChromeMenuItem} */
     const expandedMenuItem = this.querySelector(
       '[role="menuitem"][aria-haspopup][aria-expanded="true"]'
-    );
+    ) as MediaChromeMenuItem;
 
     /** @type {MediaChromeMenu} */
-    const expandedSubmenu = expandedMenuItem?.querySelector('[role="menu"]');
+    const expandedSubmenu = expandedMenuItem?.querySelector('[role="menu"]') as MediaChromeMenu;
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
 
@@ -674,11 +674,11 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     // If there are no menu items, focus on the first focusable child.
 
     /** @type {HTMLElement} */
-    const focusable = this.querySelector('[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]');
+    const focusable = this.querySelector('[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]') as HTMLElement;
     focusable?.focus();
   }
 
-  #handleClick(event) {
+  #handleClick(event: MouseEvent) {
     // Prevent running this in a parent menu if the event target is a sub menu.
     event.stopPropagation();
 
@@ -698,12 +698,12 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
   get #backButtonElement() {
     /** @type {HTMLSlotElement} */
-    const headerSlot = this.shadowRoot.querySelector('slot[name="header"]');
+    const headerSlot = this.shadowRoot.querySelector('slot[name="header"]') as HTMLSlotElement;
     return headerSlot.assignedElements({ flatten: true })
-      ?.find((el) => el.part.contains('back') && el.part.contains('button'));
+      ?.find((el) => el.part.contains('back') && el.part.contains('button')) as HTMLElement;
   }
 
-  handleSelect(event) {
+  handleSelect(event: MouseEvent | KeyboardEvent) {
     const item = this.#getItem(event);
     if (!item) return;
 
@@ -723,7 +723,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
    *
    * @param  {ToggleEvent} event
    */
-  #handleToggle(event) {
+  #handleToggle(event: ToggleEvent) {
     // Only handle events of submenus.
     if (event.target === this) return;
 
@@ -732,7 +732,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     /** @type {MediaChromeMenuItem[]} */
     const menuItemsWithSubmenu = Array.from(
       this.querySelectorAll('[role="menuitem"][aria-haspopup]')
-    );
+    ) as MediaChromeMenuItem[];
 
     // Close all other open submenus.
     for (const item of menuItemsWithSubmenu) {
@@ -768,7 +768,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.container.classList.toggle('has-expanded', !!expandedMenuItem);
   }
 
-  #handleFocusOut(event) {
+  #handleFocusOut(event: FocusEvent) {
     if (!containsComposedNode(this, event.relatedTarget)) {
       if (this.#isPopover) {
         this.#previouslyFocused?.focus();
@@ -785,7 +785,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     return ['Enter', 'Escape', 'Tab', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
   }
 
-  #handleKeyDown(event) {
+  #handleKeyDown(event: KeyboardEvent) {
     const { key, ctrlKey, altKey, metaKey } = event;
 
     if (ctrlKey || altKey || metaKey) {
@@ -831,23 +831,23 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
   }
 
-  #getItem(event) {
+  #getItem(event: MouseEvent | KeyboardEvent) {
     return event.composedPath().find((el) => {
-      return ['menuitemradio', 'menuitemcheckbox'].includes(el.role);
-    });
+      return ['menuitemradio', 'menuitemcheckbox'].includes((el as HTMLElement).role);
+    }) as MediaChromeMenuItem | undefined;
   }
 
   #getTabItem() {
     return this.items.find((item) => item.tabIndex === 0);
   }
 
-  #setTabItem(tabItem) {
+  #setTabItem(tabItem: MediaChromeMenuItem) {
     for (const item of this.items) {
       item.tabIndex = item === tabItem ? 0 : -1;
     }
   }
 
-  #selectItem(item, toggle) {
+  #selectItem(item: MediaChromeMenuItem, toggle: boolean) {
     const oldCheckedItems = [...this.checkedItems];
 
     if (item.type === 'radio') {
@@ -867,7 +867,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
   }
 
-  handleMove(event) {
+  handleMove(event: KeyboardEvent) {
     const { key } = event;
     const items = this.items;
 
@@ -898,16 +898,16 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 }
 
-function isMenuItem(element) {
+function isMenuItem(element: any): element is MediaChromeMenuItem {
   return ['menuitem', 'menuitemradio', 'menuitemcheckbox'].includes(element?.role);
 }
 
-function getBoundsElement(host) {
+function getBoundsElement(host: HTMLElement) {
   return (
     (host.getAttribute('bounds')
       ? closestComposedNode(host, `#${host.getAttribute('bounds')}`)
       : getMediaController(host) || host.parentElement) ?? host
-  );
+  ) as HTMLElement;
 }
 
 if (!globalThis.customElements.get('media-chrome-menu')) {

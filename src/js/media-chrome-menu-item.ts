@@ -1,8 +1,7 @@
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { InvokeEvent } from './utils/events.js';
 import { getDocumentOrShadowRoot, containsComposedNode } from './utils/element-utils.js';
-
-/** @typedef {import('./media-chrome-menu.js').MediaChromeMenu} MediaChromeMenu */
+import { MediaChromeMenu } from './media-chrome-menu.js';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/`
@@ -277,10 +276,10 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   /**
    * Returns the slotted submenu element.
    */
-  get submenuElement() {
+  get submenuElement(): MediaChomeMenu | null {
     /** @type {HTMLSlotElement} */
     const submenuSlot = this.shadowRoot.querySelector('slot[name="submenu"]');
-    return /** @type {MediaChromeMenu | null} */ (
+    return (
       submenuSlot.assignedElements({ flatten: true })[0]
     );
   }

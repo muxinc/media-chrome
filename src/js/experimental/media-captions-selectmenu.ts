@@ -1,7 +1,7 @@
 import { MediaChromeSelectMenu } from './media-chrome-selectmenu.js';
 import '../media-captions-button.js';
 import './media-captions-listbox.js';
-import { globalThis, document, } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 
 /**
  * @csspart button - The default button that's in the shadow DOM.

@@ -28,7 +28,7 @@ slotTemplate.innerHTML = /*html*/`
   </slot>
 `;
 
-const updateAriaLabel = (el) => {
+const updateAriaLabel = (el: MediaAirplayButton) => {
   const label = el.mediaIsAirplaying ? verbs.EXIT_AIRPLAY() : verbs.ENTER_AIRPLAY();
   el.setAttribute('aria-label', label);
 };
@@ -54,7 +54,7 @@ class MediaAirplayButton extends MediaChromeButton {
     ];
   }
 
-  constructor(options = {}) {
+  constructor(options: { slotTemplate?: HTMLTemplateElement } = {}) {
     super({ slotTemplate, ...options });
   }
 
@@ -63,7 +63,7 @@ class MediaAirplayButton extends MediaChromeButton {
     updateAriaLabel(this);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_IS_AIRPLAYING) {
@@ -74,22 +74,22 @@ class MediaAirplayButton extends MediaChromeButton {
   /**
    * @type {boolean} Are we currently airplaying
    */
-  get mediaIsAirplaying() {
+  get mediaIsAirplaying(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_IS_AIRPLAYING);
   }
 
-  set mediaIsAirplaying(value) {
+  set mediaIsAirplaying(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_IS_AIRPLAYING, value);
   }
 
   /**
    * @type {string | undefined} Airplay unavailability state
    */
-  get mediaAirplayUnavailable() {
+  get mediaAirplayUnavailable(): string | undefined {
     return getStringAttr(this, MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE);
   }
 
-  set mediaAirplayUnavailable(value) {
+  set mediaAirplayUnavailable(value: string | undefined) {
     setStringAttr(this, MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE, value);
   }
 

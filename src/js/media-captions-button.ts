@@ -35,8 +35,8 @@ slotTemplate.innerHTML = /*html*/`
   </slot>
 `;
 
-const updateAriaChecked = (el) => {
-  el.setAttribute('aria-checked', areSubsOn(el));
+const updateAriaChecked = (el: HTMLElement) => {
+  el.setAttribute('aria-checked', areSubsOn(el).toString());
 };
 
 /**
@@ -58,7 +58,9 @@ class MediaCaptionsButton extends MediaChromeButton {
     ];
   }
 
-  constructor(options = {}) {
+  private _captionsReady: boolean;
+
+  constructor(options: any = {}) {
     super({ slotTemplate, ...options });
     // Internal variable to keep track of when we have some or no captions (or subtitles, if using subtitles fallback)
     // Used for `default-showing` behavior.
@@ -72,7 +74,7 @@ class MediaCaptionsButton extends MediaChromeButton {
     updateAriaChecked(this);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string, newValue: string) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
@@ -84,11 +86,11 @@ class MediaCaptionsButton extends MediaChromeButton {
    * @type {Array<object>} An array of TextTrack-like objects.
    * Objects must have the properties: kind, language, and label.
    */
-  get mediaSubtitlesList() {
+  get mediaSubtitlesList(): Array<object> {
     return getSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
   }
 
-  set mediaSubtitlesList(list) {
+  set mediaSubtitlesList(list: Array<object>) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST, list);
   }
 
@@ -96,14 +98,14 @@ class MediaCaptionsButton extends MediaChromeButton {
    * @type {Array<object>} An array of TextTrack-like objects.
    * Objects must have the properties: kind, language, and label.
    */
-  get mediaSubtitlesShowing() {
+  get mediaSubtitlesShowing(): Array<object> {
     return getSubtitlesListAttr(
       this,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
     );
   }
 
-  set mediaSubtitlesShowing(list) {
+  set mediaSubtitlesShowing(list: Array<object>) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
   }
 
@@ -118,22 +120,22 @@ class MediaCaptionsButton extends MediaChromeButton {
 }
 
 /**
- * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {HTMLElement} el Should be HTMLElement but issues with globalThis shim
  * @param {string} attrName
  * @returns {Array<Object>} An array of TextTrack-like objects.
  */
-const getSubtitlesListAttr = (el, attrName) => {
+const getSubtitlesListAttr = (el: HTMLElement, attrName: string): Array<object> => {
   const attrVal = el.getAttribute(attrName);
   return attrVal ? parseTextTracksStr(attrVal) : [];
 };
 
 /**
  *
- * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {HTMLElement} el Should be HTMLElement but issues with globalThis shim
  * @param {string} attrName
  * @param {Array<Object>} list An array of TextTrack-like objects
  */
-const setSubtitlesListAttr = (el, attrName, list) => {
+const setSubtitlesListAttr = (el: HTMLElement, attrName: string, list: Array<object>) => {
   // null, undefined, and empty arrays are treated as "no value" here
   if (!list?.length) {
     el.removeAttribute(attrName);

@@ -85,8 +85,8 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     ];
   }
 
-  #previouslyFocused;
-  #invokerElement;
+  #previouslyFocused: HTMLElement | null = null;
+  #invokerElement: HTMLElement | null = null;
 
   constructor() {
     super();
@@ -105,16 +105,16 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     this.addEventListener('keydown', this);
   }
 
-  handleEvent(event) {
+  handleEvent(event: Event) {
     switch (event.type) {
       case 'invoke':
-        this.#handleInvoke(event);
+        this.#handleInvoke(event as CustomEvent);
         break;
       case 'focusout':
-        this.#handleFocusOut(event);
+        this.#handleFocusOut(event as FocusEvent);
         break;
       case 'keydown':
-        this.#handleKeyDown(event);
+        this.#handleKeyDown(event as KeyboardEvent);
         break;
     }
   }
@@ -125,7 +125,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     }
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     if (attrName === Attributes.HIDDEN && newValue !== oldValue) {
       if (this.hidden) {
         this.#handleClosed();
@@ -148,20 +148,19 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   focus() {
     this.#previouslyFocused = getActiveElement();
 
-    /** @type {HTMLElement} */
-    const focusable = this.querySelector('[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]');
+    const focusable: HTMLElement | null = this.querySelector('[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]');
     focusable?.focus();
   }
 
-  #handleInvoke(event) {
-    this.#invokerElement = event.relatedTarget;
+  #handleInvoke(event: CustomEvent) {
+    this.#invokerElement = event.relatedTarget as HTMLElement;
 
     if (!containsComposedNode(this, event.relatedTarget)) {
       this.hidden = !this.hidden;
     }
   }
 
-  #handleFocusOut(event) {
+  #handleFocusOut(event: FocusEvent) {
     if (!containsComposedNode(this, event.relatedTarget)) {
       this.#previouslyFocused?.focus();
 
@@ -176,7 +175,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     return ['Escape', 'Tab'];
   }
 
-  #handleKeyDown(event) {
+  #handleKeyDown(event: KeyboardEvent) {
     const { key, ctrlKey, altKey, metaKey } = event;
 
     if (ctrlKey || altKey || metaKey) {
@@ -193,10 +192,10 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     if (key === 'Tab') {
       // Move focus to the previous focusable element.
       if (event.shiftKey) {
-        /** @type {HTMLElement} */ (this.previousElementSibling)?.focus?.();
+        (this.previousElementSibling as HTMLElement)?.focus?.();
       } else {
         // Move focus to the next focusable element.
-        /** @type {HTMLElement} */ (this.nextElementSibling)?.focus?.();
+        (this.nextElementSibling as HTMLElement)?.focus?.();
       }
 
       // Go back to the previous focused element.

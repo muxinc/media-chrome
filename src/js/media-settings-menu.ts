@@ -2,7 +2,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaChromeMenu } from './media-chrome-menu.js';
 import { getMediaController } from './utils/element-utils.js';
 
-const template = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement('template');
 // prettier-ignore
 template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <style>
@@ -45,7 +45,7 @@ class MediaSettingsMenu extends MediaChromeMenu {
    * Returns the anchor element when it is a floating menu.
    * @return {HTMLElement}
    */
-  get anchorElement() {
+  get anchorElement(): HTMLElement | null {
     if (this.anchor !== 'auto') return super.anchorElement;
     return getMediaController(this).querySelector('media-settings-menu-button');
   }
