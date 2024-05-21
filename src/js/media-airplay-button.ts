@@ -1,13 +1,13 @@
-import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { verbs } from './labels/labels.js';
+import { MediaChromeButton } from './media-chrome-button.js';
 import {
-  getStringAttr,
-  setStringAttr,
   getBooleanAttr,
+  getStringAttr,
   setBooleanAttr,
+  setStringAttr,
 } from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
   <path d="M22.13 3H3.87a.87.87 0 0 0-.87.87v13.26a.87.87 0 0 0 .87.87h3.4L9 16H5V5h16v11h-4l1.72 2h3.4a.87.87 0 0 0 .87-.87V3.87a.87.87 0 0 0-.86-.87Zm-8.75 11.44a.5.5 0 0 0-.76 0l-4.91 5.73a.5.5 0 0 0 .38.83h9.82a.501.501 0 0 0 .38-.83l-4.91-5.73Z"/>
@@ -17,15 +17,13 @@ const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${
-    MediaUIAttributes.MEDIA_IS_AIRPLAYING
+  :host([${MediaUIAttributes.MEDIA_IS_AIRPLAYING
   }]) slot:not([name=exit]):not([name=icon]) {
     display: none !important;
   }
 
   ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_AIRPLAYING
+  :host(:not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING
   }])) slot:not([name=enter]):not([name=icon]) {
     display: none !important;
   }
@@ -37,10 +35,8 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const updateAriaLabel = (el) => {
-  const label = el.mediaIsAirplaying
-    ? verbs.EXIT_AIRPLAY()
-    : verbs.ENTER_AIRPLAY();
+const updateAriaLabel = (el: MediaAirplayButton) => {
+  const label = el.mediaIsAirplaying ? verbs.EXIT_AIRPLAY() : verbs.ENTER_AIRPLAY();
   el.setAttribute('aria-label', label);
 };
 
@@ -65,7 +61,7 @@ class MediaAirplayButton extends MediaChromeButton {
     ];
   }
 
-  constructor(options = {}) {
+  constructor(options: { slotTemplate?: HTMLTemplateElement } = {}) {
     super({ slotTemplate, ...options });
   }
 
@@ -74,7 +70,7 @@ class MediaAirplayButton extends MediaChromeButton {
     updateAriaLabel(this);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_IS_AIRPLAYING) {
@@ -85,22 +81,22 @@ class MediaAirplayButton extends MediaChromeButton {
   /**
    * @type {boolean} Are we currently airplaying
    */
-  get mediaIsAirplaying() {
+  get mediaIsAirplaying(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_IS_AIRPLAYING);
   }
 
-  set mediaIsAirplaying(value) {
+  set mediaIsAirplaying(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_IS_AIRPLAYING, value);
   }
 
   /**
    * @type {string | undefined} Airplay unavailability state
    */
-  get mediaAirplayUnavailable() {
+  get mediaAirplayUnavailable(): string | undefined {
     return getStringAttr(this, MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE);
   }
 
-  set mediaAirplayUnavailable(value) {
+  set mediaAirplayUnavailable(value: string | undefined) {
     setStringAttr(this, MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE, value);
   }
 

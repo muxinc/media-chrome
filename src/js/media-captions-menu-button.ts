@@ -1,7 +1,8 @@
-import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
+import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
+import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
+import { getMediaController } from './utils/element-utils.js';
 import {
   areSubsOn,
   parseTextTracksStr,
@@ -35,8 +36,8 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const updateAriaChecked = (el) => {
-  el.setAttribute('aria-checked', areSubsOn(el));
+const updateAriaChecked = (el: HTMLElement) => {
+  el.setAttribute('aria-checked', areSubsOn(el).toString());
 };
 
 /**
@@ -47,10 +48,10 @@ const updateAriaChecked = (el) => {
  * @attr {string} mediasubtitleslist - (read-only) A list of all subtitles and captions.
  * @attr {string} mediasubtitlesshowing - (read-only) A list of the showing subtitles and captions.
  *
- * @cssproperty [--media-captions-button-display = inline-flex] - `display` property of button.
+ * @cssproperty [--media-captions-menu-button-display = inline-flex] - `display` property of button.
  */
-class MediaCaptionsButton extends MediaChromeButton {
-  static get observedAttributes() {
+class MediaCaptionsMenuButton extends MediaChromeMenuButton {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
@@ -58,21 +59,21 @@ class MediaCaptionsButton extends MediaChromeButton {
     ];
   }
 
-  constructor(options = {}) {
+  constructor(options: Record<string, any> = {}) {
     super({ slotTemplate, ...options });
     // Internal variable to keep track of when we have some or no captions (or subtitles, if using subtitles fallback)
     // Used for `default-showing` behavior.
     this._captionsReady = false;
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute('role', 'switch');
+
     this.setAttribute('aria-label', nouns.CLOSED_CAPTIONS());
     updateAriaChecked(this);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string, newValue: string): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
@@ -81,14 +82,23 @@ class MediaCaptionsButton extends MediaChromeButton {
   }
 
   /**
+   * Returns the element with the id specified by the `invoketarget` attribute.
+   * @return {HTMLElement | null}
+   */
+  get invokeTargetElement(): HTMLElement | null {
+    if (this.invokeTarget != undefined) return super.invokeTargetElement;
+    return getMediaController(this)?.querySelector('media-captions-menu');
+  }
+
+  /**
    * @type {Array<object>} An array of TextTrack-like objects.
    * Objects must have the properties: kind, language, and label.
    */
-  get mediaSubtitlesList() {
+  get mediaSubtitlesList(): Array<object> {
     return getSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
   }
 
-  set mediaSubtitlesList(list) {
+  set mediaSubtitlesList(list: Array<object>) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST, list);
   }
 
@@ -96,44 +106,35 @@ class MediaCaptionsButton extends MediaChromeButton {
    * @type {Array<object>} An array of TextTrack-like objects.
    * Objects must have the properties: kind, language, and label.
    */
-  get mediaSubtitlesShowing() {
+  get mediaSubtitlesShowing(): Array<object> {
     return getSubtitlesListAttr(
       this,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
     );
   }
 
-  set mediaSubtitlesShowing(list) {
+  set mediaSubtitlesShowing(list: Array<object>) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
-  }
-
-  handleClick() {
-    this.dispatchEvent(
-      new globalThis.CustomEvent(MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST, {
-        composed: true,
-        bubbles: true,
-      })
-    );
   }
 }
 
 /**
- * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {HTMLElement} el Should be HTMLElement but issues with globalThis shim
  * @param {string} attrName
  * @returns {Array<Object>} An array of TextTrack-like objects.
  */
-const getSubtitlesListAttr = (el, attrName) => {
+const getSubtitlesListAttr = (el: HTMLElement, attrName: string): Array<object> => {
   const attrVal = el.getAttribute(attrName);
   return attrVal ? parseTextTracksStr(attrVal) : [];
 };
 
 /**
  *
- * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {HTMLElement} el Should be HTMLElement but issues with globalThis shim
  * @param {string} attrName
  * @param {Array<Object>} list An array of TextTrack-like objects
  */
-const setSubtitlesListAttr = (el, attrName, list) => {
+const setSubtitlesListAttr = (el: HTMLElement, attrName: string, list: Array<object>): void => {
   // null, undefined, and empty arrays are treated as "no value" here
   if (!list?.length) {
     el.removeAttribute(attrName);
@@ -148,11 +149,12 @@ const setSubtitlesListAttr = (el, attrName, list) => {
   el.setAttribute(attrName, newValStr);
 };
 
-if (!globalThis.customElements.get('media-captions-button')) {
+if (!globalThis.customElements.get('media-captions-menu-button')) {
   globalThis.customElements.define(
-    'media-captions-button',
-    MediaCaptionsButton
+    'media-captions-menu-button',
+    MediaCaptionsMenuButton
   );
 }
 
-export default MediaCaptionsButton;
+export { MediaCaptionsMenuButton };
+export default MediaCaptionsMenuButton;

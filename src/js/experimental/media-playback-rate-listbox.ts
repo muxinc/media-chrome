@@ -1,14 +1,14 @@
+import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
+import { DEFAULT_RATE, DEFAULT_RATES } from '../media-playback-rate-button.js';
+import { AttributeTokenList } from '../utils/attribute-token-list.js';
+import { getNumericAttr, setNumericAttr } from '../utils/element-utils.js';
+import { globalThis } from '../utils/server-safe-globals.js';
 import {
   MediaChromeListbox,
-  createOption,
   createIndicator,
+  createOption,
 } from './media-chrome-listbox.js';
 import './media-chrome-option.js';
-import { DEFAULT_RATES, DEFAULT_RATE } from '../media-playback-rate-button.js';
-import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
-import { globalThis } from '../utils/server-safe-globals.js';
-import { getNumericAttr, setNumericAttr } from '../utils/element-utils.js';
-import { AttributeTokenList } from '../utils/attribute-token-list.js';
 
 export const Attributes = {
   RATES: 'rates',
@@ -19,7 +19,7 @@ export const Attributes = {
  * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
  */
 class MediaPlaybackRateListbox extends MediaChromeListbox {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       'aria-multiselectable',
@@ -38,7 +38,7 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
     this.#render();
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -56,11 +56,11 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
    * @type { AttributeTokenList | Array<number> | undefined} Will return a DOMTokenList.
    * Setting a value will accept an array of numbers.
    */
-  get rates() {
+  get rates(): AttributeTokenList | number[] | undefined {
     return this.#rates;
   }
 
-  set rates(value) {
+  set rates(value: AttributeTokenList | number[] | undefined) {
     if (!value) {
       this.#rates.value = '';
     } else if (Array.isArray(value)) {
@@ -72,29 +72,25 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
   /**
    * @type {number} The current playback rate
    */
-  get mediaPlaybackRate() {
-    return getNumericAttr(
-      this,
-      MediaUIAttributes.MEDIA_PLAYBACK_RATE,
-      DEFAULT_RATE
-    );
+  get mediaPlaybackRate(): number {
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, DEFAULT_RATE);
   }
 
-  set mediaPlaybackRate(value) {
+  set mediaPlaybackRate(value: number) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, value);
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener('change', this.#onChange);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener('change', this.#onChange);
   }
 
-  #render() {
+  #render(): void {
     const container = this.shadowRoot.querySelector('#container');
     container.textContent = '';
 
@@ -110,7 +106,7 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
     }
   }
 
-  #onChange() {
+  #onChange(): void {
     if (!this.value) return;
 
     const event = new globalThis.CustomEvent(

@@ -93,14 +93,14 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-button-icon-transition - `transition` of button icon.
  */
 class MediaChromeButton extends globalThis.HTMLElement {
-  #mediaController;
+  #mediaController: HTMLElement | null;
   preventClick = false;
 
   static get observedAttributes() {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
-  constructor(options = {}) {
+  constructor(options: { slotTemplate?: HTMLTemplateElement; defaultContent?: string } = {}) {
     super();
 
     if (!this.shadowRoot) {
@@ -124,7 +124,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     }
   }
 
-  #clickListener = (e) => {
+  #clickListener = (e: MouseEvent) => {
     if (!this.preventClick) {
       this.handleClick(e);
     }
@@ -132,7 +132,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
-  #keyupListener = (e) => {
+  #keyupListener = (e: KeyboardEvent) => {
     const { key } = e;
     if (!this.keysUsed.includes(key)) {
       this.removeEventListener('keyup', this.#keyupListener);
@@ -144,7 +144,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     }
   };
 
-  #keydownListener = (e) => {
+  #keydownListener = (e: KeyboardEvent) => {
     const { metaKey, altKey, key } = e;
     if (metaKey || altKey || !this.keysUsed.includes(key)) {
       this.removeEventListener('keyup', this.#keyupListener);
@@ -166,7 +166,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.tabIndex = -1;
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -225,7 +225,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
    * @abstract
    * @argument {Event} e
    */
-  handleClick(e) {} // eslint-disable-line
+  handleClick(e: Event) {} // eslint-disable-line
 }
 
 if (!globalThis.customElements.get('media-chrome-button')) {

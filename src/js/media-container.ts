@@ -7,10 +7,10 @@
   * Position controls at the bottom
   * Auto-hide controls on inactivity while playing
 */
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
+import { MediaStateChangeEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { observeResize } from './utils/resize-observer.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
 
@@ -34,7 +34,7 @@ template.innerHTML = /*html*/ `
        * However, on keyboard interactions, the focus outline is shown,
        * which is particularly noticeable when going fullscreen via hotkeys.
        */ ''
-    }
+  }
     :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) ::slotted([slot=media]) {
       outline: none;
     }
@@ -68,7 +68,7 @@ template.innerHTML = /*html*/ `
       /*
        * when in audio mode, hide the slotted media element by default
        */ ''
-    }
+  }
     :host([${Attributes.AUDIO}]) slot[name=media] {
       display: var(--media-slot-display, none);
     }
@@ -77,7 +77,7 @@ template.innerHTML = /*html*/ `
       /*
        * when in audio mode, hide the gesture-layer which causes media-controller to be taller than the control bar
        */ ''
-    }
+  }
     :host([${Attributes.AUDIO}]) [part~=layer][part~=gesture-layer] {
       height: 0;
       display: block;
@@ -87,13 +87,11 @@ template.innerHTML = /*html*/ `
       /*
        * if gestures are disabled, don't accept pointer-events
        */ ''
-    }
-    :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) ::slotted([slot=gestures-chrome]),
-    :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) media-gesture-receiver[slot=gestures-chrome] {
+  }
+    :host(:not([${Attributes.AUDIO}])[${Attributes.GESTURES_DISABLED
+  }]) ::slotted([slot=gestures-chrome]),
+    :host(:not([${Attributes.AUDIO}])[${Attributes.GESTURES_DISABLED
+  }]) media-gesture-receiver[slot=gestures-chrome] {
       display: none;
     }
 
@@ -102,7 +100,7 @@ template.innerHTML = /*html*/ `
        * any slotted element that isn't a poster or media slot should be pointer-events auto
        * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
        */ ''
-    }
+  }
     ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([hidden])) {
       pointer-events: auto;
     }
@@ -112,12 +110,10 @@ template.innerHTML = /*html*/ `
       justify-content: center;
     }
 
-    :host(:not([${
-      Attributes.AUDIO
-    }])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
-    :host(:not([${
-      Attributes.AUDIO
-    }])) media-gesture-receiver[slot=gestures-chrome] {
+    :host(:not([${Attributes.AUDIO
+  }])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
+    :host(:not([${Attributes.AUDIO
+  }])) media-gesture-receiver[slot=gestures-chrome] {
       align-self: stretch;
       flex-grow: 1;
     }
@@ -149,34 +145,27 @@ template.innerHTML = /*html*/ `
     }
 
     ${/* Only add these if auto hide is not disabled */ ''}
-    ::slotted(:not([slot=media]):not([slot=poster]):not([${
-      Attributes.NO_AUTOHIDE
-    }]):not([hidden])) {
+    ::slotted(:not([slot=media]):not([slot=poster]):not([${Attributes.NO_AUTOHIDE
+  }]):not([hidden])) {
       opacity: 1;
       transition: opacity 0.25s;
     }
 
     ${
       /* Hide controls when inactive, not paused, not audio and auto hide not disabled */ ''
-    }
-    :host([${Attributes.USER_INACTIVE}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${
-  MediaUIAttributes.MEDIA_IS_CASTING
-}]):not([${
-  Attributes.AUDIO
-}])) ::slotted(:not([slot=media]):not([slot=poster]):not([${
-  Attributes.NO_AUTOHIDE
-}])) {
+  }
+    :host([${Attributes.USER_INACTIVE}]:not([${MediaUIAttributes.MEDIA_PAUSED
+  }]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${MediaUIAttributes.MEDIA_IS_CASTING
+  }]):not([${Attributes.AUDIO
+  }])) ::slotted(:not([slot=media]):not([slot=poster]):not([${Attributes.NO_AUTOHIDE
+  }])) {
       opacity: 0;
       transition: opacity 1s;
     }
 
-    :host([${Attributes.USER_INACTIVE}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
-  Attributes.AUDIO
-}])) ::slotted([slot=media]) {
+    :host([${Attributes.USER_INACTIVE}]:not([${MediaUIAttributes.MEDIA_PAUSED
+  }]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${Attributes.AUDIO
+  }])) ::slotted([slot=media]) {
       cursor: none;
     }
 
@@ -186,10 +175,9 @@ template.innerHTML = /*html*/ `
 
     ${
       /* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''
-    }
-    :host(:not([${Attributes.AUDIO}])[${
-  MediaUIAttributes.MEDIA_HAS_PLAYED
-}]) slot[name=poster] {
+  }
+    :host(:not([${Attributes.AUDIO}])[${MediaUIAttributes.MEDIA_HAS_PLAYED
+  }]) slot[name=poster] {
       display: none;
     }
 
@@ -220,11 +208,11 @@ const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 const defaultBreakpoints = 'sm:384 md:576 lg:768 xl:960';
 
-function resizeCallback(entry) {
-  setBreakpoints(entry.target, entry.contentRect.width);
+function resizeCallback(entry: ResizeObserverEntry) {
+  setBreakpoints(entry.target as HTMLElement, entry.contentRect.width);
 }
 
-function setBreakpoints(container, width) {
+function setBreakpoints(container: HTMLElement, width: number) {
   if (!container.isConnected) return;
 
   const breakpoints =
@@ -258,14 +246,14 @@ function setBreakpoints(container, width) {
   }
 }
 
-function createBreakpointMap(breakpoints) {
+function createBreakpointMap(breakpoints: string) {
   const pairs = breakpoints.split(/\s+/);
   return Object.fromEntries(pairs.map((pair) => pair.split(':')));
 }
 
-function getBreakpoints(breakpoints, width) {
+function getBreakpoints(breakpoints: Record<string, string>, width: number) {
   return Object.keys(breakpoints).filter((name) => {
-    return width >= breakpoints[name];
+    return width >= parseInt(breakpoints[name]);
   });
 }
 
@@ -302,7 +290,7 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   #pointerDownTimeStamp = 0;
-  #currentMedia;
+  #currentMedia: HTMLMediaElement | null = null;
   breakpointsComputed = false;
 
   constructor() {
@@ -315,7 +303,7 @@ class MediaContainer extends globalThis.HTMLElement {
     }
 
     // Watch for child adds/removes and update the media element if necessary
-    const mutationCallback = (mutationsList) => {
+    const mutationCallback = (mutationsList: MutationRecord[]) => {
       const media = this.media;
 
       for (let mutation of mutationsList) {
@@ -334,7 +322,7 @@ class MediaContainer extends globalThis.HTMLElement {
 
               // Must have been first if no prev sibling or new media
               if (!previousSibling || !media) {
-                this.mediaUnsetCallback(node);
+                this.mediaUnsetCallback(node as HTMLMediaElement);
               } else {
                 // Check if any prev siblings had a slot=media
                 // Should remain true otherwise
@@ -344,7 +332,7 @@ class MediaContainer extends globalThis.HTMLElement {
                 ) {
                   if (previousSibling.slot == 'media') wasFirst = false;
                 }
-                if (wasFirst) this.mediaUnsetCallback(node);
+                if (wasFirst) this.mediaUnsetCallback(node as HTMLMediaElement);
               }
             }
           });
@@ -367,7 +355,7 @@ class MediaContainer extends globalThis.HTMLElement {
     mutationObserver.observe(this, { childList: true, subtree: true });
 
     let pendingResizeCb = false;
-    const deferResizeCallback = (entry) => {
+    const deferResizeCallback = (entry: ResizeObserverEntry) => {
       // Already have a pending async breakpoint computation, so go ahead and bail
       if (pendingResizeCb) return;
       // Just in case it takes too long (which will cause an error to throw),
@@ -411,7 +399,7 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   // Could share this code with media-chrome-html-element instead
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string, newValue: string) {
     if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
       this.autohide = newValue;
     }
@@ -443,7 +431,7 @@ class MediaContainer extends globalThis.HTMLElement {
   /**
    * @param {HTMLMediaElement} media
    */
-  async handleMediaUpdated(media) {
+  async handleMediaUpdated(media: HTMLMediaElement) {
     // Anything "falsy" couldn't act as a media element.
     if (!media) return;
 
@@ -496,25 +484,25 @@ class MediaContainer extends globalThis.HTMLElement {
    * @abstract
    * @param {HTMLMediaElement} media
    */
-  mediaSetCallback(media) {} // eslint-disable-line
+  mediaSetCallback(media: HTMLMediaElement) { } // eslint-disable-line
 
   /**
    * @param {HTMLMediaElement} media
    */
-  mediaUnsetCallback(media /* eslint-disable-line no-unused-vars */) {
+  mediaUnsetCallback(media: HTMLMediaElement) { // eslint-disable-line
     this.#currentMedia = null;
   }
 
-  handleEvent(event) {
+  handleEvent(event: Event) {
     switch (event.type) {
       case 'pointerdown':
-        this.#pointerDownTimeStamp = event.timeStamp;
+        this.#pointerDownTimeStamp = (event as PointerEvent).timeStamp;
         break;
       case 'pointermove':
-        this.#handlePointerMove(event);
+        this.#handlePointerMove(event as PointerEvent);
         break;
       case 'pointerup':
-        this.#handlePointerUp(event);
+        this.#handlePointerUp(event as PointerEvent);
         break;
       case 'mouseleave':
         // Immediately hide if mouse leaves the container.
@@ -532,7 +520,7 @@ class MediaContainer extends globalThis.HTMLElement {
     }
   }
 
-  #handlePointerMove(event) {
+  #handlePointerMove(event: PointerEvent) {
     if (event.pointerType !== 'mouse') {
       // On mobile we toggle the controls on a tap which is handled in pointerup,
       // but Android fires pointermove events even when the user is just tapping.
@@ -554,7 +542,7 @@ class MediaContainer extends globalThis.HTMLElement {
     }
   }
 
-  #handlePointerUp(event) {
+  #handlePointerUp(event: PointerEvent) {
     if (event.pointerType === 'touch') {
       const controlsVisible = !this.hasAttribute(Attributes.USER_INACTIVE);
 
@@ -615,9 +603,9 @@ class MediaContainer extends globalThis.HTMLElement {
     }, this.autohide * 1000);
   }
 
-  set autohide(seconds) {
-    seconds = Number(seconds);
-    this._autohide = isNaN(seconds) ? 0 : seconds;
+  set autohide(seconds: string) {
+    const parsedSeconds = Number(seconds);
+    this._autohide = isNaN(parsedSeconds) ? 0 : parsedSeconds;
   }
 
   get autohide() {

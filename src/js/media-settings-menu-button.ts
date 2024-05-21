@@ -1,7 +1,7 @@
-import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { getMediaController } from './utils/element-utils.js';
 import { nouns } from './labels/labels.js';
+import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
+import { getMediaController } from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
@@ -16,15 +16,18 @@ slotTemplate.innerHTML = /*html*/ `
  * @attr {string} target - CSS id selector for the element to be targeted by the button.
  */
 class MediaSettingsMenuButton extends MediaChromeMenuButton {
-  static get observedAttributes() {
-    return [...super.observedAttributes, 'target'];
+  static get observedAttributes(): string[] {
+    return [
+      ...super.observedAttributes,
+      'target',
+    ];
   }
 
   constructor() {
     super({ slotTemplate });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.setAttribute('aria-label', nouns.SETTINGS());
   }
@@ -33,7 +36,7 @@ class MediaSettingsMenuButton extends MediaChromeMenuButton {
    * Returns the element with the id specified by the `invoketarget` attribute.
    * @return {HTMLElement | null}
    */
-  get invokeTargetElement() {
+  get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
     return getMediaController(this).querySelector('media-settings-menu');
   }

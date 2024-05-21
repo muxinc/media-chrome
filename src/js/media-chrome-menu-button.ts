@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis } from './utils/server-safe-globals.js';
-import { InvokeEvent } from './utils/events.js';
 import { getDocumentOrShadowRoot } from './utils/element-utils.js';
+import { InvokeEvent } from './utils/events.js';
+import { globalThis } from './utils/server-safe-globals.js';
 
 /**
  * @attr {string} invoketarget - The id of the element to invoke when clicked.
@@ -15,11 +15,11 @@ class MediaChromeMenuButton extends MediaChromeButton {
     }
   }
 
-  get invokeTarget() {
+  get invokeTarget(): string | null {
     return this.getAttribute('invoketarget');
   }
 
-  set invokeTarget(value) {
+  set invokeTarget(value: string | null) {
     this.setAttribute('invoketarget', `${value}`);
   }
 
@@ -27,17 +27,15 @@ class MediaChromeMenuButton extends MediaChromeButton {
    * Returns the element with the id specified by the `invoketarget` attribute.
    * @return {HTMLElement | null}
    */
-  get invokeTargetElement() {
+  get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget) {
-      return getDocumentOrShadowRoot(this)?.querySelector(
-        `#${this.invokeTarget}`
-      );
+      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.invokeTarget}`) as HTMLElement | null;
     }
     return null;
   }
 
   handleClick() {
-    this.invokeTargetElement.dispatchEvent(
+    this.invokeTargetElement?.dispatchEvent(
       new InvokeEvent({ relatedTarget: this })
     );
   }

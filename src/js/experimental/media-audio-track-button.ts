@@ -36,11 +36,11 @@ class MediaAudioTrackButton extends MediaChromeButton {
    * Get enabled audio track id.
    * @return {string}
    */
-  get mediaAudioTrackEnabled() {
+  get mediaAudioTrackEnabled(): string {
     return getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED);
   }
 
-  set mediaAudioTrackEnabled(id) {
+  set mediaAudioTrackEnabled(id: string) {
     setStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED, id);
   }
 }

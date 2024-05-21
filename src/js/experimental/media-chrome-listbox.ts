@@ -1,12 +1,12 @@
 import { MediaStateReceiverAttributes } from '../constants.js';
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
 
 const checkIcon = /*html*/ `
 <svg aria-hidden="true" viewBox="0 1 24 24" part="select-indicator indicator">
   <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
 </svg>`;
 
-export function createOption(text, value, selected) {
+export function createOption(text: string, value: string, selected: boolean) {
   const option = document.createElement('media-chrome-option');
   option.part.add('option');
   option.value = value;
@@ -19,7 +19,7 @@ export function createOption(text, value, selected) {
   return option;
 }
 
-export function createIndicator(el, name) {
+export function createIndicator(el: HTMLElement, name: string) {
   let customIndicator = el.querySelector(`:scope > [slot="${name}"]`);
 
   // Chaining slots
@@ -159,16 +159,16 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     return ['disabled', 'style', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
-  static formatOptionText(text) {
+  static formatOptionText(text: string) {
     return text;
   }
 
-  #mediaController;
-  #keysSoFar = '';
-  #clearKeysTimeout = null;
-  #metaPressed = false;
+  #mediaController: HTMLElement | null = null;
+  #keysSoFar: string = '';
+  #clearKeysTimeout: number | null = null;
+  #metaPressed: boolean = false;
 
-  constructor(options = {}) {
+  constructor(options: { slotTemplate?: HTMLTemplateElement } = {}) {
     super();
 
     if (!this.shadowRoot) {
@@ -184,9 +184,9 @@ class MediaChromeListbox extends globalThis.HTMLElement {
       this.shadowRoot.append(this.nativeEl);
     }
 
-    this.container = this.shadowRoot.querySelector('#container');
+    this.container = this.shadowRoot.querySelector('#container') as HTMLSlotElement;
 
-    this.container.addEventListener('slotchange', (event) => {
+    this.container.addEventListener('slotchange', (event: Event) => {
       // @ts-ignore
       for (let node of event.target.assignedNodes({ flatten: true })) {
         // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
@@ -197,12 +197,12 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     });
   }
 
-  formatOptionText(text, data) {
+  formatOptionText(text: string, data?: any): string {
     // @ts-ignore
     return this.constructor.formatOptionText(text, data);
   }
 
-  get options() {
+  get options(): HTMLOptionElement[] {
     // First query the light dom children for any options.
 
     /** @type NodeListOf<HTMLOptionElement> */
@@ -216,38 +216,38 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     return Array.from(options);
   }
 
-  get selectedOptions() {
-    return this.options.filter((option) => option.selected);
+  get selectedOptions(): HTMLOptionElement[] {
+    return this.options.filter(option => option.selected);
   }
 
-  get value() {
+  get value(): string {
     return this.selectedOptions[0]?.value ?? '';
   }
 
-  set value(newValue) {
-    const option = this.options.find((option) => option.value === newValue);
+  set value(newValue: string) {
+    const option = this.options.find(option => option.value === newValue);
 
     if (!option) return;
 
     this.#selectOption(option);
   }
 
-  focus() {
+  focus(): void {
     this.selectedOptions[0]?.focus();
   }
 
-  #clickListener = (e) => {
+  #clickListener = (e: MouseEvent) => {
     this.handleClick(e);
   };
 
-  #handleKeyListener(e) {
+  #handleKeyListener(e: KeyboardEvent) {
     const { key } = e;
 
     if (key === 'Enter' || key === ' ') {
       this.handleSelection(
         e,
         this.hasAttribute('aria-multiselectable') &&
-          this.getAttribute('aria-multiselectable') === 'true'
+        this.getAttribute('aria-multiselectable') === 'true'
       );
     } else {
       this.handleMovement(e);
@@ -256,7 +256,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
-  #keyupListener = (e) => {
+  #keyupListener = (e: KeyboardEvent) => {
     const { key } = e;
     // only cancel on Escape
     if (key === 'Escape') {
@@ -272,7 +272,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     this.#handleKeyListener(e);
   };
 
-  #keydownListener = (e) => {
+  #keydownListener = (e: KeyboardEvent) => {
     const { key, altKey } = e;
 
     if (altKey) {
@@ -308,7 +308,8 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     this.removeEventListener('keyup', this.#keyupListener);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+
     if (attrName === 'style' && newValue !== oldValue) {
       this.#updateLayoutStyle();
     } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
@@ -373,20 +374,20 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     this.#mediaController = null;
   }
 
-  get keysUsed() {
+  get keysUsed(): string[] {
     return ['Enter', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
   }
 
-  #getOption(e) {
+  #getOption(e: Event): HTMLElement | undefined {
     const composedPath = e.composedPath();
     const index = composedPath.findIndex(
       (el) => el.nodeName === 'MEDIA-CHROME-OPTION'
     );
 
-    return composedPath[index];
+    return composedPath[index] as HTMLElement;
   }
 
-  handleSelection(e, toggle) {
+  handleSelection(e: Event, toggle: boolean) {
     const option = this.#getOption(e);
 
     if (!option) return;
@@ -394,7 +395,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     this.#selectOption(option, toggle);
   }
 
-  #selectOption(option, toggle) {
+  #selectOption(option: HTMLElement, toggle?: boolean) {
     const oldSelectedOptions = [...this.selectedOptions];
 
     if (
@@ -417,7 +418,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
   }
 
-  handleMovement(e) {
+  handleMovement(e: KeyboardEvent) {
     const { key } = e;
     const els = this.options;
 
@@ -465,7 +466,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
   }
 
-  handleClick(e) {
+  handleClick(e: MouseEvent) {
     const option = this.#getOption(e);
 
     if (!option || option.hasAttribute('disabled')) return;
@@ -476,11 +477,11 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     this.handleSelection(
       e,
       this.hasAttribute('aria-multiselectable') &&
-        this.getAttribute('aria-multiselectable') === 'true'
+      this.getAttribute('aria-multiselectable') === 'true'
     );
   }
 
-  #searchOption(key) {
+  #searchOption(key: string): HTMLElement | undefined {
     this.#clearKeysOnDelay();
 
     const els = this.options;
@@ -522,7 +523,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   #clearKeysOnDelay() {
-    clearTimeout(this.#clearKeysTimeout);
+    clearTimeout(this.#clearKeysTimeout as number);
     this.#clearKeysTimeout = null;
 
     this.#clearKeysTimeout = setTimeout(() => {

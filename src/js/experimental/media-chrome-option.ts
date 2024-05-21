@@ -1,4 +1,4 @@
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/ `
@@ -84,19 +84,19 @@ class MediaChromeOption extends globalThis.HTMLElement {
     return this.getAttribute(Attributes.VALUE) ?? this.text;
   }
 
-  set value(val) {
+  set value(val: string) {
     this.setAttribute(Attributes.VALUE, val);
   }
 
-  get text() {
+  get text(): string {
     return (this.textContent ?? '').trim();
   }
 
-  get selected() {
+  get selected(): boolean {
     return this.getAttribute('aria-selected') === 'true';
   }
 
-  set selected(value) {
+  set selected(value: boolean) {
     this.#dirty = true;
     // Firefox doesn't support the property .ariaSelected.
     this.setAttribute('aria-selected', value ? 'true' : 'false');
@@ -120,7 +120,8 @@ class MediaChromeOption extends globalThis.HTMLElement {
     this.removeAttribute('tabindex');
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+
     if (attrName === Attributes.SELECTED && !this.#dirty) {
       this.setAttribute('aria-selected', newValue != null ? 'true' : 'false');
     } else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
@@ -173,7 +174,7 @@ class MediaChromeOption extends globalThis.HTMLElement {
     selectedOption?.setAttribute('aria-selected', 'true');
   }
 
-  handleClick() {}
+  handleClick() { }
 }
 
 function closestOptionsContainer(childNode, parentNode) {

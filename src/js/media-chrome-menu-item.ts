@@ -1,11 +1,7 @@
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { MediaChromeMenu } from './media-chrome-menu.js';
+import { containsComposedNode, getDocumentOrShadowRoot } from './utils/element-utils.js';
 import { InvokeEvent } from './utils/events.js';
-import {
-  getDocumentOrShadowRoot,
-  containsComposedNode,
-} from './utils/element-utils.js';
-
-/** @typedef {import('./media-chrome-menu.js').MediaChromeMenu} MediaChromeMenu */
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 template.innerHTML = /*html*/ `
@@ -99,7 +95,7 @@ template.innerHTML = /*html*/ `
 
     ${
       /* Only for indicator icons like checked-indicator or captions-indicator. */ ''
-    }
+  }
     [part~="indicator"],
     ::slotted([part~="indicator"]) {
       fill: var(--media-menu-item-indicator-fill,
@@ -284,10 +280,10 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   /**
    * Returns the slotted submenu element.
    */
-  get submenuElement() {
+  get submenuElement(): MediaChomeMenu | null {
     /** @type {HTMLSlotElement} */
     const submenuSlot = this.shadowRoot.querySelector('slot[name="submenu"]');
-    return /** @type {MediaChromeMenu | null} */ (
+    return (
       submenuSlot.assignedElements({ flatten: true })[0]
     );
   }

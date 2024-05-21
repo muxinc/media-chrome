@@ -29,7 +29,7 @@
  */
 
 /** @type {MediaUIEvents} */
-export const MediaUIEvents = {
+export const MediaUIEvents: MediaUIEvents = {
   MEDIA_PLAY_REQUEST: 'mediaplayrequest',
   MEDIA_PAUSE_REQUEST: 'mediapauserequest',
   MEDIA_MUTE_REQUEST: 'mediamuterequest',
@@ -105,7 +105,7 @@ export const MediaStateReceiverAttributes = {
  */
 
 /** @type {MediaUIProps} */
-export const MediaUIProps = {
+export const MediaUIProps: MediaUIProps = {
   MEDIA_AIRPLAY_UNAVAILABLE: 'mediaAirplayUnavailable',
   MEDIA_FULLSCREEN_UNAVAILABLE: 'mediaFullscreenUnavailable',
   MEDIA_PIP_UNAVAILABLE: 'mediaPipUnavailable',
