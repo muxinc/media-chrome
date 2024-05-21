@@ -3,10 +3,10 @@
 
   Auto position contorls in a line and set some base colors
 */
-import { MediaStateReceiverAttributes } from './constants.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { MediaStateReceiverAttributes } from './constants';
+import { globalThis, document } from './utils/server-safe-globals';
 
-const template = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
   <style>
@@ -43,9 +43,9 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-control-display - `display` property of control.
  */
 class MediaControlBar extends globalThis.HTMLElement {
-  #mediaController;
+  #mediaController: HTMLElement | null;
 
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
@@ -59,7 +59,7 @@ class MediaControlBar extends globalThis.HTMLElement {
     }
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -73,7 +73,7 @@ class MediaControlBar extends globalThis.HTMLElement {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     const mediaControllerId = this.getAttribute(
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
@@ -85,7 +85,7 @@ class MediaControlBar extends globalThis.HTMLElement {
     }
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
