@@ -1,17 +1,17 @@
 class EventTarget {
-  addEventListener() {}
-  removeEventListener() {}
+  addEventListener() { }
+  removeEventListener() { }
   dispatchEvent() {
     return true;
   }
 }
 
-class Node extends EventTarget {}
+class Node extends EventTarget { }
 
 class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  observe() { }
+  unobserve() { }
+  disconnect() { }
 }
 
 const documentShim = {
@@ -21,51 +21,45 @@ const documentShim = {
   createElementNS: function () {
     return new globalThisShim.HTMLElement();
   },
-  addEventListener() {},
-  removeEventListener() {},
+  addEventListener() { },
+  removeEventListener() { },
   /**
    *
    * @param {Event} event
    * @returns {boolean}
    */
-  dispatchEvent(event) {
-    // eslint-disable-line
-    return false;
-  },
+  dispatchEvent(event) { return false }, // eslint-disable-line
 };
 
 const globalThisShim = {
   ResizeObserver,
   document: documentShim,
   Node: Node,
-  HTMLElement: class HTMLElement extends Node {},
-  DocumentFragment: class DocumentFragment extends EventTarget {},
+  HTMLElement: class HTMLElement extends Node { },
+  DocumentFragment: class DocumentFragment extends EventTarget { },
   customElements: {
-    get: function () {},
-    define: function () {},
-    whenDefined: function () {},
+    get: function () { },
+    define: function () { },
+    whenDefined: function () { },
   },
   localStorage: {
     /**
      * @param {string} key
      * @returns {string|null}
      */
-    getItem(key) {
-      // eslint-disable-line
-      return null;
-    },
+    getItem(key) { return null }, // eslint-disable-line
     /**
      * @param {string} key
      * @param {string} value
      */
-    setItem(key, value) {}, // eslint-disable-line
+    setItem(key, value) { }, // eslint-disable-line
     /**
      * @param {string} key
      */
-    removeItem(key) {}, // eslint-disable-line
+    removeItem(key) { }, // eslint-disable-line
   },
-  CustomEvent: function CustomEvent() {},
-  getComputedStyle: function () {},
+  CustomEvent: function CustomEvent() { },
+  getComputedStyle: function () { },
   navigator: {
     languages: [],
     get userAgent() {
