@@ -321,7 +321,7 @@ class MediaContainer extends CustomElement {
     const mutationCallback = (mutationsList: MutationRecord[]) => {
       const media = this.media;
 
-      for (let mutation of mutationsList) {
+      for (const mutation of mutationsList) {
         if (mutation.type === 'childList') {
           // Media element being removed
           mutation.removedNodes.forEach((node: Element) => {
@@ -399,7 +399,7 @@ class MediaContainer extends CustomElement {
     // e.g. chaining media slots for media themes.
 
     /** @type {HTMLSlotElement} */
-    let chainedSlot = this.querySelector(
+    const chainedSlot = this.querySelector(
       ':scope > slot[slot=media]'
     ) as HTMLSlotElement;
     if (chainedSlot) {

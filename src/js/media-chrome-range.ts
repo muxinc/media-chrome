@@ -525,7 +525,7 @@ class MediaChromeRange extends CustomElement {
   }
 
   getPointerRatio(evt) {
-    let pointerRatio = getPointProgressOnLine(
+    const pointerRatio = getPointProgressOnLine(
       evt.clientX,
       evt.clientY,
       this.#startpoint.getBoundingClientRect(),

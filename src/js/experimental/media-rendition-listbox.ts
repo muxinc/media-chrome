@@ -84,7 +84,7 @@ class MediaRenditionListbox extends MediaChromeListbox {
     const container = this.shadowRoot.querySelector('#container');
     container.textContent = '';
 
-    let isAuto = !this.mediaRenditionSelected;
+    const isAuto = !this.mediaRenditionSelected;
 
     for (const rendition of renditionList) {
       const text = this.formatOptionText(

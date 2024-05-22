@@ -863,7 +863,7 @@ export const stateMediator: StateMediator = {
 
       const audioTrackId = value;
 
-      for (let track of media.audioTracks) {
+      for (const track of media.audioTracks) {
         track.enabled = audioTrackId == track.id;
       }
     },

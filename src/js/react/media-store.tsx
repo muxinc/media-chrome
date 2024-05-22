@@ -49,11 +49,11 @@ export { MediaState };
 export { AvailabilityStates, StreamTypes, VolumeLevels };
 
 const {
-  REGISTER_MEDIA_STATE_RECEIVER,
-  UNREGISTER_MEDIA_STATE_RECEIVER,
+  REGISTER_MEDIA_STATE_RECEIVER, // eslint-disable-line
+  UNREGISTER_MEDIA_STATE_RECEIVER, // eslint-disable-line
   // NOTE: These generic state change requests are not currently supported (CJP)
-  MEDIA_SHOW_TEXT_TRACKS_REQUEST,
-  MEDIA_HIDE_TEXT_TRACKS_REQUEST,
+  MEDIA_SHOW_TEXT_TRACKS_REQUEST, // eslint-disable-line
+  MEDIA_HIDE_TEXT_TRACKS_REQUEST, // eslint-disable-line
   ...StateChangeRequests
 } = MediaUIEvents;
 

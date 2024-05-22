@@ -337,7 +337,7 @@ class MediaChromeMenuItem extends CustomElement {
     const isDefaultSlot = !slot?.name;
 
     if (isDefaultSlot) {
-      for (let node of slot.assignedNodes({ flatten: true })) {
+      for (const node of slot.assignedNodes({ flatten: true })) {
         // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
         if (node instanceof Text && node.textContent.trim() === '') {
           node.remove();
