@@ -511,8 +511,9 @@ class MediaContainer extends CustomElement {
   /**
    * @param {HTMLMediaElement} media
    */
-  mediaUnsetCallback(media: HTMLMediaElement) {
-    // eslint-disable-line
+  mediaUnsetCallback(
+    media: HTMLMediaElement // eslint-disable-line
+  ) {
     this.#currentMedia = null;
   }
 
