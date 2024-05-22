@@ -16,7 +16,6 @@ function lockBetweenZeroAndOne(num: number): number {
   return Math.max(0, Math.min(1, num));
 }
 
-// @ts-ignore
 template.innerHTML = `
   <style>
     #selectorContainer {
