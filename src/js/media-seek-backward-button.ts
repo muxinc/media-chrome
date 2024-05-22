@@ -1,9 +1,8 @@
-import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { verbs } from './labels/labels.js';
-import { getSlotted, updateIconText } from './utils/element-utils.js';
+import { MediaChromeButton } from './media-chrome-button.js';
+import { getNumericAttr, getSlotted, setNumericAttr, updateIconText } from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 export const Attributes = {
   SEEK_OFFSET: 'seekoffset',
@@ -13,7 +12,7 @@ const DEFAULT_SEEK_OFFSET = 30;
 
 const backwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(2.18 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3L4.37 7 10 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 10 6Z"/></svg>`;
 
-const slotTemplate = document.createElement('template');
+const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = `
   <slot name="icon">${backwardIcon}</slot>
 `;
@@ -29,7 +28,7 @@ const DEFAULT_TIME = 0;
  * @cssproperty [--media-seek-backward-button-display = inline-flex] - `display` property of button.
  */
 class MediaSeekBackwardButton extends MediaChromeButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_CURRENT_TIME,
@@ -41,14 +40,22 @@ class MediaSeekBackwardButton extends MediaChromeButton {
     super({ slotTemplate, ...options });
   }
 
-  connectedCallback(){
-    this.seekOffset = getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
+  connectedCallback(): void {
+    this.seekOffset = getNumericAttr(
+      this,
+      Attributes.SEEK_OFFSET,
+      DEFAULT_SEEK_OFFSET
+    );
     super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, _oldValue, newValue) {
+  attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string | null): void {
     if (attrName === Attributes.SEEK_OFFSET) {
-      this.seekOffset = getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
+      this.seekOffset = getNumericAttr(
+        this,
+        Attributes.SEEK_OFFSET,
+        DEFAULT_SEEK_OFFSET
+      );
     }
 
     super.attributeChangedCallback(attrName, _oldValue, newValue);
@@ -57,33 +64,39 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   // Own props
 
   /**
-   * @type {number | undefined} Seek amount in seconds
+   * Seek amount in seconds
    */
-  get seekOffset() {
+  get seekOffset(): number {
     return getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
   }
 
-  set seekOffset(value) {
+  set seekOffset(value: number) {
     setNumericAttr(this, Attributes.SEEK_OFFSET, value);
-    this.setAttribute('aria-label', verbs.SEEK_BACK_N_SECS({ seekOffset: this.seekOffset }));
-    updateIconText(getSlotted(this, 'icon'), this.seekOffset);
+    this.setAttribute(
+      'aria-label',
+      verbs.SEEK_BACK_N_SECS({ seekOffset: this.seekOffset })
+    );
+    updateIconText(getSlotted(this, 'icon'), this.seekOffset as any);
   }
 
   // Props derived from Media UI Attributes
 
   /**
-   * The current time
-   * @type {number | undefined} In seconds
+   * The current time in seconds
    */
-  get mediaCurrentTime() {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, DEFAULT_TIME);
+  get mediaCurrentTime(): number {
+    return getNumericAttr(
+      this,
+      MediaUIAttributes.MEDIA_CURRENT_TIME,
+      DEFAULT_TIME
+    );
   }
 
-  set mediaCurrentTime(time) {
+  set mediaCurrentTime(time: number) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, time);
   }
 
-  handleClick() {
+  handleClick(): void {
     const detail = Math.max(this.mediaCurrentTime - this.seekOffset, 0);
     const evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
       composed: true,

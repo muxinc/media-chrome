@@ -1,7 +1,7 @@
 /** @jsxImportSource react */
-import Sandpack from "./SandpackBase";
+import Sandpack from './SandpackBase';
 // import { Sandpack } from "@codesandbox/sandpack-react";
-import mediaChromeRaw from "../../node_modules/media-chrome/dist/iife/index.js?raw";
+import mediaChromeRaw from '../../node_modules/media-chrome/dist/iife/index.js?raw';
 
 export const Active = {
   HTML: 'html',
@@ -23,19 +23,24 @@ export default function ComponentSandpack({
   active = Active.HTML,
   ...props
 }) {
-
   const importPaths = [
     '@internals/media-chrome',
     './styles.css',
     ...Object.keys(dependencies),
-    ...Object.keys(files).reduce((importPaths, fileAbsPath) => {
-      const disableImport = files[fileAbsPath].disableImport === true;
-      // Only automatically import .css or .js files for now
-      if (!disableImport && (fileAbsPath.endsWith('.css') || fileAbsPath.endsWith('.js'))) {
-        importPaths.push(`./${fileAbsPath}`);
-      }
-      return importPaths;
-    }, css ? ['./custom-styles.css'] : [])
+    ...Object.keys(files).reduce(
+      (importPaths, fileAbsPath) => {
+        const disableImport = files[fileAbsPath].disableImport === true;
+        // Only automatically import .css or .js files for now
+        if (
+          !disableImport &&
+          (fileAbsPath.endsWith('.css') || fileAbsPath.endsWith('.js'))
+        ) {
+          importPaths.push(`./${fileAbsPath}`);
+        }
+        return importPaths;
+      },
+      css ? ['./custom-styles.css'] : []
+    ),
   ];
 
   return (
@@ -55,38 +60,38 @@ export default function ComponentSandpack({
       }}
       customSetup={{
         dependencies: {
-          ...dependencies
+          ...dependencies,
         },
         devDependencies: {
-          "@babel/core": "7.2.0"
+          '@babel/core': '7.2.0',
         },
       }}
       files={{
-        "sandbox.config.json": {
+        'sandbox.config.json': {
           hidden: true,
           // Required for the changes to take effect on the live page.
           code: `{
   "hardReloadOnChange": true
-}`
+}`,
         },
-        "/node_modules/@internals/media-chrome/package.json": {
+        '/node_modules/@internals/media-chrome/package.json': {
           hidden: true,
           code: JSON.stringify({
-            name: "@media-chrome",
-            main: "./index.js",
+            name: '@media-chrome',
+            main: './index.js',
           }),
         },
-        "/node_modules/@internals/media-chrome/index.js": {
+        '/node_modules/@internals/media-chrome/index.js': {
           hidden: true,
           code: mediaChromeRaw,
         },
-        "/index.html": {
+        '/index.html': {
           active: active === Active.HTML,
-          code: `${html}`
+          code: `${html}`,
         },
         '/index.js': {
           hidden: true,
-          code: importPaths.map(path => `import '${path}';`).join('\n'),
+          code: importPaths.map((path) => `import '${path}';`).join('\n'),
         },
         '/styles.css': {
           code: `
@@ -103,13 +108,17 @@ video {
 ${hiddenCss}`,
           hidden: true,
         },
-        ...(css ? {'/custom-styles.css': {
-          active: active === Active.CSS,
-          code: `${css}`
-        }} : {}),
-        ...files
+        ...(css
+          ? {
+              '/custom-styles.css': {
+                active: active === Active.CSS,
+                code: `${css}`,
+              },
+            }
+          : {}),
+        ...files,
       }}
       {...props}
     />
-  )
+  );
 }

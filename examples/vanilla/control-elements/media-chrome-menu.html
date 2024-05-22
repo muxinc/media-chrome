@@ -4,7 +4,10 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Menu</title>
     <script type="module" src="../../../dist/media-chrome-menu.js"></script>
-    <script type="module" src="../../../dist/media-chrome-menu-item.js"></script>
+    <script
+      type="module"
+      src="../../../dist/media-chrome-menu-item.js"
+    ></script>
     <style>
       [disabled] {
         opacity: 60%;
@@ -12,7 +15,7 @@
       }
 
       media-chrome-menu {
-        --media-menu-item-checked-background: rgb(255 255 255 / .5);
+        --media-menu-item-checked-background: rgb(255 255 255 / 0.5);
       }
 
       .examples {
@@ -25,14 +28,30 @@
 
     <media-chrome-menu>
       <media-chrome-menu-item>menuitem</media-chrome-menu-item>
-      <media-chrome-menu-item type="radio">menuitemradio foo</media-chrome-menu-item>
-      <media-chrome-menu-item type="checkbox">menuitemcheckbox</media-chrome-menu-item>
-      <media-chrome-menu-item type="radio" disabled>menuitemradio bar</media-chrome-menu-item>
-      <media-chrome-menu-item type="radio">menuitemradio foo</media-chrome-menu-item>
-      <media-chrome-menu-item type="radio" aria-checked="true">menuitemradio <span>foo</span>foo</media-chrome-menu-item>
-      <media-chrome-menu-item type="radio">menuitemradio bar</media-chrome-menu-item>
-      <media-chrome-menu-item type="radio">menuitemradio <img src="https://placekitten.com/100/100"></media-chrome-menu-item>
-      <media-chrome-menu-item type="radio" disabled>menuitemradio baz</media-chrome-menu-item>
+      <media-chrome-menu-item type="radio"
+        >menuitemradio foo</media-chrome-menu-item
+      >
+      <media-chrome-menu-item type="checkbox"
+        >menuitemcheckbox</media-chrome-menu-item
+      >
+      <media-chrome-menu-item type="radio" disabled
+        >menuitemradio bar</media-chrome-menu-item
+      >
+      <media-chrome-menu-item type="radio"
+        >menuitemradio foo</media-chrome-menu-item
+      >
+      <media-chrome-menu-item type="radio" aria-checked="true"
+        >menuitemradio <span>foo</span>foo</media-chrome-menu-item
+      >
+      <media-chrome-menu-item type="radio"
+        >menuitemradio bar</media-chrome-menu-item
+      >
+      <media-chrome-menu-item type="radio"
+        >menuitemradio <img src="https://placekitten.com/100/100"
+      /></media-chrome-menu-item>
+      <media-chrome-menu-item type="radio" disabled
+        >menuitemradio baz</media-chrome-menu-item
+      >
     </media-chrome-menu>
 
     <select>

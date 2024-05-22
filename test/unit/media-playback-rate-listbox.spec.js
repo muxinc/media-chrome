@@ -7,7 +7,7 @@ describe('<media-playback-rate-listbox>', () => {
   let listbox;
 
   beforeEach(async () => {
-    mediaController = await fixture(/*html*/`
+    mediaController = await fixture(/*html*/ `
       <media-controller>
         <video
           slot="media"
@@ -24,5 +24,4 @@ describe('<media-playback-rate-listbox>', () => {
     assert.equal(listbox.options.length, 5);
     assert.equal(listbox.value, 1);
   });
-
 });

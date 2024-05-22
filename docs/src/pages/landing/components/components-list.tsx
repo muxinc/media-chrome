@@ -1,8 +1,8 @@
 /** @jsxImportSource react */
-import clsx from "clsx";
-import { useEffect, useState } from "react";
-import type { MediaChromeListItem } from "../../../types";
-import MediaChromeListItemRenderer from "./media-chrome-list-item-renderer";
+import clsx from 'clsx';
+import { useEffect, useState } from 'react';
+import type { MediaChromeListItem } from '../../../types';
+import MediaChromeListItemRenderer from './media-chrome-list-item-renderer';
 
 const noop = () => {};
 
@@ -19,7 +19,7 @@ const ComponentsList: React.FC<{
   selectedItem,
   onItemSelected = noop,
   onItemDeselected = noop,
-  name = "componentsList",
+  name = 'componentsList',
 }) => {
   const labelId = `${name}Label`;
   const listId = `${name}:listbox`;
@@ -31,7 +31,7 @@ const ComponentsList: React.FC<{
     setActiveItem(selectedItem);
   }, [selectedItem, items]);
 
-  const activeId = activeItem ? `${name}:listitem:${activeItem.name}` : "";
+  const activeId = activeItem ? `${name}:listitem:${activeItem.name}` : '';
   return (
     <>
       <div className="hidden lg:block">{`<media-chrome>`}</div>
@@ -60,18 +60,19 @@ const ComponentsList: React.FC<{
         onKeyDown={(evt) => {
           const { key } = evt;
           setMouseFocus(false);
-          const curActiveIdx = items.findIndex((item) => item === activeItem) || 0;
-          if (key === "ArrowDown" || key === "ArrowRight") {
+          const curActiveIdx =
+            items.findIndex((item) => item === activeItem) || 0;
+          if (key === 'ArrowDown' || key === 'ArrowRight') {
             if (curActiveIdx + 1 < items.length) {
               setActiveItem(items[curActiveIdx + 1]);
             }
           }
-          if (key === "ArrowUp" || key === "ArrowLeft") {
+          if (key === 'ArrowUp' || key === 'ArrowLeft') {
             if (curActiveIdx - 1 >= 0) {
               setActiveItem(items[curActiveIdx - 1]);
             }
           }
-          if (activeItem && (key === "Enter" || key === " ")) {
+          if (activeItem && (key === 'Enter' || key === ' ')) {
             evt.stopPropagation();
             evt.preventDefault();
             const selected = activeItem === selectedItem;
@@ -80,8 +81,8 @@ const ComponentsList: React.FC<{
           }
         }}
         tabIndex={tabIndex}
-        className={clsx("flex-grow overflow-auto", {
-          "focus:outline-none": mouseFocus,
+        className={clsx('flex-grow overflow-auto', {
+          'focus:outline-none': mouseFocus,
         })}
         aria-activedescendant={activeId}
       >

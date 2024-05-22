@@ -7,15 +7,13 @@
   * Position controls at the bottom
   * Auto-hide controls on inactivity while playing
 */
-import { globalThis, document } from './utils/server-safe-globals.js';
-import {
-  MediaUIAttributes,
-  MediaStateChangeEvents,
-} from './constants.js';
+import { MediaStateChangeEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { observeResize } from './utils/resize-observer.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
+import { CustomElement } from './utils/CustomElement.js';
 
 export const Attributes = {
   AUDIO: 'audio',
@@ -27,9 +25,9 @@ export const Attributes = {
   USER_INACTIVE: 'userinactive',
 };
 
-const template = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement('template');
 
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     ${
       /*
@@ -91,8 +89,12 @@ template.innerHTML = /*html*/`
        * if gestures are disabled, don't accept pointer-events
        */ ''
     }
-    :host(:not([${Attributes.AUDIO}])[${Attributes.GESTURES_DISABLED}]) ::slotted([slot=gestures-chrome]),
-    :host(:not([${Attributes.AUDIO}])[${Attributes.GESTURES_DISABLED}]) media-gesture-receiver[slot=gestures-chrome] {
+    :host(:not([${Attributes.AUDIO}])[${
+  Attributes.GESTURES_DISABLED
+}]) ::slotted([slot=gestures-chrome]),
+    :host(:not([${Attributes.AUDIO}])[${
+  Attributes.GESTURES_DISABLED
+}]) media-gesture-receiver[slot=gestures-chrome] {
       display: none;
     }
 
@@ -111,8 +113,12 @@ template.innerHTML = /*html*/`
       justify-content: center;
     }
 
-    :host(:not([${Attributes.AUDIO}])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
-    :host(:not([${Attributes.AUDIO}])) media-gesture-receiver[slot=gestures-chrome] {
+    :host(:not([${
+      Attributes.AUDIO
+    }])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
+    :host(:not([${
+      Attributes.AUDIO
+    }])) media-gesture-receiver[slot=gestures-chrome] {
       align-self: stretch;
       flex-grow: 1;
     }
@@ -144,7 +150,9 @@ template.innerHTML = /*html*/`
     }
 
     ${/* Only add these if auto hide is not disabled */ ''}
-    ::slotted(:not([slot=media]):not([slot=poster]):not([${Attributes.NO_AUTOHIDE}]):not([hidden])) {
+    ::slotted(:not([slot=media]):not([slot=poster]):not([${
+      Attributes.NO_AUTOHIDE
+    }]):not([hidden])) {
       opacity: 1;
       transition: opacity 0.25s;
     }
@@ -152,12 +160,24 @@ template.innerHTML = /*html*/`
     ${
       /* Hide controls when inactive, not paused, not audio and auto hide not disabled */ ''
     }
-    :host([${Attributes.USER_INACTIVE}]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${Attributes.AUDIO}])) ::slotted(:not([slot=media]):not([slot=poster]):not([${Attributes.NO_AUTOHIDE}])) {
+    :host([${Attributes.USER_INACTIVE}]:not([${
+  MediaUIAttributes.MEDIA_PAUSED
+}]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${
+  MediaUIAttributes.MEDIA_IS_CASTING
+}]):not([${
+  Attributes.AUDIO
+}])) ::slotted(:not([slot=media]):not([slot=poster]):not([${
+  Attributes.NO_AUTOHIDE
+}])) {
       opacity: 0;
       transition: opacity 1s;
     }
 
-    :host([${Attributes.USER_INACTIVE}]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${Attributes.AUDIO}])) ::slotted([slot=media]) {
+    :host([${Attributes.USER_INACTIVE}]:not([${
+  MediaUIAttributes.MEDIA_PAUSED
+}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
+  Attributes.AUDIO
+}])) ::slotted([slot=media]) {
       cursor: none;
     }
 
@@ -165,8 +185,12 @@ template.innerHTML = /*html*/`
       align-self: stretch;
     }
 
-    ${/* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''}
-    :host(:not([${Attributes.AUDIO}])[${MediaUIAttributes.MEDIA_HAS_PLAYED}]) slot[name=poster] {
+    ${
+      /* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''
+    }
+    :host(:not([${Attributes.AUDIO}])[${
+  MediaUIAttributes.MEDIA_HAS_PLAYED
+}]) slot[name=poster] {
       display: none;
     }
 
@@ -204,7 +228,8 @@ function resizeCallback(entry: ResizeObserverEntry) {
 function setBreakpoints(container: HTMLElement, width: number) {
   if (!container.isConnected) return;
 
-  const breakpoints = container.getAttribute(Attributes.BREAKPOINTS) ?? defaultBreakpoints;
+  const breakpoints =
+    container.getAttribute(Attributes.BREAKPOINTS) ?? defaultBreakpoints;
   const ranges = createBreakpointMap(breakpoints);
   const activeBreakpoints = getBreakpoints(ranges, width);
 
@@ -227,10 +252,10 @@ function setBreakpoints(container: HTMLElement, width: number) {
 
   if (changed) {
     const evt = new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_CHANGE, {
-      detail: activeBreakpoints
+      detail: activeBreakpoints,
     });
 
-    container.dispatchEvent(evt)
+    container.dispatchEvent(evt);
   }
 }
 
@@ -259,21 +284,28 @@ function getBreakpoints(breakpoints: Record<string, string>, width: number) {
  * @cssprop --media-background-color - `background-color` of container.
  * @cssprop --media-slot-display - `display` of the media slot (default none for [audio] usage).
  */
-class MediaContainer extends globalThis.HTMLElement {
-  static get observedAttributes() {
-    return [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED]
-      .concat(MEDIA_UI_ATTRIBUTE_NAMES)
-      // Filter out specific / complex data media UI attributes
-      // that shouldn't be propagated to this state receiver element.
-      .filter(name => ![
-        MediaUIAttributes.MEDIA_RENDITION_LIST,
-        MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST,
-        MediaUIAttributes.MEDIA_CHAPTERS_CUES,
-      ].includes(name));
+class MediaContainer extends CustomElement {
+  static get observedAttributes(): string[] {
+    return (
+      [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED]
+        .concat(MEDIA_UI_ATTRIBUTE_NAMES)
+        // Filter out specific / complex data media UI attributes
+        // that shouldn't be propagated to this state receiver element.
+        .filter(
+          (name) =>
+            ![
+              MediaUIAttributes.MEDIA_RENDITION_LIST,
+              MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST,
+              MediaUIAttributes.MEDIA_CHAPTERS_CUES,
+            ].includes(name as any)
+        )
+    );
   }
 
   #pointerDownTimeStamp = 0;
   #currentMedia: HTMLMediaElement | null = null;
+  #inactiveTimeout: ReturnType<typeof setTimeout> | null = null;
+  #autohide: number | undefined;
   breakpointsComputed = false;
 
   constructor() {
@@ -292,7 +324,7 @@ class MediaContainer extends globalThis.HTMLElement {
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
           // Media element being removed
-          mutation.removedNodes.forEach((node) => {
+          mutation.removedNodes.forEach((node: Element) => {
             // Is this a direct child media element of media-controller?
             // TODO: This accuracy doesn't matter after moving away from media attrs.
             // Could refactor so we can always just call 'dispose' on any removed media el.
@@ -301,7 +333,7 @@ class MediaContainer extends globalThis.HTMLElement {
               // el with slot=media in the child list. There could be multiple.
               let previousSibling =
                 mutation.previousSibling &&
-                mutation.previousSibling.previousElementSibling;
+                (mutation.previousSibling as Element).previousElementSibling;
 
               // Must have been first if no prev sibling or new media
               if (!previousSibling || !media) {
@@ -311,7 +343,8 @@ class MediaContainer extends globalThis.HTMLElement {
                 // Should remain true otherwise
                 let wasFirst = previousSibling.slot !== 'media';
                 while (
-                  (previousSibling = previousSibling.previousSibling) !== null
+                  (previousSibling =
+                    previousSibling.previousSibling as Element) !== null
                 ) {
                   if (previousSibling.slot == 'media') wasFirst = false;
                 }
@@ -353,7 +386,7 @@ class MediaContainer extends globalThis.HTMLElement {
           this.dispatchEvent(
             new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_COMPUTED, {
               bubbles: true,
-              composed: true
+              composed: true,
             })
           );
         }
@@ -366,7 +399,9 @@ class MediaContainer extends globalThis.HTMLElement {
     // e.g. chaining media slots for media themes.
 
     /** @type {HTMLSlotElement} */
-    let chainedSlot = this.querySelector(':scope > slot[slot=media]');
+    let chainedSlot = this.querySelector(
+      ':scope > slot[slot=media]'
+    ) as HTMLSlotElement;
     if (chainedSlot) {
       chainedSlot.addEventListener('slotchange', () => {
         const slotEls = chainedSlot.assignedElements({ flatten: true });
@@ -382,7 +417,11 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   // Could share this code with media-chrome-html-element instead
-  attributeChangedCallback(attrName: string, oldValue: string, newValue: string) {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string,
+    newValue: string
+  ) {
     if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
       this.autohide = newValue;
     }
@@ -399,9 +438,9 @@ class MediaContainer extends globalThis.HTMLElement {
    * videoTracks?,
    * }}
    */
-  get media() {
+  get media(): HTMLVideoElement | null {
     /** @type {HTMLVideoElement} */
-    let media = this.querySelector(':scope > [slot=media]');
+    let media = this.querySelector(':scope > [slot=media]') as HTMLVideoElement;
 
     // Chaining media slots for media templates
     if (media?.nodeName == 'SLOT')
@@ -472,7 +511,8 @@ class MediaContainer extends globalThis.HTMLElement {
   /**
    * @param {HTMLMediaElement} media
    */
-  mediaUnsetCallback(media: HTMLMediaElement) { // eslint-disable-line
+  mediaUnsetCallback(media: HTMLMediaElement) {
+    // eslint-disable-line
     this.#currentMedia = null;
   }
 
@@ -510,12 +550,13 @@ class MediaContainer extends globalThis.HTMLElement {
       // Prevent calling setActive() on tap because it will mess with the toggle logic.
       const MAX_TAP_DURATION = 250;
       // If the move duration exceeds 200ms then it's a drag and we should show the controls.
-      if (event.timeStamp - this.#pointerDownTimeStamp < MAX_TAP_DURATION) return;
+      if (event.timeStamp - this.#pointerDownTimeStamp < MAX_TAP_DURATION)
+        return;
     }
 
     this.#setActive();
     // Stay visible if hovered over control bar
-    clearTimeout(this._inactiveTimeout);
+    clearTimeout(this.#inactiveTimeout);
 
     // If hovering over something other than controls, we're free to make inactive
     // @ts-ignore
@@ -528,21 +569,29 @@ class MediaContainer extends globalThis.HTMLElement {
     if (event.pointerType === 'touch') {
       const controlsVisible = !this.hasAttribute(Attributes.USER_INACTIVE);
 
-      if ([this, this.media].includes(event.target) && controlsVisible) {
+      if (
+        [this, this.media].includes(event.target as HTMLVideoElement) &&
+        controlsVisible
+      ) {
         this.#setInactive();
       } else {
         this.#scheduleInactive();
       }
     } else if (
-      event.composedPath().some((el) =>
-        ['media-play-button', 'media-fullscreen-button'].includes(el?.localName))
+      event
+        .composedPath()
+        .some((el: HTMLElement) =>
+          ['media-play-button', 'media-fullscreen-button'].includes(
+            el?.localName
+          )
+        )
     ) {
       this.#scheduleInactive();
     }
   }
 
   #setInactive() {
-    if (this.autohide < 0) return;
+    if (this.#autohide < 0) return;
     if (this.hasAttribute(Attributes.USER_INACTIVE)) return;
 
     this.setAttribute(Attributes.USER_INACTIVE, '');
@@ -569,24 +618,24 @@ class MediaContainer extends globalThis.HTMLElement {
   #scheduleInactive() {
     this.#setActive();
 
-    clearTimeout(this._inactiveTimeout);
+    clearTimeout(this.#inactiveTimeout);
 
     // Setting autohide to -1 turns off autohide
-    if (this.autohide < 0) return;
+    if (this.#autohide < 0) return;
 
     /** @type {ReturnType<typeof setTimeout>} */
-    this._inactiveTimeout = setTimeout(() => {
+    this.#inactiveTimeout = setTimeout(() => {
       this.#setInactive();
-    }, this.autohide * 1000);
+    }, this.#autohide * 1000);
   }
 
   set autohide(seconds: string) {
     const parsedSeconds = Number(seconds);
-    this._autohide = isNaN(parsedSeconds) ? 0 : parsedSeconds;
+    this.#autohide = isNaN(parsedSeconds) ? 0 : parsedSeconds;
   }
 
-  get autohide() {
-    return this._autohide === undefined ? 2 : this._autohide;
+  get autohide(): string {
+    return (this.#autohide === undefined ? 2 : this.#autohide).toString();
   }
 }
 

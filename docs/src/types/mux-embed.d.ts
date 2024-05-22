@@ -9,17 +9,17 @@ type MetaData = {
   env_key?: string;
   video_title?: string;
   player_init_time?: number;
-}
+};
 
 type PlayerId = string | HTMLMediaElement;
 
 type Options = {
   debug?: boolean;
   data?: MetaData;
-}
+};
 
 function monitor(id: PlayerId, options?: Options): void;
 
 declare module 'mux-embed' {
-  export { monitor }
-};
+  export { monitor };
+}

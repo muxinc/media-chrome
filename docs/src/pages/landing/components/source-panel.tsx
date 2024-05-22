@@ -1,41 +1,39 @@
 /** @jsxImportSource react */
-import type { MediaChromeListItem } from "../../../types";
-import HtmlRenderer from "./html-renderer";
-import MediaChromeHtmlRenderer from "./media-chrome-html-renderer";
+import type { MediaChromeListItem } from '../../../types';
+import HtmlRenderer from './html-renderer';
+import MediaChromeHtmlRenderer from './media-chrome-html-renderer';
 
 const SourcePanel: React.FC<{
   selectedItem?: MediaChromeListItem;
   tabIndex?: number;
-}> = ({
-  selectedItem,
-}) => {
+}> = ({ selectedItem }) => {
   const { name: selectedName } = selectedItem ?? {};
   return (
     <MediaChromeHtmlRenderer selectedName={selectedName} name="controller">
       <HtmlRenderer
         name="video"
         htmlAttrs={{
-          slot: "media",
-          src: "./video.mp4",
-          crossOrigin: "",
+          slot: 'media',
+          src: './video.mp4',
+          crossOrigin: '',
           playsInline: true,
         }}
       >
         <HtmlRenderer
           htmlAttrs={{
-            label: "English",
-            kind: "captions",
-            srcLang: "en",
-            src: "./captions.vtt",
+            label: 'English',
+            kind: 'captions',
+            srcLang: 'en',
+            src: './captions.vtt',
           }}
           name="track"
         />
         <HtmlRenderer
           htmlAttrs={{
-            label: "thumbnails",
+            label: 'thumbnails',
             default: true,
-            kind: "metadata",
-            src: "./thumbnails.vtt",
+            kind: 'metadata',
+            src: './thumbnails.vtt',
           }}
           name="track"
         />

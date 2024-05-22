@@ -16,59 +16,28 @@
  * @module media-store
  */
 
+import { requestMap as defaultRequestMap, type RequestMap } from './request-map.js';
 import {
   stateMediator as defaultStateMediator,
   prepareStateOwners,
+  type EventOrAction,
+  type StateMediator,
 } from './state-mediator.js';
 import { areValuesEq } from './util.js';
-import { requestMap as defaultRequestMap } from './request-map.js';
-
-/**
- * @typedef {import('./request-map.js').RequestMap} RequestMap
- */
-
-/**
- * @typedef {import('./state-mediator.js').StateMediator} StateMediator
- */
-
-/**
- * @typedef {import('./state-mediator.js').EventOrAction<D>} EventOrAction<D>
- * @template D
- */
-
-/**
- * @typedef {import('./state-mediator.js').MediaStateOwner} MediaStateOwner
- */
-
-/**
- * @typedef {import('./state-mediator.js').FullScreenElementStateOwner} FullScreenElementStateOwner
- */
-
-/**
- * @typedef {import('./state-mediator.js').RootNodeStateOwner} RootNodeStateOwner
- */
-
-/**
- * @typedef {import('./state-mediator.js').StateOption} StateOption
- */
-
-/**
- * @typedef {import('./state-mediator.js').StateOwners} StateOwners
- */
 
 /**
  * MediaState is a full representation of all media-related state modeled by the MediaStore and its StateMediator.
  * Instead of checking the StateOwners' state directly or on the fly, MediaStore keeps a "snapshot" of the latest
  * state, which will be provided to any MediaStore subscribers whenever the state changes, and is arbitrarily retrievable
  * from the MediaStore using `getState()`.
- * @typedef {Readonly<{
- *   [K in keyof StateMediator]: ReturnType<StateMediator[K]['get']>
- * } & {
- *   mediaPreviewTime: number;
- *   mediaPreviewImage: string;
- *   mediaPreviewCoords: [string,string,string,string]
- * }>} MediaState
  */
+export type MediaState = Readonly<{
+  [K in keyof StateMediator]: ReturnType<StateMediator[K]['get']>;
+}> & {
+  mediaPreviewTime: number;
+  mediaPreviewImage: string;
+  mediaPreviewCoords: [string, string, string, string];
+};
 
 /**
  * MediaStore is the primary abstraction for managing and monitoring media state and other state relevant to the media UI
@@ -78,11 +47,6 @@ import { requestMap as defaultRequestMap } from './request-map.js';
  * - Receiving and responding to requests to change the media or related state (examples: I would like the media to be unmuted. I want to start casting now. I want to switch from English subtitles to Japanese.)
  * - Wiring up and managing the relationships between media state, media state change requests, and the stateful entities that “own” the majority of this state (examples: the current media element being used, the current root node, the current fullscreen element)
  * - Respecting and monitoring changes in certain optional behaviors that impact state or state change requests (examples: I want subtitles/closed captions to be on by default whenever media with them are loaded. I want to disable keeping track of the user’s preferred volume level.)
- *
- * @typedef {Object} MediaStore;
- * @property {(eventOrAction: EventOrAction<any>) => void} dispatch                       A method that expects an "Action" or "Event". Primarily used to make state change requests.
- * @property {() => Partial<MediaState>} getState                                         A method to get the current state of the MediaStore
- * @property {(handler: (state: Partial<MediaState>) => void) => (() => void)} subscribe  A method to "subscribe" to the MediaStore. A subscriber is just a callback function that is invoked with the current state whenever the MediaStore's state changes. The method returns an "unsubscribe" function, which should be used to tell the MediaStore to remove the corresponding subscriber.
  *
  * @example &lt;caption>Basic Usage.&lt;/caption>
  * const mediaStore = createStore({
@@ -122,19 +86,35 @@ import { requestMap as defaultRequestMap } from './request-map.js';
  * unsubscribe();
  *
  */
+export type MediaStore = {
+  /**
+   * A method that expects an "Action" or "Event".Primarily used to make state change requests.
+   */
+  dispatch(eventOrAction: EventOrAction<any>): void;
 
+  /**
+   *  A method to get the current state of the MediaStore
+   */
+  getState(): Partial<MediaState>;
+
+  /**
+   * A method to "subscribe" to the MediaStore. A subscriber is just a callback function that is invoked with the current state whenever the MediaStore's state changes. The method returns an "unsubscribe" function, which should be used to tell the MediaStore to remove the corresponding subscriber.
+   */
+  subscribe(handler: (state: Partial<MediaState>) => void): () => void;
+};
+
+type MediaStoreConfig = {
+  media?: any;
+  fullscreenElement?: any;
+  documentElement?: any;
+  stateMediator?: StateMediator;
+  requestMap?: RequestMap;
+  options?: any;
+  monitorStateOwnersOnlyWithSubscriptions?: boolean;
+};
 /**
  * A factory for creating a `MediaStore` instance.
- * @param {{
- *   media?: MediaStateOwner;
- *   fullscreenElement?: FullScreenElementStateOwner;
- *   documentElement?: RootNodeStateOwner;
- *   stateMediator?: StateMediator;
- *   requestMap?: RequestMap;
- *   options?: StateOption;
- *   monitorStateOwnersOnlyWithSubscriptions?: boolean;
- * }} mediaStoreConfig
- * @returns {MediaStore}
+ * @param mediaStoreConfig - Configuration object for the `MediaStore`.
  */
 const createMediaStore = ({
   media,
@@ -144,13 +124,13 @@ const createMediaStore = ({
   requestMap = defaultRequestMap,
   options = {},
   monitorStateOwnersOnlyWithSubscriptions = true,
-}) => {
+}: MediaStoreConfig): MediaStore => {
   const callbacks = [];
 
   // We may eventually want to expose the state owners as part of the state
   // or as a specialized getter API for advanced use cases
   /** @type {StateOwners} */
-  const stateOwners = {
+  const stateOwners: any = {
     // Spreading options here since folks should not rely on holding onto references
     // for any app-level logic wrt options.
     options: { ...options },
@@ -167,7 +147,7 @@ const createMediaStore = ({
     mediaPreviewChapter: undefined,
   });
 
-  const updateState = (nextStateDelta) => {
+  const updateState = (nextStateDelta: any) => {
     // This function is generically invoked, even if there are
     // no direct state updates. In those cases, simply bail early. (CJP)
     if (nextStateDelta == undefined) return;
@@ -214,8 +194,8 @@ const createMediaStore = ({
   // This is roughly equivalent to what used to be in `mediaSetCallback`/`mediaUnsetCallback` (CJP)
   let nextStateOwners = undefined;
   const updateStateOwners = async (
-    nextStateOwnersDelta,
-    nextSubscriberCount
+    nextStateOwnersDelta: any,
+    nextSubscriberCount?: number,
   ) => {
     const pendingUpdate = !!nextStateOwners;
     nextStateOwners = {
@@ -252,7 +232,8 @@ const createMediaStore = ({
       stateOwners.media?.audioTracks !== nextStateOwners.media?.audioTracks;
     const remoteChanged =
       stateOwners.media?.remote !== nextStateOwners.media?.remote;
-    const rootNodeChanged = stateOwners.documentElement !== nextStateOwners.documentElement;
+    const rootNodeChanged =
+      stateOwners.documentElement !== nextStateOwners.documentElement;
 
     // For any particular `stateOwner` (or "sub-owner"), we should teardown if and only if:
     // * the `stateOwner` existed -AND-
@@ -460,11 +441,17 @@ const createMediaStore = ({
         prevHandler = stateUpdateHandlers[stateName].rootEvents;
         rootEvents.forEach((eventType) => {
           if (prevHandler && teardownRootNode) {
-            stateOwners.documentElement.removeEventListener(eventType, prevHandler);
+            stateOwners.documentElement.removeEventListener(
+              eventType,
+              prevHandler
+            );
             stateUpdateHandlers[stateName].rootEvents = undefined;
           }
           if (setupRootNode) {
-            nextStateOwners.documentElement.addEventListener(eventType, handler);
+            nextStateOwners.documentElement.addEventListener(
+              eventType,
+              handler
+            );
             stateUpdateHandlers[stateName].rootEvents = handler;
           }
         });

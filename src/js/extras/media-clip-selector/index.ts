@@ -1,7 +1,8 @@
-import { globalThis, document } from '../../utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from '../../constants.js';
+import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
+import { CustomElement } from '../../utils/CustomElement.js';
+import { document, globalThis } from '../../utils/server-safe-globals.js';
 
-const template = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement('template');
 
 const HANDLE_W = 8;
 
@@ -11,7 +12,7 @@ const Z = {
   300: 300,
 };
 
-function lockBetweenZeroAndOne(num) {
+function lockBetweenZeroAndOne(num: number): number {
   return Math.max(0, Math.min(1, num));
 }
 
@@ -134,11 +135,10 @@ template.innerHTML = `
   </div>
 `;
 
-
 /**
- * @extends {HTMLElement}
+ *
  */
-class MediaClipSelector extends globalThis.HTMLElement {
+class MediaClipSelector extends CustomElement {
   static get observedAttributes() {
     return [
       'thumbnails',
@@ -146,6 +146,24 @@ class MediaClipSelector extends globalThis.HTMLElement {
       MediaUIAttributes.MEDIA_CURRENT_TIME,
     ];
   }
+
+  draggingEl: HTMLElement | null;
+  wrapper: HTMLElement;
+  selection: HTMLElement;
+  playhead: HTMLElement;
+  leftTrim: HTMLElement;
+  spacerFirst: HTMLElement;
+  startHandle: HTMLElement;
+  spacerMiddle: HTMLElement;
+  endHandle: HTMLElement;
+  spacerLast: HTMLElement;
+  initialX: number;
+  thumbnailPreview: HTMLElement;
+
+  _clickHandler: () => void;
+  _dragStart: () => void;
+  _dragEnd: () => void;
+  _drag: () => void;
 
   constructor() {
     super();
@@ -159,23 +177,14 @@ class MediaClipSelector extends globalThis.HTMLElement {
 
     this.draggingEl = null;
 
-    /** @type {HTMLElement} */
     this.wrapper = this.shadowRoot.querySelector('#selectorContainer');
-    /** @type {HTMLElement} */
     this.selection = this.shadowRoot.querySelector('#selection');
-    /** @type {HTMLElement} */
     this.playhead = this.shadowRoot.querySelector('#playhead');
-    /** @type {HTMLElement} */
     this.leftTrim = this.shadowRoot.querySelector('#leftTrim');
-    /** @type {HTMLElement} */
     this.spacerFirst = this.shadowRoot.querySelector('#spacerFirst');
-    /** @type {HTMLElement} */
     this.startHandle = this.shadowRoot.querySelector('#startHandle');
-    /** @type {HTMLElement} */
     this.spacerMiddle = this.shadowRoot.querySelector('#spacerMiddle');
-    /** @type {HTMLElement} */
     this.endHandle = this.shadowRoot.querySelector('#endHandle');
-    /** @type {HTMLElement} */
     this.spacerLast = this.shadowRoot.querySelector('#spacerLast');
 
     this._clickHandler = this.handleClick.bind(this);
@@ -196,11 +205,11 @@ class MediaClipSelector extends globalThis.HTMLElement {
     this.enableThumbnails();
   }
 
-  get mediaDuration() {
+  get mediaDuration(): number {
     return +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
   }
 
-  get mediaCurrentTime() {
+  get mediaCurrentTime(): number {
     return +this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
   }
 
@@ -209,14 +218,14 @@ class MediaClipSelector extends globalThis.HTMLElement {
    * calculates the percentage progress based on the bounding rectang
    * converts the percentage progress into a duration in seconds
    */
-  getPlayheadBasedOnMouseEvent(evt) {
+  getPlayheadBasedOnMouseEvent(evt: MouseEvent): number {
     const duration = this.mediaDuration;
     if (!duration) return;
     const mousePercent = lockBetweenZeroAndOne(this.getMousePercent(evt));
     return mousePercent * duration;
   }
 
-  getXPositionFromMouse(evt) {
+  getXPositionFromMouse(evt: any): number {
     let clientX;
 
     if (['touchstart', 'touchmove'].includes(evt.type)) {
@@ -226,14 +235,14 @@ class MediaClipSelector extends globalThis.HTMLElement {
     return clientX || evt.clientX;
   }
 
-  getMousePercent(evt) {
+  getMousePercent(evt: MouseEvent): number {
     const rangeRect = this.wrapper.getBoundingClientRect();
     const mousePercent =
       (this.getXPositionFromMouse(evt) - rangeRect.left) / rangeRect.width;
     return lockBetweenZeroAndOne(mousePercent);
   }
 
-  dragStart(evt) {
+  dragStart(evt: MouseEvent): void {
     if (evt.target === this.startHandle) {
       this.draggingEl = this.startHandle;
     }
@@ -244,12 +253,12 @@ class MediaClipSelector extends globalThis.HTMLElement {
     this.initialX = this.getXPositionFromMouse(evt);
   }
 
-  dragEnd() {
+  dragEnd(): void {
     this.initialX = null;
     this.draggingEl = null;
   }
 
-  setSelectionWidth(selectionPercent, fullTimelineWidth) {
+  setSelectionWidth(selectionPercent: number, fullTimelineWidth: number): void {
     let percent = selectionPercent;
 
     const minWidthPx = HANDLE_W * 3;
@@ -272,7 +281,7 @@ class MediaClipSelector extends globalThis.HTMLElement {
     this.selection.style.width = `${percent * 100}%`;
   }
 
-  drag(evt) {
+  drag(evt: MouseEvent): void {
     if (!this.draggingEl) {
       return;
     }
@@ -313,14 +322,14 @@ class MediaClipSelector extends globalThis.HTMLElement {
     this.dispatchUpdate();
   }
 
-  dispatchUpdate() {
+  dispatchUpdate(): void {
     const updateEvent = new CustomEvent('update', {
       detail: this.getCurrentClipBounds(),
     });
     this.dispatchEvent(updateEvent);
   }
 
-  getCurrentClipBounds() {
+  getCurrentClipBounds(): { startTime: number; endTime: number } {
     const rangeRect = this.wrapper.getBoundingClientRect();
     const leftTrimRect = this.leftTrim.getBoundingClientRect();
     const selectionRect = this.selection.getBoundingClientRect();
@@ -341,12 +350,12 @@ class MediaClipSelector extends globalThis.HTMLElement {
     };
   }
 
-  isTimestampInBounds(timestamp) {
+  isTimestampInBounds(timestamp: number): boolean {
     const { startTime, endTime } = this.getCurrentClipBounds();
     return startTime <= timestamp && endTime >= timestamp;
   }
 
-  handleClick(evt) {
+  handleClick(evt: MouseEvent): void {
     const mousePercent = this.getMousePercent(evt);
     const timestampForClick = mousePercent * this.mediaDuration;
 
@@ -365,7 +374,7 @@ class MediaClipSelector extends globalThis.HTMLElement {
     }
   }
 
-  mediaCurrentTimeSet() {
+  mediaCurrentTimeSet(): void {
     const percentComplete = lockBetweenZeroAndOne(
       this.mediaCurrentTime / this.mediaDuration
     );
@@ -398,7 +407,7 @@ class MediaClipSelector extends globalThis.HTMLElement {
     }
   }
 
-  mediaUnsetCallback(media) {
+  mediaUnsetCallback(media: HTMLVideoElement): void {
     // @ts-ignore
     super.mediaUnsetCallback(media);
 
@@ -415,7 +424,7 @@ class MediaClipSelector extends globalThis.HTMLElement {
    * This was copied over from media-time-range, we should have a way of making
    * this code shared between the two components
    */
-  enableThumbnails() {
+  enableThumbnails(): void {
     /** @type {HTMLElement} */
     this.thumbnailPreview = this.shadowRoot.querySelector(
       'media-preview-thumbnail'
@@ -469,12 +478,19 @@ class MediaClipSelector extends globalThis.HTMLElement {
         let offRangeHandler = (evt) => {
           if (evt.target != this && !this.contains(evt.target)) {
             this.thumbnailPreview.style.display = 'none';
-            globalThis.window?.removeEventListener('mousemove', offRangeHandler);
+            globalThis.window?.removeEventListener(
+              'mousemove',
+              offRangeHandler
+            );
             rangeEntered = false;
             stopTrackingMouse();
           }
         };
-        globalThis.window?.addEventListener('mousemove', offRangeHandler, false);
+        globalThis.window?.addEventListener(
+          'mousemove',
+          offRangeHandler,
+          false
+        );
       }
 
       if (!this.mediaDuration) {
@@ -485,8 +501,7 @@ class MediaClipSelector extends globalThis.HTMLElement {
     this.addEventListener('mousemove', rangeMouseMoveHander, false);
   }
 
-  disableThumbnails() {
-    /** @type {HTMLElement} */
+  disableThumbnails(): void {
     const thumbnailContainer = this.shadowRoot.querySelector(
       '#thumbnailContainer'
     );

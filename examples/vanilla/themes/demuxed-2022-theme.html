@@ -5,9 +5,15 @@
     <title>Media Chrome Demuxed 2022 Theme Example</title>
     <script type="module" src="../../../dist/index.js"></script>
     <script type="module" src="../../../src/js/themes/demuxed-2022.js"></script>
-    <script defer src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/castable-video@1/+esm"></script>
-    <link rel="stylesheet" href="https://use.typekit.net/dbt1sbf.css">
+    <script
+      defer
+      src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"
+    ></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/castable-video@1/+esm"
+    ></script>
+    <link rel="stylesheet" href="https://use.typekit.net/dbt1sbf.css" />
 
     <style>
       .examples {
@@ -16,14 +22,14 @@
 
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-theme-demuxed-2022 {
-        display: block;         /* expands the container if preload=none */
-        max-width: 720px;       /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        display: block; /* expands the container if preload=none */
+        max-width: 720px; /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9; /* set container aspect ratio if preload=none */
         overflow: hidden;
       }
 
       video {
-        width: 100%;  /* prevents video to expand beyond its container */
+        width: 100%; /* prevents video to expand beyond its container */
       }
     </style>
   </head>
@@ -31,7 +37,7 @@
     <h1>Media Chrome Demuxed 2022 Theme</h1>
 
     <media-theme-demuxed-2022 mediastreamtype="on-demand">
-    <!-- <media-theme-demuxed-2022 mediastreamtype="live"> -->
+      <!-- <media-theme-demuxed-2022 mediastreamtype="live"> -->
       <castable-video
         slot="media"
         src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/high.mp4"

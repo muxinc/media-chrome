@@ -521,7 +521,8 @@ describe('state propagation behaviors', () => {
       it(`should propagate ${propName} via attrs to a media state receiver if ${attrName} is listed in ${MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES}`, () => {
         mediaController.registerMediaStateReceiver(div);
         /** @TODO Should we still propagate true boolean attrs so the value is explicitly '' if it was previously set to some other value? (CJP) */
-        const propIsTrue = mediaController.mediaStore.getState()[propName] === true;
+        const propIsTrue =
+          mediaController.mediaStore.getState()[propName] === true;
         if (!propIsTrue) {
           assert.notEqual(div.getAttribute(attrName), INITIAL_VALUE);
         } else {
@@ -549,7 +550,8 @@ describe('state propagation behaviors', () => {
 
       it(`should propagate ${propName} via attrs to a web component media state receiver if ${attrName} is an observed attr`, () => {
         mediaController.registerMediaStateReceiver(wc);
-        const propIsTrue = mediaController.mediaStore.getState()[propName] === true;
+        const propIsTrue =
+          mediaController.mediaStore.getState()[propName] === true;
         if (!propIsTrue) {
           assert.notEqual(wc.getAttribute(attrName), INITIAL_VALUE);
         } else {

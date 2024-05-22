@@ -7,13 +7,13 @@
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: block;         /* expands the container if preload=none */
-        max-width: 360px;       /* allows the container to shrink if small */
-        aspect-ratio: 9 / 16;   /* set container aspect ratio if preload=none */
+        display: block; /* expands the container if preload=none */
+        max-width: 360px; /* allows the container to shrink if small */
+        aspect-ratio: 9 / 16; /* set container aspect ratio if preload=none */
       }
 
       video {
-        width: 100%;      /* prevents video to expand beyond its container */
+        width: 100%; /* prevents video to expand beyond its container */
       }
 
       .examples {
@@ -56,7 +56,10 @@
           slot="poster"
           src="https://image.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM/thumbnail.jpg"
         ></media-poster-image>
-        <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+        <media-loading-indicator
+          slot="centered-chrome"
+          noautohide
+        ></media-loading-indicator>
         <media-control-bar>
           <media-play-button></media-play-button>
           <media-mute-button></media-mute-button>

@@ -27,7 +27,7 @@ Example (`keysused` attribute):
 Example (`keysUsed` property):
 
 ```js
-class MyInteractiveElement extends globalThis.HTMLElement {
+class MyInteractiveElement extends CustomElement {
   get keysUsed() {
     return ['Enter', ' '];
   }

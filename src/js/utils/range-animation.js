@@ -39,7 +39,7 @@ export class RangeAnimation {
     // 2. Allow a relatively large decrease (user action or Safari jumping back :s).
     const increase = start - this.#range.valueAsNumber;
     const durationDelta = Math.abs(duration - this.duration);
-    if (increase > 0 || increase < -.03 || durationDelta >= 0.5) {
+    if (increase > 0 || increase < -0.03 || durationDelta >= 0.5) {
       this.callback(start);
     }
 
@@ -70,11 +70,11 @@ export class RangeAnimation {
         // A perfect increase at this frame rate should be this much.
         this.#lastRangeIncrease = this.playbackRate / this.duration / fps;
       } else {
-        this.#lastRangeIncrease = .995 * this.#lastRangeIncrease;
+        this.#lastRangeIncrease = 0.995 * this.#lastRangeIncrease;
         value = this.#range.valueAsNumber + this.#lastRangeIncrease;
       }
 
       this.callback(value);
     }
-  }
+  };
 }

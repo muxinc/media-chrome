@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name="viewport" content="width=device-width">
+    <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Rendition Menu</title>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"
+    ></script>
     <script type="module" src="../../../dist/index.js"></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: block;         /* expands the container if preload=none */
-        max-width: 540px;       /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        display: block; /* expands the container if preload=none */
+        max-width: 540px; /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9; /* set container aspect ratio if preload=none */
       }
 
       video {
-        width: 100%;      /* prevents video to expand beyond its container */
+        width: 100%; /* prevents video to expand beyond its container */
       }
 
       media-rendition-menu[mediarenditionunavailable],
@@ -59,13 +62,11 @@
       </media-controller>
     </main>
 
-    <br>
+    <br />
 
     <media-rendition-menu mediacontroller="mc"></media-rendition-menu>
 
-    <p>
-      Quality: <span id="renditionactive">N/A</span>
-    </p>
+    <p>Quality: <span id="renditionactive">N/A</span></p>
 
     <p>
       <button id="loadbtn">Load new clip</button>
@@ -78,16 +79,20 @@
         renditionMenu.formatMenuItemText = (text) => {
           console.log(text);
           return text.replace('1080p', '1080p (HD)');
-        }
+        };
       }
 
       video.addEventListener('resize', () => {
-        renditionactive.textContent = `${Math.min(video.videoWidth, video.videoHeight)}p`;
+        renditionactive.textContent = `${Math.min(
+          video.videoWidth,
+          video.videoHeight
+        )}p`;
       });
 
       loadbtn.onclick = () => {
         video.poster = '';
-        video.src = 'https://stream.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM.m3u8';
+        video.src =
+          'https://stream.mux.com/1EFcsL5JET00t00mBv01t00xt00T4QeNQtsXx2cKY6DLd7RM.m3u8';
       };
     </script>
 

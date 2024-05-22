@@ -17,7 +17,8 @@ const Player = (
   props: DetailedHTMLProps<
     VideoHTMLAttributes<HTMLVideoElement>,
     HTMLVideoElement
-  > & MuxVideoProps
+  > &
+    MuxVideoProps
 ) => {
   return (
     /**
@@ -44,7 +45,7 @@ const Player = (
           {/**
            * <Video/> is a thin wrapper around your actual media component (e.g. a <video/>) that also wires it up to the <MediaProvider/>'s MediaStore.
            */}
-          <Video {...props} style={{ minWidth: '100%'}} />
+          <Video {...props} style={{ minWidth: '100%' }} />
           {/**
            * <LoadingBackdrop/> is a backdrop/overlay over the UI that shows a loading indicator while media is loading.
            */}

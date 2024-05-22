@@ -11,7 +11,7 @@ import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
 <style>
   :host {
     --media-primary-color: black;
@@ -308,13 +308,13 @@ class MediaThemeDemuxed extends MediaThemeElement {
   static template = template;
   static observedAttributes = [
     ...MediaThemeElement.observedAttributes,
-    'mediastreamtype'
+    'mediastreamtype',
   ];
 
   attributeChangedCallback(name, _oldValue, newValue) {
     super.attributeChangedCallback(name, _oldValue, newValue);
 
-    if(name === "mediastreamtype" && newValue === "live") {
+    if (name === 'mediastreamtype' && newValue === 'live') {
       /** @type {HTMLMediaElement} */
       const media = this.querySelector('[slot="media"]');
       media.muted = true;
@@ -324,7 +324,10 @@ class MediaThemeDemuxed extends MediaThemeElement {
 }
 
 if (!globalThis.customElements.get('media-theme-demuxed-2022')) {
-  globalThis.customElements.define('media-theme-demuxed-2022', MediaThemeDemuxed);
+  globalThis.customElements.define(
+    'media-theme-demuxed-2022',
+    MediaThemeDemuxed
+  );
 }
 
 export default MediaThemeDemuxed;

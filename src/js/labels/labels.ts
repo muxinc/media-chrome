@@ -1,5 +1,6 @@
-/** @type {{ [k: string]: (x?: Partial<{ seekOffset: number; playbackRate: number; }>) => string; }} */
-export const nouns = {
+export type LabelOptions = { seekOffset?: number; playbackRate?: number; };
+
+export const nouns: Record<string, (options?: LabelOptions) => string> = {
   AUDIO_PLAYER: () => 'audio player',
   VIDEO_PLAYER: () => 'video player',
   VOLUME: () => 'volume',
@@ -14,8 +15,7 @@ export const nouns = {
   QUALITY: () => `quality`,
 };
 
-/** @type {{ [k: string]: (x?: Partial<{ seekOffset: number; playbackRate: number; }>) => string; }} */
-export const verbs = {
+export const verbs: Record<string, (options?: LabelOptions) => string> = {
   PLAY: () => 'play',
   PAUSE: () => 'pause',
   MUTE: () => 'mute',

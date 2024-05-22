@@ -1,16 +1,20 @@
-import { MediaChromeListbox, createOption, createIndicator } from './media-chrome-listbox.js';
-import './media-chrome-option.js';
-import { globalThis } from '../utils/server-safe-globals.js';
-import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
-import { parseRenditionList } from '../utils/utils.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
+import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
+import { globalThis } from '../utils/server-safe-globals.js';
+import { parseRenditionList } from '../utils/utils.js';
+import {
+  MediaChromeListbox,
+  createIndicator,
+  createOption,
+} from './media-chrome-listbox.js';
+import './media-chrome-option.js';
 
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
  * @attr {string} mediarenditionlist - (read-only) Set to the rendition list.
  */
 class MediaRenditionListbox extends MediaChromeListbox {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_RENDITION_LIST,
@@ -24,11 +28,15 @@ class MediaRenditionListbox extends MediaChromeListbox {
   attributeChangedCallback(attrName, oldValue, newValue) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED && oldValue !== newValue) {
+    if (
+      attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED &&
+      oldValue !== newValue
+    ) {
       this.value = newValue ?? 'auto';
-
-    } else if (attrName === MediaUIAttributes.MEDIA_RENDITION_LIST && oldValue !== newValue) {
-
+    } else if (
+      attrName === MediaUIAttributes.MEDIA_RENDITION_LIST &&
+      oldValue !== newValue
+    ) {
       this.#renditionList = parseRenditionList(newValue);
       this.#render();
     }
@@ -69,8 +77,9 @@ class MediaRenditionListbox extends MediaChromeListbox {
     if (this.#prevState === JSON.stringify(this.mediaRenditionList)) return;
     this.#prevState = JSON.stringify(this.mediaRenditionList);
 
-    const renditionList = this.mediaRenditionList
-      .sort((a, b) => b.height - a.height);
+    const renditionList = this.mediaRenditionList.sort(
+      (a, b) => b.height - a.height
+    );
 
     const container = this.shadowRoot.querySelector('#container');
     container.textContent = '';
@@ -78,7 +87,6 @@ class MediaRenditionListbox extends MediaChromeListbox {
     let isAuto = !this.mediaRenditionSelected;
 
     for (const rendition of renditionList) {
-
       const text = this.formatOptionText(
         `${Math.min(rendition.width, rendition.height)}p`,
         rendition
@@ -116,7 +124,10 @@ class MediaRenditionListbox extends MediaChromeListbox {
 }
 
 if (!globalThis.customElements.get('media-rendition-listbox')) {
-  globalThis.customElements.define('media-rendition-listbox', MediaRenditionListbox);
+  globalThis.customElements.define(
+    'media-rendition-listbox',
+    MediaRenditionListbox
+  );
 }
 
 export { MediaRenditionListbox };

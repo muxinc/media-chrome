@@ -68,7 +68,9 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
    */
   get anchorElement() {
     if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector('media-audio-track-menu-button');
+    return getMediaController(this).querySelector(
+      'media-audio-track-menu-button'
+    );
   }
 
   get mediaAudioTrackList() {

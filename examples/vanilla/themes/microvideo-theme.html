@@ -14,9 +14,9 @@
 
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-theme-microvideo {
-        display: block;         /* expands the container if preload=none */
-        max-width: 720px;       /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        display: block; /* expands the container if preload=none */
+        max-width: 720px; /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9; /* set container aspect ratio if preload=none */
       }
 
       label {
@@ -26,7 +26,10 @@
       .auto-grid {
         --auto-grid-min-size: 20rem;
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(var(--auto-grid-min-size), 1fr));
+        grid-template-columns: repeat(
+          auto-fill,
+          minmax(var(--auto-grid-min-size), 1fr)
+        );
         grid-gap: 1rem;
       }
     </style>
@@ -64,11 +67,11 @@
       <div>
         <h3>Choose <code>streamtype</code>:</h3>
         <label>
-          <input type="radio" name="streamtype" value="on-demand" checked>
+          <input type="radio" name="streamtype" value="on-demand" checked />
           on-demand
         </label>
         <label>
-          <input type="radio" name="streamtype" value="live">
+          <input type="radio" name="streamtype" value="live" />
           live
         </label>
       </div>
@@ -76,11 +79,11 @@
       <div>
         <h3>Choose <code>targetlivewindow</code>:</h3>
         <label>
-          <input type="radio" name="targetlivewindow" value="0" checked>
+          <input type="radio" name="targetlivewindow" value="0" checked />
           0
         </label>
         <label>
-          <input type="radio" name="targetlivewindow" value="1">
+          <input type="radio" name="targetlivewindow" value="1" />
           1
         </label>
       </div>
@@ -88,11 +91,11 @@
       <div>
         <h3>Choose <code>controlbarvertical</code>:</h3>
         <label>
-          <input type="radio" name="controlbarvertical" value="" checked>
+          <input type="radio" name="controlbarvertical" value="" checked />
           false
         </label>
         <label>
-          <input type="radio" name="controlbarvertical" value="1">
+          <input type="radio" name="controlbarvertical" value="1" />
           true
         </label>
       </div>
@@ -100,39 +103,44 @@
       <div>
         <h3>Choose <code>controlbarplace</code>:</h3>
         <label>
-          <input type="radio" name="controlbarplace" value="start start">
+          <input type="radio" name="controlbarplace" value="start start" />
           start start
         </label>
         <label>
-          <input type="radio" name="controlbarplace" value="start center">
+          <input type="radio" name="controlbarplace" value="start center" />
           start center
         </label>
         <label>
-          <input type="radio" name="controlbarplace" value="start end">
+          <input type="radio" name="controlbarplace" value="start end" />
           start end
         </label>
         <label>
-          <input type="radio" name="controlbarplace" value="center start">
+          <input type="radio" name="controlbarplace" value="center start" />
           center start
         </label>
         <label>
-          <input type="radio" name="controlbarplace" value="center center">
+          <input type="radio" name="controlbarplace" value="center center" />
           center center
         </label>
         <label>
-          <input type="radio" name="controlbarplace" value="center end">
+          <input type="radio" name="controlbarplace" value="center end" />
           center end
         </label>
         <label>
-          <input type="radio" name="controlbarplace" value="end start">
+          <input type="radio" name="controlbarplace" value="end start" />
           end start
         </label>
         <label>
-          <input type="radio" name="controlbarplace" value="end center" checked>
+          <input
+            type="radio"
+            name="controlbarplace"
+            value="end center"
+            checked
+          />
           end center
         </label>
         <label>
-          <input type="radio" name="controlbarplace" value="end end">
+          <input type="radio" name="controlbarplace" value="end end" />
           end end
         </label>
       </div>
@@ -148,7 +156,8 @@
         } else {
           theme.removeAttribute(key);
         }
-        document.querySelector(`[name="${key}"][value="${value}"]`).checked = !!value;
+        document.querySelector(`[name="${key}"][value="${value}"]`).checked =
+          !!value;
       });
 
       document.addEventListener('change', (e) => {
@@ -157,11 +166,9 @@
         if (e.target.name.startsWith('--')) {
           theme.style.setProperty(e.target.name, e.target.value);
           search.set(e.target.name, e.target.value);
-
         } else if (e.target.value) {
           theme.setAttribute(e.target.name, e.target.value);
           search.set(e.target.name, e.target.value);
-
         } else {
           theme.removeAttribute(e.target.name);
           search.delete(e.target.name);

@@ -1,12 +1,18 @@
-import '../media-chrome-button.js';
-import './media-chrome-listbox.js';
-import { globalThis, document } from '../utils/server-safe-globals.js';
-import { containsComposedNode, closestComposedNode, getOrInsertCSSRule, getActiveElement } from '../utils/element-utils.js';
-import { observeResize, unobserveResize } from '../utils/resize-observer.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
+import '../media-chrome-button.js';
+import { CustomElement } from '../utils/CustomElement.js';
+import {
+  closestComposedNode,
+  containsComposedNode,
+  getActiveElement,
+  getOrInsertCSSRule,
+} from '../utils/element-utils.js';
+import { observeResize, unobserveResize } from '../utils/resize-observer.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
+import './media-chrome-listbox.js';
 
-const template = document.createElement('template');
-template.innerHTML = /*html*/`
+const template: HTMLTemplateElement = document.createElement('template');
+template.innerHTML = /*html*/ `
   <style>
   :host {
     font: var(--media-font,
@@ -69,7 +75,7 @@ template.innerHTML = /*html*/`
  * @csspart button - The default button that's in the shadow DOM.
  * @csspart listbox - The default listbox that's in the shadow DOM.
  */
-class MediaChromeSelectMenu extends globalThis.HTMLElement {
+class MediaChromeSelectMenu extends CustomElement {
   #mediaController;
   #button;
   #buttonSlot;
@@ -77,10 +83,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
   #listboxSlot;
 
   static get observedAttributes() {
-    return [
-      'disabled',
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
-    ];
+    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
   constructor() {
@@ -92,7 +95,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    this.init?.();
+    this.init();
 
     this.#button = this.shadowRoot.querySelector('[part=button]');
     this.#listbox = this.shadowRoot.querySelector('[part=listbox]');
@@ -107,7 +110,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.#button = newButton;
       this.#button.preventClick = true;
 
-      const disabled = this.hasAttribute('disabled') || this.#button.hasAttribute('disabled');
+      const disabled =
+        this.hasAttribute('disabled') || this.#button.hasAttribute('disabled');
 
       if (disabled) {
         this.disable();
@@ -122,6 +126,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.#listbox = this.#listboxSlot.assignedElements()[0] || this.#listbox;
     });
   }
+
+  init() { }
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
@@ -142,7 +148,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     } else if (key === 'Escape') {
       this.#hide();
     }
-  }
+  };
 
   #keydownListener = (e) => {
     const { metaKey, altKey, key } = e;
@@ -151,25 +157,25 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       return;
     }
     e.preventDefault();
-    this.addEventListener('keyup', this.#keyupListener, {once: true});
-  }
+    this.addEventListener('keyup', this.#keyupListener, { once: true });
+  };
 
   #documentClickHandler = (e) => {
     // if we clicked inside the selectmenu, don't handle it here
     if (e.composedPath().includes(this)) return;
 
     this.#hide();
-  }
+  };
 
   #clickHandler = (e) => {
     if (e.composedPath().includes(this.#button)) {
       this.#toggle();
     }
-  }
+  };
 
   #handleOptionChange = () => {
     this.#hide();
-  }
+  };
 
   #toggle() {
     if (this.#listboxSlot.hidden) {
@@ -224,7 +230,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.#listbox.style.bottom = 'unset';
       this.#listbox.style.right = null;
       this.#listbox.style.left = '0';
-      this.#listbox.style.top = `${buttonRect.height}px`
+      this.#listbox.style.top = `${buttonRect.height}px`;
       return;
     }
 
@@ -238,8 +244,9 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     );
     this.#listbox.style.left = null;
     this.#listbox.style.right = `${position}px`;
-    this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height}px`;
-  }
+    this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height
+      }px`;
+  };
 
   enable() {
     this.#button.toggleAttribute('disabled', false);
@@ -263,13 +270,18 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
         this.#mediaController = null;
-        this.#listbox.removeAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
+        this.#listbox.removeAttribute(
+          MediaStateReceiverAttributes.MEDIA_CONTROLLER
+        );
       }
       if (newValue && this.isConnected) {
         // @ts-ignore
         this.#mediaController = this.getRootNode()?.getElementById(newValue);
         this.#mediaController?.associateElement?.(this);
-        this.#listbox.setAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER, newValue);
+        this.#listbox.setAttribute(
+          MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+          newValue
+        );
       }
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
@@ -282,14 +294,22 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 
   connectedCallback() {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
+    style.setProperty(
+      'display',
+      `var(--media-control-display, var(--${this.localName}-display, inline-flex))`
+    );
 
-    const mediaControllerId = this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
+    const mediaControllerId = this.getAttribute(
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
+    );
     if (mediaControllerId) {
-      // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController =
+        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
-      this.#listbox.setAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER, mediaControllerId);
+      this.#listbox.setAttribute(
+        MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+        mediaControllerId
+      );
     }
 
     if (!this.hasAttribute('disabled')) {
@@ -308,7 +328,9 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
-    this.#listbox.removeAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
+    this.#listbox.removeAttribute(
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER
+    );
   }
 
   get keysUsed() {
@@ -317,9 +339,11 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 }
 
 function getBoundsElement(host) {
-  return (host.getAttribute('bounds')
-    ? closestComposedNode(host, `#${host.getAttribute('bounds')}`)
-    : (getMediaControllerElement(host) || host.parentElement)) ?? host;
+  return (
+    (host.getAttribute('bounds')
+      ? closestComposedNode(host, `#${host.getAttribute('bounds')}`)
+      : getMediaControllerElement(host) || host.parentElement) ?? host
+  );
 }
 
 function getMediaControllerElement(host) {
@@ -333,7 +357,10 @@ function getMediaControllerElement(host) {
 }
 
 if (!globalThis.customElements.get('media-chrome-selectmenu')) {
-  globalThis.customElements.define('media-chrome-selectmenu', MediaChromeSelectMenu);
+  globalThis.customElements.define(
+    'media-chrome-selectmenu',
+    MediaChromeSelectMenu
+  );
 }
 
 export { MediaChromeSelectMenu };

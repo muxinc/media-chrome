@@ -11,20 +11,20 @@ on:
         required: true
         description: Version
         options:
-        - conventional
-        - patch
-        - minor
-        - major
-        - prerelease
-        - from-package
-        - from-git
+          - conventional
+          - patch
+          - minor
+          - major
+          - prerelease
+          - from-package
+          - from-git
       prerelease:
         type: choice
         description: Pre-release
         options:
-        -
-        - canary
-        - beta
+          -
+          - canary
+          - beta
       dryrun:
         description: 'Dry-run'
         type: boolean

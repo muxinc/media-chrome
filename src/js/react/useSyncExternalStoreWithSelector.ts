@@ -28,15 +28,16 @@ function isPolyfill(x: any, y: any) {
   );
 }
 
-type SnapshotRef<Selection> = | {
-  hasValue: true;
-  value: Selection;
-}
-| {
-  hasValue: false;
-  value: null;
-}
-| null;
+type SnapshotRef<Selection> =
+  | {
+      hasValue: true;
+      value: Selection;
+    }
+  | {
+      hasValue: false;
+      value: null;
+    }
+  | null;
 
 const is: (x: any, y: any) => boolean =
   typeof Object.is === 'function' ? Object.is : isPolyfill;
@@ -49,7 +50,6 @@ export function useSyncExternalStoreWithSelector<Snapshot, Selection>(
   selector: (snapshot: Snapshot) => Selection,
   isEqual?: (a: Selection, b: Selection) => boolean
 ) {
-
   // Use this to track the rendered snapshot.
   const instRef = useRef<SnapshotRef<Selection>>(null);
   let inst: SnapshotRef<Selection>;

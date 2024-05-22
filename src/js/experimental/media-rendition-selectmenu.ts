@@ -2,7 +2,7 @@ import { MediaChromeSelectMenu } from './media-chrome-selectmenu.js';
 import './media-rendition-button.js';
 import './media-rendition-listbox.js';
 import { MediaUIAttributes } from '../constants.js';
-import { globalThis, document, } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
@@ -28,7 +28,10 @@ class MediaRenditionSelectMenu extends MediaChromeSelectMenu {
 
     const renditionListbox = document.createElement('media-rendition-listbox');
     renditionListbox.part.add('listbox');
-    renditionListbox.setAttribute('exportparts', 'option, option-selected, indicator');
+    renditionListbox.setAttribute(
+      'exportparts',
+      'option, option-selected, indicator'
+    );
 
     const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
@@ -42,7 +45,10 @@ class MediaRenditionSelectMenu extends MediaChromeSelectMenu {
 }
 
 if (!globalThis.customElements.get('media-rendition-selectmenu')) {
-  globalThis.customElements.define('media-rendition-selectmenu', MediaRenditionSelectMenu);
+  globalThis.customElements.define(
+    'media-rendition-selectmenu',
+    MediaRenditionSelectMenu
+  );
 }
 
 export { MediaRenditionSelectMenu };

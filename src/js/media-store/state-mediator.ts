@@ -1,10 +1,10 @@
-import { document, globalThis } from '../utils/server-safe-globals.js';
 import {
   AvailabilityStates,
   StreamTypes,
   TextTrackKinds,
   WebkitPresentationModes,
 } from '../constants.js';
+import { getTextTracksList } from '../utils/captions.js';
 import { containsComposedNode } from '../utils/element-utils.js';
 import { fullscreenApi } from '../utils/fullscreen-api.js';
 import {
@@ -16,46 +16,34 @@ import {
   hasVolumeSupportAsync,
   pipSupported,
 } from '../utils/platform-tests.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
 import {
   getShowingSubtitleTracks,
   getSubtitleTracks,
   toggleSubtitleTracks,
 } from './util.js';
-import { getTextTracksList } from '../utils/captions.js';
+
+export type Rendition = {
+  src?: string;
+  id?: string;
+  width?: number;
+  height?: number;
+  bitrate?: number;
+  frameRate?: number;
+  codec?: string;
+  readonly selected: boolean;
+};
+
+export type AudioTrack = {
+  id?: string;
+  kind?: string;
+  label: string;
+  language: string;
+  enabled: boolean;
+};
 
 /**
- * @typedef {{
- *  src?: string;
- *  id?: string;
- *  width?: number;
- *  height?: number;
- *  bitrate?: number;
- *  frameRate?: number;
- *  codec?: string;
- *  readonly selected: boolean;
- * }} Rendition
- */
-
-/**
- * @typedef {{
- *  id?: string;
- *  kind?: string;
- *  label: string;
- *  language: string;
- *  enabled: boolean;
- * }} AudioTrack
- */
-
-/**
- * @typedef {StreamTypes[keyof StreamTypes]} StreamTypeValue
- */
-
-/**
- * @typedef {AvailabilityStates[keyof AvailabilityStates]} AvailabilityTypeValue
- */
-
-/**
- *
+ * 
  * MediaStateOwner is in a sense both a subset and a superset of `HTMLVideoElement` and is used as the primary
  * "source of truth" for media state, as well as the primary target for state change requests.
  *
@@ -69,39 +57,33 @@ import { getTextTracksList } from '../utils/captions.js';
  * properties/methods) or are not immediately derivable from primary media state or other state owners. These include things like
  * `videoRenditions` for e.g. HTTP Adaptive Streaming media (such as HLS or MPEG-DASH), `audioTracks`, or `streamType`, which identifies
  * whether the media ("stream") is "live" or "on demand". Several of these are specified and formalized on https://github.com/video-dev/media-ui-extensions.
- *
- * @typedef {Partial<HTMLVideoElement> & Pick<HTMLMediaElement, 'play' | 'paused' | 'addEventListener' | 'removeEventListener'> & {
- *  streamType?: StreamTypeValue;
- *  targetLiveWindow?: number;
- *  liveEdgeStart?: number;
- *  videoRenditions?: Rendition[] & EventTarget & { selectedIndex?: number };
- *  audioTracks?: AudioTrack[] & EventTarget;
- *  requestCast?: () => any;
- *  webkitDisplayingFullscreen?: boolean;
- *  webkitPresentationMode?: 'fullscreen'|'picture-in-picture';
- *  webkitEnterFullscreen?: () => any;
- *  webkitCurrentPlaybackTargetIsWireless?: boolean;
- *  webkitShowPlaybackTargetPicker?: () => any;
- * }} MediaStateOwner
  */
+export type MediaStateOwner = Partial<HTMLVideoElement> & Pick<HTMLMediaElement, 'play' | 'paused' | 'addEventListener' | 'removeEventListener'> & {
+  streamType?: StreamTypes;
+  targetLiveWindow?: number;
+  liveEdgeStart?: number;
+  videoRenditions?: Rendition[] & EventTarget & { selectedIndex?: number };
+  audioTracks?: AudioTrack[] & EventTarget;
+  requestCast?: () => any;
+  webkitDisplayingFullscreen?: boolean;
+  webkitPresentationMode?: 'fullscreen' | 'picture-in-picture';
+  webkitEnterFullscreen?: () => any;
+  webkitCurrentPlaybackTargetIsWireless?: boolean;
+  webkitShowPlaybackTargetPicker?: () => any;
+};
 
-/**
- * @typedef {Partial<Document|ShadowRoot>} RootNodeStateOwner
- */
+export type RootNodeStateOwner = Partial<Document | ShadowRoot>;
 
-/**
- * @typedef {Partial<HTMLElement> & EventTarget} FullScreenElementStateOwner
- */
+export type FullScreenElementStateOwner = Partial<HTMLElement> & EventTarget;
 
-/**
- * @typedef {object} StateOption
- * @property {boolean} [defaultSubtitles]
- * @property {StreamTypeValue} [defaultStreamType]
- * @property {number} [defaultDuration]
- * @property {number} [liveEdgeOffset]
- * @property {boolean} [noVolumePref]
- * @property {boolean} [noSubtitlesLangPref]
- */
+export type StateOption = {
+  defaultSubtitles?: boolean;
+  defaultStreamType?: StreamTypes;
+  defaultDuration?: number;
+  liveEdgeOffset?: number;
+  noVolumePref?: boolean;
+  noSubtitlesLangPref?: boolean;
+};
 
 /**
  *
@@ -112,57 +94,38 @@ import { getTextTracksList } from '../utils/captions.js';
  * - fullscreenElement - the element that will be used when in full screen (e.g. for Media Chrome, this will typically be the MediaController)
  * - documentElement - top level node for DOM context (usually document and defaults to `document` in `createMediaStore()`)
  * - options - state behavior/user preferences (e.g. defaultSubtitles to enable subtitles by default as the relevant state or state owners change)
- *
- * @typedef {object} StateOwners
- * @property {MediaStateOwner} [media]
- * @property {RootNodeStateOwner} [documentElement]
- * @property {FullScreenElementStateOwner} [fullscreenElement]
- * @property {StateOption} [options]
  */
+export type StateOwners = {
+  media?: MediaStateOwner;
+  documentElement?: RootNodeStateOwner;
+  fullscreenElement?: FullScreenElementStateOwner;
+  options?: StateOption;
+};
 
-/**
- * @typedef {{ type: Event['type']; detail?: D; target?: Event['target'] }} EventOrAction<D>
- * @template {any} [D=undefined]
- */
+export type EventOrAction<D = undefined> = {
+  type: string;
+  detail?: D;
+  target?: EventTarget
+};
 
-/**
- * @typedef {(stateOwners: StateOwners, event?: EventOrAction<D>) => T} FacadeGetter<T>
- * @template T
- * @template {any} [D=T]
- */
+export type FacadeGetter<T, D = T> = (stateOwners: StateOwners, event?: EventOrAction<D>) => T;
 
-/**
- * @typedef {(value: T, stateOwners: StateOwners) => void} FacadeSetter<T>
- * @template T
- */
+export type FacadeSetter<T> = (value: T, stateOwners: StateOwners) => void;
 
-/**
- *
- * @typedef {(handler: (value: T) => void, stateOwners: StateOwners) => void} StateOwnerUpdateHandler<T>
- * @template T
- */
+export type StateOwnerUpdateHandler<T> = (handler: (value: T) => void, stateOwners: StateOwners) => void;
 
-/**
- * @typedef {{
- *   get: FacadeGetter<T,D>;
- *   mediaEvents?: string[];
- *   textTracksEvents?: string[];
- *   videoRenditionsEvents?: string[];
- *   audioTracksEvents?: string[];
- *   remoteEvents?: string[];
- *   rootEvents?: string[];
- *   stateOwnersUpdateHandlers?: StateOwnerUpdateHandler<T>[];
- * }} ReadonlyFacadeProp<T>
- * @template T
- * @template {any} [D=T]
- */
+export type ReadonlyFacadeProp<T, D = T> = {
+  get: FacadeGetter<T, D>;
+  mediaEvents?: string[];
+  textTracksEvents?: string[];
+  videoRenditionsEvents?: string[];
+  audioTracksEvents?: string[];
+  remoteEvents?: string[];
+  rootEvents?: string[];
+  stateOwnersUpdateHandlers?: StateOwnerUpdateHandler<T>[];
+};
 
-/**
- * @typedef {ReadonlyFacadeProp<T,D> & { set: FacadeSetter<S> }} FacadeProp<T,S,D>
- * @template T
- * @template {any} [S=T]
- * @template {any} [D=T]
- */
+export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & { set: FacadeSetter<S> };
 
 /**
  *
@@ -182,42 +145,6 @@ import { getTextTracksList } from '../utils/captions.js';
  * - `remoteEvents[]` (Optional) - An array of event types to monitor on `stateOwners.media.remote` for potential changes in the state of K.
  * - `rootEvents[]` (Optional) - An array of event types to monitor on `stateOwners.documentElement` for potential changes in the state of K.
  * - `stateOwnersUpdateHandlers[]` (Optional) - An array of functions that define arbitrary code for monitoring or causing state changes, optionally returning a "teardown" function for cleanup.
- *
- * @typedef {{
- *   mediaPaused: FacadeProp<HTMLMediaElement['paused']>
- *   mediaHasPlayed: ReadonlyFacadeProp<boolean>;
- *   mediaEnded: ReadonlyFacadeProp<HTMLMediaElement['ended']>;
- *   mediaPlaybackRate: FacadeProp<HTMLMediaElement['playbackRate']>;
- *   mediaMuted: FacadeProp<HTMLMediaElement['muted']>;
- *   mediaVolume: FacadeProp<HTMLMediaElement['volume']>;
- *   mediaVolumeLevel: ReadonlyFacadeProp<'high'|'medium'|'low'|'off'>
- *   mediaCurrentTime: FacadeProp<HTMLMediaElement['currentTime']>;
- *   mediaDuration: ReadonlyFacadeProp<HTMLMediaElement['duration']>;
- *   mediaLoading: ReadonlyFacadeProp<boolean>;
- *   mediaSeekable: ReadonlyFacadeProp<[number, number]|undefined>;
- *   mediaBuffered: ReadonlyFacadeProp<[number, number][]>;
- *   mediaStreamType: ReadonlyFacadeProp<StreamTypeValue>;
- *   mediaTargetLiveWindow: ReadonlyFacadeProp<number>;
- *   mediaTimeIsLive: ReadonlyFacadeProp<boolean>;
- *   mediaSubtitlesList: ReadonlyFacadeProp<Pick<TextTrack,'kind'|'label'|'language'>[]>;
- *   mediaSubtitlesShowing: ReadonlyFacadeProp<Pick<TextTrack,'kind'|'label'|'language'>[]>;
- *   mediaChaptersCues: ReadonlyFacadeProp<Pick<VTTCue,'text'|'startTime'|'endTime'>[]>;
- *   mediaIsPip: FacadeProp<boolean>;
- *   mediaRenditionList: ReadonlyFacadeProp<Rendition[]>;
- *   mediaRenditionSelected: FacadeProp<string,string>;
- *   mediaAudioTrackList: ReadonlyFacadeProp<{ id?: string }[]>;
- *   mediaAudioTrackEnabled: FacadeProp<string,string>;
- *   mediaIsFullscreen: FacadeProp<boolean>;
- *   mediaIsCasting: FacadeProp<boolean,boolean,'NO_DEVICES_AVAILABLE'|'NOT_CONNECTED'|'CONNECTING'|'CONNECTED'>;
- *   mediaIsAirplaying: FacadeProp<boolean>;
- *   mediaFullscreenUnavailable: ReadonlyFacadeProp<AvailabilityTypeValue|undefined>;
- *   mediaPipUnavailable: ReadonlyFacadeProp<AvailabilityTypeValue|undefined>;
- *   mediaVolumeUnavailable: ReadonlyFacadeProp<AvailabilityTypeValue|undefined>;
- *   mediaCastUnavailable: ReadonlyFacadeProp<AvailabilityTypeValue|undefined>;
- *   mediaAirplayUnavailable: ReadonlyFacadeProp<AvailabilityTypeValue|undefined>;
- *   mediaRenditionUnavailable: ReadonlyFacadeProp<AvailabilityTypeValue|undefined>;
- *   mediaAudioTrackUnavailable: ReadonlyFacadeProp<AvailabilityTypeValue|undefined>;
- * }} StateMediator
  *
  * @example &lt;caption>Basic Example (NOTE: This is for informative use only. StateMediator is not intended to be used directly).&lt;/caption>
  *
@@ -254,13 +181,49 @@ import { getTextTracksList } from '../utils/captions.js';
  * });
  *
  */
+export type StateMediator = {
+  mediaPaused: FacadeProp<HTMLMediaElement['paused']>
+  mediaHasPlayed: ReadonlyFacadeProp<boolean>;
+  mediaEnded: ReadonlyFacadeProp<HTMLMediaElement['ended']>;
+  mediaPlaybackRate: FacadeProp<HTMLMediaElement['playbackRate']>;
+  mediaMuted: FacadeProp<HTMLMediaElement['muted']>;
+  mediaVolume: FacadeProp<HTMLMediaElement['volume']>;
+  mediaVolumeLevel: ReadonlyFacadeProp<'high' | 'medium' | 'low' | 'off'>
+  mediaCurrentTime: FacadeProp<HTMLMediaElement['currentTime']>;
+  mediaDuration: ReadonlyFacadeProp<HTMLMediaElement['duration']>;
+  mediaLoading: ReadonlyFacadeProp<boolean>;
+  mediaSeekable: ReadonlyFacadeProp<[number, number] | undefined>;
+  mediaBuffered: ReadonlyFacadeProp<[number, number][]>;
+  mediaStreamType: ReadonlyFacadeProp<StreamTypes>;
+  mediaTargetLiveWindow: ReadonlyFacadeProp<number>;
+  mediaTimeIsLive: ReadonlyFacadeProp<boolean>;
+  mediaSubtitlesList: ReadonlyFacadeProp<Pick<TextTrack, 'kind' | 'label' | 'language'>[]>;
+  mediaSubtitlesShowing: ReadonlyFacadeProp<Pick<TextTrack, 'kind' | 'label' | 'language'>[]>;
+  mediaChaptersCues: ReadonlyFacadeProp<Pick<VTTCue, 'text' | 'startTime' | 'endTime'>[]>;
+  mediaIsPip: FacadeProp<boolean>;
+  mediaRenditionList: ReadonlyFacadeProp<Rendition[]>;
+  mediaRenditionSelected: FacadeProp<string, string>;
+  mediaAudioTrackList: ReadonlyFacadeProp<{ id?: string }[]>;
+  mediaAudioTrackEnabled: FacadeProp<string, string>;
+  mediaIsFullscreen: FacadeProp<boolean>;
+  mediaIsCasting: FacadeProp<boolean, boolean, 'NO_DEVICES_AVAILABLE' | 'NOT_CONNECTED' | 'CONNECTING' | 'CONNECTED'>;
+  mediaIsAirplaying: FacadeProp<boolean>;
+  mediaFullscreenUnavailable: ReadonlyFacadeProp<AvailabilityStates | undefined>;
+  mediaPipUnavailable: ReadonlyFacadeProp<AvailabilityStates | undefined>;
+  mediaVolumeUnavailable: ReadonlyFacadeProp<AvailabilityStates | undefined>;
+  mediaCastUnavailable: ReadonlyFacadeProp<AvailabilityStates | undefined>;
+  mediaAirplayUnavailable: ReadonlyFacadeProp<AvailabilityStates | undefined>;
+  mediaRenditionUnavailable: ReadonlyFacadeProp<AvailabilityStates | undefined>;
+  mediaAudioTrackUnavailable: ReadonlyFacadeProp<AvailabilityStates | undefined>;
+}
 
-const StreamTypeValues = /** @type {StreamTypeValue[]} */ (
+const StreamTypeValues = (
   Object.values(StreamTypes)
 );
 
-let volumeSupported;
-export const volumeSupportPromise = hasVolumeSupportAsync().then(
+let volumeSupported: boolean;
+
+export const volumeSupportPromise: Promise<boolean> = hasVolumeSupportAsync().then(
   (supported) => {
     volumeSupported = supported;
     return volumeSupported;
@@ -295,8 +258,7 @@ export const prepareStateOwners = async (
   );
 };
 
-/** @type {StateMediator} */
-export const stateMediator = {
+export const stateMediator: StateMediator = {
   mediaPaused: {
     get(stateOwners) {
       const { media } = stateOwners;
@@ -310,7 +272,7 @@ export const stateMediator = {
         media.pause();
       } else {
         // Not all custom media elements return a promise from `play()`.
-        media.play()?.catch(() => {});
+        media.play()?.catch(() => { });
       }
     },
     mediaEvents: ['play', 'playing', 'pause', 'emptied'],
@@ -485,9 +447,9 @@ export const stateMediator = {
     get(stateOwners) {
       const { media } = stateOwners;
 
-      const timeRanges = /** @type {TimeRanges} */ (media?.buffered ?? []);
+      const timeRanges: any = media?.buffered ?? [];
       return Array.from(
-        /** @type {ArrayLike<any>} */ (/** @type unknown */ (timeRanges))
+        timeRanges
       ).map((_, i) => [
         Number(timeRanges.start(i).toFixed(3)),
         Number(timeRanges.end(i).toFixed(3)),
@@ -502,7 +464,7 @@ export const stateMediator = {
       const usedDefaultStreamType = [
         StreamTypes.LIVE,
         StreamTypes.ON_DEMAND,
-      ].includes(/** @type {'live'|'on-demand'} */ (defaultStreamType))
+      ].includes(defaultStreamType as any)
         ? defaultStreamType
         : undefined;
 
@@ -617,7 +579,7 @@ export const stateMediator = {
         const { media, options } = stateOwners;
         if (!media) return;
 
-        const updateDefaultSubtitlesCallback = (event) => {
+        const updateDefaultSubtitlesCallback = (event?: Event) => {
           if (!options.defaultSubtitles) return;
 
           const nonSubsEvent =
@@ -659,16 +621,16 @@ export const stateMediator = {
     ],
   },
   mediaChaptersCues: {
-    get(stateOwners) {
+    get(stateOwners: StateOwners) {
       const { media } = stateOwners;
       if (!media) return [];
 
-      const [chaptersTrack] = getTextTracksList(media, {
+      const [chaptersTrack] = getTextTracksList(media as HTMLVideoElement, {
         kind: TextTrackKinds.CHAPTERS,
       });
 
       return Array.from(chaptersTrack?.cues ?? []).map(
-        (/** @type VTTCue */ { text, startTime, endTime }) => ({
+        ({ text, startTime, endTime }: VTTCue) => ({
           text,
           startTime,
           endTime,
@@ -718,7 +680,7 @@ export const stateMediator = {
       if (documentElement.pictureInPictureElement instanceof HTMLMediaElement) {
         if (!media.localName?.includes('-')) return false;
         return containsComposedNode(
-          media,
+          media as Node,
           documentElement.pictureInPictureElement
         );
       }
@@ -960,7 +922,7 @@ export const stateMediator = {
         // NOTE: Since the "official" exit fullscreen method yields a Promise that rejects
         // if not in fullscreen, this accounts for those cases.
         if (maybePromise instanceof Promise) {
-          maybePromise.catch(() => {});
+          maybePromise.catch(() => { });
         }
         return;
       }
@@ -971,7 +933,7 @@ export const stateMediator = {
         // if already in fullscreen, this accounts for those cases.
         const maybePromise = fullscreenElement[fullscreenApi.enter]?.();
         if (maybePromise instanceof Promise) {
-          maybePromise.catch(() => {});
+          maybePromise.catch(() => { });
         }
       } else if (media?.webkitEnterFullscreen) {
         // Media element fullscreen using iOS API
@@ -1013,7 +975,7 @@ export const stateMediator = {
       media.remote
         .prompt()
         // Don't warn here because catch is run when the user closes the cast menu.
-        .catch(() => {});
+        .catch(() => { });
     },
     remoteEvents: ['connect', 'connecting', 'disconnect'],
   },
@@ -1044,7 +1006,7 @@ export const stateMediator = {
   mediaFullscreenUnavailable: {
     get(stateOwners) {
       const { media } = stateOwners;
-      if (!fullscreenSupported || !hasFullscreenSupport(media))
+      if (!fullscreenSupported || !hasFullscreenSupport(media as HTMLVideoElement))
         return AvailabilityStates.UNSUPPORTED;
       return undefined;
     },
@@ -1052,7 +1014,7 @@ export const stateMediator = {
   mediaPipUnavailable: {
     get(stateOwners) {
       const { media } = stateOwners;
-      if (!pipSupported || !hasPipSupport(media))
+      if (!pipSupported || !hasPipSupport(media as HTMLVideoElement))
         return AvailabilityStates.UNSUPPORTED;
     },
   },
@@ -1127,7 +1089,7 @@ export const stateMediator = {
             });
         }
         return () => {
-          media?.remote?.cancelWatchAvailability().catch(() => {});
+          media?.remote?.cancelWatchAvailability().catch(() => { });
         };
       },
     ],
@@ -1180,7 +1142,7 @@ export const stateMediator = {
             });
         }
         return () => {
-          media?.remote?.cancelWatchAvailability().catch(() => {});
+          media?.remote?.cancelWatchAvailability().catch(() => { });
         };
       },
     ],

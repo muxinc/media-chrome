@@ -1,10 +1,14 @@
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { InvokeEvent } from './utils/events.js';
-import { getDocumentOrShadowRoot, containsComposedNode } from './utils/element-utils.js';
 import { MediaChromeMenu } from './media-chrome-menu.js';
+import { CustomElement } from './utils/CustomElement.js';
+import {
+  containsComposedNode,
+  getDocumentOrShadowRoot,
+} from './utils/element-utils.js';
+import { InvokeEvent } from './utils/events.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       transition: var(--media-menu-item-transition,
@@ -93,7 +97,9 @@ template.innerHTML = /*html*/`
       display: block;
     }
 
-    ${/* Only for indicator icons like checked-indicator or captions-indicator. */ ''}
+    ${
+      /* Only for indicator icons like checked-indicator or captions-indicator. */ ''
+  }
     [part~="indicator"],
     ::slotted([part~="indicator"]) {
       fill: var(--media-menu-item-indicator-fill,
@@ -155,7 +161,7 @@ export const Attributes = {
  * @cssproperty --media-menu-item-indicator-fill - `fill` color of indicator icon.
  * @cssproperty --media-menu-item-indicator-height - `height` of menu-item indicator.
  */
-class MediaChromeMenuItem extends globalThis.HTMLElement {
+class MediaChromeMenuItem extends CustomElement {
   static template = template;
 
   static get observedAttributes() {
@@ -264,11 +270,12 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   /**
    * Returns the element with the id specified by the `invoketarget` attribute
    * or the slotted submenu element.
-   * @return {MediaChromeMenu | null}
    */
-  get invokeTargetElement() {
+  get invokeTargetElement(): MediaChromeMenu | null {
     if (this.invokeTarget) {
-      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.invokeTarget}`);
+      return getDocumentOrShadowRoot(this)?.querySelector(
+        `#${this.invokeTarget}`
+      );
     }
     return this.submenuElement;
   }
@@ -276,12 +283,10 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   /**
    * Returns the slotted submenu element.
    */
-  get submenuElement(): MediaChomeMenu | null {
+  get submenuElement(): MediaChromeMenu | null {
     /** @type {HTMLSlotElement} */
-    const submenuSlot = this.shadowRoot.querySelector('slot[name="submenu"]');
-    return (
-      submenuSlot.assignedElements({ flatten: true })[0]
-    );
+    const submenuSlot: HTMLSlotElement = this.shadowRoot.querySelector('slot[name="submenu"]');
+    return submenuSlot.assignedElements({ flatten: true })[0] as MediaChromeMenu;
   }
 
   get type() {
@@ -351,7 +356,10 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
 
     this.submenuElement.addEventListener('change', this.#handleMenuItem);
     this.submenuElement.addEventListener('addmenuitem', this.#handleMenuItem);
-    this.submenuElement.addEventListener('removemenuitem', this.#handleMenuItem);
+    this.submenuElement.addEventListener(
+      'removemenuitem',
+      this.#handleMenuItem
+    );
 
     this.#handleMenuItem();
   }
@@ -361,8 +369,14 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     this.removeAttribute('aria-expanded');
 
     this.submenuElement.removeEventListener('change', this.#handleMenuItem);
-    this.submenuElement.removeEventListener('addmenuitem', this.#handleMenuItem);
-    this.submenuElement.removeEventListener('removemenuitem', this.#handleMenuItem);
+    this.submenuElement.removeEventListener(
+      'addmenuitem',
+      this.#handleMenuItem
+    );
+    this.submenuElement.removeEventListener(
+      'removemenuitem',
+      this.#handleMenuItem
+    );
 
     this.#handleMenuItem();
   }
@@ -374,14 +388,16 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   #handleMenuItem = () => {
     this.setAttribute('submenusize', `${this.submenuElement.items.length}`);
 
-    const descriptionSlot = this.shadowRoot.querySelector('slot[name="description"]');
+    const descriptionSlot = this.shadowRoot.querySelector(
+      'slot[name="description"]'
+    );
     const description = this.submenuElement.checkedItems?.[0]?.text;
 
     const span = document.createElement('span');
     span.textContent = description ?? '';
 
     descriptionSlot.replaceChildren(span);
-  }
+  };
 
   handleClick(event) {
     // Checkable menu items are handled in media-chrome-menu.

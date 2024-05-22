@@ -1,10 +1,15 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { insertCSSRule, getOrInsertCSSRule, getPointProgressOnLine } from './utils/element-utils.js';
+import { CustomElement } from './utils/CustomElement.js';
+import {
+  getOrInsertCSSRule,
+  getPointProgressOnLine,
+  insertCSSRule,
+} from './utils/element-utils.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       --_focus-box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
@@ -15,7 +20,9 @@ template.innerHTML = /*html*/`
       height: calc(var(--media-control-height, 24px) + 2 * var(--_media-range-padding));
       display: inline-flex;
       align-items: center;
-      ${/* Don't horizontal align w/ justify-content! #container can go negative on the x-axis w/ small width. */''}
+      ${
+        /* Don't horizontal align w/ justify-content! #container can go negative on the x-axis w/ small width. */ ''
+  }
       vertical-align: middle;
       box-sizing: border-box;
       position: relative;
@@ -23,11 +30,11 @@ template.innerHTML = /*html*/`
       transition: background .15s linear;
       cursor: pointer;
       pointer-events: auto;
-      touch-action: none; ${/* Prevent scrolling when dragging on mobile. */''}
-      z-index: 1; ${/* Apply z-index to overlap buttons below. */''}
+      touch-action: none; ${/* Prevent scrolling when dragging on mobile. */ ''}
+      z-index: 1; ${/* Apply z-index to overlap buttons below. */ ''}
     }
 
-    ${/* Reset before `outline` on track could be set by a CSS var */''}
+    ${/* Reset before `outline` on track could be set by a CSS var */ ''}
     input[type=range]:focus {
       outline: 0;
     }
@@ -57,7 +64,9 @@ template.innerHTML = /*html*/`
     }
 
     #container {
-      ${/* Not using the CSS `padding` prop makes it easier for slide open volume ranges so the width can be zero. */''}
+      ${
+        /* Not using the CSS `padding` prop makes it easier for slide open volume ranges so the width can be zero. */ ''
+  }
       width: var(--media-range-track-width, 100%);
       transform: translate(var(--media-range-track-translate-x, 0px), var(--media-range-track-translate-y, 0px));
       position: relative;
@@ -68,7 +77,7 @@ template.innerHTML = /*html*/`
     }
 
     #range {
-      ${/* The input range acts as a hover and hit zone for input events. */''}
+      ${/* The input range acts as a hover and hit zone for input events. */ ''}
       display: var(--media-time-range-hover-display, block);
       bottom: var(--media-time-range-hover-bottom, -7px);
       height: var(--media-time-range-hover-height, max(100% + 7px, 25px));
@@ -76,9 +85,11 @@ template.innerHTML = /*html*/`
       position: absolute;
       cursor: pointer;
 
-      -webkit-appearance: none; ${/* Hides the slider so that custom slider can be made */''}
+      -webkit-appearance: none; ${
+        /* Hides the slider so that custom slider can be made */ ''
+  }
       -webkit-tap-highlight-color: transparent;
-      background: transparent; ${/* Otherwise white in Chrome */''}
+      background: transparent; ${/* Otherwise white in Chrome */ ''}
       margin: 0;
       z-index: 1;
     }
@@ -90,8 +101,10 @@ template.innerHTML = /*html*/`
       }
     }
 
-    ${/* Special styling for WebKit/Blink */''}
-    ${/* Make thumb width/height small so it has no effect on range click position. */''}
+    ${/* Special styling for WebKit/Blink */ ''}
+    ${
+      /* Make thumb width/height small so it has no effect on range click position. */ ''
+  }
     #range::-webkit-slider-thumb {
       -webkit-appearance: none;
       background: transparent;
@@ -99,7 +112,7 @@ template.innerHTML = /*html*/`
       height: .1px;
     }
 
-    ${/* The thumb is not positioned relative to the track in Firefox */''}
+    ${/* The thumb is not positioned relative to the track in Firefox */ ''}
     #range::-moz-range-thumb {
       background: transparent;
       border: transparent;
@@ -114,7 +127,7 @@ template.innerHTML = /*html*/`
       justify-content: center;
       width: 100%;
       position: absolute;
-      ${/* Required for Safari to stop glitching track height on hover */''}
+      ${/* Required for Safari to stop glitching track height on hover */ ''}
       will-change: transform;
     }
 
@@ -297,20 +310,25 @@ template.innerHTML = /*html*/`
  * @cssproperty --media-range-track-pointer-background - `background` of range track pointer.
  * @cssproperty --media-range-track-pointer-border-right - `border-right` of range track pointer.
  */
-class MediaChromeRange extends globalThis.HTMLElement {
+class MediaChromeRange extends CustomElement {
   #mediaController;
   #isInputTarget;
   #startpoint;
   #endpoint;
-  #cssRules = {};
+  #cssRules: Record<string, CSSStyleRule> = {};
   #segments = [];
 
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       'disabled',
       'aria-disabled',
-      MediaStateReceiverAttributes.MEDIA_CONTROLLER];
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+    ];
   }
+
+  container: HTMLElement;
+  range: any;
+  appearance: HTMLElement;
 
   constructor() {
     super();
@@ -326,24 +344,27 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.#endpoint = this.shadowRoot.querySelector('#endpoint');
 
     /** @type {Omit<HTMLInputElement, "value" | "min" | "max"> &
-      * {value: number, min: number, max: number}} */
+     * {value: number, min: number, max: number}} */
     this.range = this.shadowRoot.querySelector('#range');
     this.appearance = this.shadowRoot.querySelector('#appearance');
   }
 
-  #onFocusIn = () => {
+  #onFocusIn = (): void => {
     if (this.range.matches(':focus-visible')) {
       const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-      style.setProperty('--_focus-visible-box-shadow', 'var(--_focus-box-shadow)');
+      style.setProperty(
+        '--_focus-visible-box-shadow',
+        'var(--_focus-box-shadow)'
+      );
     }
-  }
+  };
 
-  #onFocusOut = () => {
+  #onFocusOut = (): void => {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.removeProperty('--_focus-visible-box-shadow');
-  }
+  };
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -356,8 +377,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
       }
     } else if (
       attrName === 'disabled' ||
-      attrName === 'aria-disabled' &&
-      oldValue !== newValue
+      (attrName === 'aria-disabled' && oldValue !== newValue)
     ) {
       if (newValue == null) {
         this.range.removeAttribute(attrName);
@@ -371,7 +391,10 @@ class MediaChromeRange extends globalThis.HTMLElement {
 
   connectedCallback() {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
+    style.setProperty(
+      'display',
+      `var(--media-control-display, var(--${this.localName}-display, inline-flex))`
+    );
 
     this.#cssRules.pointer = getOrInsertCSSRule(this.shadowRoot, '#pointer');
     this.#cssRules.progress = getOrInsertCSSRule(this.shadowRoot, '#progress');
@@ -382,7 +405,8 @@ class MediaChromeRange extends globalThis.HTMLElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController =
+        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
 
@@ -411,10 +435,13 @@ class MediaChromeRange extends globalThis.HTMLElement {
     // This fixes a Chrome bug where it doesn't refresh the clip-path on content resize.
     const clipping = this.shadowRoot.querySelector('#segments-clipping');
     if (clipping) clipping.parentNode.append(clipping);
-  }
+  };
 
   updatePointerBar(evt) {
-    this.#cssRules.pointer?.style.setProperty('width', `${this.getPointerRatio(evt) * 100}%`);
+    this.#cssRules.pointer?.style.setProperty(
+      'width',
+      `${this.getPointerRatio(evt) * 100}%`
+    );
   }
 
   updateBar() {
@@ -431,13 +458,18 @@ class MediaChromeRange extends globalThis.HTMLElement {
 
     if (!segments?.length) return;
 
-    this.#cssRules.activeSegment = insertCSSRule(this.shadowRoot, '#segments-clipping rect:nth-child(0)');
+    this.#cssRules.activeSegment = insertCSSRule(
+      this.shadowRoot,
+      '#segments-clipping rect:nth-child(0)'
+    );
 
-    const normalized = [...new Set([
-      +this.range.min,
-      ...segments.flatMap(s => [s.start, s.end]),
-      +this.range.max
-    ])];
+    const normalized = [
+      ...new Set([
+        +this.range.min,
+        ...segments.flatMap((s) => [s.start, s.end]),
+        +this.range.max,
+      ]),
+    ];
 
     this.#segments = [...normalized];
 
@@ -446,10 +478,17 @@ class MediaChromeRange extends globalThis.HTMLElement {
       const [isFirst, isLast] = [i === 0, i === normalized.length - 1];
       const x = isFirst ? 'calc(var(--segments-gap) / -1)' : `${marker * 100}%`;
       const x2 = isLast ? lastMarker : normalized[i + 1];
-      const width = `calc(${(x2 - marker) * 100}%${isFirst || isLast ? '' : ` - var(--segments-gap)`})`;
+      const width = `calc(${(x2 - marker) * 100}%${isFirst || isLast ? '' : ` - var(--segments-gap)`
+        })`;
 
-      const segmentEl = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-      const cssRule = getOrInsertCSSRule(this.shadowRoot, `#segments-clipping rect:nth-child(${i + 1})`);
+      const segmentEl = document.createElementNS(
+        'http://www.w3.org/2000/svg',
+        'rect'
+      );
+      const cssRule = getOrInsertCSSRule(
+        this.shadowRoot,
+        `#segments-clipping rect:nth-child(${i + 1})`
+      );
       cssRule.style.setProperty('x', x);
       cssRule.style.setProperty('width', width);
       clipping.append(segmentEl);
@@ -466,7 +505,8 @@ class MediaChromeRange extends globalThis.HTMLElement {
       return end != null && pointerRatio >= start && pointerRatio <= end;
     });
 
-    const selectorText = `#segments-clipping rect:nth-child(${segmentIndex + 1})`;
+    const selectorText = `#segments-clipping rect:nth-child(${segmentIndex + 1
+      })`;
 
     if (rule.selectorText != selectorText || !rule.style.transform) {
       rule.selectorText = selectorText;
@@ -482,7 +522,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
       evt.clientX,
       evt.clientY,
       this.#startpoint.getBoundingClientRect(),
-      this.#endpoint.getBoundingClientRect(),
+      this.#endpoint.getBoundingClientRect()
     );
     return Math.max(0, Math.min(1, pointerRatio));
   }
@@ -560,17 +600,25 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   #handlePointerMove(evt) {
-    this.toggleAttribute('dragging', evt.buttons === 1 || evt.pointerType !== 'mouse');
+    this.toggleAttribute(
+      'dragging',
+      evt.buttons === 1 || evt.pointerType !== 'mouse'
+    );
     this.updatePointerBar(evt);
     this.#updateActiveSegment(evt);
 
     // If the native input target & events are used don't fire manual input events.
-    if (this.dragging && (evt.pointerType !== 'mouse' || !this.#isInputTarget)) {
+    if (
+      this.dragging &&
+      (evt.pointerType !== 'mouse' || !this.#isInputTarget)
+    ) {
       // Disable native input events if manual events are fired.
       this.range.disabled = true;
 
       this.range.valueAsNumber = this.getPointerRatio(evt);
-      this.range.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+      this.range.dispatchEvent(
+        new Event('input', { bubbles: true, composed: true })
+      );
     }
   }
 

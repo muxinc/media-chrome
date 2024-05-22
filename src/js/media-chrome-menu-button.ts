@@ -29,7 +29,9 @@ class MediaChromeMenuButton extends MediaChromeButton {
    */
   get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget) {
-      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.invokeTarget}`) as HTMLElement | null;
+      return getDocumentOrShadowRoot(this)?.querySelector(
+        `#${this.invokeTarget}`
+      ) as HTMLElement | null;
     }
     return null;
   }
@@ -42,7 +44,10 @@ class MediaChromeMenuButton extends MediaChromeButton {
 }
 
 if (!globalThis.customElements.get('media-chrome-menu-button')) {
-  globalThis.customElements.define('media-chrome-menu-button', MediaChromeMenuButton);
+  globalThis.customElements.define(
+    'media-chrome-menu-button',
+    MediaChromeMenuButton
+  );
 }
 
 export { MediaChromeMenuButton };

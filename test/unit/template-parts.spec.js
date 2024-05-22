@@ -1,7 +1,11 @@
 /* Adapted from https://github.com/dy/template-parts - ISC - Dmitry Iv. */
 
 import { assert } from '@open-wc/testing';
-import { TemplateInstance, AttrPart, AttrPartList } from '../../src/js/utils/template-parts.js';
+import {
+  TemplateInstance,
+  AttrPart,
+  AttrPartList,
+} from '../../src/js/utils/template-parts.js';
 
 const test = it;
 const is = assert.deepEqual;

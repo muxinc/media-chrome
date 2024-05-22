@@ -2,7 +2,7 @@ import { MediaChromeSelectMenu } from './media-chrome-selectmenu.js';
 import './media-audio-track-button.js';
 import './media-audio-track-listbox.js';
 import { MediaUIAttributes } from '../constants.js';
-import { globalThis, document, } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 
 /**
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the selected audio track id.
@@ -26,9 +26,14 @@ class MediaAudioTrackSelectMenu extends MediaChromeSelectMenu {
     audioTrackButton.part.add('button');
     audioTrackButton.preventClick = true;
 
-    const audioTrackListbox = document.createElement('media-audio-track-listbox');
+    const audioTrackListbox = document.createElement(
+      'media-audio-track-listbox'
+    );
     audioTrackListbox.part.add('listbox');
-    audioTrackListbox.setAttribute('exportparts', 'option, option-selected, indicator');
+    audioTrackListbox.setAttribute(
+      'exportparts',
+      'option, option-selected, indicator'
+    );
 
     const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
@@ -42,7 +47,10 @@ class MediaAudioTrackSelectMenu extends MediaChromeSelectMenu {
 }
 
 if (!globalThis.customElements.get('media-audio-track-selectmenu')) {
-  globalThis.customElements.define('media-audio-track-selectmenu', MediaAudioTrackSelectMenu);
+  globalThis.customElements.define(
+    'media-audio-track-selectmenu',
+    MediaAudioTrackSelectMenu
+  );
 }
 
 export { MediaAudioTrackSelectMenu };

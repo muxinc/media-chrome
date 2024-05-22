@@ -9,7 +9,7 @@ const getCallbacks = (element) => {
   let callbacks = callbacksMap.get(element);
   if (!callbacks) callbacksMap.set(element, (callbacks = new Set()));
   return callbacks;
-}
+};
 
 const observer = new globalThis.ResizeObserver((entries) => {
   for (let entry of entries) {

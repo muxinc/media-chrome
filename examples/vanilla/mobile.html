@@ -13,13 +13,17 @@
 
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: block;         /* expands the container if preload=none */
-        max-width: 320px;       /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        display: block;
+        /* expands the container if preload=none */
+        max-width: 320px;
+        /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;
+        /* set container aspect ratio if preload=none */
       }
 
       video {
-        width: 100%;      /* prevents video to expand beyond its container */
+        width: 100%;
+        /* prevents video to expand beyond its container */
       }
 
       .examples {
@@ -81,6 +85,7 @@
       }
     </style>
   </head>
+
   <body>
     <main>
       <h1>Media Chrome Standard Mobile Video Usage Example</h1>
@@ -119,7 +124,7 @@
           <media-playback-rate-button></media-playback-rate-button>
           <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>
-          <media-airplay-button></media-button-button>
+          <media-airplay-button></media-airplay-button>
         </media-control-bar>
       </media-controller>
       <div class="examples">

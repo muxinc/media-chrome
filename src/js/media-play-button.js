@@ -13,7 +13,7 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] {
     display: none !important;

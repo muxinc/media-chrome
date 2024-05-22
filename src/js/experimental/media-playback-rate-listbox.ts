@@ -1,4 +1,8 @@
-import { MediaChromeListbox, createOption, createIndicator } from './media-chrome-listbox.js';
+import {
+  MediaChromeListbox,
+  createOption,
+  createIndicator,
+} from './media-chrome-listbox.js';
 import './media-chrome-option.js';
 import { DEFAULT_RATES, DEFAULT_RATE } from '../media-playback-rate-button.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
@@ -24,7 +28,9 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
     ];
   }
 
-  #rates = new AttributeTokenList(this, Attributes.RATES, { defaultValue: DEFAULT_RATES });
+  #rates = new AttributeTokenList(this, Attributes.RATES, {
+    defaultValue: DEFAULT_RATES,
+  });
 
   constructor() {
     super();
@@ -32,14 +38,19 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
     this.#render();
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE && oldValue != newValue) {
+    if (
+      attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE &&
+      oldValue != newValue
+    ) {
       this.value = newValue;
-
     } else if (attrName === Attributes.RATES && oldValue != newValue) {
-
       this.#rates.value = newValue;
       this.#render();
     }
@@ -66,7 +77,11 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
    * @type {number} The current playback rate
    */
   get mediaPlaybackRate(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, DEFAULT_RATE);
+    return getNumericAttr(
+      this,
+      MediaUIAttributes.MEDIA_PLAYBACK_RATE,
+      DEFAULT_RATE
+    );
   }
 
   set mediaPlaybackRate(value: number) {
@@ -88,7 +103,6 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
     container.textContent = '';
 
     for (const rate of this.rates) {
-
       /** @type {HTMLOptionElement} */
       const option = createOption(
         this.formatOptionText(`${rate}x`, rate),
@@ -116,7 +130,10 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
 }
 
 if (!globalThis.customElements.get('media-playback-rate-listbox')) {
-  globalThis.customElements.define('media-playback-rate-listbox', MediaPlaybackRateListbox);
+  globalThis.customElements.define(
+    'media-playback-rate-listbox',
+    MediaPlaybackRateListbox
+  );
 }
 
 export { MediaPlaybackRateListbox };

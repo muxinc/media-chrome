@@ -1,7 +1,7 @@
 import {
+  AttrPart,
   InnerTemplatePart,
   TemplateInstance,
-  AttrPart,
 } from './template-parts.js';
 import { isNumericString } from './utils.js';
 
@@ -53,11 +53,12 @@ export const processor = {
     if (!state) return;
 
     for (const [expression, part] of parts) {
-
       if (part instanceof InnerTemplatePart) {
         if (!part.directive) {
           // Transform short-hand if/partial attributes to directive & expression.
-          const directive = DirectiveNames.find((n) => part.template.hasAttribute(n));
+          const directive = DirectiveNames.find((n) =>
+            part.template.hasAttribute(n)
+          );
           if (directive) {
             part.directive = directive;
             part.expression = part.template.getAttribute(directive);
@@ -71,15 +72,10 @@ export const processor = {
       let value = evaluateExpression(expression, state);
 
       if (value instanceof PartialTemplate) {
-
         if (templates.get(part) !== value.template) {
           templates.set(part, value.template);
 
-          value = new TemplateInstance(
-            value.template,
-            value.state,
-            processor
-          );
+          value = new TemplateInstance(value.template, value.state, processor);
           part.value = value;
           templateInstances.set(part, value);
         } else {
@@ -90,7 +86,6 @@ export const processor = {
       }
 
       if (value) {
-
         if (part instanceof AttrPart) {
           if (part.attributeName.startsWith('aria-')) {
             value = String(value);

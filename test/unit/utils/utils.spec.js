@@ -1,5 +1,10 @@
 import { assert } from '@open-wc/testing';
-import { isNumericString, isValidNumber, camelCase, constToCamel } from '../../../src/js/utils/utils.js';
+import {
+  isNumericString,
+  isValidNumber,
+  camelCase,
+  constToCamel,
+} from '../../../src/js/utils/utils.js';
 
 describe('isNumericString', () => {
   it('returns false on non strings', () => {
