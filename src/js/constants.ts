@@ -26,7 +26,7 @@ export const MediaUIEvents = {
   UNREGISTER_MEDIA_STATE_RECEIVER: 'unregistermediastatereceiver',
 } as const;
 
-export type MediaUIEvents = typeof MediaUIEvents[keyof typeof MediaUIEvents];
+export type MediaUIEvents = (typeof MediaUIEvents)[keyof typeof MediaUIEvents];
 
 export const MediaStateReceiverAttributes = {
   MEDIA_CHROME_ATTRIBUTES: 'mediachromeattributes',
@@ -34,7 +34,7 @@ export const MediaStateReceiverAttributes = {
 } as const;
 
 export type MediaStateReceiverAttributes =
-  typeof MediaStateReceiverAttributes[keyof typeof MediaStateReceiverAttributes];
+  (typeof MediaStateReceiverAttributes)[keyof typeof MediaStateReceiverAttributes];
 
 export const MediaUIProps = {
   MEDIA_AIRPLAY_UNAVAILABLE: 'mediaAirplayUnavailable',
@@ -77,7 +77,7 @@ export const MediaUIProps = {
 } as const;
 
 type MediaUIPropsKey = keyof typeof MediaUIProps;
-export type MediaUIProps = typeof MediaUIProps[MediaUIPropsKey];
+export type MediaUIProps = (typeof MediaUIProps)[MediaUIPropsKey];
 
 type Entry<T> = [keyof T, T[keyof T]];
 
@@ -98,16 +98,16 @@ export const MediaUIAttributes: Record<
 
 export const MediaStateChangeEvents =
   /** @type {{ [k in keyof MediaUIProps | 'USER_INACTIVE' | 'BREAKPOINTS_CHANGE' | 'BREAKPOINTS_COMPUTED']: string }} */ MediaUIPropsEntries.reduce(
-  (dictObj, [key, propName]) => {
-    dictObj[key] = `${(propName as string).toLowerCase()}`;
-    return dictObj;
-  },
+    (dictObj, [key, propName]) => {
+      dictObj[key] = `${(propName as string).toLowerCase()}`;
+      return dictObj;
+    },
     /** @type {Partial<{ [k in keyof MediaUIProps | 'USER_INACTIVE' | 'BREAKPOINTS_CHANGE' | 'BREAKPOINTS_COMPUTED']: string  }>} */ {
-    USER_INACTIVE: 'userinactivechange',
-    BREAKPOINTS_CHANGE: 'breakpointchange',
-    BREAKPOINTS_COMPUTED: 'breakpointscomputed',
-  }
-);
+      USER_INACTIVE: 'userinactivechange',
+      BREAKPOINTS_CHANGE: 'breakpointchange',
+      BREAKPOINTS_COMPUTED: 'breakpointscomputed',
+    }
+  );
 
 // Maps from state change event type -> attribute name
 export const StateChangeEventToAttributeMap = Object.entries(
@@ -146,7 +146,7 @@ export const TextTrackKinds = {
 } as const;
 
 export type TextTrackKinds =
-  typeof TextTrackKinds[keyof typeof TextTrackKinds];
+  (typeof TextTrackKinds)[keyof typeof TextTrackKinds];
 
 export const TextTrackModes = {
   DISABLED: 'disabled',
@@ -154,7 +154,8 @@ export const TextTrackModes = {
   SHOWING: 'showing',
 } as const;
 
-export type TextTrackModes = typeof TextTrackModes[keyof typeof TextTrackModes];
+export type TextTrackModes =
+  (typeof TextTrackModes)[keyof typeof TextTrackModes];
 
 export const ReadyStates = {
   HAVE_NOTHING: 0,
@@ -164,7 +165,7 @@ export const ReadyStates = {
   HAVE_ENOUGH_DATA: 4,
 } as const;
 
-export type ReadyStates = typeof ReadyStates[keyof typeof ReadyStates];
+export type ReadyStates = (typeof ReadyStates)[keyof typeof ReadyStates];
 
 export const PointerTypes = {
   MOUSE: 'mouse',
@@ -172,7 +173,7 @@ export const PointerTypes = {
   TOUCH: 'touch',
 } as const;
 
-export type PointerTypes = typeof PointerTypes[keyof typeof PointerTypes];
+export type PointerTypes = (typeof PointerTypes)[keyof typeof PointerTypes];
 
 export const AvailabilityStates = {
   UNAVAILABLE: 'unavailable',
@@ -180,7 +181,7 @@ export const AvailabilityStates = {
 } as const;
 
 export type AvailabilityStates =
-  typeof AvailabilityStates[keyof typeof AvailabilityStates];
+  (typeof AvailabilityStates)[keyof typeof AvailabilityStates];
 
 export const StreamTypes = {
   LIVE: 'live',
@@ -188,7 +189,7 @@ export const StreamTypes = {
   UNKNOWN: 'unknown',
 } as const;
 
-export type StreamTypes = typeof StreamTypes[keyof typeof StreamTypes];
+export type StreamTypes = (typeof StreamTypes)[keyof typeof StreamTypes];
 
 export const VolumeLevels = {
   HIGH: 'high',
@@ -197,7 +198,7 @@ export const VolumeLevels = {
   OFF: 'off',
 } as const;
 
-export type VolumeLevels = typeof VolumeLevels[keyof typeof VolumeLevels];
+export type VolumeLevels = (typeof VolumeLevels)[keyof typeof VolumeLevels];
 
 export const WebkitPresentationModes = {
   INLINE: 'inline',
@@ -206,4 +207,4 @@ export const WebkitPresentationModes = {
 } as const;
 
 export type WebkitPresentationModes =
-  typeof WebkitPresentationModes[keyof typeof WebkitPresentationModes];
+  (typeof WebkitPresentationModes)[keyof typeof WebkitPresentationModes];

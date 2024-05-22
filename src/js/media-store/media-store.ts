@@ -16,7 +16,10 @@
  * @module media-store
  */
 
-import { requestMap as defaultRequestMap, type RequestMap } from './request-map.js';
+import {
+  requestMap as defaultRequestMap,
+  type RequestMap,
+} from './request-map.js';
 import {
   stateMediator as defaultStateMediator,
   prepareStateOwners,
@@ -195,7 +198,7 @@ const createMediaStore = ({
   let nextStateOwners = undefined;
   const updateStateOwners = async (
     nextStateOwnersDelta: any,
-    nextSubscriberCount?: number,
+    nextSubscriberCount?: number
   ) => {
     const pendingUpdate = !!nextStateOwners;
     nextStateOwners = {

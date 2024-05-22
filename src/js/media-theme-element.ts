@@ -173,7 +173,11 @@ export class MediaThemeElement extends CustomElement {
     return props;
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string,
+    newValue: string | null
+  ): void {
     if (attrName === 'template' && oldValue != newValue) {
       this.#updateTemplate();
     }

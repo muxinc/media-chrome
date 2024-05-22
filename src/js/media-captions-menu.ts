@@ -192,7 +192,10 @@ class MediaCaptionsMenu extends MediaChromeMenu {
  * @param attrName
  * @returns An array of TextTrack-like objects.
  */
-const getSubtitlesListAttr = (el: HTMLElement, attrName: string): TextTrackLike[] => {
+const getSubtitlesListAttr = (
+  el: HTMLElement,
+  attrName: string
+): TextTrackLike[] => {
   const attrVal = el.getAttribute(attrName);
   return attrVal ? parseTextTracksStr(attrVal) : [];
 };
@@ -206,7 +209,7 @@ const getSubtitlesListAttr = (el: HTMLElement, attrName: string): TextTrackLike[
 const setSubtitlesListAttr = (
   el: HTMLElement,
   attrName: string,
-  list: TextTrackLike[],
+  list: TextTrackLike[]
 ): void => {
   // null, undefined, and empty arrays are treated as "no value" here
   if (!list?.length) {

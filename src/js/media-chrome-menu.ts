@@ -322,7 +322,9 @@ class MediaChromeMenu extends CustomElement {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       this.attachShadow({ mode: 'open' });
 
-      this.nativeEl = (this.constructor as typeof MediaChromeMenu).template.content.cloneNode(true) as HTMLElement;
+      this.nativeEl = (
+        this.constructor as typeof MediaChromeMenu
+      ).template.content.cloneNode(true) as HTMLElement;
       this.shadowRoot.append(this.nativeEl);
     }
 
@@ -413,7 +415,7 @@ class MediaChromeMenu extends CustomElement {
   attributeChangedCallback(
     attrName: string,
     oldValue: string | null,
-    newValue: string | null,
+    newValue: string | null
   ): void {
     if (attrName === Attributes.HIDDEN && newValue !== oldValue) {
       if (!this.#isPopover) this.#isPopover = true;
@@ -516,7 +518,9 @@ class MediaChromeMenu extends CustomElement {
     }
 
     if (['header', 'title'].includes(slot.name)) {
-      const header: HTMLElement = this.shadowRoot.querySelector('slot[name="header"]');
+      const header: HTMLElement = this.shadowRoot.querySelector(
+        'slot[name="header"]'
+      );
       header.hidden = slot.assignedNodes().length === 0;
     }
 

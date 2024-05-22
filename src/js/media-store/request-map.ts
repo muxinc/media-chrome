@@ -16,10 +16,10 @@ import { getSubtitleTracks, toggleSubtitleTracks } from './util.js';
 
 export type MediaRequestTypes = Exclude<
   MediaUIEvents,
-  'registermediastatereceiver' |
-  'unregistermediastatereceiver' |
-  'mediashowtexttracksrequest' |
-  'mediahidetexttracksrequest'
+  | 'registermediastatereceiver'
+  | 'unregistermediastatereceiver'
+  | 'mediashowtexttracksrequest'
+  | 'mediahidetexttracksrequest'
 >;
 
 /** @TODO Make this definition more precise (CJP) */
@@ -77,15 +77,16 @@ export const requestMap = {
 
       if (cue) {
         const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
-          ? /** @type {HTMLTrackElement | null} */ (
-            media?.querySelector('track[label="thumbnails"]')
-          )?.src
+          ? /** @type {HTMLTrackElement | null} */ media?.querySelector(
+              'track[label="thumbnails"]'
+            )?.src
           : undefined;
         const url = new URL(cue.text, base);
         const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
-        mediaPreviewCoords = /** @type {[number, number, number, number]} */ (
-          previewCoordsStr.split(',').map((numStr) => +numStr)
-        );
+        mediaPreviewCoords =
+          /** @type {[number, number, number, number]} */ previewCoordsStr
+            .split(',')
+            .map((numStr) => +numStr);
         mediaPreviewImage = url.href;
       }
     }

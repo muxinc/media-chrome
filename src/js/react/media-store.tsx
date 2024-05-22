@@ -7,7 +7,10 @@ import {
   StreamTypes,
   VolumeLevels,
 } from '../constants';
-import createMediaStore, { type MediaState, type MediaStore } from '../media-store/media-store';
+import createMediaStore, {
+  type MediaState,
+  type MediaStore,
+} from '../media-store/media-store';
 import type {
   FullScreenElementStateOwner,
   MediaStateOwner,

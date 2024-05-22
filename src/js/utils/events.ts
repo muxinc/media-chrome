@@ -1,7 +1,7 @@
 export type InvokeEventInit = EventInit & {
-  action?: string,
-  relatedTarget: Element,
-}
+  action?: string;
+  relatedTarget: Element;
+};
 
 /**
  * Dispatch an InvokeEvent on the target element to perform an action.
@@ -12,7 +12,7 @@ export class InvokeEvent extends Event {
   action: string;
   relatedTarget: Element;
 
-  /** 
+  /**
    * @param init - The event options.
    */
   constructor({ action = 'auto', relatedTarget, ...options }: InvokeEventInit) {
@@ -24,9 +24,9 @@ export class InvokeEvent extends Event {
 
 export type ToggleState = 'open' | 'closed';
 export type ToggleEventInit = EventInit & {
-  newState: ToggleState,
-  oldState: ToggleState,
-}
+  newState: ToggleState;
+  oldState: ToggleState;
+};
 
 /**
  * Similar to the popover toggle event.

@@ -32,7 +32,7 @@ template.innerHTML = /*html*/ `
       Only show outline when keyboard focusing.
       https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
     */ ''
-  }
+    }
     :host(:focus-visible) {
       box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
       outline: 0;
@@ -42,7 +42,7 @@ template.innerHTML = /*html*/ `
       /*
        * hide default focus ring, particularly when using mouse
        */ ''
-  }
+    }
     :host(:where(:focus)) {
       box-shadow: none;
       outline: 0;
@@ -88,7 +88,11 @@ class MediaTextDisplay extends CustomElement {
     }
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -114,8 +118,9 @@ class MediaTextDisplay extends CustomElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController =
-        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
+      this.#mediaController = (this.getRootNode() as Document)?.getElementById(
+        mediaControllerId
+      );
       this.#mediaController?.associateElement?.(this);
     }
   }

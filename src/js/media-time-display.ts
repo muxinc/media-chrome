@@ -30,7 +30,10 @@ const ButtonPressedKeys = ['Enter', ' '];
 
 const DEFAULT_TIMES_SEP = '&nbsp;/&nbsp;';
 
-const formatTimesLabel = (el: MediaTimeDisplay, { timesSep = DEFAULT_TIMES_SEP } = {}): string => {
+const formatTimesLabel = (
+  el: MediaTimeDisplay,
+  { timesSep = DEFAULT_TIMES_SEP } = {}
+): string => {
   const showRemaining = el.hasAttribute(Attributes.REMAINING);
   const showDuration = el.hasAttribute(Attributes.SHOW_DURATION);
   const currentTime = el.mediaCurrentTime ?? 0;
@@ -165,7 +168,11 @@ class MediaTimeDisplay extends MediaTextDisplay {
     super.disconnectedCallback();
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (CombinedAttributes.includes(attrName)) {
       this.update();
     } else if (attrName === 'disabled' && newValue !== oldValue) {
@@ -247,7 +254,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   /**
-   * Range of values that can be seeked to. 
+   * Range of values that can be seeked to.
    * An array of two numbers [start, end]
    */
   get mediaSeekable(): [number, number] {

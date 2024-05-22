@@ -27,7 +27,11 @@
       }
 
       /* reconsider when :has() is fully browser supported */
-      media-settings-menu-item[aria-haspopup]:is(:not([submenusize]), [submenusize='0'], [submenusize='1']) {
+      media-settings-menu-item[aria-haspopup]:is(
+          :not([submenusize]),
+          [submenusize='0'],
+          [submenusize='1']
+        ) {
         display: none;
       }
 

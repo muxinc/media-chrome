@@ -22,7 +22,7 @@ template.innerHTML = /*html*/ `
       align-items: center;
       ${
         /* Don't horizontal align w/ justify-content! #container can go negative on the x-axis w/ small width. */ ''
-  }
+      }
       vertical-align: middle;
       box-sizing: border-box;
       position: relative;
@@ -66,7 +66,7 @@ template.innerHTML = /*html*/ `
     #container {
       ${
         /* Not using the CSS `padding` prop makes it easier for slide open volume ranges so the width can be zero. */ ''
-  }
+      }
       width: var(--media-range-track-width, 100%);
       transform: translate(var(--media-range-track-translate-x, 0px), var(--media-range-track-translate-y, 0px));
       position: relative;
@@ -87,7 +87,7 @@ template.innerHTML = /*html*/ `
 
       -webkit-appearance: none; ${
         /* Hides the slider so that custom slider can be made */ ''
-  }
+      }
       -webkit-tap-highlight-color: transparent;
       background: transparent; ${/* Otherwise white in Chrome */ ''}
       margin: 0;
@@ -104,7 +104,7 @@ template.innerHTML = /*html*/ `
     ${/* Special styling for WebKit/Blink */ ''}
     ${
       /* Make thumb width/height small so it has no effect on range click position. */ ''
-  }
+    }
     #range::-webkit-slider-thumb {
       -webkit-appearance: none;
       background: transparent;
@@ -364,7 +364,11 @@ class MediaChromeRange extends CustomElement {
     style.removeProperty('--_focus-visible-box-shadow');
   };
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -405,8 +409,9 @@ class MediaChromeRange extends CustomElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController =
-        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
+      this.#mediaController = (this.getRootNode() as Document)?.getElementById(
+        mediaControllerId
+      );
       this.#mediaController?.associateElement?.(this);
     }
 
@@ -478,8 +483,9 @@ class MediaChromeRange extends CustomElement {
       const [isFirst, isLast] = [i === 0, i === normalized.length - 1];
       const x = isFirst ? 'calc(var(--segments-gap) / -1)' : `${marker * 100}%`;
       const x2 = isLast ? lastMarker : normalized[i + 1];
-      const width = `calc(${(x2 - marker) * 100}%${isFirst || isLast ? '' : ` - var(--segments-gap)`
-        })`;
+      const width = `calc(${(x2 - marker) * 100}%${
+        isFirst || isLast ? '' : ` - var(--segments-gap)`
+      })`;
 
       const segmentEl = document.createElementNS(
         'http://www.w3.org/2000/svg',
@@ -505,8 +511,9 @@ class MediaChromeRange extends CustomElement {
       return end != null && pointerRatio >= start && pointerRatio <= end;
     });
 
-    const selectorText = `#segments-clipping rect:nth-child(${segmentIndex + 1
-      })`;
+    const selectorText = `#segments-clipping rect:nth-child(${
+      segmentIndex + 1
+    })`;
 
     if (rule.selectorText != selectorText || !rule.style.transform) {
       rule.selectorText = selectorText;

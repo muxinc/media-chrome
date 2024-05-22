@@ -64,7 +64,7 @@ export const parseTextTracksStr = (
   });
 };
 
-export type TrackOrTracks = string[] | TextTrackLike[] | string | TextTrackLike
+export type TrackOrTracks = string[] | TextTrackLike[] | string | TextTrackLike;
 export type TextTrackListLike = TextTrackLike[] | TextTrackList;
 
 /**
@@ -113,7 +113,9 @@ export const formatTextTrackObj = (
  * @param textTracks - A TextTracks object or an Array of TextTracks or TextTrack-like objects.
  * @returns A string representing a set of TextTracks, separated by whitespace.
  */
-export const stringifyTextTrackList = (textTracks: TextTrackListLike = []): string => {
+export const stringifyTextTrackList = (
+  textTracks: TextTrackListLike = []
+): string => {
   return Array.prototype.map.call(textTracks, formatTextTrackObj).join(' ');
 };
 
@@ -131,7 +133,10 @@ export const stringifyTextTrackList = (textTracks: TextTrackListLike = []): stri
  * hasShowingMode({ no_mode: 'any' }); // false
  * ```
  */
-export const isMatchingPropOf = (key: string | number, value: any): (value: any) => boolean => (obj) => obj[key] === value;
+export const isMatchingPropOf =
+  (key: string | number, value: any): ((value: any) => boolean) =>
+  (obj) =>
+    obj[key] === value;
 
 // NOTE: This is a generic higher order fn. Consider renaming and moving to generic module.
 /**
@@ -155,7 +160,9 @@ export const isMatchingPropOf = (key: string | number, value: any): (value: any)
  * isMatchingTrack({ no_corresponding_props: 'any' }); // false
  * ```
  */
-export const textTrackObjAsPred = (filterObj: any): (textTrack: TextTrackLike) => boolean => {
+export const textTrackObjAsPred = (
+  filterObj: any
+): ((textTrack: TextTrackLike) => boolean) => {
   const preds = Object.entries(filterObj).map(([key, value]) => {
     // Translate each key/value pair into a single predicate
     return isMatchingPropOf(key, value);
@@ -173,7 +180,11 @@ export const textTrackObjAsPred = (filterObj: any): (textTrack: TextTrackLike) =
  * @param tracks - A TextTracks object or array of TextTracks that should contain any matching TextTracks to update
  * @param tracksToUpdate - A value representing a set of TextTracks
  */
-export const updateTracksModeTo = (mode: TextTrackMode, tracks: TextTrackListLike = [], tracksToUpdate: TrackOrTracks = []) => {
+export const updateTracksModeTo = (
+  mode: TextTrackMode,
+  tracks: TextTrackListLike = [],
+  tracksToUpdate: TrackOrTracks = []
+) => {
   // 1. Normalize the tracksToUpdate into an array of "partial TextTrack-like" objects
   // 2. Convert each object into its own predicate function to identify that an actual TextTrack is a match
   const preds = parseTracks(tracksToUpdate).map(textTrackObjAsPred);
@@ -227,7 +238,10 @@ export type TrackFilter = (track: TextTrackLike) => boolean;
  * // [{ label: 'Spanish', kind: 'subtitles', language: 'es' }, { label: 'English', kind: 'subtitles', language: 'en' }, { label: 'English', kind: 'captions', language: 'en' }]
  * ```
  */
-export const getTextTracksList = (media: HTMLVideoElement, filterPredOrObj: TrackFilter | TextTrackLike = (track: TextTrackLike) => true): TextTrackLike[] => {
+export const getTextTracksList = (
+  media: HTMLVideoElement,
+  filterPredOrObj: TrackFilter | TextTrackLike = (track: TextTrackLike) => true
+): TextTrackLike[] => {
   if (!media?.textTracks) return [];
 
   const filterPred =
@@ -244,7 +258,9 @@ export const getTextTracksList = (media: HTMLVideoElement, filterPredOrObj: Trac
  * @param el - An HTMLElement that has caption related attributes on it.
  * @returns Whether captions are enabled or not
  */
-export const areSubsOn = (el: HTMLElement & { mediaSubtitlesShowing?: any[] }): boolean => {
+export const areSubsOn = (
+  el: HTMLElement & { mediaSubtitlesShowing?: any[] }
+): boolean => {
   const showingSubtitles =
     !!el.mediaSubtitlesShowing?.length ||
     el.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);

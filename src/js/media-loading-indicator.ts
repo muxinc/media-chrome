@@ -56,10 +56,12 @@ template.innerHTML = /*html*/ `
   transition: opacity 0.15s;
 }
 
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED
-  }])) slot[name=icon] > *,
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED
-  }])) ::slotted([slot=icon]) {
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${
+  MediaUIAttributes.MEDIA_PAUSED
+}])) slot[name=icon] > *,
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${
+  MediaUIAttributes.MEDIA_PAUSED
+}])) ::slotted([slot=icon]) {
   opacity: var(--media-loading-indicator-opacity, 1);
   transition: opacity 0.15s var(--_loading-indicator-delay);
 }
@@ -69,8 +71,9 @@ template.innerHTML = /*html*/ `
   transition: visibility 0.15s;
 }
 
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED
-  }])) #status {
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${
+  MediaUIAttributes.MEDIA_PAUSED
+}])) #status {
   visibility: var(--media-loading-indicator-opacity, visible);
   transition: visibility 0.15s var(--_loading-indicator-delay);
 }
@@ -130,7 +133,11 @@ class MediaLoadingIndicator extends CustomElement {
     }
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === Attributes.LOADING_DELAY && oldValue !== newValue) {
       this.loadingDelay = Number(newValue);
     } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
@@ -152,8 +159,9 @@ class MediaLoadingIndicator extends CustomElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController =
-        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
+      this.#mediaController = (this.getRootNode() as Document)?.getElementById(
+        mediaControllerId
+      );
       this.#mediaController?.associateElement?.(this);
     }
   }
