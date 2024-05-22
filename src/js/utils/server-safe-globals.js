@@ -28,9 +28,11 @@ const documentShim = {
    * @param {Event} event
    * @returns {boolean}
    */
-  dispatchEvent(event) {
+  dispatchEvent(
+    event // eslint-disable-line
+  ) {
     return false;
-  }, // eslint-disable-line
+  },
 };
 
 const globalThisShim = {
@@ -49,9 +51,11 @@ const globalThisShim = {
      * @param {string} key
      * @returns {string|null}
      */
-    getItem(key) {
+    getItem(
+      key // eslint-disable-line
+    ) {
       return null;
-    }, // eslint-disable-line
+    },
     /**
      * @param {string} key
      * @param {string} value
