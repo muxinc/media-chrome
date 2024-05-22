@@ -99,7 +99,9 @@ class MediaChromeDialog extends CustomElement {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       this.attachShadow({ mode: 'open' });
 
-      this.nativeEl = (this.constructor as typeof MediaChromeDialog).template.content.cloneNode(true) as HTMLElement;
+      this.nativeEl = (
+        this.constructor as typeof MediaChromeDialog
+      ).template.content.cloneNode(true) as HTMLElement;
       this.shadowRoot.append(this.nativeEl);
     }
 

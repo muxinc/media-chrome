@@ -25,4 +25,4 @@ export type TextTrackLike = {
    * The cue list for the track.
    */
   cues?: TextTrackCueList;
-}
+};

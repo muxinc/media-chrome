@@ -79,7 +79,11 @@ class MediaPreviewThumbnail extends CustomElement {
     this.#mediaController = null;
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (
       [
         MediaUIAttributes.MEDIA_PREVIEW_IMAGE,

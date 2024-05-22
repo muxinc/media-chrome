@@ -216,8 +216,9 @@ class MediaChromeButton extends CustomElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController =
-        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
+      this.#mediaController = (this.getRootNode() as Document)?.getElementById(
+        mediaControllerId
+      );
       this.#mediaController?.associateElement?.(this);
     }
   }
@@ -237,7 +238,7 @@ class MediaChromeButton extends CustomElement {
    * @abstract
    * @argument {Event} e
    */
-  handleClick(e: Event): void { } // eslint-disable-line
+  handleClick(e: Event): void {} // eslint-disable-line
 }
 
 if (!globalThis.customElements.get('media-chrome-button')) {

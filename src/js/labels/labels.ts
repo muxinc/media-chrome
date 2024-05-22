@@ -1,4 +1,4 @@
-export type LabelOptions = { seekOffset?: number; playbackRate?: number; };
+export type LabelOptions = { seekOffset?: number; playbackRate?: number };
 
 export const nouns: Record<string, (options?: LabelOptions) => string> = {
   AUDIO_PLAYER: () => 'audio player',

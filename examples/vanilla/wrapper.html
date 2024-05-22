@@ -39,7 +39,12 @@
         color: #ffffff;
       }
 
-      #wrapper:is(:fullscreen, :-webkit-full-screen, :-moz-full-screen, :-ms-fullscreen) {
+      #wrapper:is(
+          :fullscreen,
+          :-webkit-full-screen,
+          :-moz-full-screen,
+          :-ms-fullscreen
+        ) {
         --fullscreen-overlay-display: initial;
       }
 

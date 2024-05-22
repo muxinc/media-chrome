@@ -5,7 +5,9 @@ import type MediaController from '../media-controller.js';
  * Get the media controller element from the `mediacontroller` attribute or closest ancestor.
  * @param host - The element to search for the media controller.
  */
-export function getMediaController(host: HTMLElement): MediaController | undefined {
+export function getMediaController(
+  host: HTMLElement
+): MediaController | undefined {
   return (
     getAttributeMediaController(host) ??
     closestComposedNode(host, 'media-controller')
@@ -17,18 +19,24 @@ export function getMediaController(host: HTMLElement): MediaController | undefin
  * @param host - The element to search for the media controller.
  * @return
  */
-export function getAttributeMediaController(host: HTMLElement): MediaController | undefined {
+export function getAttributeMediaController(
+  host: HTMLElement
+): MediaController | undefined {
   const { MEDIA_CONTROLLER } = MediaStateReceiverAttributes;
   const mediaControllerId = host.getAttribute(MEDIA_CONTROLLER);
 
   if (mediaControllerId) {
-    return (
-      getDocumentOrShadowRoot(host)?.getElementById(mediaControllerId) as MediaController
-    );
+    return getDocumentOrShadowRoot(host)?.getElementById(
+      mediaControllerId
+    ) as MediaController;
   }
 }
 
-export const updateIconText = (svg: HTMLElement, value: string, selector: string = '.value'): void => {
+export const updateIconText = (
+  svg: HTMLElement,
+  value: string,
+  selector: string = '.value'
+): void => {
   const node = svg.querySelector(selector);
 
   if (!node) return;
@@ -36,14 +44,18 @@ export const updateIconText = (svg: HTMLElement, value: string, selector: string
   node.textContent = value;
 };
 
-export const getAllSlotted = (el: HTMLElement, name: string): HTMLCollection | HTMLElement[] => {
+export const getAllSlotted = (
+  el: HTMLElement,
+  name: string
+): HTMLCollection | HTMLElement[] => {
   const slotSelector = `slot[name="${name}"]`;
   const slot: HTMLSlotElement = el.shadowRoot.querySelector(slotSelector);
   if (!slot) return [];
   return slot.children;
 };
 
-export const getSlotted = (el: HTMLElement, name: string): HTMLElement => getAllSlotted(el, name)[0] as HTMLElement;
+export const getSlotted = (el: HTMLElement, name: string): HTMLElement =>
+  getAllSlotted(el, name)[0] as HTMLElement;
 
 /**
  *
@@ -51,7 +63,10 @@ export const getSlotted = (el: HTMLElement, name: string): HTMLElement => getAll
  * @param {Node} [childNode]
  * @returns boolean
  */
-export const containsComposedNode = (rootNode: Node, childNode: Node): boolean => {
+export const containsComposedNode = (
+  rootNode: Node,
+  childNode: Node
+): boolean => {
   if (!rootNode || !childNode) return false;
   if (rootNode?.contains(childNode)) return true;
   return containsComposedNode(
@@ -60,21 +75,29 @@ export const containsComposedNode = (rootNode: Node, childNode: Node): boolean =
   );
 };
 
-export const closestComposedNode = <T extends Element = Element>(childNode: Element, selector: string): T => {
+export const closestComposedNode = <T extends Element = Element>(
+  childNode: Element,
+  selector: string
+): T => {
   if (!childNode) return null;
   const closest = childNode.closest(selector);
   if (closest) return closest as T;
-  return closestComposedNode((childNode.getRootNode() as ShadowRoot).host, selector);
+  return closestComposedNode(
+    (childNode.getRootNode() as ShadowRoot).host,
+    selector
+  );
 };
 
 /**
  * Get the active element, accounting for Shadow DOM subtrees.
  * @param root - The root node to search for the active element.
  */
-export function getActiveElement(root: Document | ShadowRoot = document): HTMLElement {
+export function getActiveElement(
+  root: Document | ShadowRoot = document
+): HTMLElement {
   const activeEl = root?.activeElement;
   if (!activeEl) return null;
-  return getActiveElement(activeEl.shadowRoot) ?? activeEl as HTMLElement;
+  return getActiveElement(activeEl.shadowRoot) ?? (activeEl as HTMLElement);
 }
 
 /**
@@ -82,7 +105,9 @@ export function getActiveElement(root: Document | ShadowRoot = document): HTMLEl
  * https://developer.mozilla.org/en-US/docs/Web/API/Node/getRootNode#return_value
  * @param node - The node to get the root node from.
  */
-export function getDocumentOrShadowRoot(node: Node): Document | ShadowRoot | null {
+export function getDocumentOrShadowRoot(
+  node: Node
+): Document | ShadowRoot | null {
   const rootNode = node?.getRootNode?.();
   if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
     return rootNode;
@@ -94,7 +119,10 @@ export function getDocumentOrShadowRoot(node: Node): Document | ShadowRoot | nul
  * Checks if the element is visible includes opacity: 0 and visibility: hidden.
  * @param element - The element to check for visibility.
  */
-export function isElementVisible(element: HTMLElement, depth: number = 3): boolean {
+export function isElementVisible(
+  element: HTMLElement,
+  depth: number = 3
+): boolean {
   // Supported by Chrome and Firefox https://caniuse.com/mdn-api_element_checkvisibility
   // https://drafts.csswg.org/cssom-view-1/#dom-element-checkvisibility
   // @ts-ignore
@@ -131,7 +159,12 @@ export type Point = { x: number; y: number };
  * @param p1 - The first point of the line segment.
  * @param p2 - The second point of the line segment.
  */
-export function getPointProgressOnLine(x: number, y: number, p1: Point, p2: Point): number {
+export function getPointProgressOnLine(
+  x: number,
+  y: number,
+  p1: Point,
+  p2: Point
+): number {
   const segment = distance(p1, p2);
   const toStart = distance(p1, { x, y });
   const toEnd = distance(p2, { x, y });
@@ -162,7 +195,10 @@ export function distance(p1: Point, p2: Point) {
  *   selectorText: string,
  * }}
  */
-export function getOrInsertCSSRule(styleParent: Element | ShadowRoot, selectorText: string): CSSStyleRule {
+export function getOrInsertCSSRule(
+  styleParent: Element | ShadowRoot,
+  selectorText: string
+): CSSStyleRule {
   const cssRule = getCSSRule(styleParent, (st) => st === selectorText);
   if (cssRule) return cssRule;
   return insertCSSRule(styleParent, selectorText);
@@ -173,7 +209,10 @@ export function getOrInsertCSSRule(styleParent: Element | ShadowRoot, selectorTe
  * @param  styleParent - The parent element containing <style> tags.
  * @param  predicate - A function that returns true for the desired CSSStyleRule.
  */
-export function getCSSRule(styleParent: Element | ShadowRoot, predicate: (selectorText: string) => boolean): CSSStyleRule | undefined {
+export function getCSSRule(
+  styleParent: Element | ShadowRoot,
+  predicate: (selectorText: string) => boolean
+): CSSStyleRule | undefined {
   let style;
 
   for (style of styleParent.querySelectorAll('style')) {
@@ -197,7 +236,10 @@ export function getCSSRule(styleParent: Element | ShadowRoot, predicate: (select
  * @param styleParent - The parent element containing <style> tags.
  * @param selectorText - The selector text of the CSS rule.
  */
-export function insertCSSRule(styleParent: Element | ShadowRoot, selectorText: string): CSSStyleRule | undefined {
+export function insertCSSRule(
+  styleParent: Element | ShadowRoot,
+  selectorText: string
+): CSSStyleRule | undefined {
   const styles = styleParent.querySelectorAll('style') ?? [];
   const style = styles?.[styles.length - 1];
 
@@ -213,7 +255,7 @@ export function insertCSSRule(styleParent: Element | ShadowRoot, selectorText: s
     return {
       // @ts-ignore
       style: {
-        setProperty: () => { },
+        setProperty: () => {},
         removeProperty: () => '',
         getPropertyValue: () => '',
       },
@@ -221,9 +263,9 @@ export function insertCSSRule(styleParent: Element | ShadowRoot, selectorText: s
   }
 
   style?.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
-  return /** @type {CSSStyleRule} */ (
-    style.sheet.cssRules?.[style.sheet.cssRules.length - 1]
-  );
+  return /** @type {CSSStyleRule} */ style.sheet.cssRules?.[
+    style.sheet.cssRules.length - 1
+  ];
 }
 
 /**
@@ -233,7 +275,11 @@ export function insertCSSRule(styleParent: Element | ShadowRoot, selectorText: s
  * @param defaultValue - The default value to return if the attribute is not set
  * @returns Will return undefined if no attribute set
  */
-export function getNumericAttr(el: HTMLElement, attrName: string, defaultValue: number = Number.NaN): number | undefined {
+export function getNumericAttr(
+  el: HTMLElement,
+  attrName: string,
+  defaultValue: number = Number.NaN
+): number | undefined {
   const attrVal = el.getAttribute(attrName);
   return attrVal != null ? +attrVal : defaultValue;
 }
@@ -243,7 +289,11 @@ export function getNumericAttr(el: HTMLElement, attrName: string, defaultValue: 
  * @param attrName - The name of the attribute to set
  * @param value - The value to set
  */
-export function setNumericAttr(el: HTMLElement, attrName: string, value: number): void {
+export function setNumericAttr(
+  el: HTMLElement,
+  attrName: string,
+  value: number
+): void {
   // Simple cast to number
   const nextNumericValue = +value;
 
@@ -274,7 +324,11 @@ export function getBooleanAttr(el: HTMLElement, attrName: string): boolean {
  * @param attrName - The name of the attribute to set
  * @param value - The value to set
  */
-export function setBooleanAttr(el: HTMLElement, attrName: string, value: boolean): void {
+export function setBooleanAttr(
+  el: HTMLElement,
+  attrName: string,
+  value: boolean
+): void {
   // also handles undefined
   if (value == null) {
     if (el.hasAttribute(attrName)) {
@@ -295,7 +349,11 @@ export function setBooleanAttr(el: HTMLElement, attrName: string, value: boolean
  * @param attrName - The name of the attribute to get
  * @param defaultValue - The default value to return if the attribute is not set
  */
-export function getStringAttr(el: HTMLElement, attrName: string, defaultValue: any = null) {
+export function getStringAttr(
+  el: HTMLElement,
+  attrName: string,
+  defaultValue: any = null
+) {
   return el.getAttribute(attrName) ?? defaultValue;
 }
 
@@ -304,7 +362,11 @@ export function getStringAttr(el: HTMLElement, attrName: string, defaultValue: a
  * @param attrName - The name of the attribute to get
  * @param value - The value to set
  */
-export function setStringAttr(el: HTMLElement, attrName: string, value: string) {
+export function setStringAttr(
+  el: HTMLElement,
+  attrName: string,
+  value: string
+) {
   // also handles undefined
   if (value == null) {
     if (el.hasAttribute(attrName)) {

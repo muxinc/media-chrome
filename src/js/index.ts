@@ -65,9 +65,12 @@ export {
   MediaLiveButton,
   MediaLoadingIndicator,
   MediaMuteButton,
-  MediaPipButton, MediaPlayButton, MediaPlaybackRateButton,
+  MediaPipButton,
+  MediaPlayButton,
+  MediaPlaybackRateButton,
   MediaPlaybackRateMenu,
-  MediaPlaybackRateMenuButton, MediaPosterImage,
+  MediaPlaybackRateMenuButton,
+  MediaPosterImage,
   MediaPreviewChapterDisplay,
   MediaPreviewThumbnail,
   MediaPreviewTimeDisplay,
@@ -80,6 +83,5 @@ export {
   MediaSettingsMenuItem,
   MediaTimeDisplay,
   MediaTimeRange,
-  MediaVolumeRange
+  MediaVolumeRange,
 };
-

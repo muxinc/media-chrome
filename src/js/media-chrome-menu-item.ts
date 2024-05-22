@@ -99,7 +99,7 @@ template.innerHTML = /*html*/ `
 
     ${
       /* Only for indicator icons like checked-indicator or captions-indicator. */ ''
-  }
+    }
     [part~="indicator"],
     ::slotted([part~="indicator"]) {
       fill: var(--media-menu-item-indicator-fill,
@@ -285,8 +285,12 @@ class MediaChromeMenuItem extends CustomElement {
    */
   get submenuElement(): MediaChromeMenu | null {
     /** @type {HTMLSlotElement} */
-    const submenuSlot: HTMLSlotElement = this.shadowRoot.querySelector('slot[name="submenu"]');
-    return submenuSlot.assignedElements({ flatten: true })[0] as MediaChromeMenu;
+    const submenuSlot: HTMLSlotElement = this.shadowRoot.querySelector(
+      'slot[name="submenu"]'
+    );
+    return submenuSlot.assignedElements({
+      flatten: true,
+    })[0] as MediaChromeMenu;
   }
 
   get type() {

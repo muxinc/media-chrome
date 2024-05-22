@@ -255,7 +255,7 @@ class MediaChromeListbox extends CustomElement {
       this.handleSelection(
         e,
         this.hasAttribute('aria-multiselectable') &&
-        this.getAttribute('aria-multiselectable') === 'true'
+          this.getAttribute('aria-multiselectable') === 'true'
       );
     } else {
       this.handleMovement(e);
@@ -371,8 +371,9 @@ class MediaChromeListbox extends CustomElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController =
-        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
+      this.#mediaController = (this.getRootNode() as Document)?.getElementById(
+        mediaControllerId
+      );
       this.#mediaController?.associateElement?.(this);
     }
   }
@@ -488,7 +489,7 @@ class MediaChromeListbox extends CustomElement {
     this.handleSelection(
       e,
       this.hasAttribute('aria-multiselectable') &&
-      this.getAttribute('aria-multiselectable') === 'true'
+        this.getAttribute('aria-multiselectable') === 'true'
     );
   }
 

@@ -47,7 +47,12 @@ class MediaGestureReceiver extends CustomElement {
   nativeEl: HTMLElement;
   _pointerType: string;
 
-  constructor(options: { slotTemplate?: HTMLTemplateElement, defaultContent?: string } = {}) {
+  constructor(
+    options: {
+      slotTemplate?: HTMLTemplateElement;
+      defaultContent?: string;
+    } = {}
+  ) {
     super();
 
     if (!this.shadowRoot) {
@@ -70,7 +75,11 @@ class MediaGestureReceiver extends CustomElement {
     }
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -170,7 +179,7 @@ class MediaGestureReceiver extends CustomElement {
    * @abstract
    * @argument {Event} e
    */
-  handleTap(e) { } // eslint-disable-line
+  handleTap(e) {} // eslint-disable-line
 
   // eslint-disable-next-line
   handleMouseClick(e) {

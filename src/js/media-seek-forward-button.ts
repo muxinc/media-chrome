@@ -1,7 +1,12 @@
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import { verbs } from './labels/labels.js';
 import { MediaChromeButton } from './media-chrome-button.js';
-import { getNumericAttr, getSlotted, setNumericAttr, updateIconText } from './utils/element-utils.js';
+import {
+  getNumericAttr,
+  getSlotted,
+  setNumericAttr,
+  updateIconText,
+} from './utils/element-utils.js';
 import { document, globalThis } from './utils/server-safe-globals.js';
 
 export const Attributes = {
@@ -49,7 +54,11 @@ class MediaSeekForwardButton extends MediaChromeButton {
     super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName: string, _oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    _oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === Attributes.SEEK_OFFSET) {
       this.seekOffset = getNumericAttr(
         this,

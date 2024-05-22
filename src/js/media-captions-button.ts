@@ -146,7 +146,7 @@ const getSubtitlesListAttr = (
 const setSubtitlesListAttr = (
   el: HTMLElement,
   attrName: string,
-  list: TextTrackLike[],
+  list: TextTrackLike[]
 ) => {
   // null, undefined, and empty arrays are treated as "no value" here
   if (!list?.length) {

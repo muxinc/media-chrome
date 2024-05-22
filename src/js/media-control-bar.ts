@@ -85,8 +85,9 @@ class MediaControlBar extends CustomElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController =
-        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
+      this.#mediaController = (this.getRootNode() as Document)?.getElementById(
+        mediaControllerId
+      );
       this.#mediaController?.associateElement?.(this);
     }
   }
