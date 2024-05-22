@@ -1,7 +1,9 @@
+import { CustomElement } from './utils/CustomElement.js';
 import {
   containsComposedNode,
   getActiveElement,
 } from './utils/element-utils.js';
+import type { InvokeEvent } from './utils/events.js';
 import { document, globalThis } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
@@ -78,8 +80,8 @@ export const Attributes = {
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
  */
-class MediaChromeDialog extends globalThis.HTMLElement {
-  static template = template;
+class MediaChromeDialog extends CustomElement {
+  static template: HTMLTemplateElement = template;
 
   static get observedAttributes() {
     return [Attributes.HIDDEN, Attributes.ANCHOR];
@@ -88,6 +90,8 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   #previouslyFocused: HTMLElement | null = null;
   #invokerElement: HTMLElement | null = null;
 
+  nativeEl: HTMLElement;
+
   constructor() {
     super();
 
@@ -95,8 +99,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       this.attachShadow({ mode: 'open' });
 
-      // @ts-ignore
-      this.nativeEl = this.constructor.template.content.cloneNode(true);
+      this.nativeEl = (this.constructor as typeof MediaChromeDialog).template.content.cloneNode(true) as HTMLElement;
       this.shadowRoot.append(this.nativeEl);
     }
 
@@ -108,7 +111,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   handleEvent(event: Event) {
     switch (event.type) {
       case 'invoke':
-        this.#handleInvoke(event as CustomEvent);
+        this.#handleInvoke(event as InvokeEvent);
         break;
       case 'focusout':
         this.#handleFocusOut(event as FocusEvent);
@@ -125,7 +128,11 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     }
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ) {
     if (attrName === Attributes.HIDDEN && newValue !== oldValue) {
       if (this.hidden) {
         this.#handleClosed();
@@ -148,20 +155,22 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   focus() {
     this.#previouslyFocused = getActiveElement();
 
-    const focusable: HTMLElement | null = this.querySelector('[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]');
+    const focusable: HTMLElement | null = this.querySelector(
+      '[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]'
+    );
     focusable?.focus();
   }
 
-  #handleInvoke(event: CustomEvent) {
+  #handleInvoke(event: InvokeEvent) {
     this.#invokerElement = event.relatedTarget as HTMLElement;
 
-    if (!containsComposedNode(this, event.relatedTarget)) {
+    if (!containsComposedNode(this, event.relatedTarget as Node)) {
       this.hidden = !this.hidden;
     }
   }
 
   #handleFocusOut(event: FocusEvent) {
-    if (!containsComposedNode(this, event.relatedTarget)) {
+    if (!containsComposedNode(this, event.relatedTarget as Node)) {
       this.#previouslyFocused?.focus();
 
       // If the menu was opened by a click, close it when selecting an item.

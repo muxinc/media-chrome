@@ -1,15 +1,17 @@
-import { globalThis, document } from './utils/server-safe-globals.js';
 import {
-  MediaUIAttributes,
   MediaStateReceiverAttributes,
+  MediaUIAttributes,
 } from './constants.js';
+import type MediaController from './media-controller.js';
+import { CustomElement } from './utils/CustomElement.js';
 import {
   getOrInsertCSSRule,
   getStringAttr,
   setStringAttr,
 } from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
-const template = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
   <style>
     :host {
@@ -27,7 +29,6 @@ template.innerHTML = /*html*/ `
 `;
 
 /**
- * @extends {HTMLElement}
  *
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  * @attr {string} mediapreviewimage - (read-only) Set to the timeline preview image URL.
@@ -36,8 +37,8 @@ template.innerHTML = /*html*/ `
  * @cssproperty [--media-preview-thumbnail-display = inline-block] - `display` property of display.
  * @cssproperty [--media-control-display = inline-block] - `display` property of control.
  */
-class MediaPreviewThumbnail extends globalThis.HTMLElement {
-  #mediaController;
+class MediaPreviewThumbnail extends CustomElement {
+  #mediaController: MediaController;
 
   static get observedAttributes() {
     return [
@@ -46,6 +47,9 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
       MediaUIAttributes.MEDIA_PREVIEW_COORDS,
     ];
   }
+
+  imgWidth: number;
+  imgHeight: number;
 
   constructor() {
     super();
@@ -57,7 +61,7 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     const mediaControllerId = this.getAttribute(
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
@@ -69,18 +73,18 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
     }
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (
       [
         MediaUIAttributes.MEDIA_PREVIEW_IMAGE,
         MediaUIAttributes.MEDIA_PREVIEW_COORDS,
-      ].includes(attrName)
+      ].includes(attrName as any)
     ) {
       this.update();
     }
@@ -128,7 +132,7 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
     this.setAttribute(MediaUIAttributes.MEDIA_PREVIEW_COORDS, value.join(' '));
   }
 
-  update() {
+  update(): void {
     const coords = this.mediaPreviewCoords;
     const previewImage = this.mediaPreviewImage;
 

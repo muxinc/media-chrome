@@ -1,5 +1,7 @@
 import { MediaStateChangeEvents } from './constants.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import type MediaController from './media-controller.js';
+import { CustomElement } from './utils/CustomElement.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 import { TemplateInstance } from './utils/template-parts.js';
 import { processor } from './utils/template-processor.js';
 import { camelCase, isNumericString } from './utils/utils.js';
@@ -45,9 +47,9 @@ prependTemplate.innerHTML = /*html*/ `
  *
  * @attr {string} template - The element `id` of the template to render.
  */
-export class MediaThemeElement extends globalThis.HTMLElement {
-  static template;
-  static observedAttributes = ['template'];
+export class MediaThemeElement extends CustomElement {
+  static template: HTMLTemplateElement;
+  static observedAttributes: string[] = ['template'];
   static processor = processor;
 
   renderRoot;
@@ -74,7 +76,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
 
       if (
         mutationList.some((mutation) => {
-          const target = /** @type {HTMLElement} */ (mutation.target);
+          const target = mutation.target as HTMLElement;
 
           // Render on each attribute change of the `<media-theme(-x)>` element.
           if (target === this) return true;
@@ -114,7 +116,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     this.#upgradeProperty('template');
   }
 
-  #upgradeProperty(prop) {
+  #upgradeProperty(prop: string): void {
     if (Object.prototype.hasOwnProperty.call(this, prop)) {
       const value = this[prop];
       // Delete the set property from this instance.
@@ -125,12 +127,12 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   }
 
   /** @type {HTMLElement & { breakpointsComputed?: boolean }} */
-  get mediaController() {
+  get mediaController(): MediaController {
     // Expose the media controller if API access is needed
     return this.renderRoot.querySelector('media-controller');
   }
 
-  get template() {
+  get template(): HTMLTemplateElement {
     // @ts-ignore
     return this.#template ?? this.constructor.template;
   }
@@ -171,24 +173,22 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     return props;
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string, newValue: string | null): void {
     if (attrName === 'template' && oldValue != newValue) {
       this.#updateTemplate();
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     this.#updateTemplate();
   }
 
-  #updateTemplate() {
+  #updateTemplate(): void {
     const templateId = this.getAttribute('template');
     if (!templateId || templateId === this.#prevTemplateId) return;
 
     // First try to get a template element by id
-    const rootNode = /** @type HTMLDocument | ShadowRoot */ (
-      this.getRootNode()
-    );
+    const rootNode = this.getRootNode() as Document;
     const template = rootNode?.getElementById?.(templateId);
 
     if (template) {
@@ -216,7 +216,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     }
   }
 
-  createRenderer() {
+  createRenderer(): void {
     if (this.template && this.template !== this.#prevTemplate) {
       this.#prevTemplate = this.template;
 
@@ -235,12 +235,12 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     }
   }
 
-  render() {
+  render(): void {
     this.renderer?.update(this.props);
   }
 }
 
-function isValidUrl(url) {
+function isValidUrl(url: string): boolean {
   // Valid URL e.g. /absolute, ./relative, http://, https://
   if (!/^(\/|\.\/|https?:\/\/)/.test(url)) return false;
 
@@ -254,7 +254,7 @@ function isValidUrl(url) {
   return true;
 }
 
-async function request(resource) {
+async function request(resource: string | URL | Request): Promise<string> {
   const response = await fetch(resource);
 
   if (response.status !== 200) {

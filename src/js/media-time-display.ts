@@ -1,3 +1,5 @@
+import { MediaUIAttributes } from './constants.js';
+import { nouns } from './labels/labels.js';
 import { MediaTextDisplay } from './media-text-display.js';
 import {
   getBooleanAttr,
@@ -8,8 +10,6 @@ import {
 } from './utils/element-utils.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import { formatAsTimePhrase, formatTime } from './utils/time.js';
-import { MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
 
 export const Attributes = {
   REMAINING: 'remaining',
@@ -30,7 +30,7 @@ const ButtonPressedKeys = ['Enter', ' '];
 
 const DEFAULT_TIMES_SEP = '&nbsp;/&nbsp;';
 
-const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
+const formatTimesLabel = (el: MediaTimeDisplay, { timesSep = DEFAULT_TIMES_SEP } = {}): string => {
   const showRemaining = el.hasAttribute(Attributes.REMAINING);
   const showDuration = el.hasAttribute(Attributes.SHOW_DURATION);
   const currentTime = el.mediaCurrentTime ?? 0;
@@ -52,7 +52,7 @@ const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
 
 const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
-const updateAriaValueText = (el) => {
+const updateAriaValueText = (el: MediaTimeDisplay): void => {
   const currentTime = el.mediaCurrentTime;
   const [, seekableEnd] = el.mediaSeekable ?? [];
   let endTime = null;
@@ -94,10 +94,9 @@ const updateAriaValueText = (el) => {
  * @cssproperty --media-control-hover-background - `background` of control hover state.
  */
 class MediaTimeDisplay extends MediaTextDisplay {
-  /** @type {HTMLSlotElement} */
-  #slot;
+  #slot: HTMLSlotElement;
 
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
   }
 
@@ -108,7 +107,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
     this.#slot.innerHTML = `${formatTimesLabel(this)}`;
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     const { style } = getOrInsertCSSRule(
       this.shadowRoot,
       ':host(:hover:not([notoggle]))'
@@ -150,7 +149,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
     super.connectedCallback();
   }
 
-  toggleTimeDisplay() {
+  toggleTimeDisplay(): void {
     if (this.noToggle) {
       return;
     }
@@ -161,12 +160,12 @@ class MediaTimeDisplay extends MediaTextDisplay {
     }
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     this.disable();
     super.disconnectedCallback();
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (CombinedAttributes.includes(attrName)) {
       this.update();
     } else if (attrName === 'disabled' && newValue !== oldValue) {
@@ -180,11 +179,11 @@ class MediaTimeDisplay extends MediaTextDisplay {
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
-  enable() {
+  enable(): void {
     this.tabIndex = 0;
   }
 
-  disable() {
+  disable(): void {
     this.tabIndex = -1;
   }
 
@@ -192,78 +191,73 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   /**
    * Whether to show the remaining time
-   * @type {boolean}
    */
-  get remaining() {
+  get remaining(): boolean {
     return getBooleanAttr(this, Attributes.REMAINING);
   }
 
-  set remaining(show) {
+  set remaining(show: boolean) {
     setBooleanAttr(this, Attributes.REMAINING, show);
   }
 
   /**
    * Whether to show the duration
-   * @type {boolean}
    */
-  get showDuration() {
+  get showDuration(): boolean {
     return getBooleanAttr(this, Attributes.SHOW_DURATION);
   }
 
-  set showDuration(show) {
+  set showDuration(show: boolean) {
     setBooleanAttr(this, Attributes.SHOW_DURATION, show);
   }
 
   /**
    * Disable the default behavior that toggles between current and remaining time
-   * @type {boolean}
    */
-  get noToggle() {
+  get noToggle(): boolean {
     return getBooleanAttr(this, Attributes.NO_TOGGLE);
   }
 
-  set noToggle(notoggle) {
-    setBooleanAttr(this, Attributes.NO_TOGGLE, notoggle);
+  set noToggle(noToggle: boolean) {
+    setBooleanAttr(this, Attributes.NO_TOGGLE, noToggle);
   }
 
   // Props derived from media UI attributes
 
   /**
    * Get the duration
-   * @type {number | undefined} In seconds
    */
-  get mediaDuration() {
+  get mediaDuration(): number {
     return getNumericAttr(this, MediaUIAttributes.MEDIA_DURATION);
   }
 
-  set mediaDuration(time) {
+  set mediaDuration(time: number) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_DURATION, time);
   }
 
   /**
-   * The current time
-   * @type {number | undefined} In seconds
+   * The current time in seconds
    */
-  get mediaCurrentTime() {
+  get mediaCurrentTime(): number {
     return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME);
   }
 
-  set mediaCurrentTime(time) {
+  set mediaCurrentTime(time: number) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, time);
   }
 
   /**
-   * Range of values that can be seeked to
-   * @type {[number, number] | undefined} An array of two numbers [start, end]
+   * Range of values that can be seeked to. 
+   * An array of two numbers [start, end]
    */
-  get mediaSeekable() {
+  get mediaSeekable(): [number, number] {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
     if (!seekable) return undefined;
     // Only currently supports a single, contiguous seekable range (CJP)
-    return seekable.split(':').map((time) => +time);
+    return seekable.split(':').map((time) => +time) as [number, number];
   }
 
-  set mediaSeekable(range) {
+  set mediaSeekable(range: [number, number]) {
     if (range == null) {
       this.removeAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
       return;
@@ -271,7 +265,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
     this.setAttribute(MediaUIAttributes.MEDIA_SEEKABLE, range.join(':'));
   }
 
-  update() {
+  update(): void {
     const timesLabel = formatTimesLabel(this);
     updateAriaValueText(this);
     // Only update if it changed, timeupdate events are called a few times per second.

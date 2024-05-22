@@ -1,22 +1,19 @@
-import { createContext, useContext, useEffect, useMemo } from 'react';
 import type { Context, ReactNode } from 'react';
-import React from 'react';
-import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector';
-import createMediaStore from '../media-store/media-store';
-import type {
-  FullScreenElementStateOwner,
-  MediaState,
-  MediaStateOwner,
-  MediaStore,
-} from '../media-store/media-store';
-export * as timeUtils from '../utils/time';
+import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import {
+  AvailabilityStates,
   MediaUIEvents,
   MediaUIProps,
-  AvailabilityStates,
   StreamTypes,
   VolumeLevels,
 } from '../constants';
+import createMediaStore, { type MediaState, type MediaStore } from '../media-store/media-store';
+import type {
+  FullScreenElementStateOwner,
+  MediaStateOwner,
+} from '../media-store/state-mediator';
+import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector';
+export * as timeUtils from '../utils/time';
 
 /**
  * @description A lookup object for all well-defined action types that can be dispatched

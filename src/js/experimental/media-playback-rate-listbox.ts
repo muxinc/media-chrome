@@ -38,7 +38,11 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
     this.#render();
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -73,7 +77,11 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
    * @type {number} The current playback rate
    */
   get mediaPlaybackRate(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, DEFAULT_RATE);
+    return getNumericAttr(
+      this,
+      MediaUIAttributes.MEDIA_PLAYBACK_RATE,
+      DEFAULT_RATE
+    );
   }
 
   set mediaPlaybackRate(value: number) {

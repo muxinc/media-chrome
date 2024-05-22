@@ -1,14 +1,16 @@
 import {
-  MediaUIAttributes,
   MediaStateReceiverAttributes,
+  MediaUIAttributes,
 } from './constants.js';
 import { nouns } from './labels/labels.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import type MediaController from './media-controller.js';
+import { CustomElement } from './utils/CustomElement.js';
 import {
   getBooleanAttr,
-  setBooleanAttr,
   getOrInsertCSSRule,
+  setBooleanAttr,
 } from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 export const Attributes = {
   LOADING_DELAY: 'loadingdelay',
@@ -16,7 +18,7 @@ export const Attributes = {
 
 const DEFAULT_LOADING_DELAY = 500;
 
-const template = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement('template');
 
 const loadingIndicatorIcon = `
 <svg aria-hidden="true" viewBox="0 0 100 100">
@@ -54,12 +56,10 @@ template.innerHTML = /*html*/ `
   transition: opacity 0.15s;
 }
 
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}])) slot[name=icon] > *,
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}])) ::slotted([slot=icon]) {
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED
+  }])) slot[name=icon] > *,
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED
+  }])) ::slotted([slot=icon]) {
   opacity: var(--media-loading-indicator-opacity, 1);
   transition: opacity 0.15s var(--_loading-indicator-delay);
 }
@@ -69,9 +69,8 @@ template.innerHTML = /*html*/ `
   transition: visibility 0.15s;
 }
 
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}])) #status {
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED
+  }])) #status {
   visibility: var(--media-loading-indicator-opacity, visible);
   transition: visibility 0.15s var(--_loading-indicator-delay);
 }
@@ -107,11 +106,11 @@ svg, img, ::slotted(svg), ::slotted(img) {
  * @cssproperty --media-loading-indicator-icon-width - `width` of loading icon.
  * @cssproperty [ --media-loading-indicator-icon-height = 100px ] - `height` of loading icon.
  */
-class MediaLoadingIndicator extends globalThis.HTMLElement {
-  #mediaController;
+class MediaLoadingIndicator extends CustomElement {
+  #mediaController: MediaController;
   #delay = DEFAULT_LOADING_DELAY;
 
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
       MediaUIAttributes.MEDIA_PAUSED,
@@ -131,7 +130,7 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
     }
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === Attributes.LOADING_DELAY && oldValue !== newValue) {
       this.loadingDelay = Number(newValue);
     } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
@@ -147,32 +146,32 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     const mediaControllerId = this.getAttribute(
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       // @ts-ignore
       this.#mediaController =
-        this.getRootNode()?.getElementById(mediaControllerId);
+        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
   }
 
   /**
-   * @type {number} Delay in ms
+   * Delay in ms
    */
-  get loadingDelay() {
+  get loadingDelay(): number {
     return this.#delay;
   }
 
-  set loadingDelay(delay) {
+  set loadingDelay(delay: number) {
     this.#delay = delay;
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
@@ -183,23 +182,23 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
   }
 
   /**
-   * @type {boolean} Is the media paused
+   * Is the media paused
    */
-  get mediaPaused() {
+  get mediaPaused(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
   }
 
-  set mediaPaused(value) {
+  set mediaPaused(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
   }
   /**
-   * @type {boolean} Is the media loading
+   * Is the media loading
    */
-  get mediaLoading() {
+  get mediaLoading(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING);
   }
 
-  set mediaLoading(value) {
+  set mediaLoading(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING, value);
   }
 }

@@ -14,7 +14,7 @@ const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 </svg>
 `;
 
-const slotTemplate = document.createElement('template');
+const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${MediaUIAttributes.MEDIA_IS_AIRPLAYING
@@ -35,8 +35,10 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const updateAriaLabel = (el: MediaAirplayButton) => {
-  const label = el.mediaIsAirplaying ? verbs.EXIT_AIRPLAY() : verbs.ENTER_AIRPLAY();
+const updateAriaLabel = (el: MediaAirplayButton): void => {
+  const label = el.mediaIsAirplaying
+    ? verbs.EXIT_AIRPLAY()
+    : verbs.ENTER_AIRPLAY();
   el.setAttribute('aria-label', label);
 };
 
@@ -53,7 +55,7 @@ const updateAriaLabel = (el: MediaAirplayButton) => {
  * @event {CustomEvent} mediaairplayrequest
  */
 class MediaAirplayButton extends MediaChromeButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_IS_AIRPLAYING,
@@ -65,12 +67,16 @@ class MediaAirplayButton extends MediaChromeButton {
     super({ slotTemplate, ...options });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     updateAriaLabel(this);
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_IS_AIRPLAYING) {
@@ -79,7 +85,7 @@ class MediaAirplayButton extends MediaChromeButton {
   }
 
   /**
-   * @type {boolean} Are we currently airplaying
+   * Are we currently airplaying
    */
   get mediaIsAirplaying(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_IS_AIRPLAYING);
@@ -90,7 +96,7 @@ class MediaAirplayButton extends MediaChromeButton {
   }
 
   /**
-   * @type {string | undefined} Airplay unavailability state
+   * Airplay unavailability state
    */
   get mediaAirplayUnavailable(): string | undefined {
     return getStringAttr(this, MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE);
@@ -100,7 +106,7 @@ class MediaAirplayButton extends MediaChromeButton {
     setStringAttr(this, MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE, value);
   }
 
-  handleClick() {
+  handleClick(): void {
     const evt = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_AIRPLAY_REQUEST,
       {

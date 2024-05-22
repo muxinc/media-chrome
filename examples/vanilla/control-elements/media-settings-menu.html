@@ -3,7 +3,10 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <title>Media Settings Menu</title>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"
+    ></script>
     <script type="module" src="../../../dist/index.js"></script>
     <style>
       /* Hide custom elements that are not defined yet */
@@ -13,22 +16,18 @@
 
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: block;         /* expands the container if preload=none */
-        max-width: 540px;       /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        display: block; /* expands the container if preload=none */
+        max-width: 540px; /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9; /* set container aspect ratio if preload=none */
       }
 
       mux-video {
-        width: 100%;          /* prevents video to expand beyond its container */
-        height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
+        width: 100%; /* prevents video to expand beyond its container */
+        height: fit-content; /* Fix Safari aspect-ratio overflow glitch for custom media elements */
       }
 
       /* reconsider when :has() is fully browser supported */
-      media-settings-menu-item[aria-haspopup]:is(
-        :not([submenusize]),
-        [submenusize="0"],
-        [submenusize="1"]
-      ) {
+      media-settings-menu-item[aria-haspopup]:is(:not([submenusize]), [submenusize='0'], [submenusize='1']) {
         display: none;
       }
 
@@ -52,7 +51,10 @@
         playsinline
         crossorigin
       ></mux-video>
-      <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+      <media-loading-indicator
+        slot="centered-chrome"
+        noautohide
+      ></media-loading-indicator>
       <media-settings-menu anchor="auto" hidden>
         <media-settings-menu-item>
           Speed
@@ -97,10 +99,13 @@
         muted
         crossorigin
       ></mux-video>
-      <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+      <media-loading-indicator
+        slot="centered-chrome"
+        noautohide
+      ></media-loading-indicator>
       <media-chrome-dialog
         id="settings"
-        style="position: absolute; top: 5%;"
+        style="position: absolute; top: 5%"
         hidden
       >
         <media-captions-menu>
@@ -120,7 +125,9 @@
         <media-time-display></media-time-display>
         <media-rendition-selectmenu></media-rendition-selectmenu>
         <!-- Link menu button and menu with invoketarget<->id -->
-        <media-settings-menu-button invoketarget="settings"></media-settings-menu-button>
+        <media-settings-menu-button
+          invoketarget="settings"
+        ></media-settings-menu-button>
         <media-fullscreen-button></media-fullscreen-button>
       </media-control-bar>
     </media-controller>

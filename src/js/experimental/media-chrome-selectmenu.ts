@@ -1,16 +1,17 @@
+import { MediaStateReceiverAttributes } from '../constants.js';
 import '../media-chrome-button.js';
-import './media-chrome-listbox.js';
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { CustomElement } from '../utils/CustomElement.js';
 import {
-  containsComposedNode,
   closestComposedNode,
-  getOrInsertCSSRule,
+  containsComposedNode,
   getActiveElement,
+  getOrInsertCSSRule,
 } from '../utils/element-utils.js';
 import { observeResize, unobserveResize } from '../utils/resize-observer.js';
-import { MediaStateReceiverAttributes } from '../constants.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
+import './media-chrome-listbox.js';
 
-const template = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
   <style>
   :host {
@@ -74,7 +75,7 @@ template.innerHTML = /*html*/ `
  * @csspart button - The default button that's in the shadow DOM.
  * @csspart listbox - The default listbox that's in the shadow DOM.
  */
-class MediaChromeSelectMenu extends globalThis.HTMLElement {
+class MediaChromeSelectMenu extends CustomElement {
   #mediaController;
   #button;
   #buttonSlot;
@@ -94,7 +95,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    this.init?.();
+    this.init();
 
     this.#button = this.shadowRoot.querySelector('[part=button]');
     this.#listbox = this.shadowRoot.querySelector('[part=listbox]');
@@ -125,6 +126,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.#listbox = this.#listboxSlot.assignedElements()[0] || this.#listbox;
     });
   }
+
+  init() { }
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
@@ -241,9 +244,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
     );
     this.#listbox.style.left = null;
     this.#listbox.style.right = `${position}px`;
-    this.#listbox.style.maxHeight = `${
-      boundsRect.height - buttonRect.height
-    }px`;
+    this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height
+      }px`;
   };
 
   enable() {
@@ -301,9 +303,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
-      // @ts-ignore
       this.#mediaController =
-        this.getRootNode()?.getElementById(mediaControllerId);
+        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
       this.#listbox.setAttribute(
         MediaStateReceiverAttributes.MEDIA_CONTROLLER,

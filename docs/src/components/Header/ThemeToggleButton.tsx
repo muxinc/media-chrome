@@ -32,7 +32,11 @@ const ThemeToggle = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>();
 
   useEffect(() => {
-    setTheme(document.documentElement.classList.contains('theme-dark') ? 'dark' : 'light');
+    setTheme(
+      document.documentElement.classList.contains('theme-dark')
+        ? 'dark'
+        : 'light'
+    );
   }, []);
 
   useEffect(() => {

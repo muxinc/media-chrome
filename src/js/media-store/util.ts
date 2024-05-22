@@ -1,26 +1,27 @@
 import { TextTrackKinds, TextTrackModes } from '../constants.js';
+import type { TextTrackLike } from '../utils/TextTrackLike.js';
 import { getTextTracksList, updateTracksModeTo } from '../utils/captions.js';
 
-export const getSubtitleTracks = (stateOwners) => {
+export const getSubtitleTracks = (stateOwners): TextTrackLike[] => {
   return getTextTracksList(stateOwners.media, (textTrack) => {
     return [TextTrackKinds.SUBTITLES, TextTrackKinds.CAPTIONS].includes(
-      textTrack.kind
+      textTrack.kind as any
     );
   }).sort((a, b) => (a.kind >= b.kind ? 1 : -1));
 };
 
-export const getShowingSubtitleTracks = (stateOwners) => {
+export const getShowingSubtitleTracks = (stateOwners): TextTrackLike[] => {
   return getTextTracksList(stateOwners.media, (textTrack) => {
     return (
       textTrack.mode === TextTrackModes.SHOWING &&
       [TextTrackKinds.SUBTITLES, TextTrackKinds.CAPTIONS].includes(
-        textTrack.kind
+        textTrack.kind as any
       )
     );
   });
 };
 
-export const toggleSubtitleTracks = (stateOwners, force) => {
+export const toggleSubtitleTracks = (stateOwners, force: boolean): void => {
   // NOTE: Like Element::toggleAttribute(), this event uses the detail for an optional "force"
   // value. When present, this means "toggle to" "on" (aka showing, even if something's already showing)
   // or "off" (aka disabled, even if all tracks are currently disabled).
@@ -81,7 +82,7 @@ export const toggleSubtitleTracks = (stateOwners, force) => {
   }
 };
 
-export const areValuesEq = (x, y) => {
+export const areValuesEq = (x: any, y: any): boolean => {
   // If both are strictly equal, they're equal
   if (x === y) return true;
   // If their types don't match, they're not equal
@@ -96,11 +97,11 @@ export const areValuesEq = (x, y) => {
   // For objects, if every key's value in x has a corresponding key/value entry in y, the objects are equal
   return Object.entries(x).every(
     // NOTE: Checking key in y to disambiguate between between missing keys and keys whose value are undefined (CJP)
-    ([key, value]) => key in y && areValuesEq(value, y[key])
+    ([key, value]) => key in y && areValuesEq(value as number, y[key])
   );
 };
 
-export const areArraysEq = (xs, ys) => {
+export const areArraysEq = (xs: number[], ys: number[]): boolean => {
   const xIsArray = Array.isArray(xs);
   const yIsArray = Array.isArray(ys);
   // If one of the "arrays" is not an array, not equal

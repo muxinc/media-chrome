@@ -22,10 +22,14 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
     ];
   }
 
-  #audioTrackList: Array<{id: string, label: string, enabled: boolean}> = [];
+  #audioTrackList: Array<{ id: string; label: string; enabled: boolean }> = [];
   #prevState: string | null = null;
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -56,7 +60,9 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
     return this.#audioTrackList;
   }
 
-  set mediaAudioTrackList(list: Array<{id: string, label: string, enabled: boolean}>) {
+  set mediaAudioTrackList(
+    list: Array<{ id: string; label: string; enabled: boolean }>
+  ) {
     this.#audioTrackList = list;
     this.#render();
   }
@@ -105,7 +111,7 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
       }
     );
     this.dispatchEvent(event);
-  }
+  };
 }
 
 if (!globalThis.customElements.get('media-audio-track-listbox')) {

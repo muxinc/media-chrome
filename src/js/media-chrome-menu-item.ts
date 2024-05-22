@@ -1,5 +1,9 @@
 import { MediaChromeMenu } from './media-chrome-menu.js';
-import { containsComposedNode, getDocumentOrShadowRoot } from './utils/element-utils.js';
+import { CustomElement } from './utils/CustomElement.js';
+import {
+  containsComposedNode,
+  getDocumentOrShadowRoot,
+} from './utils/element-utils.js';
 import { InvokeEvent } from './utils/events.js';
 import { document, globalThis } from './utils/server-safe-globals.js';
 
@@ -157,7 +161,7 @@ export const Attributes = {
  * @cssproperty --media-menu-item-indicator-fill - `fill` color of indicator icon.
  * @cssproperty --media-menu-item-indicator-height - `height` of menu-item indicator.
  */
-class MediaChromeMenuItem extends globalThis.HTMLElement {
+class MediaChromeMenuItem extends CustomElement {
   static template = template;
 
   static get observedAttributes() {
@@ -266,9 +270,8 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   /**
    * Returns the element with the id specified by the `invoketarget` attribute
    * or the slotted submenu element.
-   * @return {MediaChromeMenu | null}
    */
-  get invokeTargetElement() {
+  get invokeTargetElement(): MediaChromeMenu | null {
     if (this.invokeTarget) {
       return getDocumentOrShadowRoot(this)?.querySelector(
         `#${this.invokeTarget}`
@@ -280,12 +283,10 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   /**
    * Returns the slotted submenu element.
    */
-  get submenuElement(): MediaChomeMenu | null {
+  get submenuElement(): MediaChromeMenu | null {
     /** @type {HTMLSlotElement} */
-    const submenuSlot = this.shadowRoot.querySelector('slot[name="submenu"]');
-    return (
-      submenuSlot.assignedElements({ flatten: true })[0]
-    );
+    const submenuSlot: HTMLSlotElement = this.shadowRoot.querySelector('slot[name="submenu"]');
+    return submenuSlot.assignedElements({ flatten: true })[0] as MediaChromeMenu;
   }
 
   get type() {

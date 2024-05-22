@@ -1,4 +1,3 @@
-import { globalThis } from '../utils/server-safe-globals.js';
 import {
   MediaUIEvents,
   StreamTypes,
@@ -10,36 +9,18 @@ import {
   parseTracks,
   updateTracksModeTo,
 } from '../utils/captions.js';
+import { globalThis } from '../utils/server-safe-globals.js';
+import type { MediaState } from './media-store.js';
+import type { StateMediator, StateOwners } from './state-mediator.js';
 import { getSubtitleTracks, toggleSubtitleTracks } from './util.js';
 
-/**
- * @typedef {Omit<
- *  MediaUIEvents,
- *  'REGISTER_MEDIA_STATE_RECEIVER' |
- *  'UNREGISTER_MEDIA_STATE_RECEIVER' |
- *  'MEDIA_SHOW_TEXT_TRACKS_REQUEST' |
- *  'MEDIA_HIDE_TEXT_TRACKS_REQUEST'
- * >} MediaRequestTypes
- */
-
-/**
- * @typedef {import('./state-mediator.js').StateMediator} StateMediator
- */
-
-/**
- * @typedef {import('./state-mediator.js').StateOwners} StateOwners
- */
-
-/** @TODO Duplicate definition (See media-store.js). Consolidate somewhere */
-/**
- * @typedef {{
- *   [K in keyof StateMediator]: ReturnType<StateMediator[K]['get']>
- * } & {
- *   mediaPreviewTime: number;
- *   mediaPreviewImage: string;
- *   mediaPreviewCoords: [number,number,number,number]
- * }} MediaState
- */
+export type MediaRequestTypes = Exclude<
+  MediaUIEvents,
+  'registermediastatereceiver' |
+  'unregistermediastatereceiver' |
+  'mediashowtexttracksrequest' |
+  'mediahidetexttracksrequest'
+>;
 
 /** @TODO Make this definition more precise (CJP) */
 /**
@@ -51,13 +32,14 @@ import { getSubtitleTracks, toggleSubtitleTracks } from './util.js';
  *
  * For any modeled state change request, the RequestMap defines a key, K, which directly maps to the state change request type (e.g. `mediapauserequest`, `mediaseekrequest`, etc.),
  * whose value is a function that defines the appropriate side effects of the request that will, under normal circumstances, (eventually) result in actual state changes.
- *
- * @typedef {{ [k in MediaRequestTypes[keyof MediaRequestTypes]]: (
- *  stateMediator: StateMediator,
- *  stateOwners: StateOwners,
- *  action: Partial<Pick<CustomEvent<any>, 'type' | 'detail'>>
- * ) => Partial<MediaState>|undefined|void}} RequestMap
  */
+export type RequestMap = {
+  [K in MediaRequestTypes]: (
+    stateMediator: StateMediator,
+    stateOwners: StateOwners,
+    action: Partial<Pick<CustomEvent<any>, 'type' | 'detail'>>
+  ) => Partial<MediaState> | undefined | void;
+};
 
 /** @type {RequestMap} */
 export const requestMap = {
@@ -96,8 +78,8 @@ export const requestMap = {
       if (cue) {
         const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
           ? /** @type {HTMLTrackElement | null} */ (
-              media?.querySelector('track[label="thumbnails"]')
-            )?.src
+            media?.querySelector('track[label="thumbnails"]')
+          )?.src
           : undefined;
         const url = new URL(cue.text, base);
         const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');

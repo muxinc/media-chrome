@@ -4,7 +4,9 @@
   Auto position contorls in a line and set some base colors
 */
 import { MediaStateReceiverAttributes } from './constants';
-import { globalThis, document } from './utils/server-safe-globals';
+import type MediaController from './media-controller';
+import { CustomElement } from './utils/CustomElement';
+import { document, globalThis } from './utils/server-safe-globals';
 
 const template: HTMLTemplateElement = document.createElement('template');
 
@@ -42,8 +44,8 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-control-bar-display - `display` property of control bar.
  * @cssproperty --media-control-display - `display` property of control.
  */
-class MediaControlBar extends globalThis.HTMLElement {
-  #mediaController: HTMLElement | null;
+class MediaControlBar extends CustomElement {
+  #mediaController: MediaController | null;
 
   static get observedAttributes(): string[] {
     return [MediaStateReceiverAttributes.MEDIA_CONTROLLER];
@@ -59,7 +61,11 @@ class MediaControlBar extends globalThis.HTMLElement {
     }
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -80,7 +86,7 @@ class MediaControlBar extends globalThis.HTMLElement {
     if (mediaControllerId) {
       // @ts-ignore
       this.#mediaController =
-        this.getRootNode()?.getElementById(mediaControllerId);
+        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }

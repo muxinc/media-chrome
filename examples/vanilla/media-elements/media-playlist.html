@@ -3,15 +3,21 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Media Playlist Example</title>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/media-playlist@0.1"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/hls-video-element@1.1/+esm"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/media-playlist@0.1"
+    ></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/hls-video-element@1.1/+esm"
+    ></script>
     <script type="module" src="../../../dist/index.js"></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: block;         /* expands the container if preload=none */
-        max-width: 720px;       /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        display: block; /* expands the container if preload=none */
+        max-width: 720px; /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9; /* set container aspect ratio if preload=none */
       }
 
       .examples {
@@ -24,11 +30,26 @@
       <h1>Media Chrome Media Playlist Example</h1>
       <media-controller>
         <media-playlist slot="media" loop>
-          <media-playlist-item type="hls-video" crossorigin src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8">
-            <track label="thumbnails" default kind="metadata" src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt" />
+          <media-playlist-item
+            type="hls-video"
+            crossorigin
+            src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe.m3u8"
+          >
+            <track
+              label="thumbnails"
+              default
+              kind="metadata"
+              src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+            />
           </media-playlist-item>
-          <media-playlist-item type="audio" src="https://dl.espressif.com/dl/audio/ff-16b-2c-44100hz.mp3"></media-playlist-item>
-          <media-playlist-item type="video" src="https://muxed.s3.amazonaws.com/ink.mp4"></media-playlist-item>
+          <media-playlist-item
+            type="audio"
+            src="https://dl.espressif.com/dl/audio/ff-16b-2c-44100hz.mp3"
+          ></media-playlist-item>
+          <media-playlist-item
+            type="video"
+            src="https://muxed.s3.amazonaws.com/ink.mp4"
+          ></media-playlist-item>
         </media-playlist>
         <media-control-bar>
           <media-play-button></media-play-button>
@@ -39,10 +60,14 @@
         </media-control-bar>
       </media-controller>
 
-      <br>
-      <button onclick="document.querySelector('media-playlist').previous()">Previous</button>
-      <button onclick="document.querySelector('media-playlist').next()">Next</button>
-      <br>
+      <br />
+      <button onclick="document.querySelector('media-playlist').previous()">
+        Previous
+      </button>
+      <button onclick="document.querySelector('media-playlist').next()">
+        Next
+      </button>
+      <br />
 
       <div class="examples">
         <a href="../">View more examples</a>

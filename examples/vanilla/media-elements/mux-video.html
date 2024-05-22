@@ -4,13 +4,16 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome &lt;mux-video&gt; Example</title>
     <script type="module" src="../../../dist/index.js"></script>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@mux/mux-video/+esm"
+    ></script>
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: grid;          /* expands the container if preload=none */
-        max-width: 800px;       /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        display: grid; /* expands the container if preload=none */
+        max-width: 800px; /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9; /* set container aspect ratio if preload=none */
         width: calc(100vmax - (8px * 2));
       }
 
@@ -35,11 +38,7 @@
         display: none;
       }
 
-      media-settings-menu-item[aria-haspopup]:is(
-        :not([submenusize]),
-        [submenusize="0"],
-        [submenusize="1"]
-      ) {
+      media-settings-menu-item[aria-haspopup]:is(:not([submenusize]), [submenusize='0'], [submenusize='1']) {
         display: none;
       }
 

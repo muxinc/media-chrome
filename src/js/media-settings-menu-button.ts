@@ -3,7 +3,7 @@ import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { getMediaController } from './utils/element-utils.js';
 import { document, globalThis } from './utils/server-safe-globals.js';
 
-const slotTemplate = document.createElement('template');
+const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <slot name="icon">
     <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -17,10 +17,7 @@ slotTemplate.innerHTML = /*html*/ `
  */
 class MediaSettingsMenuButton extends MediaChromeMenuButton {
   static get observedAttributes(): string[] {
-    return [
-      ...super.observedAttributes,
-      'target',
-    ];
+    return [...super.observedAttributes, 'target'];
   }
 
   constructor() {

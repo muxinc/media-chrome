@@ -1,25 +1,25 @@
 {
-    "name": "Media Chrome",
-    "short_name": "MediaChrome",
-    "start_url": ".",
-    "display": "standalone",
-    "background_color": "#fff",
-    "description": "A readable Hacker News app.",
-    "icons": [
-      {
-        "src": "/examples/vanilla/favicon/favicon-32x32.png",
-        "sizes": "32x32",
-        "type": "image/png"
-      },
-      {
-        "src": "/examples/vanilla/favicon/favicon-48x48.png",
-        "sizes": "48x48",
-        "type": "image/png"
-      },
-      {
-        "src": "/examples/vanilla/favicon/favicon-256x256.png",
-        "sizes": "256x256",
-        "type": "image/png"
-      }
-    ]
-  }
+  "name": "Media Chrome",
+  "short_name": "MediaChrome",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "description": "A readable Hacker News app.",
+  "icons": [
+    {
+      "src": "/examples/vanilla/favicon/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/examples/vanilla/favicon/favicon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "/examples/vanilla/favicon/favicon-256x256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    }
+  ]
+}

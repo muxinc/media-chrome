@@ -1,20 +1,20 @@
+import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
+import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
+import { globalThis } from '../utils/server-safe-globals.js';
+import { parseRenditionList } from '../utils/utils.js';
 import {
   MediaChromeListbox,
-  createOption,
   createIndicator,
+  createOption,
 } from './media-chrome-listbox.js';
 import './media-chrome-option.js';
-import { globalThis } from '../utils/server-safe-globals.js';
-import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
-import { parseRenditionList } from '../utils/utils.js';
-import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
  * @attr {string} mediarenditionlist - (read-only) Set to the rendition list.
  */
 class MediaRenditionListbox extends MediaChromeListbox {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_RENDITION_LIST,

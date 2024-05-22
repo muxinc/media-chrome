@@ -6,13 +6,13 @@
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: block;         /* expands the container if preload=none */
-        max-width: 720px;       /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+        display: block; /* expands the container if preload=none */
+        max-width: 720px; /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9; /* set container aspect ratio if preload=none */
       }
 
       videojs-video {
-        width: 100%;      /* prevents video to expand beyond its container */
+        width: 100%; /* prevents video to expand beyond its container */
         background-color: #000;
       }
 
@@ -32,13 +32,16 @@
         margin-top: 20px;
       }
     </style>
-    <script type="module" src="https://cdn.jsdelivr.net/npm/videojs-video-element@1.0/+esm"></script>
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/videojs-video-element@1.0/+esm"
+    ></script>
     <script type="module" src="../../../dist/index.js"></script>
   </head>
   <body>
     <main>
       <h1>Media Chrome Video.js Media Example</h1>
-      <media-controller style="aspect-ratio: 16 / 9;">
+      <media-controller style="aspect-ratio: 16 / 9">
         <videojs-video
           slot="media"
           crossorigin
@@ -55,8 +58,12 @@
         </videojs-video>
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
-          <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+          <media-seek-backward-button
+            seekoffset="15"
+          ></media-seek-backward-button>
+          <media-seek-forward-button
+            seekoffset="15"
+          ></media-seek-forward-button>
           <media-mute-button></media-mute-button>
           <media-volume-range></media-volume-range>
           <media-time-range></media-time-range>

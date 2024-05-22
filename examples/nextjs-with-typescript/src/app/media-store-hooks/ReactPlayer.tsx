@@ -32,7 +32,9 @@ const PlayButton = () => {
 
 const PlaybackRateButton = () => {
   const dispatch = useMediaDispatch();
-  const mediaPlaybackRate = useMediaSelector((state) => state.mediaPlaybackRate);
+  const mediaPlaybackRate = useMediaSelector(
+    (state) => state.mediaPlaybackRate
+  );
   return (
     <button
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
@@ -114,7 +116,9 @@ const PipButton = () => {
 
 const FullscreenButton = () => {
   const dispatch = useMediaDispatch();
-  const mediaIsFullscreen = useMediaSelector((state) => state.mediaIsFullscreen);
+  const mediaIsFullscreen = useMediaSelector(
+    (state) => state.mediaIsFullscreen
+  );
   return (
     <button
       className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"

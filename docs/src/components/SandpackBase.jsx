@@ -1,6 +1,6 @@
 /** @jsxImportSource react */
-import { Sandpack } from "@codesandbox/sandpack-react";
-import { githubLight, sandpackDark } from "@codesandbox/sandpack-themes";
+import { Sandpack } from '@codesandbox/sandpack-react';
+import { githubLight, sandpackDark } from '@codesandbox/sandpack-themes';
 import { useState, useEffect } from 'react';
 
 const light = {
@@ -12,12 +12,12 @@ const light = {
   },
   syntax: {
     ...githubLight.syntax,
-    definition: '#22863a'
+    definition: '#22863a',
   },
   font: {
     ...githubLight.font,
     mono: 'var(--font-mono)',
-  }
+  },
 };
 
 // Make more like GitHub dark to complement the Markdown code blocks.
@@ -40,13 +40,10 @@ const dark = {
   font: {
     ...sandpackDark.font,
     mono: 'var(--font-mono)',
-  }
+  },
 };
 
-export default function ComponentSandpack({
-  ...props
-}) {
-
+export default function ComponentSandpack({ ...props }) {
   const [theme, setTheme] = useState(light);
 
   useEffect(() => {
@@ -69,15 +66,8 @@ export default function ComponentSandpack({
   useEffect(() => {
     const darkModeObserver = new MutationObserver((mutationList) => {
       mutationList.forEach((mutationRecord) => {
-        const {
-          type,
-          target,
-          attributeName,
-        } = mutationRecord;
-        if (
-          type === 'attributes' &&
-          attributeName === 'class'
-        ) {
+        const { type, target, attributeName } = mutationRecord;
+        if (type === 'attributes' && attributeName === 'class') {
           if (target.classList.contains('theme-dark')) {
             setTheme(dark);
           } else {
@@ -93,10 +83,5 @@ export default function ComponentSandpack({
     });
   }, [theme]);
 
-  return (
-    <Sandpack
-      theme={theme}
-      {...props}
-    />
-  )
+  return <Sandpack theme={theme} {...props} />;
 }

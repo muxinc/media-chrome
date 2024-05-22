@@ -67,7 +67,7 @@
     "build:esm": "esbuild \"src/js/**/*.*s*\" --target=es2019 --format=esm --outdir=dist",
     "build:cjs": "esbuild \"src/js/**/*.*s*\" --target=es2019 --format=cjs --outdir=dist/cjs",
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
-    "build:iife": "esbuild src/js/index.js --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome",
+    "build:iife": "esbuild src/js/index.ts --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome",
     "build:react": "node ./scripts/react/build.js",
     "postbuild:react": "esbuild dist/react/*.js dist/react/common/*.js --target=es2019 --format=cjs --outdir=dist/cjs/react",
     "build": "run-s build:types build:esm build:cjs build:iife build:react",
@@ -98,6 +98,7 @@
     "rimraf": "^3.0.2",
     "sinon": "^14.0.1",
     "typescript": "^4.8.4",
+    "typescript-eslint": "^7.10.0",
     "wet-run": "^1.2.0"
   },
   "resolutions": {
@@ -118,7 +119,8 @@
       "mocha": true
     },
     "extends": [
-      "eslint:recommended"
+      "eslint:recommended",
+      "typescript:recommended"
     ],
     "parserOptions": {
       "ecmaVersion": 2022,

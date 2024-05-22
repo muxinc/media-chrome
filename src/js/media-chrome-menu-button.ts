@@ -29,7 +29,9 @@ class MediaChromeMenuButton extends MediaChromeButton {
    */
   get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget) {
-      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.invokeTarget}`) as HTMLElement | null;
+      return getDocumentOrShadowRoot(this)?.querySelector(
+        `#${this.invokeTarget}`
+      ) as HTMLElement | null;
     }
     return null;
   }

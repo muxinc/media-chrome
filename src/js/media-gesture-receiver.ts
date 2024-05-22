@@ -1,17 +1,18 @@
 import {
+  MediaStateReceiverAttributes,
   MediaUIAttributes,
   MediaUIEvents,
-  MediaStateReceiverAttributes,
   PointerTypes,
 } from './constants.js';
+import { CustomElement } from './utils/CustomElement.js';
 import {
   closestComposedNode,
   getBooleanAttr,
   setBooleanAttr,
 } from './utils/element-utils.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
-const template = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
 <style>
@@ -31,19 +32,22 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-gesture-receiver-display - `display` property of gesture receiver.
  * @cssproperty --media-control-display - `display` property of control.
  */
-class MediaGestureReceiver extends globalThis.HTMLElement {
+class MediaGestureReceiver extends CustomElement {
   #mediaController;
 
   // NOTE: Currently "baking in" actions + attrs until we come up with
   // a more robust architecture (CJP)
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
       MediaUIAttributes.MEDIA_PAUSED,
     ];
   }
 
-  constructor(options = {}) {
+  nativeEl: HTMLElement;
+  _pointerType: string;
+
+  constructor(options: { slotTemplate?: HTMLTemplateElement, defaultContent?: string } = {}) {
     super();
 
     if (!this.shadowRoot) {
@@ -51,7 +55,7 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
       const shadow = this.attachShadow({ mode: 'open' });
 
       const buttonHTML = template.content.cloneNode(true);
-      this.nativeEl = buttonHTML;
+      this.nativeEl = buttonHTML as HTMLElement;
 
       // Slots
       let slotTemplate = options.slotTemplate;
@@ -66,7 +70,7 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
     }
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -80,7 +84,7 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     this.tabIndex = -1;
     this.setAttribute('aria-hidden', 'true');
 
@@ -93,7 +97,7 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
     this.#mediaController?.addEventListener('click', this);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     if (this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER)) {
       this.#mediaController?.unassociateElement?.(this);
@@ -104,7 +108,7 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
     this.#mediaController = null;
   }
 
-  handleEvent(event) {
+  handleEvent(event): void {
     const composedTarget = event.composedPath()?.[0];
     const allowList = ['video', 'media-controller'];
     if (!allowList.includes(composedTarget?.localName)) return;
@@ -166,7 +170,7 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
    * @abstract
    * @argument {Event} e
    */
-  handleTap(e) {} // eslint-disable-line
+  handleTap(e) { } // eslint-disable-line
 
   // eslint-disable-next-line
   handleMouseClick(e) {

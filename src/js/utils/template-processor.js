@@ -1,7 +1,7 @@
 import {
+  AttrPart,
   InnerTemplatePart,
   TemplateInstance,
-  AttrPart,
 } from './template-parts.js';
 import { isNumericString } from './utils.js';
 

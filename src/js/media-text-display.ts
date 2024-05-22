@@ -1,9 +1,11 @@
 import { MediaStateReceiverAttributes } from './constants.js';
+import type MediaController from './media-controller.js';
+import { CustomElement } from './utils/CustomElement.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
-const template = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
   <style>
@@ -30,7 +32,7 @@ template.innerHTML = /*html*/ `
       Only show outline when keyboard focusing.
       https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
     */ ''
-    }
+  }
     :host(:focus-visible) {
       box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
       outline: 0;
@@ -40,7 +42,7 @@ template.innerHTML = /*html*/ `
       /*
        * hide default focus ring, particularly when using mouse
        */ ''
-    }
+  }
     :host(:where(:focus)) {
       box-shadow: none;
       outline: 0;
@@ -69,10 +71,10 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
  */
-class MediaTextDisplay extends globalThis.HTMLElement {
-  #mediaController;
+class MediaTextDisplay extends CustomElement {
+  #mediaController: MediaController | null;
 
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
@@ -86,7 +88,7 @@ class MediaTextDisplay extends globalThis.HTMLElement {
     }
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -100,7 +102,7 @@ class MediaTextDisplay extends globalThis.HTMLElement {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty(
       'display',
@@ -113,12 +115,12 @@ class MediaTextDisplay extends globalThis.HTMLElement {
     if (mediaControllerId) {
       // @ts-ignore
       this.#mediaController =
-        this.getRootNode()?.getElementById(mediaControllerId);
+        (this.getRootNode() as Document)?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;

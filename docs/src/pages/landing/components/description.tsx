@@ -1,14 +1,14 @@
 /** @jsxImportSource react */
-import React from "react";
-import type { MediaChromeListItem } from "../../../types";
+import React from 'react';
+import type { MediaChromeListItem } from '../../../types';
 
 const toAttrsStrings = (
   htmlAttrs: { [k: string]: string | boolean | undefined } = {}
 ) => {
   return Object.entries(htmlAttrs).reduce<string[]>(
     (attrStrs, [attrName, attrValue]) => {
-      if (typeof attrValue === "undefined") return attrStrs;
-      if (typeof attrValue === "boolean") {
+      if (typeof attrValue === 'undefined') return attrStrs;
+      if (typeof attrValue === 'boolean') {
         if (!attrValue) return attrStrs;
         return [...attrStrs, attrName];
       }
@@ -19,16 +19,16 @@ const toAttrsStrings = (
   );
 };
 
-const A11YDescription: React.FC<{ value?: MediaChromeListItem["a11y"] }> = ({
+const A11YDescription: React.FC<{ value?: MediaChromeListItem['a11y'] }> = ({
   value,
 }) => {
   if (!value) return null;
-  const label = "Accessibility Features";
+  const label = 'Accessibility Features';
   return (
     <div className="flex flex-col items-top">
       <h3
         aria-hidden="true"
-        style={{ fontSize: "13px", letterSpacing: "1px" }}
+        style={{ fontSize: '13px', letterSpacing: '1px' }}
         className="uppercase font-semibold"
       >
         {label}
@@ -49,7 +49,7 @@ const Description: React.FC<{
   defaultDescription?: string;
 }> = ({
   selectedItem,
-  defaultDescription = "Hover over each player element to explore more.",
+  defaultDescription = 'Hover over each player element to explore more.',
 }) => {
   const { description = defaultDescription, a11y } = selectedItem ?? {};
 

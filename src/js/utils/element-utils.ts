@@ -1,13 +1,11 @@
 import { MediaStateReceiverAttributes } from '../constants.js';
-
-/** @typedef {import('../media-controller.js').MediaController} MediaController */
+import type MediaController from '../media-controller.js';
 
 /**
  * Get the media controller element from the `mediacontroller` attribute or closest ancestor.
- * @param  {HTMLElement} host
- * @return {MediaController | undefined}
+ * @param host - The element to search for the media controller.
  */
-export function getMediaController(host) {
+export function getMediaController(host: HTMLElement): MediaController | undefined {
   return (
     getAttributeMediaController(host) ??
     closestComposedNode(host, 'media-controller')
@@ -16,23 +14,21 @@ export function getMediaController(host) {
 
 /**
  * Get the media controller element from the `mediacontroller` attribute.
- * @param  {HTMLElement} host
- * @return {MediaController | undefined}
+ * @param host - The element to search for the media controller.
+ * @return
  */
-export function getAttributeMediaController(host) {
+export function getAttributeMediaController(host: HTMLElement): MediaController | undefined {
   const { MEDIA_CONTROLLER } = MediaStateReceiverAttributes;
   const mediaControllerId = host.getAttribute(MEDIA_CONTROLLER);
 
   if (mediaControllerId) {
-    return /** @type MediaController */ (
-      /** @type {unknown} */ (
-        getDocumentOrShadowRoot(host)?.getElementById(mediaControllerId)
-      )
+    return (
+      getDocumentOrShadowRoot(host)?.getElementById(mediaControllerId) as MediaController
     );
   }
 }
 
-export const updateIconText = (svg, value, selector = '.value') => {
+export const updateIconText = (svg: HTMLElement, value: string, selector: string = '.value'): void => {
   const node = svg.querySelector(selector);
 
   if (!node) return;
@@ -40,14 +36,14 @@ export const updateIconText = (svg, value, selector = '.value') => {
   node.textContent = value;
 };
 
-export const getAllSlotted = (el, name) => {
+export const getAllSlotted = (el: HTMLElement, name: string): HTMLCollection | HTMLElement[] => {
   const slotSelector = `slot[name="${name}"]`;
-  const slot = el.shadowRoot.querySelector(slotSelector);
+  const slot: HTMLSlotElement = el.shadowRoot.querySelector(slotSelector);
   if (!slot) return [];
   return slot.children;
 };
 
-export const getSlotted = (el, name) => getAllSlotted(el, name)[0];
+export const getSlotted = (el: HTMLElement, name: string): HTMLElement => getAllSlotted(el, name)[0] as HTMLElement;
 
 /**
  *
@@ -55,40 +51,38 @@ export const getSlotted = (el, name) => getAllSlotted(el, name)[0];
  * @param {Node} [childNode]
  * @returns boolean
  */
-export const containsComposedNode = (rootNode, childNode) => {
+export const containsComposedNode = (rootNode: Node, childNode: Node): boolean => {
   if (!rootNode || !childNode) return false;
   if (rootNode?.contains(childNode)) return true;
   return containsComposedNode(
     rootNode,
-    /** @type {ShadowRoot} */ (childNode.getRootNode()).host
+    (childNode.getRootNode() as ShadowRoot).host
   );
 };
 
-export const closestComposedNode = (childNode, selector) => {
+export const closestComposedNode = <T extends Element = Element>(childNode: Element, selector: string): T => {
   if (!childNode) return null;
   const closest = childNode.closest(selector);
-  if (closest) return closest;
-  return closestComposedNode(childNode.getRootNode().host, selector);
+  if (closest) return closest as T;
+  return closestComposedNode((childNode.getRootNode() as ShadowRoot).host, selector);
 };
 
 /**
  * Get the active element, accounting for Shadow DOM subtrees.
- * @param {Document|ShadowRoot} root
- * @return {Element|null}
+ * @param root - The root node to search for the active element.
  */
-export function getActiveElement(root = document) {
+export function getActiveElement(root: Document | ShadowRoot = document): HTMLElement {
   const activeEl = root?.activeElement;
   if (!activeEl) return null;
-  return getActiveElement(activeEl.shadowRoot) ?? activeEl;
+  return getActiveElement(activeEl.shadowRoot) ?? activeEl as HTMLElement;
 }
 
 /**
  * Gets the document or shadow root of a node, not the node itself which can lead to bugs.
  * https://developer.mozilla.org/en-US/docs/Web/API/Node/getRootNode#return_value
- * @param {Node} node
- * @return {Document|ShadowRoot|null}
+ * @param node - The node to get the root node from.
  */
-export function getDocumentOrShadowRoot(node) {
+export function getDocumentOrShadowRoot(node: Node): Document | ShadowRoot | null {
   const rootNode = node?.getRootNode?.();
   if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
     return rootNode;
@@ -98,10 +92,9 @@ export function getDocumentOrShadowRoot(node) {
 
 /**
  * Checks if the element is visible includes opacity: 0 and visibility: hidden.
- * @param  {HTMLElement} element
- * @return {Boolean}
+ * @param element - The element to check for visibility.
  */
-export function isElementVisible(element, depth = 3) {
+export function isElementVisible(element: HTMLElement, depth: number = 3): boolean {
   // Supported by Chrome and Firefox https://caniuse.com/mdn-api_element_checkvisibility
   // https://drafts.csswg.org/cssom-view-1/#dom-element-checkvisibility
   // @ts-ignore
@@ -129,15 +122,16 @@ export function isElementVisible(element, depth = 3) {
   return true;
 }
 
+export type Point = { x: number; y: number };
+
 /**
  * Get progress ratio of a point on a line segment.
- * @param  {number} x
- * @param  {number} y
- * @param  {{ x: number, y: number }} p1
- * @param  {{ x: number, y: number }} p2
- * @return {number}
+ * @param x - The x coordinate of the point.
+ * @param y - The y coordinate of the point.
+ * @param p1 - The first point of the line segment.
+ * @param p2 - The second point of the line segment.
  */
-export function getPointProgressOnLine(x, y, p1, p2) {
+export function getPointProgressOnLine(x: number, y: number, p1: Point, p2: Point): number {
   const segment = distance(p1, p2);
   const toStart = distance(p1, { x, y });
   const toEnd = distance(p2, { x, y });
@@ -148,14 +142,14 @@ export function getPointProgressOnLine(x, y, p1, p2) {
   return toStart / segment;
 }
 
-export function distance(p1, p2) {
+export function distance(p1: Point, p2: Point) {
   return Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
 }
 
 /**
  * Get or insert a CSSStyleRule with a selector in an element containing <style> tags.
- * @param  {Element|ShadowRoot} styleParent
- * @param  {string} selectorText
+ * @param styleParent - The parent element containing <style> tags.
+ * @param selectorText - The selector text of the CSS rule.
  * @return {CSSStyleRule | {
  *   style: {
  *     setProperty: () => void,
@@ -168,7 +162,7 @@ export function distance(p1, p2) {
  *   selectorText: string,
  * }}
  */
-export function getOrInsertCSSRule(styleParent, selectorText) {
+export function getOrInsertCSSRule(styleParent: Element | ShadowRoot, selectorText: string): CSSStyleRule {
   const cssRule = getCSSRule(styleParent, (st) => st === selectorText);
   if (cssRule) return cssRule;
   return insertCSSRule(styleParent, selectorText);
@@ -176,13 +170,12 @@ export function getOrInsertCSSRule(styleParent, selectorText) {
 
 /**
  * Get a CSSStyleRule with a selector in an element containing <style> tags.
- * @param  {Element|ShadowRoot} styleParent
- * @param  {(selectorText) => boolean} predicate
- * @return {CSSStyleRule | undefined}
+ * @param  styleParent - The parent element containing <style> tags.
+ * @param  predicate - A function that returns true for the desired CSSStyleRule.
  */
-export function getCSSRule(styleParent, predicate) {
+export function getCSSRule(styleParent: Element | ShadowRoot, predicate: (selectorText: string) => boolean): CSSStyleRule | undefined {
   let style;
-  // @ts-ignore
+
   for (style of styleParent.querySelectorAll('style')) {
     // Catch this error. e.g. browser extension adds style tags.
     //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
@@ -201,11 +194,10 @@ export function getCSSRule(styleParent, predicate) {
 
 /**
  * Insert a CSSStyleRule with a selector in an element containing <style> tags.
- * @param  {Element|ShadowRoot} styleParent
- * @param  {string} selectorText
- * @return {CSSStyleRule | undefined}
+ * @param styleParent - The parent element containing <style> tags.
+ * @param selectorText - The selector text of the CSS rule.
  */
-export function insertCSSRule(styleParent, selectorText) {
+export function insertCSSRule(styleParent: Element | ShadowRoot, selectorText: string): CSSStyleRule | undefined {
   const styles = styleParent.querySelectorAll('style') ?? [];
   const style = styles?.[styles.length - 1];
 
@@ -221,7 +213,7 @@ export function insertCSSRule(styleParent, selectorText) {
     return {
       // @ts-ignore
       style: {
-        setProperty: () => {},
+        setProperty: () => { },
         removeProperty: () => '',
         getPropertyValue: () => '',
       },
@@ -236,22 +228,22 @@ export function insertCSSRule(styleParent, selectorText) {
 
 /**
  * Gets the number represented by the attribute
- * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
- * @param {string} attrName
- * @param {number} [defaultValue = Number.NaN]
- * @returns {number | undefined} Will return undefined if no attribute set
+ * @param el - (Should be an HTMLElement, but need any for SSR cases)
+ * @param attrName - The name of the attribute to get
+ * @param defaultValue - The default value to return if the attribute is not set
+ * @returns Will return undefined if no attribute set
  */
-export function getNumericAttr(el, attrName, defaultValue = Number.NaN) {
+export function getNumericAttr(el: HTMLElement, attrName: string, defaultValue: number = Number.NaN): number | undefined {
   const attrVal = el.getAttribute(attrName);
   return attrVal != null ? +attrVal : defaultValue;
 }
 
 /**
- * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
- * @param {string} attrName
- * @param {number} value
+ * @param el - (Should be an HTMLElement, but need any for SSR cases)
+ * @param attrName - The name of the attribute to set
+ * @param value - The value to set
  */
-export function setNumericAttr(el, attrName, value) {
+export function setNumericAttr(el: HTMLElement, attrName: string, value: number): void {
   // Simple cast to number
   const nextNumericValue = +value;
 
@@ -270,20 +262,19 @@ export function setNumericAttr(el, attrName, value) {
 }
 
 /**
- * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
- * @param {string} attrName
- * @returns {boolean}
+ * @param el - (Should be an HTMLElement, but need any for SSR cases)
+ * @param attrName - The name of the attribute to get
  */
-export function getBooleanAttr(el, attrName) {
+export function getBooleanAttr(el: HTMLElement, attrName: string): boolean {
   return el.hasAttribute(attrName);
 }
 
 /**
- * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
- * @param {string} attrName
- * @param {boolean} value
+ * @param el - (Should be an HTMLElement, but need any for SSR cases)
+ * @param attrName - The name of the attribute to set
+ * @param value - The value to set
  */
-export function setBooleanAttr(el, attrName, value) {
+export function setBooleanAttr(el: HTMLElement, attrName: string, value: boolean): void {
   // also handles undefined
   if (value == null) {
     if (el.hasAttribute(attrName)) {
@@ -300,19 +291,20 @@ export function setBooleanAttr(el, attrName, value) {
 }
 
 /**
- * @param {any} el (Should be an HTMLElement, but need any for SSR cases)
- * @param {string} attrName
+ * @param el - (Should be an HTMLElement, but need any for SSR cases)
+ * @param attrName - The name of the attribute to get
+ * @param defaultValue - The default value to return if the attribute is not set
  */
-export function getStringAttr(el, attrName, defaultValue = null) {
+export function getStringAttr(el: HTMLElement, attrName: string, defaultValue: any = null) {
   return el.getAttribute(attrName) ?? defaultValue;
 }
 
 /**
- * @param {*} el (Should be an HTMLElement, but need any for SSR cases)
- * @param {string} attrName
- * @param {string} value
+ * @param el -  (Should be an HTMLElement, but need any for SSR cases)
+ * @param attrName - The name of the attribute to get
+ * @param value - The value to set
  */
-export function setStringAttr(el, attrName, value) {
+export function setStringAttr(el: HTMLElement, attrName: string, value: string) {
   // also handles undefined
   if (value == null) {
     if (el.hasAttribute(attrName)) {

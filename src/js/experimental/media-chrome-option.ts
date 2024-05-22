@@ -1,3 +1,4 @@
+import { CustomElement } from '../utils/CustomElement.js';
 import { document, globalThis } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
@@ -61,7 +62,7 @@ export const Attributes = {
  * @cssproperty --media-option-hover-outline-offset - `outline-offset` of hovered option.
  * @cssproperty --media-option-focus-shadow - `box-shadow` of the :focus-visible state
  */
-class MediaChromeOption extends globalThis.HTMLElement {
+class MediaChromeOption extends CustomElement {
   static get observedAttributes() {
     return [Attributes.DISABLED, Attributes.SELECTED, Attributes.VALUE];
   }
@@ -107,21 +108,24 @@ class MediaChromeOption extends globalThis.HTMLElement {
     }
   }
 
-  enable() {
+  enable(): void {
     if (!this.hasAttribute('tabindex')) {
-      this.setAttribute('tabindex', -1);
+      this.setAttribute('tabindex', '-1');
     }
     if (!this.hasAttribute('aria-selected')) {
       this.setAttribute('aria-selected', 'false');
     }
   }
 
-  disable() {
+  disable(): void {
     this.removeAttribute('tabindex');
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
-
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === Attributes.SELECTED && !this.#dirty) {
       this.setAttribute('aria-selected', newValue != null ? 'true' : 'false');
     } else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
@@ -133,7 +137,7 @@ class MediaChromeOption extends globalThis.HTMLElement {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     if (!this.hasAttribute(Attributes.DISABLED)) {
       this.enable();
     }
@@ -144,14 +148,14 @@ class MediaChromeOption extends globalThis.HTMLElement {
     this.#reset();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     this.disable();
 
     this.#reset();
     this.#ownerElement = null;
   }
 
-  #reset() {
+  #reset(): void {
     const options = this.#ownerElement?.options;
     if (!options) return;
 
@@ -174,7 +178,7 @@ class MediaChromeOption extends globalThis.HTMLElement {
     selectedOption?.setAttribute('aria-selected', 'true');
   }
 
-  handleClick() { }
+  handleClick(): void { }
 }
 
 function closestOptionsContainer(childNode, parentNode) {

@@ -13,6 +13,7 @@ import { observeResize } from './utils/resize-observer.js';
 import { document, globalThis } from './utils/server-safe-globals.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
+import { CustomElement } from './utils/CustomElement.js';
 
 export const Attributes = {
   AUDIO: 'audio',
@@ -24,7 +25,7 @@ export const Attributes = {
   USER_INACTIVE: 'userinactive',
 };
 
-const template = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
   <style>
@@ -271,8 +272,8 @@ function getBreakpoints(breakpoints: Record<string, string>, width: number) {
  * @cssprop --media-background-color - `background-color` of container.
  * @cssprop --media-slot-display - `display` of the media slot (default none for [audio] usage).
  */
-class MediaContainer extends globalThis.HTMLElement {
-  static get observedAttributes() {
+class MediaContainer extends CustomElement {
+  static get observedAttributes(): string[] {
     return (
       [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED]
         .concat(MEDIA_UI_ATTRIBUTE_NAMES)
@@ -284,13 +285,15 @@ class MediaContainer extends globalThis.HTMLElement {
               MediaUIAttributes.MEDIA_RENDITION_LIST,
               MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST,
               MediaUIAttributes.MEDIA_CHAPTERS_CUES,
-            ].includes(name)
+            ].includes(name as any)
         )
     );
   }
 
   #pointerDownTimeStamp = 0;
   #currentMedia: HTMLMediaElement | null = null;
+  #inactiveTimeout: ReturnType<typeof setTimeout> | null = null;
+  #autohide: number | undefined;
   breakpointsComputed = false;
 
   constructor() {
@@ -309,7 +312,7 @@ class MediaContainer extends globalThis.HTMLElement {
       for (let mutation of mutationsList) {
         if (mutation.type === 'childList') {
           // Media element being removed
-          mutation.removedNodes.forEach((node) => {
+          mutation.removedNodes.forEach((node: Element) => {
             // Is this a direct child media element of media-controller?
             // TODO: This accuracy doesn't matter after moving away from media attrs.
             // Could refactor so we can always just call 'dispose' on any removed media el.
@@ -318,7 +321,7 @@ class MediaContainer extends globalThis.HTMLElement {
               // el with slot=media in the child list. There could be multiple.
               let previousSibling =
                 mutation.previousSibling &&
-                mutation.previousSibling.previousElementSibling;
+                (mutation.previousSibling as Element).previousElementSibling;
 
               // Must have been first if no prev sibling or new media
               if (!previousSibling || !media) {
@@ -328,7 +331,8 @@ class MediaContainer extends globalThis.HTMLElement {
                 // Should remain true otherwise
                 let wasFirst = previousSibling.slot !== 'media';
                 while (
-                  (previousSibling = previousSibling.previousSibling) !== null
+                  (previousSibling =
+                    previousSibling.previousSibling as Element) !== null
                 ) {
                   if (previousSibling.slot == 'media') wasFirst = false;
                 }
@@ -383,7 +387,9 @@ class MediaContainer extends globalThis.HTMLElement {
     // e.g. chaining media slots for media themes.
 
     /** @type {HTMLSlotElement} */
-    let chainedSlot = this.querySelector(':scope > slot[slot=media]');
+    let chainedSlot = this.querySelector(
+      ':scope > slot[slot=media]'
+    ) as HTMLSlotElement;
     if (chainedSlot) {
       chainedSlot.addEventListener('slotchange', () => {
         const slotEls = chainedSlot.assignedElements({ flatten: true });
@@ -399,7 +405,11 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   // Could share this code with media-chrome-html-element instead
-  attributeChangedCallback(attrName: string, oldValue: string, newValue: string) {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string,
+    newValue: string
+  ) {
     if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
       this.autohide = newValue;
     }
@@ -416,9 +426,9 @@ class MediaContainer extends globalThis.HTMLElement {
    * videoTracks?,
    * }}
    */
-  get media() {
+  get media(): HTMLVideoElement | null {
     /** @type {HTMLVideoElement} */
-    let media = this.querySelector(':scope > [slot=media]');
+    let media = this.querySelector(':scope > [slot=media]') as HTMLVideoElement;
 
     // Chaining media slots for media templates
     if (media?.nodeName == 'SLOT')
@@ -489,7 +499,8 @@ class MediaContainer extends globalThis.HTMLElement {
   /**
    * @param {HTMLMediaElement} media
    */
-  mediaUnsetCallback(media: HTMLMediaElement) { // eslint-disable-line
+  mediaUnsetCallback(media: HTMLMediaElement) {
+    // eslint-disable-line
     this.#currentMedia = null;
   }
 
@@ -533,7 +544,7 @@ class MediaContainer extends globalThis.HTMLElement {
 
     this.#setActive();
     // Stay visible if hovered over control bar
-    clearTimeout(this._inactiveTimeout);
+    clearTimeout(this.#inactiveTimeout);
 
     // If hovering over something other than controls, we're free to make inactive
     // @ts-ignore
@@ -546,7 +557,10 @@ class MediaContainer extends globalThis.HTMLElement {
     if (event.pointerType === 'touch') {
       const controlsVisible = !this.hasAttribute(Attributes.USER_INACTIVE);
 
-      if ([this, this.media].includes(event.target) && controlsVisible) {
+      if (
+        [this, this.media].includes(event.target as HTMLVideoElement) &&
+        controlsVisible
+      ) {
         this.#setInactive();
       } else {
         this.#scheduleInactive();
@@ -554,7 +568,7 @@ class MediaContainer extends globalThis.HTMLElement {
     } else if (
       event
         .composedPath()
-        .some((el) =>
+        .some((el: HTMLElement) =>
           ['media-play-button', 'media-fullscreen-button'].includes(
             el?.localName
           )
@@ -565,7 +579,7 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   #setInactive() {
-    if (this.autohide < 0) return;
+    if (this.#autohide < 0) return;
     if (this.hasAttribute(Attributes.USER_INACTIVE)) return;
 
     this.setAttribute(Attributes.USER_INACTIVE, '');
@@ -592,24 +606,24 @@ class MediaContainer extends globalThis.HTMLElement {
   #scheduleInactive() {
     this.#setActive();
 
-    clearTimeout(this._inactiveTimeout);
+    clearTimeout(this.#inactiveTimeout);
 
     // Setting autohide to -1 turns off autohide
-    if (this.autohide < 0) return;
+    if (this.#autohide < 0) return;
 
     /** @type {ReturnType<typeof setTimeout>} */
-    this._inactiveTimeout = setTimeout(() => {
+    this.#inactiveTimeout = setTimeout(() => {
       this.#setInactive();
-    }, this.autohide * 1000);
+    }, this.#autohide * 1000);
   }
 
   set autohide(seconds: string) {
     const parsedSeconds = Number(seconds);
-    this._autohide = isNaN(parsedSeconds) ? 0 : parsedSeconds;
+    this.#autohide = isNaN(parsedSeconds) ? 0 : parsedSeconds;
   }
 
-  get autohide() {
-    return this._autohide === undefined ? 2 : this._autohide;
+  get autohide(): string {
+    return (this.#autohide === undefined ? 2 : this.#autohide).toString();
   }
 }
 

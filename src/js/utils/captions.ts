@@ -1,12 +1,13 @@
 import { MediaUIAttributes } from '../constants.js';
+import type { TextTrackLike } from './TextTrackLike.js';
 
 // NOTE: This is generic for any CSS/html list representation. Consider renaming and moving to generic module.
 /**
  * Splits a string (representing TextTracks) into an array of strings based on whitespace.
- * @param {string} [textTracksStr = ''] - a string of 1+ "items" (representing TextTracks), separated by whitespace
- * @returns {Array<string>} An array of non-whitesace strings (each representing a single TextTrack).
+ * @param textTracksStr - a string of 1+ "items" (representing TextTracks), separated by whitespace
+ * @returns An array of non-whitesace strings (each representing a single TextTrack).
  */
-export const splitTextTracksStr = (textTracksStr = '') =>
+export const splitTextTracksStr = (textTracksStr = ''): string[] =>
   textTracksStr.split(/\s+/);
 
 /**
@@ -18,27 +19,27 @@ export const splitTextTracksStr = (textTracksStr = '') =>
  * Note that this format may be expanded to include additional properties, such as
  * `id`.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/TextTrack
- * @param {string} [textTrackStr = ''] - A well-defined TextTrack string representations
- * @returns {Object} An object that resembles a (partial) TextTrack (`{ language: string; label?: string; }`)
+ * @param textTrackStr - A well-defined TextTrack string representations
+ * @returns An object that resembles a (partial) TextTrack (`{ language: string; label?: string; }`)
  */
-export const parseTextTrackStr = (textTrackStr = '') => {
+export const parseTextTrackStr = (textTrackStr = ''): TextTrackLike => {
   let [kind, language, encodedLabel] = textTrackStr.split(':');
   const label = encodedLabel ? decodeURIComponent(encodedLabel) : undefined;
   kind = kind === 'cc' ? 'captions' : 'subtitles';
   return {
-    kind,
+    kind: kind as TextTrackKind,
     language,
     label,
   };
 };
 
 /**
- * Parses a whitespacae-separated string that represents list of TextTracks into an array of TextTrack-like objects,
+ * Parses a whitespace-separated string that represents list of TextTracks into an array of TextTrack-like objects,
  * where each object will have the properties identified by the corresponding string, plus any properties generically
  * provided by the (optional) `textTrackLikeObj` argument.
- * @param {string} [textTracksStr = ''] - a string of 1+ "items" (representing TextTracks), separated by whitespace
- * @param {Object} [textTrackLikeObj] An object that resembles a (partial) TextTrack, used to add generic properties to all parsed TextTracks.
- * @returns {Array<Object>} An array of "TextTrack-like objects", each with properties parsed from the string and any properties from `textTrackLikeObj`.
+ * @param textTracksStr - a string of 1+ "items" (representing TextTracks), separated by whitespace
+ * @param textTrackLikeObj An object that resembles a (partial) TextTrack, used to add generic properties to all parsed TextTracks.
+ * @returns An array of "TextTrack-like objects", each with properties parsed from the string and any properties from `textTrackLikeObj`.
  * @example
  * ```js
  * const tracksStr = 'en-US:English en:English%20%28with%20descriptions%29';
@@ -52,8 +53,8 @@ export const parseTextTrackStr = (textTrackStr = '') => {
  */
 export const parseTextTracksStr = (
   textTracksStr = '',
-  textTrackLikeObj = {}
-) => {
+  textTrackLikeObj: Partial<TextTrackLike> = {}
+): TextTrackLike[] => {
   return splitTextTracksStr(textTracksStr).map((textTrackStr) => {
     const textTrackObj = parseTextTrackStr(textTrackStr);
     return {
@@ -63,12 +64,15 @@ export const parseTextTracksStr = (
   });
 };
 
+export type TrackOrTracks = string[] | TextTrackLike[] | string | TextTrackLike
+export type TextTrackListLike = TextTrackLike[] | TextTrackList;
+
 /**
  * Takes a variety of possible representations of TextTrack(s) and "normalizes" them to an Array of 1+ TextTrack-like objects.
- * @param {Array<string|Object>|string|Object} trackOrTracks - A value representing 1+ TextTracks
- * @returns {Array<Object>} An array of TextTrack-like objects.
+ * @param trackOrTracks - A value representing 1+ TextTracks
+ * @returns An array of TextTrack-like objects.
  */
-export const parseTracks = (trackOrTracks) => {
+export const parseTracks = (trackOrTracks: TrackOrTracks): TextTrackLike[] => {
   if (!trackOrTracks) return [];
   // Already an array, but might be an array of strings, objects, or both.
   if (Array.isArray(trackOrTracks)) {
@@ -91,15 +95,12 @@ export const parseTracks = (trackOrTracks) => {
 
 /**
  * Translates a TextTrack-like object into a well-defined string representation for the TextTrack
- * @param {Object} obj - A TextTrack or TextTrack-like object
- * @param {string} obj.kind - A required kind for the track.
- * @param {string} [obj.label] - An optional label for the track.
- * @param {string} [obj.language] - The BCP-47 compliant string representing the language code of the track
+ * @param obj - A TextTrack or TextTrack-like object
  * @returns {string} A string representing a TextTrack with the format: "language[:label]"
  */
 export const formatTextTrackObj = (
-  { kind, label, language } = { kind: 'subtitles' }
-) => {
+  { kind, label, language }: TextTrackLike = { kind: 'subtitles' }
+): string => {
   if (!label) return language;
   return `${kind === 'captions' ? 'cc' : 'sb'}:${language}:${encodeURIComponent(
     label
@@ -109,19 +110,19 @@ export const formatTextTrackObj = (
 /**
  * Translates a set of TextTracks into a well-defined, whitespace-separated string representation of the set
  * @see https://developer.mozilla.org/en-US/docs/Web/API/TextTrackList
- * @param {Array<TextTrack|object>|TextTrackList} textTracks - A TextTracks object or an Array of TextTracks or TextTrack-like objects.
+ * @param textTracks - A TextTracks object or an Array of TextTracks or TextTrack-like objects.
  * @returns A string representing a set of TextTracks, separated by whitespace.
  */
-export const stringifyTextTrackList = (textTracks = []) => {
+export const stringifyTextTrackList = (textTracks: TextTrackListLike = []): string => {
   return Array.prototype.map.call(textTracks, formatTextTrackObj).join(' ');
 };
 
 // NOTE: This is a generic higher order fn. Consider and moving to generic module.
 /**
  * A generic higher-order function that yields a predicate to assert whether or not some value has the provided key/value pair
- * @param {string|number} key - The property key/name against which we'd like to match
- * @param {*} value - The value of the key we expect for a match
- * @returns {Function} - A predicate function that yields true if the provided object has the expected key/value pair, otherwise false.
+ * @param key - The property key/name against which we'd like to match
+ * @param value - The value of the key we expect for a match
+ * @returns A predicate function that yields true if the provided object has the expected key/value pair, otherwise false.
  * @example
  * ```js
  * const hasShowingMode = isMatchingPropOf('mode', 'showing');
@@ -130,13 +131,13 @@ export const stringifyTextTrackList = (textTracks = []) => {
  * hasShowingMode({ no_mode: 'any' }); // false
  * ```
  */
-export const isMatchingPropOf = (key, value) => (obj) => obj[key] === value;
+export const isMatchingPropOf = (key: string | number, value: any): (value: any) => boolean => (obj) => obj[key] === value;
 
 // NOTE: This is a generic higher order fn. Consider renaming and moving to generic module.
 /**
  * A higher-order function that yields a single predicate to assert whether or not some value has *every* key/value pair defined in `filterObj`.
- * @param {object} filterObj - An object of key/value pairs that we expect on a given object
- * @returns {Function} - A predicate function that yields true iff the provided object has *every* key/value pair in `filterObj`, otherwise false
+ * @param filterObj - An object of key/value pairs that we expect on a given object
+ * @returns A predicate function that yields true iff the provided object has *every* key/value pair in `filterObj`, otherwise false
  * @example
  * ```js
  * const track1 = { label: 'English', kind: 'captions', language: 'en-US' };
@@ -154,7 +155,7 @@ export const isMatchingPropOf = (key, value) => (obj) => obj[key] === value;
  * isMatchingTrack({ no_corresponding_props: 'any' }); // false
  * ```
  */
-export const textTrackObjAsPred = (filterObj) => {
+export const textTrackObjAsPred = (filterObj: any): (textTrack: TextTrackLike) => boolean => {
   const preds = Object.entries(filterObj).map(([key, value]) => {
     // Translate each key/value pair into a single predicate
     return isMatchingPropOf(key, value);
@@ -168,11 +169,11 @@ export const textTrackObjAsPred = (filterObj) => {
  * Updates any `tracks` that match one of the `tracksToUpdate` to be in the provided TextTrack `mode`.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/TextTrack/mode
  * @see {@link parseTracks}
- * @param {string} mode - The desired mode for any matching TextTracks. Should be one of "disabled"|"hidden"|"showing"
- * @param {TextTrackList|Array<TextTrack|Object>} tracks - A TextTracks object or array of TextTracks that should contain any matching TextTracks to update
- * @param {Array<string|Object>|string|Object} tracksToUpdate - A value representing a set of TextTracks
+ * @param mode - The desired mode for any matching TextTracks. Should be one of "disabled"|"hidden"|"showing"
+ * @param tracks - A TextTracks object or array of TextTracks that should contain any matching TextTracks to update
+ * @param tracksToUpdate - A value representing a set of TextTracks
  */
-export const updateTracksModeTo = (mode, tracks = [], tracksToUpdate = []) => {
+export const updateTracksModeTo = (mode: TextTrackMode, tracks: TextTrackListLike = [], tracksToUpdate: TrackOrTracks = []) => {
   // 1. Normalize the tracksToUpdate into an array of "partial TextTrack-like" objects
   // 2. Convert each object into its own predicate function to identify that an actual TextTrack is a match
   const preds = parseTracks(tracksToUpdate).map(textTrackObjAsPred);
@@ -191,14 +192,16 @@ export const updateTracksModeTo = (mode, tracks = [], tracksToUpdate = []) => {
     });
 };
 
+export type TrackFilter = (track: TextTrackLike) => boolean;
+
 /**
  * Takes an `HTMLMediaElement media` and yields an array of `TextTracks` that match the provided `filterPredOrObj` criteria (or all `TextTracks` by default).
  * @see https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/textTracks
  * @see {@link textTrackObjAsPred}
- * @param {Partial<HTMLMediaElement>} media - An HTMLMediaElement with an expected textTracks value
+ * @param media - An HTMLMediaElement with an expected textTracks value
  * (NOTE: This uses "structural polymorphism", so as long as `media` has an Array-like `textTracks` value of TextTrack-like objects, this function will work).
- * @param {Function|Object} [filterPredOrObj] Either a predicate function or an object that can be translated into a predicate function of matching key/value pairs.
- * @returns {Array<TextTrack>} An array of TextTracks that match the given `filterPredOrObj` (or all TextTracks on `media` by default)
+ * @param filterPredOrObj - Either a predicate function or an object that can be translated into a predicate function of matching key/value pairs.
+ * @returns An array of TextTracks that match the given `filterPredOrObj` (or all TextTracks on `media` by default)
  * @example
  * ```html
  * <!DOCTYPE html>
@@ -224,7 +227,7 @@ export const updateTracksModeTo = (mode, tracks = [], tracksToUpdate = []) => {
  * // [{ label: 'Spanish', kind: 'subtitles', language: 'es' }, { label: 'English', kind: 'subtitles', language: 'en' }, { label: 'English', kind: 'captions', language: 'en' }]
  * ```
  */
-export const getTextTracksList = (media, filterPredOrObj = () => true) => {
+export const getTextTracksList = (media: HTMLVideoElement, filterPredOrObj: TrackFilter | TextTrackLike = (track: TextTrackLike) => true): TextTrackLike[] => {
   if (!media?.textTracks) return [];
 
   const filterPred =
@@ -238,10 +241,10 @@ export const getTextTracksList = (media, filterPredOrObj = () => true) => {
 /**
  * Are captions or subtitles enabled?
  *
- * @param {HTMLElement & { mediaSubtitlesShowing?: any[] }} el - An HTMLElement that has caption related attributes on it.
- * @returns {boolean} Whether captions are enabled or not
+ * @param el - An HTMLElement that has caption related attributes on it.
+ * @returns Whether captions are enabled or not
  */
-export const areSubsOn = (el) => {
+export const areSubsOn = (el: HTMLElement & { mediaSubtitlesShowing?: any[] }): boolean => {
   const showingSubtitles =
     !!el.mediaSubtitlesShowing?.length ||
     el.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);

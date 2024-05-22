@@ -52,7 +52,7 @@ nav ul {
 }
 
 .content > section > :first-child {
-  margin-top: .5em;
+  margin-top: 0.5em;
 }
 
 /* Typography */
@@ -280,16 +280,16 @@ strong {
 /* Supporting Content */
 
 code {
-  --padding-block: .125rem;
-  --padding-inline: .25rem;
+  --padding-block: 0.125rem;
+  --padding-inline: 0.25rem;
 
   font-family: var(--font-mono);
-  font-size: .85em;
+  font-size: 0.85em;
   color: var(--theme-code-inline-text);
   line-height: 1.5;
   background-color: var(--theme-code-inline-bg);
   padding: var(--padding-block) var(--padding-inline);
-  margin: calc(var(--padding-block) * -1) - .125em;
+  margin: calc(var(--padding-block) * -1) - 0.125em;
   word-break: break-word;
 }
 
@@ -328,15 +328,15 @@ table {
 
 pre {
   -webkit-font-smoothing: antialiased;
-  font-size: .8125em; /* 13px */
-  background-color: hsla(0, 0%, 16%, 1.00) !important;
+  font-size: 0.8125em; /* 13px */
+  background-color: hsla(0, 0%, 16%, 1) !important;
 }
 
 td,
 th {
   border-top: 1px solid var(--theme-bg-offset);
   border-right: 1px solid var(--theme-bg-offset);
-  padding: .875rem;
+  padding: 0.875rem;
   height: 3.5rem;
   text-align: left;
 }

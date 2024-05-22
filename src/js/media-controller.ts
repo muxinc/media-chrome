@@ -15,7 +15,10 @@ import {
   MediaUIProps,
 } from './constants.js';
 import { MediaContainer } from './media-container.js';
-import createMediaStore from './media-store/media-store.js';
+import createMediaStore, {
+  type MediaStore,
+} from './media-store/media-store.js';
+import { CustomElement } from './utils/CustomElement.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { stringifyTextTrackList } from './utils/captions.js';
 import {
@@ -87,12 +90,15 @@ class MediaController extends MediaContainer {
     );
   }
 
+  mediaStateReceivers = [];
+  associatedElementSubscriptions = new Map();
+
   #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
-  #fullscreenElement;
-  #mediaStore;
-  #mediaStateCallback;
-  #mediaStoreUnsubscribe;
-  #mediaStateEventHandler = (event) => {
+  #fullscreenElement: HTMLElement;
+  #mediaStore: MediaStore;
+  #mediaStateCallback: (nextState: any) => void;
+  #mediaStoreUnsubscribe: () => void;
+  #mediaStateEventHandler = (event): void => {
     this.#mediaStore?.dispatch(event);
   };
 
@@ -100,12 +106,11 @@ class MediaController extends MediaContainer {
     super();
 
     // Track externally associated control elements
-    this.mediaStateReceivers = [];
-    this.associatedElementSubscriptions = new Map();
+
     this.associateElement(this);
 
     let prevState = {};
-    this.#mediaStateCallback = (nextState) => {
+    this.#mediaStateCallback = (nextState: any): void => {
       Object.entries(nextState).forEach(([stateName, stateValue]) => {
         // Make sure to propagate initial state, even if still undefined (CJP)
         if (stateName in prevState && prevState[stateName] === stateValue)
@@ -135,9 +140,9 @@ class MediaController extends MediaContainer {
           ? +this.getAttribute(Attributes.DEFAULT_DURATION)
           : undefined,
         defaultStreamType:
-          /** @type {import('./media-store/state-mediator.js').StreamTypeValue} */ (
-            this.getAttribute(Attributes.DEFAULT_STREAM_TYPE)
-          ) ?? undefined,
+          /** @type {import('./media-store/state-mediator.js').StreamTypeValue} */ this.getAttribute(
+          Attributes.DEFAULT_STREAM_TYPE
+        ) ?? undefined,
         liveEdgeOffset: this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)
           ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
           : undefined,
@@ -150,11 +155,11 @@ class MediaController extends MediaContainer {
     });
   }
 
-  get mediaStore() {
+  get mediaStore(): MediaStore {
     return this.#mediaStore;
   }
 
-  set mediaStore(value) {
+  set mediaStore(value: MediaStore) {
     if (this.#mediaStore) {
       this.#mediaStoreUnsubscribe?.();
       this.#mediaStoreUnsubscribe = undefined;
@@ -171,11 +176,11 @@ class MediaController extends MediaContainer {
     );
   }
 
-  get fullscreenElement() {
+  get fullscreenElement(): HTMLElement {
     return this.#fullscreenElement ?? this;
   }
 
-  set fullscreenElement(element) {
+  set fullscreenElement(element: HTMLElement) {
     if (this.hasAttribute(Attributes.FULLSCREEN_ELEMENT)) {
       this.removeAttribute(Attributes.FULLSCREEN_ELEMENT);
     }
@@ -187,7 +192,11 @@ class MediaController extends MediaContainer {
     });
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === Attributes.NO_HOTKEYS) {
@@ -231,10 +240,8 @@ class MediaController extends MediaContainer {
         },
       });
     } else if (attrName === Attributes.FULLSCREEN_ELEMENT) {
-      const el = newValue
-        ? /** @type {Document|ShadowRoot} */ (
-            /** @type {unknown} */ this.getRootNode()
-        )?.getElementById(newValue)
+      const el: HTMLElement = newValue
+        ? (this.getRootNode() as Document)?.getElementById(newValue)
         : undefined;
 
       // NOTE: Setting the internal private prop here instead of using the setter to not
@@ -248,7 +255,7 @@ class MediaController extends MediaContainer {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     // NOTE: Need to defer default MediaStore creation until connected for use cases that
     // rely on createElement('media-controller') (like many frameworks "under the hood") (CJP).
     if (!this.#mediaStore && !this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
@@ -272,7 +279,7 @@ class MediaController extends MediaContainer {
     this.enableHotkeys();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     // mediaUnsetCallback() is called in super.disconnectedCallback();
     super.disconnectedCallback?.();
 
@@ -450,9 +457,10 @@ class MediaController extends MediaContainer {
     // keysUsed is either an attribute or a property.
     // The attribute is a DOM array and the property is a JS array
     // In the attribute Space represents the space key and gets convered to ' '
+    const target = e.target as any;
     const keysUsed = (
-      e.target.getAttribute(Attributes.KEYS_USED)?.split(' ') ??
-      e.target?.keysUsed ??
+      target.getAttribute(Attributes.KEYS_USED)?.split(' ') ??
+      target?.keysUsed ??
       []
     )
       .map((key) => (key === 'Space' ? ' ' : key))
@@ -562,13 +570,13 @@ const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 const MEDIA_UI_PROP_NAMES = Object.values(MediaUIProps);
 
 const getMediaUIAttributesFrom = (child: HTMLElement): string[] => {
-  let { observedAttributes } = child.constructor;
+  let { observedAttributes } = child.constructor as typeof CustomElement;
 
   // observedAttributes are only available if the custom element was upgraded.
   // example: media-gesture-receiver in the shadow DOM requires an upgrade.
   if (!observedAttributes && child.nodeName?.includes('-')) {
     globalThis.customElements.upgrade(child);
-    ({ observedAttributes } = child.constructor);
+    ({ observedAttributes } = child.constructor as typeof CustomElement);
   }
 
   const mediaChromeAttributesList = child
@@ -611,13 +619,19 @@ const CustomAttrSerializer: Record<string, Function> = {
   [MediaUIAttributes.MEDIA_SUBTITLES_LIST]: stringifyTextTrackList,
   [MediaUIAttributes.MEDIA_SUBTITLES_SHOWING]: stringifyTextTrackList,
   [MediaUIAttributes.MEDIA_SEEKABLE]: serializeTuple,
-  [MediaUIAttributes.MEDIA_BUFFERED]: (tuples: any[][]): string => tuples?.map(serializeTuple).join(' '),
-  [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords: number[]): string => coords?.join(' '),
+  [MediaUIAttributes.MEDIA_BUFFERED]: (tuples: any[][]): string =>
+    tuples?.map(serializeTuple).join(' '),
+  [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords: number[]): string =>
+    coords?.join(' '),
   [MediaUIAttributes.MEDIA_RENDITION_LIST]: stringifyRenditionList,
   [MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST]: stringifyAudioTrackList,
 };
 
-const setAttr = async (child: HTMLElement, attrName: string, attrValue: any): Promise<void> => {
+const setAttr = async (
+  child: HTMLElement,
+  attrName: string,
+  attrValue: any
+): Promise<void> => {
   // If the node is not connected to the DOM yet wait on macrotask. Fix for:
   //   Uncaught DOMException: Failed to construct 'CustomElement':
   //   The result must not have attributes
@@ -645,7 +659,8 @@ const setAttr = async (child: HTMLElement, attrName: string, attrValue: any): Pr
   return child.setAttribute(attrName, val);
 };
 
-const isMediaSlotElementDescendant = (el: HTMLElement): boolean => !!el.closest?.('*[slot="media"]');
+const isMediaSlotElementDescendant = (el: HTMLElement): boolean =>
+  !!el.closest?.('*[slot="media"]');
 
 /**
  *
@@ -681,7 +696,10 @@ const traverseForMediaStateReceivers = (
 
     // Traverse all children (including shadowRoot children) to see if they are/have Media State Receivers
     allChildren.forEach((child) =>
-      traverseForMediaStateReceivers(child as HTMLElement, mediaStateReceiverCallback)
+      traverseForMediaStateReceivers(
+        child as HTMLElement,
+        mediaStateReceiverCallback
+      )
     );
   };
 
@@ -704,7 +722,11 @@ const traverseForMediaStateReceivers = (
   traverseForMediaStateReceiversSync(rootNode, mediaStateReceiverCallback);
 };
 
-const propagateMediaState = (els: HTMLElement[], stateName: string, val: any): void => {
+const propagateMediaState = (
+  els: HTMLElement[],
+  stateName: string,
+  val: any
+): void => {
   els.forEach((el) => {
     if (stateName in el) {
       el[stateName] = val;
@@ -771,11 +793,17 @@ const monitorForMediaStateReceivers = (
       if (type === 'childList') {
         // For each added node, register any Media State Receiver descendants (including itself)
         Array.prototype.forEach.call(addedNodes, (node) =>
-          traverseForMediaStateReceivers(node as HTMLElement, registerMediaStateReceiver)
+          traverseForMediaStateReceivers(
+            node as HTMLElement,
+            registerMediaStateReceiver
+          )
         );
         // For each removed node, unregister any Media State Receiver descendants (including itself)
         Array.prototype.forEach.call(removedNodes, (node) =>
-          traverseForMediaStateReceivers(node as HTMLElement, unregisterMediaStateReceiver)
+          traverseForMediaStateReceivers(
+            node as HTMLElement,
+            unregisterMediaStateReceiver
+          )
         );
       } else if (
         type === 'attributes' &&
@@ -795,14 +823,14 @@ const monitorForMediaStateReceivers = (
   // Storing prevSlotted elements so we can cleanup if slotted elements change over time.
   let prevSlotted: HTMLElement[] = [];
   const slotChangeHandler = (event: Event) => {
-    const slotEl = /** @type {HTMLSlotElement} */ event.target;
+    const slotEl = event.target as HTMLSlotElement;
     if (slotEl.name === 'media') return;
     prevSlotted.forEach((node) =>
       traverseForMediaStateReceivers(node, unregisterMediaStateReceiver)
     );
-    prevSlotted = /** @type {HTMLElement[]} */ ([
+    prevSlotted = [
       ...slotEl.assignedElements({ flatten: true }),
-    ]);
+    ] as HTMLElement[];
     prevSlotted.forEach((node) =>
       traverseForMediaStateReceivers(node, registerMediaStateReceiver)
     );

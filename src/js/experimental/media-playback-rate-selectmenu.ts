@@ -10,7 +10,9 @@ import './media-playback-rate-listbox.js';
  */
 class MediaPlaybackRateSelectMenu extends MediaChromeSelectMenu {
   init(): void {
-    const playbackRateButton = document.createElement('media-playback-rate-button');
+    const playbackRateButton = document.createElement(
+      'media-playback-rate-button'
+    );
     playbackRateButton.part.add('button');
     playbackRateButton.preventClick = true;
 

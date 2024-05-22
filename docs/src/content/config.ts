@@ -1,5 +1,5 @@
-import { defineCollection } from "astro:content"
-import { z } from "zod"
+import { defineCollection } from 'astro:content';
+import { z } from 'zod';
 
 export const collections = {
   authors: defineCollection({
@@ -28,14 +28,15 @@ export const collections = {
       location: z.string(),
     }),
   }),
-	showcase: defineCollection({
-		schema: ({ image }) => z.object({
-			title: z.string().min(1),
-      byline: z.string(),
-			image: image(),
-			url: z.string().url(),
-			featured: z.number().min(1).optional(),
-			highlight: z.boolean().default(false),
-		}),
-	}),
+  showcase: defineCollection({
+    schema: ({ image }) =>
+      z.object({
+        title: z.string().min(1),
+        byline: z.string(),
+        image: image(),
+        url: z.string().url(),
+        featured: z.number().min(1).optional(),
+        highlight: z.boolean().default(false),
+      }),
+  }),
 };

@@ -17,7 +17,7 @@ export async function getImportedUrls(
   }
 
   visitedFiles.add(absolutePath);
-  importedUrls.add(path.relative(parentDir, absolutePath))
+  importedUrls.add(path.relative(parentDir, absolutePath));
 
   const content = await readFile(absolutePath, 'utf-8');
   const ast = acorn.parse(content, { sourceType: 'module', ecmaVersion: 2022 });
@@ -29,7 +29,12 @@ export async function getImportedUrls(
     ImportDeclaration(node) {
       const absoluteImportPath = path.resolve(dir, node.source.value);
       promises.push(
-        getImportedUrls(absoluteImportPath, parentDir, importedUrls, visitedFiles)
+        getImportedUrls(
+          absoluteImportPath,
+          parentDir,
+          importedUrls,
+          visitedFiles
+        )
       );
     },
   });
