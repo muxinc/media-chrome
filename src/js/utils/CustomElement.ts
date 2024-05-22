@@ -4,9 +4,9 @@ export class CustomElement extends HTMLElement {
   }
 
   attributeChangedCallback(
-    attrName: string,
-    oldValue: string | null,
-    newValue: string | null
+    attrName: string, // eslint-disable-line
+    oldValue: string | null, // eslint-disable-line
+    newValue: string | null // eslint-disable-line
   ) {}
 
   connectedCallback() {}

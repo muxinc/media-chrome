@@ -59,7 +59,9 @@ export function createIndicator(el: HTMLElement, name: string) {
     return customIndicator;
   }
 
-  let fallbackIndicator = el.shadowRoot.querySelector(`[name="${name}"] > svg`);
+  const fallbackIndicator = el.shadowRoot.querySelector(
+    `[name="${name}"] > svg`
+  );
   if (fallbackIndicator) {
     return fallbackIndicator.cloneNode(true);
   }
@@ -510,7 +512,7 @@ class MediaChromeMenu extends CustomElement {
     const slot = event.target as HTMLSlotElement;
 
     // @ts-ignore
-    for (let node of slot.assignedNodes({ flatten: true }) as HTMLElement[]) {
+    for (const node of slot.assignedNodes({ flatten: true }) as HTMLElement[]) {
       // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
       if (node.nodeType === 3 && node.textContent.trim() === '') {
         node.remove();

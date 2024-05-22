@@ -37,7 +37,9 @@ export function createIndicator(el: HTMLElement, name: string) {
     return customIndicator;
   }
 
-  let fallbackIndicator = el.shadowRoot.querySelector(`[name="${name}"] > svg`);
+  const fallbackIndicator = el.shadowRoot.querySelector(
+    `[name="${name}"] > svg`
+  );
   return fallbackIndicator.cloneNode(true);
 }
 
@@ -196,7 +198,7 @@ class MediaChromeListbox extends CustomElement {
 
     this.container.addEventListener('slotchange', (event: Event) => {
       // @ts-ignore
-      for (let node of event.target.assignedNodes({ flatten: true })) {
+      for (const node of event.target.assignedNodes({ flatten: true })) {
         // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
         if (node.nodeType === 3 && node.textContent.trim() === '') {
           node.remove();

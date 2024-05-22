@@ -469,13 +469,13 @@ class MediaClipSelector extends CustomElement {
 
     // Trigger when the mouse moves over the range
     let rangeEntered = false;
-    let rangeMouseMoveHander = () => {
+    const rangeMouseMoveHander = () => {
       if (!rangeEntered && this.mediaDuration) {
         rangeEntered = true;
         this.thumbnailPreview.style.display = 'block';
         trackMouse();
 
-        let offRangeHandler = (evt) => {
+        const offRangeHandler = (evt) => {
           if (evt.target != this && !this.contains(evt.target)) {
             this.thumbnailPreview.style.display = 'none';
             globalThis.window?.removeEventListener(

@@ -23,11 +23,10 @@ export const splitTextTracksStr = (textTracksStr = ''): string[] =>
  * @returns An object that resembles a (partial) TextTrack (`{ language: string; label?: string; }`)
  */
 export const parseTextTrackStr = (textTrackStr = ''): TextTrackLike => {
-  let [kind, language, encodedLabel] = textTrackStr.split(':');
+  const [kind, language, encodedLabel] = textTrackStr.split(':');
   const label = encodedLabel ? decodeURIComponent(encodedLabel) : undefined;
-  kind = kind === 'cc' ? 'captions' : 'subtitles';
   return {
-    kind: kind as TextTrackKind,
+    kind: kind === 'cc' ? 'captions' : 'subtitles',
     language,
     label,
   };
@@ -240,7 +239,7 @@ export type TrackFilter = (track: TextTrackLike) => boolean;
  */
 export const getTextTracksList = (
   media: HTMLVideoElement,
-  filterPredOrObj: TrackFilter | TextTrackLike = (track: TextTrackLike) => true
+  filterPredOrObj: TrackFilter | TextTrackLike = () => true
 ): TextTrackLike[] => {
   if (!media?.textTracks) return [];
 

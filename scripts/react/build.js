@@ -257,8 +257,7 @@ const setupGlobalsAsync = async () => {
       // NOTE: The current implementation relies on the fact that `customElementNames` will be mutated
       // to add the Custom Element html name for every element that's defined as a result of loading/importing the entryPoints modules (CJP).
       return globalThis.customElementNames;
-    }
-    catch (err) {
+    } catch (err) {
       console.warn('Error setting up globals:', err);
     }
   });

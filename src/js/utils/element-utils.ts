@@ -225,7 +225,7 @@ export function getCSSRule(
     } catch {
       continue;
     }
-    for (let rule of cssRules ?? []) {
+    for (const rule of cssRules ?? []) {
       if (predicate(rule.selectorText)) return rule;
     }
   }

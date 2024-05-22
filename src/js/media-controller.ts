@@ -615,7 +615,7 @@ const isMediaStateReceiver = (child: HTMLElement): boolean => {
 
 const serializeTuple = (tuple: any[]): string | undefined => tuple?.join?.(':');
 
-const CustomAttrSerializer: Record<string, Function> = {
+const CustomAttrSerializer: Record<string, (value: any) => string> = {
   [MediaUIAttributes.MEDIA_SUBTITLES_LIST]: stringifyTextTrackList,
   [MediaUIAttributes.MEDIA_SUBTITLES_SHOWING]: stringifyTextTrackList,
   [MediaUIAttributes.MEDIA_SEEKABLE]: serializeTuple,
@@ -673,7 +673,7 @@ const isMediaSlotElementDescendant = (el: HTMLElement): boolean =>
  */
 const traverseForMediaStateReceivers = (
   rootNode: HTMLElement,
-  mediaStateReceiverCallback: Function
+  mediaStateReceiverCallback: (element: HTMLElement) => void
 ): void => {
   // We (currently) don't check if descendants of the `media` (e.g. <video/>) are Media State Receivers
   // See also: `propagateMediaState`
@@ -683,7 +683,7 @@ const traverseForMediaStateReceivers = (
 
   const traverseForMediaStateReceiversSync = (
     rootNode: HTMLElement,
-    mediaStateReceiverCallback: Function
+    mediaStateReceiverCallback: (element: HTMLElement) => void
   ): void => {
     // The rootNode is itself a Media State Receiver
     if (isMediaStateReceiver(rootNode)) {
@@ -753,21 +753,21 @@ const propagateMediaState = (
  */
 const monitorForMediaStateReceivers = (
   rootNode: HTMLElement,
-  registerMediaStateReceiver: Function,
-  unregisterMediaStateReceiver: Function
-): Function => {
+  registerMediaStateReceiver: (el: HTMLElement) => void,
+  unregisterMediaStateReceiver: (el: HTMLElement) => void
+): (() => void) => {
   // First traverse the tree to register any current Media State Receivers
   traverseForMediaStateReceivers(rootNode, registerMediaStateReceiver);
 
   // Monitor for any event-based requests from descendants to register/unregister as a Media State Receiver
   const registerMediaStateReceiverHandler = (evt: Event) => {
     const el = evt?.composedPath()[0] ?? evt.target;
-    registerMediaStateReceiver(el);
+    registerMediaStateReceiver(el as HTMLElement);
   };
 
   const unregisterMediaStateReceiverHandler = (evt: Event) => {
     const el = evt?.composedPath()[0] ?? evt.target;
-    unregisterMediaStateReceiver(el);
+    unregisterMediaStateReceiver(el as HTMLElement);
   };
 
   rootNode.addEventListener(
@@ -811,10 +811,10 @@ const monitorForMediaStateReceivers = (
       ) {
         if (isMediaStateReceiver(target as HTMLElement)) {
           // Changed from a "non-Media State Receiver" to a Media State Receiver: register it.
-          registerMediaStateReceiver(target);
+          registerMediaStateReceiver(target as HTMLElement);
         } else {
           // Changed from a Media State Receiver to a "non-Media State Receiver": unregister it.
-          unregisterMediaStateReceiver(target);
+          unregisterMediaStateReceiver(target as HTMLElement);
         }
       }
     });

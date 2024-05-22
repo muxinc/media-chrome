@@ -154,7 +154,7 @@ export class MediaThemeElement extends CustomElement {
     ];
 
     const props = {};
-    for (let attr of observedAttributes) {
+    for (const attr of observedAttributes) {
       const name = observedMediaAttributes[attr.name] ?? camelCase(attr.name);
       let { value } = attr;
 

@@ -29,8 +29,9 @@ const documentShim = {
    * @returns {boolean}
    */
   dispatchEvent(event) {
+    // eslint-disable-line
     return false;
-  }, // eslint-disable-line no-unused-vars
+  },
 };
 
 const globalThisShim = {
@@ -50,17 +51,18 @@ const globalThisShim = {
      * @returns {string|null}
      */
     getItem(key) {
+      // eslint-disable-line
       return null;
-    }, // eslint-disable-line no-unused-vars
+    },
     /**
      * @param {string} key
      * @param {string} value
      */
-    setItem(key, value) { }, // eslint-disable-line no-unused-vars
+    setItem(key, value) { }, // eslint-disable-line
     /**
      * @param {string} key
      */
-    removeItem(key) { }, // eslint-disable-line no-unused-vars
+    removeItem(key) { }, // eslint-disable-line
   },
   CustomEvent: function CustomEvent() { },
   getComputedStyle: function () { },
@@ -135,4 +137,3 @@ export const Document =
   isServer && !isShimmed ? documentShim : globalThis.document;
 
 export { Document as document, GlobalThis as globalThis };
-
