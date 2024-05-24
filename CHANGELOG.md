@@ -1,3 +1,12 @@
+## [3.2.3](https://github.com/muxinc/media-chrome/compare/v3.2.2...v3.2.3) (2024-05-24)
+
+
+### Bug Fixes
+
+* add media-chrome/react/media-theme ([#918](https://github.com/muxinc/media-chrome/issues/918)) ([b1b31da](https://github.com/muxinc/media-chrome/commit/b1b31da02fbdc10ca4fb893366515ce23350a641))
+
+
+
 ## [3.2.2](https://github.com/muxinc/media-chrome/compare/v3.2.1...v3.2.2) (2024-05-03)
 
 
