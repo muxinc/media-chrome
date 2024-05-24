@@ -160,7 +160,8 @@ const entryPointsToReactModulesIterable = (
 
               fs.writeFileSync(tsDeclPathAbs, tsDeclStr);
 
-              alreadyDefinedCustomElementNames = customElementNames;
+              alreadyDefinedCustomElementNames = [...customElementNames];
+
               return {
                 modulePath: modulePathAbs,
                 moduleContents: moduleStr,
@@ -238,7 +239,10 @@ export { toCustomElementReactWrapperModule };
 // EXTERNALIZEABLE/CONFIG CODE BEGIN
 const projectRoot = path.join(__dirname, '..', '..');
 const distRoot = path.join(projectRoot, 'dist', 'react');
-const entryPoints = [path.join(projectRoot, 'dist', 'index.js')];
+const entryPoints = [
+  path.join(projectRoot, 'dist', 'index.js'),
+  path.join(projectRoot, 'dist', 'media-theme-element.js')
+];
 const setupGlobalsAsync = async () => {
   const customElementNames = await import(
     path.join(projectRoot, 'dist', 'utils', 'server-safe-globals.js')
