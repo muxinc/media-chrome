@@ -114,14 +114,16 @@ const entryPointsToReactModulesIterable = (
           const importPath = entryPoints[i];
           const importPathAbs = require.resolve(importPath);
           const importPathObj = path.parse(importPathAbs);
+          // Remove `-element` suffix for React modules
+          const name = importPathObj.name.replace(/-element$/, '');
           const modulePathAbs = path.format({
             dir: distRoot,
-            name: importPathObj.name,
+            name,
             ext: '.js',
           });
           const tsDeclPathAbs = path.format({
             dir: distRoot,
-            name: importPathObj.name,
+            name,
             ext: '.d.ts',
           });
 
