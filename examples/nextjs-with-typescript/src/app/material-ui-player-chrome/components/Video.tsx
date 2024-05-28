@@ -33,7 +33,12 @@ const Video = (
       >;
     }
 ) => {
-  const { children, component = 'mux-video', poster, ...restProps } = props;
+  const {
+    children,
+    component = 'mux-video',
+    poster,
+    ...restProps
+  } = props;
   /**
    * The useMediaRef() hook returns a ref callback function that will "wire up" an element to be used by the MediaStore as the media
    * element whose state you want to monitor and make state change requests to.

@@ -6,12 +6,11 @@ import { globalThis } from '../utils/server-safe-globals.js';
 import {
   MediaChromeListbox,
   createIndicator,
-  createOption,
-} from './media-chrome-listbox.js';
-import './media-chrome-option.js';
+} from "./media-chrome-listbox.js";
+import "./media-chrome-option.js";
 
 export const Attributes = {
-  RATES: 'rates',
+  RATES: "rates",
 };
 
 /**
@@ -22,7 +21,7 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
   static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
-      'aria-multiselectable',
+      "aria-multiselectable",
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
       Attributes.RATES,
     ];
@@ -66,9 +65,9 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
 
   set rates(value: AttributeTokenList | number[] | undefined) {
     if (!value) {
-      this.#rates.value = '';
+      this.#rates.value = "";
     } else if (Array.isArray(value)) {
-      this.#rates.value = value.join(' ');
+      this.#rates.value = value.join(" ");
     }
     this.#render();
   }
@@ -90,17 +89,17 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.addEventListener('change', this.#onChange);
+    this.addEventListener("change", this.#onChange);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    this.removeEventListener('change', this.#onChange);
+    this.removeEventListener("change", this.#onChange);
   }
 
   #render(): void {
-    const container = this.shadowRoot.querySelector('#container');
-    container.textContent = '';
+    const container = this.shadowRoot.querySelector("#container");
+    container.textContent = "";
 
     for (const rate of this.rates) {
       /** @type {HTMLOptionElement} */
@@ -109,7 +108,7 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
         rate,
         this.mediaPlaybackRate == rate
       );
-      option.prepend(createIndicator(this, 'select-indicator'));
+      option.prepend(createIndicator(this, "select-indicator"));
       container.append(option);
     }
   }
@@ -129,9 +128,9 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
   }
 }
 
-if (!globalThis.customElements.get('media-playback-rate-listbox')) {
+if (!globalThis.customElements.get("media-playback-rate-listbox")) {
   globalThis.customElements.define(
-    'media-playback-rate-listbox',
+    "media-playback-rate-listbox",
     MediaPlaybackRateListbox
   );
 }

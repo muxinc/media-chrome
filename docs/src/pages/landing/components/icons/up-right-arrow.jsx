@@ -1,5 +1,5 @@
 /** @jsxImportSource react */
-function UpRightArrow(props) {
+function UpRightArrow (props) {
   return (
     <svg
       width={18}
@@ -10,7 +10,7 @@ function UpRightArrow(props) {
     >
       <path d="M1 17L17 1M7 1h10v10" stroke="currentColor" />
     </svg>
-  );
+  )
 }
 
 export default UpRightArrow;

@@ -7,10 +7,10 @@
 </media-theme-minimal>
 */
 
-import { globalThis, document } from '../utils/server-safe-globals.js';
-import { MediaThemeElement } from '../media-theme-element.js';
+import { globalThis, document } from "../utils/server-safe-globals.js";
+import { MediaThemeElement } from "../media-theme-element.js";
 
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = /*html*/ `
   <style>
     :host {
@@ -75,7 +75,7 @@ template.innerHTML = /*html*/ `
       cursor: not-allowed;
     }
 
-    ${/* Turn some buttons off by default */ ''}
+    ${/* Turn some buttons off by default */ ""}
     media-seek-backward-button {
       display: var(--media-control-display, var(--media-seek-backward-button-display, none));
     }
@@ -407,8 +407,8 @@ class MediaThemeMinimal extends MediaThemeElement {
   static template = template;
 }
 
-if (!globalThis.customElements.get('media-theme-minimal')) {
-  globalThis.customElements.define('media-theme-minimal', MediaThemeMinimal);
+if (!globalThis.customElements.get("media-theme-minimal")) {
+  globalThis.customElements.define("media-theme-minimal", MediaThemeMinimal);
 }
 
 export default MediaThemeMinimal;

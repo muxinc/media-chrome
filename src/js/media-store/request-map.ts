@@ -3,23 +3,23 @@ import {
   StreamTypes,
   TextTrackKinds,
   TextTrackModes,
-} from '../constants.js';
+} from "../constants.js";
 import {
   getTextTracksList,
   parseTracks,
   updateTracksModeTo,
-} from '../utils/captions.js';
-import { globalThis } from '../utils/server-safe-globals.js';
-import type { MediaState } from './media-store.js';
-import type { StateMediator, StateOwners } from './state-mediator.js';
-import { getSubtitleTracks, toggleSubtitleTracks } from './util.js';
+} from "../utils/captions.js";
+import { globalThis } from "../utils/server-safe-globals.js";
+import type { MediaState } from "./media-store.js";
+import type { StateMediator, StateOwners } from "./state-mediator.js";
+import { getSubtitleTracks, toggleSubtitleTracks } from "./util.js";
 
 export type MediaRequestTypes = Exclude<
   MediaUIEvents,
-  | 'registermediastatereceiver'
-  | 'unregistermediastatereceiver'
-  | 'mediashowtexttracksrequest'
-  | 'mediahidetexttracksrequest'
+  | "registermediastatereceiver"
+  | "unregistermediastatereceiver"
+  | "mediashowtexttracksrequest"
+  | "mediahidetexttracksrequest"
 >;
 
 /** @TODO Make this definition more precise (CJP) */
@@ -37,7 +37,7 @@ export type RequestMap = {
   [K in MediaRequestTypes]: (
     stateMediator: StateMediator,
     stateOwners: StateOwners,
-    action: Partial<Pick<CustomEvent<any>, 'type' | 'detail'>>
+    action: Partial<Pick<CustomEvent<any>, "type" | "detail">>
   ) => Partial<MediaState> | undefined | void;
 };
 
@@ -63,7 +63,7 @@ export const requestMap = {
       // preview thumbnail image-related derivation
       const [track] = getTextTracksList(media, {
         kind: TextTrackKinds.METADATA,
-        label: 'thumbnails',
+        label: "thumbnails",
       });
 
       const cue = Array.prototype.find.call(track?.cues ?? [], (c, i, cs) => {
@@ -82,10 +82,10 @@ export const requestMap = {
             )?.src
           : undefined;
         const url = new URL(cue.text, base);
-        const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
+        const previewCoordsStr = new URLSearchParams(url.hash).get("#xywh");
         mediaPreviewCoords =
           /** @type {[number, number, number, number]} */ previewCoordsStr
-            .split(',')
+            .split(",")
             .map((numStr) => +numStr);
         mediaPreviewImage = url.href;
       }
@@ -106,7 +106,7 @@ export const requestMap = {
     // If the chapter is not found but the detail (preview time) is defined
     // set the chapter to an empty string to differentiate it from undefined.
     if (detail != null && mediaPreviewChapter == null) {
-      mediaPreviewChapter = '';
+      mediaPreviewChapter = "";
     }
 
     // NOTE: Example of directly updating state from a request action/event (CJP)
@@ -118,12 +118,12 @@ export const requestMap = {
     };
   },
   [MediaUIEvents.MEDIA_PAUSE_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaPaused';
+    const key = "mediaPaused";
     const value = true;
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_PLAY_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaPaused';
+    const key = "mediaPaused";
     const value = false;
 
     const live =
@@ -147,17 +147,17 @@ export const requestMap = {
     stateOwners,
     { detail }
   ) {
-    const key = 'mediaPlaybackRate';
+    const key = "mediaPlaybackRate";
     const value = detail;
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_MUTE_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaMuted';
+    const key = "mediaMuted";
     const value = true;
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_UNMUTE_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaMuted';
+    const key = "mediaMuted";
     const value = false;
     // If we've unmuted but our volume is currently 0, automatically set it to some low volume
     if (!stateMediator.mediaVolume.get(stateOwners)) {
@@ -166,7 +166,7 @@ export const requestMap = {
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_VOLUME_REQUEST](stateMediator, stateOwners, { detail }) {
-    const key = 'mediaVolume';
+    const key = "mediaVolume";
     const value = detail;
     // If we've adjusted the volume to some non-0 number and are muted, automatically unmute.
     // NOTE: "pseudo-muted" is currently modeled via MEDIA_VOLUME_LEVEL === "off" (CJP)
@@ -176,14 +176,14 @@ export const requestMap = {
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_SEEK_REQUEST](stateMediator, stateOwners, { detail }) {
-    const key = 'mediaCurrentTime';
+    const key = "mediaCurrentTime";
     const value = detail;
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_SEEK_TO_LIVE_REQUEST](stateMediator, stateOwners) {
     // This is an example of a specialized state change request "action" that doesn't need a specialized
     // state facade model
-    const key = 'mediaCurrentTime';
+    const key = "mediaCurrentTime";
     const value = stateMediator.mediaSeekable.get(stateOwners)?.[1];
     // If we don't have a known seekable end (which represents the live edge), bail early
     if (!Number.isNaN(Number(value))) return;
@@ -201,7 +201,7 @@ export const requestMap = {
     const preferredLanguage = tracksToUpdate[0]?.language;
     if (preferredLanguage && !options.noSubtitlesLangPref) {
       globalThis.localStorage.setItem(
-        'media-chrome-pref-subtitles-lang',
+        "media-chrome-pref-subtitles-lang",
         preferredLanguage
       );
     }
@@ -229,7 +229,7 @@ export const requestMap = {
     stateOwners,
     { detail }
   ) {
-    const key = 'mediaRenditionSelected';
+    const key = "mediaRenditionSelected";
     const value = detail;
     stateMediator[key].set(value, stateOwners);
   },
@@ -238,13 +238,13 @@ export const requestMap = {
     stateOwners,
     { detail }
   ) {
-    const key = 'mediaAudioTrackEnabled';
+    const key = "mediaAudioTrackEnabled";
     const value = detail;
     stateMediator[key].set(value, stateOwners);
   },
   // State change requests dependent on root node
   [MediaUIEvents.MEDIA_ENTER_PIP_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaIsPip';
+    const key = "mediaIsPip";
     const value = true;
     // Exit fullscreen if in fullscreen and entering PiP
     if (stateMediator.mediaIsFullscreen.get(stateOwners)) {
@@ -254,12 +254,12 @@ export const requestMap = {
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_EXIT_PIP_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaIsPip';
+    const key = "mediaIsPip";
     const value = false;
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaIsFullscreen';
+    const key = "mediaIsFullscreen";
     const value = true;
     // Exit PiP if in PiP and entering fullscreen
     if (stateMediator.mediaIsPip.get(stateOwners)) {
@@ -269,12 +269,12 @@ export const requestMap = {
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaIsFullscreen';
+    const key = "mediaIsFullscreen";
     const value = false;
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_ENTER_CAST_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaIsCasting';
+    const key = "mediaIsCasting";
     const value = true;
     // Exit fullscreen if in fullscreen and attempting to cast
     if (stateMediator.mediaIsFullscreen.get(stateOwners)) {
@@ -284,12 +284,12 @@ export const requestMap = {
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_EXIT_CAST_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaIsCasting';
+    const key = "mediaIsCasting";
     const value = false;
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_AIRPLAY_REQUEST](stateMediator, stateOwners) {
-    const key = 'mediaIsAirplaying';
+    const key = "mediaIsAirplaying";
     const value = true;
     stateMediator[key].set(value, stateOwners);
   },

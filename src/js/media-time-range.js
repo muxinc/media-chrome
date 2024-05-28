@@ -1,13 +1,13 @@
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaChromeRange } from './media-chrome-range.js';
-import './media-preview-thumbnail.js';
-import './media-preview-time-display.js';
-import './media-preview-chapter-display.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
-import { formatAsTimePhrase } from './utils/time.js';
-import { isElementVisible } from './utils/element-utils.js';
-import { RangeAnimation } from './utils/range-animation.js';
+import { globalThis, document } from "./utils/server-safe-globals.js";
+import { MediaChromeRange } from "./media-chrome-range.js";
+import "./media-preview-thumbnail.js";
+import "./media-preview-time-display.js";
+import "./media-preview-chapter-display.js";
+import { MediaUIEvents, MediaUIAttributes } from "./constants.js";
+import { nouns } from "./labels/labels.js";
+import { formatAsTimePhrase } from "./utils/time.js";
+import { isElementVisible } from "./utils/element-utils.js";
+import { RangeAnimation } from "./utils/range-animation.js";
 import {
   getOrInsertCSSRule,
   containsComposedNode,
@@ -18,9 +18,9 @@ import {
   setNumericAttr,
   getStringAttr,
   setStringAttr,
-} from './utils/element-utils.js';
+} from "./utils/element-utils.js";
 
-const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
+const DEFAULT_MISSING_TIME_PHRASE = "video not loaded, unknown time.";
 
 const updateAriaValueText = (el) => {
   const range = el.range;
@@ -29,10 +29,10 @@ const updateAriaValueText = (el) => {
   const fullPhrase = !(currentTimePhrase && totalTimePhrase)
     ? DEFAULT_MISSING_TIME_PHRASE
     : `${currentTimePhrase} of ${totalTimePhrase}`;
-  range.setAttribute('aria-valuetext', fullPhrase);
+  range.setAttribute("aria-valuetext", fullPhrase);
 };
 
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = /*html*/ `
   <style>
     :host {
@@ -46,7 +46,7 @@ template.innerHTML = /*html*/ `
 
       ${
         /* 1% rail width trick was off in Safari, contain: layout seems to
-        prevent the horizontal overflow as well. */ ''
+        prevent the horizontal overflow as well. */ ""
       }
       contain: layout;
     }
@@ -68,7 +68,7 @@ template.innerHTML = /*html*/ `
     [part~="box"] {
       width: min-content;
       ${
-        /* absolute position is needed here so the box doesn't overflow the bounds */ ''
+        /* absolute position is needed here so the box doesn't overflow the bounds */ ""
       }
       position: absolute;
       bottom: 100%;
@@ -117,7 +117,7 @@ template.innerHTML = /*html*/ `
     ::slotted(media-preview-thumbnail) {
       visibility: hidden;
       ${
-        /* delay changing these CSS props until the preview box transition is ended */ ''
+        /* delay changing these CSS props until the preview box transition is ended */ ""
       }
       transition: visibility 0s .25s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
@@ -165,7 +165,7 @@ template.innerHTML = /*html*/ `
       min-width: 0;
       visibility: hidden;
       ${
-        /* delay changing these CSS props until the preview box transition is ended */ ''
+        /* delay changing these CSS props until the preview box transition is ended */ ""
       }
       transition: min-width 0s, border-radius 0s, margin 0s, padding 0s, visibility 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
@@ -211,7 +211,7 @@ template.innerHTML = /*html*/ `
       line-height: 17px;
       min-width: 0;
       ${
-        /* delay changing these CSS props until the preview box transition is ended */ ''
+        /* delay changing these CSS props until the preview box transition is ended */ ""
       }
       transition: min-width 0s, border-radius 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
@@ -254,7 +254,7 @@ template.innerHTML = /*html*/ `
         calc(var(--_box-shift, 0))),
         calc(var(--_box-width) / 2 - 50% - var(--media-box-arrow-offset))
       ));
-      ${/* border-color has to come before border-top-color! */ ''}
+      ${/* border-color has to come before border-top-color! */ ""}
       border-color: transparent;
       border-top-color: var(--media-box-arrow-background, var(--_control-background));
       border-width: var(--media-box-arrow-border-width,
@@ -277,7 +277,7 @@ template.innerHTML = /*html*/ `
       ${
         /* Example: add the current time w/ arrow to the playhead
         <media-time-display slot="current"></media-time-display>
-        <div part="arrow" slot="current"></div> */ ''
+        <div part="arrow" slot="current"></div> */ ""
       }
     </slot>
   </div>
@@ -420,10 +420,10 @@ class MediaTimeRange extends MediaChromeRange {
 
     const computedStyle = getComputedStyle(this);
     this.#boxPaddingLeft = parseInt(
-      computedStyle.getPropertyValue('--media-box-padding-left')
+      computedStyle.getPropertyValue("--media-box-padding-left")
     );
     this.#boxPaddingRight = parseInt(
-      computedStyle.getPropertyValue('--media-box-padding-right')
+      computedStyle.getPropertyValue("--media-box-padding-right")
     );
 
     this.#animation = new RangeAnimation(this.range, this.#updateRange, 60);
@@ -431,19 +431,19 @@ class MediaTimeRange extends MediaChromeRange {
 
   connectedCallback() {
     super.connectedCallback();
-    this.range.setAttribute('aria-label', nouns.SEEK());
+    this.range.setAttribute("aria-label", nouns.SEEK());
     this.#toggleRangeAnimation();
 
     // NOTE: Adding an event listener to an ancestor here.
     this.#rootNode = this.getRootNode();
-    this.#rootNode?.addEventListener('transitionstart', this);
+    this.#rootNode?.addEventListener("transitionstart", this);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
     this.#toggleRangeAnimation();
 
-    this.#rootNode?.removeEventListener('transitionstart', this);
+    this.#rootNode?.removeEventListener("transitionstart", this);
     this.#rootNode = null;
   }
 
@@ -584,8 +584,8 @@ class MediaTimeRange extends MediaChromeRange {
     const buffered = this.getAttribute(MediaUIAttributes.MEDIA_BUFFERED);
     if (!buffered) return [];
     return buffered
-      .split(' ')
-      .map((timePair) => timePair.split(':').map((timeStr) => +timeStr));
+      .split(" ")
+      .map((timePair) => timePair.split(":").map((timeStr) => +timeStr));
   }
 
   set mediaBuffered(list) {
@@ -593,7 +593,7 @@ class MediaTimeRange extends MediaChromeRange {
       this.removeAttribute(MediaUIAttributes.MEDIA_BUFFERED);
       return;
     }
-    const strVal = list.map((tuple) => tuple.join(':')).join(' ');
+    const strVal = list.map((tuple) => tuple.join(":")).join(" ");
     this.setAttribute(MediaUIAttributes.MEDIA_BUFFERED, strVal);
   }
 
@@ -605,7 +605,7 @@ class MediaTimeRange extends MediaChromeRange {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
     if (!seekable) return undefined;
     // Only currently supports a single, contiguous seekable range (CJP)
-    return seekable.split(':').map((time) => +time);
+    return seekable.split(":").map((time) => +time);
   }
 
   set mediaSeekable(range) {
@@ -613,7 +613,7 @@ class MediaTimeRange extends MediaChromeRange {
       this.removeAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
       return;
     }
-    this.setAttribute(MediaUIAttributes.MEDIA_SEEKABLE, range.join(':'));
+    this.setAttribute(MediaUIAttributes.MEDIA_SEEKABLE, range.join(":"));
   }
 
   /**
@@ -694,8 +694,8 @@ class MediaTimeRange extends MediaChromeRange {
       relativeBufferedEnd = 1;
     }
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#highlight');
-    style.setProperty('width', `${relativeBufferedEnd * 100}%`);
+    const { style } = getOrInsertCSSRule(this.shadowRoot, "#highlight");
+    style.setProperty("width", `${relativeBufferedEnd * 100}%`);
   }
 
   updateCurrentBox() {
@@ -706,7 +706,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     const currentRailRule = getOrInsertCSSRule(
       this.shadowRoot,
-      '#current-rail'
+      "#current-rail"
     );
     const currentBoxRule = getOrInsertCSSRule(
       this.shadowRoot,
@@ -718,17 +718,17 @@ class MediaTimeRange extends MediaChromeRange {
     const boxShift = this.#getBoxShiftPosition(rects, this.range.valueAsNumber);
 
     currentRailRule.style.transform = `translateX(${boxPos})`;
-    currentRailRule.style.setProperty('--_range-width', `${rects.range.width}`);
-    currentBoxRule.style.setProperty('--_box-shift', `${boxShift}`);
-    currentBoxRule.style.setProperty('--_box-width', `${rects.box.width}px`);
-    currentBoxRule.style.setProperty('visibility', 'initial');
+    currentRailRule.style.setProperty("--_range-width", `${rects.range.width}`);
+    currentBoxRule.style.setProperty("--_box-shift", `${boxShift}`);
+    currentBoxRule.style.setProperty("--_box-width", `${rects.box.width}px`);
+    currentBoxRule.style.setProperty("visibility", "initial");
   }
 
   #getElementRects(box) {
     // Get the element that enforces the bounds for the time range boxes.
     const bounds =
-      (this.getAttribute('bounds')
-        ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
+      (this.getAttribute("bounds")
+        ? closestComposedNode(this, `#${this.getAttribute("bounds")}`)
         : this.parentElement) ?? this;
 
     const boundsRect = bounds.getBoundingClientRect();
@@ -799,17 +799,17 @@ class MediaTimeRange extends MediaChromeRange {
     super.handleEvent(evt);
 
     switch (evt.type) {
-      case 'input':
+      case "input":
         this.#seekRequest();
         break;
-      case 'pointermove':
+      case "pointermove":
         this.#handlePointerMove(evt);
         break;
-      case 'pointerup':
-      case 'pointerleave':
+      case "pointerup":
+      case "pointerleave":
         this.#previewRequest(null);
         break;
-      case 'transitionstart':
+      case "transitionstart":
         if (containsComposedNode(evt.target, this)) {
           // Wait a tick to be sure the transition has started. Required for Safari.
           setTimeout(() => this.#toggleRangeAnimation(), 0);
@@ -835,7 +835,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     const previewRailRule = getOrInsertCSSRule(
       this.shadowRoot,
-      '#preview-rail'
+      "#preview-rail"
     );
     const previewBoxRule = getOrInsertCSSRule(
       this.shadowRoot,
@@ -851,9 +851,9 @@ class MediaTimeRange extends MediaChromeRange {
     const boxShift = this.#getBoxShiftPosition(rects, pointerRatio);
 
     previewRailRule.style.transform = `translateX(${boxPos})`;
-    previewRailRule.style.setProperty('--_range-width', `${rects.range.width}`);
-    previewBoxRule.style.setProperty('--_box-shift', `${boxShift}`);
-    previewBoxRule.style.setProperty('--_box-width', `${rects.box.width}px`);
+    previewRailRule.style.setProperty("--_range-width", `${rects.range.width}`);
+    previewBoxRule.style.setProperty("--_box-shift", `${boxShift}`);
+    previewBoxRule.style.setProperty("--_box-width", `${rects.box.width}px`);
 
     // At least require a 1s difference before requesting a new preview thumbnail,
     // unless it's at the beginning or end of the timeline.
@@ -891,8 +891,8 @@ class MediaTimeRange extends MediaChromeRange {
   }
 }
 
-if (!globalThis.customElements.get('media-time-range')) {
-  globalThis.customElements.define('media-time-range', MediaTimeRange);
+if (!globalThis.customElements.get("media-time-range")) {
+  globalThis.customElements.define("media-time-range", MediaTimeRange);
 }
 
 export default MediaTimeRange;

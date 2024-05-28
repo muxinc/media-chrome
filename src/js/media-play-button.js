@@ -1,8 +1,8 @@
-import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
-import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
+import { MediaChromeButton } from "./media-chrome-button.js";
+import { globalThis, document } from "./utils/server-safe-globals.js";
+import { MediaUIEvents, MediaUIAttributes } from "./constants.js";
+import { verbs } from "./labels/labels.js";
+import { getBooleanAttr, setBooleanAttr } from "./utils/element-utils.js";
 
 const playIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="m6 21 15-9L6 3v18Z"/>
@@ -12,7 +12,7 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M6 20h4V4H6v16Zm8-16v16h4V4h-4Z"/>
 </svg>`;
 
-const slotTemplate = document.createElement('template');
+const slotTemplate = document.createElement("template");
 slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] {
@@ -32,7 +32,7 @@ slotTemplate.innerHTML = /*html*/ `
 
 const updateAriaLabel = (el) => {
   const label = el.mediaPaused ? verbs.PLAY() : verbs.PAUSE();
-  el.setAttribute('aria-label', label);
+  el.setAttribute("aria-label", label);
 };
 
 /**
@@ -90,8 +90,8 @@ class MediaPlayButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get('media-play-button')) {
-  globalThis.customElements.define('media-play-button', MediaPlayButton);
+if (!globalThis.customElements.get("media-play-button")) {
+  globalThis.customElements.define("media-play-button", MediaPlayButton);
 }
 
 export default MediaPlayButton;

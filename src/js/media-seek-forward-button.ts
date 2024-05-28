@@ -1,23 +1,23 @@
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { verbs } from './labels/labels.js';
-import { MediaChromeButton } from './media-chrome-button.js';
+import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
+import { verbs } from "./labels/labels.js";
+import { MediaChromeButton } from "./media-chrome-button.js";
 import {
   getNumericAttr,
   getSlotted,
   setNumericAttr,
   updateIconText,
-} from './utils/element-utils.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
+} from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
 export const Attributes = {
-  SEEK_OFFSET: 'seekoffset',
+  SEEK_OFFSET: "seekoffset",
 };
 
 const DEFAULT_SEEK_OFFSET = 30;
 
 const forwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(8.9 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3l5.61 4L10 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 10 6Z"/></svg>`;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
+const slotTemplate: HTMLTemplateElement = document.createElement("template");
 slotTemplate.innerHTML = `
   <slot name="icon">${forwardIcon}</slot>
 `;
@@ -82,10 +82,10 @@ class MediaSeekForwardButton extends MediaChromeButton {
   set seekOffset(value: number) {
     setNumericAttr(this, Attributes.SEEK_OFFSET, value);
     this.setAttribute(
-      'aria-label',
+      "aria-label",
       verbs.SEEK_FORWARD_N_SECS({ seekOffset: this.seekOffset })
     );
-    updateIconText(getSlotted(this, 'icon'), this.seekOffset as any);
+    updateIconText(getSlotted(this, "icon"), this.seekOffset as any);
   }
 
   // Props derived from Media UI Attributes
@@ -116,9 +116,9 @@ class MediaSeekForwardButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get('media-seek-forward-button')) {
+if (!globalThis.customElements.get("media-seek-forward-button")) {
   globalThis.customElements.define(
-    'media-seek-forward-button',
+    "media-seek-forward-button",
     MediaSeekForwardButton
   );
 }

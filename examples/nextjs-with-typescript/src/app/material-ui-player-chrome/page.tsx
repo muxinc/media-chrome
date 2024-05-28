@@ -15,10 +15,8 @@ export default function Page() {
        * 3. the MediaStore react state management that allows for easily reacting to media state changes and making media state change requests
        * To get a better sense of this, take a peek under the hood at the components, starting with <Player/>!
        */}
-      <Player
-        playback-id="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008"
-        crossOrigin="anonymous"
-      ></Player>
+      <Player playback-id="Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008" crossOrigin='anonymous'>
+      </Player>
     </main>
   );
 }

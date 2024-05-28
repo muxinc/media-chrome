@@ -1,13 +1,13 @@
 /** @jsxImportSource react */
-import clsx from 'clsx';
+import clsx from "clsx";
 
 const toAttrsString = (
   htmlAttrs: { [k: string]: string | boolean | undefined } = {}
 ) => {
   const attrStrs = Object.entries(htmlAttrs).reduce<string[]>(
     (attrStrs, [attrName, attrValue]) => {
-      if (typeof attrValue === 'undefined') return attrStrs;
-      if (typeof attrValue === 'boolean') {
+      if (typeof attrValue === "undefined") return attrStrs;
+      if (typeof attrValue === "boolean") {
         if (!attrValue) return attrStrs;
         return [...attrStrs, attrName];
       }
@@ -16,8 +16,8 @@ const toAttrsString = (
     },
     []
   );
-  if (!attrStrs.length) return '';
-  return ` ${attrStrs.join(' ')}`;
+  if (!attrStrs.length) return "";
+  return ` ${attrStrs.join(" ")}`;
 };
 
 const HtmlRenderer: React.FC<{
@@ -30,14 +30,14 @@ const HtmlRenderer: React.FC<{
   name,
   selectedName,
   htmlAttrs,
-  nameFormatter = (x = '') => x,
+  nameFormatter = (x = "") => x,
   children,
 }) => {
   if (!children) {
     return (
       <pre
         className={clsx({
-          'text-primary-600 font-semibold': selectedName === name,
+          "text-primary-600 font-semibold": selectedName === name,
         })}
       >
         {`<${nameFormatter(name)}${toAttrsString(htmlAttrs)}>`}
@@ -50,13 +50,13 @@ const HtmlRenderer: React.FC<{
     <>
       <pre
         className={clsx({
-          'text-primary-600 font-semibold': selectedName === name,
+          "text-primary-600 font-semibold": selectedName === name,
         })}
       >{`<${nameFormatter(name)}${toAttrsString(htmlAttrs)}>`}</pre>
       <div className="ml-4">{children}</div>
       <pre
         className={clsx({
-          'text-primary-600 font-semibold': selectedName === name,
+          "text-primary-600 font-semibold": selectedName === name,
         })}
       >{`</${nameFormatter(name)}>`}</pre>
     </>

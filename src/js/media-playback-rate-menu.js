@@ -1,20 +1,20 @@
-import { globalThis } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { AttributeTokenList } from './utils/attribute-token-list.js';
+import { globalThis } from "./utils/server-safe-globals.js";
+import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
+import { AttributeTokenList } from "./utils/attribute-token-list.js";
 import {
   getNumericAttr,
   setNumericAttr,
   getMediaController,
-} from './utils/element-utils.js';
-import { DEFAULT_RATES, DEFAULT_RATE } from './media-playback-rate-button.js';
+} from "./utils/element-utils.js";
+import { DEFAULT_RATES, DEFAULT_RATE } from "./media-playback-rate-button.js";
 import {
   MediaChromeMenu,
   createMenuItem,
   createIndicator,
-} from './media-chrome-menu.js';
+} from "./media-chrome-menu.js";
 
 export const Attributes = {
-  RATES: 'rates',
+  RATES: "rates",
 };
 
 /**
@@ -61,12 +61,12 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('change', this.#onChange);
+    this.addEventListener("change", this.#onChange);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener('change', this.#onChange);
+    this.removeEventListener("change", this.#onChange);
   }
 
   /**
@@ -74,9 +74,9 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
    * @return {HTMLElement}
    */
   get anchorElement() {
-    if (this.anchor !== 'auto') return super.anchorElement;
+    if (this.anchor !== "auto") return super.anchorElement;
     return getMediaController(this).querySelector(
-      'media-playback-rate-menu-button'
+      "media-playback-rate-menu-button"
     );
   }
 
@@ -90,9 +90,9 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
 
   set rates(value) {
     if (!value) {
-      this.#rates.value = '';
+      this.#rates.value = "";
     } else if (Array.isArray(value)) {
-      this.#rates.value = value.join(' ');
+      this.#rates.value = value.join(" ");
     }
     this.#render();
   }
@@ -113,16 +113,16 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   }
 
   #render() {
-    this.defaultSlot.textContent = '';
+    this.defaultSlot.textContent = "";
 
     for (const rate of this.rates) {
       const item = createMenuItem({
-        type: 'radio',
+        type: "radio",
         text: this.formatMenuItemText(`${rate}x`, rate),
         value: rate,
         checked: this.mediaPlaybackRate == rate,
       });
-      item.prepend(createIndicator(this, 'checked-indicator'));
+      item.prepend(createIndicator(this, "checked-indicator"));
       this.defaultSlot.append(item);
     }
   }
@@ -142,9 +142,9 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   }
 }
 
-if (!globalThis.customElements.get('media-playback-rate-menu')) {
+if (!globalThis.customElements.get("media-playback-rate-menu")) {
   globalThis.customElements.define(
-    'media-playback-rate-menu',
+    "media-playback-rate-menu",
     MediaPlaybackRateMenu
   );
 }

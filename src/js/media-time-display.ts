@@ -1,20 +1,20 @@
-import { MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
-import { MediaTextDisplay } from './media-text-display.js';
+import { MediaUIAttributes } from "./constants.js";
+import { nouns } from "./labels/labels.js";
+import { MediaTextDisplay } from "./media-text-display.js";
 import {
   getBooleanAttr,
   getNumericAttr,
   getOrInsertCSSRule,
   setBooleanAttr,
   setNumericAttr,
-} from './utils/element-utils.js';
-import { globalThis } from './utils/server-safe-globals.js';
-import { formatAsTimePhrase, formatTime } from './utils/time.js';
+} from "./utils/element-utils.js";
+import { globalThis } from "./utils/server-safe-globals.js";
+import { formatAsTimePhrase, formatTime } from "./utils/time.js";
 
 export const Attributes = {
-  REMAINING: 'remaining',
-  SHOW_DURATION: 'showduration',
-  NO_TOGGLE: 'notoggle',
+  REMAINING: "remaining",
+  SHOW_DURATION: "showduration",
+  NO_TOGGLE: "notoggle",
 };
 
 const CombinedAttributes = [
@@ -26,9 +26,9 @@ const CombinedAttributes = [
 
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
-const ButtonPressedKeys = ['Enter', ' '];
+const ButtonPressedKeys = ["Enter", " "];
 
-const DEFAULT_TIMES_SEP = '&nbsp;/&nbsp;';
+const DEFAULT_TIMES_SEP = "&nbsp;/&nbsp;";
 
 const formatTimesLabel = (
   el: MediaTimeDisplay,
@@ -53,7 +53,7 @@ const formatTimesLabel = (
   return `${timeLabel}${timesSep}${formatTime(endTime)}`;
 };
 
-const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
+const DEFAULT_MISSING_TIME_PHRASE = "video not loaded, unknown time.";
 
 const updateAriaValueText = (el: MediaTimeDisplay): void => {
   const currentTime = el.mediaCurrentTime;
@@ -65,7 +65,7 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
     endTime = seekableEnd;
   }
   if (currentTime == null || endTime === null) {
-    el.setAttribute('aria-valuetext', DEFAULT_MISSING_TIME_PHRASE);
+    el.setAttribute("aria-valuetext", DEFAULT_MISSING_TIME_PHRASE);
     return;
   }
   const showRemaining = el.hasAttribute(Attributes.REMAINING);
@@ -76,12 +76,12 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
     : formatAsTimePhrase(currentTime);
 
   if (!showDuration) {
-    el.setAttribute('aria-valuetext', currentTimePhrase);
+    el.setAttribute("aria-valuetext", currentTimePhrase);
     return;
   }
   const totalTimePhrase = formatAsTimePhrase(endTime);
   const fullPhrase = `${currentTimePhrase} of ${totalTimePhrase}`;
-  el.setAttribute('aria-valuetext', fullPhrase);
+  el.setAttribute("aria-valuetext", fullPhrase);
 };
 
 /**
@@ -100,54 +100,54 @@ class MediaTimeDisplay extends MediaTextDisplay {
   #slot: HTMLSlotElement;
 
   static get observedAttributes(): string[] {
-    return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
+    return [...super.observedAttributes, ...CombinedAttributes, "disabled"];
   }
 
   constructor() {
     super();
 
-    this.#slot = this.shadowRoot.querySelector('slot');
+    this.#slot = this.shadowRoot.querySelector("slot");
     this.#slot.innerHTML = `${formatTimesLabel(this)}`;
   }
 
   connectedCallback(): void {
     const { style } = getOrInsertCSSRule(
       this.shadowRoot,
-      ':host(:hover:not([notoggle]))'
+      ":host(:hover:not([notoggle]))"
     );
-    style.setProperty('cursor', 'pointer');
+    style.setProperty("cursor", "pointer");
     style.setProperty(
-      'background',
-      'var(--media-control-hover-background, rgba(50 50 70 / .7))'
+      "background",
+      "var(--media-control-hover-background, rgba(50 50 70 / .7))"
     );
 
-    if (!this.hasAttribute('disabled')) {
+    if (!this.hasAttribute("disabled")) {
       this.enable();
     }
 
-    this.setAttribute('role', 'progressbar');
-    this.setAttribute('aria-label', nouns.PLAYBACK_TIME());
+    this.setAttribute("role", "progressbar");
+    this.setAttribute("aria-label", nouns.PLAYBACK_TIME());
 
     const keyUpHandler = (evt) => {
       const { key } = evt;
       if (!ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
+        this.removeEventListener("keyup", keyUpHandler);
         return;
       }
 
       this.toggleTimeDisplay();
     };
 
-    this.addEventListener('keydown', (evt) => {
+    this.addEventListener("keydown", (evt) => {
       const { metaKey, altKey, key } = evt;
       if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
+        this.removeEventListener("keyup", keyUpHandler);
         return;
       }
-      this.addEventListener('keyup', keyUpHandler);
+      this.addEventListener("keyup", keyUpHandler);
     });
 
-    this.addEventListener('click', this.toggleTimeDisplay);
+    this.addEventListener("click", this.toggleTimeDisplay);
 
     super.connectedCallback();
   }
@@ -156,10 +156,10 @@ class MediaTimeDisplay extends MediaTextDisplay {
     if (this.noToggle) {
       return;
     }
-    if (this.hasAttribute('remaining')) {
-      this.removeAttribute('remaining');
+    if (this.hasAttribute("remaining")) {
+      this.removeAttribute("remaining");
     } else {
-      this.setAttribute('remaining', '');
+      this.setAttribute("remaining", "");
     }
   }
 
@@ -175,7 +175,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
   ): void {
     if (CombinedAttributes.includes(attrName)) {
       this.update();
-    } else if (attrName === 'disabled' && newValue !== oldValue) {
+    } else if (attrName === "disabled" && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
       } else {
@@ -261,7 +261,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
     if (!seekable) return undefined;
     // Only currently supports a single, contiguous seekable range (CJP)
-    return seekable.split(':').map((time) => +time) as [number, number];
+    return seekable.split(":").map((time) => +time) as [number, number];
   }
 
   set mediaSeekable(range: [number, number]) {
@@ -269,7 +269,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
       this.removeAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
       return;
     }
-    this.setAttribute(MediaUIAttributes.MEDIA_SEEKABLE, range.join(':'));
+    this.setAttribute(MediaUIAttributes.MEDIA_SEEKABLE, range.join(":"));
   }
 
   update(): void {
@@ -282,8 +282,8 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 }
 
-if (!globalThis.customElements.get('media-time-display')) {
-  globalThis.customElements.define('media-time-display', MediaTimeDisplay);
+if (!globalThis.customElements.get("media-time-display")) {
+  globalThis.customElements.define("media-time-display", MediaTimeDisplay);
 }
 
 export default MediaTimeDisplay;

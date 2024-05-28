@@ -1,17 +1,17 @@
-import { isValidNumber } from './utils.js';
+import { isValidNumber } from "./utils.js";
 
 const UnitLabels = [
   {
-    singular: 'hour',
-    plural: 'hours',
+    singular: "hour",
+    plural: "hours",
   },
   {
-    singular: 'minute',
-    plural: 'minutes',
+    singular: "minute",
+    plural: "minutes",
   },
   {
-    singular: 'second',
-    plural: 'seconds',
+    singular: "second",
+    plural: "seconds",
   },
 ];
 const toTimeUnitPhrase = (timeUnitValue, unitIndex) => {
@@ -29,7 +29,7 @@ const toTimeUnitPhrase = (timeUnitValue, unitIndex) => {
  * @returns {string} The time, represented as a phrase of hours, minutes, and seconds
  */
 export const formatAsTimePhrase = (seconds) => {
-  if (!isValidNumber(seconds)) return '';
+  if (!isValidNumber(seconds)) return "";
   const positiveSeconds = Math.abs(seconds);
   const negative = positiveSeconds !== seconds;
   const secondsDateTime = new Date(0, 0, 0, 0, 0, positiveSeconds, 0);
@@ -49,10 +49,10 @@ export const formatAsTimePhrase = (seconds) => {
     // Ignore/exclude any 0 values
     .filter((x) => x)
     // join into a single comma-separated string phrase
-    .join(', ');
+    .join(", ");
 
   // If the time was negative, assume it represents some remaining amount of time/"count down".
-  const negativeSuffix = negative ? ' remaining' : '';
+  const negativeSuffix = negative ? " remaining" : "";
 
   return `${timeString}${negativeSuffix}`;
 };
@@ -87,23 +87,23 @@ export function formatTime(seconds, guide) {
   if (isNaN(seconds) || seconds === Infinity) {
     // '-' is false for all relational operators (e.g. <, >=) so this setting
     // will add the minimum number of fields specified by the guide
-    h = m = s = '0';
+    h = m = s = "0";
   }
 
   // Check if we need to show hours
   // @ts-ignore
-  h = h > 0 || gh > 0 ? h + ':' : '';
+  h = h > 0 || gh > 0 ? h + ":" : "";
 
   // If hours are showing, we may need to add a leading zero.
   // Always show at least one digit of minutes.
   // @ts-ignore
-  m = ((h || gm >= 10) && m < 10 ? '0' + m : m) + ':';
+  m = ((h || gm >= 10) && m < 10 ? "0" + m : m) + ":";
 
   // Check if leading zero is need for seconds
   // @ts-ignore
-  s = s < 10 ? '0' + s : s;
+  s = s < 10 ? "0" + s : s;
 
-  return (negative ? '-' : '') + h + m + s;
+  return (negative ? "-" : "") + h + m + s;
 }
 
 /** @type {TimeRanges} */
@@ -139,7 +139,7 @@ export function serializeTimeRanges(timeRanges = emptyTimeRanges) {
       [
         Number(timeRanges.start(i).toFixed(3)),
         Number(timeRanges.end(i).toFixed(3)),
-      ].join(':')
+      ].join(":")
     )
-    .join(' ');
+    .join(" ");
 }

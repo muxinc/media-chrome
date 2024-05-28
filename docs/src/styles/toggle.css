@@ -18,9 +18,8 @@
   user-select: none;
 }
 
-.switch-label::before,
-.switch-label::after {
-  content: '';
+.switch-label::before, .switch-label::after {
+  content: "";
   display: block;
   position: absolute;
   cursor: pointer;

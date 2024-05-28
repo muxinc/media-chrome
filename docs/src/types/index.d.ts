@@ -6,7 +6,7 @@
 //       [k: string]: function({ [k: string]: any }): string;
 //   };
 // }
-declare module 'media-chrome' {
+declare module "media-chrome" {
   type labels = {
     nouns: {
       [k: string]: (
@@ -22,15 +22,15 @@ declare module 'media-chrome' {
 }
 
 export type ARIARole =
-  | 'region'
-  | 'switch'
-  | 'button'
-  | 'progressbar'
-  | 'slider';
+  | "region"
+  | "switch"
+  | "button"
+  | "progressbar"
+  | "slider";
 
 export type A11YDescriptionSimple = {
   role: ARIARole;
-  'aria-label': string;
+  "aria-label": string;
 };
 
 // export type A11YDescriptionSimple = {
@@ -39,8 +39,8 @@ export type A11YDescriptionSimple = {
 // };
 
 export type A11YDescriptionValued = {
-  role: 'progressbar' | 'slider';
-  'aria-valuetext': string;
+  role: "progressbar" | "slider";
+  "aria-valuetext": string;
 };
 
 export type A11YDescription = A11YDescriptionValued | A11YDescriptionSimple;
@@ -55,14 +55,14 @@ export type MediaChromeListItem = {
 type MetaData = {
   env_key?: string;
   video_title?: string;
-};
+}
 
 type PlayerId = string | HTMLMediaElement;
 
 export function monitor(id: PlayerId, options?: Options): void;
 
 declare module 'mux-embed' {
-  export type { Metadata };
+  export type { Metadata }
 
-  export { monitor };
+  export { monitor }
 }

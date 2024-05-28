@@ -1,9 +1,9 @@
 /** @jsxImportSource react */
-import clsx from 'clsx';
-import React, { useEffect } from 'react';
-import type { MediaChromeListItem } from '../../../types';
-import Description from './description';
-import X from './icons/x';
+import clsx from "clsx";
+import React, { useEffect } from "react";
+import type { MediaChromeListItem } from "../../../types";
+import Description from "./description";
+import X from "./icons/x";
 
 const noop = () => {};
 
@@ -74,15 +74,15 @@ const MediaChromeListItemRenderer: React.FC<{
       // (should only be set to list itself) (CJP)
       onMouseDown={(e) => e.preventDefault()}
       onClick={() => selectItem(value)}
-      className={clsx('block w-full', {
-        'outline-black': active && showActive && !selected,
-        outline: active && showActive && !selected,
+      className={clsx("block w-full", {
+        "outline-black": active && showActive && !selected,
+        "outline": active && showActive && !selected,
       })}
     >
       <div
         aria-hidden="true"
-        className={clsx('flex leading-7', {
-          'text-primary-600': selected,
+        className={clsx("flex leading-7", {
+          "text-primary-600": selected,
         })}
       >
         <ComponentNameRenderer value={value} selected={selected} />

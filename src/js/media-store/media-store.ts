@@ -19,14 +19,14 @@
 import {
   requestMap as defaultRequestMap,
   type RequestMap,
-} from './request-map.js';
+} from "./request-map.js";
 import {
   stateMediator as defaultStateMediator,
   prepareStateOwners,
   type EventOrAction,
   type StateMediator,
-} from './state-mediator.js';
-import { areValuesEq } from './util.js';
+} from "./state-mediator.js";
+import { areValuesEq } from "./util.js";
 
 /**
  * MediaState is a full representation of all media-related state modeled by the MediaStore and its StateMediator.
@@ -35,7 +35,7 @@ import { areValuesEq } from './util.js';
  * from the MediaStore using `getState()`.
  */
 export type MediaState = Readonly<{
-  [K in keyof StateMediator]: ReturnType<StateMediator[K]['get']>;
+  [K in keyof StateMediator]: ReturnType<StateMediator[K]["get"]>;
 }> & {
   mediaPreviewTime: number;
   mediaPreviewImage: string;
@@ -512,15 +512,15 @@ const createMediaStore = ({
       // or options-style properties in a single architecture.
 
       // We can get change requests for the stateOwners themselves
-      if (type === 'mediaelementchangerequest') {
+      if (type === "mediaelementchangerequest") {
         updateStateOwners({ media: detail });
-      } else if (type === 'fullscreenelementchangerequest') {
+      } else if (type === "fullscreenelementchangerequest") {
         updateStateOwners({ fullscreenElement: detail });
-      } else if (type === 'documentelementchangerequest') {
+      } else if (type === "documentelementchangerequest") {
         updateStateOwners({ documentElement: detail });
       }
       // and we can update our default/options values
-      else if (type === 'optionschangerequest') {
+      else if (type === "optionschangerequest") {
         // Doing a simple impl for now
         Object.entries(detail ?? {}).forEach(([optionName, optionValue]) => {
           // NOTE: updating options will *NOT* prompt any state updates.

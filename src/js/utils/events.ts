@@ -15,14 +15,14 @@ export class InvokeEvent extends Event {
   /**
    * @param init - The event options.
    */
-  constructor({ action = 'auto', relatedTarget, ...options }: InvokeEventInit) {
-    super('invoke', options);
+  constructor({ action = "auto", relatedTarget, ...options }: InvokeEventInit) {
+    super("invoke", options);
     this.action = action;
     this.relatedTarget = relatedTarget;
   }
 }
 
-export type ToggleState = 'open' | 'closed';
+export type ToggleState = "open" | "closed";
 export type ToggleEventInit = EventInit & {
   newState: ToggleState;
   oldState: ToggleState;
@@ -40,7 +40,7 @@ export class ToggleEvent extends Event {
    * @param init - The event options.
    */
   constructor({ newState, oldState, ...options }: ToggleEventInit) {
-    super('toggle', options);
+    super("toggle", options);
     this.newState = newState;
     this.oldState = oldState;
   }

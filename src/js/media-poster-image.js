@@ -1,13 +1,13 @@
-import { CustomElement } from './utils/CustomElement.js';
-import { getStringAttr, setStringAttr } from './utils/element-utils.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
+import { CustomElement } from "./utils/CustomElement.js";
+import { getStringAttr, setStringAttr } from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
 export const Attributes = {
-  PLACEHOLDER_SRC: 'placeholdersrc',
-  SRC: 'src',
+  PLACEHOLDER_SRC: "placeholdersrc",
+  SRC: "src",
 };
 
-const template = document.createElement('template');
+const template = document.createElement("template");
 
 template.innerHTML = /*html*/ `
   <style>
@@ -34,10 +34,10 @@ template.innerHTML = /*html*/ `
 `;
 
 const unsetBackgroundImage = (el) => {
-  el.style.removeProperty('background-image');
+  el.style.removeProperty("background-image");
 };
 const setBackgroundImage = (el, image) => {
-  el.style['background-image'] = `url('${image}')`;
+  el.style["background-image"] = `url('${image}')`;
 };
 
 /**
@@ -60,11 +60,11 @@ class MediaPosterImage extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow({ mode: "open" });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    this.image = this.shadowRoot.querySelector('#image');
+    this.image = this.shadowRoot.querySelector("#image");
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
@@ -108,8 +108,8 @@ class MediaPosterImage extends CustomElement {
   }
 }
 
-if (!globalThis.customElements.get('media-poster-image')) {
-  globalThis.customElements.define('media-poster-image', MediaPosterImage);
+if (!globalThis.customElements.get("media-poster-image")) {
+  globalThis.customElements.define("media-poster-image", MediaPosterImage);
 }
 
 export default MediaPosterImage;

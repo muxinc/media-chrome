@@ -1,19 +1,19 @@
-import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
+import { MediaChromeButton } from "./media-chrome-button.js";
+import { globalThis, document } from "./utils/server-safe-globals.js";
+import { MediaUIEvents, MediaUIAttributes } from "./constants.js";
+import { verbs } from "./labels/labels.js";
 import {
   getBooleanAttr,
   getStringAttr,
   setBooleanAttr,
   setStringAttr,
-} from './utils/element-utils.js';
+} from "./utils/element-utils.js";
 
 const pipIcon = `<svg aria-hidden="true" viewBox="0 0 28 24">
   <path d="M24 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h20a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Zm-1 16H5V5h18v14Zm-3-8h-7v5h7v-5Z"/>
 </svg>`;
 
-const slotTemplate = document.createElement('template');
+const slotTemplate = document.createElement("template");
 slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${
@@ -22,7 +22,7 @@ slotTemplate.innerHTML = /*html*/ `
     display: none !important;
   }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+  ${/* Double negative, but safer if display doesn't equal 'block' */ ""}
   :host(:not([${
     MediaUIAttributes.MEDIA_IS_PIP
   }])) slot:not([name=enter]):not([name=icon]) {
@@ -38,7 +38,7 @@ slotTemplate.innerHTML = /*html*/ `
 
 const updateAriaLabel = (el) => {
   const label = el.mediaIsPip ? verbs.EXIT_PIP() : verbs.ENTER_PIP();
-  el.setAttribute('aria-label', label);
+  el.setAttribute("aria-label", label);
 };
 
 /**
@@ -108,8 +108,8 @@ class MediaPipButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get('media-pip-button')) {
-  globalThis.customElements.define('media-pip-button', MediaPipButton);
+if (!globalThis.customElements.get("media-pip-button")) {
+  globalThis.customElements.define("media-pip-button", MediaPipButton);
 }
 
 export default MediaPipButton;

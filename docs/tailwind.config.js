@@ -1,11 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 import colors from 'tailwindcss/colors';
 
-const fuchsia = { ...colors.fuchsia, 25: '#fefaff' };
-const amber = { ...colors.amber, 225: '#FFE5C6' };
+const fuchsia = { ...colors.fuchsia, 25: "#fefaff" };
+const amber = { ...colors.amber, 225: "#FFE5C6" };
 
 export default {
-  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
+	content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   darkMode: ['class', '.theme-dark'],
   theme: {
     extend: {
@@ -80,5 +80,5 @@ export default {
   variants: {
     extend: {},
   },
-  plugins: [],
-};
+	plugins: [],
+}

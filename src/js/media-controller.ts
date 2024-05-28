@@ -13,53 +13,53 @@ import {
   MediaUIAttributes,
   MediaUIEvents,
   MediaUIProps,
-} from './constants.js';
-import { MediaContainer } from './media-container.js';
+} from "./constants.js";
+import { MediaContainer } from "./media-container.js";
 import createMediaStore, {
   type MediaStore,
-} from './media-store/media-store.js';
-import { CustomElement } from './utils/CustomElement.js';
-import { AttributeTokenList } from './utils/attribute-token-list.js';
-import { stringifyTextTrackList } from './utils/captions.js';
+} from "./media-store/media-store.js";
+import { CustomElement } from "./utils/CustomElement.js";
+import { AttributeTokenList } from "./utils/attribute-token-list.js";
+import { stringifyTextTrackList } from "./utils/captions.js";
 import {
   setBooleanAttr,
   setNumericAttr,
   setStringAttr,
-} from './utils/element-utils.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
+} from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 import {
   delay,
   stringifyAudioTrackList,
   stringifyRenditionList,
-} from './utils/utils.js';
+} from "./utils/utils.js";
 
 const ButtonPressedKeys = [
-  'ArrowLeft',
-  'ArrowRight',
-  'Enter',
-  ' ',
-  'f',
-  'm',
-  'k',
-  'c',
+  "ArrowLeft",
+  "ArrowRight",
+  "Enter",
+  " ",
+  "f",
+  "m",
+  "k",
+  "c",
 ];
 const DEFAULT_SEEK_OFFSET = 10;
 
 export const Attributes = {
-  DEFAULT_SUBTITLES: 'defaultsubtitles',
-  DEFAULT_STREAM_TYPE: 'defaultstreamtype',
-  DEFAULT_DURATION: 'defaultduration',
-  FULLSCREEN_ELEMENT: 'fullscreenelement',
-  HOTKEYS: 'hotkeys',
-  KEYS_USED: 'keysused',
-  LIVE_EDGE_OFFSET: 'liveedgeoffset',
-  NO_AUTO_SEEK_TO_LIVE: 'noautoseektolive',
-  NO_HOTKEYS: 'nohotkeys',
-  NO_VOLUME_PREF: 'novolumepref',
-  NO_SUBTITLES_LANG_PREF: 'nosubtitleslangpref',
-  NO_DEFAULT_STORE: 'nodefaultstore',
-  KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
-  KEYBOARD_BACKWARD_SEEK_OFFSET: 'keyboardbackwardseekoffset',
+  DEFAULT_SUBTITLES: "defaultsubtitles",
+  DEFAULT_STREAM_TYPE: "defaultstreamtype",
+  DEFAULT_DURATION: "defaultduration",
+  FULLSCREEN_ELEMENT: "fullscreenelement",
+  HOTKEYS: "hotkeys",
+  KEYS_USED: "keysused",
+  LIVE_EDGE_OFFSET: "liveedgeoffset",
+  NO_AUTO_SEEK_TO_LIVE: "noautoseektolive",
+  NO_HOTKEYS: "nohotkeys",
+  NO_VOLUME_PREF: "novolumepref",
+  NO_SUBTITLES_LANG_PREF: "nosubtitleslangpref",
+  NO_DEFAULT_STORE: "nodefaultstore",
+  KEYBOARD_FORWARD_SEEK_OFFSET: "keyboardforwardseekoffset",
+  KEYBOARD_BACKWARD_SEEK_OFFSET: "keyboardbackwardseekoffset",
 };
 
 /**
@@ -187,7 +187,7 @@ class MediaController extends MediaContainer {
     this.#fullscreenElement = element;
     // Use the getter in case the fullscreen element was reset to "`this`"
     this.#mediaStore?.dispatch({
-      type: 'fullscreenelementchangerequest',
+      type: "fullscreenelementchangerequest",
       detail: this.fullscreenElement,
     });
   }
@@ -200,10 +200,10 @@ class MediaController extends MediaContainer {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === Attributes.NO_HOTKEYS) {
-      if (newValue !== oldValue && newValue === '') {
+      if (newValue !== oldValue && newValue === "") {
         if (this.hasAttribute(Attributes.HOTKEYS)) {
           console.warn(
-            'Media Chrome: Both `hotkeys` and `nohotkeys` have been set. All hotkeys will be disabled.'
+            "Media Chrome: Both `hotkeys` and `nohotkeys` have been set. All hotkeys will be disabled."
           );
         }
         this.disableHotkeys();
@@ -217,14 +217,14 @@ class MediaController extends MediaContainer {
       newValue !== oldValue
     ) {
       this.#mediaStore?.dispatch({
-        type: 'optionschangerequest',
+        type: "optionschangerequest",
         detail: {
           defaultSubtitles: this.hasAttribute(Attributes.DEFAULT_SUBTITLES),
         },
       });
     } else if (attrName === Attributes.DEFAULT_STREAM_TYPE) {
       this.#mediaStore?.dispatch({
-        type: 'optionschangerequest',
+        type: "optionschangerequest",
         detail: {
           defaultStreamType:
             this.getAttribute(Attributes.DEFAULT_STREAM_TYPE) ?? undefined,
@@ -232,7 +232,7 @@ class MediaController extends MediaContainer {
       });
     } else if (attrName === Attributes.LIVE_EDGE_OFFSET) {
       this.#mediaStore?.dispatch({
-        type: 'optionschangerequest',
+        type: "optionschangerequest",
         detail: {
           liveEdgeOffset: this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)
             ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
@@ -249,7 +249,7 @@ class MediaController extends MediaContainer {
       this.#fullscreenElement = el;
       // Use the getter in case the fullscreen element was reset to "`this`"
       this.#mediaStore?.dispatch({
-        type: 'fullscreenelementchangerequest',
+        type: "fullscreenelementchangerequest",
         detail: this.fullscreenElement,
       });
     }
@@ -263,7 +263,7 @@ class MediaController extends MediaContainer {
     }
 
     this.#mediaStore?.dispatch({
-      type: 'documentelementchangerequest',
+      type: "documentelementchangerequest",
       detail: document,
     });
 
@@ -285,7 +285,7 @@ class MediaController extends MediaContainer {
 
     if (this.#mediaStore) {
       this.#mediaStore?.dispatch({
-        type: 'documentelementchangerequest',
+        type: "documentelementchangerequest",
         detail: undefined,
       });
       /** @TODO Revisit: may not be necessary anymore or better solved via unsubscribe behavior? (CJP) */
@@ -309,12 +309,12 @@ class MediaController extends MediaContainer {
   mediaSetCallback(media: HTMLMediaElement) {
     super.mediaSetCallback(media);
     this.#mediaStore?.dispatch({
-      type: 'mediaelementchangerequest',
+      type: "mediaelementchangerequest",
       detail: media,
     });
 
     // TODO: What does this do? At least add comment, maybe move to media-container
-    if (!media.hasAttribute('tabindex')) {
+    if (!media.hasAttribute("tabindex")) {
       media.tabIndex = -1;
     }
   }
@@ -326,7 +326,7 @@ class MediaController extends MediaContainer {
   mediaUnsetCallback(media: HTMLMediaElement) {
     super.mediaUnsetCallback(media);
     this.#mediaStore?.dispatch({
-      type: 'mediaelementchangerequest',
+      type: "mediaelementchangerequest",
       detail: undefined,
     });
   }
@@ -408,7 +408,7 @@ class MediaController extends MediaContainer {
   #keyUpHandler(e: KeyboardEvent) {
     const { key } = e;
     if (!ButtonPressedKeys.includes(key)) {
-      this.removeEventListener('keyup', this.#keyUpHandler);
+      this.removeEventListener("keyup", this.#keyUpHandler);
       return;
     }
 
@@ -418,7 +418,7 @@ class MediaController extends MediaContainer {
   #keyDownHandler(e: KeyboardEvent) {
     const { metaKey, altKey, key } = e;
     if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
-      this.removeEventListener('keyup', this.#keyUpHandler);
+      this.removeEventListener("keyup", this.#keyUpHandler);
       return;
     }
 
@@ -426,25 +426,25 @@ class MediaController extends MediaContainer {
     // because doing so on keyup is too late
     // We also want to make sure that the hotkey hasn't been turned off before doing so
     if (
-      [' ', 'ArrowLeft', 'ArrowRight'].includes(key) &&
+      [" ", "ArrowLeft", "ArrowRight"].includes(key) &&
       !(
         this.#hotKeys.contains(`no${key.toLowerCase()}`) ||
-        (key === ' ' && this.#hotKeys.contains('nospace'))
+        (key === " " && this.#hotKeys.contains("nospace"))
       )
     ) {
       e.preventDefault();
     }
 
-    this.addEventListener('keyup', this.#keyUpHandler, { once: true });
+    this.addEventListener("keyup", this.#keyUpHandler, { once: true });
   }
 
   enableHotkeys() {
-    this.addEventListener('keydown', this.#keyDownHandler);
+    this.addEventListener("keydown", this.#keyDownHandler);
   }
 
   disableHotkeys() {
-    this.removeEventListener('keydown', this.#keyDownHandler);
-    this.removeEventListener('keyup', this.#keyUpHandler);
+    this.removeEventListener("keydown", this.#keyDownHandler);
+    this.removeEventListener("keyup", this.#keyUpHandler);
   }
 
   get hotkeys() {
@@ -459,11 +459,11 @@ class MediaController extends MediaContainer {
     // In the attribute Space represents the space key and gets convered to ' '
     const target = e.target as any;
     const keysUsed = (
-      target.getAttribute(Attributes.KEYS_USED)?.split(' ') ??
+      target.getAttribute(Attributes.KEYS_USED)?.split(" ") ??
       target?.keysUsed ??
       []
     )
-      .map((key) => (key === 'Space' ? ' ' : key))
+      .map((key) => (key === "Space" ? " " : key))
       .filter(Boolean);
 
     if (keysUsed.includes(e.key)) {
@@ -473,12 +473,12 @@ class MediaController extends MediaContainer {
     let eventName, detail, evt;
     // if the blocklist contains the key, skip handling it.
     if (this.#hotKeys.contains(`no${e.key.toLowerCase()}`)) return;
-    if (e.key === ' ' && this.#hotKeys.contains(`nospace`)) return;
+    if (e.key === " " && this.#hotKeys.contains(`nospace`)) return;
 
     // These event triggers were copied from the revelant buttons
     switch (e.key) {
-      case ' ':
-      case 'k':
+      case " ":
+      case "k":
         eventName = this.#mediaStore.getState().mediaPaused
           ? MediaUIEvents.MEDIA_PLAY_REQUEST
           : MediaUIEvents.MEDIA_PAUSE_REQUEST;
@@ -490,9 +490,9 @@ class MediaController extends MediaContainer {
         );
         break;
 
-      case 'm':
+      case "m":
         eventName =
-          this.mediaStore.getState().mediaVolumeLevel === 'off'
+          this.mediaStore.getState().mediaVolumeLevel === "off"
             ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
             : MediaUIEvents.MEDIA_MUTE_REQUEST;
         this.dispatchEvent(
@@ -503,7 +503,7 @@ class MediaController extends MediaContainer {
         );
         break;
 
-      case 'f':
+      case "f":
         eventName = this.mediaStore.getState().mediaIsFullscreen
           ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
           : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
@@ -515,7 +515,7 @@ class MediaController extends MediaContainer {
         );
         break;
 
-      case 'c':
+      case "c":
         this.dispatchEvent(
           new globalThis.CustomEvent(
             MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
@@ -524,7 +524,7 @@ class MediaController extends MediaContainer {
         );
         break;
 
-      case 'ArrowLeft': {
+      case "ArrowLeft": {
         const offsetValue = this.hasAttribute(
           Attributes.KEYBOARD_BACKWARD_SEEK_OFFSET
         )
@@ -542,7 +542,7 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
-      case 'ArrowRight': {
+      case "ArrowRight": {
         const offsetValue = this.hasAttribute(
           Attributes.KEYBOARD_FORWARD_SEEK_OFFSET
         )
@@ -574,7 +574,7 @@ const getMediaUIAttributesFrom = (child: HTMLElement): string[] => {
 
   // observedAttributes are only available if the custom element was upgraded.
   // example: media-gesture-receiver in the shadow DOM requires an upgrade.
-  if (!observedAttributes && child.nodeName?.includes('-')) {
+  if (!observedAttributes && child.nodeName?.includes("-")) {
     globalThis.customElements.upgrade(child);
     ({ observedAttributes } = child.constructor as typeof CustomElement);
   }
@@ -591,7 +591,7 @@ const getMediaUIAttributesFrom = (child: HTMLElement): string[] => {
 
 const hasMediaUIProps = (mediaStateReceiverCandidate: HTMLElement): boolean => {
   if (
-    mediaStateReceiverCandidate.nodeName?.includes('-') &&
+    mediaStateReceiverCandidate.nodeName?.includes("-") &&
     !!globalThis.customElements.get(
       mediaStateReceiverCandidate.nodeName?.toLowerCase()
     ) &&
@@ -613,16 +613,16 @@ const isMediaStateReceiver = (child: HTMLElement): boolean => {
   return hasMediaUIProps(child) || !!getMediaUIAttributesFrom(child).length;
 };
 
-const serializeTuple = (tuple: any[]): string | undefined => tuple?.join?.(':');
+const serializeTuple = (tuple: any[]): string | undefined => tuple?.join?.(":");
 
 const CustomAttrSerializer: Record<string, (value: any) => string> = {
   [MediaUIAttributes.MEDIA_SUBTITLES_LIST]: stringifyTextTrackList,
   [MediaUIAttributes.MEDIA_SUBTITLES_SHOWING]: stringifyTextTrackList,
   [MediaUIAttributes.MEDIA_SEEKABLE]: serializeTuple,
   [MediaUIAttributes.MEDIA_BUFFERED]: (tuples: any[][]): string =>
-    tuples?.map(serializeTuple).join(' '),
+    tuples?.map(serializeTuple).join(" "),
   [MediaUIAttributes.MEDIA_PREVIEW_COORDS]: (coords: number[]): string =>
-    coords?.join(' '),
+    coords?.join(" "),
   [MediaUIAttributes.MEDIA_RENDITION_LIST]: stringifyRenditionList,
   [MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST]: stringifyAudioTrackList,
 };
@@ -640,13 +640,13 @@ const setAttr = async (
   }
 
   // NOTE: For "nullish" (null/undefined), can use any setter
-  if (typeof attrValue === 'boolean' || attrValue == null) {
+  if (typeof attrValue === "boolean" || attrValue == null) {
     return setBooleanAttr(child, attrName, attrValue);
   }
-  if (typeof attrValue === 'number') {
+  if (typeof attrValue === "number") {
     return setNumericAttr(child, attrName, attrValue);
   }
-  if (typeof attrValue === 'string') {
+  if (typeof attrValue === "string") {
     return setStringAttr(child, attrName, attrValue);
   }
   // Treat empty arrays as "nothing" values
@@ -711,7 +711,7 @@ const traverseForMediaStateReceivers = (
   // because we encountered some reliability issues with the custom element instances not being fully "ready", even if/when
   // they are available in the registry via `globalThis.customElements.get(name)`.
   const name = rootNode?.nodeName.toLowerCase();
-  if (name.includes('-') && !isMediaStateReceiver(rootNode)) {
+  if (name.includes("-") && !isMediaStateReceiver(rootNode)) {
     globalThis.customElements.whenDefined(name).then(() => {
       // Try/traverse again once the custom element is defined
       traverseForMediaStateReceiversSync(rootNode, mediaStateReceiverCallback);
@@ -790,7 +790,7 @@ const monitorForMediaStateReceivers = (
         target,
         attributeName,
       } = mutationRecord;
-      if (type === 'childList') {
+      if (type === "childList") {
         // For each added node, register any Media State Receiver descendants (including itself)
         Array.prototype.forEach.call(addedNodes, (node) =>
           traverseForMediaStateReceivers(
@@ -806,7 +806,7 @@ const monitorForMediaStateReceivers = (
           )
         );
       } else if (
-        type === 'attributes' &&
+        type === "attributes" &&
         attributeName === MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES
       ) {
         if (isMediaStateReceiver(target as HTMLElement)) {
@@ -824,7 +824,7 @@ const monitorForMediaStateReceivers = (
   let prevSlotted: HTMLElement[] = [];
   const slotChangeHandler = (event: Event) => {
     const slotEl = event.target as HTMLSlotElement;
-    if (slotEl.name === 'media') return;
+    if (slotEl.name === "media") return;
     prevSlotted.forEach((node) =>
       traverseForMediaStateReceivers(node, unregisterMediaStateReceiver)
     );
@@ -835,7 +835,7 @@ const monitorForMediaStateReceivers = (
       traverseForMediaStateReceivers(node, registerMediaStateReceiver)
     );
   };
-  rootNode.addEventListener('slotchange', slotChangeHandler);
+  rootNode.addEventListener("slotchange", slotChangeHandler);
 
   const observer = new MutationObserver(mutationCallback);
   observer.observe(rootNode, {
@@ -848,7 +848,7 @@ const monitorForMediaStateReceivers = (
     // Unregister any Media State Receiver descendants (including ourselves)
     traverseForMediaStateReceivers(rootNode, unregisterMediaStateReceiver);
     // Make sure we remove the slotchange event listener
-    rootNode.removeEventListener('slotchange', slotChangeHandler);
+    rootNode.removeEventListener("slotchange", slotChangeHandler);
     // Stop observing for Media State Receivers
     observer.disconnect();
     // Stop listening for Media State Receiver events.
@@ -865,8 +865,8 @@ const monitorForMediaStateReceivers = (
   return unsubscribe;
 };
 
-if (!globalThis.customElements.get('media-controller')) {
-  globalThis.customElements.define('media-controller', MediaController);
+if (!globalThis.customElements.get("media-controller")) {
+  globalThis.customElements.define("media-controller", MediaController);
 }
 
 export { MediaController };

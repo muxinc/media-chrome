@@ -1,16 +1,16 @@
-import { globalThis } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { parseAudioTrackList } from './utils/utils.js';
+import { globalThis } from "./utils/server-safe-globals.js";
+import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
+import { parseAudioTrackList } from "./utils/utils.js";
 import {
   MediaChromeMenu,
   createMenuItem,
   createIndicator,
-} from './media-chrome-menu.js';
+} from "./media-chrome-menu.js";
 import {
   getStringAttr,
   setStringAttr,
   getMediaController,
-} from './utils/element-utils.js';
+} from "./utils/element-utils.js";
 
 /**
  * @extends {MediaChromeMenu}
@@ -54,12 +54,12 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('change', this.#onChange);
+    this.addEventListener("change", this.#onChange);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener('change', this.#onChange);
+    this.removeEventListener("change", this.#onChange);
   }
 
   /**
@@ -67,9 +67,9 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
    * @return {HTMLElement}
    */
   get anchorElement() {
-    if (this.anchor !== 'auto') return super.anchorElement;
+    if (this.anchor !== "auto") return super.anchorElement;
     return getMediaController(this).querySelector(
-      'media-audio-track-menu-button'
+      "media-audio-track-menu-button"
     );
   }
 
@@ -100,18 +100,18 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
 
     const audioTrackList = this.mediaAudioTrackList;
 
-    this.defaultSlot.textContent = '';
+    this.defaultSlot.textContent = "";
 
     for (const audioTrack of audioTrackList) {
       const text = this.formatMenuItemText(audioTrack.label, audioTrack);
 
       const item = createMenuItem({
-        type: 'radio',
+        type: "radio",
         text,
         value: `${audioTrack.id}`,
         checked: audioTrack.enabled,
       });
-      item.prepend(createIndicator(this, 'checked-indicator'));
+      item.prepend(createIndicator(this, "checked-indicator"));
       this.defaultSlot.append(item);
     }
   }
@@ -131,9 +131,9 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
   }
 }
 
-if (!globalThis.customElements.get('media-audio-track-menu')) {
+if (!globalThis.customElements.get("media-audio-track-menu")) {
   globalThis.customElements.define(
-    'media-audio-track-menu',
+    "media-audio-track-menu",
     MediaAudioTrackMenu
   );
 }

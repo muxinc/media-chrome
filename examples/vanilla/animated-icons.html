@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width">
     <title>Media Chrome Animated Icons</title>
     <script type="module" src="../../dist/index.js"></script>
     <style>
@@ -11,7 +11,7 @@
 
       /* Needed in the docs Codesandbox which uses JS to build HTML
         and shows the animations on page load */
-      media-controller[userinactive] [slot='icon'] * {
+      media-controller[userinactive] [slot="icon"] * {
         transition: none !important;
         animation-duration: 0.001s !important;
       }
@@ -53,7 +53,7 @@
         }
 
         :is(media-time-range, media-volume-range)::part(appearance) {
-          transition: all 0.15s ease-out;
+          transition: all .15s ease-out;
         }
 
         :is(media-time-range, media-volume-range)[dragging]::part(appearance) {
@@ -63,11 +63,11 @@
         }
 
         media-volume-range:not([dragging]) {
-          --media-range-track-transition: width 0.15s ease-out;
+          --media-range-track-transition: width .15s ease-out;
         }
 
         media-time-range:not([dragging]):active {
-          --media-range-track-transition: width 0.15s ease-out;
+          --media-range-track-transition: width .15s ease-out;
         }
 
         media-play-button {
@@ -82,7 +82,7 @@
           border-style: double;
           border-width: 0 0 0 16px;
           border-color: transparent transparent transparent currentColor;
-          transition: all 0.15s ease-out;
+          transition: all .15s ease-out;
         }
 
         media-play-button[mediapaused] .play-icon {
@@ -95,69 +95,54 @@
           display: none;
         }
 
-        media-mute-button[mediavolumelevel='off'] #icon-muted {
+        media-mute-button[mediavolumelevel="off"] #icon-muted {
           display: block;
         }
 
-        media-mute-button:not([mediavolumelevel='off']) #icon-volume {
+        media-mute-button:not([mediavolumelevel="off"]) #icon-volume {
           display: block;
         }
 
         :is(.volume-low, .volume-medium, .volume-high) {
           opacity: 1;
-          transition: opacity 0.5s;
+          transition: opacity .5s;
         }
 
-        media-mute-button[mediavolumelevel='off']
-          :is(.volume-low, .volume-medium, .volume-high),
-        media-mute-button[mediavolumelevel='low']
-          :is(.volume-medium, .volume-high),
-        media-mute-button[mediavolumelevel='medium'] :is(.volume-high) {
-          opacity: 0.2;
+        media-mute-button[mediavolumelevel="off"] :is(.volume-low, .volume-medium, .volume-high),
+        media-mute-button[mediavolumelevel="low"] :is(.volume-medium, .volume-high),
+        media-mute-button[mediavolumelevel="medium"] :is(.volume-high) {
+          opacity: .2;
         }
 
         #icon-muted-slash {
-          transition: clip-path 0.15s ease-out;
+          transition: clip-path .15s ease-out;
           clip-path: inset(0 0 100% 0);
         }
 
-        media-mute-button[mediavolumelevel='off'] #icon-muted-slash {
+        media-mute-button[mediavolumelevel="off"] #icon-muted-slash {
           clip-path: inset(0);
         }
 
         @keyframes bass-bounce {
-          0% {
-            opacity: 0;
-            translate: 0;
-          }
-          50% {
-            opacity: 1;
-            translate: 1px;
-          }
-          100% {
-            opacity: 1;
-            translate: 0;
-          }
+          0%   { opacity: 0; translate: 0; }
+          50%  { opacity: 1; translate: 1px; }
+          100% { opacity: 1; translate: 0; }
         }
 
-        media-mute-button:not([mediavolumelevel='off']) .volume-low {
-          animation: 0.35s bass-bounce cubic-bezier(0.34, 1.56, 0.64, 1);
+        media-mute-button:not([mediavolumelevel="off"]) .volume-low {
+          animation: .35s bass-bounce cubic-bezier(.34, 1.56, .64, 1);
         }
 
-        media-mute-button:is(
-            [mediavolumelevel='medium'],
-            [mediavolumelevel='high']
-          )
-          .volume-medium {
-          animation: 0.35s 0.04s bass-bounce cubic-bezier(0.34, 1.56, 0.64, 1);
+        media-mute-button:is([mediavolumelevel="medium"], [mediavolumelevel="high"]) .volume-medium {
+          animation: .35s .04s bass-bounce cubic-bezier(.34, 1.56, .64, 1);
         }
 
-        media-mute-button[mediavolumelevel='high'] .volume-high {
-          animation: 0.35s 0.08s bass-bounce cubic-bezier(0.34, 1.56, 0.64, 1);
+        media-mute-button[mediavolumelevel="high"] .volume-high {
+          animation: .35s .08s bass-bounce cubic-bezier(.34, 1.56, .64, 1);
         }
 
         media-fullscreen-button path {
-          transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          transition: transform .15s cubic-bezier(.175, .885, .32, 1.275);
         }
 
         media-fullscreen-button[mediaisfullscreen] .top-left {
@@ -183,24 +168,17 @@
         }
 
         @keyframes offset-bounce {
-          0% {
-            --fs-icon-offset: 0%;
-          }
-          50% {
-            --fs-icon-offset: 5%;
-          }
-          100% {
-            --fs-icon-offset: 0%;
-          }
+          0%   { --fs-icon-offset: 0%; }
+          50%  { --fs-icon-offset: 5%; }
+          100% { --fs-icon-offset: 0%; }
         }
 
         media-fullscreen-button:hover path {
-          animation: 0.35s offset-bounce cubic-bezier(0.34, 1.56, 0.64, 1);
+          animation: .35s offset-bounce cubic-bezier(.34, 1.56, .64, 1);
         }
 
         media-fullscreen-button:hover .top-left {
-          translate: calc(-1 * var(--fs-icon-offset))
-            calc(-1 * var(--fs-icon-offset));
+          translate: calc(-1 * var(--fs-icon-offset)) calc(-1 * var(--fs-icon-offset));
         }
 
         media-fullscreen-button:hover .top-right {
@@ -224,12 +202,7 @@
           crossorigin
           playsinline
         >
-          <track
-            default
-            kind="metadata"
-            label="thumbnails"
-            src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"
-          />
+          <track default kind="metadata" label="thumbnails" src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt">
         </video>
         <media-control-bar>
           <media-play-button mediapaused>
@@ -237,49 +210,19 @@
           </media-play-button>
           <media-mute-button mediavolumelevel="off">
             <svg slot="icon" aria-hidden="true" viewBox="0 0 24 24">
-              <path
-                id="icon-muted-slash"
-                d="M3 2.69434 20.5607 20.255 19.5 21.3157 1.93934 3.755 3 2.69434Z"
-              />
+              <path id="icon-muted-slash" d="M3 2.69434 20.5607 20.255 19.5 21.3157 1.93934 3.755 3 2.69434Z"/>
               <g id="icon-muted">
-                <path
-                  id="icon-muted-speaker-small"
-                  d="M8.55 6.13531 12 3.38v6.20484L8.55 6.13531Z"
-                />
-                <path
-                  id="icon-muted-speaker-big"
-                  d="M1.5 15.7503V8.25969h2.83453L12 15.9252V20.63l-6.11016-4.8797H1.5Z"
-                />
-                <path
-                  class="volume-low"
-                  d="M16.5 12.005c0-1.1512-.2723-2.24437-.832-3.34078l-.3399-.66844-1.3368.6811.3407.66796c.4496.88176.668 1.75176.668 2.66016-.0003.1838-.0101.3675-.0295.5503l1.2806 1.2806c.1638-.5965.2475-1.2122.2489-1.8309Zm0 0c0-1.1512-.2723-2.24437-.832-3.34078l-.3399-.66844-1.3368.6811.3407.66796c.4496.88176.668 1.75176.668 2.66016-.0003.1838-.0101.3675-.0295.5503l1.2806 1.2806c.1638-.5965.2475-1.2122.2489-1.8309Z"
-                />
-                <path
-                  class="volume-medium"
-                  d="M17.8978 6.37719C18.8869 8.07266 19.5 9.60547 19.5 12.005c0 1.7072-.3192 2.985-.8672 4.2113l-1.1484-1.149c.3333-.8962.5156-1.8468.5156-3.0623 0-2.07047-.5123-3.35437-1.3978-4.87219l-.3778-.64781 1.2956-.75562.3778.64781Z"
-                />
-                <path
-                  class="volume-high"
-                  d="M22.5 12.005c0-3.48094-.9464-5.67703-2.3677-7.90359l-.4035-.63235-1.2657.80719.4036.63234C20.1478 6.91344 21 8.88781 21 12.005c0 2.2856-.4406 3.9375-1.1634 5.4164l1.1109 1.1109C22.0388 16.4764 22.5 14.4894 22.5 12.005Zm0 0c0-3.48094-.9464-5.67703-2.3677-7.90359l-.4035-.63235-1.2657.80719M22.5 12.005c0-3.48094-.9464-5.67703-2.3677-7.90359l-.4035-.63235-1.2657.80719.4036.63234C20.1478 6.91344 21 8.88781 21 12.005c0 2.2856-.4406 3.9375-1.1634 5.4164"
-                />
+                <path id="icon-muted-speaker-small" d="M8.55 6.13531 12 3.38v6.20484L8.55 6.13531Z"/>
+                <path id="icon-muted-speaker-big" d="M1.5 15.7503V8.25969h2.83453L12 15.9252V20.63l-6.11016-4.8797H1.5Z"/>
+                <path class="volume-low" d="M16.5 12.005c0-1.1512-.2723-2.24437-.832-3.34078l-.3399-.66844-1.3368.6811.3407.66796c.4496.88176.668 1.75176.668 2.66016-.0003.1838-.0101.3675-.0295.5503l1.2806 1.2806c.1638-.5965.2475-1.2122.2489-1.8309Zm0 0c0-1.1512-.2723-2.24437-.832-3.34078l-.3399-.66844-1.3368.6811.3407.66796c.4496.88176.668 1.75176.668 2.66016-.0003.1838-.0101.3675-.0295.5503l1.2806 1.2806c.1638-.5965.2475-1.2122.2489-1.8309Z"/>
+                <path class="volume-medium" d="M17.8978 6.37719C18.8869 8.07266 19.5 9.60547 19.5 12.005c0 1.7072-.3192 2.985-.8672 4.2113l-1.1484-1.149c.3333-.8962.5156-1.8468.5156-3.0623 0-2.07047-.5123-3.35437-1.3978-4.87219l-.3778-.64781 1.2956-.75562.3778.64781Z"/>
+                <path class="volume-high" d="M22.5 12.005c0-3.48094-.9464-5.67703-2.3677-7.90359l-.4035-.63235-1.2657.80719.4036.63234C20.1478 6.91344 21 8.88781 21 12.005c0 2.2856-.4406 3.9375-1.1634 5.4164l1.1109 1.1109C22.0388 16.4764 22.5 14.4894 22.5 12.005Zm0 0c0-3.48094-.9464-5.67703-2.3677-7.90359l-.4035-.63235-1.2657.80719M22.5 12.005c0-3.48094-.9464-5.67703-2.3677-7.90359l-.4035-.63235-1.2657.80719.4036.63234C20.1478 6.91344 21 8.88781 21 12.005c0 2.2856-.4406 3.9375-1.1634 5.4164"/>
               </g>
               <g id="icon-volume">
-                <path
-                  class="volume-low"
-                  d="m15.3268 7.99094.3411.66793C16.1822 9.66585 16.5 10.7636 16.5 12c0 1.2241-.3314 2.3449-.8299 3.3368l-.3368.6701-1.3402-.6736.3368-.6701C14.7445 13.8382 15 12.9471 15 12c0-.9648-.2447-1.8302-.6679-2.65887l-.3412-.66793 1.3359-.68226Z"
-                />
-                <path
-                  class="volume-medium"
-                  d="m17.5196 5.72417.3781.64772C18.8818 8.05755 19.5 9.58453 19.5 12c0 2.4191-.6451 3.9614-1.5996 5.6235l-.3735.6504-1.3008-.747.3735-.6504C17.4713 15.3586 18 14.0753 18 12c0-2.0789-.5068-3.34567-1.3977-4.87189l-.3781-.64771 1.2954-.75623Z"
-                />
-                <path
-                  class="volume-high"
-                  d="m19.7287 3.46428.4035.63219C21.5988 6.39414 22.5 8.61481 22.5 12c0 3.3817-.899 5.6514-2.3718 7.9097l-.4097.6282-1.2564-.8194.4097-.6282C20.2115 17.0361 21 15.0467 21 12c0-3.04324-.7863-4.98789-2.1322-7.09647l-.4035-.6322 1.2644-.80705Z"
-                />
-                <path
-                  id="icon-volume-speaker"
-                  d="M5.88984 8.25469H1.5v7.49061h4.38984L12 20.625V3.375L5.88984 8.25469Z"
-                />
+                <path class="volume-low" d="m15.3268 7.99094.3411.66793C16.1822 9.66585 16.5 10.7636 16.5 12c0 1.2241-.3314 2.3449-.8299 3.3368l-.3368.6701-1.3402-.6736.3368-.6701C14.7445 13.8382 15 12.9471 15 12c0-.9648-.2447-1.8302-.6679-2.65887l-.3412-.66793 1.3359-.68226Z"/>
+                <path class="volume-medium" d="m17.5196 5.72417.3781.64772C18.8818 8.05755 19.5 9.58453 19.5 12c0 2.4191-.6451 3.9614-1.5996 5.6235l-.3735.6504-1.3008-.747.3735-.6504C17.4713 15.3586 18 14.0753 18 12c0-2.0789-.5068-3.34567-1.3977-4.87189l-.3781-.64771 1.2954-.75623Z"/>
+                <path class="volume-high" d="m19.7287 3.46428.4035.63219C21.5988 6.39414 22.5 8.61481 22.5 12c0 3.3817-.899 5.6514-2.3718 7.9097l-.4097.6282-1.2564-.8194.4097-.6282C20.2115 17.0361 21 15.0467 21 12c0-3.04324-.7863-4.98789-2.1322-7.09647l-.4035-.6322 1.2644-.80705Z"/>
+                <path id="icon-volume-speaker" d="M5.88984 8.25469H1.5v7.49061h4.38984L12 20.625V3.375L5.88984 8.25469Z"/>
               </g>
             </svg>
           </media-mute-button>

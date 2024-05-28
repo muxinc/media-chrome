@@ -1,8 +1,8 @@
-import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
-import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
+import { MediaChromeButton } from "./media-chrome-button.js";
+import { globalThis, document } from "./utils/server-safe-globals.js";
+import { MediaUIEvents, MediaUIAttributes } from "./constants.js";
+import { verbs } from "./labels/labels.js";
+import { getBooleanAttr, setBooleanAttr } from "./utils/element-utils.js";
 
 const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
@@ -10,13 +10,13 @@ const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
 const indicatorSVG =
   '<svg viewBox="0 0 6 12"><circle cx="3" cy="6" r="2"></circle></svg>';
 
-const slotTemplate = document.createElement('template');
+const slotTemplate = document.createElement("template");
 slotTemplate.innerHTML = /*html*/ `
   <style>
 
   slot[name=indicator] > *,
   :host ::slotted([slot=indicator]) {
-    ${/* Override styles for icon-only buttons */ ''}
+    ${/* Override styles for icon-only buttons */ ""}
     min-width: auto;
     fill: var(--media-live-button-icon-color, rgb(140, 140, 140));
     color: var(--media-live-button-icon-color, rgb(140, 140, 140));
@@ -39,7 +39,7 @@ slotTemplate.innerHTML = /*html*/ `
     /*
     A new line between spacer and text creates inconsistent spacing
     between slotted items and default slots.
-  */ ''
+  */ ""
   }
   <slot name="spacer">&nbsp;</slot><slot name="text">LIVE</slot>
 `;
@@ -47,11 +47,11 @@ slotTemplate.innerHTML = /*html*/ `
 const updateAriaAttributes = (el) => {
   const isPausedOrNotLive = el.mediaPaused || !el.mediaTimeIsLive;
   const label = isPausedOrNotLive ? verbs.SEEK_LIVE() : verbs.PLAYING_LIVE();
-  el.setAttribute('aria-label', label);
+  el.setAttribute("aria-label", label);
 
   isPausedOrNotLive
-    ? el.removeAttribute('aria-disabled')
-    : el.setAttribute('aria-disabled', 'true');
+    ? el.removeAttribute("aria-disabled")
+    : el.setAttribute("aria-disabled", "true");
 };
 
 /**
@@ -130,8 +130,8 @@ class MediaLiveButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get('media-live-button')) {
-  globalThis.customElements.define('media-live-button', MediaLiveButton);
+if (!globalThis.customElements.get("media-live-button")) {
+  globalThis.customElements.define("media-live-button", MediaLiveButton);
 }
 
 export default MediaLiveButton;

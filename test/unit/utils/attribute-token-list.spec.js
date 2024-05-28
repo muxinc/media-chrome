@@ -17,11 +17,7 @@ describe('AttributeTokenList', () => {
     list.add('token-1', 'token-2');
     list = [...list];
 
-    assert.deepEqual(
-      list,
-      ['token-1', 'token-2'],
-      'Assert that tokens is "token-1" and "token-2".'
-    );
+    assert.deepEqual(list, ['token-1', 'token-2'], 'Assert that tokens is "token-1" and "token-2".');
   });
 
   it('Just add token once', function () {
@@ -31,11 +27,7 @@ describe('AttributeTokenList', () => {
     list.add('token-1');
     list = [...list];
 
-    assert.deepEqual(
-      list,
-      ['token-1'],
-      'Assert that token was only added once.'
-    );
+    assert.deepEqual(list, ['token-1'], 'Assert that token was only added once.');
   });
 
   it('Check contains with a single token', function () {
@@ -43,10 +35,7 @@ describe('AttributeTokenList', () => {
 
     list.add('token-1');
 
-    assert.ok(
-      list.contains('token-1'),
-      'Assert that list contains token "token-1".'
-    );
+    assert.ok(list.contains('token-1'), 'Assert that list contains token "token-1".');
   });
 
   it('Check contains with multiple tokens', function () {
@@ -55,10 +44,7 @@ describe('AttributeTokenList', () => {
     list.add('token-1');
     list.add('token-2');
 
-    assert.ok(
-      list.contains('token-1'),
-      'Assert that list contains token "token-1".'
-    );
+    assert.ok(list.contains('token-1'), 'Assert that list contains token "token-1".');
   });
 
   it('Check contains with non existing token', function () {
@@ -66,11 +52,7 @@ describe('AttributeTokenList', () => {
 
     list.add('token-1');
 
-    assert.equal(
-      list.contains('token-2'),
-      false,
-      'Assert that list does not contains token "token-2".'
-    );
+    assert.equal(list.contains('token-2'), false, 'Assert that list does not contains token "token-2".');
   });
 
   it('Check contains with non existing tokens', function () {
@@ -79,11 +61,7 @@ describe('AttributeTokenList', () => {
     list.add('token-1');
     list.add('token-2');
 
-    assert.equal(
-      list.contains('token-3'),
-      false,
-      'Assert that list does not contains token "token-3".'
-    );
+    assert.equal(list.contains('token-3'), false, 'Assert that list does not contains token "token-3".');
   });
 
   it('Get item at index', function () {
@@ -92,11 +70,7 @@ describe('AttributeTokenList', () => {
     list.add('token-1');
     list.add('token-2');
 
-    assert.equal(
-      list.item(1),
-      'token-2',
-      'Assert that "token-2" is at index 1.'
-    );
+    assert.equal(list.item(1), 'token-2', 'Assert that "token-2" is at index 1.');
   });
 
   it('Get item at non existing index', function () {
@@ -104,11 +78,7 @@ describe('AttributeTokenList', () => {
 
     list.add('token-1');
 
-    assert.equal(
-      list.item(1),
-      null,
-      'Assert that item() gives null for non existing token.'
-    );
+    assert.equal(list.item(1), null, 'Assert that item() gives null for non existing token.');
   });
 
   it('Remove single token', function () {
@@ -132,11 +102,7 @@ describe('AttributeTokenList', () => {
     list.remove('token-1', 'token-2');
     list = [...list];
 
-    assert.deepEqual(
-      list,
-      [],
-      'Assert that "token-1" and "token-2" was removed.'
-    );
+    assert.deepEqual(list, [], 'Assert that "token-1" and "token-2" was removed.');
   });
 
   it('Remove non-existent token', function () {
@@ -147,11 +113,7 @@ describe('AttributeTokenList', () => {
     list.remove('token-3');
     list = [...list];
 
-    assert.deepEqual(
-      list,
-      ['token-1'],
-      'Assert that token list did not change by removing non-existent token.'
-    );
+    assert.deepEqual(list, ['token-1'], 'Assert that token list did not change by removing non-existent token.');
   });
 
   it('Toggle addition of token', function () {
@@ -198,11 +160,7 @@ describe('AttributeTokenList', () => {
 
     list.add('token-1');
 
-    assert.equal(
-      list.toggle('token-1', false),
-      false,
-      'Assert that toggle returns false.'
-    );
+    assert.equal(list.toggle('token-1', false), false, 'Assert that toggle returns false.');
   });
 
   it('Test toggle force = true with filled token list', function () {
@@ -210,11 +168,7 @@ describe('AttributeTokenList', () => {
 
     list.add('token-1');
 
-    assert.equal(
-      list.toggle('token-1', true),
-      true,
-      'Assert that toggle returns true.'
-    );
+    assert.equal(list.toggle('token-1', true), true, 'Assert that toggle returns true.');
   });
 
   it('Test toggle force = true with empty token list', function () {
@@ -238,11 +192,7 @@ describe('AttributeTokenList', () => {
 
     list.add('token-1', 'token-2');
 
-    assert.equal(
-      list.toString(),
-      'token-1 token-2',
-      'Assert that tokens are space separated.'
-    );
+    assert.equal(list.toString(), 'token-1 token-2', 'Assert that tokens are space separated.');
   });
 
   it('Test length after add', function () {

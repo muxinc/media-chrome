@@ -1,7 +1,7 @@
-import { globalThis } from './utils/server-safe-globals.js';
-import { MediaChromeRange } from './media-chrome-range.js';
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { nouns } from './labels/labels.js';
+import { globalThis } from "./utils/server-safe-globals.js";
+import { MediaChromeRange } from "./media-chrome-range.js";
+import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
+import { nouns } from "./labels/labels.js";
 import {
   getBooleanAttr,
   getNumericAttr,
@@ -9,7 +9,7 @@ import {
   setBooleanAttr,
   setNumericAttr,
   setStringAttr,
-} from './utils/element-utils.js';
+} from "./utils/element-utils.js";
 
 const DEFAULT_VOLUME = 1;
 
@@ -40,7 +40,7 @@ class MediaVolumeRange extends MediaChromeRange {
   constructor() {
     super();
 
-    this.range.addEventListener('input', () => {
+    this.range.addEventListener("input", () => {
       const detail = this.range.value;
       const evt = new globalThis.CustomEvent(
         MediaUIEvents.MEDIA_VOLUME_REQUEST,
@@ -56,7 +56,7 @@ class MediaVolumeRange extends MediaChromeRange {
 
   connectedCallback() {
     super.connectedCallback();
-    this.range.setAttribute('aria-label', nouns.VOLUME());
+    this.range.setAttribute("aria-label", nouns.VOLUME());
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -68,7 +68,7 @@ class MediaVolumeRange extends MediaChromeRange {
     ) {
       this.range.valueAsNumber = toVolume(this);
       this.range.setAttribute(
-        'aria-valuetext',
+        "aria-valuetext",
         formatAsPercentString(this.range)
       );
       this.updateBar();
@@ -109,8 +109,8 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 }
 
-if (!globalThis.customElements.get('media-volume-range')) {
-  globalThis.customElements.define('media-volume-range', MediaVolumeRange);
+if (!globalThis.customElements.get("media-volume-range")) {
+  globalThis.customElements.define("media-volume-range", MediaVolumeRange);
 }
 
 export default MediaVolumeRange;

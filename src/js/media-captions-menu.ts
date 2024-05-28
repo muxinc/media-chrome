@@ -1,24 +1,24 @@
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
+import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
 import {
   MediaChromeMenu,
   createIndicator,
   createMenuItem,
-} from './media-chrome-menu.js';
-import type { TextTrackLike } from './utils/TextTrackLike.js';
+} from "./media-chrome-menu.js";
+import type { TextTrackLike } from "./utils/TextTrackLike.js";
 import {
   formatTextTrackObj,
   parseTextTracksStr,
   stringifyTextTrackList,
-} from './utils/captions.js';
-import { getMediaController } from './utils/element-utils.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
+} from "./utils/captions.js";
+import { getMediaController } from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
 const ccIcon = /*html*/ `
   <svg aria-hidden="true" viewBox="0 0 26 24" part="captions-indicator indicator">
     <path d="M22.83 5.68a2.58 2.58 0 0 0-2.3-2.5c-3.62-.24-11.44-.24-15.06 0a2.58 2.58 0 0 0-2.3 2.5c-.23 4.21-.23 8.43 0 12.64a2.58 2.58 0 0 0 2.3 2.5c3.62.24 11.44.24 15.06 0a2.58 2.58 0 0 0 2.3-2.5c.23-4.21.23-8.43 0-12.64Zm-11.39 9.45a3.07 3.07 0 0 1-1.91.57 3.06 3.06 0 0 1-2.34-1 3.75 3.75 0 0 1-.92-2.67 3.92 3.92 0 0 1 .92-2.77 3.18 3.18 0 0 1 2.43-1 2.94 2.94 0 0 1 2.13.78c.364.359.62.813.74 1.31l-1.43.35a1.49 1.49 0 0 0-1.51-1.17 1.61 1.61 0 0 0-1.29.58 2.79 2.79 0 0 0-.5 1.89 3 3 0 0 0 .49 1.93 1.61 1.61 0 0 0 1.27.58 1.48 1.48 0 0 0 1-.37 2.1 2.1 0 0 0 .59-1.14l1.4.44a3.23 3.23 0 0 1-1.07 1.69Zm7.22 0a3.07 3.07 0 0 1-1.91.57 3.06 3.06 0 0 1-2.34-1 3.75 3.75 0 0 1-.92-2.67 3.88 3.88 0 0 1 .93-2.77 3.14 3.14 0 0 1 2.42-1 3 3 0 0 1 2.16.82 2.8 2.8 0 0 1 .73 1.31l-1.43.35a1.49 1.49 0 0 0-1.51-1.21 1.61 1.61 0 0 0-1.29.58A2.79 2.79 0 0 0 15 12a3 3 0 0 0 .49 1.93 1.61 1.61 0 0 0 1.27.58 1.44 1.44 0 0 0 1-.37 2.1 2.1 0 0 0 .6-1.15l1.4.44a3.17 3.17 0 0 1-1.1 1.7Z"/>
   </svg>`;
 
-const template: HTMLTemplateElement = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement("template");
 template.innerHTML =
   MediaChromeMenu.template.innerHTML +
   /*html*/ `
@@ -70,20 +70,20 @@ class MediaCaptionsMenu extends MediaChromeMenu {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.addEventListener('change', this.#onChange);
+    this.addEventListener("change", this.#onChange);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    this.removeEventListener('change', this.#onChange);
+    this.removeEventListener("change", this.#onChange);
   }
 
   /**
    * Returns the anchor element when it is a floating menu.
    */
   get anchorElement(): HTMLElement {
-    if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector('media-captions-menu-button');
+    if (this.anchor !== "auto") return super.anchorElement;
+    return getMediaController(this).querySelector("media-captions-menu-button");
   }
 
   /**
@@ -117,33 +117,33 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     if (this.#prevState === JSON.stringify(this.mediaSubtitlesList)) return;
     this.#prevState = JSON.stringify(this.mediaSubtitlesList);
 
-    this.defaultSlot.textContent = '';
+    this.defaultSlot.textContent = "";
 
     const isOff = !this.value;
     const item = createMenuItem({
-      type: 'radio',
-      text: this.formatMenuItemText('Off'),
-      value: 'off',
+      type: "radio",
+      text: this.formatMenuItemText("Off"),
+      value: "off",
       checked: isOff,
     });
-    item.prepend(createIndicator(this, 'checked-indicator'));
+    item.prepend(createIndicator(this, "checked-indicator"));
     this.defaultSlot.append(item);
 
     const subtitlesList = this.mediaSubtitlesList;
 
     for (const subs of subtitlesList) {
       const item = createMenuItem({
-        type: 'radio',
+        type: "radio",
         text: this.formatMenuItemText(subs.label, subs),
         value: formatTextTrackObj(subs),
         checked: this.value == formatTextTrackObj(subs),
       });
-      item.prepend(createIndicator(this, 'checked-indicator'));
+      item.prepend(createIndicator(this, "checked-indicator"));
 
       // add CC icon for captions
-      const type = subs.kind ?? 'subs';
-      if (type === 'captions') {
-        item.append(createIndicator(this, 'captions-indicator'));
+      const type = subs.kind ?? "subs";
+      if (type === "captions") {
+        item.append(createIndicator(this, "captions-indicator"));
       }
 
       this.defaultSlot.append(item);
@@ -225,8 +225,8 @@ const setSubtitlesListAttr = (
   el.setAttribute(attrName, newValStr);
 };
 
-if (!globalThis.customElements.get('media-captions-menu')) {
-  globalThis.customElements.define('media-captions-menu', MediaCaptionsMenu);
+if (!globalThis.customElements.get("media-captions-menu")) {
+  globalThis.customElements.define("media-captions-menu", MediaCaptionsMenu);
 }
 
 export { MediaCaptionsMenu };

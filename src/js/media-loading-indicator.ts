@@ -1,24 +1,24 @@
 import {
   MediaStateReceiverAttributes,
   MediaUIAttributes,
-} from './constants.js';
-import { nouns } from './labels/labels.js';
-import type MediaController from './media-controller.js';
-import { CustomElement } from './utils/CustomElement.js';
+} from "./constants.js";
+import { nouns } from "./labels/labels.js";
+import type MediaController from "./media-controller.js";
+import { CustomElement } from "./utils/CustomElement.js";
 import {
   getBooleanAttr,
   getOrInsertCSSRule,
   setBooleanAttr,
-} from './utils/element-utils.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
+} from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
 export const Attributes = {
-  LOADING_DELAY: 'loadingdelay',
+  LOADING_DELAY: "loadingdelay",
 };
 
 const DEFAULT_LOADING_DELAY = 500;
 
-const template: HTMLTemplateElement = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement("template");
 
 const loadingIndicatorIcon = `
 <svg aria-hidden="true" viewBox="0 0 100 100">
@@ -127,7 +127,7 @@ class MediaLoadingIndicator extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      const shadow = this.attachShadow({ mode: 'open' });
+      const shadow = this.attachShadow({ mode: "open" });
       const indicatorHTML = template.content.cloneNode(true);
       shadow.appendChild(indicatorHTML);
     }
@@ -182,9 +182,9 @@ class MediaLoadingIndicator extends CustomElement {
   set loadingDelay(delay: number) {
     this.#delay = delay;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ":host");
     style.setProperty(
-      '--_loading-indicator-delay',
+      "--_loading-indicator-delay",
       `var(--media-loading-indicator-transition-delay, ${delay}ms)`
     );
   }
@@ -211,9 +211,9 @@ class MediaLoadingIndicator extends CustomElement {
   }
 }
 
-if (!globalThis.customElements.get('media-loading-indicator')) {
+if (!globalThis.customElements.get("media-loading-indicator")) {
   globalThis.customElements.define(
-    'media-loading-indicator',
+    "media-loading-indicator",
     MediaLoadingIndicator
   );
 }

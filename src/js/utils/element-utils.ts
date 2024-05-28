@@ -1,5 +1,5 @@
-import { MediaStateReceiverAttributes } from '../constants.js';
-import type MediaController from '../media-controller.js';
+import { MediaStateReceiverAttributes } from "../constants.js";
+import type MediaController from "../media-controller.js";
 
 /**
  * Get the media controller element from the `mediacontroller` attribute or closest ancestor.
@@ -10,7 +10,7 @@ export function getMediaController(
 ): MediaController | undefined {
   return (
     getAttributeMediaController(host) ??
-    closestComposedNode(host, 'media-controller')
+    closestComposedNode(host, "media-controller")
   );
 }
 
@@ -35,7 +35,7 @@ export function getAttributeMediaController(
 export const updateIconText = (
   svg: HTMLElement,
   value: string,
-  selector: string = '.value'
+  selector: string = ".value"
 ): void => {
   const node = svg.querySelector(selector);
 
@@ -138,9 +138,9 @@ export function isElementVisible(
   while (el && depth > 0) {
     const style = getComputedStyle(el);
     if (
-      style.opacity === '0' ||
-      style.visibility === 'hidden' ||
-      style.display === 'none'
+      style.opacity === "0" ||
+      style.visibility === "hidden" ||
+      style.display === "none"
     ) {
       return false;
     }
@@ -215,7 +215,7 @@ export function getCSSRule(
 ): CSSStyleRule | undefined {
   let style;
 
-  for (style of styleParent.querySelectorAll('style')) {
+  for (style of styleParent.querySelectorAll("style")) {
     // Catch this error. e.g. browser extension adds style tags.
     //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
     //   Not allowed to access cross-origin stylesheet
@@ -240,7 +240,7 @@ export function insertCSSRule(
   styleParent: Element | ShadowRoot,
   selectorText: string
 ): CSSStyleRule | undefined {
-  const styles = styleParent.querySelectorAll('style') ?? [];
+  const styles = styleParent.querySelectorAll("style") ?? [];
   const style = styles?.[styles.length - 1];
 
   // If there is no style sheet return an empty style rule.
@@ -248,7 +248,7 @@ export function insertCSSRule(
     // The style tag must be connected to the DOM before it has a sheet.
     // This could indicate a bug. Should the code be moved to connectedCallback?
     console.warn(
-      'Media Chrome: No style sheet found on style tag of',
+      "Media Chrome: No style sheet found on style tag of",
       styleParent
     );
 
@@ -256,8 +256,8 @@ export function insertCSSRule(
       // @ts-ignore
       style: {
         setProperty: () => {},
-        removeProperty: () => '',
-        getPropertyValue: () => '',
+        removeProperty: () => "",
+        getPropertyValue: () => "",
       },
     };
   }
