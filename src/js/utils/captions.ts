@@ -1,5 +1,5 @@
-import { MediaUIAttributes } from '../constants.js';
-import type { TextTrackLike } from './TextTrackLike.js';
+import { MediaUIAttributes } from "../constants.js";
+import type { TextTrackLike } from "./TextTrackLike.js";
 
 // NOTE: This is generic for any CSS/html list representation. Consider renaming and moving to generic module.
 /**
@@ -7,7 +7,7 @@ import type { TextTrackLike } from './TextTrackLike.js';
  * @param textTracksStr - a string of 1+ "items" (representing TextTracks), separated by whitespace
  * @returns An array of non-whitesace strings (each representing a single TextTrack).
  */
-export const splitTextTracksStr = (textTracksStr = ''): string[] =>
+export const splitTextTracksStr = (textTracksStr = ""): string[] =>
   textTracksStr.split(/\s+/);
 
 /**
@@ -22,11 +22,11 @@ export const splitTextTracksStr = (textTracksStr = ''): string[] =>
  * @param textTrackStr - A well-defined TextTrack string representations
  * @returns An object that resembles a (partial) TextTrack (`{ language: string; label?: string; }`)
  */
-export const parseTextTrackStr = (textTrackStr = ''): TextTrackLike => {
-  const [kind, language, encodedLabel] = textTrackStr.split(':');
+export const parseTextTrackStr = (textTrackStr = ""): TextTrackLike => {
+  const [kind, language, encodedLabel] = textTrackStr.split(":");
   const label = encodedLabel ? decodeURIComponent(encodedLabel) : undefined;
   return {
-    kind: kind === 'cc' ? 'captions' : 'subtitles',
+    kind: kind === "cc" ? "captions" : "subtitles",
     language,
     label,
   };
@@ -51,7 +51,7 @@ export const parseTextTrackStr = (textTrackStr = ''): TextTrackLike => {
  * ```
  */
 export const parseTextTracksStr = (
-  textTracksStr = '',
+  textTracksStr = "",
   textTrackLikeObj: Partial<TextTrackLike> = {}
 ): TextTrackLike[] => {
   return splitTextTracksStr(textTracksStr).map((textTrackStr) => {
@@ -77,7 +77,7 @@ export const parseTracks = (trackOrTracks: TrackOrTracks): TextTrackLike[] => {
   if (Array.isArray(trackOrTracks)) {
     return trackOrTracks.map((trackObjOrStr) => {
       // If the individual track is a string representation, translate it into a TextTrack-like object.
-      if (typeof trackObjOrStr === 'string') {
+      if (typeof trackObjOrStr === "string") {
         return parseTextTrackStr(trackObjOrStr);
       }
       // Otherwise, assume it already is one.
@@ -85,7 +85,7 @@ export const parseTracks = (trackOrTracks: TrackOrTracks): TextTrackLike[] => {
     });
   }
   // A string of 1+ TextTrack representations. Parse into an array of objects.
-  if (typeof trackOrTracks === 'string') {
+  if (typeof trackOrTracks === "string") {
     return parseTextTracksStr(trackOrTracks);
   }
   // Assume a single TextTrack-like object. Wrap into an array of 1.
@@ -98,10 +98,10 @@ export const parseTracks = (trackOrTracks: TrackOrTracks): TextTrackLike[] => {
  * @returns {string} A string representing a TextTrack with the format: "language[:label]"
  */
 export const formatTextTrackObj = (
-  { kind, label, language }: TextTrackLike = { kind: 'subtitles' }
+  { kind, label, language }: TextTrackLike = { kind: "subtitles" }
 ): string => {
   if (!label) return language;
-  return `${kind === 'captions' ? 'cc' : 'sb'}:${language}:${encodeURIComponent(
+  return `${kind === "captions" ? "cc" : "sb"}:${language}:${encodeURIComponent(
     label
   )}`;
 };
@@ -115,7 +115,7 @@ export const formatTextTrackObj = (
 export const stringifyTextTrackList = (
   textTracks: TextTrackListLike = []
 ): string => {
-  return Array.prototype.map.call(textTracks, formatTextTrackObj).join(' ');
+  return Array.prototype.map.call(textTracks, formatTextTrackObj).join(" ");
 };
 
 // NOTE: This is a generic higher order fn. Consider and moving to generic module.
@@ -244,7 +244,7 @@ export const getTextTracksList = (
   if (!media?.textTracks) return [];
 
   const filterPred =
-    typeof filterPredOrObj === 'function'
+    typeof filterPredOrObj === "function"
       ? filterPredOrObj
       : textTrackObjAsPred(filterPredOrObj);
 

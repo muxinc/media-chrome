@@ -1,8 +1,8 @@
-import { MediaChromeSelectMenu } from './media-chrome-selectmenu.js';
-import './media-audio-track-button.js';
-import './media-audio-track-listbox.js';
-import { MediaUIAttributes } from '../constants.js';
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { MediaChromeSelectMenu } from "./media-chrome-selectmenu.js";
+import "./media-audio-track-button.js";
+import "./media-audio-track-listbox.js";
+import { MediaUIAttributes } from "../constants.js";
+import { globalThis, document } from "../utils/server-safe-globals.js";
 
 /**
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the selected audio track id.
@@ -22,33 +22,33 @@ class MediaAudioTrackSelectMenu extends MediaChromeSelectMenu {
   }
 
   init() {
-    const audioTrackButton = document.createElement('media-audio-track-button');
-    audioTrackButton.part.add('button');
+    const audioTrackButton = document.createElement("media-audio-track-button");
+    audioTrackButton.part.add("button");
     audioTrackButton.preventClick = true;
 
     const audioTrackListbox = document.createElement(
-      'media-audio-track-listbox'
+      "media-audio-track-listbox"
     );
-    audioTrackListbox.part.add('listbox');
+    audioTrackListbox.part.add("listbox");
     audioTrackListbox.setAttribute(
-      'exportparts',
-      'option, option-selected, indicator'
+      "exportparts",
+      "option, option-selected, indicator"
     );
 
-    const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
-    const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
+    const buttonSlot = this.shadowRoot.querySelector("slot[name=button]");
+    const listboxSlot = this.shadowRoot.querySelector("slot[name=listbox]");
 
-    buttonSlot.textContent = '';
-    listboxSlot.textContent = '';
+    buttonSlot.textContent = "";
+    listboxSlot.textContent = "";
 
     buttonSlot.append(audioTrackButton);
     listboxSlot.append(audioTrackListbox);
   }
 }
 
-if (!globalThis.customElements.get('media-audio-track-selectmenu')) {
+if (!globalThis.customElements.get("media-audio-track-selectmenu")) {
   globalThis.customElements.define(
-    'media-audio-track-selectmenu',
+    "media-audio-track-selectmenu",
     MediaAudioTrackSelectMenu
   );
 }

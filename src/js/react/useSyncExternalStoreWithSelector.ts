@@ -12,7 +12,7 @@ import {
   useMemo,
   useDebugValue,
   useSyncExternalStore,
-} from 'react';
+} from "react";
 
 // NOTE: This is a port of https://github.com/facebook/react/blob/main/packages/use-sync-external-store/src/useSyncExternalStoreWithSelector.js
 // and React's internal/shared version of `Object.is` with refactors for TypeScript and bundling. Doing this to avoid adding an additional dependency
@@ -40,7 +40,7 @@ type SnapshotRef<Selection> =
   | null;
 
 const is: (x: any, y: any) => boolean =
-  typeof Object.is === 'function' ? Object.is : isPolyfill;
+  typeof Object.is === "function" ? Object.is : isPolyfill;
 
 // Same as useSyncExternalStore, but supports selector and isEqual arguments.
 export function useSyncExternalStoreWithSelector<Snapshot, Selection>(

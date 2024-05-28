@@ -7,10 +7,10 @@
 </media-theme-youtube>
 */
 
-import { globalThis, document } from '../utils/server-safe-globals.js';
-import { MediaThemeElement } from '../media-theme-element.js';
+import { globalThis, document } from "../utils/server-safe-globals.js";
+import { MediaThemeElement } from "../media-theme-element.js";
 
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = /*html*/ `
 <style>
   :host {
@@ -133,8 +133,8 @@ class MediaThemeYoutube extends MediaThemeElement {
   static template = template;
 }
 
-if (!globalThis.customElements.get('media-theme-youtube')) {
-  globalThis.customElements.define('media-theme-youtube', MediaThemeYoutube);
+if (!globalThis.customElements.get("media-theme-youtube")) {
+  globalThis.customElements.define("media-theme-youtube", MediaThemeYoutube);
 }
 
 export default MediaThemeYoutube;

@@ -1,5 +1,5 @@
 export function stringifyRenditionList(renditions) {
-  return renditions?.map(stringifyRendition).join(' ');
+  return renditions?.map(stringifyRendition).join(" ");
 }
 
 export function parseRenditionList(renditions) {
@@ -9,19 +9,19 @@ export function parseRenditionList(renditions) {
 export function stringifyRendition(rendition) {
   if (rendition) {
     const { id, width, height } = rendition;
-    return [id, width, height].filter((a) => a != null).join(':');
+    return [id, width, height].filter((a) => a != null).join(":");
   }
 }
 
 export function parseRendition(rendition) {
   if (rendition) {
-    const [id, width, height] = rendition.split(':');
+    const [id, width, height] = rendition.split(":");
     return { id, width, height };
   }
 }
 
 export function stringifyAudioTrackList(audioTracks) {
-  return audioTracks?.map(stringifyAudioTrack).join(' ');
+  return audioTracks?.map(stringifyAudioTrack).join(" ");
 }
 
 export function parseAudioTrackList(audioTracks) {
@@ -31,38 +31,38 @@ export function parseAudioTrackList(audioTracks) {
 export function stringifyAudioTrack(audioTrack) {
   if (audioTrack) {
     const { id, kind, language, label } = audioTrack;
-    return [id, kind, language, label].filter((a) => a != null).join(':');
+    return [id, kind, language, label].filter((a) => a != null).join(":");
   }
 }
 
 export function parseAudioTrack(audioTrack) {
   if (audioTrack) {
-    const [id, kind, language, label] = audioTrack.split(':');
+    const [id, kind, language, label] = audioTrack.split(":");
     return { id, kind, language, label };
   }
 }
 
 export function dashedToCamel(word) {
   return word
-    .split('-')
+    .split("-")
     .map(function (x, i) {
       return (
         (i ? x[0].toUpperCase() : x[0].toLowerCase()) + x.slice(1).toLowerCase()
       );
     })
-    .join('');
+    .join("");
 }
 
 export function constToCamel(word, upperFirst = false) {
   return word
-    .split('_')
+    .split("_")
     .map(function (x, i) {
       return (
         (i || upperFirst ? x[0].toUpperCase() : x[0].toLowerCase()) +
         x.slice(1).toLowerCase()
       );
     })
-    .join('');
+    .join("");
 }
 
 export function camelCase(name) {
@@ -70,11 +70,11 @@ export function camelCase(name) {
 }
 
 export function isValidNumber(x) {
-  return typeof x === 'number' && !Number.isNaN(x) && Number.isFinite(x);
+  return typeof x === "number" && !Number.isNaN(x) && Number.isFinite(x);
 }
 
 export function isNumericString(str) {
-  if (typeof str != 'string') return false; // we only process strings!
+  if (typeof str != "string") return false; // we only process strings!
   // @ts-ignore
   return !isNaN(str) && !isNaN(parseFloat(str));
 }

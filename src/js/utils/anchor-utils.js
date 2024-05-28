@@ -30,8 +30,8 @@ function getRectRelativeToOffsetParent(element, offsetParent) {
 }
 
 function computeCoordsFromPlacement({ anchor, floating }, placement) {
-  const alignmentAxis = getSideAxis(placement) === 'x' ? 'y' : 'x';
-  const alignLength = alignmentAxis === 'y' ? 'height' : 'width';
+  const alignmentAxis = getSideAxis(placement) === "x" ? "y" : "x";
+  const alignLength = alignmentAxis === "y" ? "height" : "width";
   const side = getSide(placement);
 
   const commonX = anchor.x + anchor.width / 2 - floating.width / 2;
@@ -40,27 +40,27 @@ function computeCoordsFromPlacement({ anchor, floating }, placement) {
 
   let coords;
   switch (side) {
-    case 'top':
+    case "top":
       coords = { x: commonX, y: anchor.y - floating.height };
       break;
-    case 'bottom':
+    case "bottom":
       coords = { x: commonX, y: anchor.y + anchor.height };
       break;
-    case 'right':
+    case "right":
       coords = { x: anchor.x + anchor.width, y: commonY };
       break;
-    case 'left':
+    case "left":
       coords = { x: anchor.x - floating.width, y: commonY };
       break;
     default:
       coords = { x: anchor.x, y: anchor.y };
   }
 
-  switch (placement.split('-')[1]) {
-    case 'start':
+  switch (placement.split("-")[1]) {
+    case "start":
       coords[alignmentAxis] -= commonAlign;
       break;
-    case 'end':
+    case "end":
       coords[alignmentAxis] += commonAlign;
       break;
   }
@@ -69,9 +69,9 @@ function computeCoordsFromPlacement({ anchor, floating }, placement) {
 }
 
 function getSide(placement) {
-  return placement.split('-')[0];
+  return placement.split("-")[0];
 }
 
 function getSideAxis(placement) {
-  return ['top', 'bottom'].includes(getSide(placement)) ? 'y' : 'x';
+  return ["top", "bottom"].includes(getSide(placement)) ? "y" : "x";
 }

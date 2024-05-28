@@ -2,12 +2,12 @@ import {
   MediaChromeListbox,
   createOption,
   createIndicator,
-} from './media-chrome-listbox.js';
-import './media-chrome-option.js';
-import { globalThis } from '../utils/server-safe-globals.js';
-import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
-import { parseAudioTrackList } from '../utils/utils.js';
-import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
+} from "./media-chrome-listbox.js";
+import "./media-chrome-option.js";
+import { globalThis } from "../utils/server-safe-globals.js";
+import { getStringAttr, setStringAttr } from "../utils/element-utils.js";
+import { parseAudioTrackList } from "../utils/utils.js";
+import { MediaUIAttributes, MediaUIEvents } from "../constants.js";
 
 /**
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the enabled audio track.
@@ -48,12 +48,12 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
 
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener('change', this.#onChange);
+    this.addEventListener("change", this.#onChange);
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener('change', this.#onChange);
+    this.removeEventListener("change", this.#onChange);
   }
 
   get mediaAudioTrackList() {
@@ -85,15 +85,15 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
 
     const audioTrackList = this.mediaAudioTrackList;
 
-    const container = this.shadowRoot.querySelector('#container');
-    container.textContent = '';
+    const container = this.shadowRoot.querySelector("#container");
+    container.textContent = "";
 
     for (const audioTrack of audioTrackList) {
       const text = this.formatOptionText(audioTrack.label, audioTrack);
 
       /** @type {HTMLOptionElement} */
       const option = createOption(text, `${audioTrack.id}`, audioTrack.enabled);
-      option.prepend(createIndicator(this, 'select-indicator'));
+      option.prepend(createIndicator(this, "select-indicator"));
 
       container.append(option);
     }
@@ -114,9 +114,9 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
   };
 }
 
-if (!globalThis.customElements.get('media-audio-track-listbox')) {
+if (!globalThis.customElements.get("media-audio-track-listbox")) {
   globalThis.customElements.define(
-    'media-audio-track-listbox',
+    "media-audio-track-listbox",
     MediaAudioTrackListbox
   );
 }

@@ -1,9 +1,5 @@
 import { assert } from '@open-wc/testing';
-import {
-  evaluateExpression,
-  getParamValue,
-  processor,
-} from '../../src/js/utils/template-processor.js';
+import { evaluateExpression, getParamValue, processor } from '../../src/js/utils/template-processor.js';
 import { TemplateInstance } from '../../src/js/utils/template-parts.js';
 
 describe('evaluateExpression', () => {
@@ -78,6 +74,7 @@ describe('getParamValue', () => {
 });
 
 describe('processor', () => {
+
   it('InnerTemplatePart: simple truthy if condition', async () => {
     const template = document.createElement('template');
     template.innerHTML = `<div>hello<template if="x"> world</template>!</div>`;
@@ -116,4 +113,5 @@ describe('processor', () => {
     instance.update({ x: 1, loud: true });
     assert.equal(instance.children[0].textContent.trim(), 'hello world!');
   });
+
 });

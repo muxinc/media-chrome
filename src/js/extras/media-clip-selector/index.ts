@@ -1,8 +1,8 @@
-import { MediaUIAttributes, MediaUIEvents } from '../../constants.js';
-import { CustomElement } from '../../utils/CustomElement.js';
-import { document, globalThis } from '../../utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from "../../constants.js";
+import { CustomElement } from "../../utils/CustomElement.js";
+import { document, globalThis } from "../../utils/server-safe-globals.js";
 
-const template: HTMLTemplateElement = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement("template");
 
 const HANDLE_W = 8;
 
@@ -32,7 +32,7 @@ template.innerHTML = `
       background: #ccc;
       position: absolute;
       top: 16px;
-      z-index: ${Z['100']};
+      z-index: ${Z["100"]};
     }
 
     #startHandle, #endHandle {
@@ -49,12 +49,12 @@ template.innerHTML = `
       background-color: #aaa;
       position: absolute;
       display: none;
-      z-index: ${Z['300']};
+      z-index: ${Z["300"]};
     }
 
     #selection {
       display: flex;
-      z-index: ${Z['200']};
+      z-index: ${Z["200"]};
       width: 25%;
       height: 100%;
       align-items: center;
@@ -140,7 +140,7 @@ template.innerHTML = `
 class MediaClipSelector extends CustomElement {
   static get observedAttributes() {
     return [
-      'thumbnails',
+      "thumbnails",
       MediaUIAttributes.MEDIA_DURATION,
       MediaUIAttributes.MEDIA_CURRENT_TIME,
     ];
@@ -169,37 +169,37 @@ class MediaClipSelector extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow({ mode: "open" });
       // @ts-ignore
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
     this.draggingEl = null;
 
-    this.wrapper = this.shadowRoot.querySelector('#selectorContainer');
-    this.selection = this.shadowRoot.querySelector('#selection');
-    this.playhead = this.shadowRoot.querySelector('#playhead');
-    this.leftTrim = this.shadowRoot.querySelector('#leftTrim');
-    this.spacerFirst = this.shadowRoot.querySelector('#spacerFirst');
-    this.startHandle = this.shadowRoot.querySelector('#startHandle');
-    this.spacerMiddle = this.shadowRoot.querySelector('#spacerMiddle');
-    this.endHandle = this.shadowRoot.querySelector('#endHandle');
-    this.spacerLast = this.shadowRoot.querySelector('#spacerLast');
+    this.wrapper = this.shadowRoot.querySelector("#selectorContainer");
+    this.selection = this.shadowRoot.querySelector("#selection");
+    this.playhead = this.shadowRoot.querySelector("#playhead");
+    this.leftTrim = this.shadowRoot.querySelector("#leftTrim");
+    this.spacerFirst = this.shadowRoot.querySelector("#spacerFirst");
+    this.startHandle = this.shadowRoot.querySelector("#startHandle");
+    this.spacerMiddle = this.shadowRoot.querySelector("#spacerMiddle");
+    this.endHandle = this.shadowRoot.querySelector("#endHandle");
+    this.spacerLast = this.shadowRoot.querySelector("#spacerLast");
 
     this._clickHandler = this.handleClick.bind(this);
     this._dragStart = this.dragStart.bind(this);
     this._dragEnd = this.dragEnd.bind(this);
     this._drag = this.drag.bind(this);
 
-    this.wrapper.addEventListener('click', this._clickHandler, false);
+    this.wrapper.addEventListener("click", this._clickHandler, false);
 
-    this.wrapper.addEventListener('touchstart', this._dragStart, false);
-    globalThis.window?.addEventListener('touchend', this._dragEnd, false);
-    this.wrapper.addEventListener('touchmove', this._drag, false);
+    this.wrapper.addEventListener("touchstart", this._dragStart, false);
+    globalThis.window?.addEventListener("touchend", this._dragEnd, false);
+    this.wrapper.addEventListener("touchmove", this._drag, false);
 
-    this.wrapper.addEventListener('mousedown', this._dragStart, false);
-    globalThis.window?.addEventListener('mouseup', this._dragEnd, false);
-    globalThis.window?.addEventListener('mousemove', this._drag, false);
+    this.wrapper.addEventListener("mousedown", this._dragStart, false);
+    globalThis.window?.addEventListener("mouseup", this._dragEnd, false);
+    globalThis.window?.addEventListener("mousemove", this._drag, false);
 
     this.enableThumbnails();
   }
@@ -227,7 +227,7 @@ class MediaClipSelector extends CustomElement {
   getXPositionFromMouse(evt: any): number {
     let clientX;
 
-    if (['touchstart', 'touchmove'].includes(evt.type)) {
+    if (["touchstart", "touchmove"].includes(evt.type)) {
       clientX = evt.touches[0].clientX;
     }
 
@@ -322,7 +322,7 @@ class MediaClipSelector extends CustomElement {
   }
 
   dispatchUpdate(): void {
-    const updateEvent = new CustomEvent('update', {
+    const updateEvent = new CustomEvent("update", {
       detail: this.getCurrentClipBounds(),
     });
     this.dispatchEvent(updateEvent);
@@ -381,7 +381,7 @@ class MediaClipSelector extends CustomElement {
     // const progressW = percentComplete * fullW;
 
     this.playhead.style.left = `${percentComplete * 100}%`;
-    this.playhead.style.display = 'block';
+    this.playhead.style.display = "block";
 
     /*
      * if paused, we don't need to do anything else, but if it is playing
@@ -410,13 +410,13 @@ class MediaClipSelector extends CustomElement {
     // @ts-ignore
     super.mediaUnsetCallback(media);
 
-    this.wrapper.removeEventListener('touchstart', this._dragStart);
-    this.wrapper.removeEventListener('touchend', this._dragEnd);
-    this.wrapper.removeEventListener('touchmove', this._drag);
+    this.wrapper.removeEventListener("touchstart", this._dragStart);
+    this.wrapper.removeEventListener("touchend", this._dragEnd);
+    this.wrapper.removeEventListener("touchmove", this._drag);
 
-    this.wrapper.removeEventListener('mousedown', this._dragStart);
-    globalThis.window?.removeEventListener('mouseup', this._dragEnd);
-    globalThis.window?.removeEventListener('mousemove', this._drag);
+    this.wrapper.removeEventListener("mousedown", this._dragStart);
+    globalThis.window?.removeEventListener("mouseup", this._dragEnd);
+    globalThis.window?.removeEventListener("mousemove", this._drag);
   }
 
   /*
@@ -426,13 +426,13 @@ class MediaClipSelector extends CustomElement {
   enableThumbnails(): void {
     /** @type {HTMLElement} */
     this.thumbnailPreview = this.shadowRoot.querySelector(
-      'media-preview-thumbnail'
+      "media-preview-thumbnail"
     );
     /** @type {HTMLElement} */
     const thumbnailContainer = this.shadowRoot.querySelector(
-      '#thumbnailContainer'
+      "#thumbnailContainer"
     );
-    thumbnailContainer.classList.add('enabled');
+    thumbnailContainer.classList.add("enabled");
 
     let mouseMoveHandler;
     const trackMouse = () => {
@@ -459,11 +459,11 @@ class MediaClipSelector extends CustomElement {
           })
         );
       };
-      globalThis.window?.addEventListener('mousemove', mouseMoveHandler, false);
+      globalThis.window?.addEventListener("mousemove", mouseMoveHandler, false);
     };
 
     const stopTrackingMouse = () => {
-      globalThis.window?.removeEventListener('mousemove', mouseMoveHandler);
+      globalThis.window?.removeEventListener("mousemove", mouseMoveHandler);
     };
 
     // Trigger when the mouse moves over the range
@@ -471,14 +471,14 @@ class MediaClipSelector extends CustomElement {
     const rangeMouseMoveHander = () => {
       if (!rangeEntered && this.mediaDuration) {
         rangeEntered = true;
-        this.thumbnailPreview.style.display = 'block';
+        this.thumbnailPreview.style.display = "block";
         trackMouse();
 
         const offRangeHandler = (evt) => {
           if (evt.target != this && !this.contains(evt.target)) {
-            this.thumbnailPreview.style.display = 'none';
+            this.thumbnailPreview.style.display = "none";
             globalThis.window?.removeEventListener(
-              'mousemove',
+              "mousemove",
               offRangeHandler
             );
             rangeEntered = false;
@@ -486,30 +486,30 @@ class MediaClipSelector extends CustomElement {
           }
         };
         globalThis.window?.addEventListener(
-          'mousemove',
+          "mousemove",
           offRangeHandler,
           false
         );
       }
 
       if (!this.mediaDuration) {
-        this.thumbnailPreview.style.display = 'none';
+        this.thumbnailPreview.style.display = "none";
       }
     };
 
-    this.addEventListener('mousemove', rangeMouseMoveHander, false);
+    this.addEventListener("mousemove", rangeMouseMoveHander, false);
   }
 
   disableThumbnails(): void {
     const thumbnailContainer = this.shadowRoot.querySelector(
-      '#thumbnailContainer'
+      "#thumbnailContainer"
     );
-    thumbnailContainer.classList.remove('enabled');
+    thumbnailContainer.classList.remove("enabled");
   }
 }
 
-if (!globalThis.customElements.get('media-clip-selector')) {
-  globalThis.customElements.define('media-clip-selector', MediaClipSelector);
+if (!globalThis.customElements.get("media-clip-selector")) {
+  globalThis.customElements.define("media-clip-selector", MediaClipSelector);
 }
 
 export default MediaClipSelector;

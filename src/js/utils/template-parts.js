@@ -1,4 +1,4 @@
-import { globalThis } from '../utils/server-safe-globals.js';
+import { globalThis } from "../utils/server-safe-globals.js";
 
 /* Adapted from https://github.com/dy/template-parts - ISC - Dmitry Iv. */
 
@@ -21,12 +21,12 @@ export const defaultProcessor = {
         const value = state[expression];
         // boolean attr
         if (
-          typeof value === 'boolean' &&
+          typeof value === "boolean" &&
           part instanceof AttrPart &&
-          typeof part.element[part.attributeName] === 'boolean'
+          typeof part.element[part.attributeName] === "boolean"
         ) {
           part.booleanValue = value;
-        } else if (typeof value === 'function' && part instanceof AttrPart) {
+        } else if (typeof value === "function" && part instanceof AttrPart) {
           part.element[part.attributeName] = value;
         } else {
           part.value = value;
@@ -68,7 +68,7 @@ export const parse = (element, /** @type [string, Part][] */ parts = []) => {
   let type, value;
 
   for (let attr of element.attributes || []) {
-    if (attr.value.includes('{{')) {
+    if (attr.value.includes("{{")) {
       const list = new AttrPartList();
       for ([type, value] of tokenize(attr.value)) {
         if (!type) list.append(value);
@@ -86,7 +86,7 @@ export const parse = (element, /** @type [string, Part][] */ parts = []) => {
     if (node.nodeType === ELEMENT && !(node instanceof HTMLTemplateElement)) {
       parse(node, parts);
     } else {
-      if (node.nodeType === ELEMENT || node.data.includes('{{')) {
+      if (node.nodeType === ELEMENT || node.data.includes("{{")) {
         const items = [];
         if (node.data) {
           for ([type, value] of tokenize(node.data))
@@ -117,7 +117,7 @@ export const parse = (element, /** @type [string, Part][] */ parts = []) => {
 /** @type Record<string, [number, string][]> */
 const mem = {};
 export const tokenize = (/** @type string */ text) => {
-  let value = '',
+  let value = "",
     open = 0,
     tokens = mem[text],
     i = 0,
@@ -128,28 +128,28 @@ export const tokenize = (/** @type string */ text) => {
 
   for (; (c = text[i]); i++) {
     if (
-      c === '{' &&
-      text[i + 1] === '{' &&
-      text[i - 1] !== '\\' &&
+      c === "{" &&
+      text[i + 1] === "{" &&
+      text[i - 1] !== "\\" &&
       text[i + 2] &&
       ++open == 1
     ) {
       if (value) tokens.push([STRING, value]);
-      value = '';
+      value = "";
       i++;
     } else if (
-      c === '}' &&
-      text[i + 1] === '}' &&
-      text[i - 1] !== '\\' &&
+      c === "}" &&
+      text[i + 1] === "}" &&
+      text[i - 1] !== "\\" &&
       !--open
     ) {
       tokens.push([PART, value.trim()]);
-      value = '';
+      value = "";
       i++;
-    } else value += c || ''; // text[i] is undefined if i+=2 caught
+    } else value += c || ""; // text[i] is undefined if i+=2 caught
   }
 
-  if (value) tokens.push([STRING, (open > 0 ? '{{' : '') + value]);
+  if (value) tokens.push([STRING, (open > 0 ? "{{" : "") + value]);
 
   return (mem[text] = tokens);
 };
@@ -171,7 +171,7 @@ const FRAGMENT = 11;
 
 export class Part {
   get value() {
-    return '';
+    return "";
   }
 
   set value(val) {}
@@ -209,12 +209,12 @@ export class AttrPartList {
   }
 
   toString() {
-    return this.#items.join('');
+    return this.#items.join("");
   }
 }
 
 export class AttrPart extends Part {
-  #value = '';
+  #value = "";
   #element;
   #attributeName;
   #namespaceURI;
@@ -285,8 +285,8 @@ export class AttrPart extends Part {
   }
 
   set booleanValue(value) {
-    if (!this.#list || this.#list.length === 1) this.value = value ? '' : null;
-    else throw new DOMException('Value is not fully templatized');
+    if (!this.#list || this.#list.length === 1) this.value = value ? "" : null;
+    else throw new DOMException("Value is not fully templatized");
   }
 }
 
@@ -318,7 +318,7 @@ export class ChildNodePart extends Part {
 
   // FIXME: not sure why do we need string serialization here? Just because parent class has type DOMString?
   get value() {
-    return this.#nodes.map((node) => node.textContent).join('');
+    return this.#nodes.map((node) => node.textContent).join("");
   }
 
   set value(newValue) {
@@ -360,14 +360,14 @@ export class InnerTemplatePart extends ChildNodePart {
     /** @type HTMLTemplateElement */ template
   ) {
     let directive =
-      template.getAttribute('directive') || template.getAttribute('type');
+      template.getAttribute("directive") || template.getAttribute("type");
 
     let expression =
-      template.getAttribute('expression') ||
+      template.getAttribute("expression") ||
       template.getAttribute(directive) ||
-      '';
+      "";
 
-    if (expression.startsWith('{{'))
+    if (expression.startsWith("{{"))
       expression = expression.trim().slice(2, -2).trim();
 
     super(parentNode);

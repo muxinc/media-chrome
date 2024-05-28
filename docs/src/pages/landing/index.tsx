@@ -1,17 +1,17 @@
 /** @jsxImportSource react */
-import React, { useState } from 'react';
-import clsx from 'clsx';
-import { tagline } from './config/style-vars';
-import FooterContent from './components/footer-content';
-import Cta from './components/cta';
-import PlayerPanel from './components/player-panel';
-import Hero from './components/hero';
-import Description from './components/description';
-import type { MediaChromeListItem } from '../../types';
-import SourcePanel from './components/source-panel';
-import Toggle from './components/toggle';
-import ComponentsList from './components/components-list';
-import mediaChromeListItems from './shared/data';
+import React, { useState } from "react";
+import clsx from "clsx";
+import { tagline } from "./config/style-vars";
+import FooterContent from "./components/footer-content";
+import Cta from "./components/cta";
+import PlayerPanel from "./components/player-panel";
+import Hero from "./components/hero";
+import Description from "./components/description";
+import type { MediaChromeListItem } from "../../types";
+import SourcePanel from "./components/source-panel";
+import Toggle from "./components/toggle";
+import ComponentsList from "./components/components-list";
+import mediaChromeListItems from "./shared/data";
 
 const Home = () => {
   const items = mediaChromeListItems;
@@ -37,8 +37,8 @@ const Home = () => {
           <div className="lg:h-full lg:flex lg:flex-col">
             <ActivePanel selectedItem={selectedItem} tabIndex={2} />
             <div
-              className={clsx('mt-auto h-12 lg:flex items-center', {
-                'border-t border-solid border-black': showingSource,
+              className={clsx("mt-auto h-12 lg:flex items-center", {
+                "border-t border-solid border-black": showingSource,
                 hidden: !showingSource,
                 flex: showingSource,
               })}

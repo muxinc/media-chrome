@@ -7,13 +7,13 @@
     <style>
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: block; /* expands the container if preload=none */
-        max-width: 640px; /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9; /* set container aspect ratio if preload=none */
+        display: block;         /* expands the container if preload=none */
+        max-width: 640px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
 
       video {
-        width: 100%; /* prevents video to expand beyond its container */
+        width: 100%;      /* prevents video to expand beyond its container */
       }
 
       media-loading-indicator {
@@ -53,12 +53,8 @@
       <media-play-button mediacontroller="controller"></media-play-button>
       <media-live-button mediacontroller="controller"></media-live-button>
       <media-mute-button mediacontroller="controller"></media-mute-button>
-      <media-seek-backward-button
-        mediacontroller="controller"
-      ></media-seek-backward-button>
-      <media-seek-forward-button
-        mediacontroller="controller"
-      ></media-seek-forward-button>
+      <media-seek-backward-button mediacontroller="controller"></media-seek-backward-button>
+      <media-seek-forward-button mediacontroller="controller"></media-seek-forward-button>
       <media-volume-range mediacontroller="controller"></media-volume-range>
       <media-time-range mediacontroller="controller"></media-time-range>
       <!-- It works for "display-only" components, too! -->
@@ -67,21 +63,13 @@
         remaining
         showduration
       ></media-time-display>
-      <media-captions-button
-        mediacontroller="controller"
-      ></media-captions-button>
-      <media-playback-rate-button
-        mediacontroller="controller"
-      ></media-playback-rate-button>
+      <media-captions-button mediacontroller="controller"></media-captions-button>
+      <media-playback-rate-button mediacontroller="controller"></media-playback-rate-button>
       <media-pip-button mediacontroller="controller"></media-pip-button>
       <media-airplay-button mediacontroller="controller"></media-airplay-button>
       <media-cast-button mediacontroller="controller"></media-cast-button>
-      <media-fullscreen-button
-        mediacontroller="controller"
-      ></media-fullscreen-button>
-      <media-loading-indicator
-        mediacontroller="controller"
-      ></media-loading-indicator>
+      <media-fullscreen-button mediacontroller="controller"></media-fullscreen-button>
+      <media-loading-indicator mediacontroller="controller"></media-loading-indicator>
 
       <h2>Inside the control-bar element</h2>
       <p>

@@ -24,13 +24,13 @@ export class AttributeTokenList {
   }
 
   get value() {
-    return [...this.#tokens].join(' ') ?? '';
+    return [...this.#tokens].join(" ") ?? "";
   }
 
   set value(val) {
     if (val === this.value) return;
     this.#tokenSet = new Set();
-    this.add(...(val?.split(' ') ?? []));
+    this.add(...(val?.split(" ") ?? []));
   }
 
   toString() {
@@ -52,7 +52,7 @@ export class AttributeTokenList {
   add(...tokens) {
     tokens.forEach((t) => this.#tokenSet.add(t));
     // if the attribute was removed don't try to add it again.
-    if (this.value === '' && !this.#el?.hasAttribute(`${this.#attr}`)) {
+    if (this.value === "" && !this.#el?.hasAttribute(`${this.#attr}`)) {
       return;
     }
     this.#el?.setAttribute(`${this.#attr}`, `${this.value}`);
@@ -68,7 +68,7 @@ export class AttributeTokenList {
   }
 
   toggle(token, force) {
-    if (typeof force !== 'undefined') {
+    if (typeof force !== "undefined") {
       if (force) {
         this.add(token);
         return true;

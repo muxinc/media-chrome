@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width">
     <title>Media Chrome Advanced Video Usage Example</title>
-    <script
-      type="module"
-      src="https://cdn.jsdelivr.net/npm/hls-video-element@1.1/+esm"
-    ></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/hls-video-element@1.1/+esm"></script>
     <script type="module" src="../../dist/index.js"></script>
     <style>
       /* Hide custom elements that are not defined yet */
@@ -16,16 +13,16 @@
 
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: grid; /* expands the container if preload=none */
-        max-width: 960px; /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9; /* set container aspect ratio if preload=none */
+        display: grid;          /* expands the container if preload=none */
+        max-width: 960px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
 
       hls-video,
-      img[slot='poster'] {
-        grid-area: 1 / 1; /* position poster img on top of video element */
-        width: 100%; /* prevents video to expand beyond its container */
-        height: fit-content; /* Fix Safari aspect-ratio overflow glitch for custom media elements */
+      img[slot="poster"] {
+        grid-area: 1 / 1;     /* position poster img on top of video element */
+        width: 100%;          /* prevents video to expand beyond its container */
+        height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
       }
 
       media-audio-track-menu[mediaaudiotrackunavailable],
@@ -40,10 +37,10 @@
       }
 
       media-settings-menu-item[aria-haspopup]:is(
-          :not([submenusize]),
-          [submenusize='0'],
-          [submenusize='1']
-        ) {
+        :not([submenusize]),
+        [submenusize="0"],
+        [submenusize="1"]
+      ) {
         display: none;
       }
 
@@ -72,33 +69,21 @@
           playsinline
           crossorigin
         >
-          <track
-            default
-            kind="metadata"
-            label="thumbnails"
-            src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/storyboard.vtt"
-          />
-          <track
-            default
-            kind="chapters"
-            src="./vtt/elephantsdream/chapters.vtt"
-          />
+          <track default kind="metadata" label="thumbnails" src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/storyboard.vtt">
+          <track default kind="chapters" src="./vtt/elephantsdream/chapters.vtt">
         </hls-video>
         <img
           slot="poster"
           srcset="
-            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=640   640w,
-            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=960   960w,
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=640 640w,
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=960 960w,
             https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=1280 1280w,
-            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13            1920w
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13 1920w
           "
           alt="Elephants Dream"
           decoding="async"
-        />
-        <media-loading-indicator
-          slot="centered-chrome"
-          noautohide
-        ></media-loading-indicator>
+        >
+        <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
         <media-settings-menu anchor="auto" hidden>
           <media-settings-menu-item>
             Speed
@@ -127,12 +112,8 @@
         </media-settings-menu>
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-seek-backward-button
-            seekoffset="5"
-          ></media-seek-backward-button>
-          <media-seek-forward-button
-            seekoffset="15"
-          ></media-seek-forward-button>
+          <media-seek-backward-button seekoffset="5"></media-seek-backward-button>
+          <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
           <media-mute-button></media-mute-button>
           <media-time-display></media-time-display>
           <media-time-range></media-time-range>
@@ -146,9 +127,13 @@
       </media-controller>
     </main>
 
-    <p>Quality: <span id="renditionactive">N/A</span></p>
+    <p>
+      Quality: <span id="renditionactive">N/A</span>
+    </p>
 
-    <p>Audio: <span id="audioactive">N/A</span></p>
+    <p>
+      Audio: <span id="audioactive">N/A</span>
+    </p>
 
     <script type="module">
       video.addEventListener('emptied', () => {
@@ -157,16 +142,11 @@
       });
 
       video.addEventListener('resize', () => {
-        renditionactive.textContent = `${Math.min(
-          video.videoWidth,
-          video.videoHeight
-        )}p`;
+        renditionactive.textContent = `${Math.min(video.videoWidth, video.videoHeight)}p`;
       });
 
       video.audioTracks.addEventListener('change', () => {
-        audioactive.textContent = [...(video.audioTracks ?? [])].find(
-          (a) => a.enabled
-        )?.label;
+        audioactive.textContent = [...video.audioTracks ?? []].find(a => a.enabled)?.label;
       });
     </script>
 

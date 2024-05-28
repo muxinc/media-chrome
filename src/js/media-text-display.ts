@@ -1,11 +1,11 @@
-import { MediaStateReceiverAttributes } from './constants.js';
-import type MediaController from './media-controller.js';
-import { CustomElement } from './utils/CustomElement.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
+import { MediaStateReceiverAttributes } from "./constants.js";
+import type MediaController from "./media-controller.js";
+import { CustomElement } from "./utils/CustomElement.js";
+import { getOrInsertCSSRule } from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
-const template: HTMLTemplateElement = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement("template");
 
 template.innerHTML = /*html*/ `
   <style>
@@ -31,7 +31,7 @@ template.innerHTML = /*html*/ `
       /*
       Only show outline when keyboard focusing.
       https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
-    */ ''
+    */ ""
     }
     :host(:focus-visible) {
       box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
@@ -41,7 +41,7 @@ template.innerHTML = /*html*/ `
     ${
       /*
        * hide default focus ring, particularly when using mouse
-       */ ''
+       */ ""
     }
     :host(:where(:focus)) {
       box-shadow: none;
@@ -83,7 +83,7 @@ class MediaTextDisplay extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow({ mode: "open" });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
   }
@@ -107,9 +107,9 @@ class MediaTextDisplay extends CustomElement {
   }
 
   connectedCallback(): void {
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ":host");
     style.setProperty(
-      'display',
+      "display",
       `var(--media-control-display, var(--${this.localName}-display, inline-flex))`
     );
 
@@ -132,8 +132,8 @@ class MediaTextDisplay extends CustomElement {
   }
 }
 
-if (!globalThis.customElements.get('media-text-display')) {
-  globalThis.customElements.define('media-text-display', MediaTextDisplay);
+if (!globalThis.customElements.get("media-text-display")) {
+  globalThis.customElements.define("media-text-display", MediaTextDisplay);
 }
 
 export { MediaTextDisplay };

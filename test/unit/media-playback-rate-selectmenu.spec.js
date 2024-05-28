@@ -8,7 +8,7 @@ describe('<media-playback-rate-selectmenu>', () => {
   let listbox;
 
   beforeEach(async () => {
-    mediaController = await fixture(/*html*/ `
+    mediaController = await fixture(/*html*/`
       <media-controller>
         <video
           slot="media"
@@ -18,16 +18,13 @@ describe('<media-playback-rate-selectmenu>', () => {
         <media-playback-rate-selectmenu></media-playback-rate-selectmenu>
       </media-controller>
     `);
-    selectmenu = mediaController.querySelector(
-      'media-playback-rate-selectmenu'
-    );
-    listbox = selectmenu.shadowRoot.querySelector(
-      'media-playback-rate-listbox'
-    );
+    selectmenu = mediaController.querySelector('media-playback-rate-selectmenu');
+    listbox = selectmenu.shadowRoot.querySelector('media-playback-rate-listbox');
   });
 
   it('selectmenu is populated', async function () {
     assert.equal(listbox.options.length, 5);
     assert.equal(listbox.value, 1);
   });
+
 });

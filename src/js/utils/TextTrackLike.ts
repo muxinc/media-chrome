@@ -1,4 +1,4 @@
-import { TextTrackKinds } from '../constants.js';
+import { TextTrackKinds } from "../constants.js";
 
 export type TextTrackLike = {
   /**

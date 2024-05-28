@@ -1,22 +1,22 @@
-import type { Context, ReactNode } from 'react';
-import React, { createContext, useContext, useEffect, useMemo } from 'react';
+import type { Context, ReactNode } from "react";
+import React, { createContext, useContext, useEffect, useMemo } from "react";
 import {
   AvailabilityStates,
   MediaUIEvents,
   MediaUIProps,
   StreamTypes,
   VolumeLevels,
-} from '../constants';
+} from "../constants";
 import createMediaStore, {
   type MediaState,
   type MediaStore,
-} from '../media-store/media-store';
+} from "../media-store/media-store";
 import type {
   FullScreenElementStateOwner,
   MediaStateOwner,
-} from '../media-store/state-mediator';
-import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector';
-export * as timeUtils from '../utils/time';
+} from "../media-store/state-mediator";
+import { useSyncExternalStoreWithSelector } from "./useSyncExternalStoreWithSelector";
+export * as timeUtils from "../utils/time";
 
 /**
  * @description A lookup object for all well-defined action types that can be dispatched
@@ -59,8 +59,8 @@ const {
 
 export const MediaActionTypes = {
   ...StateChangeRequests,
-  MEDIA_ELEMENT_CHANGE_REQUEST: 'mediaelementchangerequest',
-  FULLSCREEN_ELEMENT_CHANGE_REQUEST: 'fullscreenelementchangerequest',
+  MEDIA_ELEMENT_CHANGE_REQUEST: "mediaelementchangerequest",
+  FULLSCREEN_ELEMENT_CHANGE_REQUEST: "fullscreenelementchangerequest",
 } as const;
 
 export const MediaStateNames = { ...MediaUIProps } as const;
@@ -135,12 +135,12 @@ export const MediaProvider = ({
   );
   useEffect(() => {
     value?.dispatch({
-      type: 'documentelementchangerequest',
+      type: "documentelementchangerequest",
       detail: globalThis.document,
     });
     return () => {
       value?.dispatch({
-        type: 'documentelementchangerequest',
+        type: "documentelementchangerequest",
         detail: undefined,
       });
     };
@@ -187,7 +187,7 @@ export const useMediaDispatch = () => {
   const dispatch = store?.dispatch ?? identity;
   return ((value) => {
     return dispatch(value);
-  }) as MediaStore['dispatch'];
+  }) as MediaStore["dispatch"];
 };
 
 /**

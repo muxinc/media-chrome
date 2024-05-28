@@ -1,8 +1,8 @@
-import { MediaChromeSelectMenu } from './media-chrome-selectmenu.js';
-import './media-rendition-button.js';
-import './media-rendition-listbox.js';
-import { MediaUIAttributes } from '../constants.js';
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { MediaChromeSelectMenu } from "./media-chrome-selectmenu.js";
+import "./media-rendition-button.js";
+import "./media-rendition-listbox.js";
+import { MediaUIAttributes } from "../constants.js";
+import { globalThis, document } from "../utils/server-safe-globals.js";
 
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
@@ -22,31 +22,31 @@ class MediaRenditionSelectMenu extends MediaChromeSelectMenu {
   }
 
   init(): void {
-    const renditionButton = document.createElement('media-rendition-button');
-    renditionButton.part.add('button');
+    const renditionButton = document.createElement("media-rendition-button");
+    renditionButton.part.add("button");
     renditionButton.preventClick = true;
 
-    const renditionListbox = document.createElement('media-rendition-listbox');
-    renditionListbox.part.add('listbox');
+    const renditionListbox = document.createElement("media-rendition-listbox");
+    renditionListbox.part.add("listbox");
     renditionListbox.setAttribute(
-      'exportparts',
-      'option, option-selected, indicator'
+      "exportparts",
+      "option, option-selected, indicator"
     );
 
-    const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
-    const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
+    const buttonSlot = this.shadowRoot.querySelector("slot[name=button]");
+    const listboxSlot = this.shadowRoot.querySelector("slot[name=listbox]");
 
-    buttonSlot.textContent = '';
-    listboxSlot.textContent = '';
+    buttonSlot.textContent = "";
+    listboxSlot.textContent = "";
 
     buttonSlot.append(renditionButton);
     listboxSlot.append(renditionListbox);
   }
 }
 
-if (!globalThis.customElements.get('media-rendition-selectmenu')) {
+if (!globalThis.customElements.get("media-rendition-selectmenu")) {
   globalThis.customElements.define(
-    'media-rendition-selectmenu',
+    "media-rendition-selectmenu",
     MediaRenditionSelectMenu
   );
 }

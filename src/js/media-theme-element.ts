@@ -1,20 +1,20 @@
-import { MediaStateChangeEvents } from './constants.js';
-import type MediaController from './media-controller.js';
-import { CustomElement } from './utils/CustomElement.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
-import { TemplateInstance } from './utils/template-parts.js';
-import { processor } from './utils/template-processor.js';
-import { camelCase, isNumericString } from './utils/utils.js';
+import { MediaStateChangeEvents } from "./constants.js";
+import type MediaController from "./media-controller.js";
+import { CustomElement } from "./utils/CustomElement.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
+import { TemplateInstance } from "./utils/template-parts.js";
+import { processor } from "./utils/template-processor.js";
+import { camelCase, isNumericString } from "./utils/utils.js";
 
 // Export Template parts for players.
-export * from './utils/template-parts.js';
+export * from "./utils/template-parts.js";
 
 const observedMediaAttributes = {
-  mediatargetlivewindow: 'targetlivewindow',
-  mediastreamtype: 'streamtype',
+  mediatargetlivewindow: "targetlivewindow",
+  mediastreamtype: "streamtype",
 };
 
-const prependTemplate = document.createElement('template');
+const prependTemplate = document.createElement("template");
 
 prependTemplate.innerHTML = /*html*/ `
   <style>
@@ -49,7 +49,7 @@ prependTemplate.innerHTML = /*html*/ `
  */
 export class MediaThemeElement extends CustomElement {
   static template: HTMLTemplateElement;
-  static observedAttributes: string[] = ['template'];
+  static observedAttributes: string[] = ["template"];
   static processor = processor;
 
   renderRoot;
@@ -65,7 +65,7 @@ export class MediaThemeElement extends CustomElement {
       this.renderRoot = this.shadowRoot;
     } else {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.renderRoot = this.attachShadow({ mode: 'open' });
+      this.renderRoot = this.attachShadow({ mode: "open" });
       this.createRenderer();
     }
 
@@ -82,13 +82,13 @@ export class MediaThemeElement extends CustomElement {
           if (target === this) return true;
 
           // Only check `<media-controller>`'s attributes below.
-          if (target.localName !== 'media-controller') return false;
+          if (target.localName !== "media-controller") return false;
 
           // Render if this attribute is directly observed.
           if (observedMediaAttributes[mutation.attributeName]) return true;
 
           // Render if `breakpointx` attributes change.
-          if (mutation.attributeName.startsWith('breakpoint')) return true;
+          if (mutation.attributeName.startsWith("breakpoint")) return true;
 
           return false;
         })
@@ -113,7 +113,7 @@ export class MediaThemeElement extends CustomElement {
 
     // In case the template prop was set before custom element upgrade.
     // https://web.dev/custom-elements-best-practices/#make-properties-lazy
-    this.#upgradeProperty('template');
+    this.#upgradeProperty("template");
   }
 
   #upgradeProperty(prop: string): void {
@@ -129,7 +129,7 @@ export class MediaThemeElement extends CustomElement {
   /** @type {HTMLElement & { breakpointsComputed?: boolean }} */
   get mediaController(): MediaController {
     // Expose the media controller if API access is needed
-    return this.renderRoot.querySelector('media-controller');
+    return this.renderRoot.querySelector("media-controller");
   }
 
   get template(): HTMLTemplateElement {
@@ -147,7 +147,7 @@ export class MediaThemeElement extends CustomElement {
     const observedAttributes = [
       ...Array.from(this.mediaController?.attributes ?? []).filter(
         ({ name }) => {
-          return observedMediaAttributes[name] || name.startsWith('breakpoint');
+          return observedMediaAttributes[name] || name.startsWith("breakpoint");
         }
       ),
       ...Array.from(this.attributes),
@@ -164,7 +164,7 @@ export class MediaThemeElement extends CustomElement {
           value = parseFloat(value);
         }
 
-        props[name] = value === '' ? true : value;
+        props[name] = value === "" ? true : value;
       } else {
         props[name] = false;
       }
@@ -178,7 +178,7 @@ export class MediaThemeElement extends CustomElement {
     oldValue: string,
     newValue: string | null
   ): void {
-    if (attrName === 'template' && oldValue != newValue) {
+    if (attrName === "template" && oldValue != newValue) {
       this.#updateTemplate();
     }
   }
@@ -188,7 +188,7 @@ export class MediaThemeElement extends CustomElement {
   }
 
   #updateTemplate(): void {
-    const templateId = this.getAttribute('template');
+    const templateId = this.getAttribute("template");
     if (!templateId || templateId === this.#prevTemplateId) return;
 
     // First try to get a template element by id
@@ -210,7 +210,7 @@ export class MediaThemeElement extends CustomElement {
       // Next try to fetch a HTML file if it looks like a valid URL.
       request(templateId)
         .then((data) => {
-          const template = document.createElement('template');
+          const template = document.createElement("template");
           template.innerHTML = data;
 
           this.#template = template;
@@ -231,7 +231,7 @@ export class MediaThemeElement extends CustomElement {
         this.constructor.processor
       );
 
-      this.renderRoot.textContent = '';
+      this.renderRoot.textContent = "";
       this.renderRoot.append(
         prependTemplate.content.cloneNode(true),
         this.renderer
@@ -270,6 +270,6 @@ async function request(resource: string | URL | Request): Promise<string> {
   return response.text();
 }
 
-if (!globalThis.customElements.get('media-theme')) {
-  globalThis.customElements.define('media-theme', MediaThemeElement);
+if (!globalThis.customElements.get("media-theme")) {
+  globalThis.customElements.define("media-theme", MediaThemeElement);
 }

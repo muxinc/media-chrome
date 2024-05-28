@@ -8,7 +8,7 @@ describe('<media-captions-selectmenu>', () => {
   let listbox;
 
   beforeEach(async () => {
-    mediaController = await fixture(/*html*/ `
+    mediaController = await fixture(/*html*/`
       <media-controller>
         <video
           slot="media"
@@ -38,12 +38,11 @@ describe('<media-captions-selectmenu>', () => {
   it('selectmenu is populated', async function () {
     this.timeout(5000);
 
-    await new Promise((resolve) =>
-      mediaController.media.textTracks.addEventListener('addtrack', resolve)
-    );
+    await new Promise(resolve => mediaController.media.textTracks.addEventListener('addtrack', resolve));
 
     assert.equal(mediaController.media.textTracks.length, 10);
     assert.equal(listbox.options.length, 11); // includes Off option
     // assert.equal(listbox.value, 'cc:en:English'); fails on Firefox and Safari
   });
+
 });

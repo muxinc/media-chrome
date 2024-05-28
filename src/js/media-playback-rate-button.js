@@ -1,18 +1,18 @@
-import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
-import { AttributeTokenList } from './utils/attribute-token-list.js';
-import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
+import { MediaChromeButton } from "./media-chrome-button.js";
+import { globalThis, document } from "./utils/server-safe-globals.js";
+import { MediaUIEvents, MediaUIAttributes } from "./constants.js";
+import { nouns } from "./labels/labels.js";
+import { AttributeTokenList } from "./utils/attribute-token-list.js";
+import { getNumericAttr, setNumericAttr } from "./utils/element-utils.js";
 
 export const Attributes = {
-  RATES: 'rates',
+  RATES: "rates",
 };
 
 export const DEFAULT_RATES = [1, 1.2, 1.5, 1.7, 2];
 export const DEFAULT_RATE = 1;
 
-const slotTemplate = document.createElement('template');
+const slotTemplate = document.createElement("template");
 slotTemplate.innerHTML = /*html*/ `
   <style>
     :host {
@@ -60,7 +60,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
         ? newPlaybackRate
         : DEFAULT_RATE;
       this.container.innerHTML = `${playbackRate}x`;
-      this.setAttribute('aria-label', nouns.PLAYBACK_RATE({ playbackRate }));
+      this.setAttribute("aria-label", nouns.PLAYBACK_RATE({ playbackRate }));
     }
   }
 
@@ -74,9 +74,9 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   set rates(value) {
     if (!value) {
-      this.#rates.value = '';
+      this.#rates.value = "";
     } else if (Array.isArray(value)) {
-      this.#rates.value = value.join(' ');
+      this.#rates.value = value.join(" ");
     }
   }
 
@@ -112,9 +112,9 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get('media-playback-rate-button')) {
+if (!globalThis.customElements.get("media-playback-rate-button")) {
   globalThis.customElements.define(
-    'media-playback-rate-button',
+    "media-playback-rate-button",
     MediaPlaybackRateButton
   );
 }

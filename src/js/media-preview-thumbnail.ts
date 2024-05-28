@@ -1,17 +1,17 @@
 import {
   MediaStateReceiverAttributes,
   MediaUIAttributes,
-} from './constants.js';
-import type MediaController from './media-controller.js';
-import { CustomElement } from './utils/CustomElement.js';
+} from "./constants.js";
+import type MediaController from "./media-controller.js";
+import { CustomElement } from "./utils/CustomElement.js";
 import {
   getOrInsertCSSRule,
   getStringAttr,
   setStringAttr,
-} from './utils/element-utils.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
+} from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
-const template: HTMLTemplateElement = document.createElement('template');
+const template: HTMLTemplateElement = document.createElement("template");
 template.innerHTML = /*html*/ `
   <style>
     :host {
@@ -56,7 +56,7 @@ class MediaPreviewThumbnail extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow({ mode: "open" });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
   }
@@ -133,7 +133,7 @@ class MediaPreviewThumbnail extends CustomElement {
       return;
     }
 
-    this.setAttribute(MediaUIAttributes.MEDIA_PREVIEW_COORDS, value.join(' '));
+    this.setAttribute(MediaUIAttributes.MEDIA_PREVIEW_COORDS, value.join(" "));
   }
 
   update(): void {
@@ -143,7 +143,7 @@ class MediaPreviewThumbnail extends CustomElement {
     if (!(coords && previewImage)) return;
 
     const [x, y, w, h] = coords;
-    const src = previewImage.split('#')[0];
+    const src = previewImage.split("#")[0];
 
     const computedStyle = getComputedStyle(this);
     const { maxWidth, maxHeight, minWidth, minHeight } = computedStyle;
@@ -154,21 +154,21 @@ class MediaPreviewThumbnail extends CustomElement {
     const isScalingDown = maxRatio < 1;
     const scale = isScalingDown ? maxRatio : minRatio > 1 ? minRatio : 1;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    const imgStyle = getOrInsertCSSRule(this.shadowRoot, 'img').style;
-    const img = this.shadowRoot.querySelector('img');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ":host");
+    const imgStyle = getOrInsertCSSRule(this.shadowRoot, "img").style;
+    const img = this.shadowRoot.querySelector("img");
 
     // Revert one set of extremum to its initial value on a known scale direction.
-    const extremum = isScalingDown ? 'min' : 'max';
-    style.setProperty(`${extremum}-width`, 'initial', 'important');
-    style.setProperty(`${extremum}-height`, 'initial', 'important');
+    const extremum = isScalingDown ? "min" : "max";
+    style.setProperty(`${extremum}-width`, "initial", "important");
+    style.setProperty(`${extremum}-height`, "initial", "important");
     style.width = `${w * scale}px`;
     style.height = `${h * scale}px`;
 
     const resize = () => {
       imgStyle.width = `${this.imgWidth * scale}px`;
       imgStyle.height = `${this.imgHeight * scale}px`;
-      imgStyle.display = 'block';
+      imgStyle.display = "block";
     };
 
     if (img.src !== src) {
@@ -186,9 +186,9 @@ class MediaPreviewThumbnail extends CustomElement {
   }
 }
 
-if (!globalThis.customElements.get('media-preview-thumbnail')) {
+if (!globalThis.customElements.get("media-preview-thumbnail")) {
   globalThis.customElements.define(
-    'media-preview-thumbnail',
+    "media-preview-thumbnail",
     MediaPreviewThumbnail
   );
 }

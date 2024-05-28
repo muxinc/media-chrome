@@ -1,12 +1,12 @@
-import { CustomElement } from './utils/CustomElement.js';
+import { CustomElement } from "./utils/CustomElement.js";
 import {
   containsComposedNode,
   getActiveElement,
-} from './utils/element-utils.js';
-import type { InvokeEvent } from './utils/events.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
+} from "./utils/element-utils.js";
+import type { InvokeEvent } from "./utils/events.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = /*html*/ `
   <style>
     :host {
@@ -25,7 +25,7 @@ template.innerHTML = /*html*/ `
         opacity .2s ease-out,
         transform .15s ease-out
       ) !important;
-      ${/* ^^Prevent transition override by media-container */ ''}
+      ${/* ^^Prevent transition override by media-container */ ""}
       visibility: var(--media-dialog-visibility, visible);
       opacity: var(--media-dialog-opacity, 1);
       transform: var(--media-dialog-transform-in, translateY(0) scale(1));
@@ -47,8 +47,8 @@ template.innerHTML = /*html*/ `
 `;
 
 export const Attributes = {
-  HIDDEN: 'hidden',
-  ANCHOR: 'anchor',
+  HIDDEN: "hidden",
+  ANCHOR: "anchor",
 };
 
 /**
@@ -97,7 +97,7 @@ class MediaChromeDialog extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow({ mode: "open" });
 
       this.nativeEl = (
         this.constructor as typeof MediaChromeDialog
@@ -105,20 +105,20 @@ class MediaChromeDialog extends CustomElement {
       this.shadowRoot.append(this.nativeEl);
     }
 
-    this.addEventListener('invoke', this);
-    this.addEventListener('focusout', this);
-    this.addEventListener('keydown', this);
+    this.addEventListener("invoke", this);
+    this.addEventListener("focusout", this);
+    this.addEventListener("keydown", this);
   }
 
   handleEvent(event: Event) {
     switch (event.type) {
-      case 'invoke':
+      case "invoke":
         this.#handleInvoke(event as InvokeEvent);
         break;
-      case 'focusout':
+      case "focusout":
         this.#handleFocusOut(event as FocusEvent);
         break;
-      case 'keydown':
+      case "keydown":
         this.#handleKeyDown(event as KeyboardEvent);
         break;
     }
@@ -126,7 +126,7 @@ class MediaChromeDialog extends CustomElement {
 
   connectedCallback() {
     if (!this.role) {
-      this.role = 'dialog';
+      this.role = "dialog";
     }
   }
 
@@ -145,13 +145,13 @@ class MediaChromeDialog extends CustomElement {
   }
 
   #handleOpen() {
-    this.#invokerElement?.setAttribute('aria-expanded', 'true');
+    this.#invokerElement?.setAttribute("aria-expanded", "true");
     // Focus when the transition ends.
-    this.addEventListener('transitionend', () => this.focus(), { once: true });
+    this.addEventListener("transitionend", () => this.focus(), { once: true });
   }
 
   #handleClosed() {
-    this.#invokerElement?.setAttribute('aria-expanded', 'false');
+    this.#invokerElement?.setAttribute("aria-expanded", "false");
   }
 
   focus() {
@@ -187,7 +187,7 @@ class MediaChromeDialog extends CustomElement {
   }
 
   get keysUsed() {
-    return ['Escape', 'Tab'];
+    return ["Escape", "Tab"];
   }
 
   #handleKeyDown(event: KeyboardEvent) {
@@ -204,7 +204,7 @@ class MediaChromeDialog extends CustomElement {
     event.preventDefault();
     event.stopPropagation();
 
-    if (key === 'Tab') {
+    if (key === "Tab") {
       // Move focus to the previous focusable element.
       if (event.shiftKey) {
         (this.previousElementSibling as HTMLElement)?.focus?.();
@@ -215,7 +215,7 @@ class MediaChromeDialog extends CustomElement {
 
       // Go back to the previous focused element.
       this.blur();
-    } else if (key === 'Escape') {
+    } else if (key === "Escape") {
       // Go back to the previous menu or close the menu.
       this.#previouslyFocused?.focus();
       this.hidden = true;
@@ -223,8 +223,8 @@ class MediaChromeDialog extends CustomElement {
   }
 }
 
-if (!globalThis.customElements.get('media-chrome-dialog')) {
-  globalThis.customElements.define('media-chrome-dialog', MediaChromeDialog);
+if (!globalThis.customElements.get("media-chrome-dialog")) {
+  globalThis.customElements.define("media-chrome-dialog", MediaChromeDialog);
 }
 
 export { MediaChromeDialog };

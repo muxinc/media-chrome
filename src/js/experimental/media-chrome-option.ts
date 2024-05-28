@@ -1,7 +1,7 @@
-import { CustomElement } from '../utils/CustomElement.js';
-import { document, globalThis } from '../utils/server-safe-globals.js';
+import { CustomElement } from "../utils/CustomElement.js";
+import { document, globalThis } from "../utils/server-safe-globals.js";
 
-const template = document.createElement('template');
+const template = document.createElement("template");
 template.innerHTML = /*html*/ `
 <style>
   :host {
@@ -43,9 +43,9 @@ template.innerHTML = /*html*/ `
 `;
 
 export const Attributes = {
-  VALUE: 'value',
-  SELECTED: 'selected',
-  DISABLED: 'disabled',
+  VALUE: "value",
+  SELECTED: "selected",
+  DISABLED: "disabled",
 };
 
 /**
@@ -76,7 +76,7 @@ class MediaChromeOption extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow({ mode: "open" });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
   }
@@ -90,35 +90,35 @@ class MediaChromeOption extends CustomElement {
   }
 
   get text(): string {
-    return (this.textContent ?? '').trim();
+    return (this.textContent ?? "").trim();
   }
 
   get selected(): boolean {
-    return this.getAttribute('aria-selected') === 'true';
+    return this.getAttribute("aria-selected") === "true";
   }
 
   set selected(value: boolean) {
     this.#dirty = true;
     // Firefox doesn't support the property .ariaSelected.
-    this.setAttribute('aria-selected', value ? 'true' : 'false');
+    this.setAttribute("aria-selected", value ? "true" : "false");
     if (value) {
-      this.part.add('option-selected');
+      this.part.add("option-selected");
     } else {
-      this.part.remove('option-selected');
+      this.part.remove("option-selected");
     }
   }
 
   enable(): void {
-    if (!this.hasAttribute('tabindex')) {
-      this.setAttribute('tabindex', '-1');
+    if (!this.hasAttribute("tabindex")) {
+      this.setAttribute("tabindex", "-1");
     }
-    if (!this.hasAttribute('aria-selected')) {
-      this.setAttribute('aria-selected', 'false');
+    if (!this.hasAttribute("aria-selected")) {
+      this.setAttribute("aria-selected", "false");
     }
   }
 
   disable(): void {
-    this.removeAttribute('tabindex');
+    this.removeAttribute("tabindex");
   }
 
   attributeChangedCallback(
@@ -127,7 +127,7 @@ class MediaChromeOption extends CustomElement {
     newValue: string | null
   ): void {
     if (attrName === Attributes.SELECTED && !this.#dirty) {
-      this.setAttribute('aria-selected', newValue != null ? 'true' : 'false');
+      this.setAttribute("aria-selected", newValue != null ? "true" : "false");
     } else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
@@ -142,7 +142,7 @@ class MediaChromeOption extends CustomElement {
       this.enable();
     }
 
-    this.setAttribute('role', 'option');
+    this.setAttribute("role", "option");
 
     this.#ownerElement = closestOptionsContainer(this, this.parentNode);
     this.#reset();
@@ -161,21 +161,21 @@ class MediaChromeOption extends CustomElement {
 
     // Default to the last aria-selected element if there isn't an active element already.
     let selectedOption = options
-      .filter((option) => option.getAttribute('aria-selected') === 'true')
+      .filter((option) => option.getAttribute("aria-selected") === "true")
       .pop();
 
     // If there isn't an active element or a selected element, default to the first element.
     if (!selectedOption) selectedOption = options[0];
 
-    if (this.#ownerElement.getAttribute('aria-multiselectable') !== 'true') {
+    if (this.#ownerElement.getAttribute("aria-multiselectable") !== "true") {
       options.forEach((option) => {
-        option.setAttribute('tabindex', '-1');
-        option.setAttribute('aria-selected', 'false');
+        option.setAttribute("tabindex", "-1");
+        option.setAttribute("aria-selected", "false");
       });
     }
 
-    selectedOption?.setAttribute('tabindex', '0');
-    selectedOption?.setAttribute('aria-selected', 'true');
+    selectedOption?.setAttribute("tabindex", "0");
+    selectedOption?.setAttribute("aria-selected", "true");
   }
 
   handleClick(): void {}
@@ -192,8 +192,8 @@ function closestOptionsContainer(childNode, parentNode) {
   return closestOptionsContainer(parentNode, parentNode?.parentNode);
 }
 
-if (!globalThis.customElements.get('media-chrome-option')) {
-  globalThis.customElements.define('media-chrome-option', MediaChromeOption);
+if (!globalThis.customElements.get("media-chrome-option")) {
+  globalThis.customElements.define("media-chrome-option", MediaChromeOption);
 }
 
 export { MediaChromeOption };

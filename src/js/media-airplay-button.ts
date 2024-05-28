@@ -1,20 +1,20 @@
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { verbs } from './labels/labels.js';
-import { MediaChromeButton } from './media-chrome-button.js';
+import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
+import { verbs } from "./labels/labels.js";
+import { MediaChromeButton } from "./media-chrome-button.js";
 import {
   getBooleanAttr,
   getStringAttr,
   setBooleanAttr,
   setStringAttr,
-} from './utils/element-utils.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
+} from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
 const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
   <path d="M22.13 3H3.87a.87.87 0 0 0-.87.87v13.26a.87.87 0 0 0 .87.87h3.4L9 16H5V5h16v11h-4l1.72 2h3.4a.87.87 0 0 0 .87-.87V3.87a.87.87 0 0 0-.86-.87Zm-8.75 11.44a.5.5 0 0 0-.76 0l-4.91 5.73a.5.5 0 0 0 .38.83h9.82a.501.501 0 0 0 .38-.83l-4.91-5.73Z"/>
 </svg>
 `;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
+const slotTemplate: HTMLTemplateElement = document.createElement("template");
 slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${
@@ -23,7 +23,7 @@ slotTemplate.innerHTML = /*html*/ `
     display: none !important;
   }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+  ${/* Double negative, but safer if display doesn't equal 'block' */ ""}
   :host(:not([${
     MediaUIAttributes.MEDIA_IS_AIRPLAYING
   }])) slot:not([name=enter]):not([name=icon]) {
@@ -41,7 +41,7 @@ const updateAriaLabel = (el: MediaAirplayButton): void => {
   const label = el.mediaIsAirplaying
     ? verbs.EXIT_AIRPLAY()
     : verbs.ENTER_AIRPLAY();
-  el.setAttribute('aria-label', label);
+  el.setAttribute("aria-label", label);
 };
 
 /**
@@ -120,8 +120,8 @@ class MediaAirplayButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get('media-airplay-button')) {
-  globalThis.customElements.define('media-airplay-button', MediaAirplayButton);
+if (!globalThis.customElements.get("media-airplay-button")) {
+  globalThis.customElements.define("media-airplay-button", MediaAirplayButton);
 }
 
 export default MediaAirplayButton;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width">
     <title>Media Chrome Captions Menu</title>
     <script type="module" src="../../../dist/index.js"></script>
     <style>
@@ -11,21 +11,16 @@
 
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
-        display: block;
-        /* expands the container if preload=none */
-        max-width: 640px;
-        /* allows the container to shrink if small */
-        aspect-ratio: 16 / 9;
-        /* set container aspect ratio if preload=none */
+        display: block;         /* expands the container if preload=none */
+        max-width: 640px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
 
       video {
-        width: 100%;
-        /* prevents video to expand beyond its container */
+        width: 100%;      /* prevents video to expand beyond its container */
       }
     </style>
   </head>
-
   <body>
     <!-- The main tag is used to exclude other body content in https://www.media-chrome.org/docs/en/examples -->
     <main>
@@ -39,78 +34,22 @@
           muted
           crossorigin
         >
-          <track
-            label="English"
-            kind="captions"
-            srclang="en"
-            src="../vtt/elephantsdream/captions.en.vtt"
-            default
-          />
-          <track
-            label="Japanese"
-            kind="captions"
-            srclang="ja"
-            src="../vtt/elephantsdream/captions.ja.vtt"
-          />
-          <track
-            label="Swedish"
-            kind="captions"
-            srclang="sv"
-            src="../vtt/elephantsdream/captions.sv.vtt"
-          />
-          <track
-            label="Russian"
-            kind="captions"
-            srclang="ru"
-            src="../vtt/elephantsdream/captions.ru.vtt"
-          />
-          <track
-            label="Arabic"
-            kind="captions"
-            srclang="ar"
-            src="../vtt/elephantsdream/captions.ar.vtt"
-          />
-          <track
-            label="Subs English"
-            kind="subtitles"
-            srclang="en"
-            src="../vtt/elephantsdream/captions.en.vtt"
-            default
-          />
-          <track
-            label="Subs Japanese"
-            kind="subtitles"
-            srclang="ja"
-            src="../vtt/elephantsdream/captions.ja.vtt"
-          />
-          <track
-            label="Subs Swedish"
-            kind="subtitles"
-            srclang="sv"
-            src="../vtt/elephantsdream/captions.sv.vtt"
-          />
-          <track
-            label="Subs Russian"
-            kind="subtitles"
-            srclang="ru"
-            src="../vtt/elephantsdream/captions.ru.vtt"
-          />
-          <track
-            label="Subs Arabic"
-            kind="subtitles"
-            srclang="ar"
-            src="../vtt/elephantsdream/captions.ar.vtt"
-          />
+          <track label="English" kind="captions" srclang="en" src="../vtt/elephantsdream/captions.en.vtt" default></track>
+          <track label="Japanese" kind="captions" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
+          <track label="Swedish" kind="captions" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
+          <track label="Russian" kind="captions" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
+          <track label="Arabic" kind="captions" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
+          <track label="Subs English" kind="subtitles" srclang="en" src="../vtt/elephantsdream/captions.en.vtt" default></track>
+          <track label="Subs Japanese" kind="subtitles" srclang="ja" src="../vtt/elephantsdream/captions.ja.vtt"></track>
+          <track label="Subs Swedish" kind="subtitles" srclang="sv" src="../vtt/elephantsdream/captions.sv.vtt"></track>
+          <track label="Subs Russian" kind="subtitles" srclang="ru" src="../vtt/elephantsdream/captions.ru.vtt"></track>
+          <track label="Subs Arabic" kind="subtitles" srclang="ar" src="../vtt/elephantsdream/captions.ar.vtt"></track>
         </video>
         <media-captions-menu anchor="auto" hidden></media-captions-menu>
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-seek-backward-button
-            seekoffset="15"
-          ></media-seek-backward-button>
-          <media-seek-forward-button
-            seekoffset="15"
-          ></media-seek-forward-button>
+          <media-seek-backward-button seekoffset="15"></media-seek-backward-button>
+          <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
           <media-mute-button></media-mute-button>
           <media-time-range></media-time-range>
           <media-time-display showduration remaining></media-time-display>
@@ -121,7 +60,7 @@
       </media-controller>
     </main>
 
-    <br />
+    <br>
 
     <button type="button" class="remove">Remove First Track</button>
 
@@ -133,7 +72,7 @@
 
     <media-captions-menu mediacontroller="mc" disabled></media-captions-menu>
 
-    <br />
+    <br>
 
     <script>
       document.querySelector('.remove').addEventListener('click', () => {

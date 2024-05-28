@@ -71,7 +71,7 @@ const globalThisShim = {
   navigator: {
     languages: [],
     get userAgent() {
-      return '';
+      return "";
     },
   },
   /**
@@ -86,7 +86,7 @@ const globalThisShim = {
 };
 
 export const isServer =
-  typeof window === 'undefined' || typeof window.customElements === 'undefined';
+  typeof window === "undefined" || typeof window.customElements === "undefined";
 
 const isShimmed = Object.keys(globalThisShim).every((key) => key in globalThis);
 
