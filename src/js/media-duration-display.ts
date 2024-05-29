@@ -12,19 +12,19 @@ import { getNumericAttr, setNumericAttr } from "./utils/element-utils.js";
  */
 class MediaDurationDisplay extends MediaTextDisplay {
   /** @type {HTMLSlotElement} */
-  #slot;
+  #slot: HTMLSlotElement;
 
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_DURATION];
   }
 
   constructor() {
     super();
-    this.#slot = this.shadowRoot.querySelector("slot");
+    this.#slot = this.shadowRoot.querySelector("slot") as HTMLSlotElement;
     this.#slot.textContent = formatTime(0);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
       this.#slot.textContent = formatTime(+newValue);
     }
@@ -34,11 +34,11 @@ class MediaDurationDisplay extends MediaTextDisplay {
   /**
    * @type {number | undefined} In seconds
    */
-  get mediaDuration() {
+  get mediaDuration(): number | undefined {
     return getNumericAttr(this, MediaUIAttributes.MEDIA_DURATION);
   }
 
-  set mediaDuration(time) {
+  set mediaDuration(time: number | undefined) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_DURATION, time);
   }
 }

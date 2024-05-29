@@ -36,7 +36,7 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const updateAriaLabel = (el) => {
+const updateAriaLabel = (el: MediaChromeButton) => {
   const label = el.mediaIsPip ? verbs.EXIT_PIP() : verbs.ENTER_PIP();
   el.setAttribute("aria-label", label);
 };
@@ -60,16 +60,16 @@ class MediaPipButton extends MediaChromeButton {
     ];
   }
 
-  constructor(options = {}) {
+  constructor(options: object = {}) {
     super({ slotTemplate, ...options });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     updateAriaLabel(this);
     super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === MediaUIAttributes.MEDIA_IS_PIP) {
       updateAriaLabel(this);
     }
@@ -79,26 +79,26 @@ class MediaPipButton extends MediaChromeButton {
   /**
    * @type {string | undefined} Pip unavailability state
    */
-  get mediaPipUnavailable() {
+  get mediaPipUnavailable(): string | undefined {
     return getStringAttr(this, MediaUIAttributes.MEDIA_PIP_UNAVAILABLE);
   }
 
-  set mediaPipUnavailable(value) {
+  set mediaPipUnavailable(value: string | undefined) {
     setStringAttr(this, MediaUIAttributes.MEDIA_PIP_UNAVAILABLE, value);
   }
 
   /**
    * @type {boolean} Is the media currently playing picture-in-picture
    */
-  get mediaIsPip() {
+  get mediaIsPip(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_IS_PIP);
   }
 
-  set mediaIsPip(value) {
+  set mediaIsPip(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_IS_PIP, value);
   }
 
-  handleClick() {
+  handleClick(): void {
     const eventName = this.mediaIsPip
       ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
       : MediaUIEvents.MEDIA_ENTER_PIP_REQUEST;

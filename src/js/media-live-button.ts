@@ -44,7 +44,7 @@ slotTemplate.innerHTML = /*html*/ `
   <slot name="spacer">&nbsp;</slot><slot name="text">LIVE</slot>
 `;
 
-const updateAriaAttributes = (el) => {
+const updateAriaAttributes = (el: MediaLiveButton): void => {
   const isPausedOrNotLive = el.mediaPaused || !el.mediaTimeIsLive;
   const label = isPausedOrNotLive ? verbs.SEEK_LIVE() : verbs.PLAYING_LIVE();
   el.setAttribute("aria-label", label);
@@ -67,20 +67,20 @@ const updateAriaAttributes = (el) => {
  * @cssproperty --media-live-button-indicator-color - `fill` and `color` of live button icon.
  */
 class MediaLiveButton extends MediaChromeButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [...super.observedAttributes, MEDIA_PAUSED, MEDIA_TIME_IS_LIVE];
   }
 
-  constructor(options = {}) {
+  constructor(options: object = {}) {
     super({ slotTemplate, ...options });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     updateAriaAttributes(this);
     super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
     updateAriaAttributes(this);
   }
@@ -88,26 +88,26 @@ class MediaLiveButton extends MediaChromeButton {
   /**
    * @type {boolean} Is the media paused
    */
-  get mediaPaused() {
+  get mediaPaused(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
   }
 
-  set mediaPaused(value) {
+  set mediaPaused(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
   }
 
   /**
    * @type {boolean} Is the media playback currently live
    */
-  get mediaTimeIsLive() {
+  get mediaTimeIsLive(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_TIME_IS_LIVE);
   }
 
-  set mediaTimeIsLive(value) {
+  set mediaTimeIsLive(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_TIME_IS_LIVE, value);
   }
 
-  handleClick() {
+  handleClick(): void {
     // If we're live and not paused, don't allow seek to live
     if (!this.mediaPaused && this.mediaTimeIsLive) return;
 

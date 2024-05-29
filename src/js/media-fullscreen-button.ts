@@ -48,7 +48,7 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const updateAriaLabel = (el) => {
+const updateAriaLabel = (el: MediaFullscreenButton) => {
   const label = el.mediaIsFullscreen
     ? verbs.EXIT_FULLSCREEN()
     : verbs.ENTER_FULLSCREEN();
@@ -66,7 +66,7 @@ const updateAriaLabel = (el) => {
  * @cssproperty [--media-fullscreen-button-display = inline-flex] - `display` property of button.
  */
 class MediaFullscreenButton extends MediaChromeButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_IS_FULLSCREEN,
@@ -74,16 +74,16 @@ class MediaFullscreenButton extends MediaChromeButton {
     ];
   }
 
-  constructor(options = {}) {
+  constructor(options: object = {}) {
     super({ slotTemplate, ...options });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     updateAriaLabel(this);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_IS_FULLSCREEN) {
@@ -94,26 +94,26 @@ class MediaFullscreenButton extends MediaChromeButton {
   /**
    * @type {string | undefined} Fullscreen unavailability state
    */
-  get mediaFullscreenUnavailable() {
+  get mediaFullscreenUnavailable(): string | undefined {
     return getStringAttr(this, MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE);
   }
 
-  set mediaFullscreenUnavailable(value) {
+  set mediaFullscreenUnavailable(value: string | undefined) {
     setStringAttr(this, MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE, value);
   }
 
   /**
    * @type {boolean} Whether fullscreen is available
    */
-  get mediaIsFullscreen() {
+  get mediaIsFullscreen(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_IS_FULLSCREEN);
   }
 
-  set mediaIsFullscreen(value) {
+  set mediaIsFullscreen(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_IS_FULLSCREEN, value);
   }
 
-  handleClick() {
+  handleClick(): void {
     const eventName = this.mediaIsFullscreen
       ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
       : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;

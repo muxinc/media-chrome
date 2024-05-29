@@ -48,7 +48,7 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const updateAriaLabel = (el) => {
+const updateAriaLabel = (el: MediaMuteButton) => {
   const muted = el.mediaVolumeLevel === "off";
   const label = muted ? verbs.UNMUTE() : verbs.MUTE();
   el.setAttribute("aria-label", label);
@@ -66,20 +66,20 @@ const updateAriaLabel = (el) => {
  * @cssproperty [--media-mute-button-display = inline-flex] - `display` property of button.
  */
 class MediaMuteButton extends MediaChromeButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_VOLUME_LEVEL];
   }
 
-  constructor(options = {}) {
+  constructor(options: object = {}) {
     super({ slotTemplate, ...options });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     updateAriaLabel(this);
     super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === MediaUIAttributes.MEDIA_VOLUME_LEVEL) {
       updateAriaLabel(this);
     }
@@ -89,16 +89,16 @@ class MediaMuteButton extends MediaChromeButton {
   /**
    * @type {string | undefined}
    */
-  get mediaVolumeLevel() {
+  get mediaVolumeLevel(): string | undefined {
     return getStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_LEVEL);
   }
 
-  set mediaVolumeLevel(value) {
+  set mediaVolumeLevel(value: string | undefined) {
     setStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_LEVEL, value);
   }
 
-  handleClick() {
-    const eventName =
+  handleClick(): void {
+    const eventName: string =
       this.mediaVolumeLevel === "off"
         ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
         : MediaUIEvents.MEDIA_MUTE_REQUEST;
