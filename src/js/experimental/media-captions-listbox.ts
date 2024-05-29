@@ -1,4 +1,5 @@
 import { MediaUIAttributes, MediaUIEvents } from "../constants.js";
+import type { TextTrackLike } from "../utils/TextTrackLike.js";
 import {
   formatTextTrackObj,
   parseTextTracksStr,
@@ -77,29 +78,29 @@ class MediaCaptionsListbox extends MediaChromeListbox {
   }
 
   /**
-   * @type {Array<object>} An array of TextTrack-like objects.
+   * An array of TextTrack-like objects.
    * Objects must have the properties: kind, language, and label.
    */
-  get mediaSubtitlesList(): Array<{ kind?: string; language: string; label: string }> {
+  get mediaSubtitlesList(): TextTrackLike[] {
     return getSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
   }
 
-  set mediaSubtitlesList(list: Array<{ kind?: string; language: string; label: string }>) {
+  set mediaSubtitlesList(list: TextTrackLike[]) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST, list);
   }
 
   /**
-   * @type {Array<object>} An array of TextTrack-like objects.
+   * An array of TextTrack-like objects.
    * Objects must have the properties: kind, language, and label.
    */
-  get mediaSubtitlesShowing(): Array<{ kind?: string; language: string; label: string }> {
+  get mediaSubtitlesShowing(): TextTrackLike[] {
     return getSubtitlesListAttr(
       this,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
     );
   }
 
-  set mediaSubtitlesShowing(list: Array<{ kind?: string; language: string; label: string }>) {
+  set mediaSubtitlesShowing(list: TextTrackLike[]) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
   }
 
@@ -179,7 +180,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
  * @param {string} attrName
  * @returns {Array<Object>} An array of TextTrack-like objects.
  */
-const getSubtitlesListAttr = (el: HTMLElement, attrName: string): Array<{ kind?: string; language: string; label: string }> => {
+const getSubtitlesListAttr = (el: HTMLElement, attrName: string): TextTrackLike[] => {
   const attrVal = el.getAttribute(attrName);
   return attrVal ? parseTextTracksStr(attrVal) : [];
 };
@@ -190,7 +191,7 @@ const getSubtitlesListAttr = (el: HTMLElement, attrName: string): Array<{ kind?:
  * @param {string} attrName
  * @param {Array<Object>} list An array of TextTrack-like objects
  */
-const setSubtitlesListAttr = (el: HTMLElement, attrName: string, list: Array<{ kind?: string; language: string; label: string }>): void => {
+const setSubtitlesListAttr = (el: HTMLElement, attrName: string, list: TextTrackLike[]): void => {
   // null, undefined, and empty arrays are treated as "no value" here
   if (!list?.length) {
     el.removeAttribute(attrName);

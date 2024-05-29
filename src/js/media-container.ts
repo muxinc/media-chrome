@@ -459,7 +459,7 @@ class MediaContainer extends CustomElement {
     this.mediaSetCallback(media);
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     const isAudioChrome = this.getAttribute(Attributes.AUDIO) != null;
     const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
     this.setAttribute("role", "region");
@@ -480,7 +480,7 @@ class MediaContainer extends CustomElement {
     globalThis.window?.addEventListener("mouseup", this);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     // When disconnected from the DOM, remove root node and media event listeners
     // to prevent memory leaks and unneeded invisble UI updates.
     if (this.media) {

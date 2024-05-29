@@ -99,7 +99,7 @@ template.innerHTML = /*html*/ `
 
     ${
       /* Only for indicator icons like checked-indicator or captions-indicator. */ ""
-    }
+  }
     [part~="indicator"],
     ::slotted([part~="indicator"]) {
       fill: var(--media-menu-item-indicator-fill,
@@ -227,7 +227,7 @@ class MediaChromeMenuItem extends CustomElement {
     }
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === Attributes.CHECKED && isCheckable(this) && !this.#dirty) {
       this.setAttribute("aria-checked", newValue != null ? "true" : "false");
     } else if (attrName === Attributes.TYPE && newValue !== oldValue) {
@@ -241,7 +241,7 @@ class MediaChromeMenuItem extends CustomElement {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     if (!this.hasAttribute(Attributes.DISABLED)) {
       this.enable();
     }
@@ -252,7 +252,7 @@ class MediaChromeMenuItem extends CustomElement {
     this.#reset();
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     this.disable();
 
     this.#reset();

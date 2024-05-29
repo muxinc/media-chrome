@@ -7,7 +7,7 @@ import { globalThis } from "./utils/server-safe-globals.js";
  * @attr {string} invoketarget - The id of the element to invoke when clicked.
  */
 class MediaChromeMenuButton extends MediaChromeButton {
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
 
     if (this.invokeTargetElement) {

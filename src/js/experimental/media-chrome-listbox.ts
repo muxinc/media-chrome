@@ -9,7 +9,7 @@ const checkIcon = /*html*/ `
   <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
 </svg>`;
 
-export function createOption(text: string, value: string, selected: boolean): HTMLElement {
+export function createOption(text: string, value: string, selected: boolean): MediaChromeOption {
   const option = document.createElement("media-chrome-option");
   option.part.add("option");
   option.value = value;
@@ -197,17 +197,19 @@ class MediaChromeListbox extends CustomElement {
     ) as HTMLSlotElement;
 
     this.container.addEventListener("slotchange", (event: Event) => {
-      for (const node of event.target.assignedNodes({ flatten: true })) {
+      const target: HTMLSlotElement = event.target as HTMLSlotElement;
+      for (const node of target.assignedNodes({ flatten: true })) {
         // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
         if (node.nodeType === 3 && node.textContent.trim() === "") {
-          node.remove();
+          (node as Element).remove();
         }
       }
     });
   }
 
-  formatOptionText(text: string, data?: any): string {
-    return this.constructor.formatOptionText(text, data);
+  formatOptionText(text: string, data?: any): string
+  formatOptionText(text: string): string {
+    return (this.constructor as typeof MediaChromeListbox).formatOptionText(text);
   }
 
   get options(): MediaChromeOption[] {
@@ -255,7 +257,7 @@ class MediaChromeListbox extends CustomElement {
       this.handleSelection(
         e,
         this.hasAttribute("aria-multiselectable") &&
-          this.getAttribute("aria-multiselectable") === "true"
+        this.getAttribute("aria-multiselectable") === "true"
       );
     } else {
       this.handleMovement(e);
@@ -329,7 +331,7 @@ class MediaChromeListbox extends CustomElement {
         this.#mediaController = null;
       }
       if (newValue && this.isConnected) {
-        this.#mediaController = this.getRootNode()?.getElementById(newValue);
+        this.#mediaController = (this.getRootNode() as Document)?.getElementById(newValue) as MediaController;
         this.#mediaController?.associateElement?.(this);
       }
     } else if (attrName === "disabled" && newValue !== oldValue) {
@@ -371,7 +373,7 @@ class MediaChromeListbox extends CustomElement {
     if (mediaControllerId) {
       this.#mediaController = (this.getRootNode() as Document)?.getElementById(
         mediaControllerId
-      );
+      ) as MediaController;
       this.#mediaController?.associateElement?.(this);
     }
   }
@@ -487,7 +489,7 @@ class MediaChromeListbox extends CustomElement {
     this.handleSelection(
       e,
       this.hasAttribute("aria-multiselectable") &&
-        this.getAttribute("aria-multiselectable") === "true"
+      this.getAttribute("aria-multiselectable") === "true"
     );
   }
 
@@ -515,7 +517,7 @@ class MediaChromeListbox extends CustomElement {
       .slice(0, activeIndex - (repeatedKey ? 1 : 0))
       .filter((el) => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
 
- let afterRepeated = [];
+    let afterRepeated = [];
     let beforeRepeated = [];
 
     if (repeatedKey) {

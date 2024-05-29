@@ -1,12 +1,29 @@
 /* Adapted from floating-ui - The MIT License - Floating UI contributors */
 
-export function computePosition({ anchor, floating, placement }) {
-  let rects = getElementRects({ anchor, floating });
-  let { x, y } = computeCoordsFromPlacement(rects, placement);
+import type { Point } from "./Point.js";
+import type { Rect } from "./Rect";
+
+export type PositionElements = {
+  anchor: HTMLElement;
+  floating: HTMLElement;
+}
+
+export type PositionRects = {
+  anchor: Rect;
+  floating: Rect;
+}
+
+export type Positions = PositionElements & {
+  placement: string;
+}
+
+export function computePosition({ anchor, floating, placement }: Positions): Point {
+  const rects = getElementRects({ anchor, floating });
+  const { x, y } = computeCoordsFromPlacement(rects, placement);
   return { x, y };
 }
 
-function getElementRects({ anchor, floating }) {
+function getElementRects({ anchor, floating }: PositionElements): PositionRects {
   return {
     anchor: getRectRelativeToOffsetParent(anchor, floating.offsetParent),
     floating: {
@@ -18,9 +35,9 @@ function getElementRects({ anchor, floating }) {
   };
 }
 
-function getRectRelativeToOffsetParent(element, offsetParent) {
-  let rect = element.getBoundingClientRect();
-  let offsetRect = offsetParent.getBoundingClientRect();
+function getRectRelativeToOffsetParent(element: Element, offsetParent: Element): Rect {
+  const rect = element.getBoundingClientRect();
+  const offsetRect = offsetParent.getBoundingClientRect();
   return {
     x: rect.x - offsetRect.x,
     y: rect.y - offsetRect.y,
@@ -29,7 +46,7 @@ function getRectRelativeToOffsetParent(element, offsetParent) {
   };
 }
 
-function computeCoordsFromPlacement({ anchor, floating }, placement) {
+function computeCoordsFromPlacement({ anchor, floating }: PositionRects, placement: string): Rect {
   const alignmentAxis = getSideAxis(placement) === "x" ? "y" : "x";
   const alignLength = alignmentAxis === "y" ? "height" : "width";
   const side = getSide(placement);
@@ -68,10 +85,10 @@ function computeCoordsFromPlacement({ anchor, floating }, placement) {
   return coords;
 }
 
-function getSide(placement) {
+function getSide(placement: string): string {
   return placement.split("-")[0];
 }
 
-function getSideAxis(placement) {
+function getSideAxis(placement: string): "x" | "y" {
   return ["top", "bottom"].includes(getSide(placement)) ? "y" : "x";
 }

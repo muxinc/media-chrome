@@ -1,8 +1,8 @@
+import { MediaUIAttributes } from "./constants.js";
 import { MediaTextDisplay } from "./media-text-display.js";
+import { getNumericAttr, setNumericAttr } from "./utils/element-utils.js";
 import { globalThis } from "./utils/server-safe-globals.js";
 import { formatTime } from "./utils/time.js";
-import { MediaUIAttributes } from "./constants.js";
-import { getNumericAttr, setNumericAttr } from "./utils/element-utils.js";
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 /**
@@ -11,8 +11,7 @@ import { getNumericAttr, setNumericAttr } from "./utils/element-utils.js";
  * @cssproperty [--media-preview-time-display-display = inline-flex] - `display` property of display.
  */
 class MediaPreviewTimeDisplay extends MediaTextDisplay {
-  /** @type {HTMLSlotElement} */
-  #slot;
+  #slot: HTMLSlotElement;
 
   static get observedAttributes() {
     return [...super.observedAttributes, MediaUIAttributes.MEDIA_PREVIEW_TIME];
@@ -24,22 +23,22 @@ class MediaPreviewTimeDisplay extends MediaTextDisplay {
     this.#slot.textContent = formatTime(0);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_PREVIEW_TIME && newValue != null) {
-      this.#slot.textContent = formatTime(newValue);
+      this.#slot.textContent = formatTime(parseFloat(newValue));
     }
   }
 
   /**
-   * @type {number | undefined} Timeline preview time
+   * Timeline preview time
    */
-  get mediaPreviewTime() {
+  get mediaPreviewTime(): number | undefined {
     return getNumericAttr(this, MediaUIAttributes.MEDIA_PREVIEW_TIME);
   }
 
-  set mediaPreviewTime(value) {
+  set mediaPreviewTime(value: number | undefined) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_PREVIEW_TIME, value);
   }
 }

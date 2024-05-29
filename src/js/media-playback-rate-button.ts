@@ -1,9 +1,9 @@
-import { MediaChromeButton } from "./media-chrome-button.js";
-import { globalThis, document } from "./utils/server-safe-globals.js";
-import { MediaUIEvents, MediaUIAttributes } from "./constants.js";
+import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
 import { nouns } from "./labels/labels.js";
+import { MediaChromeButton } from "./media-chrome-button.js";
 import { AttributeTokenList } from "./utils/attribute-token-list.js";
 import { getNumericAttr, setNumericAttr } from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
 export const Attributes = {
   RATES: "rates",
@@ -42,13 +42,15 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     defaultValue: DEFAULT_RATES,
   });
 
+  container: HTMLSlotElement;
+
   constructor(options = {}) {
     super({ slotTemplate, ...options });
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === Attributes.RATES) {

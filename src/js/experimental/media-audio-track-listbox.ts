@@ -1,13 +1,14 @@
+import { MediaUIAttributes, MediaUIEvents } from "../constants.js";
+import type { TextTrackLike } from "../utils/TextTrackLike.js";
+import { getStringAttr, setStringAttr } from "../utils/element-utils.js";
+import { globalThis } from "../utils/server-safe-globals.js";
+import { parseAudioTrackList } from "../utils/utils.js";
 import {
   MediaChromeListbox,
-  createOption,
   createIndicator,
+  createOption,
 } from "./media-chrome-listbox.js";
 import "./media-chrome-option.js";
-import { globalThis } from "../utils/server-safe-globals.js";
-import { getStringAttr, setStringAttr } from "../utils/element-utils.js";
-import { parseAudioTrackList } from "../utils/utils.js";
-import { MediaUIAttributes, MediaUIEvents } from "../constants.js";
 
 /**
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the enabled audio track.
@@ -22,7 +23,7 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
     ];
   }
 
-  #audioTrackList: Array<{ id: string; label: string; enabled: boolean }> = [];
+  #audioTrackList: TextTrackLike[] = [];
   #prevState: string | null = null;
 
   attributeChangedCallback(
@@ -46,12 +47,12 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener("change", this.#onChange);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener("change", this.#onChange);
   }
@@ -61,7 +62,7 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
   }
 
   set mediaAudioTrackList(
-    list: Array<{ id: string; label: string; enabled: boolean }>
+    list: TextTrackLike[]
   ) {
     this.#audioTrackList = list;
     this.#render();

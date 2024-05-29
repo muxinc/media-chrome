@@ -1,17 +1,17 @@
-import { globalThis } from "./utils/server-safe-globals.js";
 import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
-import { AttributeTokenList } from "./utils/attribute-token-list.js";
-import {
-  getNumericAttr,
-  setNumericAttr,
-  getMediaController,
-} from "./utils/element-utils.js";
-import { DEFAULT_RATES, DEFAULT_RATE } from "./media-playback-rate-button.js";
 import {
   MediaChromeMenu,
-  createMenuItem,
   createIndicator,
+  createMenuItem,
 } from "./media-chrome-menu.js";
+import { DEFAULT_RATE, DEFAULT_RATES } from "./media-playback-rate-button.js";
+import { AttributeTokenList } from "./utils/attribute-token-list.js";
+import {
+  getMediaController,
+  getNumericAttr,
+  setNumericAttr,
+} from "./utils/element-utils.js";
+import { globalThis } from "./utils/server-safe-globals.js";
 
 export const Attributes = {
   RATES: "rates",
@@ -28,7 +28,7 @@ export const Attributes = {
  * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
  */
 class MediaPlaybackRateMenu extends MediaChromeMenu {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
@@ -36,7 +36,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
     ];
   }
 
-  #rates = new AttributeTokenList(this, Attributes.RATES, {
+  #rates: AttributeTokenList = new AttributeTokenList(this, Attributes.RATES, {
     defaultValue: DEFAULT_RATES,
   });
 
@@ -45,7 +45,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
     this.#render();
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -59,21 +59,20 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener("change", this.#onChange);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener("change", this.#onChange);
   }
 
   /**
    * Returns the anchor element when it is a floating menu.
-   * @return {HTMLElement}
    */
-  get anchorElement() {
+  get anchorElement(): HTMLElement | null {
     if (this.anchor !== "auto") return super.anchorElement;
     return getMediaController(this).querySelector(
       "media-playback-rate-menu-button"
@@ -81,14 +80,14 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   }
 
   /**
-   * @type { AttributeTokenList | Array<number> | undefined} Will return a DOMTokenList.
+   * Will return a DOMTokenList.
    * Setting a value will accept an array of numbers.
    */
-  get rates() {
+  get rates(): AttributeTokenList | number[] | undefined {
     return this.#rates;
   }
 
-  set rates(value) {
+  set rates(value: AttributeTokenList | number[] | undefined) {
     if (!value) {
       this.#rates.value = "";
     } else if (Array.isArray(value)) {
@@ -98,9 +97,9 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   }
 
   /**
-   * @type {number} The current playback rate
+   * The current playback rate
    */
-  get mediaPlaybackRate() {
+  get mediaPlaybackRate(): number {
     return getNumericAttr(
       this,
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
@@ -108,18 +107,18 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
     );
   }
 
-  set mediaPlaybackRate(value) {
+  set mediaPlaybackRate(value: number) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, value);
   }
 
-  #render() {
+  #render(): void {
     this.defaultSlot.textContent = "";
 
     for (const rate of this.rates) {
       const item = createMenuItem({
         type: "radio",
         text: this.formatMenuItemText(`${rate}x`, rate),
-        value: rate,
+        value: rate as string,
         checked: this.mediaPlaybackRate == rate,
       });
       item.prepend(createIndicator(this, "checked-indicator"));
@@ -127,7 +126,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
     }
   }
 
-  #onChange() {
+  #onChange(): void {
     if (!this.value) return;
 
     const event = new globalThis.CustomEvent(

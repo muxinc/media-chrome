@@ -58,13 +58,14 @@ export const formatAsTimePhrase = (seconds) => {
 };
 
 /**
- * @description Converts a time, in numeric seconds, to a formatted string representation of the form [HH:[MM:]]SS, where hours and minutes
+ * Converts a time, in numeric seconds, to a formatted string representation of the form [HH:[MM:]]SS, where hours and minutes
  * are optional, either based on the value of `seconds` or (optionally) based on the value of `guide`.
- * @param {number} seconds - The total time you'd like formatted, in seconds
- * @param {number} [guide] - A number in seconds that represents how many units you'd want to show. This ensures consistent formatting between e.g. 35s and 4834s.
- * @returns {string} A string representation of the time, with expected units
+ * 
+ * @param seconds - The total time you'd like formatted, in seconds
+ * @param guide - A number in seconds that represents how many units you'd want to show. This ensures consistent formatting between e.g. 35s and 4834s.
+ * @returns A string representation of the time, with expected units
  */
-export function formatTime(seconds, guide) {
+export function formatTime(seconds: number, guide?: number): string {
   // Handle negative values at the end
   let negative = false;
 
@@ -74,12 +75,10 @@ export function formatTime(seconds, guide) {
   }
 
   seconds = seconds < 0 ? 0 : seconds;
-  /** @type {number|string} */
-  let s = Math.floor(seconds % 60);
-  /** @type {number|string} */
-  let m = Math.floor((seconds / 60) % 60);
-  /** @type {number|string} */
-  let h = Math.floor(seconds / 3600);
+
+  let s: number | string = Math.floor(seconds % 60);
+  let m: number | string = Math.floor((seconds / 60) % 60);
+  let h: number | string = Math.floor(seconds / 3600);
   const gm = Math.floor((guide / 60) % 60);
   const gh = Math.floor(guide / 3600);
 
@@ -106,8 +105,7 @@ export function formatTime(seconds, guide) {
   return (negative ? "-" : "") + h + m + s;
 }
 
-/** @type {TimeRanges} */
-export const emptyTimeRanges = Object.freeze({
+export const emptyTimeRanges: TimeRanges = Object.freeze({
   length: 0,
   start(index) {
     const unsignedIdx = index >>> 0;
@@ -130,11 +128,9 @@ export const emptyTimeRanges = Object.freeze({
 });
 
 /**
- * @argument {TimeRanges} [timeRanges]
  */
-export function serializeTimeRanges(timeRanges = emptyTimeRanges) {
-  // @ts-ignore
-  return Array.from(timeRanges)
+export function serializeTimeRanges(timeRanges: TimeRanges = emptyTimeRanges): string {
+  return Array.from(timeRanges as any)
     .map((_, i) =>
       [
         Number(timeRanges.start(i).toFixed(3)),

@@ -1,11 +1,12 @@
-import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
-import { DEFAULT_RATE, DEFAULT_RATES } from '../media-playback-rate-button.js';
-import { AttributeTokenList } from '../utils/attribute-token-list.js';
-import { getNumericAttr, setNumericAttr } from '../utils/element-utils.js';
-import { globalThis } from '../utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from "../constants.js";
+import { DEFAULT_RATE, DEFAULT_RATES } from "../media-playback-rate-button.js";
+import { AttributeTokenList } from "../utils/attribute-token-list.js";
+import { getNumericAttr, setNumericAttr } from "../utils/element-utils.js";
+import { globalThis } from "../utils/server-safe-globals.js";
 import {
   MediaChromeListbox,
   createIndicator,
+  createOption,
 } from "./media-chrome-listbox.js";
 import "./media-chrome-option.js";
 
@@ -102,10 +103,9 @@ class MediaPlaybackRateListbox extends MediaChromeListbox {
     container.textContent = "";
 
     for (const rate of this.rates) {
-      /** @type {HTMLOptionElement} */
       const option = createOption(
         this.formatOptionText(`${rate}x`, rate),
-        rate,
+        rate as string,
         this.mediaPlaybackRate == rate
       );
       option.prepend(createIndicator(this, "select-indicator"));

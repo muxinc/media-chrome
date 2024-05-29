@@ -1,7 +1,6 @@
-import { globalThis } from "./utils/server-safe-globals.js";
-import { MediaChromeRange } from "./media-chrome-range.js";
 import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
 import { nouns } from "./labels/labels.js";
+import { MediaChromeRange } from "./media-chrome-range.js";
 import {
   getBooleanAttr,
   getNumericAttr,
@@ -10,15 +9,16 @@ import {
   setNumericAttr,
   setStringAttr,
 } from "./utils/element-utils.js";
+import { globalThis } from "./utils/server-safe-globals.js";
 
 const DEFAULT_VOLUME = 1;
 
-const toVolume = (el) => {
+const toVolume = (el: any): number => {
   if (el.mediaMuted) return 0;
   return el.mediaVolume;
 };
 
-const formatAsPercentString = ({ value }) => `${Math.round(value * 100)}%`;
+const formatAsPercentString = ({ value }: { value: number }): string => `${Math.round(value * 100)}%`;
 
 /**
  * @attr {string} mediavolume - (read-only) Set to the media volume.
@@ -28,7 +28,7 @@ const formatAsPercentString = ({ value }) => `${Math.round(value * 100)}%`;
  * @cssproperty [--media-volume-range-display = inline-block] - `display` property of range.
  */
 class MediaVolumeRange extends MediaChromeRange {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_VOLUME,
@@ -54,12 +54,12 @@ class MediaVolumeRange extends MediaChromeRange {
     });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.range.setAttribute("aria-label", nouns.VOLUME());
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -76,35 +76,35 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 
   /**
-   * @type {number}
+   * 
    */
-  get mediaVolume() {
+  get mediaVolume(): number {
     return getNumericAttr(this, MediaUIAttributes.MEDIA_VOLUME, DEFAULT_VOLUME);
   }
 
-  set mediaVolume(value) {
+  set mediaVolume(value: number) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_VOLUME, value);
   }
 
   /**
-   * @type {boolean} Is the media currently muted
+   * Is the media currently muted
    */
-  get mediaMuted() {
+  get mediaMuted(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_MUTED);
   }
 
-  set mediaMuted(value) {
+  set mediaMuted(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_MUTED, value);
   }
 
   /**
-   * @type {string | undefined} The volume unavailability state
+   * The volume unavailability state
    */
-  get mediaVolumeUnavailable() {
+  get mediaVolumeUnavailable(): string | undefined {
     return getStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE);
   }
 
-  set mediaVolumeUnavailable(value) {
+  set mediaVolumeUnavailable(value: string | undefined) {
     setStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, value);
   }
 }

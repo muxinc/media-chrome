@@ -62,7 +62,7 @@ class MediaCastButton extends MediaChromeButton {
     super({ slotTemplate, ...options });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     updateAriaLabel(this);
   }

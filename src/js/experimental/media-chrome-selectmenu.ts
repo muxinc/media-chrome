@@ -127,7 +127,7 @@ class MediaChromeSelectMenu extends CustomElement {
     });
   }
 
-  init() {}
+  init() { }
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
@@ -244,9 +244,8 @@ class MediaChromeSelectMenu extends CustomElement {
     );
     this.#listbox.style.left = null;
     this.#listbox.style.right = `${position}px`;
-    this.#listbox.style.maxHeight = `${
-      boundsRect.height - buttonRect.height
-    }px`;
+    this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height
+      }px`;
   };
 
   enable() {
@@ -266,7 +265,7 @@ class MediaChromeSelectMenu extends CustomElement {
     document.removeEventListener("click", this.#documentClickHandler);
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -293,7 +292,7 @@ class MediaChromeSelectMenu extends CustomElement {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ":host");
     style.setProperty(
       "display",
@@ -323,7 +322,7 @@ class MediaChromeSelectMenu extends CustomElement {
     }
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     unobserveResize(getBoundsElement(this), this.#updateMenuPosition);
     this.disable();
 

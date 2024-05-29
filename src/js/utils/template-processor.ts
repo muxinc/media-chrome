@@ -1,7 +1,10 @@
 import {
   AttrPart,
   InnerTemplatePart,
+  Processor,
   TemplateInstance,
+  type Part,
+  type State,
 } from "./template-parts.js";
 import { isNumericString } from "./utils.js";
 
@@ -11,6 +14,9 @@ const pipeModifiers = {
 };
 
 class PartialTemplate {
+  template: any;
+  state: Record<string, any>;
+
   constructor(template) {
     this.template = template;
     this.state = undefined;
@@ -21,7 +27,7 @@ const templates = new WeakMap();
 const templateInstances = new WeakMap();
 
 const Directives = {
-  partial: (part, state) => {
+  partial: (part: any, state: any) => {
     state[part.expression] = new PartialTemplate(part.template);
   },
   if: (part, state) => {
@@ -48,8 +54,11 @@ const Directives = {
 
 const DirectiveNames = Object.keys(Directives);
 
-export const processor = {
-  processCallback(instance, parts, state) {
+export const processor: Processor = {
+  processCallback(
+    instance: TemplateInstance,
+    parts: [string, Part][],
+    state: State) {
     if (!state) return;
 
     for (const [expression, part] of parts) {
@@ -136,7 +145,7 @@ const operators = {
   "|": (a, b) => pipeModifiers[b]?.(a),
 };
 
-export function tokenizeExpression(expr) {
+export function tokenizeExpression(expr: string): Token[] {
   return tokenize(expr, {
     boolean: /true|false/,
     number: /-?\d+\.?\d*/,
@@ -155,7 +164,7 @@ export function tokenizeExpression(expr) {
 //   streamtype != 'live'
 //   breakpointmd
 //   !targetlivewindow
-export function evaluateExpression(expr, state = {}) {
+export function evaluateExpression(expr: string, state: Record<string, any> = {}): any {
   const tokens = tokenizeExpression(expr);
 
   if (tokens.length === 0 || tokens.some(({ type }) => !type)) {
@@ -227,17 +236,17 @@ export function evaluateExpression(expr, state = {}) {
   }
 }
 
-function invalidExpression(expr) {
+function invalidExpression(expr: string): boolean {
   console.warn(`Warning: invalid expression \`${expr}\``);
   return false;
 }
 
-function isValidParam({ type }) {
+function isValidParam({ type }: Token): boolean {
   return ["number", "boolean", "string", "param"].includes(type);
 }
 
 // Eval params of something like `{{PlayButton param='center'}}
-export function getParamValue(raw, state) {
+export function getParamValue(raw: string, state: Record<string, any>) {
   const firstChar = raw[0];
   const lastChar = raw.slice(-1);
 
@@ -260,6 +269,12 @@ export function getParamValue(raw, state) {
   return state[raw];
 }
 
+type Token = {
+  token: string;
+  type: string;
+  matches?: string[];
+};
+
 /*
  * Tiny tokenizer
  * https://gist.github.com/borgar/451393
@@ -271,17 +286,17 @@ export function getParamValue(raw, state) {
  * result => [{ token="this", type="word" },{ token=" ", type="whitespace" }, Object { token="is", type="word" }, ... ]
  *
  */
-function tokenize(str, parsers) {
+function tokenize(str: string, parsers): Token[] {
   let len,
     match,
-    token,
-    tokens = [];
+    token;
+  const tokens: Token[] = [];
 
   while (str) {
     token = null;
     len = str.length;
 
-    for (let key in parsers) {
+    for (const key in parsers) {
       match = parsers[key].exec(str);
       // try to choose the best match if there are several
       // where "best" is the closest to the current starting point

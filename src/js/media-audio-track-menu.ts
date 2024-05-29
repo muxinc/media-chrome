@@ -1,20 +1,19 @@
-import { globalThis } from "./utils/server-safe-globals";
 import { MediaUIAttributes, MediaUIEvents } from "./constants";
-import { parseAudioTrackList } from "./utils/utils";
 import {
   MediaChromeMenu,
-  createMenuItem,
   createIndicator,
+  createMenuItem,
 } from "./media-chrome-menu";
+import type { TextTrackLike } from "./utils/TextTrackLike";
 import {
+  getMediaController,
   getStringAttr,
   setStringAttr,
-  getMediaController,
 } from "./utils/element-utils";
+import { globalThis } from "./utils/server-safe-globals";
+import { parseAudioTrackList } from "./utils/utils";
 
 /**
- * @extends {MediaChromeMenu}
- *
  * @slot - Default slotted elements.
  * @slot header - An element shown at the top of the menu.
  * @slot checked-indicator - An icon element indicating a checked menu-item.
@@ -32,10 +31,10 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
     ];
   }
 
-  #audioTrackList: { id: string; kind: string; language: string; label: string; enabled: boolean }[] = [];
+  #audioTrackList: TextTrackLike[] = [];
   #prevState: string | undefined;
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -52,19 +51,18 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener("change", this.#onChange);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener("change", this.#onChange);
   }
 
   /**
    * Returns the anchor element when it is a floating menu.
-   * @return {HTMLElement}
    */
   get anchorElement(): HTMLElement | null {
     if (this.anchor !== "auto") return super.anchorElement;
@@ -73,18 +71,17 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
     );
   }
 
-  get mediaAudioTrackList(): { id: string; kind: string; language: string; label: string; enabled: boolean }[] {
+  get mediaAudioTrackList(): TextTrackLike[] {
     return this.#audioTrackList;
   }
 
-  set mediaAudioTrackList(list: { id: string; kind: string; language: string; label: string; enabled: boolean }[]) {
+  set mediaAudioTrackList(list: TextTrackLike[]) {
     this.#audioTrackList = list;
     this.#render();
   }
 
   /**
    * Get enabled audio track id.
-   * @return {string}
    */
   get mediaAudioTrackEnabled(): string {
     return getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED) ?? "";
