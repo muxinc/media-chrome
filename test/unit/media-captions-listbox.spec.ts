@@ -35,7 +35,10 @@ describe('<media-captions-listbox>', () => {
 
   it('listbox is populated', async function () {
     this.timeout(5000);
-    await new Promise(resolve => mediaController.media.textTracks.addEventListener('addtrack', resolve));
+
+    if (mediaController.media.textTracks.length !== 10) {
+      await new Promise(resolve => mediaController.media.textTracks.addEventListener('addtrack', resolve));
+    }
 
     assert.equal(mediaController.media.textTracks.length, 10);
     assert.equal(listbox.options.length, 11); // includes Off option
