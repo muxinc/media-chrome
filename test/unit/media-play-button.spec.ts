@@ -1,12 +1,13 @@
+import { expect, fixture } from '@open-wc/testing';
 import { spy } from 'sinon';
-import { fixture, expect } from '@open-wc/testing';
-import { MediaUIAttributes, MediaUIEvents } from '../../src/js/constants';
-import { verbs } from '../../src/js/labels/labels';
-import '../../src/js/media-play-button';
+import { MediaUIAttributes, MediaUIEvents } from '../../src/js/constants.js';
+import { verbs } from '../../src/js/labels/labels.js';
+import '../../src/js/media-play-button.js';
+import { MediaPlayButton } from '../../src/js/media-play-button.js';
 
 describe('<media-play-button>', () => {
   it('passes the a11y audit', async () => {
-    const el = await fixture(`<media-play-button></media-play-button>`);
+    const el = await fixture<MediaPlayButton>(`<media-play-button></media-play-button>`);
     await expect(el).shadowDom.to.be.accessible();
   });
 
@@ -113,10 +114,10 @@ describe('<media-play-button>', () => {
       const idStr = 'customPlay';
       const slotStr = 'play';
 
-      const el = await fixture(
+      const el = await fixture<MediaPlayButton>(
         `<media-play-button><span id="${idStr}" slot="${slotStr}">Play</span></media-play-button>`
       );
-      const slottedEl = el.shadowRoot.querySelector(
+      const slottedEl = el?.shadowRoot?.querySelector(
         `slot[name="${slotStr}"] > *`
       );
       expect(slottedEl).to.have.id(idStr);
@@ -126,10 +127,10 @@ describe('<media-play-button>', () => {
       const idStr = 'customPause';
       const slotStr = 'pause';
 
-      const el = await fixture(
+      const el = await fixture<MediaPlayButton>(
         `<media-play-button><span id="${idStr}" slot="${slotStr}">Play</span></media-play-button>`
       );
-      const slottedEl = el.shadowRoot.querySelector(
+      const slottedEl = el?.shadowRoot?.querySelector(
         `slot[name="${slotStr}"] > *`
       );
       expect(slottedEl).to.have.id(idStr);

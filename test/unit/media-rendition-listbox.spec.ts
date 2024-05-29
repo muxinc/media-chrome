@@ -1,11 +1,12 @@
 import { assert, fixture } from '@open-wc/testing';
 import 'https://cdn.jsdelivr.net/npm/hls-video-element@1.1/+esm';
-import '../../src/js/index.js';
 import '../../src/js/experimental/index.js';
+import type { MediaRenditionListbox } from '../../src/js/experimental/index.js';
+import '../../src/js/index.js';
 
 describe('<media-rendition-listbox>', () => {
   let mediaController;
-  let listbox;
+  let listbox: MediaRenditionListbox;
 
   beforeEach(async () => {
     mediaController = await fixture(/*html*/`

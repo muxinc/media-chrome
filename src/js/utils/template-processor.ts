@@ -246,7 +246,7 @@ function isValidParam({ type }: Token): boolean {
 }
 
 // Eval params of something like `{{PlayButton param='center'}}
-export function getParamValue(raw: string, state: Record<string, any>) {
+export function getParamValue(raw: string, state?: Record<string, any>) {
   const firstChar = raw[0];
   const lastChar = raw.slice(-1);
 

@@ -94,4 +94,5 @@ if (!globalThis.customElements.get("media-play-button")) {
   globalThis.customElements.define("media-play-button", MediaPlayButton);
 }
 
+export { MediaPlayButton };
 export default MediaPlayButton;

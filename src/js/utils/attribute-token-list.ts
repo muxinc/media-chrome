@@ -1,10 +1,10 @@
 export class AttributeTokenList implements Pick<DOMTokenList, 'length' | 'value' | 'toString' | 'item' | 'add' | 'remove' | 'contains' | 'toggle' | 'replace'> {
   #el: HTMLElement;
-  #attr;
+  #attr: string;
   #defaultSet: Set<string>;
   #tokenSet: Set<string> = new Set<string>();
 
-  constructor(el: HTMLElement, attr, { defaultValue } = { defaultValue: undefined }) {
+  constructor(el?: HTMLElement, attr?: string, { defaultValue } = { defaultValue: undefined }) {
     this.#el = el;
     this.#attr = attr;
     this.#defaultSet = new Set(defaultValue);
