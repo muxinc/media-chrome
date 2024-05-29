@@ -1,14 +1,19 @@
+import { esbuildPlugin } from '@web/dev-server-esbuild';
 import { playwrightLauncher } from '@web/test-runner-playwright';
+import process from 'node:process';
 
 const config = {
   /** Test files to run */
-  files: 'test/@(unit|integration)/**/*.@(test|spec).js',
+  files: 'test/@(unit|integration)/**/*.@(test|spec).(ts|js)',
+  // files: 'test/unit/media-play-button.spec.ts',
 
   /** Resolve bare module imports */
   nodeResolve: true,
 
   /** Compile JS for older browsers. Requires @web/dev-server-esbuild plugin */
-  // esbuildTarget: 'auto',
+  plugins: [
+    esbuildPlugin({ ts: true })
+  ],
 
   /** Amount of test files per browser to test concurrently */
   // concurrency: 1,

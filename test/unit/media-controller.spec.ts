@@ -1,7 +1,8 @@
-import { fixture, assert, aTimeout, waitUntil } from '@open-wc/testing';
-import { constants } from '../../src/js/index.js';
-import { nextFrame } from '@open-wc/testing';
+import { aTimeout, assert, fixture, nextFrame, waitUntil } from '@open-wc/testing';
 import { MediaStateReceiverAttributes } from '../../src/js/constants.js';
+import { constants } from '../../src/js/index.js';
+import '../../src/js/media-controller.js';
+import { MediaController } from '../../src/js/media-controller.js';
 
 const {
   MediaUIEvents,
@@ -11,9 +12,9 @@ const {
 } = constants;
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
 
-describe('<media-controller>', () => {
+describe.only('<media-controller>', () => {
   it('associates itself to observe for state receivers', async () => {
-    const mediaController = await fixture(`
+    const mediaController = await fixture<MediaController>(`
       <media-controller></media-controller>
     `);
     assert.equal(mediaController.associatedElementSubscriptions.size, 1);
@@ -21,10 +22,10 @@ describe('<media-controller>', () => {
   });
 
   it('associates non-child elements to observe for state receivers', async () => {
-    const mediaController = await fixture(`
+    const mediaController = await fixture<MediaController>(`
       <media-controller id="ctrl"></media-controller>
     `);
-    const playButton = await fixture(`
+    const playButton = await fixture<HTMLElement>(`
       <media-play-button mediacontroller="ctrl"></media-play-button>
     `);
     assert.equal(mediaController.associatedElementSubscriptions.size, 2);
@@ -32,7 +33,7 @@ describe('<media-controller>', () => {
   });
 
   it('registers itself and child controls state receivers', async () => {
-    const mediaController = await fixture(`
+    const mediaController = await fixture<MediaController>(`
       <media-controller>
         <media-play-button></media-play-button>
       </media-controller>
@@ -44,7 +45,7 @@ describe('<media-controller>', () => {
       mediaController.mediaStateReceivers.indexOf(mediaController) >= 0,
       'registers itself'
     );
-    const playButton = mediaController.querySelector('media-play-button');
+    const playButton = mediaController.querySelector('media-play-button') as HTMLElement;
     assert(
       mediaController.mediaStateReceivers.indexOf(playButton) >= 0,
       'registers play button'
@@ -52,10 +53,10 @@ describe('<media-controller>', () => {
   });
 
   it('registers itself and non-child button state receivers', async () => {
-    const mediaController = await fixture(`
+    const mediaController = await fixture<MediaController>(`
       <media-controller id="ctrl"></media-controller>
     `);
-    const ui = await fixture(`
+    const ui = await fixture<HTMLElement>(`
       <media-play-button mediacontroller="ctrl"></media-play-button>
     `);
 
@@ -80,10 +81,10 @@ describe('<media-controller>', () => {
   });
 
   it('registers itself and non-child range state receivers', async () => {
-    const mediaController = await fixture(`
+    const mediaController = await fixture<MediaController>(`
       <media-controller id="ctrl"></media-controller>
     `);
-    const ui = await fixture(`
+    const ui = await fixture<HTMLElement>(`
       <media-time-range mediacontroller="ctrl"></media-time-range>
     `);
 
@@ -108,10 +109,10 @@ describe('<media-controller>', () => {
   });
 
   it('registers itself and non-child gesture-receiver state receivers', async () => {
-    const mediaController = await fixture(`
+    const mediaController = await fixture<MediaController>(`
       <media-controller id="ctrl"></media-controller>
     `);
-    const ui = await fixture(`
+    const ui = await fixture<HTMLElement>(`
       <media-gesture-receiver mediacontroller="ctrl"></media-gesture-receiver>
     `);
 
@@ -136,10 +137,10 @@ describe('<media-controller>', () => {
   });
 
   it('registers itself and non-child loading-indicator state receivers', async () => {
-    const mediaController = await fixture(`
+    const mediaController = await fixture<MediaController>(`
       <media-controller id="ctrl"></media-controller>
     `);
-    const ui = await fixture(`
+    const ui = await fixture<HTMLElement>(`
       <media-loading-indicator mediacontroller="ctrl"></media-loading-indicator>
     `);
 
@@ -164,10 +165,10 @@ describe('<media-controller>', () => {
   });
 
   it('registers itself and non-child preview-thumbnail state receivers', async () => {
-    const mediaController = await fixture(`
+    const mediaController = await fixture<MediaController>(`
       <media-controller id="ctrl"></media-controller>
     `);
-    const ui = await fixture(`
+    const ui = await fixture<HTMLElement>(`
       <media-preview-thumbnail mediacontroller="ctrl"></media-preview-thumbnail>
     `);
 
@@ -192,10 +193,10 @@ describe('<media-controller>', () => {
   });
 
   it('registers itself and non-child time-display state receivers', async () => {
-    const mediaController = await fixture(`
+    const mediaController = await fixture<MediaController>(`
       <media-controller id="ctrl"></media-controller>
     `);
-    const ui = await fixture(`
+    const ui = await fixture<HTMLElement>(`
       <media-time-display mediacontroller="ctrl"></media-time-display>
     `);
 
@@ -220,7 +221,7 @@ describe('<media-controller>', () => {
   });
 
   it('registers itself and child simple element state receivers', async () => {
-    const mediaController = await fixture(`
+    const mediaController = await fixture<MediaController>(`
       <media-controller>
         <div mediachromeattributes="mediapaused mediacurrenttime"></div>
       </media-controller>
@@ -232,7 +233,7 @@ describe('<media-controller>', () => {
       mediaController.mediaStateReceivers.indexOf(mediaController) >= 0,
       'registers itself'
     );
-    const div = mediaController.querySelector('div');
+    const div = mediaController.querySelector('div') as HTMLElement;
     assert(
       mediaController.mediaStateReceivers.indexOf(div) >= 0,
       'registers div'
@@ -241,12 +242,12 @@ describe('<media-controller>', () => {
 });
 
 describe('receiving state / dispatching (bubbling) events', () => {
-  let mediaController;
-  let video;
-  let div;
+  let mediaController: MediaController;
+  let video: HTMLVideoElement;
+  let div: HTMLDivElement;
 
   beforeEach(async () => {
-    mediaController = await fixture(`
+    mediaController = await fixture<MediaController>(`
       <media-controller>
         <video
           slot="media"
@@ -258,8 +259,8 @@ describe('receiving state / dispatching (bubbling) events', () => {
         <div></div>
       </media-controller>
     `);
-    video = mediaController.querySelector('video');
-    div = mediaController.querySelector('div');
+    video = mediaController.querySelector('video') as HTMLVideoElement;
+    div = mediaController.querySelector('div') as HTMLDivElement;
   });
 
   it('receives state as attributes from the media', async () => {
@@ -356,6 +357,7 @@ describe('receiving state / dispatching (bubbling) events', () => {
 
     await waitUntil(
       () =>
+        // @ts-ignore
         mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) >= 2
     );
     assert(true, 'mediacurrenttime is 2');
@@ -371,7 +373,9 @@ describe('receiving state / dispatching (bubbling) events', () => {
 
     await waitUntil(
       () =>
+        // @ts-ignore
         mediaController.getAttribute(MediaUIAttributes.MEDIA_VOLUME) == 0.73,
+      // @ts-ignore
       10000
     );
     assert(true, 'mediavolume is 0.73');
@@ -379,31 +383,29 @@ describe('receiving state / dispatching (bubbling) events', () => {
 });
 
 describe('state propagation behaviors', () => {
-  let mediaController;
-  let mediaAllReceiver;
-  let mediaEl;
+  let mediaController: MediaController;
+  let mediaAllReceiver: HTMLDivElement;
 
   beforeEach(async () => {
-    mediaController = await fixture(`
+    mediaController = await fixture<MediaController>(`
       <media-controller>
         <video
           slot="media"
           preload="auto"
           muted
         />
-        <div ${
-          MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES
-        }="${Object.values(MediaUIAttributes).join(' ')}"></div>
+        <div ${MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES
+      }="${Object.values(MediaUIAttributes).join(' ')}"></div>
       </media-controller>
     `);
-    mediaAllReceiver = mediaController.querySelector('div');
-    mediaEl = mediaController.querySelector('video');
+    mediaAllReceiver = mediaController.querySelector('div') as HTMLDivElement;
   });
 
   afterEach(() => {
+    // @ts-ignore
     mediaController = undefined;
+    // @ts-ignore
     mediaAllReceiver = undefined;
-    mediaEl = undefined;
   });
 
   // NOTE: Examples of ad hoc state update tests. These could be moved into higher order functions if preferred (CJP)

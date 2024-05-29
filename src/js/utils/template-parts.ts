@@ -9,16 +9,17 @@ const STRING = 0;
 const PART = 1;
 
 export type State = Record<string, any>;
+export type Parts = [string, Part][];
 
 export type Processor = {
   createCallback?: (
     instance: TemplateInstance,
-    parts: [string, Part][],
+    parts: Parts,
     state: State
   ) => void;
   processCallback: (
     instance: TemplateInstance,
-    parts: [string, Part][],
+    parts: Parts,
     state: State
   ) => void;
 };
@@ -26,7 +27,7 @@ export type Processor = {
 export const defaultProcessor: Processor = {
   processCallback(
     instance: TemplateInstance,
-    parts: [string, Part][],
+    parts: Parts,
     state: State
   ): void {
     if (!state) return;
@@ -59,7 +60,7 @@ export class TemplateInstance extends DocumentFragment {
 
   constructor(
     template: HTMLTemplateElement,
-    state: State,
+    state?: State | null,
     processor: Processor = defaultProcessor
   ) {
     super();
@@ -72,13 +73,13 @@ export class TemplateInstance extends DocumentFragment {
     processor.processCallback(this, this.#parts, state);
   }
 
-  update(state: State) {
+  update(state?: State) {
     this.#processor.processCallback(this, this.#parts, state);
   }
 }
 
 // collect element parts
-export const parse = (element: Element, parts: [string, Part][] = []) => {
+export const parse = (element: Element, parts: Parts = []) => {
   let type, value;
 
   for (const attr of element.attributes || []) {
@@ -238,7 +239,7 @@ export class AttrPart extends Part {
   constructor(
     element: Element,
     attributeName: string,
-    namespaceURI: string
+    namespaceURI: string | null,
   ) {
     super();
     this.#element = element;

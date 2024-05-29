@@ -41,8 +41,7 @@ export type RequestMap = {
   ) => Partial<MediaState> | undefined | void;
 };
 
-/** @type {RequestMap} */
-export const requestMap = {
+export const requestMap: RequestMap = {
   /**
    * @TODO Consider adding state to `StateMediator` for e.g. `mediaThumbnailCues` and use that for derived state here (CJP)
    */
@@ -61,7 +60,7 @@ export const requestMap = {
     // when there is no media or the preview time request is null/undefined
     if (media && mediaPreviewTime != null) {
       // preview thumbnail image-related derivation
-      const [track] = getTextTracksList(media, {
+      const [track] = getTextTracksList(media as HTMLVideoElement, {
         kind: TextTrackKinds.METADATA,
         label: "thumbnails",
       });
@@ -77,16 +76,13 @@ export const requestMap = {
 
       if (cue) {
         const base = !/'^(?:[a-z]+:)?\/\//i.test(cue.text)
-          ? /** @type {HTMLTrackElement | null} */ media?.querySelector(
-              'track[label="thumbnails"]'
-            )?.src
+          ? (media?.querySelector('track[label="thumbnails"]') as HTMLTrackElement)?.src
           : undefined;
         const url = new URL(cue.text, base);
         const previewCoordsStr = new URLSearchParams(url.hash).get("#xywh");
-        mediaPreviewCoords =
-          /** @type {[number, number, number, number]} */ previewCoordsStr
-            .split(",")
-            .map((numStr) => +numStr);
+        mediaPreviewCoords = previewCoordsStr
+          .split(",")
+          .map((numStr) => +numStr) as [number, number, number, number];
         mediaPreviewImage = url.href;
       }
     }

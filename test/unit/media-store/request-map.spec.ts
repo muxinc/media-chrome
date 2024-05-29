@@ -1,6 +1,6 @@
 import { expect, fixture } from '@open-wc/testing';
-import { stateMediator } from '../../../src/js/media-store/state-mediator';
-import { requestMap } from '../../../src/js/media-store/request-map';
+import { requestMap } from '../../../src/js/media-store/request-map.js';
+import { stateMediator } from '../../../src/js/media-store/state-mediator.js';
 
 describe('RequestMap', () => {
   const requestMapEntries = Object.entries(requestMap);

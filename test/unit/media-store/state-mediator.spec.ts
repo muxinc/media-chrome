@@ -1,12 +1,12 @@
 import { expect, fixture } from '@open-wc/testing';
-import { stateMediator } from '../../../src/js/media-store/state-mediator';
+import { stateMediator } from '../../../src/js/media-store/state-mediator.js';
 
 describe('StateMediator', () => {
   const stateMediatorEntries = Object.entries(stateMediator);
   describe('no stateOwners', () => {
     const stateOwners = {};
 
-    stateMediatorEntries.forEach(([stateName, stateValueAPI]) => {
+    stateMediatorEntries.forEach(([stateName, stateValueAPI]: [string, any]) => {
       const { get: getter, set: setter } = stateValueAPI;
       it(`${stateName} getter should not throw`, () => {
         const fn = () => getter(stateOwners);
@@ -42,7 +42,7 @@ describe('StateMediator', () => {
       stateOwners = undefined;
     });
 
-    stateMediatorEntries.forEach(([stateName, stateValueAPI]) => {
+    stateMediatorEntries.forEach(([stateName, stateValueAPI]: [string, any]) => {
       const { get: getter, set: setter } = stateValueAPI;
       it(`${stateName} getter should not throw`, () => {
         const fn = () => getter(stateOwners);

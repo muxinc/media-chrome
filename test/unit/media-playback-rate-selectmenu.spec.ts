@@ -1,11 +1,12 @@
 import { assert, fixture } from '@open-wc/testing';
-import '../../src/js/index.js';
 import '../../src/js/experimental/index.js';
+import type { MediaPlaybackRateListbox, MediaPlaybackRateSelectMenu } from '../../src/js/experimental/index.js';
+import '../../src/js/index.js';
 
 describe('<media-playback-rate-selectmenu>', () => {
   let mediaController;
-  let selectmenu;
-  let listbox;
+  let selectmenu: MediaPlaybackRateSelectMenu;
+  let listbox: MediaPlaybackRateListbox;
 
   beforeEach(async () => {
     mediaController = await fixture(/*html*/`
@@ -19,12 +20,12 @@ describe('<media-playback-rate-selectmenu>', () => {
       </media-controller>
     `);
     selectmenu = mediaController.querySelector('media-playback-rate-selectmenu');
-    listbox = selectmenu.shadowRoot.querySelector('media-playback-rate-listbox');
+    listbox = selectmenu!.shadowRoot!.querySelector('media-playback-rate-listbox') as MediaPlaybackRateListbox;
   });
 
   it('selectmenu is populated', async function () {
     assert.equal(listbox.options.length, 5);
-    assert.equal(listbox.value, 1);
+    assert.equal(listbox.value, '1');
   });
 
 });

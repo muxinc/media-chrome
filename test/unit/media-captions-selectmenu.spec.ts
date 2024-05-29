@@ -1,13 +1,16 @@
 import { assert, fixture } from '@open-wc/testing';
-import '../../src/js/index.js';
 import '../../src/js/experimental/index.js';
+import '../../src/js/index.js';
+import { MediaController } from '../../src/js/media-controller.js';
 
-describe('<media-captions-listbox>', () => {
-  let mediaController;
-  let listbox;
+
+describe('<media-captions-selectmenu>', () => {
+  let mediaController: MediaController;
+  let selectmenu: HTMLElement;
+  let listbox: HTMLSelectElement;
 
   beforeEach(async () => {
-    mediaController = await fixture(/*html*/`
+    mediaController = await fixture<MediaController>(/*html*/`
       <media-controller>
         <video
           slot="media"
@@ -27,19 +30,20 @@ describe('<media-captions-listbox>', () => {
           <track label="Subs Russian" kind="subtitles" srclang="ru" src="../../examples/vanilla/vtt/elephantsdream/captions.ru.vtt"></track>
           <track label="Subs Arabic" kind="subtitles" srclang="ar" src="../../examples/vanilla/vtt/elephantsdream/captions.ar.vtt"></track>
         </video>
-        <media-captions-listbox></media-captions-listbox>
+        <media-captions-selectmenu></media-captions-selectmenu>
       </media-controller>
     `);
-    listbox = mediaController.querySelector('media-captions-listbox');
+    selectmenu = mediaController.querySelector('media-captions-selectmenu') as HTMLElement;
+    listbox = selectmenu.shadowRoot!.querySelector('media-captions-listbox') as HTMLSelectElement;
   });
 
-  it('listbox is populated', async function () {
+  it('selectmenu is populated', async function () {
     this.timeout(5000);
 
-    await new Promise(resolve => mediaController.media.textTracks.addEventListener('addtrack', resolve));
+    await new Promise(resolve => mediaController!.media!.textTracks.addEventListener('addtrack', resolve));
 
-    assert.equal(mediaController.media.textTracks.length, 10);
-    assert.equal(listbox.options.length, 11); // includes Off option
+    assert.equal(mediaController!.media!.textTracks.length, 10);
+    assert.equal(listbox.options!.length, 11); // includes Off option
     // assert.equal(listbox.value, 'cc:en:English'); fails on Firefox and Safari
   });
 

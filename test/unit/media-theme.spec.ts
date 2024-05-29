@@ -1,12 +1,13 @@
-import { fixture, assert, waitUntil } from '@open-wc/testing';
-import '../../src/js/media-theme-element.js';
-import '../../src/js/index.js';
+import { assert, fixture, waitUntil } from '@open-wc/testing';
 import { MediaUIAttributes } from '../../src/js/constants.js';
+import '../../src/js/index.js';
+import '../../src/js/media-theme-element.js';
+import { MediaThemeElement } from '../../src/js/media-theme-element.js';
 
 describe('<media-theme>', () => {
   it(`<media-theme> with template attribute works w/ delayed document append`, async () => {
 
-    const template = document.createElement('template');
+    const template: HTMLTemplateElement = document.createElement('template');
     template.id = 'not-yet';
     template.innerHTML = /*html*/`
       <media-controller>
@@ -22,23 +23,23 @@ describe('<media-theme>', () => {
 
     document.body.append(template, theme);
 
-    assert(theme.shadowRoot.innerHTML.includes('media-play-button'), 'shadow root contains a play button');
+    assert(theme!.shadowRoot!.innerHTML.includes('media-play-button'), 'shadow root contains a play button');
   });
 
-  it(`<media-theme> w/ template HTML file URL doesn't duplicate fetch/render `, async function() {
+  it(`<media-theme> w/ template HTML file URL doesn't duplicate fetch/render `, async function () {
     this.timeout(5000);
 
     const theme = document.createElement('media-theme');
     theme.setAttribute('template', 'https://gist.githubusercontent.com/luwes/5812c419830fee000d3463c496d18e19/raw/c295dad03a33ea8ad93870fa55de40a3308c8f45/media-theme-micro.html');
 
-    await waitUntil(() => theme.shadowRoot.querySelector('media-controller'), 5000);
-    const mediaController = theme.shadowRoot.querySelector('media-controller');
+    await waitUntil(() => theme!.shadowRoot!.querySelector('media-controller'), 5000 as any);
+    const mediaController = theme!.shadowRoot!.querySelector('media-controller');
 
     document.body.append(theme);
 
     assert.equal(
       mediaController,
-      theme.shadowRoot.querySelector('media-controller'),
+      theme!.shadowRoot!.querySelector('media-controller'),
       'should have not re-rendered and media-controller stayed the same'
     );
   });
@@ -57,13 +58,11 @@ describe('<media-theme>', () => {
       </media-theme>
     `);
 
-    const media = theme1.querySelector('[slot="media"]');
+    const media = theme1.querySelector('[slot="media"]') as HTMLVideoElement;
     await media.play();
 
     assert(
-      theme1.shadowRoot
-        .querySelector('media-controller')
-        .hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME)
+      theme1.shadowRoot!.querySelector('media-controller')!.hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME)
     );
 
     const theme2 = await fixture(`
@@ -72,29 +71,22 @@ describe('<media-theme>', () => {
 
     theme2.append(media);
 
+
     await waitUntil(() =>
-      theme1.shadowRoot
-        .querySelector('media-controller')
-        .hasAttribute(MediaUIAttributes.MEDIA_PAUSED)
+      theme1!.shadowRoot!.querySelector('media-controller')!.hasAttribute(MediaUIAttributes.MEDIA_PAUSED)
     );
 
     assert(
-      theme1.shadowRoot
-        .querySelector('media-controller')
-        .hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
+      theme1!.shadowRoot!.querySelector('media-controller')!.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
       'should be reset to paused state on mediaUnsetCallback'
     );
 
     await waitUntil(() =>
-      theme2.shadowRoot
-        .querySelector('media-controller')
-        .hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME)
+      theme2.shadowRoot!.querySelector('media-controller')!.hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME)
     );
 
     assert(
-      theme2.shadowRoot
-        .querySelector('media-controller')
-        .hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME),
+      theme2.shadowRoot!.querySelector('media-controller')!.hasAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME),
       'should have a mediacurrenttime attribute on mediaSetCallback'
     );
   });
@@ -115,7 +107,12 @@ describe('<media-theme>', () => {
       <media-theme template="mytheme" has-text="yes" text="Hello"></media-theme>
     `);
 
-    const h1 = theme1.shadowRoot.querySelector('h1');
+    assert.exists(theme1.shadowRoot);
+
+    const h1 = theme1!.shadowRoot!.querySelector('h1');
+
+    assert.exists(h1);
+
     assert.equal(h1.textContent, 'Hello');
 
     theme1.setAttribute('has-text', 'true');
@@ -142,22 +139,23 @@ describe('<media-theme>', () => {
       </template>
     `);
 
-    const theme = await fixture(`
+    const theme = await fixture<MediaThemeElement>(`
       <media-theme template="decoupled-controller">
         <video slot="media" muted src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/low.mp4"></video>
       </media-theme>
     `);
+
     const mediaController = theme.mediaController;
-    const playButton = theme.shadowRoot.querySelector('media-play-button');
+    const playButton = theme!.shadowRoot!.querySelector('media-play-button');
 
     // Also includes the media-gesture-receiver by default
     assert.equal(mediaController.mediaStateReceivers.length, 3);
     assert(mediaController.mediaStateReceivers.includes(mediaController), 'registers itself');
-    assert(mediaController.mediaStateReceivers.includes(playButton), 'registers play button');
+    assert(mediaController.mediaStateReceivers.includes(playButton as any), 'registers play button');
 
-    playButton.remove();
+    playButton!.remove();
 
     assert.equal(mediaController.mediaStateReceivers.length, 2);
-    assert(!mediaController.mediaStateReceivers.includes(playButton), 'unregisters play button');
+    assert(!mediaController.mediaStateReceivers.includes(playButton as any), 'unregisters play button');
   });
 });

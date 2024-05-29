@@ -90,8 +90,8 @@ class MediaController extends MediaContainer {
     );
   }
 
-  mediaStateReceivers = [];
-  associatedElementSubscriptions = new Map();
+  mediaStateReceivers: HTMLElement[] = [];
+  associatedElementSubscriptions: Map<HTMLElement, () => void> = new Map();
 
   #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
   #fullscreenElement: HTMLElement;
@@ -141,8 +141,8 @@ class MediaController extends MediaContainer {
           : undefined,
         defaultStreamType:
           /** @type {import('./media-store/state-mediator.js').StreamTypeValue} */ this.getAttribute(
-            Attributes.DEFAULT_STREAM_TYPE
-          ) ?? undefined,
+          Attributes.DEFAULT_STREAM_TYPE
+        ) ?? undefined,
         liveEdgeOffset: this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)
           ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
           : undefined,
