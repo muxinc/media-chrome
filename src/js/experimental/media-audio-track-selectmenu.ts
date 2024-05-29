@@ -13,7 +13,7 @@ import { globalThis, document } from "../utils/server-safe-globals.js";
  * @csspart option - A part that targets each option of the listbox.
  */
 class MediaAudioTrackSelectMenu extends MediaChromeSelectMenu {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED,

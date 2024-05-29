@@ -14,7 +14,7 @@ import { MediaUIAttributes, MediaUIEvents } from "../constants.js";
  * @attr {string} mediaaudiotracklist - (read-only) Set to the audio track list.
  */
 class MediaAudioTrackListbox extends MediaChromeListbox {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST,

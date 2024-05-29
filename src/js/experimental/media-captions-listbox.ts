@@ -29,7 +29,7 @@ slotTemplate.innerHTML = /*html*/ `
  * @attr {boolean} mediasubtitlesshowing - (read-only) A list of the showing subtitles and captions.
  */
 class MediaCaptionsListbox extends MediaChromeListbox {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       "aria-multiselectable",
@@ -38,13 +38,13 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     ];
   }
 
-  #prevState;
+  #prevState: string | null = null;
 
   constructor() {
     super({ slotTemplate });
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -58,7 +58,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     ) {
       this.value = newValue;
     } else if (attrName === "aria-multiselectable") {
-      // diallow aria-multiselectable
+      // disallow aria-multiselectable
       this.removeAttribute("aria-multiselectable");
       console.warn(
         "Captions List doesn't currently support multiple selections. You can enable multiple items via the media.textTracks API."
@@ -66,12 +66,12 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener("change", this.#onChange);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener("change", this.#onChange);
   }
@@ -80,11 +80,11 @@ class MediaCaptionsListbox extends MediaChromeListbox {
    * @type {Array<object>} An array of TextTrack-like objects.
    * Objects must have the properties: kind, language, and label.
    */
-  get mediaSubtitlesList() {
+  get mediaSubtitlesList(): Array<{ kind?: string; language: string; label: string }> {
     return getSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST);
   }
 
-  set mediaSubtitlesList(list) {
+  set mediaSubtitlesList(list: Array<{ kind?: string; language: string; label: string }>) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_LIST, list);
   }
 
@@ -92,18 +92,18 @@ class MediaCaptionsListbox extends MediaChromeListbox {
    * @type {Array<object>} An array of TextTrack-like objects.
    * Objects must have the properties: kind, language, and label.
    */
-  get mediaSubtitlesShowing() {
+  get mediaSubtitlesShowing(): Array<{ kind?: string; language: string; label: string }> {
     return getSubtitlesListAttr(
       this,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
     );
   }
 
-  set mediaSubtitlesShowing(list) {
+  set mediaSubtitlesShowing(list: Array<{ kind?: string; language: string; label: string }>) {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
   }
 
-  #render() {
+  #render(): void {
     if (this.#prevState === JSON.stringify(this.mediaSubtitlesList)) return;
     this.#prevState = JSON.stringify(this.mediaSubtitlesList);
 
@@ -137,7 +137,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     }
   }
 
-  #onChange() {
+  #onChange = (): void => {
     const showingSubs = this.mediaSubtitlesShowing;
     const showingSubsStr = this.getAttribute(
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
@@ -171,26 +171,26 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       }
     );
     this.dispatchEvent(event);
-  }
+  };
 }
 
 /**
- * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {HTMLElement} el
  * @param {string} attrName
  * @returns {Array<Object>} An array of TextTrack-like objects.
  */
-const getSubtitlesListAttr = (el, attrName) => {
+const getSubtitlesListAttr = (el: HTMLElement, attrName: string): Array<{ kind?: string; language: string; label: string }> => {
   const attrVal = el.getAttribute(attrName);
   return attrVal ? parseTextTracksStr(attrVal) : [];
 };
 
 /**
  *
- * @param {any} el Should be HTMLElement but issues with globalThis shim
+ * @param {HTMLElement} el
  * @param {string} attrName
  * @param {Array<Object>} list An array of TextTrack-like objects
  */
-const setSubtitlesListAttr = (el, attrName, list) => {
+const setSubtitlesListAttr = (el: HTMLElement, attrName: string, list: Array<{ kind?: string; language: string; label: string }>): void => {
   // null, undefined, and empty arrays are treated as "no value" here
   if (!list?.length) {
     el.removeAttribute(attrName);
