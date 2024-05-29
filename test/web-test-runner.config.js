@@ -5,7 +5,6 @@ import process from 'node:process';
 const config = {
   /** Test files to run */
   files: 'test/@(unit|integration)/**/*.@(test|spec).(ts|js)',
-  // files: 'test/unit/media-play-button.spec.ts',
 
   /** Resolve bare module imports */
   nodeResolve: true,
