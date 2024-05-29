@@ -9,7 +9,7 @@ const checkIcon = /*html*/ `
   <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
 </svg>`;
 
-export function createOption(text: string, value: string, selected: boolean) {
+export function createOption(text: string, value: string, selected: boolean): HTMLElement {
   const option = document.createElement("media-chrome-option");
   option.part.add("option");
   option.value = value;
@@ -22,7 +22,7 @@ export function createOption(text: string, value: string, selected: boolean) {
   return option;
 }
 
-export function createIndicator(el: HTMLElement, name: string) {
+export function createIndicator(el: HTMLElement, name: string): Node {
   let customIndicator = el.querySelector(`:scope > [slot="${name}"]`);
 
   // Chaining slots
@@ -164,7 +164,7 @@ class MediaChromeListbox extends CustomElement {
     return ["disabled", "style", MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
-  static formatOptionText(text: string) {
+  static formatOptionText(text: string): string {
     return text;
   }
 
@@ -197,7 +197,6 @@ class MediaChromeListbox extends CustomElement {
     ) as HTMLSlotElement;
 
     this.container.addEventListener("slotchange", (event: Event) => {
-      // @ts-ignore
       for (const node of event.target.assignedNodes({ flatten: true })) {
         // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
         if (node.nodeType === 3 && node.textContent.trim() === "") {
@@ -208,7 +207,6 @@ class MediaChromeListbox extends CustomElement {
   }
 
   formatOptionText(text: string, data?: any): string {
-    // @ts-ignore
     return this.constructor.formatOptionText(text, data);
   }
 
@@ -331,7 +329,6 @@ class MediaChromeListbox extends CustomElement {
         this.#mediaController = null;
       }
       if (newValue && this.isConnected) {
-        // @ts-ignore
         this.#mediaController = this.getRootNode()?.getElementById(newValue);
         this.#mediaController?.associateElement?.(this);
       }
@@ -372,7 +369,6 @@ class MediaChromeListbox extends CustomElement {
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
-      // @ts-ignore
       this.#mediaController = (this.getRootNode() as Document)?.getElementById(
         mediaControllerId
       );
@@ -519,7 +515,7 @@ class MediaChromeListbox extends CustomElement {
       .slice(0, activeIndex - (repeatedKey ? 1 : 0))
       .filter((el) => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
 
-    let afterRepeated = [];
+ let afterRepeated = [];
     let beforeRepeated = [];
 
     if (repeatedKey) {

@@ -20,7 +20,7 @@ slotTemplate.innerHTML = /*html*/ `
  * @cssproperty [--media-audio-track-button-display = inline-flex] - `display` property of button.
  */
 class MediaAudioTrackButton extends MediaChromeButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED,

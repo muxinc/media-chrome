@@ -1,7 +1,7 @@
 import { CustomElement } from "../utils/CustomElement.js";
 import { document, globalThis } from "../utils/server-safe-globals.js";
 
-const template = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement("template");
 template.innerHTML = /*html*/ `
 <style>
   :host {
@@ -46,7 +46,7 @@ export const Attributes = {
   VALUE: "value",
   SELECTED: "selected",
   DISABLED: "disabled",
-};
+} as const;
 
 /**
  * @slot - Default slotted elements.
@@ -63,13 +63,13 @@ export const Attributes = {
  * @cssproperty --media-option-focus-shadow - `box-shadow` of the :focus-visible state
  */
 class MediaChromeOption extends CustomElement {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [Attributes.DISABLED, Attributes.SELECTED, Attributes.VALUE];
   }
 
   /** @see https://html.spec.whatwg.org/multipage/form-elements.html#concept-option-dirtiness */
-  #dirty = false;
-  #ownerElement;
+  #dirty: boolean = false;
+  #ownerElement: HTMLElement | null;
 
   constructor() {
     super();
@@ -81,7 +81,7 @@ class MediaChromeOption extends CustomElement {
     }
   }
 
-  get value() {
+  get value(): string {
     return this.getAttribute(Attributes.VALUE) ?? this.text;
   }
 
