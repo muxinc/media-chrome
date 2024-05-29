@@ -3,7 +3,7 @@
 import { CustomElement } from "../utils/CustomElement.js";
 import { document, globalThis } from "../utils/server-safe-globals.js";
 
-const template = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement("template");
 
 template.innerHTML = `
   <style>

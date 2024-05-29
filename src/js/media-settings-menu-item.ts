@@ -1,7 +1,7 @@
-import { globalThis, document } from "./utils/server-safe-globals.js";
 import { MediaChromeMenuItem } from "./media-chrome-menu-item.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
-const template = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement("template");
 template.innerHTML =
   MediaChromeMenuItem.template.innerHTML +
   /*html*/ `

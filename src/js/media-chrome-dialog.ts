@@ -6,7 +6,7 @@ import {
 import type { InvokeEvent } from "./utils/events.js";
 import { document, globalThis } from "./utils/server-safe-globals.js";
 
-const template = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement("template");
 template.innerHTML = /*html*/ `
   <style>
     :host {
