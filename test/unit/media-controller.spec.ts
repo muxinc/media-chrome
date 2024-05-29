@@ -12,7 +12,7 @@ const {
 } = constants;
 const isSafari = /.*Version\/.*Safari\/.*/.test(navigator.userAgent);
 
-describe.only('<media-controller>', () => {
+describe('<media-controller>', () => {
   it('associates itself to observe for state receivers', async () => {
     const mediaController = await fixture<MediaController>(`
       <media-controller></media-controller>
