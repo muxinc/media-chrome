@@ -70,7 +70,7 @@ export function createIndicator(el: HTMLElement, name: string) {
   return "";
 }
 
-const template = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement("template");
 template.innerHTML = /*html*/ `
   <style>
     :host {

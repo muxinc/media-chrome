@@ -7,10 +7,10 @@
 </media-theme-demuxed-2022>
 */
 
-import { globalThis, document } from "../utils/server-safe-globals.js";
 import { MediaThemeElement } from "../media-theme-element.js";
+import { document, globalThis } from "../utils/server-safe-globals.js";
 
-const template = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement("template");
 template.innerHTML = /*html*/ `
 <style>
   :host {
@@ -305,18 +305,17 @@ template.innerHTML = /*html*/ `
 `;
 
 class MediaThemeDemuxed extends MediaThemeElement {
-  static template = template;
-  static observedAttributes = [
+  static template: HTMLTemplateElement = template;
+  static observedAttributes: string[] = [
     ...MediaThemeElement.observedAttributes,
     "mediastreamtype",
   ];
 
-  attributeChangedCallback(name, _oldValue, newValue) {
-    super.attributeChangedCallback(name, _oldValue, newValue);
+  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+    super.attributeChangedCallback(name, oldValue, newValue);
 
     if (name === "mediastreamtype" && newValue === "live") {
-      /** @type {HTMLMediaElement} */
-      const media = this.querySelector('[slot="media"]');
+      const media: HTMLMediaElement = this.querySelector('[slot="media"]');
       media.muted = true;
       media.play();
     }

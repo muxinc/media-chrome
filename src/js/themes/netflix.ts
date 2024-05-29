@@ -7,10 +7,10 @@
 </media-theme-netflix>
 */
 
-import { globalThis, document } from "../utils/server-safe-globals.js";
 import { MediaThemeElement } from "../media-theme-element.js";
+import { document, globalThis } from "../utils/server-safe-globals.js";
 
-const template = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement("template");
 template.innerHTML = /*html*/ `
 <style>
   media-controller {
@@ -127,7 +127,7 @@ template.innerHTML = /*html*/ `
 `;
 
 class MediaThemeNetflix extends MediaThemeElement {
-  static template = template;
+  static template: HTMLTemplateElement = template;
 }
 
 if (!globalThis.customElements.get("media-theme-netflix")) {

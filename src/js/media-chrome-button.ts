@@ -4,7 +4,7 @@ import { CustomElement } from "./utils/CustomElement.js";
 import { getOrInsertCSSRule } from "./utils/element-utils.js";
 import { document, globalThis } from "./utils/server-safe-globals.js";
 
-const template = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement("template");
 
 template.innerHTML = /*html*/ `
 <style>
@@ -116,7 +116,7 @@ class MediaChromeButton extends CustomElement {
       this.attachShadow({ mode: "open" });
 
       const buttonHTML = template.content.cloneNode(true);
-      this.nativeEl = buttonHTML;
+      this.nativeEl = buttonHTML as HTMLElement;
 
       // Slots
       let slotTemplate = options.slotTemplate;
@@ -238,7 +238,7 @@ class MediaChromeButton extends CustomElement {
    * @abstract
    * @argument {Event} e
    */
-  handleClick(e: Event): void {} // eslint-disable-line
+  handleClick(e: Event): void { } // eslint-disable-line
 }
 
 if (!globalThis.customElements.get("media-chrome-button")) {
