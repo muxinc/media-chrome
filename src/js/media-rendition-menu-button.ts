@@ -1,18 +1,18 @@
 import { MediaUIAttributes } from "./constants.js";
-import { MediaChromeMenuButton } from "./media-chrome-menu-button.js";
-import { globalThis, document } from "./utils/server-safe-globals.js";
 import { nouns } from "./labels/labels.js";
+import { MediaChromeMenuButton } from "./media-chrome-menu-button.js";
 import {
+  getMediaController,
   getStringAttr,
   setStringAttr,
-  getMediaController,
 } from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
 const renditionIcon = /*html*/ `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M13.5 2.5h2v6h-2v-2h-11v-2h11v-2Zm4 2h4v2h-4v-2Zm-12 4h2v6h-2v-2h-3v-2h3v-2Zm4 2h12v2h-12v-2Zm1 4h2v6h-2v-2h-8v-2h8v-2Zm4 2h7v2h-7v-2Z" />
 </svg>`;
 
-const slotTemplate = document.createElement("template");
+const slotTemplate: HTMLTemplateElement = document.createElement("template");
 slotTemplate.innerHTML = /*html*/ `
   <slot name="icon">${renditionIcon}</slot>
 `;
@@ -36,29 +36,27 @@ class MediaRenditionMenuButton extends MediaChromeMenuButton {
     super({ slotTemplate });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.setAttribute("aria-label", nouns.QUALITY());
   }
 
   /**
    * Returns the element with the id specified by the `invoketarget` attribute.
-   * @return {HTMLElement | null}
    */
-  get invokeTargetElement() {
+  get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
     return getMediaController(this).querySelector("media-rendition-menu");
   }
 
   /**
    * Get selected rendition id.
-   * @return {string}
    */
-  get mediaRenditionSelected() {
+  get mediaRenditionSelected(): string {
     return getStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED);
   }
 
-  set mediaRenditionSelected(id) {
+  set mediaRenditionSelected(id: string) {
     setStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
   }
 }

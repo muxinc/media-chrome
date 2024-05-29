@@ -2,6 +2,16 @@ import { TextTrackKinds } from "../constants.js";
 
 export type TextTrackLike = {
   /**
+   * The id of the track.
+   */
+  id?: string;
+
+  /**
+   * Whether the track is enabled.
+   */
+  enabled?: boolean;
+
+  /**
    * A required kind for the track.
    */
   kind: TextTrackKinds;

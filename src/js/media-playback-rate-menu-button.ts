@@ -1,13 +1,13 @@
-import { globalThis, document } from "./utils/server-safe-globals.js";
 import { MediaUIAttributes } from "./constants.js";
 import { nouns } from "./labels/labels.js";
 import { MediaChromeMenuButton } from "./media-chrome-menu-button.js";
 import { AttributeTokenList } from "./utils/attribute-token-list.js";
 import {
+  getMediaController,
   getNumericAttr,
   setNumericAttr,
-  getMediaController,
 } from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
 export const Attributes = {
   RATES: "rates",
@@ -16,7 +16,7 @@ export const Attributes = {
 export const DEFAULT_RATES = [1, 1.2, 1.5, 1.7, 2];
 export const DEFAULT_RATE = 1;
 
-const slotTemplate = document.createElement("template");
+const slotTemplate: HTMLTemplateElement = document.createElement("template");
 slotTemplate.innerHTML = /*html*/ `
   <style>
     :host {
@@ -34,7 +34,7 @@ slotTemplate.innerHTML = /*html*/ `
  * @cssproperty [--media-playback-rate-menu-button-display = inline-flex] - `display` property of button.
  */
 class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
@@ -46,13 +46,15 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
     defaultValue: DEFAULT_RATES,
   });
 
+  container: HTMLSlotElement;
+
   constructor(options = {}) {
     super({ slotTemplate, ...options });
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === Attributes.RATES) {
@@ -70,22 +72,21 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
 
   /**
    * Returns the element with the id specified by the `invoketarget` attribute.
-   * @return {HTMLElement | null}
    */
-  get invokeTargetElement() {
+  get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
     return getMediaController(this).querySelector("media-playback-rate-menu");
   }
 
   /**
-   * @type { AttributeTokenList | Array<number> | undefined} Will return a DOMTokenList.
+   * Will return a DOMTokenList.
    * Setting a value will accept an array of numbers.
    */
-  get rates() {
+  get rates(): AttributeTokenList | number[] | undefined {
     return this.#rates;
   }
 
-  set rates(value) {
+  set rates(value: AttributeTokenList | number[] | undefined) {
     if (!value) {
       this.#rates.value = "";
     } else if (Array.isArray(value)) {
@@ -94,9 +95,9 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   }
 
   /**
-   * @type {number} The current playback rate
+   * The current playback rate
    */
-  get mediaPlaybackRate() {
+  get mediaPlaybackRate(): number {
     return getNumericAttr(
       this,
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
@@ -104,7 +105,7 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
     );
   }
 
-  set mediaPlaybackRate(value) {
+  set mediaPlaybackRate(value: number) {
     setNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, value);
   }
 }

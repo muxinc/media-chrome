@@ -1,8 +1,8 @@
-import { MediaChromeButton } from "./media-chrome-button.js";
-import { globalThis, document } from "./utils/server-safe-globals.js";
-import { MediaUIEvents, MediaUIAttributes } from "./constants.js";
+import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
 import { verbs } from "./labels/labels.js";
+import { MediaChromeButton } from "./media-chrome-button.js";
 import { getBooleanAttr, setBooleanAttr } from "./utils/element-utils.js";
+import { document, globalThis } from "./utils/server-safe-globals.js";
 
 const playIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="m6 21 15-9L6 3v18Z"/>
@@ -12,7 +12,7 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M6 20h4V4H6v16Zm8-16v16h4V4h-4Z"/>
 </svg>`;
 
-const slotTemplate = document.createElement("template");
+const slotTemplate: HTMLTemplateElement = document.createElement("template");
 slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] {
@@ -30,7 +30,7 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const updateAriaLabel = (el) => {
+const updateAriaLabel = (el: any): void => {
   const label = el.mediaPaused ? verbs.PLAY() : verbs.PAUSE();
   el.setAttribute("aria-label", label);
 };
@@ -45,7 +45,7 @@ const updateAriaLabel = (el) => {
  * @cssproperty [--media-play-button-display = inline-flex] - `display` property of button.
  */
 class MediaPlayButton extends MediaChromeButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_PAUSED,
@@ -57,12 +57,12 @@ class MediaPlayButton extends MediaChromeButton {
     super({ slotTemplate, ...options });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     updateAriaLabel(this);
     super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === MediaUIAttributes.MEDIA_PAUSED) {
       updateAriaLabel(this);
     }
@@ -70,17 +70,17 @@ class MediaPlayButton extends MediaChromeButton {
   }
 
   /**
-   * @type {boolean} Is the media paused
+   * Is the media paused
    */
-  get mediaPaused() {
+  get mediaPaused(): boolean {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED);
   }
 
-  set mediaPaused(value) {
+  set mediaPaused(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, value);
   }
 
-  handleClick() {
+  handleClick(): void {
     const eventName = this.mediaPaused
       ? MediaUIEvents.MEDIA_PLAY_REQUEST
       : MediaUIEvents.MEDIA_PAUSE_REQUEST;

@@ -35,7 +35,7 @@ template.innerHTML = /*html*/ `
        * However, on keyboard interactions, the focus outline is shown,
        * which is particularly noticeable when going fullscreen via hotkeys.
        */ ""
-    }
+  }
     :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) ::slotted([slot=media]) {
       outline: none;
     }
@@ -69,7 +69,7 @@ template.innerHTML = /*html*/ `
       /*
        * when in audio mode, hide the slotted media element by default
        */ ""
-    }
+  }
     :host([${Attributes.AUDIO}]) slot[name=media] {
       display: var(--media-slot-display, none);
     }
@@ -78,7 +78,7 @@ template.innerHTML = /*html*/ `
       /*
        * when in audio mode, hide the gesture-layer which causes media-controller to be taller than the control bar
        */ ""
-    }
+  }
     :host([${Attributes.AUDIO}]) [part~=layer][part~=gesture-layer] {
       height: 0;
       display: block;
@@ -88,13 +88,11 @@ template.innerHTML = /*html*/ `
       /*
        * if gestures are disabled, don't accept pointer-events
        */ ""
-    }
-    :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) ::slotted([slot=gestures-chrome]),
-    :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) media-gesture-receiver[slot=gestures-chrome] {
+  }
+    :host(:not([${Attributes.AUDIO}])[${Attributes.GESTURES_DISABLED
+  }]) ::slotted([slot=gestures-chrome]),
+    :host(:not([${Attributes.AUDIO}])[${Attributes.GESTURES_DISABLED
+  }]) media-gesture-receiver[slot=gestures-chrome] {
       display: none;
     }
 
@@ -103,7 +101,7 @@ template.innerHTML = /*html*/ `
        * any slotted element that isn't a poster or media slot should be pointer-events auto
        * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
        */ ""
-    }
+  }
     ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([hidden])) {
       pointer-events: auto;
     }
@@ -113,12 +111,10 @@ template.innerHTML = /*html*/ `
       justify-content: center;
     }
 
-    :host(:not([${
-      Attributes.AUDIO
-    }])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
-    :host(:not([${
-      Attributes.AUDIO
-    }])) media-gesture-receiver[slot=gestures-chrome] {
+    :host(:not([${Attributes.AUDIO
+  }])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
+    :host(:not([${Attributes.AUDIO
+  }])) media-gesture-receiver[slot=gestures-chrome] {
       align-self: stretch;
       flex-grow: 1;
     }
@@ -150,34 +146,27 @@ template.innerHTML = /*html*/ `
     }
 
     ${/* Only add these if auto hide is not disabled */ ""}
-    ::slotted(:not([slot=media]):not([slot=poster]):not([${
-      Attributes.NO_AUTOHIDE
-    }]):not([hidden])) {
+    ::slotted(:not([slot=media]):not([slot=poster]):not([${Attributes.NO_AUTOHIDE
+  }]):not([hidden])) {
       opacity: 1;
       transition: opacity 0.25s;
     }
 
     ${
       /* Hide controls when inactive, not paused, not audio and auto hide not disabled */ ""
-    }
-    :host([${Attributes.USER_INACTIVE}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${
-  MediaUIAttributes.MEDIA_IS_CASTING
-}]):not([${
-  Attributes.AUDIO
-}])) ::slotted(:not([slot=media]):not([slot=poster]):not([${
-  Attributes.NO_AUTOHIDE
-}])) {
+  }
+    :host([${Attributes.USER_INACTIVE}]:not([${MediaUIAttributes.MEDIA_PAUSED
+  }]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${MediaUIAttributes.MEDIA_IS_CASTING
+  }]):not([${Attributes.AUDIO
+  }])) ::slotted(:not([slot=media]):not([slot=poster]):not([${Attributes.NO_AUTOHIDE
+  }])) {
       opacity: 0;
       transition: opacity 1s;
     }
 
-    :host([${Attributes.USER_INACTIVE}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
-  Attributes.AUDIO
-}])) ::slotted([slot=media]) {
+    :host([${Attributes.USER_INACTIVE}]:not([${MediaUIAttributes.MEDIA_PAUSED
+  }]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${Attributes.AUDIO
+  }])) ::slotted([slot=media]) {
       cursor: none;
     }
 
@@ -187,10 +176,9 @@ template.innerHTML = /*html*/ `
 
     ${
       /* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ""
-    }
-    :host(:not([${Attributes.AUDIO}])[${
-  MediaUIAttributes.MEDIA_HAS_PLAYED
-}]) slot[name=poster] {
+  }
+    :host(:not([${Attributes.AUDIO}])[${MediaUIAttributes.MEDIA_HAS_PLAYED
+  }]) slot[name=poster] {
       display: none;
     }
 
@@ -471,7 +459,7 @@ class MediaContainer extends CustomElement {
     this.mediaSetCallback(media);
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     const isAudioChrome = this.getAttribute(Attributes.AUDIO) != null;
     const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
     this.setAttribute("role", "region");
@@ -492,7 +480,7 @@ class MediaContainer extends CustomElement {
     globalThis.window?.addEventListener("mouseup", this);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     // When disconnected from the DOM, remove root node and media event listeners
     // to prevent memory leaks and unneeded invisble UI updates.
     if (this.media) {
@@ -506,7 +494,7 @@ class MediaContainer extends CustomElement {
    * @abstract
    * @param {HTMLMediaElement} media
    */
-  mediaSetCallback(media: HTMLMediaElement) {} // eslint-disable-line
+  mediaSetCallback(media: HTMLMediaElement) { } // eslint-disable-line
 
   /**
    * @param {HTMLMediaElement} media

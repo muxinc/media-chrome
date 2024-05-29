@@ -1,11 +1,10 @@
-/** @implements {Pick<DOMTokenList, 'length' | 'value' | 'toString' | 'item' | 'add' | 'remove' | 'contains' | 'toggle' | 'replace'>} */
-export class AttributeTokenList {
-  #el;
+export class AttributeTokenList implements Pick<DOMTokenList, 'length' | 'value' | 'toString' | 'item' | 'add' | 'remove' | 'contains' | 'toggle' | 'replace'> {
+  #el: HTMLElement;
   #attr;
-  #defaultSet;
-  #tokenSet = new Set();
+  #defaultSet: Set<string>;
+  #tokenSet: Set<string> = new Set<string>();
 
-  constructor(el, attr, { defaultValue } = { defaultValue: undefined }) {
+  constructor(el: HTMLElement, attr, { defaultValue } = { defaultValue: undefined }) {
     this.#el = el;
     this.#attr = attr;
     this.#defaultSet = new Set(defaultValue);
@@ -15,41 +14,41 @@ export class AttributeTokenList {
     return this.#tokens.values();
   }
 
-  get #tokens() {
+  get #tokens(): Set<string> {
     return this.#tokenSet.size ? this.#tokenSet : this.#defaultSet;
   }
 
-  get length() {
+  get length(): number {
     return this.#tokens.size;
   }
 
-  get value() {
+  get value(): string {
     return [...this.#tokens].join(" ") ?? "";
   }
 
-  set value(val) {
+  set value(val: string) {
     if (val === this.value) return;
     this.#tokenSet = new Set();
     this.add(...(val?.split(" ") ?? []));
   }
 
-  toString() {
+  toString(): string {
     return this.value;
   }
 
-  item(index) {
+  item(index): string {
     return [...this.#tokens][index];
   }
 
-  values() {
+  values(): Iterable<string> {
     return this.#tokens.values();
   }
 
-  forEach(callback) {
-    this.#tokens.forEach(callback);
+  forEach(callback: (value: string, key: string, parent: Set<string>) => void, thisArg?: any) {
+    this.#tokens.forEach(callback, thisArg);
   }
 
-  add(...tokens) {
+  add(...tokens: string[]): void {
     tokens.forEach((t) => this.#tokenSet.add(t));
     // if the attribute was removed don't try to add it again.
     if (this.value === "" && !this.#el?.hasAttribute(`${this.#attr}`)) {
@@ -58,16 +57,16 @@ export class AttributeTokenList {
     this.#el?.setAttribute(`${this.#attr}`, `${this.value}`);
   }
 
-  remove(...tokens) {
+  remove(...tokens: string[]): void {
     tokens.forEach((t) => this.#tokenSet.delete(t));
     this.#el?.setAttribute(`${this.#attr}`, `${this.value}`);
   }
 
-  contains(token) {
+  contains(token: string): boolean {
     return this.#tokens.has(token);
   }
 
-  toggle(token, force) {
+  toggle(token: string, force: boolean): boolean {
     if (typeof force !== "undefined") {
       if (force) {
         this.add(token);
@@ -87,7 +86,7 @@ export class AttributeTokenList {
     return true;
   }
 
-  replace(oldToken, newToken) {
+  replace(oldToken: string, newToken: string): boolean {
     this.remove(oldToken);
     this.add(newToken);
     return oldToken === newToken;

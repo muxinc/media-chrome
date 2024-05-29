@@ -16,15 +16,13 @@ const exitIcon = `<svg aria-hidden="true" viewBox="0 0 24 24"><g><path class="ca
 const slotTemplate: HTMLTemplateElement = document.createElement("template");
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${
-    MediaUIAttributes.MEDIA_IS_CASTING
+  :host([${MediaUIAttributes.MEDIA_IS_CASTING
   }]) slot:not([name=exit]):not([name=icon]) {
     display: none !important;
   }
 
   ${/* Double negative, but safer if display doesn't equal 'block' */ ""}
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_CASTING
+  :host(:not([${MediaUIAttributes.MEDIA_IS_CASTING
   }])) slot:not([name=enter]):not([name=icon]) {
     display: none !important;
   }
@@ -64,7 +62,7 @@ class MediaCastButton extends MediaChromeButton {
     super({ slotTemplate, ...options });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     updateAriaLabel(this);
   }

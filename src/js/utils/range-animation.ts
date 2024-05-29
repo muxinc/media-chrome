@@ -1,18 +1,25 @@
+type Range = { valueAsNumber: number }
+
 /**
  * Smoothly animate a range input accounting for hiccups and diverging playback.
  */
 export class RangeAnimation {
-  #range;
-  #startTime;
-  #previousTime;
-  #deltaTime;
-  #frameCount;
-  #updateTimestamp;
-  #updateStartValue;
-  #lastRangeIncrease;
+  fps: number;
+  callback: (value: number) => void;
+  duration: number;
+  playbackRate: number;
+
+  #range: Range;
+  #startTime: number;
+  #previousTime: number;
+  #deltaTime: number;
+  #frameCount: number;
+  #updateTimestamp: number;
+  #updateStartValue: number;
+  #lastRangeIncrease: number;
   #id = 0;
 
-  constructor(range, callback, fps) {
+  constructor(range: Range, callback: (value: number) => void, fps: number) {
     this.#range = range;
     this.callback = callback;
     this.fps = fps;

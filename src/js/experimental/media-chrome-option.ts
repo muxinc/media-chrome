@@ -1,5 +1,6 @@
 import { CustomElement } from "../utils/CustomElement.js";
 import { document, globalThis } from "../utils/server-safe-globals.js";
+import { MediaChromeListbox } from "./media-chrome-listbox.js";
 
 const template: HTMLTemplateElement = document.createElement("template");
 template.innerHTML = /*html*/ `
@@ -69,7 +70,7 @@ class MediaChromeOption extends CustomElement {
 
   /** @see https://html.spec.whatwg.org/multipage/form-elements.html#concept-option-dirtiness */
   #dirty: boolean = false;
-  #ownerElement: HTMLElement | null;
+  #ownerElement: MediaChromeListbox | null;
 
   constructor() {
     super();
@@ -178,7 +179,7 @@ class MediaChromeOption extends CustomElement {
     selectedOption?.setAttribute("aria-selected", "true");
   }
 
-  handleClick(): void {}
+  handleClick(): void { }
 }
 
 function closestOptionsContainer(childNode, parentNode) {

@@ -68,7 +68,7 @@ class MediaCaptionsButton extends MediaChromeButton {
     this._captionsReady = false;
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.setAttribute("role", "switch");
     this.setAttribute("aria-label", nouns.CLOSED_CAPTIONS());

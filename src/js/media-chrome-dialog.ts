@@ -124,7 +124,7 @@ class MediaChromeDialog extends CustomElement {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     if (!this.role) {
       this.role = "dialog";
     }

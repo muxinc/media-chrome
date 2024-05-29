@@ -7,7 +7,7 @@ export const Attributes = {
   SRC: "src",
 };
 
-const template = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement("template");
 
 template.innerHTML = /*html*/ `
   <style>
@@ -33,10 +33,10 @@ template.innerHTML = /*html*/ `
   <img part="poster img" aria-hidden="true" id="image"/>
 `;
 
-const unsetBackgroundImage = (el) => {
+const unsetBackgroundImage = (el: HTMLElement): void => {
   el.style.removeProperty("background-image");
 };
-const setBackgroundImage = (el, image) => {
+const setBackgroundImage = (el: HTMLElement, image: string): void => {
   el.style["background-image"] = `url('${image}')`;
 };
 
@@ -51,9 +51,11 @@ const setBackgroundImage = (el, image) => {
  * @cssproperty --media-object-position - `object-position` of poster image.
  */
 class MediaPosterImage extends CustomElement {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [Attributes.PLACEHOLDER_SRC, Attributes.SRC];
   }
+
+  image: HTMLImageElement
 
   constructor() {
     super();
@@ -67,7 +69,7 @@ class MediaPosterImage extends CustomElement {
     this.image = this.shadowRoot.querySelector("#image");
   }
 
-  attributeChangedCallback(attrName, _oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     if (attrName === Attributes.SRC) {
       if (newValue == null) {
         this.image.removeAttribute(Attributes.SRC);
@@ -86,24 +88,24 @@ class MediaPosterImage extends CustomElement {
   }
 
   /**
-   * @type {string | undefined}
+   * 
    */
-  get placeholderSrc() {
+  get placeholderSrc(): string | undefined {
     return getStringAttr(this, Attributes.PLACEHOLDER_SRC);
   }
 
-  set placeholderSrc(value) {
+  set placeholderSrc(value: string | undefined) {
     setStringAttr(this, Attributes.SRC, value);
   }
 
   /**
-   * @type {string | undefined}
+   * 
    */
-  get src() {
+  get src(): string | undefined {
     return getStringAttr(this, Attributes.SRC);
   }
 
-  set src(value) {
+  set src(value: string | undefined) {
     setStringAttr(this, Attributes.SRC, value);
   }
 }

@@ -1,20 +1,19 @@
-import { globalThis } from "./utils/server-safe-globals.js";
 import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
+import {
+  MediaChromeMenu,
+  createIndicator,
+  createMenuItem,
+} from "./media-chrome-menu.js";
+import type { Rendition } from "./utils/Rendition.js";
 import {
   getMediaController,
   getStringAttr,
   setStringAttr,
 } from "./utils/element-utils.js";
+import { globalThis } from "./utils/server-safe-globals.js";
 import { parseRenditionList } from "./utils/utils.js";
-import {
-  MediaChromeMenu,
-  createMenuItem,
-  createIndicator,
-} from "./media-chrome-menu.js";
 
 /**
- * @extends {MediaChromeMenu}
- *
  * @slot - Default slotted elements.
  * @slot header - An element shown at the top of the menu.
  * @slot checked-indicator - An icon element indicating a checked menu-item.
@@ -23,7 +22,7 @@ import {
  * @attr {string} mediarenditionlist - (read-only) Set to the rendition list.
  */
 class MediaRenditionMenu extends MediaChromeMenu {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_RENDITION_LIST,
@@ -32,10 +31,10 @@ class MediaRenditionMenu extends MediaChromeMenu {
     ];
   }
 
-  #renditionList = [];
+  #renditionList: Rendition[] = [];
   #prevState;
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -52,63 +51,61 @@ class MediaRenditionMenu extends MediaChromeMenu {
     }
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener("change", this.#onChange);
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener("change", this.#onChange);
   }
 
   /**
    * Returns the anchor element when it is a floating menu.
-   * @return {HTMLElement}
    */
-  get anchorElement() {
+  get anchorElement(): HTMLElement {
     if (this.anchor !== "auto") return super.anchorElement;
     return getMediaController(this).querySelector(
       "media-rendition-menu-button"
     );
   }
 
-  get mediaRenditionList() {
+  get mediaRenditionList(): Rendition[] {
     return this.#renditionList;
   }
 
-  set mediaRenditionList(list) {
+  set mediaRenditionList(list: Rendition[]) {
     this.#renditionList = list;
     this.#render();
   }
 
   /**
    * Get selected rendition id.
-   * @return {string}
    */
-  get mediaRenditionSelected() {
+  get mediaRenditionSelected(): string {
     return getStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED);
   }
 
-  set mediaRenditionSelected(id) {
+  set mediaRenditionSelected(id: string) {
     setStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
   }
 
-  #render() {
+  #render(): void {
     if (this.#prevState === JSON.stringify(this.mediaRenditionList)) return;
     this.#prevState = JSON.stringify(this.mediaRenditionList);
 
     const renditionList = this.mediaRenditionList.sort(
-      (a, b) => b.height - a.height
+      (a: any, b: any) => b.height - a.height
     );
 
     this.defaultSlot.textContent = "";
 
-    let isAuto = !this.mediaRenditionSelected;
+    const isAuto = !this.mediaRenditionSelected;
 
     for (const rendition of renditionList) {
       const text = this.formatMenuItemText(
-        `${Math.min(rendition.width, rendition.height)}p`,
+        `${Math.min(rendition.width as number, rendition.height as number)}p`,
         rendition
       );
 
@@ -132,7 +129,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
     this.defaultSlot.append(item);
   }
 
-  #onChange() {
+  #onChange(): void {
     if (this.value == null) return;
 
     const event = new globalThis.CustomEvent(
