@@ -13,7 +13,7 @@ const audioTrackIcon = /*html*/ `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Zm-2 0a8 8 0 1 0-16 0 8 8 0 0 0 16 0Z"/>
 </svg>`;
 
-const slotTemplate = document.createElement("template");
+const slotTemplate: HTMLTemplateElement = document.createElement("template");
 slotTemplate.innerHTML = /*html*/ `
   <slot name="icon">${audioTrackIcon}</slot>
 `;
@@ -25,7 +25,7 @@ slotTemplate.innerHTML = /*html*/ `
  * @cssproperty [--media-audio-track-menu-button-display = inline-flex] - `display` property of button.
  */
 class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED,
@@ -37,29 +37,33 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
     super({ slotTemplate });
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     super.connectedCallback();
     this.setAttribute("aria-label", nouns.AUDIO_TRACKS());
+  }
+
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**
    * Returns the element with the id specified by the `invoketarget` attribute.
    * @return {HTMLElement | null}
    */
-  get invokeTargetElement() {
+  get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
-    return getMediaController(this).querySelector("media-audio-track-menu");
+    return getMediaController(this)?.querySelector("media-audio-track-menu");
   }
 
   /**
    * Get enabled audio track id.
    * @return {string}
    */
-  get mediaAudioTrackEnabled() {
-    return getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED);
+  get mediaAudioTrackEnabled(): string {
+    return getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED) ?? "";
   }
 
-  set mediaAudioTrackEnabled(id) {
+  set mediaAudioTrackEnabled(id: string) {
     setStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED, id);
   }
 }

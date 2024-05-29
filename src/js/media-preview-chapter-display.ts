@@ -9,9 +9,9 @@ import { getStringAttr, setStringAttr } from "./utils/element-utils.js";
  * @cssproperty [--media-preview-chapter-display-display = inline-flex] - `display` property of display.
  */
 class MediaPreviewChapterDisplay extends MediaTextDisplay {
-  #slot;
+  #slot: HTMLSlotElement;
 
-  static get observedAttributes() {
+  static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_PREVIEW_CHAPTER,
@@ -20,10 +20,10 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
 
   constructor() {
     super();
-    this.#slot = this.shadowRoot.querySelector("slot");
+    this.#slot = this.shadowRoot.querySelector("slot") as HTMLSlotElement;
   }
 
-  attributeChangedCallback(attrName, oldValue, newValue) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_PREVIEW_CHAPTER) {
@@ -32,31 +32,3 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
         this.#slot.textContent = newValue;
 
         if (newValue !== "") {
-          this.setAttribute("aria-valuetext", `chapter: ${newValue}`);
-        } else {
-          this.removeAttribute("aria-valuetext");
-        }
-      }
-    }
-  }
-
-  /**
-   * @type {string | undefined} Timeline preview chapter
-   */
-  get mediaPreviewChapter() {
-    return getStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_CHAPTER);
-  }
-
-  set mediaPreviewChapter(value) {
-    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_CHAPTER, value);
-  }
-}
-
-if (!globalThis.customElements.get("media-preview-chapter-display")) {
-  globalThis.customElements.define(
-    "media-preview-chapter-display",
-    MediaPreviewChapterDisplay
-  );
-}
-
-export default MediaPreviewChapterDisplay;
