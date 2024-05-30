@@ -1,9 +1,9 @@
-import { nouns } from "./labels/labels.js";
-import { MediaChromeMenuButton } from "./media-chrome-menu-button.js";
-import { getMediaController } from "./utils/element-utils.js";
-import { document, globalThis } from "./utils/server-safe-globals.js";
+import { nouns } from './labels/labels.js';
+import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
+import { getMediaController } from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
-const slotTemplate: HTMLTemplateElement = document.createElement("template");
+const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <slot name="icon">
     <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -17,7 +17,7 @@ slotTemplate.innerHTML = /*html*/ `
  */
 class MediaSettingsMenuButton extends MediaChromeMenuButton {
   static get observedAttributes(): string[] {
-    return [...super.observedAttributes, "target"];
+    return [...super.observedAttributes, 'target'];
   }
 
   constructor() {
@@ -26,7 +26,7 @@ class MediaSettingsMenuButton extends MediaChromeMenuButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute("aria-label", nouns.SETTINGS());
+    this.setAttribute('aria-label', nouns.SETTINGS());
   }
 
   /**
@@ -35,13 +35,13 @@ class MediaSettingsMenuButton extends MediaChromeMenuButton {
    */
   get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
-    return getMediaController(this).querySelector("media-settings-menu");
+    return getMediaController(this).querySelector('media-settings-menu');
   }
 }
 
-if (!globalThis.customElements.get("media-settings-menu-button")) {
+if (!globalThis.customElements.get('media-settings-menu-button')) {
   globalThis.customElements.define(
-    "media-settings-menu-button",
+    'media-settings-menu-button',
     MediaSettingsMenuButton
   );
 }

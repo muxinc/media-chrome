@@ -1,8 +1,8 @@
-import { MediaTextDisplay } from "./media-text-display.js";
-import { globalThis } from "./utils/server-safe-globals.js";
-import { formatTime } from "./utils/time.js";
-import { MediaUIAttributes } from "./constants.js";
-import { getNumericAttr, setNumericAttr } from "./utils/element-utils.js";
+import { MediaTextDisplay } from './media-text-display.js';
+import { globalThis } from './utils/server-safe-globals.js';
+import { formatTime } from './utils/time.js';
+import { MediaUIAttributes } from './constants.js';
+import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 /**
@@ -20,11 +20,15 @@ class MediaDurationDisplay extends MediaTextDisplay {
 
   constructor() {
     super();
-    this.#slot = this.shadowRoot.querySelector("slot") as HTMLSlotElement;
+    this.#slot = this.shadowRoot.querySelector('slot') as HTMLSlotElement;
     this.#slot.textContent = formatTime(0);
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === MediaUIAttributes.MEDIA_DURATION) {
       this.#slot.textContent = formatTime(+newValue);
     }
@@ -43,9 +47,9 @@ class MediaDurationDisplay extends MediaTextDisplay {
   }
 }
 
-if (!globalThis.customElements.get("media-duration-display")) {
+if (!globalThis.customElements.get('media-duration-display')) {
   globalThis.customElements.define(
-    "media-duration-display",
+    'media-duration-display',
     MediaDurationDisplay
   );
 }

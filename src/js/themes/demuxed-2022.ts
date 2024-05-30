@@ -7,10 +7,10 @@
 </media-theme-demuxed-2022>
 */
 
-import { MediaThemeElement } from "../media-theme-element.js";
-import { document, globalThis } from "../utils/server-safe-globals.js";
+import { MediaThemeElement } from '../media-theme-element.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
 <style>
   :host {
@@ -308,13 +308,17 @@ class MediaThemeDemuxed extends MediaThemeElement {
   static template: HTMLTemplateElement = template;
   static observedAttributes: string[] = [
     ...MediaThemeElement.observedAttributes,
-    "mediastreamtype",
+    'mediastreamtype',
   ];
 
-  attributeChangedCallback(name: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    name: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(name, oldValue, newValue);
 
-    if (name === "mediastreamtype" && newValue === "live") {
+    if (name === 'mediastreamtype' && newValue === 'live') {
       const media: HTMLMediaElement = this.querySelector('[slot="media"]');
       media.muted = true;
       media.play();
@@ -322,9 +326,9 @@ class MediaThemeDemuxed extends MediaThemeElement {
   }
 }
 
-if (!globalThis.customElements.get("media-theme-demuxed-2022")) {
+if (!globalThis.customElements.get('media-theme-demuxed-2022')) {
   globalThis.customElements.define(
-    "media-theme-demuxed-2022",
+    'media-theme-demuxed-2022',
     MediaThemeDemuxed
   );
 }

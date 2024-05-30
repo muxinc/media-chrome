@@ -1,8 +1,8 @@
-import { globalThis, document } from "./utils/server-safe-globals.js";
-import { MediaChromeMenu } from "./media-chrome-menu.js";
-import { getMediaController } from "./utils/element-utils.js";
+import { globalThis, document } from './utils/server-safe-globals.js';
+import { MediaChromeMenu } from './media-chrome-menu.js';
+import { getMediaController } from './utils/element-utils.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 // prettier-ignore
 template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <style>
@@ -46,13 +46,13 @@ class MediaSettingsMenu extends MediaChromeMenu {
    * @return {HTMLElement}
    */
   get anchorElement(): HTMLElement | null {
-    if (this.anchor !== "auto") return super.anchorElement;
-    return getMediaController(this).querySelector("media-settings-menu-button");
+    if (this.anchor !== 'auto') return super.anchorElement;
+    return getMediaController(this).querySelector('media-settings-menu-button');
   }
 }
 
-if (!globalThis.customElements.get("media-settings-menu")) {
-  globalThis.customElements.define("media-settings-menu", MediaSettingsMenu);
+if (!globalThis.customElements.get('media-settings-menu')) {
+  globalThis.customElements.define('media-settings-menu', MediaSettingsMenu);
 }
 
 export { MediaSettingsMenu };

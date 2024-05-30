@@ -7,10 +7,10 @@
 </media-theme-responsive>
 */
 
-import { MediaThemeElement } from "../media-theme-element.js";
-import { document, globalThis } from "../utils/server-safe-globals.js";
+import { MediaThemeElement } from '../media-theme-element.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
 <style>
 
@@ -19,8 +19,8 @@ template.innerHTML = /*html*/ `
       /*
        * Containers can't be sized by their contents, they require a width
        * https://stackoverflow.com/a/73980194/268820
-       */ ""
-  }
+       */ ''
+    }
     container: media-chrome / inline-size;
     width: 100%;
   }
@@ -134,9 +134,9 @@ class MediaThemeResponsive extends MediaThemeElement {
   static template: HTMLTemplateElement = template;
 }
 
-if (!globalThis.customElements.get("media-theme-responsive")) {
+if (!globalThis.customElements.get('media-theme-responsive')) {
   globalThis.customElements.define(
-    "media-theme-responsive",
+    'media-theme-responsive',
     MediaThemeResponsive
   );
 }

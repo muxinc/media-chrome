@@ -1,8 +1,8 @@
-import { MediaUIAttributes } from "./constants.js";
-import { MediaTextDisplay } from "./media-text-display.js";
-import { getNumericAttr, setNumericAttr } from "./utils/element-utils.js";
-import { globalThis } from "./utils/server-safe-globals.js";
-import { formatTime } from "./utils/time.js";
+import { MediaUIAttributes } from './constants.js';
+import { MediaTextDisplay } from './media-text-display.js';
+import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
+import { globalThis } from './utils/server-safe-globals.js';
+import { formatTime } from './utils/time.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
 /**
@@ -19,11 +19,15 @@ class MediaPreviewTimeDisplay extends MediaTextDisplay {
 
   constructor() {
     super();
-    this.#slot = this.shadowRoot.querySelector("slot");
+    this.#slot = this.shadowRoot.querySelector('slot');
     this.#slot.textContent = formatTime(0);
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_PREVIEW_TIME && newValue != null) {
@@ -43,9 +47,9 @@ class MediaPreviewTimeDisplay extends MediaTextDisplay {
   }
 }
 
-if (!globalThis.customElements.get("media-preview-time-display")) {
+if (!globalThis.customElements.get('media-preview-time-display')) {
   globalThis.customElements.define(
-    "media-preview-time-display",
+    'media-preview-time-display',
     MediaPreviewTimeDisplay
   );
 }

@@ -1,5 +1,8 @@
 import { assert } from '@open-wc/testing';
-import { getPointProgressOnLine, isElementVisible } from '../../../src/js/utils/element-utils.js';
+import {
+  getPointProgressOnLine,
+  isElementVisible,
+} from '../../../src/js/utils/element-utils.js';
 
 describe('getPointProgressOnLine', () => {
   it('gets progress of point on line segment', () => {

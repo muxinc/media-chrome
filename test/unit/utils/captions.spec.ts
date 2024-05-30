@@ -1,7 +1,10 @@
 import { expect } from '@open-wc/testing';
 import type { TextTrackKinds } from '../../../src/js/constants.js';
 import type { TextTrackLike } from '../../../src/js/utils/TextTrackLike';
-import { formatTextTrackObj, getTextTracksList } from '../../../src/js/utils/captions';
+import {
+  formatTextTrackObj,
+  getTextTracksList,
+} from '../../../src/js/utils/captions';
 
 describe('module: util/captions', () => {
   const fakeSubsTrackES = Object.freeze({
@@ -55,8 +58,9 @@ describe('module: util/captions', () => {
     it('should only include TextTracks that match the provided predicate', async () => {
       const media: any = { textTracks: fakeTracksList };
 
-      const actual = getTextTracksList(media, (textTrack: TextTrackLike) =>
-        !!textTrack.language?.startsWith('en')
+      const actual = getTextTracksList(
+        media,
+        (textTrack: TextTrackLike) => !!textTrack.language?.startsWith('en')
       );
 
       expect(actual).to.be.an('array').with.lengthOf(2);
@@ -97,7 +101,11 @@ describe('module: util/captions', () => {
 
   describe('formatTextTrackObj()', () => {
     it('should format to a well-defined string representation for label and language', () => {
-      const track = { label: 'Spanish', kind: 'subtitles' as TextTrackKinds, language: 'es' };
+      const track = {
+        label: 'Spanish',
+        kind: 'subtitles' as TextTrackKinds,
+        language: 'es',
+      };
 
       const actual = formatTextTrackObj(track);
       const expected = 'sb:es:Spanish';

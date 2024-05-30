@@ -10,7 +10,7 @@ describe('<media-rendition-selectmenu>', () => {
   let listbox: MediaRenditionListbox;
 
   beforeEach(async () => {
-    mediaController = await fixture(/*html*/`
+    mediaController = await fixture(/*html*/ `
       <media-controller>
         <hls-video
           slot="media"
@@ -27,10 +27,14 @@ describe('<media-rendition-selectmenu>', () => {
   });
 
   it('selectmenu is populated', async function () {
-    await new Promise(resolve => mediaController.media.videoRenditions.addEventListener('addrendition', resolve));
+    await new Promise((resolve) =>
+      mediaController.media.videoRenditions.addEventListener(
+        'addrendition',
+        resolve
+      )
+    );
 
     assert.equal(listbox.options.length, 6);
     assert.equal(listbox.value, 'auto');
   });
-
 });

@@ -1,7 +1,7 @@
-import "../media-playback-rate-button.js";
-import { document, globalThis } from "../utils/server-safe-globals.js";
-import { MediaChromeSelectMenu } from "./media-chrome-selectmenu.js";
-import "./media-playback-rate-listbox.js";
+import '../media-playback-rate-button.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
+import { MediaChromeSelectMenu } from './media-chrome-selectmenu.js';
+import './media-playback-rate-listbox.js';
 
 /**
  * @csspart button - The default button that's in the shadow DOM.
@@ -11,34 +11,34 @@ import "./media-playback-rate-listbox.js";
 class MediaPlaybackRateSelectMenu extends MediaChromeSelectMenu {
   init(): void {
     const playbackRateButton = document.createElement(
-      "media-playback-rate-button"
+      'media-playback-rate-button'
     );
-    playbackRateButton.part.add("button");
+    playbackRateButton.part.add('button');
     playbackRateButton.preventClick = true;
 
     const playbackRateListbox = document.createElement(
-      "media-playback-rate-listbox"
+      'media-playback-rate-listbox'
     );
-    playbackRateListbox.part.add("listbox");
+    playbackRateListbox.part.add('listbox');
     playbackRateListbox.setAttribute(
-      "exportparts",
-      "option, option-selected, indicator"
+      'exportparts',
+      'option, option-selected, indicator'
     );
 
-    const buttonSlot = this.shadowRoot.querySelector("slot[name=button]");
-    const listboxSlot = this.shadowRoot.querySelector("slot[name=listbox]");
+    const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
+    const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
 
-    buttonSlot.textContent = "";
-    listboxSlot.textContent = "";
+    buttonSlot.textContent = '';
+    listboxSlot.textContent = '';
 
     buttonSlot.append(playbackRateButton);
     listboxSlot.append(playbackRateListbox);
   }
 }
 
-if (!globalThis.customElements.get("media-playback-rate-selectmenu")) {
+if (!globalThis.customElements.get('media-playback-rate-selectmenu')) {
   globalThis.customElements.define(
-    "media-playback-rate-selectmenu",
+    'media-playback-rate-selectmenu',
     MediaPlaybackRateSelectMenu
   );
 }

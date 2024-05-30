@@ -1,6 +1,6 @@
-import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
-import { nouns } from "./labels/labels.js";
-import { MediaChromeRange } from "./media-chrome-range.js";
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
+import { nouns } from './labels/labels.js';
+import { MediaChromeRange } from './media-chrome-range.js';
 import {
   getBooleanAttr,
   getNumericAttr,
@@ -8,8 +8,8 @@ import {
   setBooleanAttr,
   setNumericAttr,
   setStringAttr,
-} from "./utils/element-utils.js";
-import { globalThis } from "./utils/server-safe-globals.js";
+} from './utils/element-utils.js';
+import { globalThis } from './utils/server-safe-globals.js';
 
 const DEFAULT_VOLUME = 1;
 
@@ -18,7 +18,8 @@ const toVolume = (el: any): number => {
   return el.mediaVolume;
 };
 
-const formatAsPercentString = ({ value }: { value: number }): string => `${Math.round(value * 100)}%`;
+const formatAsPercentString = ({ value }: { value: number }): string =>
+  `${Math.round(value * 100)}%`;
 
 /**
  * @attr {string} mediavolume - (read-only) Set to the media volume.
@@ -40,7 +41,7 @@ class MediaVolumeRange extends MediaChromeRange {
   constructor() {
     super();
 
-    this.range.addEventListener("input", () => {
+    this.range.addEventListener('input', () => {
       const detail = this.range.value;
       const evt = new globalThis.CustomEvent(
         MediaUIEvents.MEDIA_VOLUME_REQUEST,
@@ -56,10 +57,14 @@ class MediaVolumeRange extends MediaChromeRange {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.range.setAttribute("aria-label", nouns.VOLUME());
+    this.range.setAttribute('aria-label', nouns.VOLUME());
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -68,7 +73,7 @@ class MediaVolumeRange extends MediaChromeRange {
     ) {
       this.range.valueAsNumber = toVolume(this);
       this.range.setAttribute(
-        "aria-valuetext",
+        'aria-valuetext',
         formatAsPercentString(this.range)
       );
       this.updateBar();
@@ -76,7 +81,7 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 
   /**
-   * 
+   *
    */
   get mediaVolume(): number {
     return getNumericAttr(this, MediaUIAttributes.MEDIA_VOLUME, DEFAULT_VOLUME);
@@ -109,8 +114,8 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 }
 
-if (!globalThis.customElements.get("media-volume-range")) {
-  globalThis.customElements.define("media-volume-range", MediaVolumeRange);
+if (!globalThis.customElements.get('media-volume-range')) {
+  globalThis.customElements.define('media-volume-range', MediaVolumeRange);
 }
 
 export default MediaVolumeRange;

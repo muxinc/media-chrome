@@ -1,13 +1,13 @@
-import { MediaUIAttributes, MediaUIEvents } from "../constants.js";
-import { getStringAttr, setStringAttr } from "../utils/element-utils.js";
-import { globalThis } from "../utils/server-safe-globals.js";
-import { parseRenditionList } from "../utils/utils.js";
+import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
+import { getStringAttr, setStringAttr } from '../utils/element-utils.js';
+import { globalThis } from '../utils/server-safe-globals.js';
+import { parseRenditionList } from '../utils/utils.js';
 import {
   MediaChromeListbox,
   createIndicator,
   createOption,
-} from "./media-chrome-listbox.js";
-import "./media-chrome-option.js";
+} from './media-chrome-listbox.js';
+import './media-chrome-option.js';
 
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
@@ -25,14 +25,18 @@ class MediaRenditionListbox extends MediaChromeListbox {
   #renditionList = [];
   #prevState;
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
       attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED &&
       oldValue !== newValue
     ) {
-      this.value = newValue ?? "auto";
+      this.value = newValue ?? 'auto';
     } else if (
       attrName === MediaUIAttributes.MEDIA_RENDITION_LIST &&
       oldValue !== newValue
@@ -44,12 +48,12 @@ class MediaRenditionListbox extends MediaChromeListbox {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.addEventListener("change", this.#onChange);
+    this.addEventListener('change', this.#onChange);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    this.removeEventListener("change", this.#onChange);
+    this.removeEventListener('change', this.#onChange);
   }
 
   get mediaRenditionList() {
@@ -81,8 +85,8 @@ class MediaRenditionListbox extends MediaChromeListbox {
       (a, b) => b.height - a.height
     );
 
-    const container = this.shadowRoot.querySelector("#container");
-    container.textContent = "";
+    const container = this.shadowRoot.querySelector('#container');
+    container.textContent = '';
 
     const isAuto = !this.mediaRenditionSelected;
 
@@ -98,13 +102,13 @@ class MediaRenditionListbox extends MediaChromeListbox {
         `${rendition.id}`,
         rendition.selected && !isAuto
       );
-      option.prepend(createIndicator(this, "select-indicator"));
+      option.prepend(createIndicator(this, 'select-indicator'));
 
       container.append(option);
     }
 
-    const option = createOption(this.formatOptionText("Auto"), "auto", isAuto);
-    option.prepend(createIndicator(this, "select-indicator"));
+    const option = createOption(this.formatOptionText('Auto'), 'auto', isAuto);
+    option.prepend(createIndicator(this, 'select-indicator'));
     container.append(option);
   }
 
@@ -123,9 +127,9 @@ class MediaRenditionListbox extends MediaChromeListbox {
   }
 }
 
-if (!globalThis.customElements.get("media-rendition-listbox")) {
+if (!globalThis.customElements.get('media-rendition-listbox')) {
   globalThis.customElements.define(
-    "media-rendition-listbox",
+    'media-rendition-listbox',
     MediaRenditionListbox
   );
 }

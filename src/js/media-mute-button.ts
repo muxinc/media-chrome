@@ -1,8 +1,8 @@
-import { MediaChromeButton } from "./media-chrome-button.js";
-import { globalThis, document } from "./utils/server-safe-globals.js";
-import { MediaUIEvents, MediaUIAttributes } from "./constants.js";
-import { verbs } from "./labels/labels.js";
-import { getStringAttr, setStringAttr } from "./utils/element-utils.js";
+import { MediaChromeButton } from './media-chrome-button.js';
+import { globalThis, document } from './utils/server-safe-globals.js';
+import { MediaUIEvents, MediaUIAttributes } from './constants.js';
+import { verbs } from './labels/labels.js';
+import { getStringAttr, setStringAttr } from './utils/element-utils.js';
 
 const { MEDIA_VOLUME_LEVEL } = MediaUIAttributes;
 
@@ -18,10 +18,10 @@ const highIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M3 9v6h4l5 5V4L7 9H3Zm13.5 3A4.5 4.5 0 0 0 14 8v8a4.47 4.47 0 0 0 2.5-4ZM14 3.23v2.06a7 7 0 0 1 0 13.42v2.06a9 9 0 0 0 0-17.54Z"/>
 </svg>`;
 
-const slotTemplate = document.createElement("template");
+const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  ${/* Default to High slot/icon. */ ""}
+  ${/* Default to High slot/icon. */ ''}
   :host(:not([${MEDIA_VOLUME_LEVEL}])) slot:not([name=high]):not([name=icon]), 
   :host([${MEDIA_VOLUME_LEVEL}=high]) slot:not([name=high]):not([name=icon]) {
     display: none !important;
@@ -49,9 +49,9 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const updateAriaLabel = (el: MediaMuteButton) => {
-  const muted = el.mediaVolumeLevel === "off";
+  const muted = el.mediaVolumeLevel === 'off';
   const label = muted ? verbs.UNMUTE() : verbs.MUTE();
-  el.setAttribute("aria-label", label);
+  el.setAttribute('aria-label', label);
 };
 
 /**
@@ -79,7 +79,11 @@ class MediaMuteButton extends MediaChromeButton {
     super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === MediaUIAttributes.MEDIA_VOLUME_LEVEL) {
       updateAriaLabel(this);
     }
@@ -99,7 +103,7 @@ class MediaMuteButton extends MediaChromeButton {
 
   handleClick(): void {
     const eventName: string =
-      this.mediaVolumeLevel === "off"
+      this.mediaVolumeLevel === 'off'
         ? MediaUIEvents.MEDIA_UNMUTE_REQUEST
         : MediaUIEvents.MEDIA_MUTE_REQUEST;
     this.dispatchEvent(
@@ -108,8 +112,8 @@ class MediaMuteButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get("media-mute-button")) {
-  globalThis.customElements.define("media-mute-button", MediaMuteButton);
+if (!globalThis.customElements.get('media-mute-button')) {
+  globalThis.customElements.define('media-mute-button', MediaMuteButton);
 }
 
 export default MediaMuteButton;

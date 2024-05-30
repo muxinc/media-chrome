@@ -7,10 +7,10 @@
 </media-theme-microvideo>
 */
 
-import { MediaThemeElement } from "../media-theme-element.js";
-import { document, globalThis } from "../utils/server-safe-globals.js";
+import { MediaThemeElement } from '../media-theme-element.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
 <style>
   :host {
@@ -65,7 +65,7 @@ template.innerHTML = /*html*/ `
 
   media-loading-indicator {
     place-self: center;
-    ${/* Stack the grid items on top of each other */ ""}
+    ${/* Stack the grid items on top of each other */ ''}
     grid-area: 1 / 1;
   }
 
@@ -212,7 +212,7 @@ template.innerHTML = /*html*/ `
     width: 7px;
   }
 
-  ${/* Turn some buttons off by default */ ""}
+  ${/* Turn some buttons off by default */ ''}
   media-seek-backward-button {
     display: var(--media-control-display, var(--media-seek-backward-button-display, none));
   }
@@ -505,9 +505,9 @@ class MediaThemeMicrovideo extends MediaThemeElement {
   static template: HTMLTemplateElement = template;
 }
 
-if (!globalThis.customElements.get("media-theme-microvideo")) {
+if (!globalThis.customElements.get('media-theme-microvideo')) {
   globalThis.customElements.define(
-    "media-theme-microvideo",
+    'media-theme-microvideo',
     MediaThemeMicrovideo
   );
 }

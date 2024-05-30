@@ -7,7 +7,9 @@ import { MediaPlayButton } from '../../src/js/media-play-button.js';
 
 describe('<media-play-button>', () => {
   it('passes the a11y audit', async () => {
-    const el = await fixture<MediaPlayButton>(`<media-play-button></media-play-button>`);
+    const el = await fixture<MediaPlayButton>(
+      `<media-play-button></media-play-button>`
+    );
     await expect(el).shadowDom.to.be.accessible();
   });
 

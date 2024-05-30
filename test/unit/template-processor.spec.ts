@@ -1,6 +1,10 @@
 import { assert } from '@open-wc/testing';
 import { TemplateInstance } from '../../src/js/utils/template-parts.js';
-import { evaluateExpression, getParamValue, processor } from '../../src/js/utils/template-processor.js';
+import {
+  evaluateExpression,
+  getParamValue,
+  processor,
+} from '../../src/js/utils/template-processor.js';
 
 describe('evaluateExpression', () => {
   it('can evaluate a simple boolean condition', () => {
@@ -74,7 +78,6 @@ describe('getParamValue', () => {
 });
 
 describe('processor', () => {
-
   it('InnerTemplatePart: simple truthy if condition', async () => {
     const template = document.createElement('template');
     template.innerHTML = `<div>hello<template if="x"> world</template>!</div>`;
@@ -113,5 +116,4 @@ describe('processor', () => {
     instance.update({ x: 1, loud: true });
     assert.equal(instance.children[0].textContent!.trim(), 'hello world!');
   });
-
 });

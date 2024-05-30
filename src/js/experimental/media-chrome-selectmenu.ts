@@ -1,17 +1,17 @@
-import { MediaStateReceiverAttributes } from "../constants.js";
-import "../media-chrome-button.js";
-import { CustomElement } from "../utils/CustomElement.js";
+import { MediaStateReceiverAttributes } from '../constants.js';
+import '../media-chrome-button.js';
+import { CustomElement } from '../utils/CustomElement.js';
 import {
   closestComposedNode,
   containsComposedNode,
   getActiveElement,
   getOrInsertCSSRule,
-} from "../utils/element-utils.js";
-import { observeResize, unobserveResize } from "../utils/resize-observer.js";
-import { document, globalThis } from "../utils/server-safe-globals.js";
-import "./media-chrome-listbox.js";
+} from '../utils/element-utils.js';
+import { observeResize, unobserveResize } from '../utils/resize-observer.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
+import './media-chrome-listbox.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
   <style>
   :host {
@@ -83,7 +83,7 @@ class MediaChromeSelectMenu extends CustomElement {
   #listboxSlot;
 
   static get observedAttributes() {
-    return ["disabled", MediaStateReceiverAttributes.MEDIA_CONTROLLER];
+    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
   constructor() {
@@ -91,17 +91,17 @@ class MediaChromeSelectMenu extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: "open" });
+      this.attachShadow({ mode: 'open' });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
     this.init();
 
-    this.#button = this.shadowRoot.querySelector("[part=button]");
-    this.#listbox = this.shadowRoot.querySelector("[part=listbox]");
+    this.#button = this.shadowRoot.querySelector('[part=button]');
+    this.#listbox = this.shadowRoot.querySelector('[part=listbox]');
 
-    this.#buttonSlot = this.shadowRoot.querySelector("slot[name=button]");
-    this.#buttonSlot.addEventListener("slotchange", () => {
+    this.#buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
+    this.#buttonSlot.addEventListener('slotchange', () => {
       const newButton = this.#buttonSlot.assignedElements()[0];
 
       // if the slotted button is the built-in, nothing to do
@@ -111,23 +111,23 @@ class MediaChromeSelectMenu extends CustomElement {
       this.#button.preventClick = true;
 
       const disabled =
-        this.hasAttribute("disabled") || this.#button.hasAttribute("disabled");
+        this.hasAttribute('disabled') || this.#button.hasAttribute('disabled');
 
       if (disabled) {
         this.disable();
       } else {
         this.enable();
-        this.#button.setAttribute("aria-haspopup", "listbox");
+        this.#button.setAttribute('aria-haspopup', 'listbox');
       }
     });
 
-    this.#listboxSlot = this.shadowRoot.querySelector("slot[name=listbox]");
-    this.#listboxSlot.addEventListener("slotchange", () => {
+    this.#listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
+    this.#listboxSlot.addEventListener('slotchange', () => {
       this.#listbox = this.#listboxSlot.assignedElements()[0] || this.#listbox;
     });
   }
 
-  init() { }
+  init() {}
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
@@ -135,7 +135,7 @@ class MediaChromeSelectMenu extends CustomElement {
     const { key } = e;
 
     if (!this.keysUsed.includes(key)) {
-      this.removeEventListener("keyup", this.#keyupListener);
+      this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
 
@@ -143,9 +143,9 @@ class MediaChromeSelectMenu extends CustomElement {
 
     // only allow Enter/Space on the button itself and not on the listbox
     // and allow hiding the menu when pressing Escape when focused on the listbox
-    if (isButton && (key === "Enter" || key === " ")) {
+    if (isButton && (key === 'Enter' || key === ' ')) {
       this.#toggle();
-    } else if (key === "Escape") {
+    } else if (key === 'Escape') {
       this.#hide();
     }
   };
@@ -153,11 +153,11 @@ class MediaChromeSelectMenu extends CustomElement {
   #keydownListener = (e) => {
     const { metaKey, altKey, key } = e;
     if (metaKey || altKey || !this.keysUsed.includes(key)) {
-      this.removeEventListener("keyup", this.#keyupListener);
+      this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
     e.preventDefault();
-    this.addEventListener("keyup", this.#keyupListener, { once: true });
+    this.addEventListener('keyup', this.#keyupListener, { once: true });
   };
 
   #documentClickHandler = (e) => {
@@ -189,7 +189,7 @@ class MediaChromeSelectMenu extends CustomElement {
     if (!this.#listboxSlot.hidden) return;
 
     this.#listboxSlot.hidden = false;
-    this.#button.setAttribute("aria-expanded", "true");
+    this.#button.setAttribute('aria-expanded', 'true');
 
     this.#updateMenuPosition();
     this.#listbox.focus();
@@ -205,7 +205,7 @@ class MediaChromeSelectMenu extends CustomElement {
     const activeElement = getActiveElement();
 
     this.#listboxSlot.hidden = true;
-    this.#button.setAttribute("aria-expanded", "false");
+    this.#button.setAttribute('aria-expanded', 'false');
 
     if (containsComposedNode(this.#listbox, activeElement)) {
       this.#button.focus();
@@ -222,14 +222,14 @@ class MediaChromeSelectMenu extends CustomElement {
 
     // If this select element is outside of the controller open downward.
     if (
-      this.hasAttribute("mediacontroller") ||
-      this.#button.hasAttribute("mediacontroller") ||
-      this.#listbox.hasAttribute("mediacontroller")
+      this.hasAttribute('mediacontroller') ||
+      this.#button.hasAttribute('mediacontroller') ||
+      this.#listbox.hasAttribute('mediacontroller')
     ) {
-      this.#listbox.style.zIndex = "1";
-      this.#listbox.style.bottom = "unset";
+      this.#listbox.style.zIndex = '1';
+      this.#listbox.style.bottom = 'unset';
       this.#listbox.style.right = null;
-      this.#listbox.style.left = "0";
+      this.#listbox.style.left = '0';
       this.#listbox.style.top = `${buttonRect.height}px`;
       return;
     }
@@ -244,28 +244,33 @@ class MediaChromeSelectMenu extends CustomElement {
     );
     this.#listbox.style.left = null;
     this.#listbox.style.right = `${position}px`;
-    this.#listbox.style.maxHeight = `${boundsRect.height - buttonRect.height
-      }px`;
+    this.#listbox.style.maxHeight = `${
+      boundsRect.height - buttonRect.height
+    }px`;
   };
 
   enable() {
-    this.#button.toggleAttribute("disabled", false);
-    this.addEventListener("change", this.#handleOptionChange);
-    this.addEventListener("keydown", this.#keydownListener);
-    this.addEventListener("click", this.#clickHandler);
-    document.addEventListener("click", this.#documentClickHandler);
+    this.#button.toggleAttribute('disabled', false);
+    this.addEventListener('change', this.#handleOptionChange);
+    this.addEventListener('keydown', this.#keydownListener);
+    this.addEventListener('click', this.#clickHandler);
+    document.addEventListener('click', this.#documentClickHandler);
   }
 
   disable() {
-    this.#button.toggleAttribute("disabled", true);
-    this.removeEventListener("change", this.#handleOptionChange);
-    this.removeEventListener("keydown", this.#keydownListener);
-    this.removeEventListener("keyup", this.#keyupListener);
-    this.removeEventListener("click", this.#clickHandler);
-    document.removeEventListener("click", this.#documentClickHandler);
+    this.#button.toggleAttribute('disabled', true);
+    this.removeEventListener('change', this.#handleOptionChange);
+    this.removeEventListener('keydown', this.#keydownListener);
+    this.removeEventListener('keyup', this.#keyupListener);
+    this.removeEventListener('click', this.#clickHandler);
+    document.removeEventListener('click', this.#documentClickHandler);
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
         this.#mediaController?.unassociateElement?.(this);
@@ -283,7 +288,7 @@ class MediaChromeSelectMenu extends CustomElement {
           newValue
         );
       }
-    } else if (attrName === "disabled" && newValue !== oldValue) {
+    } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
       } else {
@@ -293,9 +298,9 @@ class MediaChromeSelectMenu extends CustomElement {
   }
 
   connectedCallback(): void {
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ":host");
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty(
-      "display",
+      'display',
       `var(--media-control-display, var(--${this.localName}-display, inline-flex))`
     );
 
@@ -313,7 +318,7 @@ class MediaChromeSelectMenu extends CustomElement {
       );
     }
 
-    if (!this.hasAttribute("disabled")) {
+    if (!this.hasAttribute('disabled')) {
       this.enable();
     }
 
@@ -335,14 +340,14 @@ class MediaChromeSelectMenu extends CustomElement {
   }
 
   get keysUsed() {
-    return ["Enter", "Escape", " ", "ArrowUp", "ArrowDown", "f", "c", "k", "m"];
+    return ['Enter', 'Escape', ' ', 'ArrowUp', 'ArrowDown', 'f', 'c', 'k', 'm'];
   }
 }
 
 function getBoundsElement(host) {
   return (
-    (host.getAttribute("bounds")
-      ? closestComposedNode(host, `#${host.getAttribute("bounds")}`)
+    (host.getAttribute('bounds')
+      ? closestComposedNode(host, `#${host.getAttribute('bounds')}`)
       : getMediaControllerElement(host) || host.parentElement) ?? host
   );
 }
@@ -354,12 +359,12 @@ function getMediaControllerElement(host) {
   if (mediaControllerId) {
     return host.getRootNode()?.getElementById(mediaControllerId);
   }
-  return closestComposedNode(host, "media-controller");
+  return closestComposedNode(host, 'media-controller');
 }
 
-if (!globalThis.customElements.get("media-chrome-selectmenu")) {
+if (!globalThis.customElements.get('media-chrome-selectmenu')) {
   globalThis.customElements.define(
-    "media-chrome-selectmenu",
+    'media-chrome-selectmenu',
     MediaChromeSelectMenu
   );
 }

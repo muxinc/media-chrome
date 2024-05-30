@@ -1,21 +1,32 @@
-import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
-import { nouns } from "./labels/labels.js";
-import { MediaChromeRange } from "./media-chrome-range.js";
-import "./media-preview-chapter-display.js";
-import "./media-preview-thumbnail.js";
-import "./media-preview-time-display.js";
-import { closestComposedNode, containsComposedNode, getBooleanAttr, getNumericAttr, getOrInsertCSSRule, getStringAttr, isElementVisible, setBooleanAttr, setNumericAttr, setStringAttr } from "./utils/element-utils.js";
-import { RangeAnimation } from "./utils/range-animation.js";
-import { document, globalThis } from "./utils/server-safe-globals.js";
-import { formatAsTimePhrase } from "./utils/time.js";
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
+import { nouns } from './labels/labels.js';
+import { MediaChromeRange } from './media-chrome-range.js';
+import './media-preview-chapter-display.js';
+import './media-preview-thumbnail.js';
+import './media-preview-time-display.js';
+import {
+  closestComposedNode,
+  containsComposedNode,
+  getBooleanAttr,
+  getNumericAttr,
+  getOrInsertCSSRule,
+  getStringAttr,
+  isElementVisible,
+  setBooleanAttr,
+  setNumericAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
+import { RangeAnimation } from './utils/range-animation.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
+import { formatAsTimePhrase } from './utils/time.js';
 
 type Rects = {
-  box: { width: number, min: number, max: number },
-  range?: DOMRect,
-  bounds?: DOMRect,
+  box: { width: number; min: number; max: number };
+  range?: DOMRect;
+  bounds?: DOMRect;
 };
 
-const DEFAULT_MISSING_TIME_PHRASE = "video not loaded, unknown time.";
+const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
 const updateAriaValueText = (el: any): void => {
   const range = el.range;
@@ -24,10 +35,10 @@ const updateAriaValueText = (el: any): void => {
   const fullPhrase = !(currentTimePhrase && totalTimePhrase)
     ? DEFAULT_MISSING_TIME_PHRASE
     : `${currentTimePhrase} of ${totalTimePhrase}`;
-  range.setAttribute("aria-valuetext", fullPhrase);
+  range.setAttribute('aria-valuetext', fullPhrase);
 };
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
   <style>
     :host {
@@ -41,8 +52,8 @@ template.innerHTML = /*html*/ `
 
       ${
         /* 1% rail width trick was off in Safari, contain: layout seems to
-        prevent the horizontal overflow as well. */ ""
-  }
+        prevent the horizontal overflow as well. */ ''
+      }
       contain: layout;
     }
 
@@ -63,8 +74,8 @@ template.innerHTML = /*html*/ `
     [part~="box"] {
       width: min-content;
       ${
-        /* absolute position is needed here so the box doesn't overflow the bounds */ ""
-  }
+        /* absolute position is needed here so the box doesn't overflow the bounds */ ''
+      }
       position: absolute;
       bottom: 100%;
       flex-direction: column;
@@ -88,8 +99,9 @@ template.innerHTML = /*html*/ `
       opacity: 0;
     }
 
-    :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${MediaUIAttributes.MEDIA_PREVIEW_TIME
-  }])[dragging]) [part~="preview-box"] {
+    :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${
+  MediaUIAttributes.MEDIA_PREVIEW_TIME
+}])[dragging]) [part~="preview-box"] {
       transition-duration: var(--media-preview-transition-duration-in, .5s);
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
@@ -97,8 +109,9 @@ template.innerHTML = /*html*/ `
     }
 
     @media (hover: hover) {
-      :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${MediaUIAttributes.MEDIA_PREVIEW_TIME
-  }]):hover) [part~="preview-box"] {
+      :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${
+  MediaUIAttributes.MEDIA_PREVIEW_TIME
+}]):hover) [part~="preview-box"] {
         transition-duration: var(--media-preview-transition-duration-in, .5s);
         transition-delay: var(--media-preview-transition-delay-in, .25s);
         visibility: visible;
@@ -110,8 +123,8 @@ template.innerHTML = /*html*/ `
     ::slotted(media-preview-thumbnail) {
       visibility: hidden;
       ${
-        /* delay changing these CSS props until the preview box transition is ended */ ""
-  }
+        /* delay changing these CSS props until the preview box transition is ended */ ''
+      }
       transition: visibility 0s .25s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-thumbnail-background, var(--_preview-background));
@@ -125,19 +138,23 @@ template.innerHTML = /*html*/ `
         var(--media-preview-border-radius) var(--media-preview-border-radius) 0 0);
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE
-  }][dragging]) media-preview-thumbnail,
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE
-  }][dragging]) ::slotted(media-preview-thumbnail) {
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }][dragging]) media-preview-thumbnail,
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }][dragging]) ::slotted(media-preview-thumbnail) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
     }
 
     @media (hover: hover) {
-      :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE
-  }]:hover) media-preview-thumbnail,
-      :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE
-  }]:hover) ::slotted(media-preview-thumbnail) {
+      :host([${
+        MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+      }]:hover) media-preview-thumbnail,
+      :host([${
+        MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+      }]:hover) ::slotted(media-preview-thumbnail) {
         transition-delay: var(--media-preview-transition-delay-in, .25s);
         visibility: visible;
       }
@@ -154,8 +171,8 @@ template.innerHTML = /*html*/ `
       min-width: 0;
       visibility: hidden;
       ${
-        /* delay changing these CSS props until the preview box transition is ended */ ""
-  }
+        /* delay changing these CSS props until the preview box transition is ended */ ''
+      }
       transition: min-width 0s, border-radius 0s, margin 0s, padding 0s, visibility 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-chapter-background, var(--_preview-background));
@@ -167,10 +184,12 @@ template.innerHTML = /*html*/ `
       text-shadow: var(--media-preview-chapter-text-shadow, 0 0 4px rgb(0 0 0 / .75));
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE
-  }]) media-preview-chapter-display,
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE
-  }]) ::slotted(media-preview-chapter-display) {
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]) media-preview-chapter-display,
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]) ::slotted(media-preview-chapter-display) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       border-radius: var(--media-preview-chapter-border-radius, 0);
       padding: var(--media-preview-chapter-padding, 3.5px 9px 0);
@@ -179,8 +198,9 @@ template.innerHTML = /*html*/ `
     }
 
     media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}],
-    ::slotted(media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER
-  }]) {
+    ::slotted(media-preview-chapter-display[${
+      MediaUIAttributes.MEDIA_PREVIEW_CHAPTER
+    }]) {
       visibility: visible;
     }
 
@@ -197,8 +217,8 @@ template.innerHTML = /*html*/ `
       line-height: 17px;
       min-width: 0;
       ${
-        /* delay changing these CSS props until the preview box transition is ended */ ""
-  }
+        /* delay changing these CSS props until the preview box transition is ended */ ''
+      }
       transition: min-width 0s, border-radius 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-time-background, var(--_preview-background));
@@ -215,10 +235,12 @@ template.innerHTML = /*html*/ `
       ));
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE
-  }]) media-preview-time-display,
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE
-  }]) ::slotted(media-preview-time-display) {
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]) media-preview-time-display,
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]) ::slotted(media-preview-time-display) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       border-radius: var(--media-preview-time-border-radius,
         0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
@@ -238,7 +260,7 @@ template.innerHTML = /*html*/ `
         calc(var(--_box-shift, 0))),
         calc(var(--_box-width) / 2 - 50% - var(--media-box-arrow-offset))
       ));
-      ${/* border-color has to come before border-top-color! */ ""}
+      ${/* border-color has to come before border-top-color! */ ''}
       border-color: transparent;
       border-top-color: var(--media-box-arrow-background, var(--_control-background));
       border-width: var(--media-box-arrow-border-width,
@@ -261,13 +283,16 @@ template.innerHTML = /*html*/ `
       ${
         /* Example: add the current time w/ arrow to the playhead
         <media-time-display slot="current"></media-time-display>
-        <div part="arrow" slot="current"></div> */ ""
-  }
+        <div part="arrow" slot="current"></div> */ ''
+      }
     </slot>
   </div>
 `;
 
-const calcRangeValueFromTime = (el: any, time: number = el.mediaCurrentTime): number => {
+const calcRangeValueFromTime = (
+  el: any,
+  time: number = el.mediaCurrentTime
+): number => {
   const startTime = Number.isFinite(el.mediaSeekableStart)
     ? el.mediaSeekableStart
     : 0;
@@ -280,7 +305,10 @@ const calcRangeValueFromTime = (el: any, time: number = el.mediaCurrentTime): nu
   return Math.max(0, Math.min(value, 1));
 };
 
-const calcTimeFromRangeValue = (el: any, value: number = el.range.valueAsNumber): number => {
+const calcTimeFromRangeValue = (
+  el: any,
+  value: number = el.range.valueAsNumber
+): number => {
   const startTime = Number.isFinite(el.mediaSeekableStart)
     ? el.mediaSeekableStart
     : 0;
@@ -399,10 +427,10 @@ class MediaTimeRange extends MediaChromeRange {
 
     const computedStyle = getComputedStyle(this);
     this.#boxPaddingLeft = parseInt(
-      computedStyle.getPropertyValue("--media-box-padding-left")
+      computedStyle.getPropertyValue('--media-box-padding-left')
     );
     this.#boxPaddingRight = parseInt(
-      computedStyle.getPropertyValue("--media-box-padding-right")
+      computedStyle.getPropertyValue('--media-box-padding-right')
     );
 
     this.#animation = new RangeAnimation(this.range, this.#updateRange, 60);
@@ -410,23 +438,27 @@ class MediaTimeRange extends MediaChromeRange {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.range.setAttribute("aria-label", nouns.SEEK());
+    this.range.setAttribute('aria-label', nouns.SEEK());
     this.#toggleRangeAnimation();
 
     // NOTE: Adding an event listener to an ancestor here.
     this.#rootNode = this.getRootNode();
-    this.#rootNode?.addEventListener("transitionstart", this);
+    this.#rootNode?.addEventListener('transitionstart', this);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
     this.#toggleRangeAnimation();
 
-    this.#rootNode?.removeEventListener("transitionstart", this);
+    this.#rootNode?.removeEventListener('transitionstart', this);
     this.#rootNode = null;
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (oldValue == newValue) return;
@@ -523,7 +555,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   /**
-   * 
+   *
    */
   get mediaDuration(): number | undefined {
     return getNumericAttr(this, MediaUIAttributes.MEDIA_DURATION);
@@ -534,7 +566,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   /**
-   * 
+   *
    */
   get mediaCurrentTime(): number | undefined {
     return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME);
@@ -545,7 +577,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   /**
-   * 
+   *
    */
   get mediaPlaybackRate(): number {
     return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, 1);
@@ -563,8 +595,8 @@ class MediaTimeRange extends MediaChromeRange {
     const buffered = this.getAttribute(MediaUIAttributes.MEDIA_BUFFERED);
     if (!buffered) return [];
     return buffered
-      .split(" ")
-      .map((timePair) => timePair.split(":").map((timeStr) => +timeStr));
+      .split(' ')
+      .map((timePair) => timePair.split(':').map((timeStr) => +timeStr));
   }
 
   set mediaBuffered(list: number[][]) {
@@ -572,7 +604,7 @@ class MediaTimeRange extends MediaChromeRange {
       this.removeAttribute(MediaUIAttributes.MEDIA_BUFFERED);
       return;
     }
-    const strVal = list.map((tuple) => tuple.join(":")).join(" ");
+    const strVal = list.map((tuple) => tuple.join(':')).join(' ');
     this.setAttribute(MediaUIAttributes.MEDIA_BUFFERED, strVal);
   }
 
@@ -584,7 +616,7 @@ class MediaTimeRange extends MediaChromeRange {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
     if (!seekable) return undefined;
     // Only currently supports a single, contiguous seekable range (CJP)
-    return seekable.split(":").map((time) => +time);
+    return seekable.split(':').map((time) => +time);
   }
 
   set mediaSeekable(range: number[] | undefined) {
@@ -592,11 +624,11 @@ class MediaTimeRange extends MediaChromeRange {
       this.removeAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
       return;
     }
-    this.setAttribute(MediaUIAttributes.MEDIA_SEEKABLE, range.join(":"));
+    this.setAttribute(MediaUIAttributes.MEDIA_SEEKABLE, range.join(':'));
   }
 
   /**
-   * 
+   *
    */
   get mediaSeekableEnd(): number | undefined {
     const [, end = this.mediaDuration] = this.mediaSeekable ?? [];
@@ -620,7 +652,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   /**
-   * 
+   *
    */
   get mediaPreviewTime(): number | undefined {
     return getNumericAttr(this, MediaUIAttributes.MEDIA_PREVIEW_TIME);
@@ -631,7 +663,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   /**
-   * 
+   *
    */
   get mediaEnded(): boolean | undefined {
     return getBooleanAttr(this, MediaUIAttributes.MEDIA_ENDED);
@@ -673,18 +705,20 @@ class MediaTimeRange extends MediaChromeRange {
       relativeBufferedEnd = 1;
     }
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, "#highlight");
-    style.setProperty("width", `${relativeBufferedEnd * 100}%`);
+    const { style } = getOrInsertCSSRule(this.shadowRoot, '#highlight');
+    style.setProperty('width', `${relativeBufferedEnd * 100}%`);
   }
 
   updateCurrentBox(): void {
     // If there are no elements in the current box no need for expensive style updates.
-    const currentSlot: HTMLSlotElement = this.shadowRoot.querySelector('slot[name="current"]');
+    const currentSlot: HTMLSlotElement = this.shadowRoot.querySelector(
+      'slot[name="current"]'
+    );
     if (!currentSlot.assignedElements().length) return;
 
     const currentRailRule = getOrInsertCSSRule(
       this.shadowRoot,
-      "#current-rail"
+      '#current-rail'
     );
     const currentBoxRule = getOrInsertCSSRule(
       this.shadowRoot,
@@ -696,17 +730,17 @@ class MediaTimeRange extends MediaChromeRange {
     const boxShift = this.#getBoxShiftPosition(rects, this.range.valueAsNumber);
 
     currentRailRule.style.transform = `translateX(${boxPos})`;
-    currentRailRule.style.setProperty("--_range-width", `${rects.range.width}`);
-    currentBoxRule.style.setProperty("--_box-shift", `${boxShift}`);
-    currentBoxRule.style.setProperty("--_box-width", `${rects.box.width}px`);
-    currentBoxRule.style.setProperty("visibility", "initial");
+    currentRailRule.style.setProperty('--_range-width', `${rects.range.width}`);
+    currentBoxRule.style.setProperty('--_box-shift', `${boxShift}`);
+    currentBoxRule.style.setProperty('--_box-width', `${rects.box.width}px`);
+    currentBoxRule.style.setProperty('visibility', 'initial');
   }
 
   #getElementRects(box: HTMLElement) {
     // Get the element that enforces the bounds for the time range boxes.
     const bounds =
-      (this.getAttribute("bounds")
-        ? closestComposedNode(this, `#${this.getAttribute("bounds")}`)
+      (this.getAttribute('bounds')
+        ? closestComposedNode(this, `#${this.getAttribute('bounds')}`)
         : this.parentElement) ?? this;
 
     const boundsRect = bounds.getBoundingClientRect();
@@ -773,17 +807,17 @@ class MediaTimeRange extends MediaChromeRange {
     super.handleEvent(evt);
 
     switch (evt.type) {
-      case "input":
+      case 'input':
         this.#seekRequest();
         break;
-      case "pointermove":
+      case 'pointermove':
         this.#handlePointerMove(evt as MouseEvent);
         break;
-      case "pointerup":
-      case "pointerleave":
+      case 'pointerup':
+      case 'pointerleave':
         this.#previewRequest(null);
         break;
-      case "transitionstart":
+      case 'transitionstart':
         if (containsComposedNode(evt.target as any, this)) {
           // Wait a tick to be sure the transition has started. Required for Safari.
           setTimeout(() => this.#toggleRangeAnimation(), 0);
@@ -809,7 +843,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     const previewRailRule = getOrInsertCSSRule(
       this.shadowRoot,
-      "#preview-rail"
+      '#preview-rail'
     );
     const previewBoxRule = getOrInsertCSSRule(
       this.shadowRoot,
@@ -825,9 +859,9 @@ class MediaTimeRange extends MediaChromeRange {
     const boxShift = this.#getBoxShiftPosition(rects, pointerRatio);
 
     previewRailRule.style.transform = `translateX(${boxPos})`;
-    previewRailRule.style.setProperty("--_range-width", `${rects.range.width}`);
-    previewBoxRule.style.setProperty("--_box-shift", `${boxShift}`);
-    previewBoxRule.style.setProperty("--_box-width", `${rects.box.width}px`);
+    previewRailRule.style.setProperty('--_range-width', `${rects.range.width}`);
+    previewBoxRule.style.setProperty('--_box-shift', `${boxShift}`);
+    previewBoxRule.style.setProperty('--_box-width', `${rects.box.width}px`);
 
     // At least require a 1s difference before requesting a new preview thumbnail,
     // unless it's at the beginning or end of the timeline.
@@ -865,8 +899,8 @@ class MediaTimeRange extends MediaChromeRange {
   }
 }
 
-if (!globalThis.customElements.get("media-time-range")) {
-  globalThis.customElements.define("media-time-range", MediaTimeRange);
+if (!globalThis.customElements.get('media-time-range')) {
+  globalThis.customElements.define('media-time-range', MediaTimeRange);
 }
 
 export default MediaTimeRange;

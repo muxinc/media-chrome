@@ -1,7 +1,7 @@
-import { MediaThemeElement } from "../media-theme-element.js";
-import { document, globalThis } from "../utils/server-safe-globals.js";
+import { MediaThemeElement } from '../media-theme-element.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
 <style>
   :host {
@@ -413,8 +413,8 @@ class MediaThemeWinamp extends MediaThemeElement {
   static template: HTMLTemplateElement = template;
 }
 
-if (!globalThis.customElements.get("media-theme-winamp")) {
-  globalThis.customElements.define("media-theme-winamp", MediaThemeWinamp);
+if (!globalThis.customElements.get('media-theme-winamp')) {
+  globalThis.customElements.define('media-theme-winamp', MediaThemeWinamp);
 }
 
 export default MediaThemeWinamp;

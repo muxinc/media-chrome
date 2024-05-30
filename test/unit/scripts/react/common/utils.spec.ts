@@ -11,7 +11,7 @@ describe('module: scripts/react/common/utils', () => {
 
       const actual = toNativeProps(props);
 
-      expect(actual).to.deep.equal({ 'camelcase': 'foo', nocamelcase: 'bar' });
+      expect(actual).to.deep.equal({ camelcase: 'foo', nocamelcase: 'bar' });
     });
 
     it('should appropriately translate special React props to their DOM equivalent names, even for camelCase', async () => {

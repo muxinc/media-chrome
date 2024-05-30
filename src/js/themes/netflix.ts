@@ -7,10 +7,10 @@
 </media-theme-netflix>
 */
 
-import { MediaThemeElement } from "../media-theme-element.js";
-import { document, globalThis } from "../utils/server-safe-globals.js";
+import { MediaThemeElement } from '../media-theme-element.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
 <style>
   media-controller {
@@ -130,8 +130,8 @@ class MediaThemeNetflix extends MediaThemeElement {
   static template: HTMLTemplateElement = template;
 }
 
-if (!globalThis.customElements.get("media-theme-netflix")) {
-  globalThis.customElements.define("media-theme-netflix", MediaThemeNetflix);
+if (!globalThis.customElements.get('media-theme-netflix')) {
+  globalThis.customElements.define('media-theme-netflix', MediaThemeNetflix);
 }
 
 export default MediaThemeNetflix;

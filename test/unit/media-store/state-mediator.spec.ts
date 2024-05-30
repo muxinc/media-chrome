@@ -6,20 +6,22 @@ describe('StateMediator', () => {
   describe('no stateOwners', () => {
     const stateOwners = {};
 
-    stateMediatorEntries.forEach(([stateName, stateValueAPI]: [string, any]) => {
-      const { get: getter, set: setter } = stateValueAPI;
-      it(`${stateName} getter should not throw`, () => {
-        const fn = () => getter(stateOwners);
-        expect(fn).to.not.throw();
-      });
-
-      if (setter) {
-        it(`${stateName} setter should not throw`, () => {
-          const fn = () => setter(undefined, stateOwners);
+    stateMediatorEntries.forEach(
+      ([stateName, stateValueAPI]: [string, any]) => {
+        const { get: getter, set: setter } = stateValueAPI;
+        it(`${stateName} getter should not throw`, () => {
+          const fn = () => getter(stateOwners);
           expect(fn).to.not.throw();
         });
+
+        if (setter) {
+          it(`${stateName} setter should not throw`, () => {
+            const fn = () => setter(undefined, stateOwners);
+            expect(fn).to.not.throw();
+          });
+        }
       }
-    });
+    );
   });
 
   describe('simple stateOwners', () => {
@@ -42,19 +44,21 @@ describe('StateMediator', () => {
       stateOwners = undefined;
     });
 
-    stateMediatorEntries.forEach(([stateName, stateValueAPI]: [string, any]) => {
-      const { get: getter, set: setter } = stateValueAPI;
-      it(`${stateName} getter should not throw`, () => {
-        const fn = () => getter(stateOwners);
-        expect(fn).to.not.throw();
-      });
-
-      if (setter) {
-        it(`${stateName} setter should not throw`, () => {
-          const fn = () => setter(undefined, stateOwners);
+    stateMediatorEntries.forEach(
+      ([stateName, stateValueAPI]: [string, any]) => {
+        const { get: getter, set: setter } = stateValueAPI;
+        it(`${stateName} getter should not throw`, () => {
+          const fn = () => getter(stateOwners);
           expect(fn).to.not.throw();
         });
+
+        if (setter) {
+          it(`${stateName} setter should not throw`, () => {
+            const fn = () => setter(undefined, stateOwners);
+            expect(fn).to.not.throw();
+          });
+        }
       }
-    });
+    );
   });
 });

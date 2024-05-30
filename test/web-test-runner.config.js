@@ -10,9 +10,7 @@ const config = {
   nodeResolve: true,
 
   /** Compile JS for older browsers. Requires @web/dev-server-esbuild plugin */
-  plugins: [
-    esbuildPlugin({ ts: true })
-  ],
+  plugins: [esbuildPlugin({ ts: true })],
 
   /** Amount of test files per browser to test concurrently */
   // concurrency: 1,

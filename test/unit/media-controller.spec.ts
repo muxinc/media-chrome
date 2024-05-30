@@ -1,4 +1,10 @@
-import { aTimeout, assert, fixture, nextFrame, waitUntil } from '@open-wc/testing';
+import {
+  aTimeout,
+  assert,
+  fixture,
+  nextFrame,
+  waitUntil,
+} from '@open-wc/testing';
 import { MediaStateReceiverAttributes } from '../../src/js/constants.js';
 import { constants } from '../../src/js/index.js';
 import '../../src/js/media-controller.js';
@@ -45,7 +51,9 @@ describe('<media-controller>', () => {
       mediaController.mediaStateReceivers.indexOf(mediaController) >= 0,
       'registers itself'
     );
-    const playButton = mediaController.querySelector('media-play-button') as HTMLElement;
+    const playButton = mediaController.querySelector(
+      'media-play-button'
+    ) as HTMLElement;
     assert(
       mediaController.mediaStateReceivers.indexOf(playButton) >= 0,
       'registers play button'
@@ -394,8 +402,9 @@ describe('state propagation behaviors', () => {
           preload="auto"
           muted
         />
-        <div ${MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES
-      }="${Object.values(MediaUIAttributes).join(' ')}"></div>
+        <div ${
+          MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES
+        }="${Object.values(MediaUIAttributes).join(' ')}"></div>
       </media-controller>
     `);
     mediaAllReceiver = mediaController.querySelector('div') as HTMLDivElement;
@@ -523,7 +532,8 @@ describe('state propagation behaviors', () => {
       it(`should propagate ${propName} via attrs to a media state receiver if ${attrName} is listed in ${MediaStateReceiverAttributes.MEDIA_CHROME_ATTRIBUTES}`, () => {
         mediaController.registerMediaStateReceiver(div);
         /** @TODO Should we still propagate true boolean attrs so the value is explicitly '' if it was previously set to some other value? (CJP) */
-        const propIsTrue = mediaController.mediaStore.getState()[propName] === true;
+        const propIsTrue =
+          mediaController.mediaStore.getState()[propName] === true;
         if (!propIsTrue) {
           assert.notEqual(div.getAttribute(attrName), INITIAL_VALUE);
         } else {
@@ -551,7 +561,8 @@ describe('state propagation behaviors', () => {
 
       it(`should propagate ${propName} via attrs to a web component media state receiver if ${attrName} is an observed attr`, () => {
         mediaController.registerMediaStateReceiver(wc);
-        const propIsTrue = mediaController.mediaStore.getState()[propName] === true;
+        const propIsTrue =
+          mediaController.mediaStore.getState()[propName] === true;
         if (!propIsTrue) {
           assert.notEqual(wc.getAttribute(attrName), INITIAL_VALUE);
         } else {

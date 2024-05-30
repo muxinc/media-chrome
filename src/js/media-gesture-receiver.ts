@@ -3,16 +3,16 @@ import {
   MediaUIAttributes,
   MediaUIEvents,
   PointerTypes,
-} from "./constants.js";
-import { CustomElement } from "./utils/CustomElement.js";
+} from './constants.js';
+import { CustomElement } from './utils/CustomElement.js';
 import {
   closestComposedNode,
   getBooleanAttr,
   setBooleanAttr,
-} from "./utils/element-utils.js";
-import { document, globalThis } from "./utils/server-safe-globals.js";
+} from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
 <style>
@@ -57,7 +57,7 @@ class MediaGestureReceiver extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      const shadow = this.attachShadow({ mode: "open" });
+      const shadow = this.attachShadow({ mode: 'open' });
 
       const buttonHTML = template.content.cloneNode(true);
       this.nativeEl = buttonHTML as HTMLElement;
@@ -66,8 +66,8 @@ class MediaGestureReceiver extends CustomElement {
       let slotTemplate = options.slotTemplate;
 
       if (!slotTemplate) {
-        slotTemplate = document.createElement("template");
-        slotTemplate.innerHTML = `<slot>${options.defaultContent || ""}</slot>`;
+        slotTemplate = document.createElement('template');
+        slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
       }
 
       this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
@@ -95,15 +95,15 @@ class MediaGestureReceiver extends CustomElement {
 
   connectedCallback(): void {
     this.tabIndex = -1;
-    this.setAttribute("aria-hidden", "true");
+    this.setAttribute('aria-hidden', 'true');
 
     this.#mediaController = getMediaControllerEl(this);
     if (this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER)) {
       this.#mediaController?.associateElement?.(this);
     }
 
-    this.#mediaController?.addEventListener("pointerdown", this);
-    this.#mediaController?.addEventListener("click", this);
+    this.#mediaController?.addEventListener('pointerdown', this);
+    this.#mediaController?.addEventListener('click', this);
   }
 
   disconnectedCallback(): void {
@@ -112,21 +112,21 @@ class MediaGestureReceiver extends CustomElement {
       this.#mediaController?.unassociateElement?.(this);
     }
 
-    this.#mediaController?.removeEventListener("pointerdown", this);
-    this.#mediaController?.removeEventListener("click", this);
+    this.#mediaController?.removeEventListener('pointerdown', this);
+    this.#mediaController?.removeEventListener('click', this);
     this.#mediaController = null;
   }
 
   handleEvent(event): void {
     const composedTarget = event.composedPath()?.[0];
-    const allowList = ["video", "media-controller"];
+    const allowList = ['video', 'media-controller'];
     if (!allowList.includes(composedTarget?.localName)) return;
 
-    if (event.type === "pointerdown") {
+    if (event.type === 'pointerdown') {
       // Since not all browsers have updated to be spec compliant, where 'click' events should be PointerEvents,
       // we can use use 'pointerdown' to reliably determine the pointer type. (CJP).
       this._pointerType = event.pointerType;
-    } else if (event.type === "click") {
+    } else if (event.type === 'click') {
       // Cannot use composedPath or target because this is a layer on top and pointer events are disabled.
       // Attach to window and check if click is in this element's bounding box to keep <video> right-click menu.
       const { clientX, clientY } = event;
@@ -199,12 +199,12 @@ function getMediaControllerEl(controlEl) {
   if (mediaControllerId) {
     return controlEl.getRootNode()?.getElementById(mediaControllerId);
   }
-  return closestComposedNode(controlEl, "media-controller");
+  return closestComposedNode(controlEl, 'media-controller');
 }
 
-if (!globalThis.customElements.get("media-gesture-receiver")) {
+if (!globalThis.customElements.get('media-gesture-receiver')) {
   globalThis.customElements.define(
-    "media-gesture-receiver",
+    'media-gesture-receiver',
     MediaGestureReceiver
   );
 }

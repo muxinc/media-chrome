@@ -1,9 +1,9 @@
 // Work in progress
 
-import { CustomElement } from "../utils/CustomElement.js";
-import { document, globalThis } from "../utils/server-safe-globals.js";
+import { CustomElement } from '../utils/CustomElement.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = `
   <style>
@@ -43,13 +43,13 @@ class MediaSettingsPopup extends CustomElement {
   constructor() {
     super();
 
-    this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: 'open' });
     this.shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }
 
-if (!globalThis.customElements.get("media-settings-popup")) {
-  globalThis.customElements.define("media-settings-popup", MediaSettingsPopup);
+if (!globalThis.customElements.get('media-settings-popup')) {
+  globalThis.customElements.define('media-settings-popup', MediaSettingsPopup);
 }
 
 export default MediaSettingsPopup;

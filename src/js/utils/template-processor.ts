@@ -5,8 +5,8 @@ import {
   TemplateInstance,
   type Part,
   type State,
-} from "./template-parts.js";
-import { isNumericString } from "./utils.js";
+} from './template-parts.js';
+import { isNumericString } from './utils.js';
 
 // Filters concept like Nunjucks or Liquid.
 const pipeModifiers = {
@@ -44,7 +44,7 @@ const Directives = {
         templateInstances.get(part)?.update(state);
       }
     } else {
-      part.replace("");
+      part.replace('');
       // Clean up template caches if this part's contents is cleared.
       templates.delete(part);
       templateInstances.delete(part);
@@ -58,7 +58,8 @@ export const processor: Processor = {
   processCallback(
     instance: TemplateInstance,
     parts: [string, Part][],
-    state: State) {
+    state: State
+  ) {
     if (!state) return;
 
     for (const [expression, part] of parts) {
@@ -96,16 +97,16 @@ export const processor: Processor = {
 
       if (value) {
         if (part instanceof AttrPart) {
-          if (part.attributeName.startsWith("aria-")) {
+          if (part.attributeName.startsWith('aria-')) {
             value = String(value);
           }
         }
 
         // No need to HTML escape values, the template parts stringify the values.
         if (part instanceof AttrPart) {
-          if (typeof value === "boolean") {
+          if (typeof value === 'boolean') {
             part.booleanValue = value;
-          } else if (typeof value === "function") {
+          } else if (typeof value === 'function') {
             part.element[part.attributeName] = value;
           } else {
             part.value = value;
@@ -133,16 +134,16 @@ export const processor: Processor = {
 };
 
 const operators = {
-  "!": (a) => !a,
-  "!!": (a) => !!a,
-  "==": (a, b) => a == b,
-  "!=": (a, b) => a != b,
-  ">": (a, b) => a > b,
-  ">=": (a, b) => a >= b,
-  "<": (a, b) => a < b,
-  "<=": (a, b) => a <= b,
-  "??": (a, b) => a ?? b,
-  "|": (a, b) => pipeModifiers[b]?.(a),
+  '!': (a) => !a,
+  '!!': (a) => !!a,
+  '==': (a, b) => a == b,
+  '!=': (a, b) => a != b,
+  '>': (a, b) => a > b,
+  '>=': (a, b) => a >= b,
+  '<': (a, b) => a < b,
+  '<=': (a, b) => a <= b,
+  '??': (a, b) => a ?? b,
+  '|': (a, b) => pipeModifiers[b]?.(a),
 };
 
 export function tokenizeExpression(expr: string): Token[] {
@@ -153,7 +154,7 @@ export function tokenizeExpression(expr: string): Token[] {
     operator: /[!=><][=!]?|\?\?|\|/,
     ws: /\s+/,
     param: /[$a-z_][$\w]*/i,
-  }).filter(({ type }) => type !== "ws");
+  }).filter(({ type }) => type !== 'ws');
 }
 
 // Support minimal expressions e.g.
@@ -164,7 +165,10 @@ export function tokenizeExpression(expr: string): Token[] {
 //   streamtype != 'live'
 //   breakpointmd
 //   !targetlivewindow
-export function evaluateExpression(expr: string, state: Record<string, any> = {}): any {
+export function evaluateExpression(
+  expr: string,
+  state: Record<string, any> = {}
+): any {
   const tokens = tokenizeExpression(expr);
 
   if (tokens.length === 0 || tokens.some(({ type }) => !type)) {
@@ -172,7 +176,7 @@ export function evaluateExpression(expr: string, state: Record<string, any> = {}
   }
 
   // e.g. {{>PlayButton section="center"}}
-  if (tokens[0]?.token === ">") {
+  if (tokens[0]?.token === '>') {
     const partial = state[tokens[1]?.token];
     if (!partial) {
       return invalidExpression(expr);
@@ -188,7 +192,7 @@ export function evaluateExpression(expr: string, state: Record<string, any> = {}
       const operator = args[i + 1]?.token;
       const value = args[i + 2]?.token;
 
-      if (name && operator === "=") {
+      if (name && operator === '=') {
         partialState[name] = getParamValue(value, state);
       }
     }
@@ -227,7 +231,7 @@ export function evaluateExpression(expr: string, state: Record<string, any> = {}
 
     const a = getParamValue(tokens[0].token, state);
 
-    if (operator === "|") {
+    if (operator === '|') {
       return run(a, tokens[2].token);
     }
 
@@ -242,7 +246,7 @@ function invalidExpression(expr: string): boolean {
 }
 
 function isValidParam({ type }: Token): boolean {
-  return ["number", "boolean", "string", "param"].includes(type);
+  return ['number', 'boolean', 'string', 'param'].includes(type);
 }
 
 // Eval params of something like `{{PlayButton param='center'}}
@@ -250,9 +254,9 @@ export function getParamValue(raw: string, state?: Record<string, any>) {
   const firstChar = raw[0];
   const lastChar = raw.slice(-1);
 
-  if (raw === "true" || raw === "false") {
+  if (raw === 'true' || raw === 'false') {
     // boolean
-    return raw === "true";
+    return raw === 'true';
   }
 
   if (firstChar === lastChar && [`'`, `"`].includes(firstChar)) {
@@ -287,9 +291,7 @@ type Token = {
  *
  */
 function tokenize(str: string, parsers): Token[] {
-  let len,
-    match,
-    token;
+  let len, match, token;
   const tokens: Token[] = [];
 
   while (str) {

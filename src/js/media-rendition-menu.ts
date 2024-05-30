@@ -1,17 +1,17 @@
-import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import {
   MediaChromeMenu,
   createIndicator,
   createMenuItem,
-} from "./media-chrome-menu.js";
-import type { Rendition } from "./utils/Rendition.js";
+} from './media-chrome-menu.js';
+import type { Rendition } from './utils/Rendition.js';
 import {
   getMediaController,
   getStringAttr,
   setStringAttr,
-} from "./utils/element-utils.js";
-import { globalThis } from "./utils/server-safe-globals.js";
-import { parseRenditionList } from "./utils/utils.js";
+} from './utils/element-utils.js';
+import { globalThis } from './utils/server-safe-globals.js';
+import { parseRenditionList } from './utils/utils.js';
 
 /**
  * @slot - Default slotted elements.
@@ -34,14 +34,18 @@ class MediaRenditionMenu extends MediaChromeMenu {
   #renditionList: Rendition[] = [];
   #prevState;
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
       attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED &&
       oldValue !== newValue
     ) {
-      this.value = newValue ?? "auto";
+      this.value = newValue ?? 'auto';
     } else if (
       attrName === MediaUIAttributes.MEDIA_RENDITION_LIST &&
       oldValue !== newValue
@@ -53,21 +57,21 @@ class MediaRenditionMenu extends MediaChromeMenu {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.addEventListener("change", this.#onChange);
+    this.addEventListener('change', this.#onChange);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    this.removeEventListener("change", this.#onChange);
+    this.removeEventListener('change', this.#onChange);
   }
 
   /**
    * Returns the anchor element when it is a floating menu.
    */
   get anchorElement(): HTMLElement {
-    if (this.anchor !== "auto") return super.anchorElement;
+    if (this.anchor !== 'auto') return super.anchorElement;
     return getMediaController(this).querySelector(
-      "media-rendition-menu-button"
+      'media-rendition-menu-button'
     );
   }
 
@@ -99,7 +103,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       (a: any, b: any) => b.height - a.height
     );
 
-    this.defaultSlot.textContent = "";
+    this.defaultSlot.textContent = '';
 
     const isAuto = !this.mediaRenditionSelected;
 
@@ -110,22 +114,22 @@ class MediaRenditionMenu extends MediaChromeMenu {
       );
 
       const item = createMenuItem({
-        type: "radio",
+        type: 'radio',
         text,
         value: `${rendition.id}`,
         checked: rendition.selected && !isAuto,
       });
-      item.prepend(createIndicator(this, "checked-indicator"));
+      item.prepend(createIndicator(this, 'checked-indicator'));
       this.defaultSlot.append(item);
     }
 
     const item = createMenuItem({
-      type: "radio",
-      text: this.formatMenuItemText("Auto"),
-      value: "auto",
+      type: 'radio',
+      text: this.formatMenuItemText('Auto'),
+      value: 'auto',
       checked: isAuto,
     });
-    item.prepend(createIndicator(this, "checked-indicator"));
+    item.prepend(createIndicator(this, 'checked-indicator'));
     this.defaultSlot.append(item);
   }
 
@@ -144,8 +148,8 @@ class MediaRenditionMenu extends MediaChromeMenu {
   }
 }
 
-if (!globalThis.customElements.get("media-rendition-menu")) {
-  globalThis.customElements.define("media-rendition-menu", MediaRenditionMenu);
+if (!globalThis.customElements.get('media-rendition-menu')) {
+  globalThis.customElements.define('media-rendition-menu', MediaRenditionMenu);
 }
 
 export { MediaRenditionMenu };

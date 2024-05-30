@@ -3,17 +3,17 @@
 
   Auto position contorls in a line and set some base colors
 */
-import { MediaStateReceiverAttributes } from "./constants";
-import type MediaController from "./media-controller";
-import { CustomElement } from "./utils/CustomElement";
-import { document, globalThis } from "./utils/server-safe-globals";
+import { MediaStateReceiverAttributes } from './constants';
+import type MediaController from './media-controller';
+import { CustomElement } from './utils/CustomElement';
+import { document, globalThis } from './utils/server-safe-globals';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
   <style>
     :host {
-      ${/* Need position to display above video for some reason */ ""}
+      ${/* Need position to display above video for some reason */ ''}
       box-sizing: border-box;
       display: var(--media-control-display, var(--media-control-bar-display, inline-flex));
       color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
@@ -56,7 +56,7 @@ class MediaControlBar extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: "open" });
+      this.attachShadow({ mode: 'open' });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
   }
@@ -99,8 +99,8 @@ class MediaControlBar extends CustomElement {
   }
 }
 
-if (!globalThis.customElements.get("media-control-bar")) {
-  globalThis.customElements.define("media-control-bar", MediaControlBar);
+if (!globalThis.customElements.get('media-control-bar')) {
+  globalThis.customElements.define('media-control-bar', MediaControlBar);
 }
 
 export default MediaControlBar;

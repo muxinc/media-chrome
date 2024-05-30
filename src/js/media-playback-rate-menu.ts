@@ -1,20 +1,20 @@
-import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import {
   MediaChromeMenu,
   createIndicator,
   createMenuItem,
-} from "./media-chrome-menu.js";
-import { DEFAULT_RATE, DEFAULT_RATES } from "./media-playback-rate-button.js";
-import { AttributeTokenList } from "./utils/attribute-token-list.js";
+} from './media-chrome-menu.js';
+import { DEFAULT_RATE, DEFAULT_RATES } from './media-playback-rate-button.js';
+import { AttributeTokenList } from './utils/attribute-token-list.js';
 import {
   getMediaController,
   getNumericAttr,
   setNumericAttr,
-} from "./utils/element-utils.js";
-import { globalThis } from "./utils/server-safe-globals.js";
+} from './utils/element-utils.js';
+import { globalThis } from './utils/server-safe-globals.js';
 
 export const Attributes = {
-  RATES: "rates",
+  RATES: 'rates',
 };
 
 /**
@@ -45,7 +45,11 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
     this.#render();
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
@@ -61,21 +65,21 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.addEventListener("change", this.#onChange);
+    this.addEventListener('change', this.#onChange);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    this.removeEventListener("change", this.#onChange);
+    this.removeEventListener('change', this.#onChange);
   }
 
   /**
    * Returns the anchor element when it is a floating menu.
    */
   get anchorElement(): HTMLElement | null {
-    if (this.anchor !== "auto") return super.anchorElement;
+    if (this.anchor !== 'auto') return super.anchorElement;
     return getMediaController(this).querySelector(
-      "media-playback-rate-menu-button"
+      'media-playback-rate-menu-button'
     );
   }
 
@@ -89,9 +93,9 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
 
   set rates(value: AttributeTokenList | number[] | undefined) {
     if (!value) {
-      this.#rates.value = "";
+      this.#rates.value = '';
     } else if (Array.isArray(value)) {
-      this.#rates.value = value.join(" ");
+      this.#rates.value = value.join(' ');
     }
     this.#render();
   }
@@ -112,16 +116,16 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   }
 
   #render(): void {
-    this.defaultSlot.textContent = "";
+    this.defaultSlot.textContent = '';
 
     for (const rate of this.rates) {
       const item = createMenuItem({
-        type: "radio",
+        type: 'radio',
         text: this.formatMenuItemText(`${rate}x`, rate),
         value: rate as string,
         checked: this.mediaPlaybackRate == rate,
       });
-      item.prepend(createIndicator(this, "checked-indicator"));
+      item.prepend(createIndicator(this, 'checked-indicator'));
       this.defaultSlot.append(item);
     }
   }
@@ -141,9 +145,9 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   }
 }
 
-if (!globalThis.customElements.get("media-playback-rate-menu")) {
+if (!globalThis.customElements.get('media-playback-rate-menu')) {
   globalThis.customElements.define(
-    "media-playback-rate-menu",
+    'media-playback-rate-menu',
     MediaPlaybackRateMenu
   );
 }

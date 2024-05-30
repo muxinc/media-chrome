@@ -1,21 +1,25 @@
-import { MediaStateReceiverAttributes } from "../constants.js";
-import type MediaController from "../media-controller.js";
-import { CustomElement } from "../utils/CustomElement.js";
-import { document, globalThis } from "../utils/server-safe-globals.js";
-import type MediaChromeOption from "./media-chrome-option.js";
+import { MediaStateReceiverAttributes } from '../constants.js';
+import type MediaController from '../media-controller.js';
+import { CustomElement } from '../utils/CustomElement.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
+import type MediaChromeOption from './media-chrome-option.js';
 
 const checkIcon = /*html*/ `
 <svg aria-hidden="true" viewBox="0 1 24 24" part="select-indicator indicator">
   <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
 </svg>`;
 
-export function createOption(text: string, value: string, selected: boolean): MediaChromeOption {
-  const option = document.createElement("media-chrome-option");
-  option.part.add("option");
+export function createOption(
+  text: string,
+  value: string,
+  selected: boolean
+): MediaChromeOption {
+  const option = document.createElement('media-chrome-option');
+  option.part.add('option');
   option.value = value;
   option.selected = selected;
 
-  const label = document.createElement("span");
+  const label = document.createElement('span');
   label.textContent = text;
   option.append(label);
 
@@ -26,14 +30,14 @@ export function createIndicator(el: HTMLElement, name: string): Node {
   let customIndicator = el.querySelector(`:scope > [slot="${name}"]`);
 
   // Chaining slots
-  if (customIndicator?.nodeName == "SLOT")
+  if (customIndicator?.nodeName == 'SLOT')
     // @ts-ignore
     customIndicator = customIndicator.assignedElements({ flatten: true })[0];
 
   if (customIndicator) {
     // @ts-ignore
     customIndicator = customIndicator.cloneNode(true);
-    customIndicator.removeAttribute("slot");
+    customIndicator.removeAttribute('slot');
     return customIndicator;
   }
 
@@ -43,7 +47,7 @@ export function createIndicator(el: HTMLElement, name: string): Node {
   return fallbackIndicator.cloneNode(true);
 }
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
 <style>
   :host {
@@ -161,7 +165,7 @@ template.innerHTML = /*html*/ `
  */
 class MediaChromeListbox extends CustomElement {
   static get observedAttributes(): string[] {
-    return ["disabled", "style", MediaStateReceiverAttributes.MEDIA_CONTROLLER];
+    return ['disabled', 'style', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
   static formatOptionText(text: string): string {
@@ -172,7 +176,7 @@ class MediaChromeListbox extends CustomElement {
   container: HTMLSlotElement;
 
   #mediaController: MediaController | null = null;
-  #keysSoFar: string = "";
+  #keysSoFar: string = '';
   #clearKeysTimeout: ReturnType<typeof setTimeout> = null;
   #metaPressed: boolean = false;
 
@@ -181,7 +185,7 @@ class MediaChromeListbox extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: "open" });
+      this.attachShadow({ mode: 'open' });
 
       this.nativeEl = template.content.cloneNode(true) as HTMLElement;
 
@@ -193,34 +197,36 @@ class MediaChromeListbox extends CustomElement {
     }
 
     this.container = this.shadowRoot.querySelector(
-      "#container"
+      '#container'
     ) as HTMLSlotElement;
 
-    this.container.addEventListener("slotchange", (event: Event) => {
+    this.container.addEventListener('slotchange', (event: Event) => {
       const target: HTMLSlotElement = event.target as HTMLSlotElement;
       for (const node of target.assignedNodes({ flatten: true })) {
         // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
-        if (node.nodeType === 3 && node.textContent.trim() === "") {
+        if (node.nodeType === 3 && node.textContent.trim() === '') {
           (node as Element).remove();
         }
       }
     });
   }
 
-  formatOptionText(text: string, data?: any): string
+  formatOptionText(text: string, data?: any): string;
   formatOptionText(text: string): string {
-    return (this.constructor as typeof MediaChromeListbox).formatOptionText(text);
+    return (this.constructor as typeof MediaChromeListbox).formatOptionText(
+      text
+    );
   }
 
   get options(): MediaChromeOption[] {
     // First query the light dom children for any options.
 
     /** @type NodeListOf<HTMLOptionElement> */
-    let options = this.querySelectorAll("media-chrome-option");
+    let options = this.querySelectorAll('media-chrome-option');
 
     if (!options.length) {
       // Fallback to the options in the shadow dom.
-      options = this.container?.querySelectorAll("media-chrome-option");
+      options = this.container?.querySelectorAll('media-chrome-option');
     }
 
     return Array.from(options) as MediaChromeOption[];
@@ -231,7 +237,7 @@ class MediaChromeListbox extends CustomElement {
   }
 
   get value(): string {
-    return this.selectedOptions[0]?.value ?? "";
+    return this.selectedOptions[0]?.value ?? '';
   }
 
   set value(newValue: string) {
@@ -253,11 +259,11 @@ class MediaChromeListbox extends CustomElement {
   #handleKeyListener(e: KeyboardEvent): void {
     const { key } = e;
 
-    if (key === "Enter" || key === " ") {
+    if (key === 'Enter' || key === ' ') {
       this.handleSelection(
         e,
-        this.hasAttribute("aria-multiselectable") &&
-        this.getAttribute("aria-multiselectable") === "true"
+        this.hasAttribute('aria-multiselectable') &&
+          this.getAttribute('aria-multiselectable') === 'true'
       );
     } else {
       this.handleMovement(e);
@@ -269,12 +275,12 @@ class MediaChromeListbox extends CustomElement {
   #keyupListener = (e: KeyboardEvent): void => {
     const { key } = e;
     // only cancel on Escape
-    if (key === "Escape") {
-      this.removeEventListener("keyup", this.#keyupListener);
+    if (key === 'Escape') {
+      this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
 
-    if (key === "Meta") {
+    if (key === 'Meta') {
       this.#metaPressed = false;
       return;
     }
@@ -286,11 +292,11 @@ class MediaChromeListbox extends CustomElement {
     const { key, altKey } = e;
 
     if (altKey) {
-      this.removeEventListener("keyup", this.#keyupListener);
+      this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
 
-    if (key === "Meta") {
+    if (key === 'Meta') {
       this.#metaPressed = true;
       return;
     }
@@ -305,17 +311,17 @@ class MediaChromeListbox extends CustomElement {
       return;
     }
 
-    this.addEventListener("keyup", this.#keyupListener, { once: true });
+    this.addEventListener('keyup', this.#keyupListener, { once: true });
   };
 
   enable(): void {
-    this.addEventListener("click", this.#clickListener);
-    this.addEventListener("keydown", this.#keydownListener);
+    this.addEventListener('click', this.#clickListener);
+    this.addEventListener('keydown', this.#keydownListener);
   }
 
   disable(): void {
-    this.removeEventListener("click", this.#clickListener);
-    this.removeEventListener("keyup", this.#keyupListener);
+    this.removeEventListener('click', this.#clickListener);
+    this.removeEventListener('keyup', this.#keyupListener);
   }
 
   attributeChangedCallback(
@@ -323,7 +329,7 @@ class MediaChromeListbox extends CustomElement {
     oldValue: string | null,
     newValue: string | null
   ): void {
-    if (attrName === "style" && newValue !== oldValue) {
+    if (attrName === 'style' && newValue !== oldValue) {
       this.#updateLayoutStyle();
     } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
       if (oldValue) {
@@ -331,10 +337,12 @@ class MediaChromeListbox extends CustomElement {
         this.#mediaController = null;
       }
       if (newValue && this.isConnected) {
-        this.#mediaController = (this.getRootNode() as Document)?.getElementById(newValue) as MediaController;
+        this.#mediaController = (
+          this.getRootNode() as Document
+        )?.getElementById(newValue) as MediaController;
         this.#mediaController?.associateElement?.(this);
       }
-    } else if (attrName === "disabled" && newValue !== oldValue) {
+    } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
       } else {
@@ -344,27 +352,27 @@ class MediaChromeListbox extends CustomElement {
   }
 
   #updateLayoutStyle(): void {
-    const layoutRowStyle = this.shadowRoot.querySelector("#layout-row");
+    const layoutRowStyle = this.shadowRoot.querySelector('#layout-row');
     const isLayoutRow =
       getComputedStyle(this)
-        .getPropertyValue("--media-listbox-layout")
-        ?.trim() === "row";
+        .getPropertyValue('--media-listbox-layout')
+        ?.trim() === 'row';
 
-    layoutRowStyle.setAttribute("media", isLayoutRow ? "" : "width:0");
+    layoutRowStyle.setAttribute('media', isLayoutRow ? '' : 'width:0');
   }
 
   connectedCallback(): void {
     this.#updateLayoutStyle();
 
-    if (!this.hasAttribute("disabled")) {
+    if (!this.hasAttribute('disabled')) {
       this.enable();
     }
 
-    if (!this.hasAttribute("role")) {
+    if (!this.hasAttribute('role')) {
       // set listbox role on the media-chrome-listbox element itself
       // this is to make sure that SRs announce options as being part
       // of a listbox when focused
-      this.setAttribute("role", "listbox");
+      this.setAttribute('role', 'listbox');
     }
 
     const mediaControllerId = this.getAttribute(
@@ -387,13 +395,13 @@ class MediaChromeListbox extends CustomElement {
   }
 
   get keysUsed(): string[] {
-    return ["Enter", " ", "ArrowDown", "ArrowUp", "Home", "End"];
+    return ['Enter', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
   }
 
   #getOption(e: Event): MediaChromeOption | undefined {
     const composedPath = e.composedPath() as HTMLElement[];
     const index = composedPath.findIndex(
-      (el: Element) => el.nodeName === "MEDIA-CHROME-OPTION"
+      (el: Element) => el.nodeName === 'MEDIA-CHROME-OPTION'
     );
 
     return composedPath[index] as MediaChromeOption;
@@ -411,8 +419,8 @@ class MediaChromeListbox extends CustomElement {
     const oldSelectedOptions = [...this.selectedOptions];
 
     if (
-      !this.hasAttribute("aria-multiselectable") ||
-      this.getAttribute("aria-multiselectable") !== "true"
+      !this.hasAttribute('aria-multiselectable') ||
+      this.getAttribute('aria-multiselectable') !== 'true'
     ) {
       this.options.forEach((el) => (el.selected = false));
     }
@@ -425,7 +433,7 @@ class MediaChromeListbox extends CustomElement {
 
     if (this.selectedOptions.some((opt, i) => opt != oldSelectedOptions[i])) {
       this.dispatchEvent(
-        new Event("change", { bubbles: true, composed: true })
+        new Event('change', { bubbles: true, composed: true })
       );
     }
   }
@@ -437,33 +445,33 @@ class MediaChromeListbox extends CustomElement {
     let currentOption = this.#getOption(e);
     if (!currentOption) {
       currentOption = els.filter(
-        (el) => el.getAttribute("tabindex") === "0"
+        (el) => el.getAttribute('tabindex') === '0'
       )[0];
     }
 
     let nextOption;
 
     switch (key) {
-      case "ArrowDown":
+      case 'ArrowDown':
         nextOption = currentOption.nextElementSibling;
 
-        if (nextOption?.hasAttribute("disabled")) {
+        if (nextOption?.hasAttribute('disabled')) {
           nextOption = nextOption.nextElementSibling;
         }
 
         break;
-      case "ArrowUp":
+      case 'ArrowUp':
         nextOption = currentOption.previousElementSibling;
 
-        if (nextOption?.hasAttribute("disabled")) {
+        if (nextOption?.hasAttribute('disabled')) {
           nextOption = nextOption.previousElementSibling;
         }
 
         break;
-      case "Home":
+      case 'Home':
         nextOption = els[0];
         break;
-      case "End":
+      case 'End':
         nextOption = els[els.length - 1];
         break;
       default:
@@ -472,8 +480,8 @@ class MediaChromeListbox extends CustomElement {
     }
 
     if (nextOption) {
-      els.forEach((el) => el.setAttribute("tabindex", "-1"));
-      nextOption.setAttribute("tabindex", "0");
+      els.forEach((el) => el.setAttribute('tabindex', '-1'));
+      nextOption.setAttribute('tabindex', '0');
       nextOption.focus();
     }
   }
@@ -481,15 +489,15 @@ class MediaChromeListbox extends CustomElement {
   handleClick(e: MouseEvent): void {
     const option = this.#getOption(e);
 
-    if (!option || option.hasAttribute("disabled")) return;
+    if (!option || option.hasAttribute('disabled')) return;
 
-    this.options.forEach((el) => el.setAttribute("tabindex", "-1"));
-    option.setAttribute("tabindex", "0");
+    this.options.forEach((el) => el.setAttribute('tabindex', '-1'));
+    option.setAttribute('tabindex', '0');
 
     this.handleSelection(
       e,
-      this.hasAttribute("aria-multiselectable") &&
-      this.getAttribute("aria-multiselectable") === "true"
+      this.hasAttribute('aria-multiselectable') &&
+        this.getAttribute('aria-multiselectable') === 'true'
     );
   }
 
@@ -498,7 +506,7 @@ class MediaChromeListbox extends CustomElement {
 
     const els = this.options;
     const activeIndex = els.findIndex(
-      (el) => el.getAttribute("tabindex") === "0"
+      (el) => el.getAttribute('tabindex') === '0'
     );
 
     // always accumulate the key
@@ -507,7 +515,7 @@ class MediaChromeListbox extends CustomElement {
     // if the same key is pressed, assume it's a repeated key
     // to skip to the same option that begings with that key
     // until the user presses another key and a better choice is available
-    const repeatedKey = this.#keysSoFar.split("").every((k) => k === key);
+    const repeatedKey = this.#keysSoFar.split('').every((k) => k === key);
 
     // if it's a repeat key, skip the current option
     const after = els
@@ -539,14 +547,14 @@ class MediaChromeListbox extends CustomElement {
     this.#clearKeysTimeout = null;
 
     this.#clearKeysTimeout = setTimeout(() => {
-      this.#keysSoFar = "";
+      this.#keysSoFar = '';
       this.#clearKeysTimeout = null;
     }, 500);
   }
 }
 
-if (!globalThis.customElements.get("media-chrome-listbox")) {
-  globalThis.customElements.define("media-chrome-listbox", MediaChromeListbox);
+if (!globalThis.customElements.get('media-chrome-listbox')) {
+  globalThis.customElements.define('media-chrome-listbox', MediaChromeListbox);
 }
 
 export { MediaChromeListbox };

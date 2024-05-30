@@ -1,10 +1,10 @@
-import { MediaStateReceiverAttributes } from "./constants.js";
-import MediaController from "./media-controller.js";
-import { CustomElement } from "./utils/CustomElement.js";
-import { getOrInsertCSSRule } from "./utils/element-utils.js";
-import { document, globalThis } from "./utils/server-safe-globals.js";
+import { MediaStateReceiverAttributes } from './constants.js';
+import MediaController from './media-controller.js';
+import { CustomElement } from './utils/CustomElement.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
 <style>
@@ -32,7 +32,7 @@ template.innerHTML = /*html*/ `
     /*
     Only show outline when keyboard focusing.
     https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
-  */ ""
+  */ ''
   }
   :host(:focus-visible) {
     box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
@@ -41,7 +41,7 @@ template.innerHTML = /*html*/ `
   ${
     /*
      * hide default focus ring, particularly when using mouse
-     */ ""
+     */ ''
   }
   :host(:where(:focus)) {
     box-shadow: none;
@@ -100,7 +100,7 @@ class MediaChromeButton extends CustomElement {
   nativeEl: HTMLElement;
 
   static get observedAttributes() {
-    return ["disabled", MediaStateReceiverAttributes.MEDIA_CONTROLLER];
+    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
   constructor(
@@ -113,7 +113,7 @@ class MediaChromeButton extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: "open" });
+      this.attachShadow({ mode: 'open' });
 
       const buttonHTML = template.content.cloneNode(true);
       this.nativeEl = buttonHTML as HTMLElement;
@@ -122,8 +122,8 @@ class MediaChromeButton extends CustomElement {
       let slotTemplate = options.slotTemplate;
 
       if (!slotTemplate) {
-        slotTemplate = document.createElement("template");
-        slotTemplate.innerHTML = `<slot>${options.defaultContent || ""}</slot>`;
+        slotTemplate = document.createElement('template');
+        slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
       }
 
       this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
@@ -143,7 +143,7 @@ class MediaChromeButton extends CustomElement {
   #keyupListener = (e: KeyboardEvent): void => {
     const { key } = e;
     if (!this.keysUsed.includes(key)) {
-      this.removeEventListener("keyup", this.#keyupListener);
+      this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
 
@@ -155,22 +155,22 @@ class MediaChromeButton extends CustomElement {
   #keydownListener = (e: KeyboardEvent): void => {
     const { metaKey, altKey, key } = e;
     if (metaKey || altKey || !this.keysUsed.includes(key)) {
-      this.removeEventListener("keyup", this.#keyupListener);
+      this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
-    this.addEventListener("keyup", this.#keyupListener, { once: true });
+    this.addEventListener('keyup', this.#keyupListener, { once: true });
   };
 
   enable(): void {
-    this.addEventListener("click", this.#clickListener);
-    this.addEventListener("keydown", this.#keydownListener);
+    this.addEventListener('click', this.#clickListener);
+    this.addEventListener('keydown', this.#keydownListener);
     this.tabIndex = 0;
   }
 
   disable(): void {
-    this.removeEventListener("click", this.#clickListener);
-    this.removeEventListener("keydown", this.#keydownListener);
-    this.removeEventListener("keyup", this.#keyupListener);
+    this.removeEventListener('click', this.#clickListener);
+    this.removeEventListener('keydown', this.#keydownListener);
+    this.removeEventListener('keyup', this.#keyupListener);
     this.tabIndex = -1;
   }
 
@@ -189,7 +189,7 @@ class MediaChromeButton extends CustomElement {
         this.#mediaController = this.getRootNode()?.getElementById(newValue);
         this.#mediaController?.associateElement?.(this);
       }
-    } else if (attrName === "disabled" && newValue !== oldValue) {
+    } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
       } else {
@@ -199,17 +199,17 @@ class MediaChromeButton extends CustomElement {
   }
 
   connectedCallback(): void {
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ":host");
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     style.setProperty(
-      "display",
+      'display',
       `var(--media-control-display, var(--${this.localName}-display, inline-flex))`
     );
 
-    if (!this.hasAttribute("disabled")) {
+    if (!this.hasAttribute('disabled')) {
       this.enable();
     }
 
-    this.setAttribute("role", "button");
+    this.setAttribute('role', 'button');
 
     const mediaControllerId = this.getAttribute(
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
@@ -231,18 +231,18 @@ class MediaChromeButton extends CustomElement {
   }
 
   get keysUsed() {
-    return ["Enter", " "];
+    return ['Enter', ' '];
   }
 
   /**
    * @abstract
    * @argument {Event} e
    */
-  handleClick(e: Event): void { } // eslint-disable-line
+  handleClick(e: Event): void {} // eslint-disable-line
 }
 
-if (!globalThis.customElements.get("media-chrome-button")) {
-  globalThis.customElements.define("media-chrome-button", MediaChromeButton);
+if (!globalThis.customElements.get('media-chrome-button')) {
+  globalThis.customElements.define('media-chrome-button', MediaChromeButton);
 }
 
 export { MediaChromeButton };

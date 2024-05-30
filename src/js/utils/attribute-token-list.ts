@@ -1,10 +1,28 @@
-export class AttributeTokenList implements Pick<DOMTokenList, 'length' | 'value' | 'toString' | 'item' | 'add' | 'remove' | 'contains' | 'toggle' | 'replace'> {
+export class AttributeTokenList
+  implements
+    Pick<
+      DOMTokenList,
+      | 'length'
+      | 'value'
+      | 'toString'
+      | 'item'
+      | 'add'
+      | 'remove'
+      | 'contains'
+      | 'toggle'
+      | 'replace'
+    >
+{
   #el: HTMLElement;
   #attr: string;
   #defaultSet: Set<string>;
   #tokenSet: Set<string> = new Set<string>();
 
-  constructor(el?: HTMLElement, attr?: string, { defaultValue } = { defaultValue: undefined }) {
+  constructor(
+    el?: HTMLElement,
+    attr?: string,
+    { defaultValue } = { defaultValue: undefined }
+  ) {
     this.#el = el;
     this.#attr = attr;
     this.#defaultSet = new Set(defaultValue);
@@ -23,13 +41,13 @@ export class AttributeTokenList implements Pick<DOMTokenList, 'length' | 'value'
   }
 
   get value(): string {
-    return [...this.#tokens].join(" ") ?? "";
+    return [...this.#tokens].join(' ') ?? '';
   }
 
   set value(val: string) {
     if (val === this.value) return;
     this.#tokenSet = new Set();
-    this.add(...(val?.split(" ") ?? []));
+    this.add(...(val?.split(' ') ?? []));
   }
 
   toString(): string {
@@ -44,14 +62,17 @@ export class AttributeTokenList implements Pick<DOMTokenList, 'length' | 'value'
     return this.#tokens.values();
   }
 
-  forEach(callback: (value: string, key: string, parent: Set<string>) => void, thisArg?: any) {
+  forEach(
+    callback: (value: string, key: string, parent: Set<string>) => void,
+    thisArg?: any
+  ) {
     this.#tokens.forEach(callback, thisArg);
   }
 
   add(...tokens: string[]): void {
     tokens.forEach((t) => this.#tokenSet.add(t));
     // if the attribute was removed don't try to add it again.
-    if (this.value === "" && !this.#el?.hasAttribute(`${this.#attr}`)) {
+    if (this.value === '' && !this.#el?.hasAttribute(`${this.#attr}`)) {
       return;
     }
     this.#el?.setAttribute(`${this.#attr}`, `${this.value}`);
@@ -67,7 +88,7 @@ export class AttributeTokenList implements Pick<DOMTokenList, 'length' | 'value'
   }
 
   toggle(token: string, force: boolean): boolean {
-    if (typeof force !== "undefined") {
+    if (typeof force !== 'undefined') {
       if (force) {
         this.add(token);
         return true;

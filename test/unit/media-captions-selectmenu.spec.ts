@@ -2,14 +2,13 @@ import { assert, fixture } from '@open-wc/testing';
 import '../../src/js/experimental/index.js';
 import '../../src/js/index.js';
 
-
 describe('<media-captions-selectmenu>', () => {
   let mediaController;
   let selectmenu;
   let listbox;
 
   beforeEach(async () => {
-    mediaController = await fixture(/*html*/`
+    mediaController = await fixture(/*html*/ `
       <media-controller>
         <video
           slot="media"
@@ -32,20 +31,25 @@ describe('<media-captions-selectmenu>', () => {
         <media-captions-selectmenu></media-captions-selectmenu>
       </media-controller>
     `);
-    selectmenu = mediaController.querySelector('media-captions-selectmenu') as HTMLElement;
-    listbox = selectmenu.shadowRoot!.querySelector('media-captions-listbox') as HTMLSelectElement;
+    selectmenu = mediaController.querySelector(
+      'media-captions-selectmenu'
+    ) as HTMLElement;
+    listbox = selectmenu.shadowRoot!.querySelector(
+      'media-captions-listbox'
+    ) as HTMLSelectElement;
   });
 
   it('selectmenu is populated', async function () {
     this.timeout(5000);
 
     if (mediaController.media.textTracks.length !== 10) {
-      await new Promise(resolve => mediaController.media.textTracks.addEventListener('addtrack', resolve));
+      await new Promise((resolve) =>
+        mediaController.media.textTracks.addEventListener('addtrack', resolve)
+      );
     }
 
     assert.equal(mediaController.media.textTracks.length, 10);
     assert.equal(listbox.options.length, 11); // includes Off option
     // assert.equal(listbox.value, 'cc:en:English'); fails on Firefox and Safari
   });
-
 });

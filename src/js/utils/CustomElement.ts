@@ -7,9 +7,9 @@ export class CustomElement extends HTMLElement {
     attrName: string, // eslint-disable-line
     oldValue: string | null, // eslint-disable-line
     newValue: string | null // eslint-disable-line
-  ) { }
+  ) {}
 
-  connectedCallback(): void { }
+  connectedCallback(): void {}
 
-  disconnectedCallback(): void { }
+  disconnectedCallback(): void {}
 }

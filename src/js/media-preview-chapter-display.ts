@@ -1,7 +1,7 @@
-import { MediaUIAttributes } from "./constants.js";
-import MediaTextDisplay from "./media-text-display.js";
-import { getStringAttr, setStringAttr } from "./utils/element-utils.js";
-import { globalThis } from "./utils/server-safe-globals.js";
+import { MediaUIAttributes } from './constants.js';
+import MediaTextDisplay from './media-text-display.js';
+import { getStringAttr, setStringAttr } from './utils/element-utils.js';
+import { globalThis } from './utils/server-safe-globals.js';
 
 /**
  * @attr {string} mediapreviewchapter - (read-only) Set to the timeline preview chapter.
@@ -20,10 +20,14 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
 
   constructor() {
     super();
-    this.#slot = this.shadowRoot.querySelector("slot") as HTMLSlotElement;
+    this.#slot = this.shadowRoot.querySelector('slot') as HTMLSlotElement;
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_PREVIEW_CHAPTER) {
@@ -31,10 +35,10 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
       if (newValue !== oldValue && newValue != null) {
         this.#slot.textContent = newValue;
 
-        if (newValue !== "") {
-          this.setAttribute("aria-valuetext", `chapter: ${newValue}`);
+        if (newValue !== '') {
+          this.setAttribute('aria-valuetext', `chapter: ${newValue}`);
         } else {
-          this.removeAttribute("aria-valuetext");
+          this.removeAttribute('aria-valuetext');
         }
       }
     }
@@ -52,9 +56,9 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
   }
 }
 
-if (!globalThis.customElements.get("media-preview-chapter-display")) {
+if (!globalThis.customElements.get('media-preview-chapter-display')) {
   globalThis.customElements.define(
-    "media-preview-chapter-display",
+    'media-preview-chapter-display',
     MediaPreviewChapterDisplay
   );
 }
