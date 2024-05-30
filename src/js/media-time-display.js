@@ -37,7 +37,7 @@ const formatTimesLabel = (el, { timesSep = DEFAULT_TIMES_SEP } = {}) => {
   const [, seekableEnd] = el.mediaSeekable ?? [];
   let endTime = 0;
   if (Number.isFinite(el.mediaDuration)) {
-    endTime = el.mediaDuration
+    endTime = el.mediaDuration;
   } else if (Number.isFinite(seekableEnd)) {
     endTime = seekableEnd;
   }
@@ -57,7 +57,7 @@ const updateAriaValueText = (el) => {
   const [, seekableEnd] = el.mediaSeekable ?? [];
   let endTime = null;
   if (Number.isFinite(el.mediaDuration)) {
-    endTime = el.mediaDuration
+    endTime = el.mediaDuration;
   } else if (Number.isFinite(seekableEnd)) {
     endTime = seekableEnd;
   }

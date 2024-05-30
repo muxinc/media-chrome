@@ -1,6 +1,10 @@
 import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { getMediaController, getStringAttr, setStringAttr } from './utils/element-utils.js';
+import {
+  getMediaController,
+  getStringAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
 import { parseRenditionList } from './utils/utils.js';
 import {
   MediaChromeMenu,
@@ -64,7 +68,9 @@ class MediaRenditionMenu extends MediaChromeMenu {
    */
   get anchorElement() {
     if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector('media-rendition-menu-button');
+    return getMediaController(this).querySelector(
+      'media-rendition-menu-button'
+    );
   }
 
   get mediaRenditionList() {

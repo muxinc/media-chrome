@@ -11,7 +11,7 @@ const indicatorSVG =
   '<svg viewBox="0 0 6 12"><circle cx="3" cy="6" r="2"></circle></svg>';
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
 
   slot[name=indicator] > *,
@@ -45,13 +45,13 @@ slotTemplate.innerHTML = /*html*/`
 `;
 
 const updateAriaAttributes = (el) => {
-  const isPausedOrNotLive = el.mediaPaused || !el.mediaTimeIsLive
+  const isPausedOrNotLive = el.mediaPaused || !el.mediaTimeIsLive;
   const label = isPausedOrNotLive ? verbs.SEEK_LIVE() : verbs.PLAYING_LIVE();
   el.setAttribute('aria-label', label);
 
-  isPausedOrNotLive ?
-    el.removeAttribute('aria-disabled') :
-    el.setAttribute('aria-disabled', 'true');
+  isPausedOrNotLive
+    ? el.removeAttribute('aria-disabled')
+    : el.setAttribute('aria-disabled', 'true');
 };
 
 /**

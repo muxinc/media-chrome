@@ -58,7 +58,7 @@
     "dist"
   ],
   "scripts": {
-    "format": "prettier --write .",
+    "format": "prettier . --write",
     "clean": "rimraf dist",
     "lint": "eslint src/js",
     "premanifest": "mkdir -p dist/ && cp -R src/js/media-* dist/",

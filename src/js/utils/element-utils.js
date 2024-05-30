@@ -58,7 +58,10 @@ export const getSlotted = (el, name) => getAllSlotted(el, name)[0];
 export const containsComposedNode = (rootNode, childNode) => {
   if (!rootNode || !childNode) return false;
   if (rootNode?.contains(childNode)) return true;
-  return containsComposedNode(rootNode, /** @type {ShadowRoot} */ (childNode.getRootNode()).host);
+  return containsComposedNode(
+    rootNode,
+    /** @type {ShadowRoot} */ (childNode.getRootNode()).host
+  );
 };
 
 export const closestComposedNode = (childNode, selector) => {
@@ -210,7 +213,10 @@ export function insertCSSRule(styleParent, selectorText) {
   if (!style?.sheet) {
     // The style tag must be connected to the DOM before it has a sheet.
     // This could indicate a bug. Should the code be moved to connectedCallback?
-    console.warn('Media Chrome: No style sheet found on style tag of', styleParent);
+    console.warn(
+      'Media Chrome: No style sheet found on style tag of',
+      styleParent
+    );
 
     return {
       // @ts-ignore
@@ -223,7 +229,9 @@ export function insertCSSRule(styleParent, selectorText) {
   }
 
   style?.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
-  return /** @type {CSSStyleRule} */(style.sheet.cssRules?.[style.sheet.cssRules.length - 1]);
+  return /** @type {CSSStyleRule} */ (
+    style.sheet.cssRules?.[style.sheet.cssRules.length - 1]
+  );
 }
 
 /**

@@ -13,7 +13,7 @@ export const DEFAULT_RATES = [1, 1.2, 1.5, 1.7, 2];
 export const DEFAULT_RATE = 1;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
     :host {
       min-width: 5ch;
@@ -38,7 +38,9 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     ];
   }
 
-  #rates = new AttributeTokenList(this, Attributes.RATES, { defaultValue: DEFAULT_RATES });
+  #rates = new AttributeTokenList(this, Attributes.RATES, {
+    defaultValue: DEFAULT_RATES,
+  });
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
@@ -82,7 +84,11 @@ class MediaPlaybackRateButton extends MediaChromeButton {
    * @type {number} The current playback rate
    */
   get mediaPlaybackRate() {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, DEFAULT_RATE);
+    return getNumericAttr(
+      this,
+      MediaUIAttributes.MEDIA_PLAYBACK_RATE,
+      DEFAULT_RATE
+    );
   }
 
   set mediaPlaybackRate(value) {
@@ -90,7 +96,9 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const availableRates = Array.from(this.rates.values(), str => +str).sort((a, b) => a - b);
+    const availableRates = Array.from(this.rates.values(), (str) => +str).sort(
+      (a, b) => a - b
+    );
 
     const detail =
       availableRates.find((r) => r > this.mediaPlaybackRate) ??

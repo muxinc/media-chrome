@@ -1,7 +1,7 @@
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
 <style>
   :host {
     cursor: pointer;
@@ -63,11 +63,7 @@ export const Attributes = {
  */
 class MediaChromeOption extends globalThis.HTMLElement {
   static get observedAttributes() {
-    return [
-      Attributes.DISABLED,
-      Attributes.SELECTED,
-      Attributes.VALUE,
-    ];
+    return [Attributes.DISABLED, Attributes.SELECTED, Attributes.VALUE];
   }
 
   /** @see https://html.spec.whatwg.org/multipage/form-elements.html#concept-option-dirtiness */
@@ -125,12 +121,9 @@ class MediaChromeOption extends globalThis.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-
     if (attrName === Attributes.SELECTED && !this.#dirty) {
       this.setAttribute('aria-selected', newValue != null ? 'true' : 'false');
-    }
-
-    else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
+    } else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
       } else {
@@ -162,15 +155,17 @@ class MediaChromeOption extends globalThis.HTMLElement {
     if (!options) return;
 
     // Default to the last aria-selected element if there isn't an active element already.
-    let selectedOption = options.filter(option => option.getAttribute('aria-selected') === 'true').pop();
+    let selectedOption = options
+      .filter((option) => option.getAttribute('aria-selected') === 'true')
+      .pop();
 
     // If there isn't an active element or a selected element, default to the first element.
     if (!selectedOption) selectedOption = options[0];
 
     if (this.#ownerElement.getAttribute('aria-multiselectable') !== 'true') {
-      options.forEach(option => {
+      options.forEach((option) => {
         option.setAttribute('tabindex', '-1');
-        option.setAttribute('aria-selected', 'false')
+        option.setAttribute('aria-selected', 'false');
       });
     }
 

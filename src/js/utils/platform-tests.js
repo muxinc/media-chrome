@@ -46,9 +46,10 @@ export const hasPipSupport = (mediaEl = getTestMediaEl()) => {
   // NOTE: PWAs for Apple that rely on Safari don't support picture in picture but still have `requestPictureInPicture()`
   // (which will result in a failed promise). Checking for those conditions here (CJP).
   // This should still work for macOS PWAs installed using Chrome, where PiP is supported.
-  if (globalThis.matchMedia('(display-mode: standalone)').matches && isSafari) return false;
+  if (globalThis.matchMedia('(display-mode: standalone)').matches && isSafari)
+    return false;
   return typeof mediaEl?.requestPictureInPicture === 'function';
-}
+};
 
 /**
  * Test for Fullscreen support
@@ -68,5 +69,6 @@ export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {
 
 export const fullscreenSupported = hasFullscreenSupport();
 export const pipSupported = hasPipSupport();
-export const airplaySupported = !!globalThis.WebKitPlaybackTargetAvailabilityEvent;
+export const airplaySupported =
+  !!globalThis.WebKitPlaybackTargetAvailabilityEvent;
 export const castSupported = !!globalThis.chrome;

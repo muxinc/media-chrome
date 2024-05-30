@@ -5,7 +5,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       font: var(--media-font,
@@ -25,18 +25,22 @@ template.innerHTML = /*html*/`
       pointer-events: auto;
     }
 
-    ${/*
+    ${
+      /*
       Only show outline when keyboard focusing.
       https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
-    */''}
+    */ ''
+    }
     :host(:focus-visible) {
       box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
       outline: 0;
     }
 
-    ${/*
-     * hide default focus ring, particularly when using mouse
-     */''}
+    ${
+      /*
+       * hide default focus ring, particularly when using mouse
+       */ ''
+    }
     :host(:where(:focus)) {
       box-shadow: none;
       outline: 0;
@@ -98,14 +102,18 @@ class MediaTextDisplay extends globalThis.HTMLElement {
 
   connectedCallback() {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
+    style.setProperty(
+      'display',
+      `var(--media-control-display, var(--${this.localName}-display, inline-flex))`
+    );
 
     const mediaControllerId = this.getAttribute(
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController =
+        this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }

@@ -3,7 +3,11 @@ import { MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
-import { getNumericAttr, setNumericAttr, getMediaController } from './utils/element-utils.js';
+import {
+  getNumericAttr,
+  setNumericAttr,
+  getMediaController,
+} from './utils/element-utils.js';
 
 export const Attributes = {
   RATES: 'rates',
@@ -13,7 +17,7 @@ export const DEFAULT_RATES = [1, 1.2, 1.5, 1.7, 2];
 export const DEFAULT_RATE = 1;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
     :host {
       min-width: 5ch;
@@ -38,7 +42,9 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
     ];
   }
 
-  #rates = new AttributeTokenList(this, Attributes.RATES, { defaultValue: DEFAULT_RATES });
+  #rates = new AttributeTokenList(this, Attributes.RATES, {
+    defaultValue: DEFAULT_RATES,
+  });
 
   constructor(options = {}) {
     super({ slotTemplate, ...options });
@@ -91,7 +97,11 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
    * @type {number} The current playback rate
    */
   get mediaPlaybackRate() {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, DEFAULT_RATE);
+    return getNumericAttr(
+      this,
+      MediaUIAttributes.MEDIA_PLAYBACK_RATE,
+      DEFAULT_RATE
+    );
   }
 
   set mediaPlaybackRate(value) {

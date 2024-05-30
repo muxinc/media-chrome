@@ -1,20 +1,15 @@
-
 export function stringifyRenditionList(renditions) {
-  return renditions
-    ?.map(stringifyRendition)
-    .join(' ');
+  return renditions?.map(stringifyRendition).join(' ');
 }
 
 export function parseRenditionList(renditions) {
-  return renditions
-    ?.split(/\s+/)
-    .map(parseRendition);
+  return renditions?.split(/\s+/).map(parseRendition);
 }
 
 export function stringifyRendition(rendition) {
   if (rendition) {
     const { id, width, height } = rendition;
-    return [id, width, height].filter(a => a != null).join(':')
+    return [id, width, height].filter((a) => a != null).join(':');
   }
 }
 
@@ -26,21 +21,17 @@ export function parseRendition(rendition) {
 }
 
 export function stringifyAudioTrackList(audioTracks) {
-  return audioTracks
-    ?.map(stringifyAudioTrack)
-    .join(' ');
+  return audioTracks?.map(stringifyAudioTrack).join(' ');
 }
 
 export function parseAudioTrackList(audioTracks) {
-  return audioTracks
-    ?.split(/\s+/)
-    .map(parseAudioTrack);
+  return audioTracks?.split(/\s+/).map(parseAudioTrack);
 }
 
 export function stringifyAudioTrack(audioTrack) {
   if (audioTrack) {
     const { id, kind, language, label } = audioTrack;
-    return [id, kind, language, label].filter(a => a != null).join(':')
+    return [id, kind, language, label].filter((a) => a != null).join(':');
   }
 }
 

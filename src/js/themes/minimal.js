@@ -11,7 +11,7 @@ import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaThemeElement } from '../media-theme-element.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       --_primary-color: var(--media-primary-color, #fff);
@@ -75,7 +75,7 @@ template.innerHTML = /*html*/`
       cursor: not-allowed;
     }
 
-    ${/* Turn some buttons off by default */''}
+    ${/* Turn some buttons off by default */ ''}
     media-seek-backward-button {
       display: var(--media-control-display, var(--media-seek-backward-button-display, none));
     }

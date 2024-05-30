@@ -1,7 +1,7 @@
 import { MediaChromeSelectMenu } from './media-chrome-selectmenu.js';
 import '../media-captions-button.js';
 import './media-captions-listbox.js';
-import { globalThis, document, } from '../utils/server-safe-globals.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
 
 /**
  * @csspart button - The default button that's in the shadow DOM.
@@ -16,7 +16,10 @@ class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
 
     const captionsListbox = document.createElement('media-captions-listbox');
     captionsListbox.part.add('listbox');
-    captionsListbox.setAttribute('exportparts', 'option, option-selected, indicator');
+    captionsListbox.setAttribute(
+      'exportparts',
+      'option, option-selected, indicator'
+    );
 
     const buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     const listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
@@ -30,7 +33,10 @@ class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
 }
 
 if (!globalThis.customElements.get('media-captions-selectmenu')) {
-  globalThis.customElements.define('media-captions-selectmenu', MediaCaptionsSelectMenu);
+  globalThis.customElements.define(
+    'media-captions-selectmenu',
+    MediaCaptionsSelectMenu
+  );
 }
 
 export { MediaCaptionsSelectMenu };

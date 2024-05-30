@@ -17,7 +17,7 @@ const ccIconOff = `<svg aria-hidden="true" viewBox="0 0 26 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
     :host([aria-checked="true"]) slot[name=off] {
       display: none !important;

@@ -6,10 +6,7 @@ import {
   setNumericAttr,
   getMediaController,
 } from './utils/element-utils.js';
-import {
-  DEFAULT_RATES,
-  DEFAULT_RATE,
-} from './media-playback-rate-button.js';
+import { DEFAULT_RATES, DEFAULT_RATE } from './media-playback-rate-button.js';
 import {
   MediaChromeMenu,
   createMenuItem,
@@ -78,7 +75,9 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
    */
   get anchorElement() {
     if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector('media-playback-rate-menu-button');
+    return getMediaController(this).querySelector(
+      'media-playback-rate-menu-button'
+    );
   }
 
   /**

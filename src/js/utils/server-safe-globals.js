@@ -28,7 +28,9 @@ const documentShim = {
    * @param {Event} event
    * @returns {boolean}
    */
-  dispatchEvent(event) { return false; }, // eslint-disable-line no-unused-vars
+  dispatchEvent(event /* eslint-disable-line no-unused-vars */) {
+    return false;
+  },
 };
 
 const globalThisShim = {
@@ -46,8 +48,10 @@ const globalThisShim = {
     /**
      * @param {string} key
      * @returns {string|null}
-    */
-    getItem(key) { return null; }, // eslint-disable-line no-unused-vars
+     */
+    getItem(key /* eslint-disable-line no-unused-vars */) {
+      return null;
+    },
     /**
      * @param {string} key
      * @param {string} value
@@ -55,7 +59,7 @@ const globalThisShim = {
     setItem(key, value) {}, // eslint-disable-line no-unused-vars
     /**
      * @param {string} key
-    */
+     */
     removeItem(key) {}, // eslint-disable-line no-unused-vars
   },
   CustomEvent: function CustomEvent() {},
@@ -64,7 +68,7 @@ const globalThisShim = {
     languages: [],
     get userAgent() {
       return '';
-    }
+    },
   },
   /**
    * @param {string} media
@@ -74,64 +78,60 @@ const globalThisShim = {
       matches: false,
       media,
     };
-  }
+  },
 };
 
 export const isServer =
-  typeof window === 'undefined' ||
-  typeof window.customElements === 'undefined';
+  typeof window === 'undefined' || typeof window.customElements === 'undefined';
 
-const isShimmed = Object.keys(globalThisShim)
-  .every(key => key in globalThis);
+const isShimmed = Object.keys(globalThisShim).every((key) => key in globalThis);
 
 /**
-  * @type { globalThis & {
-  *   WebKitPlaybackTargetAvailabilityEvent?,
-  *   chrome?,
-  *   DocumentFragment?,
-  *   getComputedStyle,
-  *   CastableVideoElement?
-  * } |
-  * {Node,
-  * HTMLElement,
-  * customElements,
-  * CustomEvent,
-  * getComputedStyle,
-  * addEventListener?,
-  * removeEventListener?,
-  * localStorage?,
-  * WebKitPlaybackTargetAvailabilityEvent?,
-  * window?,
-  * document?,
-  * chrome?,
-  * DocumentFragment?,
-  * ResizeObserver?,
-  * CastableVideoElement?,
-  * navigator?,
-  * matchMedia,
-  * } }
-  * */
+ * @type { globalThis & {
+ *   WebKitPlaybackTargetAvailabilityEvent?,
+ *   chrome?,
+ *   DocumentFragment?,
+ *   getComputedStyle,
+ *   CastableVideoElement?
+ * } |
+ * {Node,
+ * HTMLElement,
+ * customElements,
+ * CustomEvent,
+ * getComputedStyle,
+ * addEventListener?,
+ * removeEventListener?,
+ * localStorage?,
+ * WebKitPlaybackTargetAvailabilityEvent?,
+ * window?,
+ * document?,
+ * chrome?,
+ * DocumentFragment?,
+ * ResizeObserver?,
+ * CastableVideoElement?,
+ * navigator?,
+ * matchMedia,
+ * } }
+ * */
 export const GlobalThis = isServer && !isShimmed ? globalThisShim : globalThis;
 
 /**
-  * @type { document & { webkitExitFullscreen? } |
-  * {createElement,
-  * createElementNS?,
-  * activeElement?,
-  * fullscreenElement?,
-  * webkitExitFullscreen?,
-  * getElementById?,
-  * pictureInPictureElement?,
-  * exitPictureInPicture?,
-  * pictureInPictureEnabled?,
-  * requestPictureInPicture?,
-  * addEventListener?,
-  * removeEventListener?,
-  * } }
-  */
-export const Document = isServer && !isShimmed ? documentShim : globalThis.document;
+ * @type { document & { webkitExitFullscreen? } |
+ * {createElement,
+ * createElementNS?,
+ * activeElement?,
+ * fullscreenElement?,
+ * webkitExitFullscreen?,
+ * getElementById?,
+ * pictureInPictureElement?,
+ * exitPictureInPicture?,
+ * pictureInPictureEnabled?,
+ * requestPictureInPicture?,
+ * addEventListener?,
+ * removeEventListener?,
+ * } }
+ */
+export const Document =
+  isServer && !isShimmed ? documentShim : globalThis.document;
 
-export {
-  GlobalThis as globalThis,
-  Document as document
-};
+export { GlobalThis as globalThis, Document as document };

@@ -102,7 +102,7 @@ export const requestMap = {
         const url = new URL(cue.text, base);
         const previewCoordsStr = new URLSearchParams(url.hash).get('#xywh');
         mediaPreviewCoords = /** @type {[number, number, number, number]} */ (
-          previewCoordsStr.split(',').map(numStr => +numStr)
+          previewCoordsStr.split(',').map((numStr) => +numStr)
         );
         mediaPreviewImage = url.href;
       }

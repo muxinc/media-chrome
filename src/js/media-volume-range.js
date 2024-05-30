@@ -42,11 +42,14 @@ class MediaVolumeRange extends MediaChromeRange {
 
     this.range.addEventListener('input', () => {
       const detail = this.range.value;
-      const evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
-        composed: true,
-        bubbles: true,
-        detail,
-      });
+      const evt = new globalThis.CustomEvent(
+        MediaUIEvents.MEDIA_VOLUME_REQUEST,
+        {
+          composed: true,
+          bubbles: true,
+          detail,
+        }
+      );
       this.dispatchEvent(evt);
     });
   }
