@@ -28,9 +28,9 @@ const documentShim = {
    * @param {Event} event
    * @returns {boolean}
    */
-  dispatchEvent(event) {
+  dispatchEvent(event /* eslint-disable-line no-unused-vars */) {
     return false;
-  }, // eslint-disable-line no-unused-vars
+  },
 };
 
 const globalThisShim = {
@@ -49,7 +49,7 @@ const globalThisShim = {
      * @param {string} key
      * @returns {string|null}
      */
-    getItem(key) {
+    getItem(key /* eslint-disable-line no-unused-vars */) {
       return null;
     }, // eslint-disable-line no-unused-vars
     /**

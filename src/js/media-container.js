@@ -501,8 +501,7 @@ class MediaContainer extends globalThis.HTMLElement {
   /**
    * @param {HTMLMediaElement} media
    */
-  mediaUnsetCallback(media) {
-    // eslint-disable-line
+  mediaUnsetCallback(media /* eslint-disable-line no-unused-vars */) {
     this.#currentMedia = null;
   }
 

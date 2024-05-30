@@ -5,10 +5,9 @@ import { MediaUIAttributes } from '../../src/js/constants.js';
 
 describe('<media-theme>', () => {
   it(`<media-theme> with template attribute works w/ delayed document append`, async () => {
-
     const template = document.createElement('template');
     template.id = 'not-yet';
-    template.innerHTML = /*html*/`
+    template.innerHTML = /*html*/ `
       <media-controller>
         <slot name="media" slot="media"></slot>
         <media-control-bar>
@@ -22,16 +21,25 @@ describe('<media-theme>', () => {
 
     document.body.append(template, theme);
 
-    assert(theme.shadowRoot.innerHTML.includes('media-play-button'), 'shadow root contains a play button');
+    assert(
+      theme.shadowRoot.innerHTML.includes('media-play-button'),
+      'shadow root contains a play button'
+    );
   });
 
-  it(`<media-theme> w/ template HTML file URL doesn't duplicate fetch/render `, async function() {
+  it(`<media-theme> w/ template HTML file URL doesn't duplicate fetch/render `, async function () {
     this.timeout(5000);
 
     const theme = document.createElement('media-theme');
-    theme.setAttribute('template', 'https://gist.githubusercontent.com/luwes/5812c419830fee000d3463c496d18e19/raw/c295dad03a33ea8ad93870fa55de40a3308c8f45/media-theme-micro.html');
+    theme.setAttribute(
+      'template',
+      'https://gist.githubusercontent.com/luwes/5812c419830fee000d3463c496d18e19/raw/c295dad03a33ea8ad93870fa55de40a3308c8f45/media-theme-micro.html'
+    );
 
-    await waitUntil(() => theme.shadowRoot.querySelector('media-controller'), 5000);
+    await waitUntil(
+      () => theme.shadowRoot.querySelector('media-controller'),
+      5000
+    );
     const mediaController = theme.shadowRoot.querySelector('media-controller');
 
     document.body.append(theme);
@@ -125,7 +133,11 @@ describe('<media-theme>', () => {
     await Promise.resolve();
 
     assert.equal(h1.textContent, 'Hello world');
-    assert.equal(h1, theme1.shadowRoot.querySelector('h1'), 'h1 is the same element');
+    assert.equal(
+      h1,
+      theme1.shadowRoot.querySelector('h1'),
+      'h1 is the same element'
+    );
     assert(
       theme1.shadowRoot.querySelector('hello-world'),
       'caused a re-render and <hello-world> is available'
@@ -152,12 +164,21 @@ describe('<media-theme>', () => {
 
     // Also includes the media-gesture-receiver by default
     assert.equal(mediaController.mediaStateReceivers.length, 3);
-    assert(mediaController.mediaStateReceivers.includes(mediaController), 'registers itself');
-    assert(mediaController.mediaStateReceivers.includes(playButton), 'registers play button');
+    assert(
+      mediaController.mediaStateReceivers.includes(mediaController),
+      'registers itself'
+    );
+    assert(
+      mediaController.mediaStateReceivers.includes(playButton),
+      'registers play button'
+    );
 
     playButton.remove();
 
     assert.equal(mediaController.mediaStateReceivers.length, 2);
-    assert(!mediaController.mediaStateReceivers.includes(playButton), 'unregisters play button');
+    assert(
+      !mediaController.mediaStateReceivers.includes(playButton),
+      'unregisters play button'
+    );
   });
 });
