@@ -97,9 +97,13 @@ export const parseTracks = (trackOrTracks) => {
  * @param {string} [obj.language] - The BCP-47 compliant string representing the language code of the track
  * @returns {string} A string representing a TextTrack with the format: "language[:label]"
  */
-export const formatTextTrackObj = ({ kind, label, language } = { kind: 'subtitles' }) => {
+export const formatTextTrackObj = (
+  { kind, label, language } = { kind: 'subtitles' }
+) => {
   if (!label) return language;
-  return `${kind === 'captions' ? 'cc': 'sb'}:${language}:${encodeURIComponent(label)}`;
+  return `${kind === 'captions' ? 'cc' : 'sb'}:${language}:${encodeURIComponent(
+    label
+  )}`;
 };
 
 /**
@@ -231,7 +235,6 @@ export const getTextTracksList = (media, filterPredOrObj = () => true) => {
   return Array.from(media.textTracks).filter(filterPred);
 };
 
-
 /**
  * Are captions or subtitles enabled?
  *
@@ -239,8 +242,8 @@ export const getTextTracksList = (media, filterPredOrObj = () => true) => {
  * @returns {boolean} Whether captions are enabled or not
  */
 export const areSubsOn = (el) => {
-  const showingSubtitles = !!el.mediaSubtitlesShowing?.length || el.hasAttribute(
-    MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
-  );
+  const showingSubtitles =
+    !!el.mediaSubtitlesShowing?.length ||
+    el.hasAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
   return showingSubtitles;
 };

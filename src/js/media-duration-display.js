@@ -44,7 +44,10 @@ class MediaDurationDisplay extends MediaTextDisplay {
 }
 
 if (!globalThis.customElements.get('media-duration-display')) {
-  globalThis.customElements.define('media-duration-display', MediaDurationDisplay);
+  globalThis.customElements.define(
+    'media-duration-display',
+    MediaDurationDisplay
+  );
 }
 
 export default MediaDurationDisplay;

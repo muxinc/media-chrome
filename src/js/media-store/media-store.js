@@ -252,7 +252,8 @@ const createMediaStore = ({
       stateOwners.media?.audioTracks !== nextStateOwners.media?.audioTracks;
     const remoteChanged =
       stateOwners.media?.remote !== nextStateOwners.media?.remote;
-    const rootNodeChanged = stateOwners.documentElement !== nextStateOwners.documentElement;
+    const rootNodeChanged =
+      stateOwners.documentElement !== nextStateOwners.documentElement;
 
     // For any particular `stateOwner` (or "sub-owner"), we should teardown if and only if:
     // * the `stateOwner` existed -AND-
@@ -460,11 +461,17 @@ const createMediaStore = ({
         prevHandler = stateUpdateHandlers[stateName].rootEvents;
         rootEvents.forEach((eventType) => {
           if (prevHandler && teardownRootNode) {
-            stateOwners.documentElement.removeEventListener(eventType, prevHandler);
+            stateOwners.documentElement.removeEventListener(
+              eventType,
+              prevHandler
+            );
             stateUpdateHandlers[stateName].rootEvents = undefined;
           }
           if (setupRootNode) {
-            nextStateOwners.documentElement.addEventListener(eventType, handler);
+            nextStateOwners.documentElement.addEventListener(
+              eventType,
+              handler
+            );
             stateUpdateHandlers[stateName].rootEvents = handler;
           }
         });

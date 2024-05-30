@@ -14,7 +14,7 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
-      MediaUIAttributes.MEDIA_PREVIEW_CHAPTER
+      MediaUIAttributes.MEDIA_PREVIEW_CHAPTER,
     ];
   }
 
@@ -53,7 +53,10 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
 }
 
 if (!globalThis.customElements.get('media-preview-chapter-display')) {
-  globalThis.customElements.define('media-preview-chapter-display', MediaPreviewChapterDisplay);
+  globalThis.customElements.define(
+    'media-preview-chapter-display',
+    MediaPreviewChapterDisplay
+  );
 }
 
 export default MediaPreviewChapterDisplay;

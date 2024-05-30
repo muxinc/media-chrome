@@ -33,7 +33,7 @@ const updateAriaValueText = (el) => {
 };
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       --media-box-border-radius: 4px;
@@ -44,8 +44,10 @@ template.innerHTML = /*html*/`
       --_control-background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
       --_preview-background: var(--media-preview-background, var(--_control-background));
 
-      ${/* 1% rail width trick was off in Safari, contain: layout seems to
-        prevent the horizontal overflow as well. */ ''}
+      ${
+        /* 1% rail width trick was off in Safari, contain: layout seems to
+        prevent the horizontal overflow as well. */ ''
+      }
       contain: layout;
     }
 
@@ -65,7 +67,9 @@ template.innerHTML = /*html*/`
 
     [part~="box"] {
       width: min-content;
-      ${/* absolute position is needed here so the box doesn't overflow the bounds */''}
+      ${
+        /* absolute position is needed here so the box doesn't overflow the bounds */ ''
+      }
       position: absolute;
       bottom: 100%;
       flex-direction: column;
@@ -89,7 +93,9 @@ template.innerHTML = /*html*/`
       opacity: 0;
     }
 
-    :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${MediaUIAttributes.MEDIA_PREVIEW_TIME}])[dragging]) [part~="preview-box"] {
+    :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${
+  MediaUIAttributes.MEDIA_PREVIEW_TIME
+}])[dragging]) [part~="preview-box"] {
       transition-duration: var(--media-preview-transition-duration-in, .5s);
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
@@ -97,7 +103,9 @@ template.innerHTML = /*html*/`
     }
 
     @media (hover: hover) {
-      :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${MediaUIAttributes.MEDIA_PREVIEW_TIME}]):hover) [part~="preview-box"] {
+      :host(:is([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}], [${
+  MediaUIAttributes.MEDIA_PREVIEW_TIME
+}]):hover) [part~="preview-box"] {
         transition-duration: var(--media-preview-transition-duration-in, .5s);
         transition-delay: var(--media-preview-transition-delay-in, .25s);
         visibility: visible;
@@ -108,7 +116,9 @@ template.innerHTML = /*html*/`
     media-preview-thumbnail,
     ::slotted(media-preview-thumbnail) {
       visibility: hidden;
-      ${/* delay changing these CSS props until the preview box transition is ended */''}
+      ${
+        /* delay changing these CSS props until the preview box transition is ended */ ''
+      }
       transition: visibility 0s .25s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-thumbnail-background, var(--_preview-background));
@@ -122,15 +132,23 @@ template.innerHTML = /*html*/`
         var(--media-preview-border-radius) var(--media-preview-border-radius) 0 0);
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}][dragging]) media-preview-thumbnail,
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}][dragging]) ::slotted(media-preview-thumbnail) {
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }][dragging]) media-preview-thumbnail,
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }][dragging]) ::slotted(media-preview-thumbnail) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       visibility: visible;
     }
 
     @media (hover: hover) {
-      :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) media-preview-thumbnail,
-      :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]:hover) ::slotted(media-preview-thumbnail) {
+      :host([${
+        MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+      }]:hover) media-preview-thumbnail,
+      :host([${
+        MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+      }]:hover) ::slotted(media-preview-thumbnail) {
         transition-delay: var(--media-preview-transition-delay-in, .25s);
         visibility: visible;
       }
@@ -146,7 +164,9 @@ template.innerHTML = /*html*/`
       line-height: 17px;
       min-width: 0;
       visibility: hidden;
-      ${/* delay changing these CSS props until the preview box transition is ended */''}
+      ${
+        /* delay changing these CSS props until the preview box transition is ended */ ''
+      }
       transition: min-width 0s, border-radius 0s, margin 0s, padding 0s, visibility 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-chapter-background, var(--_preview-background));
@@ -158,8 +178,12 @@ template.innerHTML = /*html*/`
       text-shadow: var(--media-preview-chapter-text-shadow, 0 0 4px rgb(0 0 0 / .75));
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-chapter-display,
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) ::slotted(media-preview-chapter-display) {
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]) media-preview-chapter-display,
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]) ::slotted(media-preview-chapter-display) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       border-radius: var(--media-preview-chapter-border-radius, 0);
       padding: var(--media-preview-chapter-padding, 3.5px 9px 0);
@@ -168,7 +192,9 @@ template.innerHTML = /*html*/`
     }
 
     media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}],
-    ::slotted(media-preview-chapter-display[${MediaUIAttributes.MEDIA_PREVIEW_CHAPTER}]) {
+    ::slotted(media-preview-chapter-display[${
+      MediaUIAttributes.MEDIA_PREVIEW_CHAPTER
+    }]) {
       visibility: visible;
     }
 
@@ -184,7 +210,9 @@ template.innerHTML = /*html*/`
       font-size: var(--media-font-size, 13px);
       line-height: 17px;
       min-width: 0;
-      ${/* delay changing these CSS props until the preview box transition is ended */''}
+      ${
+        /* delay changing these CSS props until the preview box transition is ended */ ''
+      }
       transition: min-width 0s, border-radius 0s;
       transition-delay: calc(var(--media-preview-transition-delay-out, 0s) + var(--media-preview-transition-duration-out, .25s));
       background: var(--media-preview-time-background, var(--_preview-background));
@@ -201,8 +229,12 @@ template.innerHTML = /*html*/`
       ));
     }
 
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) media-preview-time-display,
-    :host([${MediaUIAttributes.MEDIA_PREVIEW_IMAGE}]) ::slotted(media-preview-time-display) {
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]) media-preview-time-display,
+    :host([${
+      MediaUIAttributes.MEDIA_PREVIEW_IMAGE
+    }]) ::slotted(media-preview-time-display) {
       transition-delay: var(--media-preview-transition-delay-in, .25s);
       border-radius: var(--media-preview-time-border-radius,
         0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
@@ -222,7 +254,7 @@ template.innerHTML = /*html*/`
         calc(var(--_box-shift, 0))),
         calc(var(--_box-width) / 2 - 50% - var(--media-box-arrow-offset))
       ));
-      ${/* border-color has to come before border-top-color! */''}
+      ${/* border-color has to come before border-top-color! */ ''}
       border-color: transparent;
       border-top-color: var(--media-box-arrow-background, var(--_control-background));
       border-width: var(--media-box-arrow-border-width,
@@ -242,29 +274,39 @@ template.innerHTML = /*html*/`
   </div>
   <div id="current-rail">
     <slot name="current" part="box current-box">
-      ${/* Example: add the current time w/ arrow to the playhead
+      ${
+        /* Example: add the current time w/ arrow to the playhead
         <media-time-display slot="current"></media-time-display>
-        <div part="arrow" slot="current"></div> */''}
+        <div part="arrow" slot="current"></div> */ ''
+      }
     </slot>
   </div>
 `;
 
 const calcRangeValueFromTime = (el, time = el.mediaCurrentTime) => {
-  const startTime = Number.isFinite(el.mediaSeekableStart) ? el.mediaSeekableStart : 0;
+  const startTime = Number.isFinite(el.mediaSeekableStart)
+    ? el.mediaSeekableStart
+    : 0;
   // Prefer `mediaDuration` when available and finite.
-  const endTime = Number.isFinite(el.mediaDuration) ? el.mediaDuration : el.mediaSeekableEnd;
+  const endTime = Number.isFinite(el.mediaDuration)
+    ? el.mediaDuration
+    : el.mediaSeekableEnd;
   if (Number.isNaN(endTime)) return 0;
   const value = (time - startTime) / (endTime - startTime);
   return Math.max(0, Math.min(value, 1));
-}
+};
 
 const calcTimeFromRangeValue = (el, value = el.range.valueAsNumber) => {
-  const startTime = Number.isFinite(el.mediaSeekableStart) ? el.mediaSeekableStart : 0;
+  const startTime = Number.isFinite(el.mediaSeekableStart)
+    ? el.mediaSeekableStart
+    : 0;
   // Prefer `mediaDuration` when available and finite.
-  const endTime = Number.isFinite(el.mediaDuration) ? el.mediaDuration : el.mediaSeekableEnd;
+  const endTime = Number.isFinite(el.mediaDuration)
+    ? el.mediaDuration
+    : el.mediaSeekableEnd;
   if (Number.isNaN(endTime)) return 0;
-  return (value * (endTime - startTime)) + startTime;
-}
+  return value * (endTime - startTime) + startTime;
+};
 
 /**
  * @slot preview - An element that slides along the timeline to the position of the pointer hovering.
@@ -377,8 +419,12 @@ class MediaTimeRange extends MediaChromeRange {
     this.#currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
 
     const computedStyle = getComputedStyle(this);
-    this.#boxPaddingLeft = parseInt(computedStyle.getPropertyValue('--media-box-padding-left'));
-    this.#boxPaddingRight = parseInt(computedStyle.getPropertyValue('--media-box-padding-right'));
+    this.#boxPaddingLeft = parseInt(
+      computedStyle.getPropertyValue('--media-box-padding-left')
+    );
+    this.#boxPaddingRight = parseInt(
+      computedStyle.getPropertyValue('--media-box-padding-right')
+    );
 
     this.#animation = new RangeAnimation(this.range, this.#updateRange, 60);
   }
@@ -417,12 +463,11 @@ class MediaTimeRange extends MediaChromeRange {
       this.#animation.update({
         start: calcRangeValueFromTime(this),
         duration: this.mediaSeekableEnd - this.mediaSeekableStart,
-        playbackRate: this.mediaPlaybackRate
+        playbackRate: this.mediaPlaybackRate,
       });
       this.#toggleRangeAnimation();
       updateAriaValueText(this);
-    }
-    else if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
+    } else if (attrName === MediaUIAttributes.MEDIA_BUFFERED) {
       this.updateBufferedBar();
     }
 
@@ -444,12 +489,14 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   #shouldRangeAnimate() {
-    return this.isConnected
-      && !this.mediaPaused
-      && !this.mediaLoading
-      && !this.mediaEnded
-      && this.mediaSeekableEnd > 0
-      && isElementVisible(this);
+    return (
+      this.isConnected &&
+      !this.mediaPaused &&
+      !this.mediaLoading &&
+      !this.mediaEnded &&
+      this.mediaSeekableEnd > 0 &&
+      isElementVisible(this)
+    );
   }
 
   #updateRange = (value) => {
@@ -457,7 +504,7 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.range.valueAsNumber = value;
     this.updateBar();
-  }
+  };
 
   get mediaChaptersCues() {
     return this.#mediaChaptersCues;
@@ -466,10 +513,12 @@ class MediaTimeRange extends MediaChromeRange {
   set mediaChaptersCues(value) {
     this.#mediaChaptersCues = value;
 
-    this.updateSegments(this.#mediaChaptersCues?.map(c => ({
-      start: calcRangeValueFromTime(this, c.startTime),
-      end: calcRangeValueFromTime(this, c.endTime),
-    })));
+    this.updateSegments(
+      this.#mediaChaptersCues?.map((c) => ({
+        start: calcRangeValueFromTime(this, c.startTime),
+        end: calcRangeValueFromTime(this, c.endTime),
+      }))
+    );
   }
 
   /**
@@ -633,9 +682,10 @@ class MediaTimeRange extends MediaChromeRange {
 
     if (!this.mediaEnded) {
       const currentTime = this.mediaCurrentTime;
-      const [, bufferedEnd = this.mediaSeekableStart] = buffered.find(
-        ([start, end]) => start <= currentTime && currentTime <= end
-      ) ?? [];
+      const [, bufferedEnd = this.mediaSeekableStart] =
+        buffered.find(
+          ([start, end]) => start <= currentTime && currentTime <= end
+        ) ?? [];
       relativeBufferedEnd = calcRangeValueFromTime(this, bufferedEnd);
     } else {
       // If we've ended, there may be some discrepancies between seekable end, duration, and current time.
@@ -654,8 +704,14 @@ class MediaTimeRange extends MediaChromeRange {
     const currentSlot = this.shadowRoot.querySelector('slot[name="current"]');
     if (!currentSlot.assignedElements().length) return;
 
-    const currentRailRule = getOrInsertCSSRule(this.shadowRoot, '#current-rail');
-    const currentBoxRule = getOrInsertCSSRule(this.shadowRoot, '[part~="current-box"]');
+    const currentRailRule = getOrInsertCSSRule(
+      this.shadowRoot,
+      '#current-rail'
+    );
+    const currentBoxRule = getOrInsertCSSRule(
+      this.shadowRoot,
+      '[part~="current-box"]'
+    );
 
     const rects = this.#getElementRects(this.#currentBox);
     const boxPos = this.#getBoxPosition(rects, this.range.valueAsNumber);
@@ -725,12 +781,14 @@ class MediaTimeRange extends MediaChromeRange {
     const pointerX = ratio * rects.range.width;
 
     if (pointerX < min + this.#boxPaddingLeft) {
-      const offset = rects.range.left - rects.bounds.left - this.#boxPaddingLeft;
+      const offset =
+        rects.range.left - rects.bounds.left - this.#boxPaddingLeft;
       return `${pointerX - width / 2 + offset}px`;
     }
 
     if (pointerX > max - this.#boxPaddingRight) {
-      const offset = rects.bounds.right - rects.range.right - this.#boxPaddingRight;
+      const offset =
+        rects.bounds.right - rects.range.right - this.#boxPaddingRight;
       return `${pointerX + width / 2 - offset - rects.range.width}px`;
     }
 
@@ -762,7 +820,9 @@ class MediaTimeRange extends MediaChromeRange {
 
   #handlePointerMove(evt) {
     // @ts-ignore
-    const isOverBoxes = [...this.#boxes].some((b) => evt.composedPath().includes(b));
+    const isOverBoxes = [...this.#boxes].some((b) =>
+      evt.composedPath().includes(b)
+    );
 
     if (!this.dragging && (isOverBoxes || !evt.composedPath().includes(this))) {
       this.#previewRequest(null);
@@ -773,8 +833,14 @@ class MediaTimeRange extends MediaChromeRange {
     // If no duration we can't calculate which time to show
     if (!duration) return;
 
-    const previewRailRule = getOrInsertCSSRule(this.shadowRoot, '#preview-rail');
-    const previewBoxRule = getOrInsertCSSRule(this.shadowRoot, '[part~="preview-box"]');
+    const previewRailRule = getOrInsertCSSRule(
+      this.shadowRoot,
+      '#preview-rail'
+    );
+    const previewBoxRule = getOrInsertCSSRule(
+      this.shadowRoot,
+      '[part~="preview-box"]'
+    );
 
     const rects = this.#getElementRects(this.#previewBox);
 
@@ -791,18 +857,23 @@ class MediaTimeRange extends MediaChromeRange {
 
     // At least require a 1s difference before requesting a new preview thumbnail,
     // unless it's at the beginning or end of the timeline.
-    const diff = Math.round(this.#previewTime) - Math.round(pointerRatio * duration);
-    if (Math.abs(diff) < 1 && pointerRatio > .01 && pointerRatio < 0.99) return;
+    const diff =
+      Math.round(this.#previewTime) - Math.round(pointerRatio * duration);
+    if (Math.abs(diff) < 1 && pointerRatio > 0.01 && pointerRatio < 0.99)
+      return;
 
     this.#previewTime = pointerRatio * duration;
     this.#previewRequest(this.#previewTime);
   }
 
   #previewRequest(detail) {
-    this.dispatchEvent(new globalThis.CustomEvent(
-      MediaUIEvents.MEDIA_PREVIEW_REQUEST,
-      { composed: true, bubbles: true, detail }
-    ));
+    this.dispatchEvent(
+      new globalThis.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
+        composed: true,
+        bubbles: true,
+        detail,
+      })
+    );
   }
 
   #seekRequest() {
@@ -810,10 +881,13 @@ class MediaTimeRange extends MediaChromeRange {
     this.#animation.stop();
 
     const detail = calcTimeFromRangeValue(this);
-    this.dispatchEvent(new globalThis.CustomEvent(
-      MediaUIEvents.MEDIA_SEEK_REQUEST,
-      { composed: true, bubbles: true, detail }
-    ));
+    this.dispatchEvent(
+      new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+        composed: true,
+        bubbles: true,
+        detail,
+      })
+    );
   }
 }
 

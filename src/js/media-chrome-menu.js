@@ -57,7 +57,7 @@ export function createIndicator(el, name) {
 }
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       font: var(--media-font,
@@ -529,7 +529,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
 
     this.#previousItems = currentItems;
-  }
+  };
 
   /**
    * Sets the layout style for the menu.
@@ -575,11 +575,11 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #handleBoundsResize = () => {
     this.#positionMenu(false);
     this.#resizeMenu(false);
-  }
+  };
 
   #handleMenuResize = () => {
     this.#positionMenu(false);
-  }
+  };
 
   /**
    * Updates the popover menu position based on the anchor element.
@@ -644,7 +644,10 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     if (expandedSubmenu) {
       const height = expandedSubmenu.offsetHeight;
-      const width = Math.max(expandedSubmenu.offsetWidth, expandedMenuItem.offsetWidth);
+      const width = Math.max(
+        expandedSubmenu.offsetWidth,
+        expandedMenuItem.offsetWidth
+      );
 
       // Safari required directly setting the style property instead of
       // updating the style node for the min-width or min-height to work.
@@ -674,7 +677,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     // If there are no menu items, focus on the first focusable child.
 
     /** @type {HTMLElement} */
-    const focusable = this.querySelector('[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]');
+    const focusable = this.querySelector(
+      '[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]'
+    );
     focusable?.focus();
   }
 
@@ -699,7 +704,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   get #backButtonElement() {
     /** @type {HTMLSlotElement} */
     const headerSlot = this.shadowRoot.querySelector('slot[name="header"]');
-    return headerSlot.assignedElements({ flatten: true })
+    return headerSlot
+      .assignedElements({ flatten: true })
       ?.find((el) => el.part.contains('back') && el.part.contains('button'));
   }
 
@@ -775,14 +781,27 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       }
 
       // If the menu was opened by a click, close it when selecting an item.
-      if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && !this.hidden) {
+      if (
+        this.#invokerElement &&
+        this.#invokerElement !== event.relatedTarget &&
+        !this.hidden
+      ) {
         this.hidden = true;
       }
     }
   }
 
   get keysUsed() {
-    return ['Enter', 'Escape', 'Tab', ' ', 'ArrowDown', 'ArrowUp', 'Home', 'End'];
+    return [
+      'Enter',
+      'Escape',
+      'Tab',
+      ' ',
+      'ArrowDown',
+      'ArrowUp',
+      'Home',
+      'End',
+    ];
   }
 
   #handleKeyDown(event) {
@@ -816,7 +835,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
       // Go back to the previous focused element.
       this.blur();
-
     } else if (key === 'Escape') {
       // Go back to the previous menu or close the menu.
       this.#previouslyFocused?.focus();
@@ -899,7 +917,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 }
 
 function isMenuItem(element) {
-  return ['menuitem', 'menuitemradio', 'menuitemcheckbox'].includes(element?.role);
+  return ['menuitem', 'menuitemradio', 'menuitemcheckbox'].includes(
+    element?.role
+  );
 }
 
 function getBoundsElement(host) {

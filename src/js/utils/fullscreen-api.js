@@ -17,8 +17,11 @@ if (document.fullscreenElement === undefined) {
       ? 'webkitExitFullscreen'
       : 'webkitCancelFullScreen';
   fullscreenApi.rootEvents = ['webkitfullscreenchange'];
-  fullscreenApi.mediaEvents = ['webkitbeginfullscreen', 'webkitendfullscreen'],
-  fullscreenApi.element = 'webkitFullscreenElement';
+  (fullscreenApi.mediaEvents = [
+    'webkitbeginfullscreen',
+    'webkitendfullscreen',
+  ]),
+    (fullscreenApi.element = 'webkitFullscreenElement');
   fullscreenApi.error = 'webkitfullscreenerror';
   fullscreenApi.enabled = 'webkitFullscreenEnabled';
 }

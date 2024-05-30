@@ -134,7 +134,6 @@ template.innerHTML = `
   </div>
 `;
 
-
 /**
  * @extends {HTMLElement}
  */
@@ -469,12 +468,19 @@ class MediaClipSelector extends globalThis.HTMLElement {
         let offRangeHandler = (evt) => {
           if (evt.target != this && !this.contains(evt.target)) {
             this.thumbnailPreview.style.display = 'none';
-            globalThis.window?.removeEventListener('mousemove', offRangeHandler);
+            globalThis.window?.removeEventListener(
+              'mousemove',
+              offRangeHandler
+            );
             rangeEntered = false;
             stopTrackingMouse();
           }
         };
-        globalThis.window?.addEventListener('mousemove', offRangeHandler, false);
+        globalThis.window?.addEventListener(
+          'mousemove',
+          offRangeHandler,
+          false
+        );
       }
 
       if (!this.mediaDuration) {

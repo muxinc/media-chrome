@@ -1,8 +1,11 @@
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { containsComposedNode, getActiveElement } from './utils/element-utils.js';
+import {
+  containsComposedNode,
+  getActiveElement,
+} from './utils/element-utils.js';
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
       font: var(--media-font,
@@ -79,10 +82,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   static template = template;
 
   static get observedAttributes() {
-    return [
-      Attributes.HIDDEN,
-      Attributes.ANCHOR,
-    ];
+    return [Attributes.HIDDEN, Attributes.ANCHOR];
   }
 
   #previouslyFocused;
@@ -149,7 +149,9 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     this.#previouslyFocused = getActiveElement();
 
     /** @type {HTMLElement} */
-    const focusable = this.querySelector('[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]');
+    const focusable = this.querySelector(
+      '[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]'
+    );
     focusable?.focus();
   }
 
@@ -166,7 +168,11 @@ class MediaChromeDialog extends globalThis.HTMLElement {
       this.#previouslyFocused?.focus();
 
       // If the menu was opened by a click, close it when selecting an item.
-      if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && !this.hidden) {
+      if (
+        this.#invokerElement &&
+        this.#invokerElement !== event.relatedTarget &&
+        !this.hidden
+      ) {
         this.hidden = true;
       }
     }
@@ -201,7 +207,6 @@ class MediaChromeDialog extends globalThis.HTMLElement {
 
       // Go back to the previous focused element.
       this.blur();
-
     } else if (key === 'Escape') {
       // Go back to the previous menu or close the menu.
       this.#previouslyFocused?.focus();

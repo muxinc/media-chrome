@@ -4,7 +4,7 @@ import { getMediaController } from './utils/element-utils.js';
 import { nouns } from './labels/labels.js';
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <slot name="icon">
     <svg aria-hidden="true" viewBox="0 0 24 24">
       <path d="M4.5 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm7.5 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm7.5 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
@@ -17,10 +17,7 @@ slotTemplate.innerHTML = /*html*/`
  */
 class MediaSettingsMenuButton extends MediaChromeMenuButton {
   static get observedAttributes() {
-    return [
-      ...super.observedAttributes,
-      'target',
-    ];
+    return [...super.observedAttributes, 'target'];
   }
 
   constructor() {
@@ -43,7 +40,10 @@ class MediaSettingsMenuButton extends MediaChromeMenuButton {
 }
 
 if (!globalThis.customElements.get('media-settings-menu-button')) {
-  globalThis.customElements.define('media-settings-menu-button', MediaSettingsMenuButton);
+  globalThis.customElements.define(
+    'media-settings-menu-button',
+    MediaSettingsMenuButton
+  );
 }
 
 export { MediaSettingsMenuButton };

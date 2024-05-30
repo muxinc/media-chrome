@@ -1,7 +1,7 @@
 import { MediaStateReceiverAttributes } from '../constants.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
-const checkIcon = /*html*/`
+const checkIcon = /*html*/ `
 <svg aria-hidden="true" viewBox="0 1 24 24" part="select-indicator indicator">
   <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
 </svg>`;
@@ -39,7 +39,7 @@ export function createIndicator(el, name) {
 }
 
 const template = document.createElement('template');
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
 <style>
   :host {
     font: var(--media-font,
@@ -217,7 +217,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   get selectedOptions() {
-    return this.options.filter(option => option.selected);
+    return this.options.filter((option) => option.selected);
   }
 
   get value() {
@@ -225,7 +225,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   set value(newValue) {
-    const option = this.options.find(option => option.value === newValue);
+    const option = this.options.find((option) => option.value === newValue);
 
     if (!option) return;
 
@@ -238,13 +238,17 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   #clickListener = (e) => {
     this.handleClick(e);
-  }
+  };
 
   #handleKeyListener(e) {
     const { key } = e;
 
     if (key === 'Enter' || key === ' ') {
-      this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
+      this.handleSelection(
+        e,
+        this.hasAttribute('aria-multiselectable') &&
+          this.getAttribute('aria-multiselectable') === 'true'
+      );
     } else {
       this.handleMovement(e);
     }
@@ -266,7 +270,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
 
     this.#handleKeyListener(e);
-  }
+  };
 
   #keydownListener = (e) => {
     const { key, altKey } = e;
@@ -291,8 +295,8 @@ class MediaChromeListbox extends globalThis.HTMLElement {
       return;
     }
 
-    this.addEventListener('keyup', this.#keyupListener, {once: true});
-  }
+    this.addEventListener('keyup', this.#keyupListener, { once: true });
+  };
 
   enable() {
     this.addEventListener('click', this.#clickListener);
@@ -305,7 +309,6 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
-
     if (attrName === 'style' && newValue !== oldValue) {
       this.#updateLayoutStyle();
     } else if (attrName === MediaStateReceiverAttributes.MEDIA_CONTROLLER) {
@@ -329,8 +332,10 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   #updateLayoutStyle() {
     const layoutRowStyle = this.shadowRoot.querySelector('#layout-row');
-    const isLayoutRow = getComputedStyle(this)
-      .getPropertyValue('--media-listbox-layout')?.trim() === 'row';
+    const isLayoutRow =
+      getComputedStyle(this)
+        .getPropertyValue('--media-listbox-layout')
+        ?.trim() === 'row';
 
     layoutRowStyle.setAttribute('media', isLayoutRow ? '' : 'width:0');
   }
@@ -354,7 +359,8 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController =
+        this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }
@@ -373,7 +379,9 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
   #getOption(e) {
     const composedPath = e.composedPath();
-    const index = composedPath.findIndex(el => el.nodeName === 'MEDIA-CHROME-OPTION');
+    const index = composedPath.findIndex(
+      (el) => el.nodeName === 'MEDIA-CHROME-OPTION'
+    );
 
     return composedPath[index];
   }
@@ -389,8 +397,11 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   #selectOption(option, toggle) {
     const oldSelectedOptions = [...this.selectedOptions];
 
-    if (!this.hasAttribute('aria-multiselectable') || this.getAttribute('aria-multiselectable') !== 'true') {
-      this.options.forEach(el => (el.selected = false));
+    if (
+      !this.hasAttribute('aria-multiselectable') ||
+      this.getAttribute('aria-multiselectable') !== 'true'
+    ) {
+      this.options.forEach((el) => (el.selected = false));
     }
 
     if (toggle) {
@@ -400,7 +411,9 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
 
     if (this.selectedOptions.some((opt, i) => opt != oldSelectedOptions[i])) {
-      this.dispatchEvent(new Event('change', { bubbles: true, composed: true }));
+      this.dispatchEvent(
+        new Event('change', { bubbles: true, composed: true })
+      );
     }
   }
 
@@ -410,7 +423,9 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
     let currentOption = this.#getOption(e);
     if (!currentOption) {
-      currentOption = els.filter(el => el.getAttribute('tabindex') === '0')[0];
+      currentOption = els.filter(
+        (el) => el.getAttribute('tabindex') === '0'
+      )[0];
     }
 
     let nextOption;
@@ -444,7 +459,7 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     }
 
     if (nextOption) {
-      els.forEach(el => el.setAttribute('tabindex', '-1'));
+      els.forEach((el) => el.setAttribute('tabindex', '-1'));
       nextOption.setAttribute('tabindex', '0');
       nextOption.focus();
     }
@@ -455,17 +470,23 @@ class MediaChromeListbox extends globalThis.HTMLElement {
 
     if (!option || option.hasAttribute('disabled')) return;
 
-    this.options.forEach(el => el.setAttribute('tabindex', '-1'));
+    this.options.forEach((el) => el.setAttribute('tabindex', '-1'));
     option.setAttribute('tabindex', '0');
 
-    this.handleSelection(e, this.hasAttribute('aria-multiselectable') && this.getAttribute('aria-multiselectable') === 'true');
+    this.handleSelection(
+      e,
+      this.hasAttribute('aria-multiselectable') &&
+        this.getAttribute('aria-multiselectable') === 'true'
+    );
   }
 
   #searchOption(key) {
     this.#clearKeysOnDelay();
 
     const els = this.options;
-    const activeIndex = els.findIndex(el => el.getAttribute('tabindex') === '0');
+    const activeIndex = els.findIndex(
+      (el) => el.getAttribute('tabindex') === '0'
+    );
 
     // always accumulate the key
     this.#keysSoFar += key;
@@ -473,18 +494,26 @@ class MediaChromeListbox extends globalThis.HTMLElement {
     // if the same key is pressed, assume it's a repeated key
     // to skip to the same option that begings with that key
     // until the user presses another key and a better choice is available
-    const repeatedKey = this.#keysSoFar.split('').every(k => k === key);
+    const repeatedKey = this.#keysSoFar.split('').every((k) => k === key);
 
     // if it's a repeat key, skip the current option
-    const after = els.slice(activeIndex + (repeatedKey ? 1 : 0)).filter(el => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
-    const before = els.slice(0, activeIndex - (repeatedKey ? 1 : 0)).filter(el => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
+    const after = els
+      .slice(activeIndex + (repeatedKey ? 1 : 0))
+      .filter((el) => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
+    const before = els
+      .slice(0, activeIndex - (repeatedKey ? 1 : 0))
+      .filter((el) => el.textContent.toLowerCase().startsWith(this.#keysSoFar));
 
     let afterRepeated = [];
     let beforeRepeated = [];
 
     if (repeatedKey) {
-      afterRepeated = els.slice(activeIndex + (repeatedKey ? 1 : 0)).filter(el => el.textContent.startsWith(key));
-      beforeRepeated = els.slice(0, activeIndex - (repeatedKey ? 1 : 0)).filter(el => el.textContent.startsWith(key));
+      afterRepeated = els
+        .slice(activeIndex + (repeatedKey ? 1 : 0))
+        .filter((el) => el.textContent.startsWith(key));
+      beforeRepeated = els
+        .slice(0, activeIndex - (repeatedKey ? 1 : 0))
+        .filter((el) => el.textContent.startsWith(key));
     }
 
     const returns = [...after, ...before, ...afterRepeated, ...beforeRepeated];

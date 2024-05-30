@@ -19,9 +19,9 @@ const highIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
 </svg>`;
 
 const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/`
+slotTemplate.innerHTML = /*html*/ `
   <style>
-  ${/* Default to High slot/icon. */''}
+  ${/* Default to High slot/icon. */ ''}
   :host(:not([${MEDIA_VOLUME_LEVEL}])) slot:not([name=high]):not([name=icon]), 
   :host([${MEDIA_VOLUME_LEVEL}=high]) slot:not([name=high]):not([name=icon]) {
     display: none !important;

@@ -1,15 +1,17 @@
-import { MediaUIAttributes, MediaStateReceiverAttributes } from './constants.js';
+import {
+  MediaUIAttributes,
+  MediaStateReceiverAttributes,
+} from './constants.js';
 import { nouns } from './labels/labels.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import {
   getBooleanAttr,
   setBooleanAttr,
-  getOrInsertCSSRule
+  getOrInsertCSSRule,
 } from './utils/element-utils.js';
 
-
 export const Attributes = {
-  LOADING_DELAY: 'loadingdelay'
+  LOADING_DELAY: 'loadingdelay',
 };
 
 const DEFAULT_LOADING_DELAY = 500;
@@ -31,7 +33,7 @@ const loadingIndicatorIcon = `
 </svg>
 `;
 
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
 <style>
 :host {
   display: var(--media-control-display, var(--media-loading-indicator-display, inline-block));
@@ -52,8 +54,12 @@ template.innerHTML = /*html*/`
   transition: opacity 0.15s;
 }
 
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=icon] > *,
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) ::slotted([slot=icon]) {
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${
+  MediaUIAttributes.MEDIA_PAUSED
+}])) slot[name=icon] > *,
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${
+  MediaUIAttributes.MEDIA_PAUSED
+}])) ::slotted([slot=icon]) {
   opacity: var(--media-loading-indicator-opacity, 1);
   transition: opacity 0.15s var(--_loading-indicator-delay);
 }
@@ -63,7 +69,9 @@ template.innerHTML = /*html*/`
   transition: visibility 0.15s;
 }
 
-:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${MediaUIAttributes.MEDIA_PAUSED}])) #status {
+:host([${MediaUIAttributes.MEDIA_LOADING}]:not([${
+  MediaUIAttributes.MEDIA_PAUSED
+}])) #status {
   visibility: var(--media-loading-indicator-opacity, visible);
   transition: visibility 0.15s var(--_loading-indicator-delay);
 }
@@ -145,7 +153,8 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController =
+        this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }
@@ -196,7 +205,10 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
 }
 
 if (!globalThis.customElements.get('media-loading-indicator')) {
-  globalThis.customElements.define('media-loading-indicator', MediaLoadingIndicator);
+  globalThis.customElements.define(
+    'media-loading-indicator',
+    MediaLoadingIndicator
+  );
 }
 
 export default MediaLoadingIndicator;

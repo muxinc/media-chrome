@@ -41,14 +41,22 @@ class MediaSeekBackwardButton extends MediaChromeButton {
     super({ slotTemplate, ...options });
   }
 
-  connectedCallback(){
-    this.seekOffset = getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
+  connectedCallback() {
+    this.seekOffset = getNumericAttr(
+      this,
+      Attributes.SEEK_OFFSET,
+      DEFAULT_SEEK_OFFSET
+    );
     super.connectedCallback();
   }
 
   attributeChangedCallback(attrName, _oldValue, newValue) {
     if (attrName === Attributes.SEEK_OFFSET) {
-      this.seekOffset = getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
+      this.seekOffset = getNumericAttr(
+        this,
+        Attributes.SEEK_OFFSET,
+        DEFAULT_SEEK_OFFSET
+      );
     }
 
     super.attributeChangedCallback(attrName, _oldValue, newValue);
@@ -65,7 +73,10 @@ class MediaSeekBackwardButton extends MediaChromeButton {
 
   set seekOffset(value) {
     setNumericAttr(this, Attributes.SEEK_OFFSET, value);
-    this.setAttribute('aria-label', verbs.SEEK_BACK_N_SECS({ seekOffset: this.seekOffset }));
+    this.setAttribute(
+      'aria-label',
+      verbs.SEEK_BACK_N_SECS({ seekOffset: this.seekOffset })
+    );
     updateIconText(getSlotted(this, 'icon'), this.seekOffset);
   }
 
@@ -76,7 +87,11 @@ class MediaSeekBackwardButton extends MediaChromeButton {
    * @type {number | undefined} In seconds
    */
   get mediaCurrentTime() {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, DEFAULT_TIME);
+    return getNumericAttr(
+      this,
+      MediaUIAttributes.MEDIA_CURRENT_TIME,
+      DEFAULT_TIME
+    );
   }
 
   set mediaCurrentTime(time) {

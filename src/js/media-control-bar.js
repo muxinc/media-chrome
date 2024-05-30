@@ -8,10 +8,10 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
   <style>
     :host {
-      ${/* Need position to display above video for some reason */''}
+      ${/* Need position to display above video for some reason */ ''}
       box-sizing: border-box;
       display: var(--media-control-display, var(--media-control-bar-display, inline-flex));
       color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
@@ -79,7 +79,8 @@ class MediaControlBar extends globalThis.HTMLElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController =
+        this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }

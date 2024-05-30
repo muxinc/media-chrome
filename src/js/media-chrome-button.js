@@ -4,7 +4,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 
 const template = document.createElement('template');
 
-template.innerHTML = /*html*/`
+template.innerHTML = /*html*/ `
 <style>
   :host {
     font: var(--media-font,
@@ -26,17 +26,21 @@ template.innerHTML = /*html*/`
     -webkit-tap-highlight-color: transparent;
   }
 
-  ${/*
+  ${
+    /*
     Only show outline when keyboard focusing.
     https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
-  */''}
+  */ ''
+  }
   :host(:focus-visible) {
     box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
     outline: 0;
   }
-  ${/*
-   * hide default focus ring, particularly when using mouse
-   */''}
+  ${
+    /*
+     * hide default focus ring, particularly when using mouse
+     */ ''
+  }
   :host(:where(:focus)) {
     box-shadow: none;
     outline: 0;
@@ -124,7 +128,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     if (!this.preventClick) {
       this.handleClick(e);
     }
-  }
+  };
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
@@ -138,7 +142,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     if (!this.preventClick) {
       this.handleClick(e);
     }
-  }
+  };
 
   #keydownListener = (e) => {
     const { metaKey, altKey, key } = e;
@@ -146,8 +150,8 @@ class MediaChromeButton extends globalThis.HTMLElement {
       this.removeEventListener('keyup', this.#keyupListener);
       return;
     }
-    this.addEventListener('keyup', this.#keyupListener, {once: true});
-  }
+    this.addEventListener('keyup', this.#keyupListener, { once: true });
+  };
 
   enable() {
     this.addEventListener('click', this.#clickListener);
@@ -184,7 +188,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   connectedCallback() {
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    style.setProperty('display', `var(--media-control-display, var(--${this.localName}-display, inline-flex))`);
+    style.setProperty(
+      'display',
+      `var(--media-control-display, var(--${this.localName}-display, inline-flex))`
+    );
 
     if (!this.hasAttribute('disabled')) {
       this.enable();
@@ -197,7 +204,8 @@ class MediaChromeButton extends globalThis.HTMLElement {
     );
     if (mediaControllerId) {
       // @ts-ignore
-      this.#mediaController = this.getRootNode()?.getElementById(mediaControllerId);
+      this.#mediaController =
+        this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
   }

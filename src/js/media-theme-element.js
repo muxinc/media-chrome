@@ -14,7 +14,7 @@ const observedMediaAttributes = {
 
 const prependTemplate = document.createElement('template');
 
-prependTemplate.innerHTML = /*html*/`
+prependTemplate.innerHTML = /*html*/ `
   <style>
     :host {
       display: inline-block;
@@ -69,25 +69,28 @@ export class MediaThemeElement extends globalThis.HTMLElement {
 
     const observer = new MutationObserver((mutationList) => {
       // Only update if `<media-controller>` has computed breakpoints at least once.
-      if (this.mediaController && !this.mediaController?.breakpointsComputed) return;
+      if (this.mediaController && !this.mediaController?.breakpointsComputed)
+        return;
 
-      if (mutationList.some((mutation) => {
-        const target = /** @type {HTMLElement} */ (mutation.target);
+      if (
+        mutationList.some((mutation) => {
+          const target = /** @type {HTMLElement} */ (mutation.target);
 
-        // Render on each attribute change of the `<media-theme(-x)>` element.
-        if (target === this) return true;
+          // Render on each attribute change of the `<media-theme(-x)>` element.
+          if (target === this) return true;
 
-        // Only check `<media-controller>`'s attributes below.
-        if (target.localName !== 'media-controller') return false;
+          // Only check `<media-controller>`'s attributes below.
+          if (target.localName !== 'media-controller') return false;
 
-        // Render if this attribute is directly observed.
-        if (observedMediaAttributes[mutation.attributeName]) return true;
+          // Render if this attribute is directly observed.
+          if (observedMediaAttributes[mutation.attributeName]) return true;
 
-        // Render if `breakpointx` attributes change.
-        if (mutation.attributeName.startsWith('breakpoint')) return true;
+          // Render if `breakpointx` attributes change.
+          if (mutation.attributeName.startsWith('breakpoint')) return true;
 
-        return false;
-      })) {
+          return false;
+        })
+      ) {
         this.render();
       }
     });
@@ -101,7 +104,10 @@ export class MediaThemeElement extends globalThis.HTMLElement {
       subtree: true,
     });
 
-    this.addEventListener(MediaStateChangeEvents.BREAKPOINTS_COMPUTED, this.render);
+    this.addEventListener(
+      MediaStateChangeEvents.BREAKPOINTS_COMPUTED,
+      this.render
+    );
 
     // In case the template prop was set before custom element upgrade.
     // https://web.dev/custom-elements-best-practices/#make-properties-lazy
@@ -137,30 +143,27 @@ export class MediaThemeElement extends globalThis.HTMLElement {
 
   get props() {
     const observedAttributes = [
-      ...Array.from(this.mediaController?.attributes ?? [])
-        .filter(({ name }) => {
-          return observedMediaAttributes[name] || name.startsWith('breakpoint')
-        }),
+      ...Array.from(this.mediaController?.attributes ?? []).filter(
+        ({ name }) => {
+          return observedMediaAttributes[name] || name.startsWith('breakpoint');
+        }
+      ),
       ...Array.from(this.attributes),
     ];
 
     const props = {};
     for (let attr of observedAttributes) {
-
       const name = observedMediaAttributes[attr.name] ?? camelCase(attr.name);
       let { value } = attr;
 
       if (value != null) {
-
         if (isNumericString(value)) {
           // @ts-ignore
           value = parseFloat(value);
         }
 
         props[name] = value === '' ? true : value;
-
       } else {
-
         props[name] = false;
       }
     }
@@ -183,7 +186,9 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     if (!templateId || templateId === this.#prevTemplateId) return;
 
     // First try to get a template element by id
-    const rootNode = /** @type HTMLDocument | ShadowRoot */ (this.getRootNode());
+    const rootNode = /** @type HTMLDocument | ShadowRoot */ (
+      this.getRootNode()
+    );
     const template = rootNode?.getElementById?.(templateId);
 
     if (template) {
@@ -253,7 +258,9 @@ async function request(resource) {
   const response = await fetch(resource);
 
   if (response.status !== 200) {
-    throw new Error(`Failed to load resource: the server responded with a status of ${response.status}`);
+    throw new Error(
+      `Failed to load resource: the server responded with a status of ${response.status}`
+    );
   }
 
   return response.text();
