@@ -3,10 +3,10 @@ import {
   StreamTypes,
   TextTrackKinds,
   WebkitPresentationModes,
-} from "../constants.js";
-import { getTextTracksList } from "../utils/captions.js";
-import { containsComposedNode } from "../utils/element-utils.js";
-import { fullscreenApi } from "../utils/fullscreen-api.js";
+} from '../constants.js';
+import { getTextTracksList } from '../utils/captions.js';
+import { containsComposedNode } from '../utils/element-utils.js';
+import { fullscreenApi } from '../utils/fullscreen-api.js';
 import {
   airplaySupported,
   castSupported,
@@ -15,13 +15,13 @@ import {
   hasPipSupport,
   hasVolumeSupportAsync,
   pipSupported,
-} from "../utils/platform-tests.js";
-import { document, globalThis } from "../utils/server-safe-globals.js";
+} from '../utils/platform-tests.js';
+import { document, globalThis } from '../utils/server-safe-globals.js';
 import {
   getShowingSubtitleTracks,
   getSubtitleTracks,
   toggleSubtitleTracks,
-} from "./util.js";
+} from './util.js';
 
 export type Rendition = {
   src?: string;
@@ -61,7 +61,7 @@ export type AudioTrack = {
 export type MediaStateOwner = Partial<HTMLVideoElement> &
   Pick<
     HTMLMediaElement,
-    "play" | "paused" | "addEventListener" | "removeEventListener"
+    'play' | 'paused' | 'addEventListener' | 'removeEventListener'
   > & {
     streamType?: StreamTypes;
     targetLiveWindow?: number;
@@ -70,7 +70,7 @@ export type MediaStateOwner = Partial<HTMLVideoElement> &
     audioTracks?: AudioTrack[] & EventTarget;
     requestCast?: () => any;
     webkitDisplayingFullscreen?: boolean;
-    webkitPresentationMode?: "fullscreen" | "picture-in-picture";
+    webkitPresentationMode?: 'fullscreen' | 'picture-in-picture';
     webkitEnterFullscreen?: () => any;
     webkitCurrentPlaybackTargetIsWireless?: boolean;
     webkitShowPlaybackTargetPicker?: () => any;
@@ -194,15 +194,15 @@ export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
  *
  */
 export type StateMediator = {
-  mediaPaused: FacadeProp<HTMLMediaElement["paused"]>;
+  mediaPaused: FacadeProp<HTMLMediaElement['paused']>;
   mediaHasPlayed: ReadonlyFacadeProp<boolean>;
-  mediaEnded: ReadonlyFacadeProp<HTMLMediaElement["ended"]>;
-  mediaPlaybackRate: FacadeProp<HTMLMediaElement["playbackRate"]>;
-  mediaMuted: FacadeProp<HTMLMediaElement["muted"]>;
-  mediaVolume: FacadeProp<HTMLMediaElement["volume"]>;
-  mediaVolumeLevel: ReadonlyFacadeProp<"high" | "medium" | "low" | "off">;
-  mediaCurrentTime: FacadeProp<HTMLMediaElement["currentTime"]>;
-  mediaDuration: ReadonlyFacadeProp<HTMLMediaElement["duration"]>;
+  mediaEnded: ReadonlyFacadeProp<HTMLMediaElement['ended']>;
+  mediaPlaybackRate: FacadeProp<HTMLMediaElement['playbackRate']>;
+  mediaMuted: FacadeProp<HTMLMediaElement['muted']>;
+  mediaVolume: FacadeProp<HTMLMediaElement['volume']>;
+  mediaVolumeLevel: ReadonlyFacadeProp<'high' | 'medium' | 'low' | 'off'>;
+  mediaCurrentTime: FacadeProp<HTMLMediaElement['currentTime']>;
+  mediaDuration: ReadonlyFacadeProp<HTMLMediaElement['duration']>;
   mediaLoading: ReadonlyFacadeProp<boolean>;
   mediaSeekable: ReadonlyFacadeProp<[number, number] | undefined>;
   mediaBuffered: ReadonlyFacadeProp<[number, number][]>;
@@ -210,13 +210,13 @@ export type StateMediator = {
   mediaTargetLiveWindow: ReadonlyFacadeProp<number>;
   mediaTimeIsLive: ReadonlyFacadeProp<boolean>;
   mediaSubtitlesList: ReadonlyFacadeProp<
-    Pick<TextTrack, "kind" | "label" | "language">[]
+    Pick<TextTrack, 'kind' | 'label' | 'language'>[]
   >;
   mediaSubtitlesShowing: ReadonlyFacadeProp<
-    Pick<TextTrack, "kind" | "label" | "language">[]
+    Pick<TextTrack, 'kind' | 'label' | 'language'>[]
   >;
   mediaChaptersCues: ReadonlyFacadeProp<
-    Pick<VTTCue, "text" | "startTime" | "endTime">[]
+    Pick<VTTCue, 'text' | 'startTime' | 'endTime'>[]
   >;
   mediaIsPip: FacadeProp<boolean>;
   mediaRenditionList: ReadonlyFacadeProp<Rendition[]>;
@@ -227,7 +227,7 @@ export type StateMediator = {
   mediaIsCasting: FacadeProp<
     boolean,
     boolean,
-    "NO_DEVICES_AVAILABLE" | "NOT_CONNECTED" | "CONNECTING" | "CONNECTED"
+    'NO_DEVICES_AVAILABLE' | 'NOT_CONNECTED' | 'CONNECTING' | 'CONNECTED'
   >;
   mediaIsAirplaying: FacadeProp<boolean>;
   mediaFullscreenUnavailable: ReadonlyFacadeProp<
@@ -262,7 +262,7 @@ export const prepareStateOwners = async (
       .map(async (stateOwner) => {
         if (
           !(
-            "localName" in stateOwner &&
+            'localName' in stateOwner &&
             stateOwner instanceof globalThis.HTMLElement
           )
         ) {
@@ -270,7 +270,7 @@ export const prepareStateOwners = async (
         }
 
         const name = stateOwner.localName;
-        if (!name.includes("-")) return;
+        if (!name.includes('-')) return;
 
         const classDef = globalThis.customElements.get(name);
         if (classDef && stateOwner instanceof classDef) return;
@@ -298,7 +298,7 @@ export const stateMediator: StateMediator = {
         media.play()?.catch(() => {});
       }
     },
-    mediaEvents: ["play", "playing", "pause", "emptied"],
+    mediaEvents: ['play', 'playing', 'pause', 'emptied'],
   },
   mediaHasPlayed: {
     // We want to let the user know that the media started playing at any point (`media-has-played`).
@@ -309,9 +309,9 @@ export const stateMediator: StateMediator = {
 
       if (!media) return false;
       if (!event) return !media.paused;
-      return event.type === "playing";
+      return event.type === 'playing';
     },
-    mediaEvents: ["playing", "emptied"],
+    mediaEvents: ['playing', 'emptied'],
   },
   mediaEnded: {
     get(stateOwners) {
@@ -319,7 +319,7 @@ export const stateMediator: StateMediator = {
 
       return media?.ended ?? false;
     },
-    mediaEvents: ["seeked", "ended", "emptied"],
+    mediaEvents: ['seeked', 'ended', 'emptied'],
   },
   mediaPlaybackRate: {
     get(stateOwners) {
@@ -333,7 +333,7 @@ export const stateMediator: StateMediator = {
       if (!Number.isFinite(+value)) return;
       media.playbackRate = +value;
     },
-    mediaEvents: ["ratechange", "loadstart"],
+    mediaEvents: ['ratechange', 'loadstart'],
   },
   mediaMuted: {
     get(stateOwners) {
@@ -346,7 +346,7 @@ export const stateMediator: StateMediator = {
       if (!media) return;
       media.muted = value;
     },
-    mediaEvents: ["volumechange"],
+    mediaEvents: ['volumechange'],
   },
   mediaVolume: {
     get(stateOwners) {
@@ -361,10 +361,10 @@ export const stateMediator: StateMediator = {
       /** @TODO How should we handle globalThis dependencies/"state ownership"? (CJP) */
       try {
         if (value == null) {
-          globalThis.localStorage.removeItem("media-chrome-pref-volume");
+          globalThis.localStorage.removeItem('media-chrome-pref-volume');
         } else {
           globalThis.localStorage.setItem(
-            "media-chrome-pref-volume",
+            'media-chrome-pref-volume',
             value.toString()
           );
         }
@@ -374,7 +374,7 @@ export const stateMediator: StateMediator = {
       if (!Number.isFinite(+value)) return;
       media.volume = +value;
     },
-    mediaEvents: ["volumechange"],
+    mediaEvents: ['volumechange'],
     stateOwnersUpdateHandlers: [
       (handler, stateOwners) => {
         const {
@@ -384,13 +384,13 @@ export const stateMediator: StateMediator = {
         /** @TODO How should we handle globalThis dependencies/"state ownership"? (CJP) */
         try {
           const volumePref = globalThis.localStorage.getItem(
-            "media-chrome-pref-volume"
+            'media-chrome-pref-volume'
           );
           if (volumePref == null) return;
           stateMediator.mediaVolume.set(+volumePref, stateOwners);
           handler(volumePref);
         } catch (e) {
-          console.debug("Error getting volume pref", e);
+          console.debug('Error getting volume pref', e);
         }
       },
     ],
@@ -401,13 +401,13 @@ export const stateMediator: StateMediator = {
   mediaVolumeLevel: {
     get(stateOwners) {
       const { media } = stateOwners;
-      if (typeof media?.volume == "undefined") return "high";
-      if (media.muted || media.volume === 0) return "off";
-      if (media.volume < 0.5) return "low";
-      if (media.volume < 0.75) return "medium";
-      return "high";
+      if (typeof media?.volume == 'undefined') return 'high';
+      if (media.muted || media.volume === 0) return 'off';
+      if (media.volume < 0.5) return 'low';
+      if (media.volume < 0.75) return 'medium';
+      return 'high';
     },
-    mediaEvents: ["volumechange"],
+    mediaEvents: ['volumechange'],
   },
   mediaCurrentTime: {
     get(stateOwners) {
@@ -421,7 +421,7 @@ export const stateMediator: StateMediator = {
       if (!media || media.readyState === 0) return;
       media.currentTime = value;
     },
-    mediaEvents: ["timeupdate", "loadedmetadata"],
+    mediaEvents: ['timeupdate', 'loadedmetadata'],
   },
   mediaDuration: {
     get(stateOwners) {
@@ -441,7 +441,7 @@ export const stateMediator: StateMediator = {
 
       return Number.isFinite(media?.duration) ? media.duration : Number.NaN;
     },
-    mediaEvents: ["durationchange", "loadedmetadata", "emptied"],
+    mediaEvents: ['durationchange', 'loadedmetadata', 'emptied'],
   },
   mediaLoading: {
     get(stateOwners) {
@@ -449,7 +449,7 @@ export const stateMediator: StateMediator = {
 
       return media?.readyState < 3;
     },
-    mediaEvents: ["waiting", "playing", "emptied"],
+    mediaEvents: ['waiting', 'playing', 'emptied'],
   },
   mediaSeekable: {
     get(stateOwners) {
@@ -464,7 +464,7 @@ export const stateMediator: StateMediator = {
       if (!start && !end) return undefined;
       return [Number(start.toFixed(3)), Number(end.toFixed(3))];
     },
-    mediaEvents: ["loadedmetadata", "emptied", "progress", "seekablechange"],
+    mediaEvents: ['loadedmetadata', 'emptied', 'progress', 'seekablechange'],
   },
   mediaBuffered: {
     get(stateOwners) {
@@ -476,7 +476,7 @@ export const stateMediator: StateMediator = {
         Number(timeRanges.end(i).toFixed(3)),
       ]);
     },
-    mediaEvents: ["progress", "emptied"],
+    mediaEvents: ['progress', 'emptied'],
   },
   mediaStreamType: {
     get(stateOwners) {
@@ -512,10 +512,10 @@ export const stateMediator: StateMediator = {
       return usedDefaultStreamType;
     },
     mediaEvents: [
-      "emptied",
-      "durationchange",
-      "loadedmetadata",
-      "streamtypechange",
+      'emptied',
+      'durationchange',
+      'loadedmetadata',
+      'streamtypechange',
     ],
   },
   mediaTargetLiveWindow: {
@@ -537,11 +537,11 @@ export const stateMediator: StateMediator = {
       return targetLiveWindow;
     },
     mediaEvents: [
-      "emptied",
-      "durationchange",
-      "loadedmetadata",
-      "streamtypechange",
-      "targetlivewindowchange",
+      'emptied',
+      'durationchange',
+      'loadedmetadata',
+      'streamtypechange',
+      'targetlivewindowchange',
     ],
   },
   mediaTimeIsLive: {
@@ -554,7 +554,7 @@ export const stateMediator: StateMediator = {
 
       if (!media) return false;
 
-      if (typeof media.liveEdgeStart === "number") {
+      if (typeof media.liveEdgeStart === 'number') {
         if (Number.isNaN(media.liveEdgeStart)) return false;
         return media.currentTime >= media.liveEdgeStart;
       }
@@ -575,7 +575,7 @@ export const stateMediator: StateMediator = {
       const liveEdgeStart = seekable.end(seekable.length - 1) - liveEdgeOffset;
       return media.currentTime >= liveEdgeStart;
     },
-    mediaEvents: ["playing", "timeupdate", "progress", "waiting", "emptied"],
+    mediaEvents: ['playing', 'timeupdate', 'progress', 'waiting', 'emptied'],
   },
   // Text Tracks modeling
   mediaSubtitlesList: {
@@ -584,8 +584,8 @@ export const stateMediator: StateMediator = {
         ({ kind, label, language }) => ({ kind, label, language })
       );
     },
-    mediaEvents: ["loadstart"],
-    textTracksEvents: ["addtrack", "removetrack"],
+    mediaEvents: ['loadstart'],
+    textTracksEvents: ['addtrack', 'removetrack'],
   },
   mediaSubtitlesShowing: {
     get(stateOwners) {
@@ -593,8 +593,8 @@ export const stateMediator: StateMediator = {
         ({ kind, label, language }) => ({ kind, label, language })
       );
     },
-    mediaEvents: ["loadstart"],
-    textTracksEvents: ["addtrack", "removetrack", "change"],
+    mediaEvents: ['loadstart'],
+    textTracksEvents: ['addtrack', 'removetrack', 'change'],
     stateOwnersUpdateHandlers: [
       (_handler, stateOwners) => {
         const { media, options } = stateOwners;
@@ -617,11 +617,11 @@ export const stateMediator: StateMediator = {
         };
 
         media.textTracks?.addEventListener(
-          "addtrack",
+          'addtrack',
           updateDefaultSubtitlesCallback
         );
         media.textTracks?.addEventListener(
-          "removetrack",
+          'removetrack',
           updateDefaultSubtitlesCallback
         );
 
@@ -630,11 +630,11 @@ export const stateMediator: StateMediator = {
 
         return () => {
           media.textTracks?.removeEventListener(
-            "addtrack",
+            'addtrack',
             updateDefaultSubtitlesCallback
           );
           media.textTracks?.removeEventListener(
-            "removetrack",
+            'removetrack',
             updateDefaultSubtitlesCallback
           );
         };
@@ -658,8 +658,8 @@ export const stateMediator: StateMediator = {
         })
       );
     },
-    mediaEvents: ["loadstart", "loadedmetadata"],
-    textTracksEvents: ["addtrack", "removetrack", "change"],
+    mediaEvents: ['loadstart', 'loadedmetadata'],
+    textTracksEvents: ['addtrack', 'removetrack', 'change'],
     stateOwnersUpdateHandlers: [
       (handler, stateOwners) => {
         const { media } = stateOwners;
@@ -671,11 +671,11 @@ export const stateMediator: StateMediator = {
         );
 
         /** @ts-ignore */
-        chaptersTrack?.addEventListener("load", handler);
+        chaptersTrack?.addEventListener('load', handler);
 
         return () => {
           /** @ts-ignore */
-          chaptersTrack?.removeEventListener("load", handler);
+          chaptersTrack?.removeEventListener('load', handler);
         };
       },
     ],
@@ -699,7 +699,7 @@ export const stateMediator: StateMediator = {
       // that is a web component, even if it's not "visible" from the
       // documentElement, so check for that.
       if (documentElement.pictureInPictureElement instanceof HTMLMediaElement) {
-        if (!media.localName?.includes("-")) return false;
+        if (!media.localName?.includes('-')) return false;
         return containsComposedNode(
           media as Node,
           documentElement.pictureInPictureElement
@@ -712,7 +712,7 @@ export const stateMediator: StateMediator = {
       // is "visible" at that level. Since the media StateOwner may be nested
       // inside an indeterminite number of web components, traverse each layer
       // until we either find the media StateOwner or complete the recursive check.
-      if (documentElement.pictureInPictureElement.localName.includes("-")) {
+      if (documentElement.pictureInPictureElement.localName.includes('-')) {
         let currentRoot = documentElement.pictureInPictureElement.shadowRoot;
         while (currentRoot?.pictureInPictureElement) {
           if (currentRoot.pictureInPictureElement === media) return true;
@@ -727,21 +727,21 @@ export const stateMediator: StateMediator = {
       if (!media) return;
       if (value) {
         if (!document.pictureInPictureEnabled) {
-          console.warn("MediaChrome: Picture-in-picture is not enabled");
+          console.warn('MediaChrome: Picture-in-picture is not enabled');
           // Placeholder for emitting a user-facing warning
           return;
         }
 
         if (!media.requestPictureInPicture) {
           console.warn(
-            "MediaChrome: The current media does not support picture-in-picture"
+            'MediaChrome: The current media does not support picture-in-picture'
           );
           // Placeholder for emitting a user-facing warning
           return;
         }
         const warnNotReady = () => {
           console.warn(
-            "MediaChrome: The media is not ready for picture-in-picture. It must have a readyState > 0."
+            'MediaChrome: The media is not ready for picture-in-picture. It must have a readyState > 0.'
           );
         };
 
@@ -751,7 +751,7 @@ export const stateMediator: StateMediator = {
           if (err.code === 11) {
             if (!media.src) {
               console.warn(
-                "MediaChrome: The media is not ready for picture-in-picture. It must have a src set."
+                'MediaChrome: The media is not ready for picture-in-picture. It must have a src set.'
               );
               return;
             }
@@ -760,10 +760,10 @@ export const stateMediator: StateMediator = {
             // Only works in Chrome currently. Safari doesn't allow triggering
             // in an event listener. Also requires readyState == 4.
             // Firefox doesn't have the PiP API yet.
-            if (media.readyState === 0 && media.preload === "none") {
+            if (media.readyState === 0 && media.preload === 'none') {
               const cleanup = () => {
-                media.removeEventListener("loadedmetadata", tryPip);
-                media.preload = "none";
+                media.removeEventListener('loadedmetadata', tryPip);
+                media.preload = 'none';
               };
 
               const tryPip = () => {
@@ -771,8 +771,8 @@ export const stateMediator: StateMediator = {
                 cleanup();
               };
 
-              media.addEventListener("loadedmetadata", tryPip);
-              media.preload = "metadata";
+              media.addEventListener('loadedmetadata', tryPip);
+              media.preload = 'metadata';
 
               // No easy way to know if this failed and we should clean up
               // quickly if it doesn't to prevent an awkward delay for the user
@@ -795,7 +795,7 @@ export const stateMediator: StateMediator = {
         document.exitPictureInPicture();
       }
     },
-    mediaEvents: ["enterpictureinpicture", "leavepictureinpicture"],
+    mediaEvents: ['enterpictureinpicture', 'leavepictureinpicture'],
   },
   mediaRenditionList: {
     get(stateOwners) {
@@ -805,8 +805,8 @@ export const stateMediator: StateMediator = {
         ...videoRendition,
       }));
     },
-    mediaEvents: ["emptied", "loadstart"],
-    videoRenditionsEvents: ["addrendition", "removerendition"],
+    mediaEvents: ['emptied', 'loadstart'],
+    videoRenditionsEvents: ['addrendition', 'removerendition'],
   },
   /** @TODO Model this as a derived value? (CJP) */
   mediaRenditionSelected: {
@@ -818,7 +818,7 @@ export const stateMediator: StateMediator = {
       const { media } = stateOwners;
       if (!media?.videoRenditions) {
         console.warn(
-          "MediaController: Rendition selection not supported by this media."
+          'MediaController: Rendition selection not supported by this media.'
         );
         return;
       }
@@ -834,16 +834,16 @@ export const stateMediator: StateMediator = {
         media.videoRenditions.selectedIndex = index;
       }
     },
-    mediaEvents: ["emptied"],
-    videoRenditionsEvents: ["addrendition", "removerendition", "change"],
+    mediaEvents: ['emptied'],
+    videoRenditionsEvents: ['addrendition', 'removerendition', 'change'],
   },
   mediaAudioTrackList: {
     get(stateOwners) {
       const { media } = stateOwners;
       return [...(media?.audioTracks ?? [])];
     },
-    mediaEvents: ["emptied", "loadstart"],
-    audioTracksEvents: ["addtrack", "removetrack"],
+    mediaEvents: ['emptied', 'loadstart'],
+    audioTracksEvents: ['addtrack', 'removetrack'],
   },
   mediaAudioTrackEnabled: {
     get(stateOwners) {
@@ -856,7 +856,7 @@ export const stateMediator: StateMediator = {
       const { media } = stateOwners;
       if (!media?.audioTracks) {
         console.warn(
-          "MediaChrome: Audio track selection not supported by this media."
+          'MediaChrome: Audio track selection not supported by this media.'
         );
         return;
       }
@@ -867,8 +867,8 @@ export const stateMediator: StateMediator = {
         track.enabled = audioTrackId == track.id;
       }
     },
-    mediaEvents: ["emptied"],
-    audioTracksEvents: ["addtrack", "removetrack", "change"],
+    mediaEvents: ['emptied'],
+    audioTracksEvents: ['addtrack', 'removetrack', 'change'],
   },
   mediaIsFullscreen: {
     get(stateOwners) {
@@ -882,8 +882,8 @@ export const stateMediator: StateMediator = {
         // Except for iOS, which doesn't conform to the standard API
         // See: https://developer.apple.com/documentation/webkitjs/htmlvideoelement/1630493-webkitdisplayingfullscreen
         if (
-          "webkitDisplayingFullscreen" in media &&
-          "webkitPresentationMode" in media
+          'webkitDisplayingFullscreen' in media &&
+          'webkitPresentationMode' in media
         ) {
           // Unfortunately, webkitDisplayingFullscreen is also true when in PiP, so we also check if webkitPresentationMode is 'fullscreen'.
           return (
@@ -904,7 +904,7 @@ export const stateMediator: StateMediator = {
       // is "visible" at that level. Since the (also named) fullscreenElement StateOwner
       // may be nested inside an indeterminite number of web components, traverse each layer
       // until we either find the fullscreen StateOwner or complete the recursive check.
-      if (documentElement[fullscreenApi.element].localName.includes("-")) {
+      if (documentElement[fullscreenApi.element].localName.includes('-')) {
         let currentRoot = documentElement[fullscreenApi.element].shadowRoot;
 
         // NOTE: This is for (non-iOS) Safari < 16.4, which did not support ShadowRoot::fullscreenElement.
@@ -973,7 +973,7 @@ export const stateMediator: StateMediator = {
     get(stateOwners) {
       const { media } = stateOwners;
 
-      if (!media?.remote || media.remote?.state === "disconnected")
+      if (!media?.remote || media.remote?.state === 'disconnected')
         return false;
 
       return !!media.remote.state;
@@ -981,12 +981,12 @@ export const stateMediator: StateMediator = {
     set(value, stateOwners) {
       const { media } = stateOwners;
       if (!media) return;
-      if (value && media.remote?.state !== "disconnected") return;
-      if (!value && media.remote?.state !== "connected") return;
+      if (value && media.remote?.state !== 'disconnected') return;
+      if (!value && media.remote?.state !== 'connected') return;
 
-      if (typeof media.remote.prompt !== "function") {
+      if (typeof media.remote.prompt !== 'function') {
         console.warn(
-          "MediaChrome: Casting is not supported in this environment"
+          'MediaChrome: Casting is not supported in this environment'
         );
         return;
       }
@@ -998,7 +998,7 @@ export const stateMediator: StateMediator = {
         // Don't warn here because catch is run when the user closes the cast menu.
         .catch(() => {});
     },
-    remoteEvents: ["connect", "connecting", "disconnect"],
+    remoteEvents: ['connect', 'connecting', 'disconnect'],
   },
   // NOTE: Newly added state for tracking airplaying
   mediaIsAirplaying: {
@@ -1016,13 +1016,13 @@ export const stateMediator: StateMediator = {
         )
       ) {
         console.warn(
-          "MediaChrome: received a request to select AirPlay but AirPlay is not supported in this environment"
+          'MediaChrome: received a request to select AirPlay but AirPlay is not supported in this environment'
         );
         return;
       }
       media.webkitShowPlaybackTargetPicker();
     },
-    mediaEvents: ["webkitcurrentplaybacktargetiswirelesschanged"],
+    mediaEvents: ['webkitcurrentplaybacktargetiswirelesschanged'],
   },
   mediaFullscreenUnavailable: {
     get(stateOwners) {
@@ -1067,14 +1067,14 @@ export const stateMediator: StateMediator = {
   },
   mediaCastUnavailable: {
     // @ts-ignore
-    get(stateOwners, { availability = "not-available" } = {}) {
+    get(stateOwners, { availability = 'not-available' } = {}) {
       const { media } = stateOwners;
 
       if (!castSupported || !media?.remote?.state) {
         return AvailabilityStates.UNSUPPORTED;
       }
 
-      if (availability == null || availability === "available")
+      if (availability == null || availability === 'available')
         return undefined;
 
       return AvailabilityStates.UNAVAILABLE;
@@ -1086,19 +1086,19 @@ export const stateMediator: StateMediator = {
 
         const remotePlaybackDisabled =
           media.disableRemotePlayback ||
-          media.hasAttribute("disableremoteplayback");
+          media.hasAttribute('disableremoteplayback');
         if (!remotePlaybackDisabled) {
           media?.remote
             ?.watchAvailability((availabilityBool) => {
               // Normalizing to `webkitplaybacktargetavailabilitychanged` for consistency.
               const availability = availabilityBool
-                ? "available"
-                : "not-available";
+                ? 'available'
+                : 'not-available';
               // @ts-ignore
               handler({ availability });
             })
             .catch((error) => {
-              if (error.name === "NotSupportedError") {
+              if (error.name === 'NotSupportedError') {
                 // Availability monitoring is not supported by the platform, so discovery of
                 // remote playback devices will happen only after remote.prompt() is called.
                 // @ts-ignore
@@ -1108,7 +1108,7 @@ export const stateMediator: StateMediator = {
                 // or if the source can't be played remotely.
                 // Normalizing to `webkitplaybacktargetavailabilitychanged` for consistency.
                 // @ts-ignore
-                handler({ availability: "not-available" });
+                handler({ availability: 'not-available' });
               }
             });
         }
@@ -1122,7 +1122,7 @@ export const stateMediator: StateMediator = {
     get(_stateOwners, event) {
       if (!airplaySupported) return AvailabilityStates.UNSUPPORTED;
       // @ts-ignore
-      if (event?.availability === "not-available") {
+      if (event?.availability === 'not-available') {
         return AvailabilityStates.UNAVAILABLE;
       }
       // Either available via `availability` state or not yet known
@@ -1131,7 +1131,7 @@ export const stateMediator: StateMediator = {
     // NOTE: Keeping this event, as it's still the documented way of monitoring
     // for AirPlay availability from Apple.
     // See: https://developer.apple.com/documentation/webkitjs/adding_an_airplay_button_to_your_safari_media_controls#2940021 (CJP)
-    mediaEvents: ["webkitplaybacktargetavailabilitychanged"],
+    mediaEvents: ['webkitplaybacktargetavailabilitychanged'],
     stateOwnersUpdateHandlers: [
       (handler, stateOwners) => {
         const { media } = stateOwners;
@@ -1139,19 +1139,19 @@ export const stateMediator: StateMediator = {
 
         const remotePlaybackDisabled =
           media.disableRemotePlayback ||
-          media.hasAttribute("disableremoteplayback");
+          media.hasAttribute('disableremoteplayback');
         if (!remotePlaybackDisabled) {
           media?.remote
             ?.watchAvailability((availabilityBool) => {
               // Normalizing to `webkitplaybacktargetavailabilitychanged` for consistency.
               const availability = availabilityBool
-                ? "available"
-                : "not-available";
+                ? 'available'
+                : 'not-available';
               // @ts-ignore
               handler({ availability });
             })
             .catch((error) => {
-              if (error.name === "NotSupportedError") {
+              if (error.name === 'NotSupportedError') {
                 // Availability monitoring is not supported by the platform, so discovery of
                 // remote playback devices will happen only after remote.prompt() is called.
                 // @ts-ignore
@@ -1161,7 +1161,7 @@ export const stateMediator: StateMediator = {
                 // or if the source can't be played remotely.
                 // Normalizing to `webkitplaybacktargetavailabilitychanged` for consistency.
                 // @ts-ignore
-                handler({ availability: "not-available" });
+                handler({ availability: 'not-available' });
               }
             });
         }
@@ -1185,8 +1185,8 @@ export const stateMediator: StateMediator = {
 
       return undefined;
     },
-    mediaEvents: ["emptied", "loadstart"],
-    videoRenditionsEvents: ["addrendition", "removerendition"],
+    mediaEvents: ['emptied', 'loadstart'],
+    videoRenditionsEvents: ['addrendition', 'removerendition'],
   },
   mediaAudioTrackUnavailable: {
     get(stateOwners) {
@@ -1203,7 +1203,7 @@ export const stateMediator: StateMediator = {
 
       return undefined;
     },
-    mediaEvents: ["emptied", "loadstart"],
-    audioTracksEvents: ["addtrack", "removetrack"],
+    mediaEvents: ['emptied', 'loadstart'],
+    audioTracksEvents: ['addtrack', 'removetrack'],
   },
 };

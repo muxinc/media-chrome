@@ -1,7 +1,7 @@
-import { MediaChromeMenuItem } from "./media-chrome-menu-item.js";
-import { document, globalThis } from "./utils/server-safe-globals.js";
+import { MediaChromeMenuItem } from './media-chrome-menu-item.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML =
   MediaChromeMenuItem.template.innerHTML +
   /*html*/ `
@@ -28,9 +28,9 @@ class MediaSettingsMenuItem extends MediaChromeMenuItem {
   static template = template;
 }
 
-if (!globalThis.customElements.get("media-settings-menu-item")) {
+if (!globalThis.customElements.get('media-settings-menu-item')) {
   globalThis.customElements.define(
-    "media-settings-menu-item",
+    'media-settings-menu-item',
     MediaSettingsMenuItem
   );
 }

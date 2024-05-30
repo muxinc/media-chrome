@@ -1,28 +1,30 @@
-import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
-import { verbs } from "./labels/labels.js";
-import { MediaChromeButton } from "./media-chrome-button.js";
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
+import { verbs } from './labels/labels.js';
+import { MediaChromeButton } from './media-chrome-button.js';
 import {
   getBooleanAttr,
   getStringAttr,
   setBooleanAttr,
   setStringAttr,
-} from "./utils/element-utils.js";
-import { document, globalThis } from "./utils/server-safe-globals.js";
+} from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 const pipIcon = `<svg aria-hidden="true" viewBox="0 0 28 24">
   <path d="M24 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h20a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Zm-1 16H5V5h18v14Zm-3-8h-7v5h7v-5Z"/>
 </svg>`;
 
-const slotTemplate: HTMLTemplateElement = document.createElement("template");
+const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${MediaUIAttributes.MEDIA_IS_PIP
+  :host([${
+    MediaUIAttributes.MEDIA_IS_PIP
   }]) slot:not([name=exit]):not([name=icon]) {
     display: none !important;
   }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ""}
-  :host(:not([${MediaUIAttributes.MEDIA_IS_PIP
+  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+  :host(:not([${
+    MediaUIAttributes.MEDIA_IS_PIP
   }])) slot:not([name=enter]):not([name=icon]) {
     display: none !important;
   }
@@ -36,7 +38,7 @@ slotTemplate.innerHTML = /*html*/ `
 
 const updateAriaLabel = (el: MediaPipButton): void => {
   const label = el.mediaIsPip ? verbs.EXIT_PIP() : verbs.ENTER_PIP();
-  el.setAttribute("aria-label", label);
+  el.setAttribute('aria-label', label);
 };
 
 /**
@@ -67,7 +69,11 @@ class MediaPipButton extends MediaChromeButton {
     super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === MediaUIAttributes.MEDIA_IS_PIP) {
       updateAriaLabel(this);
     }
@@ -106,8 +112,8 @@ class MediaPipButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get("media-pip-button")) {
-  globalThis.customElements.define("media-pip-button", MediaPipButton);
+if (!globalThis.customElements.get('media-pip-button')) {
+  globalThis.customElements.define('media-pip-button', MediaPipButton);
 }
 
 export default MediaPipButton;

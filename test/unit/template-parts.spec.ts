@@ -1,7 +1,13 @@
 /* Adapted from https://github.com/dy/template-parts - ISC - Dmitry Iv. */
 
 import { assert } from '@open-wc/testing';
-import { AttrPart, AttrPartList, TemplateInstance, type Parts, type State } from '../../src/js/utils/template-parts.js';
+import {
+  AttrPart,
+  AttrPartList,
+  TemplateInstance,
+  type Parts,
+  type State,
+} from '../../src/js/utils/template-parts.js';
 
 const test = it;
 const is = assert.deepEqual;
@@ -541,7 +547,7 @@ test('processor: does not process parts with no param for the expression', () =>
 test('default processor: default processor is identity/boolean', () => {
   const tplEl = document.createElement('template');
   tplEl.innerHTML = `<div x={{x}} hidden={{hidden}} onclick={{onclick}}></div>`;
-  const onclick = () => { };
+  const onclick = () => {};
   const tpl = new TemplateInstance(tplEl, {
     x: 'Hello',
     hidden: false,

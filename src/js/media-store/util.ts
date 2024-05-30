@@ -1,6 +1,6 @@
-import { TextTrackKinds, TextTrackModes } from "../constants.js";
-import type { TextTrackLike } from "../utils/TextTrackLike.js";
-import { getTextTracksList, updateTracksModeTo } from "../utils/captions.js";
+import { TextTrackKinds, TextTrackModes } from '../constants.js';
+import type { TextTrackLike } from '../utils/TextTrackLike.js';
+import { getTextTracksList, updateTracksModeTo } from '../utils/captions.js';
 
 export const getSubtitleTracks = (stateOwners): TextTrackLike[] => {
   return getTextTracksList(stateOwners.media, (textTrack) => {
@@ -46,7 +46,7 @@ export const toggleSubtitleTracks = (stateOwners, force: boolean): void => {
     const { options } = stateOwners;
     if (!options?.noSubtitlesLangPref) {
       const subtitlesPref = globalThis.localStorage.getItem(
-        "media-chrome-pref-subtitles-lang"
+        'media-chrome-pref-subtitles-lang'
       );
 
       const userLangPrefs = subtitlesPref
@@ -55,15 +55,15 @@ export const toggleSubtitleTracks = (stateOwners, force: boolean): void => {
       const preferredAvailableSubs = tracks
         .filter((textTrack) => {
           return userLangPrefs.some((lang) =>
-            textTrack.language.toLowerCase().startsWith(lang.split("-")[0])
+            textTrack.language.toLowerCase().startsWith(lang.split('-')[0])
           );
         })
         .sort((textTrackA, textTrackB) => {
           const idxA = userLangPrefs.findIndex((lang) =>
-            textTrackA.language.toLowerCase().startsWith(lang.split("-")[0])
+            textTrackA.language.toLowerCase().startsWith(lang.split('-')[0])
           );
           const idxB = userLangPrefs.findIndex((lang) =>
-            textTrackB.language.toLowerCase().startsWith(lang.split("-")[0])
+            textTrackB.language.toLowerCase().startsWith(lang.split('-')[0])
           );
           return idxA - idxB;
         });
@@ -88,10 +88,10 @@ export const areValuesEq = (x: any, y: any): boolean => {
   // If their types don't match, they're not equal
   if (typeof x !== typeof y) return false;
   // Treat NaNs as equal
-  if (typeof x === "number" && Number.isNaN(x) && Number.isNaN(y)) return true;
+  if (typeof x === 'number' && Number.isNaN(x) && Number.isNaN(y)) return true;
   // NOTE: This impl does not support function values (CJP)
   // All other "simple" types are not equal, since they have the same type and were not strictly equal
-  if (typeof x !== "object") return false;
+  if (typeof x !== 'object') return false;
   if (Array.isArray(x)) return areArraysEq(x, y);
   // NOTE: This impl currently assumes that if y[key] -> x[key] (aka no "extra" keys in y) (CJP)
   // For objects, if every key's value in x has a corresponding key/value entry in y, the objects are equal

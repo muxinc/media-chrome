@@ -1,6 +1,6 @@
-import { fullscreenApi } from "./fullscreen-api.js";
-import { document, globalThis } from "./server-safe-globals.js";
-import { delay } from "./utils.js";
+import { fullscreenApi } from './fullscreen-api.js';
+import { document, globalThis } from './server-safe-globals.js';
+import { delay } from './utils.js';
 
 /**
  * Test element
@@ -8,7 +8,7 @@ import { delay } from "./utils.js";
 let testMediaEl: HTMLVideoElement;
 export const getTestMediaEl = (): HTMLVideoElement => {
   if (testMediaEl) return testMediaEl;
-  testMediaEl = document?.createElement?.("video");
+  testMediaEl = document?.createElement?.('video');
   return testMediaEl;
 };
 
@@ -50,9 +50,9 @@ export const hasPipSupport = (
   // NOTE: PWAs for Apple that rely on Safari don't support picture in picture but still have `requestPictureInPicture()`
   // (which will result in a failed promise). Checking for those conditions here (CJP).
   // This should still work for macOS PWAs installed using Chrome, where PiP is supported.
-  if (globalThis.matchMedia("(display-mode: standalone)").matches && isSafari)
+  if (globalThis.matchMedia('(display-mode: standalone)').matches && isSafari)
     return false;
-  return typeof mediaEl?.requestPictureInPicture === "function";
+  return typeof mediaEl?.requestPictureInPicture === 'function';
 };
 
 /**
@@ -66,7 +66,7 @@ export const hasFullscreenSupport = (
   let fullscreenEnabled = document[fullscreenApi.enabled];
 
   if (!fullscreenEnabled && mediaEl) {
-    fullscreenEnabled = "webkitSupportsFullscreen" in mediaEl;
+    fullscreenEnabled = 'webkitSupportsFullscreen' in mediaEl;
   }
 
   return fullscreenEnabled;

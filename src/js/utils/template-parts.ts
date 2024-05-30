@@ -1,4 +1,3 @@
-
 /* Adapted from https://github.com/dy/template-parts - ISC - Dmitry Iv. */
 
 // Template Instance API
@@ -36,12 +35,12 @@ export const defaultProcessor: Processor = {
         const value = state[expression];
         // boolean attr
         if (
-          typeof value === "boolean" &&
+          typeof value === 'boolean' &&
           part instanceof AttrPart &&
-          typeof part.element[part.attributeName] === "boolean"
+          typeof part.element[part.attributeName] === 'boolean'
         ) {
           part.booleanValue = value;
-        } else if (typeof value === "function" && part instanceof AttrPart) {
+        } else if (typeof value === 'function' && part instanceof AttrPart) {
           part.element[part.attributeName] = value;
         } else {
           part.value = value;
@@ -52,7 +51,7 @@ export const defaultProcessor: Processor = {
 };
 
 /**
- * 
+ *
  */
 export class TemplateInstance extends DocumentFragment {
   #parts;
@@ -83,7 +82,7 @@ export const parse = (element: Element, parts: Parts = []) => {
   let type, value;
 
   for (const attr of element.attributes || []) {
-    if (attr.value.includes("{{")) {
+    if (attr.value.includes('{{')) {
       const list = new AttrPartList();
       for ([type, value] of tokenize(attr.value)) {
         if (!type) list.append(value);
@@ -102,7 +101,7 @@ export const parse = (element: Element, parts: Parts = []) => {
       parse(node as Element, parts);
     } else {
       const data = (node as any).data;
-      if (node.nodeType === ELEMENT || data.includes("{{")) {
+      if (node.nodeType === ELEMENT || data.includes('{{')) {
         const items = [];
         if (data) {
           for ([type, value] of tokenize(data))
@@ -133,7 +132,7 @@ export const parse = (element: Element, parts: Parts = []) => {
 const mem: Record<string, [number, string][]> = {};
 
 export const tokenize = (text: string): [number, string][] => {
-  let value = "",
+  let value = '',
     open = 0,
     tokens = mem[text],
     i = 0,
@@ -144,28 +143,28 @@ export const tokenize = (text: string): [number, string][] => {
 
   for (; (c = text[i]); i++) {
     if (
-      c === "{" &&
-      text[i + 1] === "{" &&
-      text[i - 1] !== "\\" &&
+      c === '{' &&
+      text[i + 1] === '{' &&
+      text[i - 1] !== '\\' &&
       text[i + 2] &&
       ++open == 1
     ) {
       if (value) tokens.push([STRING, value]);
-      value = "";
+      value = '';
       i++;
     } else if (
-      c === "}" &&
-      text[i + 1] === "}" &&
-      text[i - 1] !== "\\" &&
+      c === '}' &&
+      text[i + 1] === '}' &&
+      text[i - 1] !== '\\' &&
       !--open
     ) {
       tokens.push([PART, value.trim()]);
-      value = "";
+      value = '';
       i++;
-    } else value += c || ""; // text[i] is undefined if i+=2 caught
+    } else value += c || ''; // text[i] is undefined if i+=2 caught
   }
 
-  if (value) tokens.push([STRING, (open > 0 ? "{{" : "") + value]);
+  if (value) tokens.push([STRING, (open > 0 ? '{{' : '') + value]);
 
   return (mem[text] = tokens);
 };
@@ -187,10 +186,10 @@ const FRAGMENT = 11;
 
 export class Part {
   get value(): string {
-    return "";
+    return '';
   }
 
-  set value(val: string) { }
+  set value(val: string) {}
 
   toString(): string {
     return this.value;
@@ -226,12 +225,12 @@ export class AttrPartList {
   }
 
   toString(): string {
-    return this.#items.join("");
+    return this.#items.join('');
   }
 }
 
 export class AttrPart extends Part {
-  #value: string = "";
+  #value: string = '';
   #element: Element;
   #attributeName: string;
   #namespaceURI: string;
@@ -239,7 +238,7 @@ export class AttrPart extends Part {
   constructor(
     element: Element,
     attributeName: string,
-    namespaceURI: string | null,
+    namespaceURI: string | null
   ) {
     super();
     this.#element = element;
@@ -301,8 +300,8 @@ export class AttrPart extends Part {
   }
 
   set booleanValue(value: boolean) {
-    if (!this.#list || this.#list.length === 1) this.value = value ? "" : null;
-    else throw new DOMException("Value is not fully templatized");
+    if (!this.#list || this.#list.length === 1) this.value = value ? '' : null;
+    else throw new DOMException('Value is not fully templatized');
   }
 }
 
@@ -334,7 +333,7 @@ export class ChildNodePart extends Part {
 
   // FIXME: not sure why do we need string serialization here? Just because parent class has type DOMString?
   get value() {
-    return this.#nodes.map((node) => node.textContent).join("");
+    return this.#nodes.map((node) => node.textContent).join('');
   }
 
   set value(newValue) {
@@ -349,12 +348,12 @@ export class ChildNodePart extends Part {
         node == null
           ? [new Text()]
           : node.forEach
-            ? [...node]
-            : node.nodeType === FRAGMENT
-              ? [...node.childNodes]
-              : node.nodeType
-                ? [node]
-                : [new Text(node)]
+          ? [...node]
+          : node.nodeType === FRAGMENT
+          ? [...node.childNodes]
+          : node.nodeType
+          ? [node]
+          : [new Text(node)]
       );
 
     if (!normalisedNodes.length) normalisedNodes.push(new Text());
@@ -373,19 +372,16 @@ export class InnerTemplatePart extends ChildNodePart {
   expression: string;
   template: HTMLTemplateElement;
 
-  constructor(
-    parentNode: Element,
-    template: HTMLTemplateElement
-  ) {
+  constructor(parentNode: Element, template: HTMLTemplateElement) {
     const directive =
-      template.getAttribute("directive") || template.getAttribute("type");
+      template.getAttribute('directive') || template.getAttribute('type');
 
     let expression =
-      template.getAttribute("expression") ||
+      template.getAttribute('expression') ||
       template.getAttribute(directive) ||
-      "";
+      '';
 
-    if (expression.startsWith("{{"))
+    if (expression.startsWith('{{'))
       expression = expression.trim().slice(2, -2).trim();
 
     super(parentNode);

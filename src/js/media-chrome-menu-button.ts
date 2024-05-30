@@ -1,7 +1,7 @@
-import { MediaChromeButton } from "./media-chrome-button.js";
-import { getDocumentOrShadowRoot } from "./utils/element-utils.js";
-import { InvokeEvent } from "./utils/events.js";
-import { globalThis } from "./utils/server-safe-globals.js";
+import { MediaChromeButton } from './media-chrome-button.js';
+import { getDocumentOrShadowRoot } from './utils/element-utils.js';
+import { InvokeEvent } from './utils/events.js';
+import { globalThis } from './utils/server-safe-globals.js';
 
 /**
  * @attr {string} invoketarget - The id of the element to invoke when clicked.
@@ -11,16 +11,16 @@ class MediaChromeMenuButton extends MediaChromeButton {
     super.connectedCallback();
 
     if (this.invokeTargetElement) {
-      this.setAttribute("aria-haspopup", "menu");
+      this.setAttribute('aria-haspopup', 'menu');
     }
   }
 
   get invokeTarget(): string | null {
-    return this.getAttribute("invoketarget");
+    return this.getAttribute('invoketarget');
   }
 
   set invokeTarget(value: string | null) {
-    this.setAttribute("invoketarget", `${value}`);
+    this.setAttribute('invoketarget', `${value}`);
   }
 
   /**
@@ -43,9 +43,9 @@ class MediaChromeMenuButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get("media-chrome-menu-button")) {
+if (!globalThis.customElements.get('media-chrome-menu-button')) {
   globalThis.customElements.define(
-    "media-chrome-menu-button",
+    'media-chrome-menu-button',
     MediaChromeMenuButton
   );
 }

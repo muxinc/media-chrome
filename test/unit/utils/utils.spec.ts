@@ -1,5 +1,10 @@
 import { assert } from '@open-wc/testing';
-import { camelCase, constToCamel, isNumericString, isValidNumber } from '../../../src/js/utils/utils.js';
+import {
+  camelCase,
+  constToCamel,
+  isNumericString,
+  isValidNumber,
+} from '../../../src/js/utils/utils.js';
 
 describe('isNumericString', () => {
   it('returns false on non strings', () => {
@@ -8,7 +13,7 @@ describe('isNumericString', () => {
     assert(!isNumericString([1]));
     assert(!isNumericString(true));
     assert(!isNumericString(NaN));
-    assert(!isNumericString(() => { }));
+    assert(!isNumericString(() => {}));
   });
 
   it('returns false on non numeric strings', () => {
@@ -33,7 +38,7 @@ describe('isValidNumber', () => {
     assert(!isValidNumber([1]));
     assert(!isValidNumber(true));
     assert(!isValidNumber(NaN));
-    assert(!isValidNumber(() => { }));
+    assert(!isValidNumber(() => {}));
   });
 
   it('returns true on numbers', () => {

@@ -1,13 +1,13 @@
-import { CustomElement } from "./utils/CustomElement.js";
-import { getStringAttr, setStringAttr } from "./utils/element-utils.js";
-import { document, globalThis } from "./utils/server-safe-globals.js";
+import { CustomElement } from './utils/CustomElement.js';
+import { getStringAttr, setStringAttr } from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 export const Attributes = {
-  PLACEHOLDER_SRC: "placeholdersrc",
-  SRC: "src",
+  PLACEHOLDER_SRC: 'placeholdersrc',
+  SRC: 'src',
 };
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
   <style>
@@ -34,10 +34,10 @@ template.innerHTML = /*html*/ `
 `;
 
 const unsetBackgroundImage = (el: HTMLElement): void => {
-  el.style.removeProperty("background-image");
+  el.style.removeProperty('background-image');
 };
 const setBackgroundImage = (el: HTMLElement, image: string): void => {
-  el.style["background-image"] = `url('${image}')`;
+  el.style['background-image'] = `url('${image}')`;
 };
 
 /**
@@ -55,21 +55,25 @@ class MediaPosterImage extends CustomElement {
     return [Attributes.PLACEHOLDER_SRC, Attributes.SRC];
   }
 
-  image: HTMLImageElement
+  image: HTMLImageElement;
 
   constructor() {
     super();
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: "open" });
+      this.attachShadow({ mode: 'open' });
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    this.image = this.shadowRoot.querySelector("#image");
+    this.image = this.shadowRoot.querySelector('#image');
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === Attributes.SRC) {
       if (newValue == null) {
         this.image.removeAttribute(Attributes.SRC);
@@ -88,7 +92,7 @@ class MediaPosterImage extends CustomElement {
   }
 
   /**
-   * 
+   *
    */
   get placeholderSrc(): string | undefined {
     return getStringAttr(this, Attributes.PLACEHOLDER_SRC);
@@ -99,7 +103,7 @@ class MediaPosterImage extends CustomElement {
   }
 
   /**
-   * 
+   *
    */
   get src(): string | undefined {
     return getStringAttr(this, Attributes.SRC);
@@ -110,8 +114,8 @@ class MediaPosterImage extends CustomElement {
   }
 }
 
-if (!globalThis.customElements.get("media-poster-image")) {
-  globalThis.customElements.define("media-poster-image", MediaPosterImage);
+if (!globalThis.customElements.get('media-poster-image')) {
+  globalThis.customElements.define('media-poster-image', MediaPosterImage);
 }
 
 export default MediaPosterImage;

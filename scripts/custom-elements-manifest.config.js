@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { generateCustomData } from "cem-plugin-vs-code-custom-data-generator";
+import { generateCustomData } from 'cem-plugin-vs-code-custom-data-generator';
 import { generateCssVars } from './cem-plugin-css-vars.js';
 
 const packageData = JSON.parse(fs.readFileSync('./package.json', 'utf8'));
@@ -28,6 +28,6 @@ export default {
       outdir: 'dist',
       htmlFileName: 'vscode.html-data.json',
       cssFileName: 'vscode.css-data.json',
-    })
+    }),
   ],
 };

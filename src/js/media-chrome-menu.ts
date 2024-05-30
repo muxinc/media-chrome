@@ -1,5 +1,5 @@
-import { MediaStateReceiverAttributes } from "./constants.js";
-import { computePosition } from "./utils/anchor-utils.js";
+import { MediaStateReceiverAttributes } from './constants.js';
+import { computePosition } from './utils/anchor-utils.js';
 import {
   closestComposedNode,
   containsComposedNode,
@@ -8,14 +8,14 @@ import {
   getDocumentOrShadowRoot,
   getMediaController,
   getOrInsertCSSRule,
-} from "./utils/element-utils.js";
-import { InvokeEvent, ToggleEvent } from "./utils/events.js";
-import { observeResize, unobserveResize } from "./utils/resize-observer.js";
-import { document, globalThis } from "./utils/server-safe-globals.js";
+} from './utils/element-utils.js';
+import { InvokeEvent, ToggleEvent } from './utils/events.js';
+import { observeResize, unobserveResize } from './utils/resize-observer.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
-import type { MediaChromeMenuItem } from "./media-chrome-menu-item.js";
-import type MediaController from "./media-controller.js";
-import { CustomElement } from "./utils/CustomElement.js";
+import type { MediaChromeMenuItem } from './media-chrome-menu-item.js';
+import type MediaController from './media-controller.js';
+import { CustomElement } from './utils/CustomElement.js';
 
 export function createMenuItem({
   type,
@@ -28,17 +28,17 @@ export function createMenuItem({
   value: string;
   checked: boolean;
 }) {
-  const item = document.createElement("media-chrome-menu-item");
+  const item = document.createElement('media-chrome-menu-item');
 
-  item.type = type ?? "";
+  item.type = type ?? '';
 
-  item.part.add("menu-item");
+  item.part.add('menu-item');
   if (type) item.part.add(type);
 
   item.value = value;
   item.checked = checked;
 
-  const label = document.createElement("span");
+  const label = document.createElement('span');
   label.textContent = text;
   item.append(label);
 
@@ -49,7 +49,7 @@ export function createIndicator(el: HTMLElement, name: string) {
   let customIndicator = el.querySelector(`:scope > [slot="${name}"]`);
 
   // Chaining slots
-  if (customIndicator?.nodeName == "SLOT")
+  if (customIndicator?.nodeName == 'SLOT')
     // @ts-ignore
     customIndicator = customIndicator.assignedElements({ flatten: true })[0];
 
@@ -67,10 +67,10 @@ export function createIndicator(el: HTMLElement, name: string) {
   }
 
   // Return an empty string if no indicator is found to use the slot fallback.
-  return "";
+  return '';
 }
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
   <style>
     :host {
@@ -92,13 +92,13 @@ template.innerHTML = /*html*/ `
         min-width .2s ease-in-out,
         min-height .2s ease-in-out
       ) !important;
-      ${/* ^^Prevent transition override by media-container */ ""}
+      ${/* ^^Prevent transition override by media-container */ ''}
       visibility: var(--media-menu-visibility, visible);
       opacity: var(--media-menu-opacity, 1);
       max-height: var(--media-menu-max-height, var(--_menu-max-height, 300px));
       transform: var(--media-menu-transform-in, translateY(0) scale(1));
       flex-direction: column;
-      ${/* Prevent overflowing a flex container */ ""}
+      ${/* Prevent overflowing a flex container */ ''}
       min-height: 0;
       position: relative;
       box-sizing: border-box;
@@ -214,7 +214,7 @@ template.innerHTML = /*html*/ `
       background: var(--media-menu-item-checked-background, rgb(255 255 255 / .2));
     }
 
-    ${/* In row layout hide the checked indicator completely. */ ""}
+    ${/* In row layout hide the checked indicator completely. */ ''}
     media-chrome-menu-item::part(checked-indicator) {
       display: var(--media-menu-item-checked-indicator-display, none);
     }
@@ -236,10 +236,10 @@ template.innerHTML = /*html*/ `
 `;
 
 export const Attributes = {
-  STYLE: "style",
-  HIDDEN: "hidden",
-  DISABLED: "disabled",
-  ANCHOR: "anchor",
+  STYLE: 'style',
+  HIDDEN: 'hidden',
+  DISABLED: 'disabled',
+  ANCHOR: 'anchor',
 } as const;
 
 /**
@@ -307,7 +307,7 @@ class MediaChromeMenu extends CustomElement {
   #mediaController: MediaController | null = null;
   #previouslyFocused: HTMLElement | null = null;
   #invokerElement: HTMLElement | null = null;
-  #keysSoFar = "";
+  #keysSoFar = '';
   #clearKeysTimeout: number | null = null;
   #previousItems = new Set<MediaChromeMenuItem>();
   #mutationObserver: MutationObserver;
@@ -322,7 +322,7 @@ class MediaChromeMenu extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: "open" });
+      this.attachShadow({ mode: 'open' });
 
       this.nativeEl = (
         this.constructor as typeof MediaChromeMenu
@@ -330,51 +330,51 @@ class MediaChromeMenu extends CustomElement {
       this.shadowRoot.append(this.nativeEl);
     }
 
-    this.container = this.shadowRoot.querySelector("#container") as HTMLElement;
+    this.container = this.shadowRoot.querySelector('#container') as HTMLElement;
     this.defaultSlot = this.shadowRoot.querySelector(
-      "slot:not([name])"
+      'slot:not([name])'
     ) as HTMLSlotElement;
 
-    this.shadowRoot.addEventListener("slotchange", this);
+    this.shadowRoot.addEventListener('slotchange', this);
 
     this.#mutationObserver = new MutationObserver(this.#handleMenuItems);
     this.#mutationObserver.observe(this.defaultSlot, { childList: true });
   }
 
   enable(): void {
-    this.addEventListener("click", this);
-    this.addEventListener("focusout", this);
-    this.addEventListener("keydown", this);
-    this.addEventListener("invoke", this);
-    this.addEventListener("toggle", this);
+    this.addEventListener('click', this);
+    this.addEventListener('focusout', this);
+    this.addEventListener('keydown', this);
+    this.addEventListener('invoke', this);
+    this.addEventListener('toggle', this);
   }
 
   disable(): void {
-    this.removeEventListener("click", this);
-    this.removeEventListener("focusout", this);
-    this.removeEventListener("keyup", this);
-    this.removeEventListener("invoke", this);
-    this.removeEventListener("toggle", this);
+    this.removeEventListener('click', this);
+    this.removeEventListener('focusout', this);
+    this.removeEventListener('keyup', this);
+    this.removeEventListener('invoke', this);
+    this.removeEventListener('toggle', this);
   }
 
   handleEvent(event: Event): void {
     switch (event.type) {
-      case "slotchange":
+      case 'slotchange':
         this.#handleSlotChange(event as Event);
         break;
-      case "invoke":
+      case 'invoke':
         this.#handleInvoke(event as InvokeEvent);
         break;
-      case "click":
+      case 'click':
         this.#handleClick(event as MouseEvent);
         break;
-      case "toggle":
+      case 'toggle':
         this.#handleToggle(event as ToggleEvent);
         break;
-      case "focusout":
+      case 'focusout':
         this.#handleFocusOut(event as FocusEvent);
         break;
-      case "keydown":
+      case 'keydown':
         this.#handleKeyDown(event as KeyboardEvent);
         break;
     }
@@ -383,7 +383,7 @@ class MediaChromeMenu extends CustomElement {
   connectedCallback(): void {
     this.#updateLayoutStyle();
 
-    if (!this.hasAttribute("disabled")) {
+    if (!this.hasAttribute('disabled')) {
       this.enable();
     }
 
@@ -391,7 +391,7 @@ class MediaChromeMenu extends CustomElement {
       // set menu role on the media-chrome-menu element itself
       // this is to make sure that SRs announce items as being part
       // of a menu when focused
-      this.role = "menu";
+      this.role = 'menu';
     }
 
     this.#mediaController = getAttributeMediaController(this);
@@ -431,8 +431,8 @@ class MediaChromeMenu extends CustomElement {
       // Fire a toggle event from a submenu which can be used in a parent menu.
       this.dispatchEvent(
         new ToggleEvent({
-          oldState: this.hidden ? "open" : "closed",
-          newState: this.hidden ? "closed" : "open",
+          oldState: this.hidden ? 'open' : 'closed',
+          newState: this.hidden ? 'closed' : 'open',
           bubbles: true,
         })
       );
@@ -462,11 +462,11 @@ class MediaChromeMenu extends CustomElement {
   }
 
   get anchor() {
-    return this.getAttribute("anchor");
+    return this.getAttribute('anchor');
   }
 
   set anchor(value: string) {
-    this.setAttribute("anchor", `${value}`);
+    this.setAttribute('anchor', `${value}`);
   }
 
   /**
@@ -489,7 +489,7 @@ class MediaChromeMenu extends CustomElement {
   }
 
   get radioGroupItems(): MediaChromeMenuItem[] {
-    return this.items.filter((item) => item.role === "menuitemradio");
+    return this.items.filter((item) => item.role === 'menuitemradio');
   }
 
   get checkedItems(): MediaChromeMenuItem[] {
@@ -497,7 +497,7 @@ class MediaChromeMenu extends CustomElement {
   }
 
   get value(): string {
-    return this.checkedItems[0]?.value ?? "";
+    return this.checkedItems[0]?.value ?? '';
   }
 
   set value(newValue: string) {
@@ -514,12 +514,12 @@ class MediaChromeMenu extends CustomElement {
     // @ts-ignore
     for (const node of slot.assignedNodes({ flatten: true }) as HTMLElement[]) {
       // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
-      if (node.nodeType === 3 && node.textContent.trim() === "") {
+      if (node.nodeType === 3 && node.textContent.trim() === '') {
         node.remove();
       }
     }
 
-    if (["header", "title"].includes(slot.name)) {
+    if (['header', 'title'].includes(slot.name)) {
       const header: HTMLElement = this.shadowRoot.querySelector(
         'slot[name="header"]'
       );
@@ -541,13 +541,13 @@ class MediaChromeMenu extends CustomElement {
 
     for (const item of previousItems) {
       if (!currentItems.has(item)) {
-        this.dispatchEvent(new CustomEvent("removemenuitem", { detail: item }));
+        this.dispatchEvent(new CustomEvent('removemenuitem', { detail: item }));
       }
     }
 
     for (const item of currentItems) {
       if (!previousItems.has(item)) {
-        this.dispatchEvent(new CustomEvent("addmenuitem", { detail: item }));
+        this.dispatchEvent(new CustomEvent('addmenuitem', { detail: item }));
       }
     }
 
@@ -559,12 +559,12 @@ class MediaChromeMenu extends CustomElement {
    * It can be a row or column layout. e.g. playback-rate-menu
    */
   #updateLayoutStyle() {
-    const layoutRowStyle = this.shadowRoot.querySelector("#layout-row");
+    const layoutRowStyle = this.shadowRoot.querySelector('#layout-row');
     const menuLayout = getComputedStyle(this)
-      .getPropertyValue("--media-menu-layout")
+      .getPropertyValue('--media-menu-layout')
       ?.trim();
 
-    layoutRowStyle.setAttribute("media", menuLayout === "row" ? "" : "width:0");
+    layoutRowStyle.setAttribute('media', menuLayout === 'row' ? '' : 'width:0');
   }
 
   #handleInvoke(event: InvokeEvent) {
@@ -576,20 +576,20 @@ class MediaChromeMenu extends CustomElement {
   }
 
   #handleOpen() {
-    this.#invokerElement?.setAttribute("aria-expanded", "true");
+    this.#invokerElement?.setAttribute('aria-expanded', 'true');
 
     // Wait one animation frame so the element dimensions are updated.
     requestAnimationFrame(() => this.#positionMenu(false));
 
     // Focus when the transition ends.
-    this.addEventListener("transitionend", () => this.focus(), { once: true });
+    this.addEventListener('transitionend', () => this.focus(), { once: true });
 
     observeResize(getBoundsElement(this), this.#handleBoundsResize);
     observeResize(this, this.#handleMenuResize);
   }
 
   #handleClosed() {
-    this.#invokerElement?.setAttribute("aria-expanded", "false");
+    this.#invokerElement?.setAttribute('aria-expanded', 'false');
 
     unobserveResize(getBoundsElement(this), this.#handleBoundsResize);
     unobserveResize(this, this.#handleMenuResize);
@@ -611,7 +611,7 @@ class MediaChromeMenu extends CustomElement {
    */
   #positionMenu(animate: boolean, menuWidth?: number) {
     // Can't position if the menu doesn't have an anchor and isn't a child of a media controller.
-    if (this.hasAttribute("mediacontroller") && !this.anchor) return;
+    if (this.hasAttribute('mediacontroller') && !this.anchor) return;
 
     // If the menu is hidden or there is no anchor, skip updating the menu position.
     if (this.hidden || !this.anchorElement) return;
@@ -619,7 +619,7 @@ class MediaChromeMenu extends CustomElement {
     const { x, y } = computePosition({
       anchor: this.anchorElement,
       floating: this,
-      placement: "top-start",
+      placement: 'top-start',
     });
 
     menuWidth ??= this.offsetWidth;
@@ -632,18 +632,18 @@ class MediaChromeMenu extends CustomElement {
     const bottom = boundsRect.height - y - this.offsetHeight;
     const maxHeight = boundsRect.height - anchorRect.height;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ":host");
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
 
     if (!animate) {
-      style.setProperty("--media-menu-transition-in", "none");
+      style.setProperty('--media-menu-transition-in', 'none');
     }
 
-    style.setProperty("position", "absolute");
-    style.setProperty("right", `${Math.max(0, right)}px`);
-    style.setProperty("bottom", `${bottom}px`);
-    style.setProperty("--_menu-max-height", `${maxHeight}px`);
+    style.setProperty('position', 'absolute');
+    style.setProperty('right', `${Math.max(0, right)}px`);
+    style.setProperty('bottom', `${bottom}px`);
+    style.setProperty('--_menu-max-height', `${maxHeight}px`);
 
-    style.removeProperty("--media-menu-transition-in");
+    style.removeProperty('--media-menu-transition-in');
   }
 
   /**
@@ -661,10 +661,10 @@ class MediaChromeMenu extends CustomElement {
       '[role="menu"]'
     ) as MediaChromeMenu;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ":host");
+    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
 
     if (!animate) {
-      style.setProperty("--media-menu-transition-in", "none");
+      style.setProperty('--media-menu-transition-in', 'none');
     }
 
     if (expandedSubmenu) {
@@ -676,18 +676,18 @@ class MediaChromeMenu extends CustomElement {
 
       // Safari required directly setting the style property instead of
       // updating the style node for the min-width or min-height to work.
-      this.style.setProperty("min-width", `${width}px`);
-      this.style.setProperty("min-height", `${height}px`);
+      this.style.setProperty('min-width', `${width}px`);
+      this.style.setProperty('min-height', `${height}px`);
 
       this.#positionMenu(animate, width);
     } else {
-      this.style.removeProperty("min-width");
-      this.style.removeProperty("min-height");
+      this.style.removeProperty('min-width');
+      this.style.removeProperty('min-height');
 
       this.#positionMenu(animate);
     }
 
-    style.removeProperty("--media-menu-transition-in");
+    style.removeProperty('--media-menu-transition-in');
   }
 
   focus() {
@@ -720,7 +720,7 @@ class MediaChromeMenu extends CustomElement {
 
     const item = this.#getItem(event);
 
-    if (!item || item.hasAttribute("disabled")) return;
+    if (!item || item.hasAttribute('disabled')) return;
 
     this.#setTabItem(item);
     this.handleSelect(event);
@@ -734,7 +734,7 @@ class MediaChromeMenu extends CustomElement {
     return headerSlot
       .assignedElements({ flatten: true })
       ?.find(
-        (el) => el.part.contains("back") && el.part.contains("button")
+        (el) => el.part.contains('back') && el.part.contains('button')
       ) as HTMLElement;
   }
 
@@ -742,7 +742,7 @@ class MediaChromeMenu extends CustomElement {
     const item = this.#getItem(event);
     if (!item) return;
 
-    this.#selectItem(item, item.type === "checkbox");
+    this.#selectItem(item, item.type === 'checkbox');
 
     // If the menu was opened by a click, close it when selecting an item.
     if (this.#invokerElement && !this.hidden) {
@@ -774,8 +774,8 @@ class MediaChromeMenu extends CustomElement {
       if (item.invokeTargetElement == event.target) continue;
 
       if (
-        event.newState == "open" &&
-        item.getAttribute("aria-expanded") == "true" &&
+        event.newState == 'open' &&
+        item.getAttribute('aria-expanded') == 'true' &&
         !item.invokeTargetElement.hidden
       ) {
         item.invokeTargetElement.dispatchEvent(
@@ -787,7 +787,7 @@ class MediaChromeMenu extends CustomElement {
     // Keep the aria-expanded attribute in sync with the hidden state of the submenu.
     // This is needed when loading media-chrome with an unhidden submenu.
     for (const item of menuItemsWithSubmenu) {
-      item.setAttribute("aria-expanded", `${!item.submenuElement.hidden}`);
+      item.setAttribute('aria-expanded', `${!item.submenuElement.hidden}`);
     }
 
     this.#resizeMenu(true);
@@ -800,7 +800,7 @@ class MediaChromeMenu extends CustomElement {
   #checkSubmenuHasExpanded() {
     const selector = '[role="menuitem"] > [role="menu"]:not([hidden])';
     const expandedMenuItem = this.querySelector(selector);
-    this.container.classList.toggle("has-expanded", !!expandedMenuItem);
+    this.container.classList.toggle('has-expanded', !!expandedMenuItem);
   }
 
   #handleFocusOut(event: FocusEvent) {
@@ -822,14 +822,14 @@ class MediaChromeMenu extends CustomElement {
 
   get keysUsed() {
     return [
-      "Enter",
-      "Escape",
-      "Tab",
-      " ",
-      "ArrowDown",
-      "ArrowUp",
-      "Home",
-      "End",
+      'Enter',
+      'Escape',
+      'Tab',
+      ' ',
+      'ArrowDown',
+      'ArrowUp',
+      'Home',
+      'End',
     ];
   }
 
@@ -847,7 +847,7 @@ class MediaChromeMenu extends CustomElement {
     event.preventDefault();
     event.stopPropagation();
 
-    if (key === "Tab") {
+    if (key === 'Tab') {
       if (this.#isPopover) {
         // Close all menus when tabbing out.
         this.hidden = true;
@@ -864,14 +864,14 @@ class MediaChromeMenu extends CustomElement {
 
       // Go back to the previous focused element.
       this.blur();
-    } else if (key === "Escape") {
+    } else if (key === 'Escape') {
       // Go back to the previous menu or close the menu.
       this.#previouslyFocused?.focus();
 
       if (this.#isPopover) {
         this.hidden = true;
       }
-    } else if (key === "Enter" || key === " ") {
+    } else if (key === 'Enter' || key === ' ') {
       this.handleSelect(event);
     } else {
       this.handleMove(event);
@@ -880,7 +880,7 @@ class MediaChromeMenu extends CustomElement {
 
   #getItem(event: MouseEvent | KeyboardEvent) {
     return event.composedPath().find((el) => {
-      return ["menuitemradio", "menuitemcheckbox"].includes(
+      return ['menuitemradio', 'menuitemcheckbox'].includes(
         (el as HTMLElement).role
       );
     }) as MediaChromeMenuItem | undefined;
@@ -899,7 +899,7 @@ class MediaChromeMenu extends CustomElement {
   #selectItem(item: MediaChromeMenuItem, toggle?: boolean) {
     const oldCheckedItems = [...this.checkedItems];
 
-    if (item.type === "radio") {
+    if (item.type === 'radio') {
       this.radioGroupItems.forEach((el) => (el.checked = false));
     }
 
@@ -911,7 +911,7 @@ class MediaChromeMenu extends CustomElement {
 
     if (this.checkedItems.some((opt, i) => opt != oldCheckedItems[i])) {
       this.dispatchEvent(
-        new Event("change", { bubbles: true, composed: true })
+        new Event('change', { bubbles: true, composed: true })
       );
     }
   }
@@ -924,13 +924,13 @@ class MediaChromeMenu extends CustomElement {
     const currentIndex = items.indexOf(currentItem);
     let index = Math.max(0, currentIndex);
 
-    if (key === "ArrowDown") {
+    if (key === 'ArrowDown') {
       index++;
-    } else if (key === "ArrowUp") {
+    } else if (key === 'ArrowUp') {
       index--;
-    } else if (event.key === "Home") {
+    } else if (event.key === 'Home') {
       index = 0;
-    } else if (event.key === "End") {
+    } else if (event.key === 'End') {
       index = items.length - 1;
     }
 
@@ -948,19 +948,19 @@ class MediaChromeMenu extends CustomElement {
 }
 
 function isMenuItem(element: any): element is MediaChromeMenuItem {
-  return ["menuitem", "menuitemradio", "menuitemcheckbox"].includes(
+  return ['menuitem', 'menuitemradio', 'menuitemcheckbox'].includes(
     element?.role
   );
 }
 
 function getBoundsElement(host: HTMLElement) {
-  return ((host.getAttribute("bounds")
-    ? closestComposedNode(host, `#${host.getAttribute("bounds")}`)
+  return ((host.getAttribute('bounds')
+    ? closestComposedNode(host, `#${host.getAttribute('bounds')}`)
     : getMediaController(host) || host.parentElement) ?? host) as HTMLElement;
 }
 
-if (!globalThis.customElements.get("media-chrome-menu")) {
-  globalThis.customElements.define("media-chrome-menu", MediaChromeMenu);
+if (!globalThis.customElements.get('media-chrome-menu')) {
+  globalThis.customElements.define('media-chrome-menu', MediaChromeMenu);
 }
 
 export { MediaChromeMenu };

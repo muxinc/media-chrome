@@ -1,17 +1,17 @@
-import { MediaUIAttributes, MediaUIEvents } from "./constants";
+import { MediaUIAttributes, MediaUIEvents } from './constants';
 import {
   MediaChromeMenu,
   createIndicator,
   createMenuItem,
-} from "./media-chrome-menu";
-import type { TextTrackLike } from "./utils/TextTrackLike";
+} from './media-chrome-menu';
+import type { TextTrackLike } from './utils/TextTrackLike';
 import {
   getMediaController,
   getStringAttr,
   setStringAttr,
-} from "./utils/element-utils";
-import { globalThis } from "./utils/server-safe-globals";
-import { parseAudioTrackList } from "./utils/utils";
+} from './utils/element-utils';
+import { globalThis } from './utils/server-safe-globals';
+import { parseAudioTrackList } from './utils/utils';
 
 /**
  * @slot - Default slotted elements.
@@ -34,40 +34,44 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
   #audioTrackList: TextTrackLike[] = [];
   #prevState: string | undefined;
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (
       attrName === MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED &&
       oldValue !== newValue
     ) {
-      this.value = newValue ?? "";
+      this.value = newValue ?? '';
     } else if (
       attrName === MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST &&
       oldValue !== newValue
     ) {
-      this.#audioTrackList = parseAudioTrackList(newValue ?? "");
+      this.#audioTrackList = parseAudioTrackList(newValue ?? '');
       this.#render();
     }
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.addEventListener("change", this.#onChange);
+    this.addEventListener('change', this.#onChange);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    this.removeEventListener("change", this.#onChange);
+    this.removeEventListener('change', this.#onChange);
   }
 
   /**
    * Returns the anchor element when it is a floating menu.
    */
   get anchorElement(): HTMLElement | null {
-    if (this.anchor !== "auto") return super.anchorElement;
+    if (this.anchor !== 'auto') return super.anchorElement;
     return getMediaController(this)?.querySelector(
-      "media-audio-track-menu-button"
+      'media-audio-track-menu-button'
     );
   }
 
@@ -84,7 +88,9 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
    * Get enabled audio track id.
    */
   get mediaAudioTrackEnabled(): string {
-    return getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED) ?? "";
+    return (
+      getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED) ?? ''
+    );
   }
 
   set mediaAudioTrackEnabled(id: string) {
@@ -97,18 +103,18 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
 
     const audioTrackList = this.mediaAudioTrackList;
 
-    this.defaultSlot.textContent = "";
+    this.defaultSlot.textContent = '';
 
     for (const audioTrack of audioTrackList) {
       const text = this.formatMenuItemText(audioTrack.label, audioTrack);
 
       const item = createMenuItem({
-        type: "radio",
+        type: 'radio',
         text,
         value: `${audioTrack.id}`,
         checked: audioTrack.enabled,
       });
-      item.prepend(createIndicator(this, "checked-indicator"));
+      item.prepend(createIndicator(this, 'checked-indicator'));
       this.defaultSlot.append(item);
     }
   }
@@ -128,9 +134,9 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
   };
 }
 
-if (!globalThis.customElements.get("media-audio-track-menu")) {
+if (!globalThis.customElements.get('media-audio-track-menu')) {
   globalThis.customElements.define(
-    "media-audio-track-menu",
+    'media-audio-track-menu',
     MediaAudioTrackMenu
   );
 }

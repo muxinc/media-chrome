@@ -1,13 +1,13 @@
-import { MediaChromeMenu } from "./media-chrome-menu.js";
-import { CustomElement } from "./utils/CustomElement.js";
+import { MediaChromeMenu } from './media-chrome-menu.js';
+import { CustomElement } from './utils/CustomElement.js';
 import {
   containsComposedNode,
   getDocumentOrShadowRoot,
-} from "./utils/element-utils.js";
-import { InvokeEvent } from "./utils/events.js";
-import { document, globalThis } from "./utils/server-safe-globals.js";
+} from './utils/element-utils.js';
+import { InvokeEvent } from './utils/events.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement("template");
+const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
   <style>
     :host {
@@ -90,7 +90,7 @@ template.innerHTML = /*html*/ `
       display: var(--media-menu-item-checked-indicator-display, inline-block);
     }
 
-    ${/* For all slotted icons in prefix and suffix. */ ""}
+    ${/* For all slotted icons in prefix and suffix. */ ''}
     svg, img, ::slotted(svg), ::slotted(img) {
       height: var(--media-menu-item-icon-height, var(--media-control-height, 24px));
       fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
@@ -98,8 +98,8 @@ template.innerHTML = /*html*/ `
     }
 
     ${
-      /* Only for indicator icons like checked-indicator or captions-indicator. */ ""
-  }
+      /* Only for indicator icons like checked-indicator or captions-indicator. */ ''
+    }
     [part~="indicator"],
     ::slotted([part~="indicator"]) {
       fill: var(--media-menu-item-indicator-fill,
@@ -129,10 +129,10 @@ template.innerHTML = /*html*/ `
 `;
 
 export const Attributes = {
-  TYPE: "type",
-  VALUE: "value",
-  CHECKED: "checked",
-  DISABLED: "disabled",
+  TYPE: 'type',
+  VALUE: 'value',
+  CHECKED: 'checked',
+  DISABLED: 'disabled',
 };
 
 /**
@@ -181,57 +181,61 @@ class MediaChromeMenuItem extends CustomElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: "open" });
+      this.attachShadow({ mode: 'open' });
       // @ts-ignore
       this.shadowRoot.append(this.constructor.template.content.cloneNode(true));
     }
 
-    this.shadowRoot.addEventListener("slotchange", this);
+    this.shadowRoot.addEventListener('slotchange', this);
   }
 
   enable() {
-    if (!this.hasAttribute("tabindex")) {
-      this.setAttribute("tabindex", "-1");
+    if (!this.hasAttribute('tabindex')) {
+      this.setAttribute('tabindex', '-1');
     }
 
-    if (isCheckable(this) && !this.hasAttribute("aria-checked")) {
-      this.setAttribute("aria-checked", "false");
+    if (isCheckable(this) && !this.hasAttribute('aria-checked')) {
+      this.setAttribute('aria-checked', 'false');
     }
 
-    this.addEventListener("click", this);
-    this.addEventListener("keydown", this);
+    this.addEventListener('click', this);
+    this.addEventListener('keydown', this);
   }
 
   disable() {
-    this.removeAttribute("tabindex");
+    this.removeAttribute('tabindex');
 
-    this.removeEventListener("click", this);
-    this.removeEventListener("keydown", this);
-    this.removeEventListener("keyup", this);
+    this.removeEventListener('click', this);
+    this.removeEventListener('keydown', this);
+    this.removeEventListener('keyup', this);
   }
 
   handleEvent(event) {
     switch (event.type) {
-      case "slotchange":
+      case 'slotchange':
         this.#handleSlotChange(event);
         break;
-      case "click":
+      case 'click':
         this.handleClick(event);
         break;
-      case "keydown":
+      case 'keydown':
         this.#handleKeyDown(event);
         break;
-      case "keyup":
+      case 'keyup':
         this.#handleKeyUp(event);
         break;
     }
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === Attributes.CHECKED && isCheckable(this) && !this.#dirty) {
-      this.setAttribute("aria-checked", newValue != null ? "true" : "false");
+      this.setAttribute('aria-checked', newValue != null ? 'true' : 'false');
     } else if (attrName === Attributes.TYPE && newValue !== oldValue) {
-      this.role = "menuitem" + newValue;
+      this.role = 'menuitem' + newValue;
     } else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
       if (newValue == null) {
         this.enable();
@@ -246,7 +250,7 @@ class MediaChromeMenuItem extends CustomElement {
       this.enable();
     }
 
-    this.role = "menuitem" + this.type;
+    this.role = 'menuitem' + this.type;
 
     this.#ownerElement = closestMenuItemsContainer(this, this.parentNode);
     this.#reset();
@@ -260,11 +264,11 @@ class MediaChromeMenuItem extends CustomElement {
   }
 
   get invokeTarget() {
-    return this.getAttribute("invoketarget");
+    return this.getAttribute('invoketarget');
   }
 
   set invokeTarget(value) {
-    this.setAttribute("invoketarget", `${value}`);
+    this.setAttribute('invoketarget', `${value}`);
   }
 
   /**
@@ -294,7 +298,7 @@ class MediaChromeMenuItem extends CustomElement {
   }
 
   get type() {
-    return this.getAttribute(Attributes.TYPE) ?? "";
+    return this.getAttribute(Attributes.TYPE) ?? '';
   }
 
   set type(val) {
@@ -310,12 +314,12 @@ class MediaChromeMenuItem extends CustomElement {
   }
 
   get text() {
-    return (this.textContent ?? "").trim();
+    return (this.textContent ?? '').trim();
   }
 
   get checked() {
     if (!isCheckable(this)) return undefined;
-    return this.getAttribute("aria-checked") === "true";
+    return this.getAttribute('aria-checked') === 'true';
   }
 
   set checked(value) {
@@ -323,12 +327,12 @@ class MediaChromeMenuItem extends CustomElement {
 
     this.#dirty = true;
     // Firefox doesn't support the property .ariaChecked.
-    this.setAttribute("aria-checked", value ? "true" : "false");
+    this.setAttribute('aria-checked', value ? 'true' : 'false');
 
     if (value) {
-      this.part.add("checked");
+      this.part.add('checked');
     } else {
-      this.part.remove("checked");
+      this.part.remove('checked');
     }
   }
 
@@ -339,13 +343,13 @@ class MediaChromeMenuItem extends CustomElement {
     if (isDefaultSlot) {
       for (const node of slot.assignedNodes({ flatten: true })) {
         // Remove all whitespace text nodes so the unnamed slot shows its fallback content.
-        if (node instanceof Text && node.textContent.trim() === "") {
+        if (node instanceof Text && node.textContent.trim() === '') {
           node.remove();
         }
       }
     }
 
-    if (slot.name === "submenu") {
+    if (slot.name === 'submenu') {
       if (this.submenuElement) {
         this.#submenuConnected();
       } else {
@@ -355,13 +359,13 @@ class MediaChromeMenuItem extends CustomElement {
   }
 
   async #submenuConnected() {
-    this.setAttribute("aria-haspopup", "menu");
-    this.setAttribute("aria-expanded", `${!this.submenuElement.hidden}`);
+    this.setAttribute('aria-haspopup', 'menu');
+    this.setAttribute('aria-expanded', `${!this.submenuElement.hidden}`);
 
-    this.submenuElement.addEventListener("change", this.#handleMenuItem);
-    this.submenuElement.addEventListener("addmenuitem", this.#handleMenuItem);
+    this.submenuElement.addEventListener('change', this.#handleMenuItem);
+    this.submenuElement.addEventListener('addmenuitem', this.#handleMenuItem);
     this.submenuElement.addEventListener(
-      "removemenuitem",
+      'removemenuitem',
       this.#handleMenuItem
     );
 
@@ -369,16 +373,16 @@ class MediaChromeMenuItem extends CustomElement {
   }
 
   #submenuDisconnected() {
-    this.removeAttribute("aria-haspopup");
-    this.removeAttribute("aria-expanded");
+    this.removeAttribute('aria-haspopup');
+    this.removeAttribute('aria-expanded');
 
-    this.submenuElement.removeEventListener("change", this.#handleMenuItem);
+    this.submenuElement.removeEventListener('change', this.#handleMenuItem);
     this.submenuElement.removeEventListener(
-      "addmenuitem",
+      'addmenuitem',
       this.#handleMenuItem
     );
     this.submenuElement.removeEventListener(
-      "removemenuitem",
+      'removemenuitem',
       this.#handleMenuItem
     );
 
@@ -390,15 +394,15 @@ class MediaChromeMenuItem extends CustomElement {
    * is populated with the text of the first checked item.
    */
   #handleMenuItem = () => {
-    this.setAttribute("submenusize", `${this.submenuElement.items.length}`);
+    this.setAttribute('submenusize', `${this.submenuElement.items.length}`);
 
     const descriptionSlot = this.shadowRoot.querySelector(
       'slot[name="description"]'
     );
     const description = this.submenuElement.checkedItems?.[0]?.text;
 
-    const span = document.createElement("span");
-    span.textContent = description ?? "";
+    const span = document.createElement('span');
+    span.textContent = description ?? '';
 
     descriptionSlot.replaceChildren(span);
   };
@@ -415,14 +419,14 @@ class MediaChromeMenuItem extends CustomElement {
   }
 
   get keysUsed() {
-    return ["Enter", " "];
+    return ['Enter', ' '];
   }
 
   #handleKeyUp(event) {
     const { key } = event;
 
     if (!this.keysUsed.includes(key)) {
-      this.removeEventListener("keyup", this.#handleKeyUp);
+      this.removeEventListener('keyup', this.#handleKeyUp);
       return;
     }
 
@@ -433,11 +437,11 @@ class MediaChromeMenuItem extends CustomElement {
     const { metaKey, altKey, key } = event;
 
     if (metaKey || altKey || !this.keysUsed.includes(key)) {
-      this.removeEventListener("keyup", this.#handleKeyUp);
+      this.removeEventListener('keyup', this.#handleKeyUp);
       return;
     }
 
-    this.addEventListener("keyup", this.#handleKeyUp, { once: true });
+    this.addEventListener('keyup', this.#handleKeyUp, { once: true });
   }
 
   #reset() {
@@ -446,22 +450,22 @@ class MediaChromeMenuItem extends CustomElement {
 
     // Default to the last aria-checked element if there isn't an active element already.
     let checkedItem = items
-      .filter((item) => item.getAttribute("aria-checked") === "true")
+      .filter((item) => item.getAttribute('aria-checked') === 'true')
       .pop();
 
     // If there isn't an active element or a checked element, default to the first element.
     if (!checkedItem) checkedItem = items[0];
 
     for (const item of items) {
-      item.setAttribute("aria-checked", "false");
+      item.setAttribute('aria-checked', 'false');
     }
 
-    checkedItem?.setAttribute("aria-checked", "true");
+    checkedItem?.setAttribute('aria-checked', 'true');
   }
 }
 
 function isCheckable(item) {
-  return item.type === "radio" || item.type === "checkbox";
+  return item.type === 'radio' || item.type === 'checkbox';
 }
 
 function closestMenuItemsContainer(childNode, parentNode) {
@@ -475,9 +479,9 @@ function closestMenuItemsContainer(childNode, parentNode) {
   return closestMenuItemsContainer(parentNode, parentNode?.parentNode);
 }
 
-if (!globalThis.customElements.get("media-chrome-menu-item")) {
+if (!globalThis.customElements.get('media-chrome-menu-item')) {
   globalThis.customElements.define(
-    "media-chrome-menu-item",
+    'media-chrome-menu-item',
     MediaChromeMenuItem
   );
 }

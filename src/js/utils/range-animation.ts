@@ -1,4 +1,4 @@
-type Range = { valueAsNumber: number }
+type Range = { valueAsNumber: number };
 
 /**
  * Smoothly animate a range input accounting for hiccups and diverging playback.

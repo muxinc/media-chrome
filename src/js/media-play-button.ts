@@ -1,8 +1,8 @@
-import { MediaUIAttributes, MediaUIEvents } from "./constants.js";
-import { verbs } from "./labels/labels.js";
-import { MediaChromeButton } from "./media-chrome-button.js";
-import { getBooleanAttr, setBooleanAttr } from "./utils/element-utils.js";
-import { document, globalThis } from "./utils/server-safe-globals.js";
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
+import { verbs } from './labels/labels.js';
+import { MediaChromeButton } from './media-chrome-button.js';
+import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 const playIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="m6 21 15-9L6 3v18Z"/>
@@ -12,7 +12,7 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M6 20h4V4H6v16Zm8-16v16h4V4h-4Z"/>
 </svg>`;
 
-const slotTemplate: HTMLTemplateElement = document.createElement("template");
+const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] {
@@ -32,7 +32,7 @@ slotTemplate.innerHTML = /*html*/ `
 
 const updateAriaLabel = (el: any): void => {
   const label = el.mediaPaused ? verbs.PLAY() : verbs.PAUSE();
-  el.setAttribute("aria-label", label);
+  el.setAttribute('aria-label', label);
 };
 
 /**
@@ -62,7 +62,11 @@ class MediaPlayButton extends MediaChromeButton {
     super.connectedCallback();
   }
 
-  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null): void {
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
     if (attrName === MediaUIAttributes.MEDIA_PAUSED) {
       updateAriaLabel(this);
     }
@@ -90,8 +94,8 @@ class MediaPlayButton extends MediaChromeButton {
   }
 }
 
-if (!globalThis.customElements.get("media-play-button")) {
-  globalThis.customElements.define("media-play-button", MediaPlayButton);
+if (!globalThis.customElements.get('media-play-button')) {
+  globalThis.customElements.define('media-play-button', MediaPlayButton);
 }
 
 export { MediaPlayButton };

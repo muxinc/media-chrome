@@ -47,5 +47,4 @@ describe('<media-container>', () => {
     video.remove();
     assert.equal(mediaContainer.media, null);
   });
-
 });
