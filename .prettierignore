@@ -1,2 +1,26 @@
+## don't apply prettier rules to any of our markdown
 **/*.mdx
 **/*.md
+
+## ignore various dev env/build artifacts (should be same as .gitingore)
+dist/
+.cache/
+yarn-error.log
+.DS_Store
+sandbox/*
+.orig
+
+.vercel
+.vscode
+
+/coverage/
+*.sublime-*
+
+## all ignore project-root files
+/*.*
+
+## for now, ignore these directories as well
+docs
+examples
+scripts
+.github
