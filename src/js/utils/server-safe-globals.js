@@ -51,7 +51,7 @@ const globalThisShim = {
      */
     getItem(key /* eslint-disable-line no-unused-vars */) {
       return null;
-    }, // eslint-disable-line no-unused-vars
+    },
     /**
      * @param {string} key
      * @param {string} value
