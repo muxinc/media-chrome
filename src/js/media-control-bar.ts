@@ -3,10 +3,10 @@
 
   Auto position contorls in a line and set some base colors
 */
-import { MediaStateReceiverAttributes } from './constants';
-import type MediaController from './media-controller';
-import { CustomElement } from './utils/CustomElement';
-import { document, globalThis } from './utils/server-safe-globals';
+import { MediaStateReceiverAttributes } from './constants.js';
+import type MediaController from './media-controller.js';
+import { CustomElement } from './utils/CustomElement.js';
+import { document, globalThis } from './utils/server-safe-globals.js';
 
 const template: HTMLTemplateElement = document.createElement('template');
 

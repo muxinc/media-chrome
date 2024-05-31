@@ -83,5 +83,5 @@ export {
   MediaSettingsMenuItem,
   MediaTimeDisplay,
   MediaTimeRange,
-  MediaVolumeRange
+  MediaVolumeRange,
 };

@@ -1,7 +1,7 @@
 /* Adapted from floating-ui - The MIT License - Floating UI contributors */
 
 import type { Point } from './Point.js';
-import type { Rect } from './Rect';
+import type { Rect } from './Rect.js';
 
 export type PositionElements = {
   anchor: HTMLElement;

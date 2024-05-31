@@ -6,17 +6,17 @@ import {
   MediaUIProps,
   StreamTypes,
   VolumeLevels,
-} from '../constants';
+} from '../constants.js';
 import createMediaStore, {
   type MediaState,
   type MediaStore,
-} from '../media-store/media-store';
+} from '../media-store/media-store.js';
 import type {
   FullScreenElementStateOwner,
   MediaStateOwner,
-} from '../media-store/state-mediator';
-import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector';
-export * as timeUtils from '../utils/time';
+} from '../media-store/state-mediator.js';
+import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector.js';
+export * as timeUtils from '../utils/time.js';
 
 /**
  * @description A lookup object for all well-defined action types that can be dispatched

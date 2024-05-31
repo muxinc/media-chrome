@@ -1,20 +1,20 @@
-import { MediaUIAttributes, MediaUIEvents } from './constants';
+import { MediaUIAttributes, MediaUIEvents } from './constants.js';
 import {
   MediaChromeMenu,
   createIndicator,
   createMenuItem,
-} from './media-chrome-menu';
-import type { TextTrackLike } from './utils/TextTrackLike';
+} from './media-chrome-menu.js';
+import type { TextTrackLike } from './utils/TextTrackLike.js';
 import {
   getMediaController,
   getStringAttr,
   setStringAttr,
-} from './utils/element-utils';
-import { globalThis } from './utils/server-safe-globals';
-import { parseAudioTrackList } from './utils/utils';
+} from './utils/element-utils.js';
+import { globalThis } from './utils/server-safe-globals.js';
+import { parseAudioTrackList } from './utils/utils.js';
 
 /**
- * @slot - Default slotted elements.
+ * @slot - Default slotted elements.node
  * @slot header - An element shown at the top of the menu.
  * @slot checked-indicator - An icon element indicating a checked menu-item.
  *
