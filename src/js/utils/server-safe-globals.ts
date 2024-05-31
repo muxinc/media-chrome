@@ -31,13 +31,18 @@ const documentShim = {
   dispatchEvent(event /* eslint-disable-line no-unused-vars */) {
     return false;
   },
-};
+} as unknown as typeof globalThis['document'];
 
 const globalThisShim = {
   ResizeObserver,
   document: documentShim,
   Node: Node,
-  HTMLElement: class HTMLElement extends Node {},
+  HTMLElement: class HTMLElement extends Node {
+    innerHTML: string = '';
+    get content() {
+      return new DocumentFragment();
+    }
+  },
   DocumentFragment: class DocumentFragment extends EventTarget {},
   customElements: {
     get: function () {},
@@ -79,59 +84,15 @@ const globalThisShim = {
       media,
     };
   },
-};
+} as unknown as typeof globalThis;
 
 export const isServer =
   typeof window === 'undefined' || typeof window.customElements === 'undefined';
 
 const isShimmed = Object.keys(globalThisShim).every((key) => key in globalThis);
 
-/**
- * @type { globalThis & {
- *   WebKitPlaybackTargetAvailabilityEvent?,
- *   chrome?,
- *   DocumentFragment?,
- *   getComputedStyle,
- *   CastableVideoElement?
- * } |
- * {Node,
- * HTMLElement,
- * customElements,
- * CustomEvent,
- * getComputedStyle,
- * addEventListener?,
- * removeEventListener?,
- * localStorage?,
- * WebKitPlaybackTargetAvailabilityEvent?,
- * window?,
- * document?,
- * chrome?,
- * DocumentFragment?,
- * ResizeObserver?,
- * CastableVideoElement?,
- * navigator?,
- * matchMedia,
- * } }
- * */
-export const GlobalThis = isServer && !isShimmed ? globalThisShim : globalThis;
-
-/**
- * @type { document & { webkitExitFullscreen? } |
- * {createElement,
- * createElementNS?,
- * activeElement?,
- * fullscreenElement?,
- * webkitExitFullscreen?,
- * getElementById?,
- * pictureInPictureElement?,
- * exitPictureInPicture?,
- * pictureInPictureEnabled?,
- * requestPictureInPicture?,
- * addEventListener?,
- * removeEventListener?,
- * } }
- */
-export const Document =
+export const GlobalThis: typeof globalThis = isServer && !isShimmed ? globalThisShim : globalThis;
+export const Document: typeof globalThis['document'] =
   isServer && !isShimmed ? documentShim : globalThis.document;
 
 export { GlobalThis as globalThis, Document as document };
