@@ -7,7 +7,9 @@ const checkIcon = /*html*/ `
 </svg>`;
 
 export function createOption(text, value, selected) {
-  const option = document.createElement('media-chrome-option');
+  const option = /** @type {HTMLOptionElement} */ (
+    /** @type unknown */ document.createElement('media-chrome-option')
+  );
   option.part.add('option');
   option.value = value;
   option.selected = selected;
@@ -167,6 +169,8 @@ class MediaChromeListbox extends globalThis.HTMLElement {
   #keysSoFar = '';
   #clearKeysTimeout = null;
   #metaPressed = false;
+  /** @type {DocumentFragment} */
+  nativeEl;
 
   constructor(options = {}) {
     super();
@@ -175,7 +179,9 @@ class MediaChromeListbox extends globalThis.HTMLElement {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       this.attachShadow({ mode: 'open' });
 
-      this.nativeEl = template.content.cloneNode(true);
+      this.nativeEl = /** @type {DocumentFragment} */ (
+        /** @type {unknown} */ template.content.cloneNode(true)
+      );
 
       if (options.slotTemplate) {
         this.nativeEl.append(options.slotTemplate.content.cloneNode(true));

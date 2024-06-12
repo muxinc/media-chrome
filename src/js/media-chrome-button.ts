@@ -95,19 +95,25 @@ template.innerHTML = /*html*/ `
 class MediaChromeButton extends globalThis.HTMLElement {
   #mediaController;
   preventClick = false;
+  nativeEl: DocumentFragment;
 
   static get observedAttributes() {
     return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
   }
 
-  constructor(options = {}) {
+  constructor(
+    options: Partial<{
+      slotTemplate: HTMLTemplateElement;
+      defaultContent: string;
+    }> = {}
+  ) {
     super();
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       this.attachShadow({ mode: 'open' });
 
-      const buttonHTML = template.content.cloneNode(true);
+      const buttonHTML = template.content.cloneNode(true) as DocumentFragment;
       this.nativeEl = buttonHTML;
 
       // Slots

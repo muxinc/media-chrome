@@ -296,6 +296,8 @@ class MediaContainer extends globalThis.HTMLElement {
               MediaUIAttributes.MEDIA_RENDITION_LIST,
               MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST,
               MediaUIAttributes.MEDIA_CHAPTERS_CUES,
+              /** @TODO Fix me after TS migration (CJP) */
+              // @ts-ignore
             ].includes(name)
         )
     );

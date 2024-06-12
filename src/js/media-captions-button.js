@@ -155,4 +155,5 @@ if (!globalThis.customElements.get('media-captions-button')) {
   );
 }
 
+export { MediaCaptionsButton };
 export default MediaCaptionsButton;

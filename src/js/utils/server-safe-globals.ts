@@ -91,8 +91,11 @@ export const isServer =
 
 const isShimmed = Object.keys(globalThisShim).every((key) => key in globalThis);
 
-export const GlobalThis: typeof globalThis = isServer && !isShimmed ? globalThisShim : globalThis;
-export const Document: typeof globalThis['document'] =
-  isServer && !isShimmed ? documentShim : globalThis.document;
+export const GlobalThis: typeof globalThis =
+  isServer && !isShimmed ? globalThisShim : globalThis;
+export const Document: typeof globalThis['document'] &
+  Partial<{
+    webkitExitFullscreen: typeof globalThis['document']['exitFullscreen'];
+  }> = isServer && !isShimmed ? documentShim : globalThis.document;
 
 export { GlobalThis as globalThis, Document as document };

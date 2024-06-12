@@ -260,7 +260,9 @@ class MediaTimeDisplay extends MediaTextDisplay {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
     if (!seekable) return undefined;
     // Only currently supports a single, contiguous seekable range (CJP)
-    return seekable.split(':').map((time) => +time);
+    return /** @type {[number, number] | undefined} */ (
+      /** @type {unknown} */ seekable.split(':').map((time) => +time)
+    );
   }
 
   set mediaSeekable(range) {

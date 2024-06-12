@@ -4,13 +4,19 @@ import './media-captions-listbox.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
 /**
+ * @typedef {import('../media-captions-button.js').MediaCaptionsButton} MediaCaptionsButton
+ */
+
+/**
  * @csspart button - The default button that's in the shadow DOM.
  * @csspart listbox - The default listbox that's in the shadow DOM.
  * @csspart option - A part that targets each option of the listbox.
  */
 class MediaCaptionsSelectMenu extends MediaChromeSelectMenu {
   init() {
-    const captionsButton = document.createElement('media-captions-button');
+    const captionsButton = /** @type {MediaCaptionsButton} */ (
+      /** @type {unknown} */ document.createElement('media-captions-button')
+    );
     captionsButton.part.add('button');
     captionsButton.preventClick = true;
 

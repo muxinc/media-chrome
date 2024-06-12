@@ -10,6 +10,12 @@ import {
 import { observeResize, unobserveResize } from '../utils/resize-observer.js';
 import { MediaStateReceiverAttributes } from '../constants.js';
 
+/** @typedef {import('../media-controller.js').MediaController} MediaController */
+
+/**
+ * @typedef {import('../media-chrome-button.js').MediaChromeButton} MediaChromeButton
+ */
+
 const template = document.createElement('template');
 template.innerHTML = /*html*/ `
   <style>
@@ -75,10 +81,15 @@ template.innerHTML = /*html*/ `
  * @csspart listbox - The default listbox that's in the shadow DOM.
  */
 class MediaChromeSelectMenu extends globalThis.HTMLElement {
+  /** @type {MediaController} */
   #mediaController;
+  /** @type {MediaChromeButton} */
   #button;
+  /** @type {HTMLSlotElement} */
   #buttonSlot;
+  /** @type {HTMLElement} */
   #listbox;
+  /** @type {HTMLSlotElement} */
   #listboxSlot;
 
   static get observedAttributes() {
@@ -94,14 +105,16 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    this.init?.();
+    this.init();
 
     this.#button = this.shadowRoot.querySelector('[part=button]');
     this.#listbox = this.shadowRoot.querySelector('[part=listbox]');
 
     this.#buttonSlot = this.shadowRoot.querySelector('slot[name=button]');
     this.#buttonSlot.addEventListener('slotchange', () => {
-      const newButton = this.#buttonSlot.assignedElements()[0];
+      const newButton = /** @type {MediaChromeButton} */ (
+        /** @type {unknown} */ this.#buttonSlot.assignedElements()[0]
+      );
 
       // if the slotted button is the built-in, nothing to do
       if (!newButton) return;
@@ -122,9 +135,14 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
 
     this.#listboxSlot = this.shadowRoot.querySelector('slot[name=listbox]');
     this.#listboxSlot.addEventListener('slotchange', () => {
-      this.#listbox = this.#listboxSlot.assignedElements()[0] || this.#listbox;
+      this.#listbox = /** @type {HTMLElement} */ (
+        /** @type {unknown} */ this.#listboxSlot.assignedElements()[0] ||
+          this.#listbox
+      );
     });
   }
+
+  init() {}
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
@@ -275,6 +293,7 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       if (newValue && this.isConnected) {
         // @ts-ignore
         this.#mediaController = this.getRootNode()?.getElementById(newValue);
+        // @ts-ignore
         this.#mediaController?.associateElement?.(this);
         this.#listbox.setAttribute(
           MediaStateReceiverAttributes.MEDIA_CONTROLLER,
@@ -301,8 +320,8 @@ class MediaChromeSelectMenu extends globalThis.HTMLElement {
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
-      // @ts-ignore
       this.#mediaController =
+        // @ts-ignore
         this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
       this.#listbox.setAttribute(

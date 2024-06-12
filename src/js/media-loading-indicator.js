@@ -152,8 +152,8 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
-      // @ts-ignore
       this.#mediaController =
+        // @ts-ignore
         this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
