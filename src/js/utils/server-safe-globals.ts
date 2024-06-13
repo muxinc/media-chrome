@@ -40,7 +40,7 @@ const globalThisShim = {
   HTMLElement: class HTMLElement extends Node {
     innerHTML: string = '';
     get content() {
-      return new DocumentFragment();
+      return new globalThisShim.DocumentFragment();
     }
   },
   DocumentFragment: class DocumentFragment extends EventTarget {},
