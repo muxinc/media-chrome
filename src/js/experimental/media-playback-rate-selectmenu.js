@@ -4,14 +4,20 @@ import './media-playback-rate-listbox.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
 /**
+ * @typedef {import('../media-playback-rate-button.js').MediaPlaybackRateButton} MediaPlaybackRateButton
+ */
+
+/**
  * @csspart button - The default button that's in the shadow DOM.
  * @csspart listbox - The default listbox that's in the shadow DOM.
  * @csspart option - A part that targets each option of the listbox.
  */
 class MediaPlaybackRateSelectMenu extends MediaChromeSelectMenu {
   init() {
-    const playbackRateButton = document.createElement(
-      'media-playback-rate-button'
+    const playbackRateButton = /** @type {MediaPlaybackRateButton} */ (
+      /** @type {unknown} */ document.createElement(
+        'media-playback-rate-button'
+      )
     );
     playbackRateButton.part.add('button');
     playbackRateButton.preventClick = true;

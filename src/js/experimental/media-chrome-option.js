@@ -109,7 +109,7 @@ class MediaChromeOption extends globalThis.HTMLElement {
 
   enable() {
     if (!this.hasAttribute('tabindex')) {
-      this.setAttribute('tabindex', -1);
+      this.tabIndex = -1;
     }
     if (!this.hasAttribute('aria-selected')) {
       this.setAttribute('aria-selected', 'false');

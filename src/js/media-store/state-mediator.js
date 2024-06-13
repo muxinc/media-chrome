@@ -403,7 +403,7 @@ export const stateMediator = {
           );
           if (volumePref == null) return;
           stateMediator.mediaVolume.set(+volumePref, stateOwners);
-          handler(volumePref);
+          handler(+volumePref);
         } catch (e) {
           console.debug('Error getting volume pref', e);
         }

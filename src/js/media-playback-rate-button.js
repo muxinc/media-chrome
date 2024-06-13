@@ -119,4 +119,6 @@ if (!globalThis.customElements.get('media-playback-rate-button')) {
   );
 }
 
+export { MediaPlaybackRateButton };
+
 export default MediaPlaybackRateButton;

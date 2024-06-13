@@ -16,7 +16,9 @@ import {
 /** @typedef {import('./media-chrome-menu-item.js').MediaChromeMenuItem} MediaChromeMenuItem */
 
 export function createMenuItem({ type, text, value, checked }) {
-  const item = document.createElement('media-chrome-menu-item');
+  const item = /** @type {MediaChromeMenuItem} */ (
+    /** @type {unknown} */ document.createElement('media-chrome-menu-item')
+  );
 
   item.type = type ?? '';
 

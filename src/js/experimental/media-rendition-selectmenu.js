@@ -5,6 +5,10 @@ import { MediaUIAttributes } from '../constants.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
 /**
+ * @typedef {import('./media-rendition-button.js').MediaRenditionButton} MediaRenditionButton
+ */
+
+/**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
  * @attr {(unavailable|unsupported)} mediarenditionunavailable - (read-only) Set if rendition selection is unavailable.
  *
@@ -22,7 +26,9 @@ class MediaRenditionSelectMenu extends MediaChromeSelectMenu {
   }
 
   init() {
-    const renditionButton = document.createElement('media-rendition-button');
+    const renditionButton = /** @type {MediaRenditionButton} */ (
+      /** @type {unknown} */ document.createElement('media-rendition-button')
+    );
     renditionButton.part.add('button');
     renditionButton.preventClick = true;
 

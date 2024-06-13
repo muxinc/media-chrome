@@ -5,6 +5,10 @@ import { MediaUIAttributes } from '../constants.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 
 /**
+ * @typedef {import('./media-audio-track-button.js').MediaAudioTrackButton} MediaAudioTrackButton
+ */
+
+/**
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the selected audio track id.
  * @attr {(unavailable|unsupported)} mediaaudiotrackunavailable - (read-only) Set if audio track selection is unavailable.
  *
@@ -22,7 +26,9 @@ class MediaAudioTrackSelectMenu extends MediaChromeSelectMenu {
   }
 
   init() {
-    const audioTrackButton = document.createElement('media-audio-track-button');
+    const audioTrackButton = /** @type {MediaAudioTrackButton} */ (
+      /** @type {unknown} */ document.createElement('media-audio-track-button')
+    );
     audioTrackButton.part.add('button');
     audioTrackButton.preventClick = true;
 
