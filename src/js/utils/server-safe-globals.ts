@@ -1,12 +1,12 @@
 class EventTarget {
-  addEventListener() {}
-  removeEventListener() {}
+  addEventListener() { }
+  removeEventListener() { }
   dispatchEvent() {
     return true;
   }
 }
 
-class Node extends EventTarget {}
+class Node extends EventTarget { }
 
 class Element extends Node {
   attributes: NamedNodeMap;
@@ -15,9 +15,9 @@ class Element extends Node {
 }
 
 class ResizeObserver {
-  observe() {}
-  unobserve() {}
-  disconnect() {}
+  observe() { }
+  unobserve() { }
+  disconnect() { }
 }
 
 const documentShim = {
@@ -27,14 +27,14 @@ const documentShim = {
   createElementNS: function () {
     return new globalThisShim.HTMLElement();
   },
-  addEventListener() {},
-  removeEventListener() {},
+  addEventListener() { },
+  removeEventListener() { },
   /**
    *
    * @param {Event} event
    * @returns {boolean}
    */
-  dispatchEvent(event /* eslint-disable-line no-unused-vars */) {
+  dispatchEvent(event /* eslint-disable-line @typescript-eslint/no-unused-vars */) {
     return false;
   },
 } as unknown as typeof globalThis['document'];
@@ -50,32 +50,32 @@ const globalThisShim = {
       return new globalThisShim.DocumentFragment();
     }
   },
-  DocumentFragment: class DocumentFragment extends EventTarget {},
+  DocumentFragment: class DocumentFragment extends EventTarget { },
   customElements: {
-    get: function () {},
-    define: function () {},
-    whenDefined: function () {},
+    get: function () { },
+    define: function () { },
+    whenDefined: function () { },
   },
   localStorage: {
     /**
      * @param {string} key
      * @returns {string|null}
      */
-    getItem(key /* eslint-disable-line no-unused-vars */) {
+    getItem(key /* eslint-disable-line @typescript-eslint/no-unused-vars */) {
       return null;
     },
     /**
      * @param {string} key
      * @param {string} value
      */
-    setItem(key, value) {}, // eslint-disable-line no-unused-vars
+    setItem(key, value) { }, // eslint-disable-line @typescript-eslint/no-unused-vars
     /**
      * @param {string} key
      */
-    removeItem(key) {}, // eslint-disable-line no-unused-vars
+    removeItem(key) { }, // eslint-disable-line @typescript-eslint/no-unused-vars
   },
-  CustomEvent: function CustomEvent() {},
-  getComputedStyle: function () {},
+  CustomEvent: function CustomEvent() { },
+  getComputedStyle: function () { },
   navigator: {
     languages: [],
     get userAgent() {
