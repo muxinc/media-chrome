@@ -1,10 +1,11 @@
 import { assert, fixture } from '@open-wc/testing';
-import '../../src/js/index.js';
 import '../../src/js/experimental/index.js';
+import type { MediaPlaybackRateListbox } from '../../src/js/experimental/index.js';
+import '../../src/js/index.js';
 
 describe('<media-playback-rate-listbox>', () => {
   let mediaController;
-  let listbox;
+  let listbox: MediaPlaybackRateListbox;
 
   beforeEach(async () => {
     mediaController = await fixture(/*html*/ `
@@ -22,6 +23,6 @@ describe('<media-playback-rate-listbox>', () => {
 
   it('listbox is populated', async function () {
     assert.equal(listbox.options.length, 5);
-    assert.equal(listbox.value, 1);
+    assert.equal(listbox.value, '1');
   });
 });

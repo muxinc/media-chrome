@@ -1,5 +1,5 @@
 import { expect } from '@open-wc/testing';
-import { toNativeProps } from '../../../../../scripts/react/common/utils';
+import { toNativeProps } from '../../../../../scripts/react/common/utils.js';
 
 describe('module: scripts/react/common/utils', () => {
   describe('toNativeProps()', () => {

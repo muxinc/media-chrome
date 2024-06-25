@@ -1,7 +1,9 @@
 import { expect } from '@open-wc/testing';
+import type { TextTrackKinds } from '../../../src/js/constants.js';
+import type { TextTrackLike } from '../../../src/js/utils/TextTrackLike';
 import {
-  getTextTracksList,
   formatTextTrackObj,
+  getTextTracksList,
 } from '../../../src/js/utils/captions';
 
 describe('module: util/captions', () => {
@@ -36,7 +38,7 @@ describe('module: util/captions', () => {
 
   describe('getTextTracksList()', () => {
     it('should yield an array of all TextTrack objects by default', async () => {
-      const media = { textTracks: fakeTracksList };
+      const media: any = { textTracks: fakeTracksList };
 
       const actual = getTextTracksList(media);
 
@@ -54,10 +56,11 @@ describe('module: util/captions', () => {
     });
 
     it('should only include TextTracks that match the provided predicate', async () => {
-      const media = { textTracks: fakeTracksList };
+      const media: any = { textTracks: fakeTracksList };
 
-      const actual = getTextTracksList(media, (textTrack) =>
-        textTrack.language?.startsWith('en')
+      const actual = getTextTracksList(
+        media,
+        (textTrack: TextTrackLike) => !!textTrack.language?.startsWith('en')
       );
 
       expect(actual).to.be.an('array').with.lengthOf(2);
@@ -76,7 +79,7 @@ describe('module: util/captions', () => {
     });
 
     it('should only include TextTracks that match the provided filter object', async () => {
-      const media = { textTracks: fakeTracksList };
+      const media: any = { textTracks: fakeTracksList };
 
       const actual = getTextTracksList(media, { kind: 'metadata' });
 
@@ -98,7 +101,11 @@ describe('module: util/captions', () => {
 
   describe('formatTextTrackObj()', () => {
     it('should format to a well-defined string representation for label and language', () => {
-      const track = { label: 'Spanish', kind: 'subtitles', language: 'es' };
+      const track = {
+        label: 'Spanish',
+        kind: 'subtitles' as TextTrackKinds,
+        language: 'es',
+      };
 
       const actual = formatTextTrackObj(track);
       const expected = 'sb:es:Spanish';
@@ -107,7 +114,7 @@ describe('module: util/captions', () => {
     });
 
     it('should treat label as optional', () => {
-      const track = { kind: 'subtitles', language: 'es' };
+      const track = { kind: 'subtitles' as TextTrackKinds, language: 'es' };
 
       const actual = formatTextTrackObj(track);
       const expected = 'es';
@@ -118,7 +125,7 @@ describe('module: util/captions', () => {
     it('should url encode strings to avoid special character conflation', () => {
       const track = {
         label: 'English: with descriptions',
-        kind: 'captions',
+        kind: 'captions' as TextTrackKinds,
         language: 'en',
       };
 

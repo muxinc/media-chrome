@@ -1,9 +1,9 @@
 import { assert } from '@open-wc/testing';
 import {
-  isNumericString,
-  isValidNumber,
   camelCase,
   constToCamel,
+  isNumericString,
+  isValidNumber,
 } from '../../../src/js/utils/utils.js';
 
 describe('isNumericString', () => {

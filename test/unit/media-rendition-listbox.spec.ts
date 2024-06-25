@@ -1,12 +1,12 @@
 import { assert, fixture } from '@open-wc/testing';
 import 'https://cdn.jsdelivr.net/npm/hls-video-element@1.1/+esm';
-import '../../src/js/index.js';
 import '../../src/js/experimental/index.js';
+import type { MediaRenditionListbox } from '../../src/js/experimental/index.js';
+import '../../src/js/index.js';
 
-describe('<media-rendition-selectmenu>', () => {
+describe('<media-rendition-listbox>', () => {
   let mediaController;
-  let selectmenu;
-  let listbox;
+  let listbox: MediaRenditionListbox;
 
   beforeEach(async () => {
     mediaController = await fixture(/*html*/ `
@@ -18,14 +18,13 @@ describe('<media-rendition-selectmenu>', () => {
           muted
           crossorigin
         ></hls-video>
-        <media-rendition-selectmenu></media-rendition-selectmenu>
+        <media-rendition-listbox></media-rendition-listbox>
       </media-controller>
     `);
-    selectmenu = mediaController.querySelector('media-rendition-selectmenu');
-    listbox = selectmenu.shadowRoot.querySelector('media-rendition-listbox');
+    listbox = mediaController.querySelector('media-rendition-listbox');
   });
 
-  it('selectmenu is populated', async function () {
+  it('listbox is populated', async function () {
     await new Promise((resolve) =>
       mediaController.media.videoRenditions.addEventListener(
         'addrendition',

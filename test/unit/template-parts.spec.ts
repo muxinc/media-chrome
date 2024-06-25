@@ -2,9 +2,11 @@
 
 import { assert } from '@open-wc/testing';
 import {
-  TemplateInstance,
   AttrPart,
   AttrPartList,
+  TemplateInstance,
+  type Parts,
+  type State,
 } from '../../src/js/utils/template-parts.js';
 
 const test = it;
@@ -159,10 +161,10 @@ test('update: is a noop when update() is called with no args', () => {
 });
 
 test('update: inserting instance does not break update', () => {
-  let template = document.createElement('template');
+  const template = document.createElement('template');
   template.innerHTML = `{{a}}`;
   const inst = new TemplateInstance(template, { a: 1 });
-  let el = document.createElement('div');
+  const el = document.createElement('div');
   el.appendChild(inst);
   is(el.innerHTML, `1`);
   inst.update({ a: 2 });
@@ -170,10 +172,10 @@ test('update: inserting instance does not break update', () => {
 });
 
 test('update: inserting instance does not break update', () => {
-  let template = document.createElement('template');
+  const template = document.createElement('template');
   template.innerHTML = `{{a}}`;
   const inst = new TemplateInstance(template, { a: 1 });
-  let el = document.createElement('div');
+  const el = document.createElement('div');
   el.appendChild(inst);
   is(el.innerHTML, `1`);
   inst.update({ a: 2 });
@@ -181,8 +183,8 @@ test('update: inserting instance does not break update', () => {
 });
 
 const propertyIdentityOrBooleanAttribute = {
-  createCallback() {
-    return this.processCallback(...arguments);
+  createCallback(instance: TemplateInstance, parts: Parts, state: State) {
+    return this.processCallback(instance, parts, state);
   },
 
   processCallback(instance, parts, params) {
@@ -322,16 +324,18 @@ test('update: replaces an empty replace() call with an empty text node', () => {
     template,
     { a: true },
     {
-      createCallback() {
-        return this.processCallback(...arguments);
+      createCallback(instance: TemplateInstance, parts: Parts, state: State) {
+        return this.processCallback(instance, parts, state);
       },
       processCallback(instance, parts, params) {
         if (typeof params !== 'object' || !params) return;
         for (const [expression, part] of parts) {
           if (expression in params) {
-            const value = params[expression] ?? '';
+            // @ts-ignore
             part.replace();
+            // @ts-ignore
             part.replace();
+            // @ts-ignore
             part.replace();
           }
         }
@@ -420,12 +424,13 @@ test('processCallback: is called on update', () => {
 test('innerTemplatePart: full form', () => {
   const template = document.createElement('template');
   template.innerHTML = `<div><template directive="x" expression="x">{{ x }}</template></div>`;
-  let arr = [];
+  const arr: any[] = [];
   const instance = new TemplateInstance(
     template,
     { x: ['x', 'y'] },
     {
-      processCallback(el, [[, part]], state) {
+      processCallback(el, [[, p]], state) {
+        const part = p as any;
         arr.push(part.directive);
         arr.push(part.expression);
         const nodes = state[part.expression].map(
@@ -436,10 +441,10 @@ test('innerTemplatePart: full form', () => {
     }
   );
   is(arr, ['x', 'x']);
-  is(instance.childNodes[0].innerHTML, 'xy');
+  is(instance.children[0].innerHTML, 'xy');
 
   instance.update({ x: ['y', 'z', 'w'] });
-  is(instance.childNodes[0].innerHTML, 'yzw');
+  is(instance.children[0].innerHTML, 'yzw');
 });
 
 test('attr: updates the given attribute from partList when updateParent is called', () => {
@@ -458,11 +463,12 @@ test('attr: updates the AttributeValue which updates the Attr whenever it receiv
     new AttrPart(el, attr.name, attr.namespaceURI),
     new AttrPart(el, attr.name, attr.namespaceURI)
   );
-  list.item(0).value = 'hello';
-  list.item(1).value = ' world'; // NOTE: space here
+  const item: any = list.item(0);
+  item.value = 'hello';
+  (list.item(1) as any).value = ' world'; // NOTE: space here
   is(el.getAttribute('class'), 'hello world');
 
-  list.item(0).value = 'goodbye';
+  item.value = 'goodbye';
   is(el.getAttribute('class'), 'goodbye world');
 });
 
@@ -471,20 +477,21 @@ test('attr: updates boolean attr', () => {
   const attr = document.createAttribute('hidden');
   const list = new AttrPartList();
   list.append(new AttrPart(el, attr.name, attr.namespaceURI));
-  list.item(0).booleanValue = false;
+  const item: any = list.item(0);
+  item.booleanValue = false;
   is(el.hasAttribute('hidden'), false);
-  is(list.item(0).booleanValue, false);
+  is(item.booleanValue, false);
 
-  list.item(0).booleanValue = true;
+  item.booleanValue = true;
   is(el.hasAttribute('hidden'), true);
-  is(list.item(0).booleanValue, true);
+  is(item.booleanValue, true);
 });
 
 test('nodes: should preserve spaces', () => {
-  let tpl = document.createElement('template');
+  const tpl = document.createElement('template');
   tpl.innerHTML = `<span>{{ count }}</span> {{ text }} left`;
-  let inst = new TemplateInstance(tpl, { count: 10, text: 'items' });
-  let el = document.createElement('div');
+  const inst = new TemplateInstance(tpl, { count: 10, text: 'items' });
+  const el = document.createElement('div');
   el.appendChild(inst);
   is(el.innerHTML, `<span>10</span> items left`);
 });
@@ -510,7 +517,7 @@ const processor = {
 };
 
 test('processor: creates a processor calling the given function when the param exists', () => {
-  let template = document.createElement('template');
+  const template = document.createElement('template');
   template.innerHTML = originalHTML;
 
   processor.createCalls = 0;
@@ -524,7 +531,7 @@ test('processor: creates a processor calling the given function when the param e
 });
 
 test('processor: does not process parts with no param for the expression', () => {
-  let template = document.createElement('template');
+  const template = document.createElement('template');
   template.innerHTML = originalHTML;
 
   processor.createCalls = 0;
@@ -546,16 +553,16 @@ test('default processor: default processor is identity/boolean', () => {
     hidden: false,
     onclick,
   });
-  let el = tpl.childNodes[0];
+  const el = tpl.childNodes[0] as HTMLElement;
   is(el.getAttribute('x'), 'Hello');
   is(el.hasAttribute('hidden'), false);
   is(el.onclick, onclick); // function
 });
 
 test('table: default HTML behavior', () => {
-  let tpl = document.createElement('template');
+  const tpl = document.createElement('template');
   tpl.innerHTML = `<table>123</table>`;
-  let instance = new TemplateInstance(tpl);
+  const instance = new TemplateInstance(tpl);
 
   const el = document.createElement('div');
   el.appendChild(instance);
@@ -563,17 +570,17 @@ test('table: default HTML behavior', () => {
 });
 
 test('table: <table><!--{{ a }}--><tr><!-- {{ b }} --></tr></table>', () => {
-  let tpl = document.createElement('template');
+  const tpl = document.createElement('template');
   tpl.innerHTML = `<table><!--{{ a }}--><tr><!--  {{ b }}  --></tr></table>`;
 
-  let table = document.createElement('table');
+  const table = document.createElement('table');
   table.innerHTML = `<tr><td>a</td></tr>`;
-  let inst = new TemplateInstance(tpl, {
+  const inst = new TemplateInstance(tpl, {
     a: table.childNodes[0].childNodes,
     b: 'b',
   });
 
-  let el = document.createElement('div');
+  const el = document.createElement('div');
   el.appendChild(inst);
 
   any(el.innerHTML, [
