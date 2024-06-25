@@ -1,22 +1,22 @@
-import { createContext, useContext, useEffect, useMemo } from 'react';
 import type { Context, ReactNode } from 'react';
-import React from 'react';
-import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector';
-import createMediaStore from '../media-store/media-store';
-import type {
-  FullScreenElementStateOwner,
-  MediaState,
-  MediaStateOwner,
-  MediaStore,
-} from '../media-store/media-store';
-export * as timeUtils from '../utils/time';
+import React, { createContext, useContext, useEffect, useMemo } from 'react';
 import {
+  AvailabilityStates,
   MediaUIEvents,
   MediaUIProps,
-  AvailabilityStates,
   StreamTypes,
   VolumeLevels,
-} from '../constants';
+} from '../constants.js';
+import createMediaStore, {
+  type MediaState,
+  type MediaStore,
+} from '../media-store/media-store.js';
+import type {
+  FullScreenElementStateOwner,
+  MediaStateOwner,
+} from '../media-store/state-mediator.js';
+import { useSyncExternalStoreWithSelector } from './useSyncExternalStoreWithSelector.js';
+export * as timeUtils from '../utils/time.js';
 
 /**
  * @description A lookup object for all well-defined action types that can be dispatched
@@ -49,11 +49,11 @@ export { MediaState };
 export { AvailabilityStates, StreamTypes, VolumeLevels };
 
 const {
-  REGISTER_MEDIA_STATE_RECEIVER,
-  UNREGISTER_MEDIA_STATE_RECEIVER,
+  REGISTER_MEDIA_STATE_RECEIVER, // eslint-disable-line
+  UNREGISTER_MEDIA_STATE_RECEIVER, // eslint-disable-line
   // NOTE: These generic state change requests are not currently supported (CJP)
-  MEDIA_SHOW_TEXT_TRACKS_REQUEST,
-  MEDIA_HIDE_TEXT_TRACKS_REQUEST,
+  MEDIA_SHOW_TEXT_TRACKS_REQUEST, // eslint-disable-line
+  MEDIA_HIDE_TEXT_TRACKS_REQUEST, // eslint-disable-line
   ...StateChangeRequests
 } = MediaUIEvents;
 
