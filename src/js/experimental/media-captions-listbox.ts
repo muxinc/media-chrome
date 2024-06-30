@@ -142,7 +142,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
     }
   }
 
-  #onChange = (): void => {
+  #onChange(): void {
     const showingSubs = this.mediaSubtitlesShowing;
     const showingSubsStr = this.getAttribute(
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING
@@ -176,7 +176,7 @@ class MediaCaptionsListbox extends MediaChromeListbox {
       }
     );
     this.dispatchEvent(event);
-  };
+  }
 }
 
 /**

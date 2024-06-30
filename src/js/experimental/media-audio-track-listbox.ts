@@ -98,7 +98,7 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
     }
   }
 
-  #onChange = () => {
+  #onChange(): void {
     if (this.value == null) return;
 
     const event = new globalThis.CustomEvent(
@@ -110,7 +110,7 @@ class MediaAudioTrackListbox extends MediaChromeListbox {
       }
     );
     this.dispatchEvent(event);
-  };
+  }
 }
 
 if (!globalThis.customElements.get('media-audio-track-listbox')) {
