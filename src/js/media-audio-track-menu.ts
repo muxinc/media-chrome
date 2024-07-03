@@ -47,7 +47,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
       attrName === MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED &&
       oldValue !== newValue
     ) {
-      this.value = newValue ?? '';
+      this.value = newValue;
     } else if (
       attrName === MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST &&
       oldValue !== newValue
