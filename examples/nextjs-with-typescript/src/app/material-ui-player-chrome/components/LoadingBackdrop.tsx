@@ -40,7 +40,7 @@ const LoadingBackdrop = ({ loadingDelay = LOADING_DELAY }) => {
       clearTimeout(loadingDelayTimeoutId);
       setLoadingDelayTimeoutId(undefined);
     };
-  }, [mediaLoading, loadingDelay]);
+  }, [mediaLoading, loadingDelay, loadingDelayTimeoutId]);
 
   return (
     <Backdrop
