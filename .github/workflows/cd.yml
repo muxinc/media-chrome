@@ -58,7 +58,7 @@ jobs:
       - run: yarn test
       - run: yarn manifest
       - run: yarn build
-      - run: npx --yes wet-run@1.0.3 release ${{ inputs.version }} ${{ inputs.dryrun && '--dry-run' || '' }} ${{ inputs.prerelease && format('--prerelease {0}', inputs.prerelease) || '' }} --provenance --changelog --github-release --verbose
+      - run: npx --yes wet-run@1.2.2 release ${{ inputs.version }} ${{ inputs.dryrun && '--dry-run' || '' }} ${{ inputs.prerelease && format('--prerelease {0}', inputs.prerelease) || '' }} --provenance --changelog --github-release --log-level verbose
       - name: Get NPM version
         id: npm-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
