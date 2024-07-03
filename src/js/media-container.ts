@@ -626,7 +626,7 @@ class MediaContainer extends globalThis.HTMLElement {
     /** @type {ReturnType<typeof setTimeout>} */
     this.#inactiveTimeout = setTimeout(() => {
       this.#setInactive();
-    }, this.#autohide * 1000);
+    }, this.autohide * 1000);
   }
 
   set autohide(seconds: string) {
