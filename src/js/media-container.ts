@@ -620,13 +620,15 @@ class MediaContainer extends globalThis.HTMLElement {
 
     clearTimeout(this.#inactiveTimeout);
 
+    const autohide = parseInt(this.autohide);
+
     // Setting autohide to -1 turns off autohide
-    if (this.autohide < 0) return;
+    if (autohide < 0) return;
 
     /** @type {ReturnType<typeof setTimeout>} */
     this.#inactiveTimeout = setTimeout(() => {
       this.#setInactive();
-    }, this.autohide * 1000);
+    }, autohide * 1000);
   }
 
   set autohide(seconds: string) {
