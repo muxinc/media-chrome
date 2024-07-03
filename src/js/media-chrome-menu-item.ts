@@ -4,7 +4,7 @@ import {
   getDocumentOrShadowRoot,
   containsComposedNode,
 } from './utils/element-utils.js';
-import MediaChromeMenu from './media-chrome-menu.js';
+import type MediaChromeMenu from './media-chrome-menu.js';
 
 const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
