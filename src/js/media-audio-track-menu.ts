@@ -14,6 +14,7 @@ import {
 import { TextTrackLike } from './utils/TextTrackLike.js';
 
 /**
+ * @extends {MediaChromeMenu}
  * @slot - Default slotted elements.node
  * @slot header - An element shown at the top of the menu.
  * @slot checked-indicator - An icon element indicating a checked menu-item.
