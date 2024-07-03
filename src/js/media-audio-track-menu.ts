@@ -119,7 +119,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
     }
   }
 
-  #onChange = (): void => {
+  #onChange() {
     if (this.value == null) return;
 
     const event = new globalThis.CustomEvent(
