@@ -14,6 +14,8 @@ import {
 import { Rendition } from './media-store/state-mediator.js';
 
 /**
+ * @extends {MediaChromeMenu}
+ * 
  * @slot - Default slotted elements.
  * @slot header - An element shown at the top of the menu.
  * @slot checked-indicator - An icon element indicating a checked menu-item.
