@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@custom-elements-manifest/analyzer@^0.8.4":
-  version "0.8.4"
-  resolved "https://registry.yarnpkg.com/@custom-elements-manifest/analyzer/-/analyzer-0.8.4.tgz#34fce1158a44cb7a9d8c1c7415e8c9d03e25d95f"
-  integrity sha512-hibYFNoqPc/xSH9ySuotOllz3UtQnnbG912oC0RtRwHGilnOVT5zeL3Ip26swCjiuFAp8Y0uLN5DwnMpa/xXYQ==
+"@custom-elements-manifest/analyzer@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@custom-elements-manifest/analyzer/-/analyzer-0.10.2.tgz#5f71d02f45c3db691e752ca19e4bee8ea4068ded"
+  integrity sha512-YkfAfaNGSulnXxyIAHU3K8Z7bYGmIU2MlPvEaQPXnWUaIFMo0p3VEVYvByvENnVCQKPPDyjlkCm73u/zRnRvMA==
   dependencies:
     "@custom-elements-manifest/find-dependencies" "^0.0.5"
     "@github/catalyst" "^1.6.0"
@@ -37,7 +37,7 @@
     custom-elements-manifest "1.0.0"
     debounce "1.2.1"
     globby "11.0.4"
-    typescript "~4.3.2"
+    typescript "~5.4.2"
 
 "@custom-elements-manifest/find-dependencies@^0.0.5":
   version "0.0.5"
@@ -3767,10 +3767,10 @@ typescript@^5.5.2:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.5.2.tgz#c26f023cb0054e657ce04f72583ea2d85f8d0507"
   integrity sha512-NcRtPEOsPFFWjobJEtfihkLCZCXZt/os3zf8nTxjVH3RvTSxjrCamJpbExGvYOF+tFHc3pA65qpdwPbzjohhew==
 
-typescript@~4.3.2:
-  version "4.3.5"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.5.tgz#4d1c37cc16e893973c45a06886b7113234f119f4"
-  integrity sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==
+typescript@~5.4.2:
+  version "5.4.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.4.5.tgz#42ccef2c571fdbd0f6718b1d1f5e6e5ef006f611"
+  integrity sha512-vcI4UpRgg81oIRUFwR0WSIHKt11nJ7SAVlYNIu+QpqeyXP+gpQJy/Z4+F0aGxSE4MqwjyXvW/TzgkLAx2AGHwQ==
 
 typical@^4.0.0:
   version "4.0.0"
