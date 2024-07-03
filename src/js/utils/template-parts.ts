@@ -53,7 +53,7 @@ export const defaultProcessor: Processor = {
 /**
  *
  */
-export class TemplateInstance extends DocumentFragment {
+export class TemplateInstance extends globalThis.DocumentFragment {
   #parts;
   #processor: Processor;
 
