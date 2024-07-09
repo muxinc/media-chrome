@@ -13,7 +13,7 @@ template.innerHTML = /*html*/ `
     /* TODO: remove hardcoded values / replace with CSS vars where appro */
     #container {
       position: relative;
-      display: inline-flex;
+      display: var(--media-control-display, var(--media-tooltip-display, inline-flex));
       justify-content: center;
       align-items: center;
       box-sizing: border-box;
