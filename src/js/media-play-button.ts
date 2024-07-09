@@ -29,13 +29,20 @@ slotTemplate.innerHTML = /*html*/ `
     <slot name="pause">${pauseIcon}</slot>
   </slot>
   <media-tooltip id="tooltip">
-    <slot name="tooltip">Play</slot>
+    <slot name="tooltip"></slot>
   </media-tooltip>
 `;
 
 const updateAriaLabel = (el: any): void => {
   const label = el.mediaPaused ? verbs.PLAY() : verbs.PAUSE();
   el.setAttribute('aria-label', label);
+};
+
+// TODO: should `verbs` be used here? they're not capitalised
+const updateTooltip = (el: any): void => {
+  const label = el.mediaPaused ? 'Play' : 'Pause';
+  const slot = el.shadowRoot.querySelector('slot[name=tooltip]');
+  if (slot) slot.textContent = label;
 };
 
 /**
@@ -62,6 +69,7 @@ class MediaPlayButton extends MediaChromeButton {
 
   connectedCallback(): void {
     updateAriaLabel(this);
+    updateTooltip(this);
     super.connectedCallback();
   }
 
@@ -72,6 +80,7 @@ class MediaPlayButton extends MediaChromeButton {
   ): void {
     if (attrName === MediaUIAttributes.MEDIA_PAUSED) {
       updateAriaLabel(this);
+      updateTooltip(this);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }

@@ -11,6 +11,9 @@
       .examples {
         margin-top: 20px;
       }
+      media-controller {
+        max-width: 500px;
+      }
     </style>
   </head>
   <body>
@@ -29,8 +32,17 @@
 
       <h2>As part of button controls</h2>
 
-      <media-play-button></media-play-button>
-      <media-airplay-button></media-airplay-button>
+      <media-controller>
+        <video
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+          muted
+        ></video>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-airplay-button></media-airplay-button>
+        </media-control-bar>
+      </media-controller>
 
       <h2>Overriding tooltip label</h2>
       <media-airplay-button></media-airplay-button>
