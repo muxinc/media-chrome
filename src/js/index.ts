@@ -42,6 +42,7 @@ import MediaSettingsMenuButton from './media-settings-menu-button.js';
 import MediaSettingsMenuItem from './media-settings-menu-item.js';
 import MediaTimeDisplay from './media-time-display.js';
 import MediaTimeRange from './media-time-range.js';
+import MediaTooltip from './media-tooltip.js';
 import MediaVolumeRange from './media-volume-range.js';
 
 export {
@@ -83,5 +84,6 @@ export {
   MediaSettingsMenuItem,
   MediaTimeDisplay,
   MediaTimeRange,
+  MediaTooltip,
   MediaVolumeRange,
 };

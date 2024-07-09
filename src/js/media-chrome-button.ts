@@ -7,6 +7,7 @@ const template = document.createElement('template');
 template.innerHTML = /*html*/ `
 <style>
   :host {
+    position: relative;
     font: var(--media-font,
       var(--media-font-weight, bold)
       var(--media-font-size, 14px) /
@@ -60,6 +61,19 @@ template.innerHTML = /*html*/ `
     max-width: 100%;
     max-height: 100%;
     min-width: 100%;
+  }
+
+  media-tooltip {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translate(-50%, 0);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+
+  :host(:hover) media-tooltip {
+    opacity: 1;
   }
 </style>
 `;
