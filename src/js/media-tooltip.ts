@@ -27,6 +27,7 @@ template.innerHTML = /*html*/ `
       border-radius: 5px;
       pointer-events: none;
       filter: drop-shadow(0 0 4px rgba(0, 0, 0, .2));
+      white-space: nowrap;
     }
 
     #container::after {
