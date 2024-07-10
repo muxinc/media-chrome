@@ -30,6 +30,10 @@ template.innerHTML = /*html*/ `
       white-space: nowrap;
     }
 
+    #container img, #container svg {
+      display: inline-block;
+    }
+
     #container::after {
       content: '';
       width: 0px;

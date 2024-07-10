@@ -7,16 +7,17 @@
     <style>
       body {
         background: #eee;
+        padding: 50px;
       }
       .examples {
         margin-top: 20px;
       }
       media-controller {
-        max-width: 500px;
+        max-width: 300px;
       }
     </style>
   </head>
-  <body>
+  <body>     
     <main>
       <h1>Tooltips</h1>
       
@@ -40,15 +41,23 @@
         ></video>
         <media-control-bar>
           <media-play-button></media-play-button>
-          <media-airplay-button></media-airplay-button>
         </media-control-bar>
       </media-controller>
 
       <h2>Overriding tooltip label</h2>
-      <media-airplay-button></media-airplay-button>
-      <media-play-button>
-        <span slot="tooltip">Play the <strong>damn</strong> movie</span>
-      </media-play-button>
+      <media-controller>
+        <video
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+          muted
+        ></video>
+        <media-control-bar>
+          <media-play-button>
+            <span slot="tooltip-play"><strong>Play</strong> the movie! <img src="/examples/vanilla/images/spacebar.svg" width="12"></span>
+            <span slot="tooltip-pause">Please <i>stop</i>... <img src="/examples/vanilla/images/spacebar.svg" width="12"></strong></span>
+          </media-play-button>
+        </media-control-bar>
+      </media-controller>
 
       <h2>Hiding with CSS</h2>
 
