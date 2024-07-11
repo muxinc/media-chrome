@@ -70,9 +70,9 @@ class MediaRenditionMenu extends MediaChromeMenu {
   /**
    * Returns the anchor element when it is a floating menu.
    */
-  get anchorElement(): HTMLElement {
+  get anchorElement() {
     if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector(
+    return getMediaController(this).querySelector<HTMLElement>(
       'media-rendition-menu-button'
     );
   }
