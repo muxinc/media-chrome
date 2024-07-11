@@ -1,3 +1,12 @@
+## [3.2.4](https://github.com/muxinc/media-chrome/compare/v3.2.3...v3.2.4) (2024-07-11)
+
+
+### Bug Fixes
+
+* floating time display position ([#942](https://github.com/muxinc/media-chrome/issues/942)) ([fad3522](https://github.com/muxinc/media-chrome/commit/fad3522b024b7dd1b8a2a2413e8feb904c58d8d9))
+
+
+
 ## [3.2.3](https://github.com/muxinc/media-chrome/compare/v3.2.2...v3.2.3) (2024-05-24)
 
 
