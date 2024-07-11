@@ -245,7 +245,6 @@ template.innerHTML = /*html*/ `
       border-radius: var(--media-preview-time-border-radius,
         0 0 var(--media-preview-border-radius) var(--media-preview-border-radius));
       min-width: 100%;
-      transform: translateX(0);
     }
 
     :host([${MediaUIAttributes.MEDIA_PREVIEW_TIME}]:hover) {
