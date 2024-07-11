@@ -43,11 +43,10 @@ class MediaSettingsMenu extends MediaChromeMenu {
 
   /**
    * Returns the anchor element when it is a floating menu.
-   * @return {HTMLElement}
    */
-  get anchorElement(): HTMLElement | null {
+  get anchorElement() {
     if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector('media-settings-menu-button');
+    return getMediaController(this).querySelector<HTMLElement>('media-settings-menu-button');
   }
 }
 
