@@ -53,11 +53,9 @@ const updateTooltipPosition = (
   const containingEl = closestComposedNode(tooltipEl, containingSelector);
   if (!containingEl) return;
 
-  const { x: cbX } = containingEl.getBoundingClientRect();
-  const { x: tpX } = tooltipEl.getBoundingClientRect();
-  const xDiff = tpX - cbX;
-
-  console.log(xDiff);
+  const { x: containerX } = containingEl.getBoundingClientRect();
+  const { x: tooltipX } = tooltipEl.getBoundingClientRect();
+  const xDiff = tooltipX - containerX;
 
   // not spilling out left
   if (xDiff > 0) {
