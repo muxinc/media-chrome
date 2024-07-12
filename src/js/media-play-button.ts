@@ -2,7 +2,12 @@ import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
-import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
+import {
+  closestComposedNode,
+  getBooleanAttr,
+  setBooleanAttr,
+} from './utils/element-utils.js';
+import MediaTooltip from './media-tooltip.js';
 
 const playIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="m6 21 15-9L6 3v18Z"/>
@@ -38,6 +43,34 @@ const updateAriaLabel = (el: any): void => {
   el.setAttribute('aria-label', label);
 };
 
+// TODO: move to shared util file
+// Adjust tooltip position relative to the closest containing element
+// such that it doesn't spill out of the left or right sides
+const updateTooltipPosition = (
+  tooltipEl: MediaTooltip,
+  containingSelector: string
+): void => {
+  const containingEl = closestComposedNode(tooltipEl, containingSelector);
+  if (!containingEl) return;
+
+  const { x: cbX } = containingEl.getBoundingClientRect();
+  const { x: tpX } = tooltipEl.getBoundingClientRect();
+  const xDiff = tpX - cbX;
+
+  console.log(xDiff);
+
+  // not spilling out left
+  if (xDiff > 0) {
+    tooltipEl.offsetX = null;
+    return;
+  }
+
+  tooltipEl.offsetX = xDiff;
+
+  // right edge
+  // TODO: ...
+};
+
 /**
  * @slot play - An element shown when the media is paused and pressing the button will start media playback.
  * @slot pause - An element shown when the media is playing and pressing the button will pause media playback.
@@ -56,13 +89,32 @@ class MediaPlayButton extends MediaChromeButton {
     ];
   }
 
+  tooltip: HTMLElement;
+
   constructor(options = {}) {
     super({ slotTemplate, ...options });
+    this.tooltip = this.shadowRoot.querySelector('#tooltip');
   }
 
   connectedCallback(): void {
     updateAriaLabel(this);
     super.connectedCallback();
+    this.addEventListener(
+      'mouseenter',
+      updateTooltipPosition.bind(null, this.tooltip, 'media-control-bar')
+    );
+    // TODO: remove this hack
+    // use mutation observer for inner content change cb?
+    this.addEventListener('click', () => {
+      setTimeout(
+        updateTooltipPosition.bind(null, this.tooltip, 'media-control-bar'),
+        0
+      );
+    });
+  }
+
+  disconnectedCallback(): void {
+    // TODO: remove event listener for tooltip position update
   }
 
   attributeChangedCallback(
