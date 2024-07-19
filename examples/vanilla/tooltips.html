@@ -98,6 +98,44 @@
         </div>
       </div>
 
+      <h2>Entirely custom tooltip element</h2>
+
+      <media-play-button style="margin-top: 1.5em">
+        <style>
+          .my-tooltip {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            left: 50%;
+            bottom: calc(100% + 5px);
+            transform: translate(-50%, 0);
+            color: #fff;
+            font-weight: 700;
+            background: linear-gradient(45deg, red, yellow, blue, red);
+            white-space: nowrap;
+            width: 110px;
+            height: 26px;
+            border-radius: 13px;
+            opacity: 0;
+            pointer-events: none;
+            scale: 0;
+            transition: all .25s;
+            transform-origin: 0 bottom;
+            font-family: "Comic Sans MS", "Comic Sans", cursive;
+            font-size: 18px;
+          }
+          .my-tooltip marquee { display: block; }
+          media-play-button:hover .my-tooltip {
+            opacity: 1;
+            scale: 1;
+          }
+        </style>
+        <div slot="tooltip" class="my-tooltip">
+          <marquee>HellooOOoo!!</marquee>
+        </div>
+      </media-play-button>
+
 	    <div class="examples">
         <a href="./">View more examples</a>
       </div>

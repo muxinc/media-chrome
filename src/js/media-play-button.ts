@@ -27,10 +27,12 @@ slotTemplate.innerHTML = /*html*/ `
     <slot name="play">${playIcon}</slot>
     <slot name="pause">${pauseIcon}</slot>
   </slot>
-  <media-tooltip>
-    <slot name="tooltip-play">Play</slot>
-    <slot name="tooltip-pause">Pause</slot>
-  </media-tooltip>
+  <slot name="tooltip">
+    <media-tooltip>
+      <slot name="tooltip-play">Play</slot>
+      <slot name="tooltip-pause">Pause</slot>
+    </media-tooltip>
+  </slot>
 `;
 
 const updateAriaLabel = (el: any): void => {
