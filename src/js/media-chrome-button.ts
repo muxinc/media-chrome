@@ -15,27 +15,36 @@ const updateTooltipPosition = (
 ): void => {
   const containingEl = closestComposedNode(tooltipEl, containingSelector);
   if (!containingEl) return;
-  const { x: containerX } = containingEl.getBoundingClientRect();
-  const { x: tooltipX } = tooltipEl.getBoundingClientRect();
+  const { x: containerX, width: containerWidth } =
+    containingEl.getBoundingClientRect();
+  const { x: tooltipX, width: tooltipWidth } =
+    tooltipEl.getBoundingClientRect();
+  const tooltipRight = tooltipX + tooltipWidth;
+  const containerRight = containerX + containerWidth;
   const offsetXVal = tooltipEl.style.getPropertyValue(
     '--media-tooltip-offset-x'
   );
   const currOffsetX = offsetXVal ? parseFloat(offsetXVal.replace('px', '')) : 0;
 
-  // we might have already offset the tooltip previously so we take remove it's
+  // we might have already offset the tooltip previously so we remove it's
   // current offset from our calculations
-  const xDiff = tooltipX - containerX + currOffsetX;
+  const leftDiff = tooltipX - containerX + currOffsetX;
+  const rightDiff = tooltipRight - containerRight + currOffsetX;
 
-  // not spilling out left
-  if (xDiff > 0) {
-    tooltipEl.style.removeProperty('--media-tooltip-offset-x');
+  // out of left bounds
+  if (leftDiff < 0) {
+    tooltipEl.style.setProperty('--media-tooltip-offset-x', `${leftDiff}px`);
     return;
   }
 
-  tooltipEl.style.setProperty('--media-tooltip-offset-x', `${xDiff}px`);
+  // out of right bounds
+  if (rightDiff > 0) {
+    tooltipEl.style.setProperty('--media-tooltip-offset-x', `${rightDiff}px`);
+    return;
+  }
 
-  // right edge
-  // TODO: ...
+  // no spilling out
+  tooltipEl.style.removeProperty('--media-tooltip-offset-x');
 };
 
 const template = document.createElement('template');
