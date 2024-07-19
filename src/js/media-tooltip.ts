@@ -1,8 +1,14 @@
-import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
+import {
+  getNumericAttr,
+  getStringAttr,
+  setNumericAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 
 export const Attributes = {
   OFFSET_X: 'offsetx',
+  POSITION: 'position',
 };
 
 const template: HTMLTemplateElement = document.createElement('template');
@@ -11,12 +17,13 @@ template.innerHTML = /*html*/ `
   <style>
     :host {
       pointer-events: none;
+      z-index: 1;
     }
 
     /* TODO: remove hardcoded values / replace with CSS vars where appro */
-    #container {
+    :host {
       position: relative;
-      display: var(--media-control-display, var(--media-tooltip-display, inline-flex));
+      display: var(--media-tooltip-display, inline-flex);
       justify-content: center;
       align-items: center;
       box-sizing: border-box;
@@ -33,7 +40,7 @@ template.innerHTML = /*html*/ `
       white-space: nowrap;
     }
 
-    #container img, #container svg {
+    img, svg {
       display: inline-block;
     }
 
@@ -47,21 +54,49 @@ template.innerHTML = /*html*/ `
       border-width: 5px 6px 0 6px;
       border-color: #fff transparent transparent transparent;
       transform: rotate(0deg);
+      transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
+    }
+
+    :host(:not([position])),
+    :host([position="top"]) {
+      position: absolute;
+      bottom: calc(100% + var(--media-tooltip-distance, 12px));
+      left: 50%;
+      transform: translate(calc(-50% - var(--media-tooltip-offset-x, 0px)), 0);
+    }
+    :host([position="right"]) {
+      position: absolute;
+      left: calc(100% + var(--media-tooltip-distance, 12px));
+      top: 50%;
+      transform: translate(0, -50%);
+    }
+    :host([position="bottom"]) {
+      position: absolute;
+      top: calc(100% + var(--media-tooltip-distance, 12px));
+      left: 50%;
       transform: translate(-50%, 0);
     }
+    :host([position="left"]) {
+      position: absolute;
+      right: calc(100% + var(--media-tooltip-distance, 12px));
+      top: 50%;
+      transform: translate(0, -50%);
+    }
+    /*
+    * Because we default to "top" style if no attr is set we can
+    /* let it fall back to default style for "none"
+    /* :host([position="none"]) .container {} */
+
   </style>
-  <div id="container" role="tooltip">
-    <slot></slot>
-    <div id="arrow"></div>
-  </div>
+  <slot></slot>
+  <div id="arrow"></div>
 `;
 
 class MediaTooltip extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
-    return [Attributes.OFFSET_X];
+    return [Attributes.OFFSET_X, Attributes.POSITION];
   }
 
-  containerEl: HTMLElement;
   arrowEl: HTMLElement;
 
   constructor() {
@@ -73,7 +108,6 @@ class MediaTooltip extends globalThis.HTMLElement {
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    this.containerEl = this.shadowRoot.querySelector('#container');
     this.arrowEl = this.shadowRoot.querySelector('#arrow');
   }
 
@@ -84,11 +118,11 @@ class MediaTooltip extends globalThis.HTMLElement {
   ): void {
     if (attrName === Attributes.OFFSET_X) {
       if (newValue == null) {
-        this.containerEl.style.removeProperty('right');
-        this.arrowEl.style.removeProperty('left');
+        // this.style.removeProperty('right');
+        // this.arrowEl.style.removeProperty('left');
       } else {
-        this.containerEl.style.right = `${newValue}px`;
-        this.arrowEl.style.left = `calc(50% + ${newValue}px)`;
+        // this.style.right = `${newValue}px`;
+        // this.arrowEl.style.left = `calc(50% + ${newValue}px)`;
       }
     }
   }
@@ -96,12 +130,23 @@ class MediaTooltip extends globalThis.HTMLElement {
   /**
    * Get or set offset X value
    */
-  get offsetX(): number | undefined {
-    return getNumericAttr(this, Attributes.OFFSET_X);
+  // get offsetX(): number | undefined {
+  //   return getNumericAttr(this, Attributes.OFFSET_X);
+  // }
+
+  // set offsetX(value: number | undefined) {
+  //   setNumericAttr(this, Attributes.OFFSET_X, value);
+  // }
+
+  /**
+   * Get or set tooltip position
+   */
+  get position(): string | undefined {
+    return getStringAttr(this, Attributes.POSITION);
   }
 
-  set offsetX(value: number | undefined) {
-    setNumericAttr(this, Attributes.OFFSET_X, value);
+  set position(value: string | undefined) {
+    setStringAttr(this, Attributes.POSITION, value);
   }
 }
 

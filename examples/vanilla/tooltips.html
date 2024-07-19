@@ -27,11 +27,11 @@
       <h2>On their own</h2>
 
       <div>
-        <media-tooltip>Settings</media-tooltip>
+        <media-tooltip position="none">Settings</media-tooltip>
         <br><br>
-        <media-tooltip>Play</media-tooltip>
+        <media-tooltip position="none">Play</media-tooltip>
         <br><br>
-        <media-tooltip>Pause</media-tooltip>
+        <media-tooltip position="none">Pause</media-tooltip>
       </div>
 
       <h2>As part of button controls</h2>
@@ -65,6 +65,27 @@
       <h2>Hiding with CSS</h2>
 
       <media-play-button style="--media-tooltip-display: none;"></media-play-button>
+
+      <h2>Positioning</h2>
+
+      <div style="display: flex; gap: 25px;">
+        <div>
+          <div>Top</div>
+          <media-play-button tooltipposition="top"></media-play-button>  
+        </div>
+        <div>
+          <div>Right</div>
+          <media-play-button tooltipposition="right"></media-play-button>  
+        </div>
+        <div>
+          <div>Bottom</div>
+          <media-play-button tooltipposition="bottom"></media-play-button>  
+        </div>
+        <div>
+          <div>Left</div>
+          <media-play-button tooltipposition="left"></media-play-button>
+        </div>
+      </div>
 
 	    <div class="examples">
         <a href="./">View more examples</a>

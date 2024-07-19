@@ -1,6 +1,42 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
+import MediaTooltip from './media-tooltip.js';
+import {
+  closestComposedNode,
+  getOrInsertCSSRule,
+} from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
+
+// TODO: move to shared util file
+// Adjust tooltip position relative to the closest containing element
+// such that it doesn't spill out of the left or right sides
+const updateTooltipPosition = (
+  tooltipEl: MediaTooltip,
+  containingSelector: string
+): void => {
+  const containingEl = closestComposedNode(tooltipEl, containingSelector);
+  if (!containingEl) return;
+  const { x: containerX } = containingEl.getBoundingClientRect();
+  const { x: tooltipX } = tooltipEl.getBoundingClientRect();
+  const offsetXVal = tooltipEl.style.getPropertyValue(
+    '--media-tooltip-offset-x'
+  );
+  const currOffsetX = offsetXVal ? parseFloat(offsetXVal.replace('px', '')) : 0;
+
+  // we might have already offset the tooltip previously so we take remove it's
+  // current offset from our calculations
+  const xDiff = tooltipX - containerX + currOffsetX;
+
+  // not spilling out left
+  if (xDiff > 0) {
+    tooltipEl.style.removeProperty('--media-tooltip-offset-x');
+    return;
+  }
+
+  tooltipEl.style.setProperty('--media-tooltip-offset-x', `${xDiff}px`);
+
+  // right edge
+  // TODO: ...
+};
 
 const template = document.createElement('template');
 
@@ -64,10 +100,6 @@ template.innerHTML = /*html*/ `
   }
 
   media-tooltip {
-    position: absolute;
-    bottom: calc(100% + 12px);
-    left: 50%;
-    transform: translate(-50%, 0);
     opacity: 0;
     transition: opacity .3s;
   }
@@ -83,6 +115,7 @@ template.innerHTML = /*html*/ `
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
+ * @attr {('top'|'right'|'bottom'|'left'|'none')} tooltipposition - The position of the tooltip, defaults to "top"
  *
  * @cssproperty --media-primary-color - Default color of text and icon.
  * @cssproperty --media-secondary-color - Default color of button background.
@@ -110,9 +143,14 @@ class MediaChromeButton extends globalThis.HTMLElement {
   #mediaController;
   preventClick = false;
   nativeEl: DocumentFragment;
+  tooltip: MediaTooltip = null;
 
   static get observedAttributes() {
-    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
+    return [
+      'disabled',
+      'tooltipposition',
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+    ];
   }
 
   constructor(
@@ -142,6 +180,8 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
       this.shadowRoot.appendChild(buttonHTML);
     }
+
+    this.tooltip = this.shadowRoot.querySelector('media-tooltip');
   }
 
   #clickListener = (e) => {
@@ -203,6 +243,13 @@ class MediaChromeButton extends globalThis.HTMLElement {
       } else {
         this.disable();
       }
+    } else if (attrName === 'tooltipposition' && newValue !== oldValue) {
+      if (this.tooltip) {
+        // TODO: figure out how to remove this hack
+        globalThis.customElements.whenDefined('media-tooltip').then(() => {
+          this.tooltip.position = newValue;
+        });
+      }
     }
   }
 
@@ -228,6 +275,34 @@ class MediaChromeButton extends globalThis.HTMLElement {
         this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
+
+    // TODO: make this reactive to focus in some way
+    // / how should container constraining be enabled?
+    // TODO: figure out how to remove this hack
+    globalThis.customElements.whenDefined('media-tooltip').then(() => {
+      this.addEventListener(
+        'mouseenter',
+        updateTooltipPosition.bind(null, this.tooltip, 'media-control-bar')
+      );
+    });
+
+    // use mutation observer for inner content change cb?
+    // TODO: figure out how to remove this hack
+    globalThis.customElements.whenDefined('media-tooltip').then(() => {
+      this.addEventListener('click', () => {
+        setTimeout(
+          updateTooltipPosition.bind(null, this.tooltip, 'media-control-bar'),
+          0
+        );
+      });
+    });
+
+    if (this.hasAttribute('tooltipposition') && this.tooltip) {
+      // TODO: figure out how to remove this hack
+      globalThis.customElements.whenDefined('media-tooltip').then(() => {
+        this.tooltip.position = this.getAttribute('tooltipposition');
+      });
+    }
   }
 
   disconnectedCallback() {
@@ -235,6 +310,8 @@ class MediaChromeButton extends globalThis.HTMLElement {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
+
+    // TODO: remove event listener for tooltip position update / unset this.tooltip
   }
 
   get keysUsed() {
