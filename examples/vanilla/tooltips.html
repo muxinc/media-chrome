@@ -54,10 +54,14 @@
           src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
           muted
         ></video>
-        <media-control-bar>
+        <media-control-bar style="display: flexbox; justify-content: space-between;">
           <media-play-button>
             <span slot="tooltip-play"><strong>Play</strong> the movie! <img src="/examples/vanilla/images/spacebar.svg" width="12"></span>
             <span slot="tooltip-pause">Please <i>stop</i>... <img src="/examples/vanilla/images/spacebar.svg" width="12"></strong></span>
+          </media-play-button>
+          <media-play-button>
+            <span slot="tooltip-play">Play......</span>
+            <span slot="tooltip-pause">Pause........</span>
           </media-play-button>
         </media-control-bar>
       </media-controller>
