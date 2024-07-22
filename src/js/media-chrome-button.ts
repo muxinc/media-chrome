@@ -1,51 +1,7 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import MediaTooltip from './media-tooltip.js';
-import {
-  closestComposedNode,
-  getOrInsertCSSRule,
-} from './utils/element-utils.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
-
-// TODO: move to shared util file
-// Adjust tooltip position relative to the closest containing element
-// such that it doesn't spill out of the left or right sides
-const updateTooltipPosition = (
-  tooltipEl: MediaTooltip,
-  containingSelector: string
-): void => {
-  const containingEl = closestComposedNode(tooltipEl, containingSelector);
-  if (!containingEl) return;
-  const { x: containerX, width: containerWidth } =
-    containingEl.getBoundingClientRect();
-  const { x: tooltipX, width: tooltipWidth } =
-    tooltipEl.getBoundingClientRect();
-  const tooltipRight = tooltipX + tooltipWidth;
-  const containerRight = containerX + containerWidth;
-  const offsetXVal = tooltipEl.style.getPropertyValue(
-    '--media-tooltip-offset-x'
-  );
-  const currOffsetX = offsetXVal ? parseFloat(offsetXVal.replace('px', '')) : 0;
-
-  // we might have already offset the tooltip previously so we remove it's
-  // current offset from our calculations
-  const leftDiff = tooltipX - containerX + currOffsetX;
-  const rightDiff = tooltipRight - containerRight + currOffsetX;
-
-  // out of left bounds
-  if (leftDiff < 0) {
-    tooltipEl.style.setProperty('--media-tooltip-offset-x', `${leftDiff}px`);
-    return;
-  }
-
-  // out of right bounds
-  if (rightDiff > 0) {
-    tooltipEl.style.setProperty('--media-tooltip-offset-x', `${rightDiff}px`);
-    return;
-  }
-
-  // no spilling out
-  tooltipEl.style.removeProperty('--media-tooltip-offset-x');
-};
 
 const template = document.createElement('template');
 
@@ -188,9 +144,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
       this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
       this.shadowRoot.appendChild(buttonHTML);
-    }
 
-    this.tooltip = this.shadowRoot.querySelector('media-tooltip');
+      this.tooltip = this.shadowRoot.querySelector('media-tooltip');
+    }
   }
 
   #clickListener = (e) => {
@@ -253,11 +209,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
         this.disable();
       }
     } else if (attrName === 'tooltipposition' && newValue !== oldValue) {
-      if (this.tooltip) {
-        // TODO: figure out how to remove this hack
-        globalThis.customElements.whenDefined('media-tooltip').then(() => {
-          this.tooltip.position = newValue;
-        });
+      // If the tooltip isn't defined, then we could accidentally overwrite
+      // the '.position' property
+      if (this.tooltip && globalThis.customElements.get('media-tooltip')) {
+        this.tooltip.position = newValue;
       }
     }
   }
@@ -285,32 +240,12 @@ class MediaChromeButton extends globalThis.HTMLElement {
       this.#mediaController?.associateElement?.(this);
     }
 
-    // TODO: make this reactive to focus in some way
-    // / how should container constraining be enabled?
-    // TODO: figure out how to remove this hack
-    globalThis.customElements.whenDefined('media-tooltip').then(() => {
-      this.addEventListener(
-        'mouseenter',
-        updateTooltipPosition.bind(null, this.tooltip, 'media-control-bar')
-      );
-    });
-
-    // use mutation observer for inner content change cb?
-    // TODO: figure out how to remove this hack
-    globalThis.customElements.whenDefined('media-tooltip').then(() => {
-      this.addEventListener('click', () => {
-        setTimeout(
-          updateTooltipPosition.bind(null, this.tooltip, 'media-control-bar'),
-          0
-        );
-      });
-    });
-
-    if (this.hasAttribute('tooltipposition') && this.tooltip) {
-      // TODO: figure out how to remove this hack
-      globalThis.customElements.whenDefined('media-tooltip').then(() => {
-        this.tooltip.position = this.getAttribute('tooltipposition');
-      });
+    if (window.customElements.get('media-tooltip')) {
+      this.setupTooltip();
+    } else {
+      globalThis.customElements
+        .whenDefined('media-tooltip')
+        .then(this.setupTooltip.bind(this));
     }
   }
 
@@ -320,7 +255,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
 
-    // TODO: remove event listener for tooltip position update / unset this.tooltip
+    this.removeEventListener('mouseenter', this.tooltip?.updateXOffset);
+    // TODO: how to remove this correctly?
+    // this.removeEventListener('click', this.tooltip?.updatePosition);
   }
 
   get keysUsed() {
@@ -332,6 +269,18 @@ class MediaChromeButton extends globalThis.HTMLElement {
    * @argument {Event} e
    */
   handleClick(e) {} // eslint-disable-line
+
+  // Called when we know the tooltip is ready / defined
+  setupTooltip() {
+    this.addEventListener('mouseenter', this.tooltip.updateXOffset);
+    this.addEventListener('click', () => {
+      // Timeout needed to wait for a new "tick" of event loop otherwise
+      // measured position does not take into account the new tooltip content
+      setTimeout(this.tooltip.updateXOffset, 0);
+    });
+    const initialPosition = this.getAttribute('tooltipposition');
+    if (initialPosition) this.tooltip.position = initialPosition;
+  }
 }
 
 if (!globalThis.customElements.get('media-chrome-button')) {

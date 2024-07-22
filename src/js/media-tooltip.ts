@@ -1,14 +1,13 @@
 import {
-  getNumericAttr,
+  closestComposedNode,
   getStringAttr,
-  setNumericAttr,
   setStringAttr,
 } from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 
 export const Attributes = {
-  OFFSET_X: 'offsetx',
   POSITION: 'position',
+  CONTAINER: 'container',
 };
 
 const template: HTMLTemplateElement = document.createElement('template');
@@ -119,9 +118,15 @@ template.innerHTML = /*html*/ `
   <div id="arrow"></div>
 `;
 
+/**
+ * @extends {HTMLElement}
+ *
+ * @attr {('top'|'right'|'bottom'|'left'|'none')} position - The position of the tooltip, defaults to "top"
+ * @attr {string} container - The containing element (one of it's parents) that should constrain the tooltips left and right position. Defaults to 'media-control-bar'.
+ */
 class MediaTooltip extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
-    return [Attributes.OFFSET_X, Attributes.POSITION];
+    return [Attributes.POSITION, Attributes.CONTAINER];
   }
 
   arrowEl: HTMLElement;
@@ -138,32 +143,43 @@ class MediaTooltip extends globalThis.HTMLElement {
     this.arrowEl = this.shadowRoot.querySelector('#arrow');
   }
 
-  attributeChangedCallback(
-    attrName: string,
-    oldValue: string | null,
-    newValue: string | null
-  ): void {
-    if (attrName === Attributes.OFFSET_X) {
-      if (newValue == null) {
-        // this.style.removeProperty('right');
-        // this.arrowEl.style.removeProperty('left');
-      } else {
-        // this.style.right = `${newValue}px`;
-        // this.arrowEl.style.left = `calc(50% + ${newValue}px)`;
-      }
+  // Adjust tooltip position relative to the closest containing element
+  // such that it doesn't spill out of the left or right sides
+  updateXOffset = () => {
+    const containingSelector =
+      this.getAttribute('container') ?? 'media-control-bar';
+    const containingEl = closestComposedNode(this, containingSelector);
+    if (!containingEl) return;
+    const { x: containerX, width: containerWidth } =
+      containingEl.getBoundingClientRect();
+    const { x: tooltipX, width: tooltipWidth } = this.getBoundingClientRect();
+    const tooltipRight = tooltipX + tooltipWidth;
+    const containerRight = containerX + containerWidth;
+    const offsetXVal = this.style.getPropertyValue('--media-tooltip-offset-x');
+    const currOffsetX = offsetXVal
+      ? parseFloat(offsetXVal.replace('px', ''))
+      : 0;
+
+    // we might have already offset the tooltip previously so we remove it's
+    // current offset from our calculations
+    const leftDiff = tooltipX - containerX + currOffsetX;
+    const rightDiff = tooltipRight - containerRight + currOffsetX;
+
+    // out of left bounds
+    if (leftDiff < 0) {
+      this.style.setProperty('--media-tooltip-offset-x', `${leftDiff}px`);
+      return;
     }
-  }
 
-  /**
-   * Get or set offset X value
-   */
-  // get offsetX(): number | undefined {
-  //   return getNumericAttr(this, Attributes.OFFSET_X);
-  // }
+    // out of right bounds
+    if (rightDiff > 0) {
+      this.style.setProperty('--media-tooltip-offset-x', `${rightDiff}px`);
+      return;
+    }
 
-  // set offsetX(value: number | undefined) {
-  //   setNumericAttr(this, Attributes.OFFSET_X, value);
-  // }
+    // no spilling out
+    this.style.removeProperty('--media-tooltip-offset-x');
+  };
 
   /**
    * Get or set tooltip position
