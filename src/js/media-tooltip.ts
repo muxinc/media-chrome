@@ -16,7 +16,6 @@ const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
   <style>
-    /* TODO: remove hardcoded values / replace with CSS vars where appro */
     :host {
       --_tooltip-background: var(--media-tooltip-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
       position: relative;
@@ -27,14 +26,15 @@ template.innerHTML = /*html*/ `
       box-sizing: border-box;
       z-index: var(--media-tooltip-z-index, 1);
       background: var(--_tooltip-background);
-      color: var(--media-primary-color, rgb(238 238 238));
+      color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
       font: var(--media-font,
         var(--media-font-weight, 400)
-        var(--media-font-size, 13px)
+        var(--media-font-size, 13px) /
+        var(--media-text-content-height, var(--media-control-height, 18px))
         var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
       padding: var(--media-tooltip-padding, .35em .7em);
       border-radius: var(--media-tooltip-border-radius, 5px);
-      filter: var(--media-tooltip-shadow, drop-shadow(0 0 4px rgba(0, 0, 0, .2)));
+      filter: var(--media-tooltip-filter, drop-shadow(0 0 4px rgba(0, 0, 0, .2)));
       white-space: var(--media-tooltip-white-space, nowrap);
     }
 
@@ -122,6 +122,25 @@ template.innerHTML = /*html*/ `
  *
  * @attr {('top'|'right'|'bottom'|'left'|'none')} position - The position of the tooltip, defaults to "top"
  * @attr {string} container - The containing element (one of it's parents) that should constrain the tooltips left and right position.
+ *
+ * @cssproperty --media-primary-color - Default color of text.
+ * @cssproperty --media-secondary-color - Default color of tooltip background.
+ * @cssproperty --media-text-color - `color` of tooltip text.
+ *
+ * @cssproperty --media-font - `font` shorthand property.
+ * @cssproperty --media-font-weight - `font-weight` property.
+ * @cssproperty --media-font-family - `font-family` property.
+ * @cssproperty --media-font-size - `font-size` property.
+ * @cssproperty --media-text-content-height - `line-height` of button text.
+ *
+ * @cssproperty --media-tooltip-background - `background` color
+ * @cssproperty --media-tooltip-display - `display` of tooltip
+ * @cssproperty --media-tooltip-z-index - `z-index` of tooltip
+ * @cssproperty --media-tooltip-padding - `padding` of tooltip
+ * @cssproperty --media-tooltip-border-radius - `border-radius` of tooltip
+ * @cssproperty --media-tooltip-filter - `filter` property of tooltip, for drop-shadow
+ * @cssproperty --media-tooltip-white-space - `white-space` property of tooltip
+ * @cssproperty --media-tooltip-arrow-display - `display` property of tooltip arrow
  */
 class MediaTooltip extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
