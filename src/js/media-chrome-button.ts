@@ -69,8 +69,7 @@ template.innerHTML = /*html*/ `
     transition: opacity .3s;
   }
 
-  :host(:hover) media-tooltip,
-  :host(:focus) media-tooltip {
+  :host(:hover) media-tooltip {
     opacity: 1;
   }
 </style>
