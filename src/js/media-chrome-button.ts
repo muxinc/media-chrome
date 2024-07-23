@@ -69,7 +69,8 @@ template.innerHTML = /*html*/ `
     transition: opacity .3s;
   }
 
-  :host(:hover) media-tooltip {
+  :host(:hover) media-tooltip,
+  :host(:focus) media-tooltip {
     opacity: 1;
   }
 </style>
@@ -256,8 +257,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.#mediaController = null;
 
     this.removeEventListener('mouseenter', this.tooltip?.updateXOffset);
+    this.removeEventListener('focus', this.tooltip?.updateXOffset);
     // TODO: how to remove this correctly?
     // this.removeEventListener('click', this.tooltip?.updatePosition);
+    this.tooltip = null;
   }
 
   get keysUsed() {
@@ -273,6 +276,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
   // Called when we know the tooltip is ready / defined
   setupTooltip() {
     this.addEventListener('mouseenter', this.tooltip.updateXOffset);
+    this.addEventListener('focus', this.tooltip.updateXOffset);
     this.addEventListener('click', () => {
       // Timeout needed to wait for a new "tick" of event loop otherwise
       // measured position does not take into account the new tooltip content
