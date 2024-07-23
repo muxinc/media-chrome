@@ -121,7 +121,7 @@ template.innerHTML = /*html*/ `
  * @extends {HTMLElement}
  *
  * @attr {('top'|'right'|'bottom'|'left'|'none')} position - The position of the tooltip, defaults to "top"
- * @attr {string} container - The containing element (one of it's parents) that should constrain the tooltips left and right position.
+ * @attr {string} container - CSS selector for the containing element (one of it's parents) that should constrain the tooltips horizontal position.
  *
  * @cssproperty --media-primary-color - Default color of text.
  * @cssproperty --media-secondary-color - Default color of tooltip background.
@@ -161,9 +161,9 @@ class MediaTooltip extends globalThis.HTMLElement {
     this.arrowEl = this.shadowRoot.querySelector('#arrow');
   }
 
-  // Adjust tooltip position relative to the closest containing element
+  // Adjusts tooltip position relative to the closest specified container
   // such that it doesn't spill out of the left or right sides. Only applies
-  // to top and bottom positioned tooltips.
+  // to 'top' and 'bottom' positioned tooltips.
   updateXOffset = () => {
     const position = this.position;
 
