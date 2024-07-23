@@ -1,5 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import MediaTooltip from './media-tooltip.js';
+import MediaTooltip, { TooltipPosition } from './media-tooltip.js';
 import { getOrInsertCSSRule } from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 
@@ -278,7 +278,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
       // measured position does not take into account the new tooltip content
       setTimeout(this.tooltip.updateXOffset, 0);
     });
-    const initialPosition = this.getAttribute('tooltipposition');
+    const initialPosition = this.getAttribute(
+      'tooltipposition'
+    ) as TooltipPosition;
     if (initialPosition) this.tooltip.position = initialPosition;
   }
 }

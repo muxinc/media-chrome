@@ -10,6 +10,8 @@ export const Attributes = {
   CONTAINER: 'container',
 };
 
+export type TooltipPosition = 'top' | 'right' | 'bottom' | 'left' | 'none';
+
 const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
@@ -85,7 +87,7 @@ template.innerHTML = /*html*/ `
       position: absolute;
       top: calc(100% + var(--media-tooltip-distance, 12px));
       left: 50%;
-      transform: translate(-50%, 0);
+      transform: translate(calc(-50% - var(--media-tooltip-offset-x, 0px)), 0);
     }
     :host([position="bottom"]) #arrow {
       bottom: 100%;
@@ -122,7 +124,7 @@ template.innerHTML = /*html*/ `
  * @extends {HTMLElement}
  *
  * @attr {('top'|'right'|'bottom'|'left'|'none')} position - The position of the tooltip, defaults to "top"
- * @attr {string} container - The containing element (one of it's parents) that should constrain the tooltips left and right position. Defaults to 'media-control-bar'.
+ * @attr {string} container - The containing element (one of it's parents) that should constrain the tooltips left and right position.
  */
 class MediaTooltip extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
@@ -144,10 +146,19 @@ class MediaTooltip extends globalThis.HTMLElement {
   }
 
   // Adjust tooltip position relative to the closest containing element
-  // such that it doesn't spill out of the left or right sides
+  // such that it doesn't spill out of the left or right sides. Only applies
+  // to top and bottom positioned tooltips.
   updateXOffset = () => {
-    const containingSelector =
-      this.getAttribute('container') ?? 'media-control-bar';
+    const position = this.position;
+
+    // we don't offset against tooltips coming out of left and right sides
+    if (position === 'left' || position === 'right') {
+      // could have been offset before switching to a new position
+      this.style.removeProperty('--media-tooltip-offset-x');
+      return;
+    }
+
+    const containingSelector = this.container;
     const containingEl = closestComposedNode(this, containingSelector);
     if (!containingEl) return;
     const { x: containerX, width: containerWidth } =
@@ -184,12 +195,24 @@ class MediaTooltip extends globalThis.HTMLElement {
   /**
    * Get or set tooltip position
    */
-  get position(): string | undefined {
+  get position(): TooltipPosition | undefined {
     return getStringAttr(this, Attributes.POSITION);
   }
 
-  set position(value: string | undefined) {
+  set position(value: TooltipPosition | undefined) {
     setStringAttr(this, Attributes.POSITION, value);
+  }
+
+  /**
+   * Get or set tooltip container selector that will constrain the tooltips horizontal
+   * position. A css selector that matches one of the tooltips parents.
+   */
+  get container(): string | undefined {
+    return getStringAttr(this, Attributes.CONTAINER);
+  }
+
+  set container(value: string | undefined) {
+    setStringAttr(this, Attributes.CONTAINER, value);
   }
 }
 

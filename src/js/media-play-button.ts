@@ -28,7 +28,7 @@ slotTemplate.innerHTML = /*html*/ `
     <slot name="pause">${pauseIcon}</slot>
   </slot>
   <slot name="tooltip">
-    <media-tooltip>
+    <media-tooltip container="media-control-bar">
       <slot name="tooltip-play">Play</slot>
       <slot name="tooltip-pause">Pause</slot>
     </media-tooltip>
