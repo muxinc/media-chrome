@@ -16,29 +16,26 @@ const template: HTMLTemplateElement = document.createElement('template');
 
 template.innerHTML = /*html*/ `
   <style>
-    :host {
-      pointer-events: none;
-      z-index: 1;
-    }
-
     /* TODO: remove hardcoded values / replace with CSS vars where appro */
     :host {
+      --_tooltip-background: var(--media-tooltip-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
       position: relative;
+      pointer-events: none;
       display: var(--media-tooltip-display, inline-flex);
       justify-content: center;
       align-items: center;
       box-sizing: border-box;
-      background: var(--media-tooltip-background, #fff);
-      color: #000;
-      font-weight: 400;
-      font-family: var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif);
-      padding: .35em .7em;
-      font-size: 13px;
-      text-align: center;
-      border-radius: 5px;
-      pointer-events: none;
-      filter: drop-shadow(0 0 4px rgba(0, 0, 0, .2));
-      white-space: nowrap;
+      z-index: var(--media-tooltip-z-index, 1);
+      background: var(--_tooltip-background);
+      color: var(--media-primary-color, rgb(238 238 238));
+      font: var(--media-font,
+        var(--media-font-weight, 400)
+        var(--media-font-size, 13px)
+        var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+      padding: var(--media-tooltip-padding, .35em .7em);
+      border-radius: var(--media-tooltip-border-radius, 5px);
+      filter: var(--media-tooltip-shadow, drop-shadow(0 0 4px rgba(0, 0, 0, .2)));
+      white-space: var(--media-tooltip-white-space, nowrap);
     }
 
     img, svg {
@@ -65,7 +62,7 @@ template.innerHTML = /*html*/ `
       top: 100%;
       left: 50%;
       border-width: 5px 6px 0 6px;
-      border-color: var(--media-tooltip-background, #fff) transparent transparent transparent;
+      border-color: var(--_tooltip-background) transparent transparent transparent;
       transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
     }
 
@@ -79,7 +76,7 @@ template.innerHTML = /*html*/ `
       top: 50%;
       right: 100%;
       border-width: 6px 5px 6px 0;
-      border-color: transparent var(--media-tooltip-background, #fff) transparent transparent;
+      border-color: transparent var(--_tooltip-background) transparent transparent;
       transform: translate(0, -50%);
     }
 
@@ -93,7 +90,7 @@ template.innerHTML = /*html*/ `
       bottom: 100%;
       left: 50%;
       border-width: 0 6px 5px 6px;
-      border-color: transparent transparent var(--media-tooltip-background, #fff) transparent;
+      border-color: transparent transparent var(--_tooltip-background) transparent;
       transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
     }
 
@@ -107,7 +104,7 @@ template.innerHTML = /*html*/ `
       top: 50%;
       left: 100%;
       border-width: 6px 0 6px 5px;
-      border-color: transparent transparent transparent var(--media-tooltip-background, #fff);
+      border-color: transparent transparent transparent var(--_tooltip-background);
       transform: translate(0, -50%);
     }
     
