@@ -21,7 +21,7 @@ template.innerHTML = /*html*/ `
       --_tooltip-background: var(--media-tooltip-background, var(--_tooltip-background-color));
       --_tooltip-arrow-half-width: calc(var(--media-tooltip-arrow-width, 12px) / 2);
       --_tooltip-arrow-height: var(--media-tooltip-arrow-height, 5px);
-      --_tooltip-arrow-background: var(--media-tooltip-arrow-background-color, var(--_tooltip-background-color));
+      --_tooltip-arrow-background: var(--media-tooltip-arrow-color, var(--_tooltip-background-color));
       position: relative;
       pointer-events: none;
       display: var(--media-tooltip-display, inline-flex);
@@ -150,7 +150,7 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-tooltip-arrow-display - `display` property of tooltip arrow
  * @cssproperty --media-tooltip-arrow-width - Arrow width
  * @cssproperty --media-tooltip-arrow-height - Arrow height
- * @cssproperty --media-tooltip-arrow-background-color - Arrow background color
+ * @cssproperty --media-tooltip-arrow-color - Arrow color
  */
 class MediaTooltip extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
