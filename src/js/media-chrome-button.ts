@@ -1,10 +1,17 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import MediaTooltip, { TooltipPosition } from './media-tooltip.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
+import {
+  getOrInsertCSSRule,
+  getStringAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 
-const template = document.createElement('template');
+const Attributes = {
+  TOOLTIP_POSITION: 'tooltipposition',
+};
 
+const template = document.createElement('template');
 template.innerHTML = /*html*/ `
 <style>
   :host {
@@ -113,7 +120,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
   static get observedAttributes() {
     return [
       'disabled',
-      'tooltipposition',
+      Attributes.TOOLTIP_POSITION,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
     ];
   }
@@ -208,7 +215,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
       } else {
         this.disable();
       }
-    } else if (attrName === 'tooltipposition' && newValue !== oldValue) {
+    } else if (
+      attrName === Attributes.TOOLTIP_POSITION &&
+      newValue !== oldValue
+    ) {
       // If the tooltip isn't defined, then we could accidentally overwrite
       // the '.position' property
       if (this.tooltip && globalThis.customElements.get('media-tooltip')) {
@@ -267,6 +277,17 @@ class MediaChromeButton extends globalThis.HTMLElement {
   }
 
   /**
+   * Get or set tooltip position
+   */
+  get tooltipPosition(): TooltipPosition | undefined {
+    return getStringAttr(this, Attributes.TOOLTIP_POSITION);
+  }
+
+  set tooltipPosition(value: TooltipPosition | undefined) {
+    setStringAttr(this, Attributes.TOOLTIP_POSITION, value);
+  }
+
+  /**
    * @abstract
    * @argument {Event} e
    */
@@ -281,9 +302,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
       // measured position does not take into account the new tooltip content
       setTimeout(this.tooltip.updateXOffset, 0);
     });
-    const initialPosition = this.getAttribute(
-      'tooltipposition'
-    ) as TooltipPosition;
+    const initialPosition = this.tooltipPosition;
     if (initialPosition) this.tooltip.position = initialPosition;
   }
 }
