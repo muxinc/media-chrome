@@ -17,10 +17,11 @@ const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
   <style>
     :host {
-      --_tooltip-background: var(--media-tooltip-background, var(--media-secondary-color, rgba(20, 20, 30, .7)));
+      --_tooltip-background-color: var(--media-tooltip-background-color, var(--media-secondary-color, rgba(20, 20, 30, .7)));
+      --_tooltip-background: var(--media-tooltip-background, var(--_tooltip-background-color));
       --_tooltip-arrow-half-width: calc(var(--media-tooltip-arrow-width, 12px) / 2);
       --_tooltip-arrow-height: var(--media-tooltip-arrow-height, 5px);
-      --_tooltip-arrow-background: var(--media-tooltip-arrow-background-color, var(--_tooltip-background));
+      --_tooltip-arrow-background: var(--media-tooltip-arrow-background-color, var(--_tooltip-background-color));
       position: relative;
       pointer-events: none;
       display: var(--media-tooltip-display, inline-flex);
@@ -36,6 +37,7 @@ template.innerHTML = /*html*/ `
         var(--media-text-content-height, var(--media-control-height, 18px))
         var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
       padding: var(--media-tooltip-padding, .35em .7em);
+      border: var(--media-tooltip-border, none);
       border-radius: var(--media-tooltip-border-radius, 5px);
       filter: var(--media-tooltip-filter, drop-shadow(0 0 4px rgba(0, 0, 0, .2)));
       white-space: var(--media-tooltip-white-space, nowrap);
@@ -136,7 +138,9 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of button text.
  *
- * @cssproperty --media-tooltip-background - `background` of tooltip
+ * @cssproperty --media-tooltip-border - 'border' of tooltip
+ * @cssproperty --media-tooltip-background-color - Background color of tooltip and arrow, unless individually overidden
+ * @cssproperty --media-tooltip-background - `background` of tooltip, ignoring the arrow
  * @cssproperty --media-tooltip-display - `display` of tooltip
  * @cssproperty --media-tooltip-z-index - `z-index` of tooltip
  * @cssproperty --media-tooltip-padding - `padding` of tooltip
