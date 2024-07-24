@@ -17,7 +17,10 @@ const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = /*html*/ `
   <style>
     :host {
-      --_tooltip-background: var(--media-tooltip-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
+      --_tooltip-background: var(--media-tooltip-background, var(--media-secondary-color, rgba(20, 20, 30, .7)));
+      --_tooltip-arrow-half-width: calc(var(--media-tooltip-arrow-width, 12px) / 2);
+      --_tooltip-arrow-height: var(--media-tooltip-arrow-height, 5px);
+      --_tooltip-arrow-background: var(--media-tooltip-arrow-background-color, var(--_tooltip-background));
       position: relative;
       pointer-events: none;
       display: var(--media-tooltip-display, inline-flex);
@@ -61,8 +64,8 @@ template.innerHTML = /*html*/ `
     :host([position="top"]) #arrow {
       top: 100%;
       left: 50%;
-      border-width: 5px 6px 0 6px;
-      border-color: var(--_tooltip-background) transparent transparent transparent;
+      border-width: var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width) 0 var(--_tooltip-arrow-half-width);
+      border-color: var(--_tooltip-arrow-background) transparent transparent transparent;
       transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
     }
 
@@ -75,8 +78,8 @@ template.innerHTML = /*html*/ `
     :host([position="right"]) #arrow {
       top: 50%;
       right: 100%;
-      border-width: 6px 5px 6px 0;
-      border-color: transparent var(--_tooltip-background) transparent transparent;
+      border-width: var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width) 0;
+      border-color: transparent var(--_tooltip-arrow-background) transparent transparent;
       transform: translate(0, -50%);
     }
 
@@ -89,8 +92,8 @@ template.innerHTML = /*html*/ `
     :host([position="bottom"]) #arrow {
       bottom: 100%;
       left: 50%;
-      border-width: 0 6px 5px 6px;
-      border-color: transparent transparent var(--_tooltip-background) transparent;
+      border-width: 0 var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width);
+      border-color: transparent transparent var(--_tooltip-arrow-background) transparent;
       transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
     }
 
@@ -103,8 +106,8 @@ template.innerHTML = /*html*/ `
     :host([position="left"]) #arrow {
       top: 50%;
       left: 100%;
-      border-width: 6px 0 6px 5px;
-      border-color: transparent transparent transparent var(--_tooltip-background);
+      border-width: var(--_tooltip-arrow-half-width) 0 var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height);
+      border-color: transparent transparent transparent var(--_tooltip-arrow-background);
       transform: translate(0, -50%);
     }
     
@@ -133,7 +136,7 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of button text.
  *
- * @cssproperty --media-tooltip-background - `background` color
+ * @cssproperty --media-tooltip-background - `background` of tooltip
  * @cssproperty --media-tooltip-display - `display` of tooltip
  * @cssproperty --media-tooltip-z-index - `z-index` of tooltip
  * @cssproperty --media-tooltip-padding - `padding` of tooltip
@@ -141,6 +144,9 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-tooltip-filter - `filter` property of tooltip, for drop-shadow
  * @cssproperty --media-tooltip-white-space - `white-space` property of tooltip
  * @cssproperty --media-tooltip-arrow-display - `display` property of tooltip arrow
+ * @cssproperty --media-tooltip-arrow-width - Arrow width
+ * @cssproperty --media-tooltip-arrow-height - Arrow height
+ * @cssproperty --media-tooltip-arrow-background-color - Arrow background color
  */
 class MediaTooltip extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
