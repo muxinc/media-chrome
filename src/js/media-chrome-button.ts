@@ -250,13 +250,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
       this.#mediaController?.associateElement?.(this);
     }
 
-    if (window.customElements.get('media-tooltip')) {
-      this.setupTooltip();
-    } else {
-      globalThis.customElements
-        .whenDefined('media-tooltip')
-        .then(this.setupTooltip.bind(this));
-    }
+    globalThis.customElements
+      .whenDefined('media-tooltip')
+      .then(this.setupTooltip.bind(this));
   }
 
   disconnectedCallback() {
