@@ -100,41 +100,54 @@
 
       <h2>Entirely custom tooltip element</h2>
 
-      <media-play-button style="margin-top: 1.5em">
-        <style>
-          .my-tooltip {
-            position: absolute;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            left: 50%;
-            bottom: calc(100% + 5px);
-            transform: translate(-50%, 0);
-            color: #fff;
-            font-weight: 700;
-            background: linear-gradient(45deg, red, yellow, blue, red);
-            white-space: nowrap;
-            width: 110px;
-            height: 26px;
-            border-radius: 13px;
-            opacity: 0;
-            pointer-events: none;
-            scale: 0;
-            transition: all .3s cubic-bezier(0.34, 2.5, 0.7, 1);
-            transform-origin: 0 bottom;
-            font-family: "Comic Sans MS", "Comic Sans", cursive;
-            font-size: 18px;
-          }
-          .my-tooltip marquee { display: block; }
-          media-play-button:hover .my-tooltip {
-            opacity: 1;
-            scale: 1;
-          }
-        </style>
-        <div slot="tooltip" class="my-tooltip">
-          <marquee>HellooOOoo!!</marquee>
-        </div>
-      </media-play-button>
+      <media-controller>
+        <video
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+          muted
+        ></video>
+        <media-play-button style="margin-top: 1.5em">
+          <style>
+            .my-tooltip {
+              position: absolute;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              left: 50%;
+              bottom: calc(100% + 5px);
+              transform: translate(-50%, 0);
+              color: #fff;
+              font-weight: 700;
+              background: linear-gradient(45deg, red, yellow, blue, red);
+              white-space: nowrap;
+              width: 110px;
+              height: 26px;
+              border-radius: 13px;
+              opacity: 0;
+              pointer-events: none;
+              scale: 0;
+              transition: all .3s cubic-bezier(0.34, 2.5, 0.7, 1);
+              transform-origin: 0 bottom;
+              font-family: "Comic Sans MS", "Comic Sans", cursive;
+              font-size: 18px;
+            }
+            media-play-button:hover .my-tooltip {
+              opacity: 1;
+              scale: 1;
+            }
+            media-play-button[mediapaused] #play { display: block; }
+            media-play-button[mediapaused] #pause { display: none; }
+            media-play-button #play { display: none; }
+            media-play-button #pause { display: block; }
+          </style>
+          <div slot="tooltip" class="my-tooltip">
+            <marquee>
+              <div id="play">Play</div>
+              <div id="pause">Pause</div>
+            </marquee>
+          </div>
+        </media-play-button>
+      </media-controller>
 
       <h2>Theming</h2>
 
