@@ -25,6 +25,29 @@
       code {
         color: maroon;
       }
+
+      .custom-btn {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: lightblue;
+        border: 2px solid #333;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .custom-btn media-tooltip {
+        opacity: 0;
+        transition: opacity .3s;
+      }
+      .custom-btn:hover media-tooltip {
+        opacity: 1;
+      }
     </style>
   </head>
   <body>     
@@ -176,6 +199,11 @@
           "></media-play-button>
         </media-control-bar>
       </media-controller>
+
+      <h2>Placing within a custom button</h2>
+      <div style="display: flex;">
+        <div class="custom-btn">+<media-tooltip position="right">Add</media-tooltip></div>
+      </div>
 
 	    <div class="examples">
         <a href="./">View more examples</a>
