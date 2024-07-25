@@ -160,6 +160,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
     if (!this.preventClick) {
       this.handleClick(e);
     }
+
+    // Timeout needed to wait for a new "tick" of event loop otherwise
+    // measured position does not take into account the new tooltip content
+    setTimeout(this.tooltip.updateXOffset, 0);
   };
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
@@ -263,8 +267,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
     this.removeEventListener('mouseenter', this.tooltip?.updateXOffset);
     this.removeEventListener('focus', this.tooltip?.updateXOffset);
-    // TODO: how to remove this correctly?
-    // this.removeEventListener('click', this.tooltip?.updatePosition);
+    this.removeEventListener('click', this.#clickListener);
     this.tooltip = null;
   }
 
@@ -293,11 +296,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
   setupTooltip() {
     this.addEventListener('mouseenter', this.tooltip.updateXOffset);
     this.addEventListener('focus', this.tooltip.updateXOffset);
-    this.addEventListener('click', () => {
-      // Timeout needed to wait for a new "tick" of event loop otherwise
-      // measured position does not take into account the new tooltip content
-      setTimeout(this.tooltip.updateXOffset, 0);
-    });
+    this.addEventListener('click', this.#clickListener);
     const initialPosition = this.tooltipPosition;
     if (initialPosition) this.tooltip.position = initialPosition;
   }
