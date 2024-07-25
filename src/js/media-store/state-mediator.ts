@@ -3,10 +3,9 @@ import {
   AvailabilityStates,
   StreamTypes,
   TextTrackKinds,
-  WebkitPresentationModes,
 } from '../constants.js';
 import { containsComposedNode } from '../utils/element-utils.js';
-import { fullscreenApi } from '../utils/fullscreen-api.js';
+import { enterFullscreen, exitFullscreen, isFullscreen } from '../utils/fullscreen-api.js';
 import {
   airplaySupported,
   castSupported,
@@ -872,101 +871,19 @@ export const stateMediator: StateMediator = {
   },
   mediaIsFullscreen: {
     get(stateOwners) {
-      const { media, documentElement, fullscreenElement = media } = stateOwners;
-
-      // Need a documentElement and a media StateOwner to be in fullscreen, so we're not fullscreen
-      if (!media || !documentElement) return false;
-
-      // Need a documentElement.fullscreenElement to be in fullscreen, so we're not fullscreen
-      if (!documentElement[fullscreenApi.element]) {
-        // Except for iOS, which doesn't conform to the standard API
-        // See: https://developer.apple.com/documentation/webkitjs/htmlvideoelement/1630493-webkitdisplayingfullscreen
-        if (
-          'webkitDisplayingFullscreen' in media &&
-          'webkitPresentationMode' in media
-        ) {
-          // Unfortunately, webkitDisplayingFullscreen is also true when in PiP, so we also check if webkitPresentationMode is 'fullscreen'.
-          return (
-            media.webkitDisplayingFullscreen &&
-            media.webkitPresentationMode === WebkitPresentationModes.FULLSCREEN
-          );
-        }
-        return false;
-      }
-
-      // If documentElement.fullscreenElement is the media StateOwner, we're definitely in fullscreen
-      if (documentElement[fullscreenApi.element] === fullscreenElement)
-        return true;
-
-      // In this case (most modern browsers, sans e.g. iOS), the fullscreenElement may be
-      // a web component that is "visible" from the documentElement, but should
-      // have its own fullscreenElement on its shadowRoot for whatever
-      // is "visible" at that level. Since the (also named) fullscreenElement StateOwner
-      // may be nested inside an indeterminite number of web components, traverse each layer
-      // until we either find the fullscreen StateOwner or complete the recursive check.
-      if (documentElement[fullscreenApi.element].localName.includes('-')) {
-        let currentRoot = documentElement[fullscreenApi.element].shadowRoot;
-
-        // NOTE: This is for (non-iOS) Safari < 16.4, which did not support ShadowRoot::fullscreenElement.
-        // We can remove this if/when we decide those versions are old enough/not used enough to handle
-        // (e.g. at the time of writing, < 16.4 ~= 1% of global market, per caniuse https://caniuse.com/mdn-api_shadowroot_fullscreenelement) (CJP)
-
-        // We can simply check if the fullscreenElement key (typically 'fullscreenElement') is defined on the shadowRoot to determine whether or not
-        // it is supported.
-        if (!(fullscreenApi.element in currentRoot)) {
-          // For these cases, if documentElement.fullscreenElement (aka document.fullscreenElement) contains our fullscreenElement StateOwner,
-          // we'll assume that means we're in fullscreen. That should be valid for all current actual and planned supported
-          // web component use cases.
-          return containsComposedNode(
-            documentElement[fullscreenApi.element],
-            /** @TODO clean up type assumptions (e.g. Node) (CJP) */
-            // @ts-ignore
-            fullscreenElement
-          );
-        }
-
-        while (currentRoot?.[fullscreenApi.element]) {
-          if (currentRoot[fullscreenApi.element] === fullscreenElement)
-            return true;
-          currentRoot = currentRoot[fullscreenApi.element]?.shadowRoot;
-        }
-      }
-
-      return false;
+      return isFullscreen(stateOwners);
     },
     set(value, stateOwners) {
-      const { media, fullscreenElement, documentElement } = stateOwners;
-
-      // Exiting fullscreen case (generic)
-      if (!value && documentElement?.[fullscreenApi.exit]) {
-        const maybePromise = documentElement?.[fullscreenApi.exit]?.();
-        // NOTE: Since the "official" exit fullscreen method yields a Promise that rejects
-        // if not in fullscreen, this accounts for those cases.
-        if (maybePromise instanceof Promise) {
-          maybePromise.catch(() => {});
-        }
-        return;
-      }
-
-      // Entering fullscreen cases (browser-specific)
-      if (fullscreenElement?.[fullscreenApi.enter]) {
-        // NOTE: Since the "official" enter fullscreen method yields a Promise that rejects
-        // if already in fullscreen, this accounts for those cases.
-        const maybePromise = fullscreenElement[fullscreenApi.enter]?.();
-        if (maybePromise instanceof Promise) {
-          maybePromise.catch(() => {});
-        }
-      } else if (media?.webkitEnterFullscreen) {
-        // Media element fullscreen using iOS API
-        media.webkitEnterFullscreen();
-      } else if (media?.requestFullscreen) {
-        // So media els don't have to implement multiple APIs.
-        media.requestFullscreen();
+      if (!value) {
+        exitFullscreen(stateOwners);
+      } else {
+        enterFullscreen(stateOwners);
       }
     },
-    rootEvents: fullscreenApi.rootEvents,
-    // iOS requires `webkitbeginfullscreen` and `webkitendfullscreen` events on the video.
-    mediaEvents: fullscreenApi.mediaEvents,
+    // older Safari version may require webkit-specific events
+    rootEvents: ['fullscreenchange', 'webkitfullscreenchange'],
+    // iOS requires webkit-specific events on the video.
+    mediaEvents: ['webkitbeginfullscreen', 'webkitendfullscreen', 'webkitpresentationmodechanged']
   },
   mediaIsCasting: {
     // Note this relies on a customized castable-video element.
