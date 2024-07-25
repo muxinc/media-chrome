@@ -43,19 +43,20 @@
 
       <h2>As part of button controls</h2>
 
-      <media-controller>
+      <media-controller style="--media-tooltip-container-margin: 10px;">
         <video
           slot="media"
           src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
           muted
         ></video>
-        <media-control-bar>
+        <media-control-bar style="display: flexbox; justify-content: space-between;">
+          <media-play-button></media-play-button>
           <media-play-button></media-play-button>
         </media-control-bar>
       </media-controller>
 
       <h2>Overriding tooltip label <small>(and constraining x position)</small></h2>
-      <media-controller>
+      <media-controller style="--media-tooltip-container-margin: 10px;">
         <video
           slot="media"
           src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"

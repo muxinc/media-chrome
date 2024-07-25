@@ -15,12 +15,15 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
 const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause],
-  :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=play],
-  :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=tooltip-pause],
-  :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=tooltip-play] {
-    display: none !important;
-  }
+    :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause],
+    :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=play] {
+      display: none !important;
+    }
+
+    :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=tooltip-pause],
+    :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=tooltip-play] {
+      display: none;
+    }
   </style>
 
   <slot name="icon">
@@ -28,7 +31,7 @@ slotTemplate.innerHTML = /*html*/ `
     <slot name="pause">${pauseIcon}</slot>
   </slot>
   <slot name="tooltip">
-    <media-tooltip container="media-control-bar">
+    <media-tooltip>
       <slot name="tooltip-play">Play</slot>
       <slot name="tooltip-pause">Pause</slot>
     </media-tooltip>

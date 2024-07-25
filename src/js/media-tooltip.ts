@@ -7,8 +7,10 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 
 export const Attributes = {
   POSITION: 'position',
-  CONTAINER: 'container',
+  CONTAIN_WITHIN: 'containwithin',
 };
+
+const defaultContainerSelector = 'media-controller';
 
 export type TooltipPosition = 'top' | 'right' | 'bottom' | 'left' | 'none';
 
@@ -126,7 +128,7 @@ template.innerHTML = /*html*/ `
  * @extends {HTMLElement}
  *
  * @attr {('top'|'right'|'bottom'|'left'|'none')} position - The position of the tooltip, defaults to "top"
- * @attr {string} container - CSS selector for the containing element (one of it's parents) that should constrain the tooltips horizontal position.
+ * @attr {string} containWithin - CSS selector for the containing element (one of it's parents) that should constrain the tooltips horizontal position.
  *
  * @cssproperty --media-primary-color - Default color of text.
  * @cssproperty --media-secondary-color - Default color of tooltip background.
@@ -154,7 +156,7 @@ template.innerHTML = /*html*/ `
  */
 class MediaTooltip extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
-    return [Attributes.POSITION, Attributes.CONTAINER];
+    return [Attributes.POSITION, Attributes.CONTAIN_WITHIN];
   }
 
   arrowEl: HTMLElement;
@@ -184,7 +186,14 @@ class MediaTooltip extends globalThis.HTMLElement {
       return;
     }
 
-    const containingSelector = this.container;
+    // We need to calculate the difference (diff) between the left edge of the
+    // tooltip compared to the left edge of the container element, to see if it
+    // bleeds out (and the same for the right edges).
+    // If they do, then we apply the diff as an offset to get it back within bounds
+    // + any extra margin specified to create some buffer space, so it looks better.
+    // e.g. it's 20px out of bounds, we nudge it 20px back in + margin
+    const tooltipStyle = getComputedStyle(this);
+    const containingSelector = this.containWithin ?? defaultContainerSelector;
     const containingEl = closestComposedNode(this, containingSelector);
     if (!containingEl) return;
     const { x: containerX, width: containerWidth } =
@@ -192,15 +201,25 @@ class MediaTooltip extends globalThis.HTMLElement {
     const { x: tooltipX, width: tooltipWidth } = this.getBoundingClientRect();
     const tooltipRight = tooltipX + tooltipWidth;
     const containerRight = containerX + containerWidth;
-    const offsetXVal = this.style.getPropertyValue('--media-tooltip-offset-x');
+    const offsetXVal = tooltipStyle.getPropertyValue(
+      '--media-tooltip-offset-x'
+    );
     const currOffsetX = offsetXVal
       ? parseFloat(offsetXVal.replace('px', ''))
       : 0;
+    const marginVal = tooltipStyle.getPropertyValue(
+      '--media-tooltip-container-margin'
+    );
+    const currMargin = marginVal ? parseFloat(marginVal.replace('px', '')) : 0;
 
-    // we might have already offset the tooltip previously so we remove it's
-    // current offset from our calculations
-    const leftDiff = tooltipX - containerX + currOffsetX;
-    const rightDiff = tooltipRight - containerRight + currOffsetX;
+    // We might have already offset the tooltip previously so we remove it's
+    // current offset from our calculations, because we need to know if it goes
+    // outside the boundary if we weren't already offsetting it
+    // We also add on any additional container margin specified. Depending on
+    // if we're adjusting the element leftwards or rightwards, we need either a
+    // positive or negative offset
+    const leftDiff = tooltipX - containerX + currOffsetX - currMargin;
+    const rightDiff = tooltipRight - containerRight + currOffsetX + currMargin;
 
     // out of left bounds
     if (leftDiff < 0) {
@@ -233,12 +252,12 @@ class MediaTooltip extends globalThis.HTMLElement {
    * Get or set tooltip container selector that will constrain the tooltips horizontal
    * position. A css selector that matches one of the tooltips parents.
    */
-  get container(): string | undefined {
-    return getStringAttr(this, Attributes.CONTAINER);
+  get containWithin(): string | undefined {
+    return getStringAttr(this, Attributes.CONTAIN_WITHIN);
   }
 
-  set container(value: string | undefined) {
-    setStringAttr(this, Attributes.CONTAINER, value);
+  set containWithin(value: string | undefined) {
+    setStringAttr(this, Attributes.CONTAIN_WITHIN, value);
   }
 }
 
