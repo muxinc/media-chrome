@@ -1,6 +1,6 @@
 import { globalThis, document } from './server-safe-globals.js';
 import { delay } from './utils.js';
-import { fullscreenApi } from './fullscreen-api.js';
+import { isFullscreenEnabled } from './fullscreen-api.js';
 
 /**
  * Test element
@@ -58,13 +58,7 @@ export const hasPipSupport = (mediaEl = getTestMediaEl()) => {
  * @returns {boolean}
  */
 export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {
-  let fullscreenEnabled = document[fullscreenApi.enabled];
-
-  if (!fullscreenEnabled && mediaEl) {
-    fullscreenEnabled = 'webkitSupportsFullscreen' in mediaEl;
-  }
-
-  return fullscreenEnabled;
+  return isFullscreenEnabled({ documentElement: document, media: mediaEl });
 };
 
 export const fullscreenSupported = hasFullscreenSupport();
