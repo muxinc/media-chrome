@@ -1,3 +1,12 @@
+## [3.2.5](https://github.com/muxinc/media-chrome/compare/v3.2.4...v3.2.5) (2024-07-25)
+
+
+### Bug Fixes
+
+* refactor fullscreen-api and state mediator to make fewer assumpt… ([#946](https://github.com/muxinc/media-chrome/issues/946)) ([904e6cb](https://github.com/muxinc/media-chrome/commit/904e6cb8714b8977e1a21b656c7ed1dae1607e92))
+
+
+
 ## [3.2.4](https://github.com/muxinc/media-chrome/compare/v3.2.3...v3.2.4) (2024-07-11)
 
 
