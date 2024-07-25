@@ -981,9 +981,9 @@ export const stateMediator = {
         media.requestFullscreen();
       }
     },
-    rootEvents: fullscreenApi.rootEvents,
+    rootEvents: ['fullscreenchange', 'webkitfullscreenchange'],
     // iOS requires `webkitbeginfullscreen` and `webkitendfullscreen` events on the video.
-    mediaEvents: fullscreenApi.mediaEvents,
+    mediaEvents: ['webkitbeginfullscreen', 'webkitendfullscreen', 'webkitpresentationmodechanged']
   },
   mediaIsCasting: {
     // Note this relies on a customized castable-video element.

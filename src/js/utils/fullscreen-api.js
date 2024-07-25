@@ -1,27 +1,36 @@
 import { document } from './server-safe-globals.js';
 
 export const fullscreenApi = {
-  enter: 'requestFullscreen',
-  exit: 'exitFullscreen',
-  rootEvents: ['fullscreenchange'],
-  mediaEvents: [],
-  element: 'fullscreenElement',
-  error: 'fullscreenerror',
-  enabled: 'fullscreenEnabled',
-};
-
-if (document.fullscreenElement === undefined) {
-  fullscreenApi.enter = 'webkitRequestFullScreen';
-  fullscreenApi.exit =
-    document.webkitExitFullscreen != null
+  enter:
+    'requestFullscreen' in document
+      ? 'requestFullscreen'
+      : 'webkitRequestFullScreen' in document
+      ? 'webkitRequestFullScreen'
+      : undefined,
+  exit:
+    'exitFullscreen' in document
+      ? 'exitFullscreen'
+      : 'webkitExitFullscreen' in document
       ? 'webkitExitFullscreen'
-      : 'webkitCancelFullScreen';
-  fullscreenApi.rootEvents = ['webkitfullscreenchange'];
-  (fullscreenApi.mediaEvents = [
-    'webkitbeginfullscreen',
-    'webkitendfullscreen',
-  ]),
-    (fullscreenApi.element = 'webkitFullscreenElement');
-  fullscreenApi.error = 'webkitfullscreenerror';
-  fullscreenApi.enabled = 'webkitFullscreenEnabled';
-}
+      : 'webkitCancelFullScreen' in document
+      ? 'webkitCancelFullScreen'
+      : undefined,
+  element:
+    'fullscreenElement' in document
+      ? 'fullscreenElement'
+      : 'webkitFullscreenElement' in document
+      ? 'webkitFullscreenElement'
+      : undefined,
+  error:
+    'fullscreenerror' in document
+      ? 'fullscreenerror'
+      : 'webkitfullscreenerror' in document
+      ? 'webkitfullscreenerror'
+      : undefined,
+  enabled:
+    'fullscreenEnabled' in document
+      ? 'fullscreenEnabled'
+      : 'webkitFullscreenEnabled' in document
+      ? 'webkitFullscreenEnabled'
+      : undefined,
+};
