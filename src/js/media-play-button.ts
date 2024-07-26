@@ -30,12 +30,11 @@ slotTemplate.innerHTML = /*html*/ `
     <slot name="play">${playIcon}</slot>
     <slot name="pause">${pauseIcon}</slot>
   </slot>
-  <slot name="tooltip">
-    <media-tooltip>
-      <slot name="tooltip-play">Play</slot>
-      <slot name="tooltip-pause">Pause</slot>
-    </media-tooltip>
-  </slot>
+`;
+
+const tooltipContent = /*html*/ `
+  <slot name="tooltip-play">Play</slot>
+  <slot name="tooltip-pause">Pause</slot>
 `;
 
 const updateAriaLabel = (el: any): void => {
@@ -62,7 +61,7 @@ class MediaPlayButton extends MediaChromeButton {
   }
 
   constructor(options = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent, ...options });
   }
 
   connectedCallback(): void {

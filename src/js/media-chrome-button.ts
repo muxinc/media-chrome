@@ -80,6 +80,12 @@ template.innerHTML = /*html*/ `
     opacity: 1;
   }
 </style>
+
+<slot name="tooltip">
+  <media-tooltip>
+    <slot name="tooltip-content"></slot>
+  </media-tooltip>
+</slot>
 `;
 
 /**
@@ -129,6 +135,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     options: Partial<{
       slotTemplate: HTMLTemplateElement;
       defaultContent: string;
+      tooltipContent: string;
     }> = {}
   ) {
     super();
@@ -146,6 +153,11 @@ class MediaChromeButton extends globalThis.HTMLElement {
       if (!slotTemplate) {
         slotTemplate = document.createElement('template');
         slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
+      }
+
+      if (options.tooltipContent) {
+        buttonHTML.querySelector('slot[name="tooltip-content"]').innerHTML =
+          options.tooltipContent ?? '';
       }
 
       this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
