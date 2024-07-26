@@ -171,6 +171,16 @@ class MediaTooltip extends globalThis.HTMLElement {
     }
 
     this.arrowEl = this.shadowRoot.querySelector('#arrow');
+
+    // Check if the position prop has been set before the element was
+    // defined / upgraded. Without this, position might be permanently overriden
+    // on the target element.
+    // see: https://nolanlawson.com/2021/08/03/handling-properties-in-custom-element-upgrades/
+    if (this.hasOwnProperty('position')) {
+      const position = this.position;
+      delete this.position;
+      this.position = position;
+    }
   }
 
   // Adjusts tooltip position relative to the closest specified container

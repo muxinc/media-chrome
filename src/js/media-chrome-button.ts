@@ -221,13 +221,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
       }
     } else if (
       attrName === Attributes.TOOLTIP_POSITION &&
+      this.tooltip &&
       newValue !== oldValue
     ) {
-      // If the tooltip isn't defined, then we could accidentally overwrite
-      // the '.position' property
-      if (this.tooltip && globalThis.customElements.get('media-tooltip')) {
-        this.tooltip.position = newValue;
-      }
+      this.tooltip.position = newValue;
     }
   }
 
