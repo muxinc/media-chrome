@@ -6,13 +6,13 @@ import {
 import { globalThis, document } from './utils/server-safe-globals.js';
 
 export const Attributes = {
-  POSITION: 'position',
+  PLACEMENT: 'placement',
   CONTAIN_WITHIN: 'containwithin',
 };
 
 const defaultContainerSelector = 'media-controller';
 
-export type TooltipPosition = 'top' | 'right' | 'bottom' | 'left' | 'none';
+export type TooltipPlacement = 'top' | 'right' | 'bottom' | 'left' | 'none';
 
 const template: HTMLTemplateElement = document.createElement('template');
 
@@ -57,15 +57,15 @@ template.innerHTML = /*html*/ `
       display: var(--media-tooltip-arrow-display, block);
     }
 
-    :host(:not([position])),
-    :host([position="top"]) {
+    :host(:not([placement])),
+    :host([placement="top"]) {
       position: absolute;
       bottom: calc(100% + var(--media-tooltip-distance, 12px));
       left: 50%;
       transform: translate(calc(-50% - var(--media-tooltip-offset-x, 0px)), 0);
     }
-    :host(:not([position])) #arrow,
-    :host([position="top"]) #arrow {
+    :host(:not([placement])) #arrow,
+    :host([placement="top"]) #arrow {
       top: 100%;
       left: 50%;
       border-width: var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width) 0 var(--_tooltip-arrow-half-width);
@@ -73,13 +73,13 @@ template.innerHTML = /*html*/ `
       transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
     }
 
-    :host([position="right"]) {
+    :host([placement="right"]) {
       position: absolute;
       left: calc(100% + var(--media-tooltip-distance, 12px));
       top: 50%;
       transform: translate(0, -50%);
     }
-    :host([position="right"]) #arrow {
+    :host([placement="right"]) #arrow {
       top: 50%;
       right: 100%;
       border-width: var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width) 0;
@@ -87,13 +87,13 @@ template.innerHTML = /*html*/ `
       transform: translate(0, -50%);
     }
 
-    :host([position="bottom"]) {
+    :host([placement="bottom"]) {
       position: absolute;
       top: calc(100% + var(--media-tooltip-distance, 12px));
       left: 50%;
       transform: translate(calc(-50% - var(--media-tooltip-offset-x, 0px)), 0);
     }
-    :host([position="bottom"]) #arrow {
+    :host([placement="bottom"]) #arrow {
       bottom: 100%;
       left: 50%;
       border-width: 0 var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width);
@@ -101,13 +101,13 @@ template.innerHTML = /*html*/ `
       transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
     }
 
-    :host([position="left"]) {
+    :host([placement="left"]) {
       position: absolute;
       right: calc(100% + var(--media-tooltip-distance, 12px));
       top: 50%;
       transform: translate(0, -50%);
     }
-    :host([position="left"]) #arrow {
+    :host([placement="left"]) #arrow {
       top: 50%;
       left: 100%;
       border-width: var(--_tooltip-arrow-half-width) 0 var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height);
@@ -115,7 +115,7 @@ template.innerHTML = /*html*/ `
       transform: translate(0, -50%);
     }
     
-    :host([position="none"]) #arrow {
+    :host([placement="none"]) #arrow {
       display: none;
     }
 
@@ -127,7 +127,7 @@ template.innerHTML = /*html*/ `
 /**
  * @extends {HTMLElement}
  *
- * @attr {('top'|'right'|'bottom'|'left'|'none')} position - The position of the tooltip, defaults to "top"
+ * @attr {('top'|'right'|'bottom'|'left'|'none')} placement - The placement of the tooltip, defaults to "top"
  * @attr {string} containWithin - CSS selector for the containing element (one of it's parents) that should constrain the tooltips horizontal position.
  *
  * @cssproperty --media-primary-color - Default color of text.
@@ -156,7 +156,7 @@ template.innerHTML = /*html*/ `
  */
 class MediaTooltip extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
-    return [Attributes.POSITION, Attributes.CONTAIN_WITHIN];
+    return [Attributes.PLACEMENT, Attributes.CONTAIN_WITHIN];
   }
 
   arrowEl: HTMLElement;
@@ -172,25 +172,25 @@ class MediaTooltip extends globalThis.HTMLElement {
 
     this.arrowEl = this.shadowRoot.querySelector('#arrow');
 
-    // Check if the position prop has been set before the element was
-    // defined / upgraded. Without this, position might be permanently overriden
+    // Check if the placement prop has been set before the element was
+    // defined / upgraded. Without this, placement might be permanently overriden
     // on the target element.
     // see: https://nolanlawson.com/2021/08/03/handling-properties-in-custom-element-upgrades/
-    if (this.hasOwnProperty('position')) {
-      const position = this.position;
-      delete this.position;
-      this.position = position;
+    if (this.hasOwnProperty('placement')) {
+      const placement = this.placement;
+      delete this.placement;
+      this.placement = placement;
     }
   }
 
   // Adjusts tooltip position relative to the closest specified container
   // such that it doesn't spill out of the left or right sides. Only applies
-  // to 'top' and 'bottom' positioned tooltips.
+  // to 'top' and 'bottom' placed tooltips.
   updateXOffset = () => {
-    const position = this.position;
+    const placement = this.placement;
 
     // we don't offset against tooltips coming out of left and right sides
-    if (position === 'left' || position === 'right') {
+    if (placement === 'left' || placement === 'right') {
       // could have been offset before switching to a new position
       this.style.removeProperty('--media-tooltip-offset-x');
       return;
@@ -248,14 +248,14 @@ class MediaTooltip extends globalThis.HTMLElement {
   };
 
   /**
-   * Get or set tooltip position
+   * Get or set tooltip placement
    */
-  get position(): TooltipPosition | undefined {
-    return getStringAttr(this, Attributes.POSITION);
+  get placement(): TooltipPlacement | undefined {
+    return getStringAttr(this, Attributes.PLACEMENT);
   }
 
-  set position(value: TooltipPosition | undefined) {
-    setStringAttr(this, Attributes.POSITION, value);
+  set placement(value: TooltipPlacement | undefined) {
+    setStringAttr(this, Attributes.PLACEMENT, value);
   }
 
   /**

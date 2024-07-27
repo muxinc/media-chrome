@@ -1,5 +1,5 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import MediaTooltip, { TooltipPosition } from './media-tooltip.js';
+import MediaTooltip, { TooltipPlacement } from './media-tooltip.js';
 import {
   getOrInsertCSSRule,
   getStringAttr,
@@ -8,7 +8,7 @@ import {
 import { globalThis, document } from './utils/server-safe-globals.js';
 
 const Attributes = {
-  TOOLTIP_POSITION: 'tooltipposition',
+  TOOLTIP_PLACEMENT: 'tooltipplacement',
 };
 
 const template = document.createElement('template');
@@ -93,7 +93,7 @@ template.innerHTML = /*html*/ `
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
- * @attr {('top'|'right'|'bottom'|'left'|'none')} tooltipposition - The position of the tooltip, defaults to "top"
+ * @attr {('top'|'right'|'bottom'|'left'|'none')} tooltipplacement - The placement of the tooltip, defaults to "top"
  *
  * @cssproperty --media-primary-color - Default color of text and icon.
  * @cssproperty --media-secondary-color - Default color of button background.
@@ -126,7 +126,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
   static get observedAttributes() {
     return [
       'disabled',
-      Attributes.TOOLTIP_POSITION,
+      Attributes.TOOLTIP_PLACEMENT,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
     ];
   }
@@ -232,11 +232,11 @@ class MediaChromeButton extends globalThis.HTMLElement {
         this.disable();
       }
     } else if (
-      attrName === Attributes.TOOLTIP_POSITION &&
+      attrName === Attributes.TOOLTIP_PLACEMENT &&
       this.tooltip &&
       newValue !== oldValue
     ) {
-      this.tooltip.position = newValue;
+      this.tooltip.placement = newValue;
     }
   }
 
@@ -285,14 +285,14 @@ class MediaChromeButton extends globalThis.HTMLElement {
   }
 
   /**
-   * Get or set tooltip position
+   * Get or set tooltip placement
    */
-  get tooltipPosition(): TooltipPosition | undefined {
-    return getStringAttr(this, Attributes.TOOLTIP_POSITION);
+  get tooltipPlacement(): TooltipPlacement | undefined {
+    return getStringAttr(this, Attributes.TOOLTIP_PLACEMENT);
   }
 
-  set tooltipPosition(value: TooltipPosition | undefined) {
-    setStringAttr(this, Attributes.TOOLTIP_POSITION, value);
+  set tooltipPlacement(value: TooltipPlacement | undefined) {
+    setStringAttr(this, Attributes.TOOLTIP_PLACEMENT, value);
   }
 
   /**
@@ -306,8 +306,8 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.addEventListener('mouseenter', this.tooltip.updateXOffset);
     this.addEventListener('focus', this.tooltip.updateXOffset);
     this.addEventListener('click', this.#clickListener);
-    const initialPosition = this.tooltipPosition;
-    if (initialPosition) this.tooltip.position = initialPosition;
+    const initialPlacement = this.tooltipPlacement;
+    if (initialPlacement) this.tooltip.placement = initialPlacement;
   }
 }
 
