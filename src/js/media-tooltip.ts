@@ -45,6 +45,10 @@ template.innerHTML = /*html*/ `
       white-space: var(--media-tooltip-white-space, nowrap);
     }
 
+    :host([hidden]) {
+      display: none;
+    }
+
     img, svg {
       display: inline-block;
     }
