@@ -48,14 +48,14 @@ prependTemplate.innerHTML = /*html*/ `
  */
 export class MediaThemeElement extends globalThis.HTMLElement {
   static template: HTMLTemplateElement;
-  static observedAttributes: string[] = ['template'];
+  static observedAttributes = ['template'];
   static processor = processor;
 
-  renderRoot;
-  renderer;
-  #template;
-  #prevTemplate;
-  #prevTemplateId;
+  renderRoot: ShadowRoot;
+  renderer?: TemplateInstance;
+  #template: HTMLTemplateElement;
+  #prevTemplate: HTMLTemplateElement;
+  #prevTemplateId: string | null;
 
   constructor() {
     super();
@@ -131,9 +131,8 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     return this.renderRoot.querySelector('media-controller');
   }
 
-  get template(): HTMLTemplateElement {
-    // @ts-ignore
-    return this.#template ?? this.constructor.template;
+  get template() {
+    return this.#template ?? (this.constructor as typeof MediaThemeElement).template;
   }
 
   set template(element) {
@@ -192,7 +191,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
 
     // First try to get a template element by id
     const rootNode = this.getRootNode() as Document;
-    const template = rootNode?.getElementById?.(templateId);
+    const template = rootNode?.getElementById?.(templateId) as HTMLTemplateElement | null;
 
     if (template) {
       // Only save prevTemplateId if a template was found.

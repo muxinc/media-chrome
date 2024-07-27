@@ -472,9 +472,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   /**
    * Returns the anchor element when it is a floating menu.
    */
-  get anchorElement(): HTMLElement {
+  get anchorElement() {
     if (this.anchor) {
-      return getDocumentOrShadowRoot(this)?.querySelector(`#${this.anchor}`);
+      return getDocumentOrShadowRoot(this)?.querySelector<HTMLElement>(`#${this.anchor}`);
     }
     return null;
   }

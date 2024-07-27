@@ -76,9 +76,9 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   /**
    * Returns the anchor element when it is a floating menu.
    */
-  get anchorElement(): HTMLElement | null {
+  get anchorElement() {
     if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector(
+    return getMediaController(this).querySelector<HTMLElement>(
       'media-playback-rate-menu-button'
     );
   }
