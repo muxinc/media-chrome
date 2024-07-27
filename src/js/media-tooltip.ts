@@ -180,7 +180,7 @@ class MediaTooltip extends globalThis.HTMLElement {
     // defined / upgraded. Without this, placement might be permanently overriden
     // on the target element.
     // see: https://nolanlawson.com/2021/08/03/handling-properties-in-custom-element-upgrades/
-    if (this.hasOwnProperty('placement')) {
+    if (Object.prototype.hasOwnProperty.call(this, 'placement')) {
       const placement = this.placement;
       delete this.placement;
       this.placement = placement;
