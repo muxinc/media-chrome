@@ -9,6 +9,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 
 const Attributes = {
   TOOLTIP_PLACEMENT: 'tooltipplacement',
+  TOOLTIP: 'tooltip',
 };
 
 const template = document.createElement('template');
@@ -79,6 +80,10 @@ template.innerHTML = /*html*/ `
   :host(:hover) media-tooltip {
     opacity: 1;
   }
+
+  :host([tooltip=""]) media-tooltip {
+    display: none;
+  }
 </style>
 
 <slot name="tooltip">
@@ -121,12 +126,14 @@ class MediaChromeButton extends globalThis.HTMLElement {
   #mediaController;
   preventClick = false;
   nativeEl: DocumentFragment;
-  tooltip: MediaTooltip = null;
+  tooltipEl: MediaTooltip = null;
+  tooltipContent: string = '';
 
   static get observedAttributes() {
     return [
       'disabled',
       Attributes.TOOLTIP_PLACEMENT,
+      Attributes.TOOLTIP,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
     ];
   }
@@ -158,13 +165,14 @@ class MediaChromeButton extends globalThis.HTMLElement {
       if (options.tooltipContent) {
         buttonHTML.querySelector('slot[name="tooltip-content"]').innerHTML =
           options.tooltipContent ?? '';
+        this.tooltipContent = options.tooltipContent;
       }
 
       this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
       this.shadowRoot.appendChild(buttonHTML);
 
-      this.tooltip = this.shadowRoot.querySelector('media-tooltip');
+      this.tooltipEl = this.shadowRoot.querySelector('media-tooltip');
     }
   }
 
@@ -175,7 +183,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
     // Timeout needed to wait for a new "tick" of event loop otherwise
     // measured position does not take into account the new tooltip content
-    setTimeout(this.tooltip.updateXOffset, 0);
+    setTimeout(this.tooltipEl.updateXOffset, 0);
   };
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
@@ -233,10 +241,25 @@ class MediaChromeButton extends globalThis.HTMLElement {
       }
     } else if (
       attrName === Attributes.TOOLTIP_PLACEMENT &&
-      this.tooltip &&
+      this.tooltipEl &&
       newValue !== oldValue
     ) {
-      this.tooltip.placement = newValue;
+      this.tooltipEl.placement = newValue;
+    } else if (
+      attrName === Attributes.TOOLTIP &&
+      this.tooltipEl &&
+      newValue !== oldValue
+    ) {
+      const contentEl = this.tooltipEl.querySelector(
+        'slot[name="tooltip-content"]'
+      );
+      if (!contentEl) return;
+      if (newValue == null) {
+        // reset it to what it was initially configured to be through constructor options
+        contentEl.innerHTML = this.tooltipContent;
+        return;
+      }
+      contentEl.innerHTML = newValue;
     }
   }
 
@@ -274,10 +297,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
 
-    this.removeEventListener('mouseenter', this.tooltip?.updateXOffset);
-    this.removeEventListener('focus', this.tooltip?.updateXOffset);
+    this.removeEventListener('mouseenter', this.tooltipEl?.updateXOffset);
+    this.removeEventListener('focus', this.tooltipEl?.updateXOffset);
     this.removeEventListener('click', this.#clickListener);
-    this.tooltip = null;
+    this.tooltipEl = null;
   }
 
   get keysUsed() {
@@ -296,6 +319,17 @@ class MediaChromeButton extends globalThis.HTMLElement {
   }
 
   /**
+   * Get or set tooltip label
+   */
+  get tooltip(): string | undefined {
+    return getStringAttr(this, Attributes.TOOLTIP);
+  }
+
+  set tooltip(value: string | undefined) {
+    setStringAttr(this, Attributes.TOOLTIP, value);
+  }
+
+  /**
    * @abstract
    * @argument {Event} e
    */
@@ -303,11 +337,11 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   // Called when we know the tooltip is ready / defined
   setupTooltip() {
-    this.addEventListener('mouseenter', this.tooltip.updateXOffset);
-    this.addEventListener('focus', this.tooltip.updateXOffset);
+    this.addEventListener('mouseenter', this.tooltipEl.updateXOffset);
+    this.addEventListener('focus', this.tooltipEl.updateXOffset);
     this.addEventListener('click', this.#clickListener);
     const initialPlacement = this.tooltipPlacement;
-    if (initialPlacement) this.tooltip.placement = initialPlacement;
+    if (initialPlacement) this.tooltipEl.placement = initialPlacement;
   }
 }
 

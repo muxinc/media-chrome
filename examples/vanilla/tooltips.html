@@ -97,9 +97,15 @@
         </media-control-bar>
       </media-controller>
 
-      <h2>Hiding with CSS</h2>
+      <h2>Hiding</h2>
+
+      <h3>with CSS</h3>
 
       <media-play-button style="--media-tooltip-display: none;"></media-play-button>
+
+      <h3>with an empty <code>tooltip</code> attribute</h3>
+
+      <media-play-button tooltip=""></media-play-button>
 
       <h2>Positioning</h2>
 
@@ -204,6 +210,16 @@
       <div style="display: flex;">
         <div class="custom-btn">+<media-tooltip placement="right">Add</media-tooltip></div>
       </div>
+
+      <h2>Dynamic label changes via <code>tooltip</code> attribute (+ hiding when label is empty)</h2>
+      <p><input id="dynamicInput" type="text" value="Custom..."></p>
+      <media-play-button id="dynamicPlay"></media-play-button>
+      <script>
+        window.dynamicInput.oninput = (event) => {
+          window.dynamicPlay.tooltip = event.target.value;
+        }
+        window.dynamicPlay.setAttribute('tooltip', window.dynamicInput.value);
+      </script>
 
 	    <div class="examples">
         <a href="./">View more examples</a>
