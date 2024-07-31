@@ -9,7 +9,6 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 
 const Attributes = {
   TOOLTIP_PLACEMENT: 'tooltipplacement',
-  TOOLTIP: 'tooltip',
 };
 
 const template = document.createElement('template');
@@ -81,7 +80,7 @@ template.innerHTML = /*html*/ `
     opacity: 1;
   }
 
-  :host([tooltip=""]) media-tooltip {
+  :host([notooltip]) slot[name="tooltip"] {
     display: none;
   }
 </style>
@@ -133,7 +132,6 @@ class MediaChromeButton extends globalThis.HTMLElement {
     return [
       'disabled',
       Attributes.TOOLTIP_PLACEMENT,
-      Attributes.TOOLTIP,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
     ];
   }
@@ -245,21 +243,6 @@ class MediaChromeButton extends globalThis.HTMLElement {
       newValue !== oldValue
     ) {
       this.tooltipEl.placement = newValue;
-    } else if (
-      attrName === Attributes.TOOLTIP &&
-      this.tooltipEl &&
-      newValue !== oldValue
-    ) {
-      const contentEl = this.tooltipEl.querySelector(
-        'slot[name="tooltip-content"]'
-      );
-      if (!contentEl) return;
-      if (newValue == null) {
-        // reset it to what it was initially configured to be through constructor options
-        contentEl.innerHTML = this.tooltipContent;
-        return;
-      }
-      contentEl.innerHTML = newValue;
     }
   }
 
@@ -316,17 +299,6 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   set tooltipPlacement(value: TooltipPlacement | undefined) {
     setStringAttr(this, Attributes.TOOLTIP_PLACEMENT, value);
-  }
-
-  /**
-   * Get or set tooltip label
-   */
-  get tooltip(): string | undefined {
-    return getStringAttr(this, Attributes.TOOLTIP);
-  }
-
-  set tooltip(value: string | undefined) {
-    setStringAttr(this, Attributes.TOOLTIP, value);
   }
 
   /**
