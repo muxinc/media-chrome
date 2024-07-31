@@ -1,5 +1,6 @@
 import {
   closestComposedNode,
+  getMediaController,
   getStringAttr,
   setStringAttr,
 } from './utils/element-utils.js';
@@ -7,10 +8,8 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 
 export const Attributes = {
   PLACEMENT: 'placement',
-  CONTAIN_WITHIN: 'containwithin',
+  BOUNDS: 'bounds',
 };
-
-const defaultContainerSelector = 'media-controller';
 
 export type TooltipPlacement = 'top' | 'right' | 'bottom' | 'left' | 'none';
 
@@ -132,7 +131,7 @@ template.innerHTML = /*html*/ `
  * @extends {HTMLElement}
  *
  * @attr {('top'|'right'|'bottom'|'left'|'none')} placement - The placement of the tooltip, defaults to "top"
- * @attr {string} containWithin - CSS selector for the containing element (one of it's parents) that should constrain the tooltips horizontal position.
+ * @attr {string} bounds - ID for the containing element (one of it's parents) that should constrain the tooltips horizontal position.
  *
  * @cssproperty --media-primary-color - Default color of text.
  * @cssproperty --media-secondary-color - Default color of tooltip background.
@@ -160,7 +159,7 @@ template.innerHTML = /*html*/ `
  */
 class MediaTooltip extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
-    return [Attributes.PLACEMENT, Attributes.CONTAIN_WITHIN];
+    return [Attributes.PLACEMENT, Attributes.BOUNDS];
   }
 
   arrowEl: HTMLElement;
@@ -207,8 +206,8 @@ class MediaTooltip extends globalThis.HTMLElement {
     // + any extra margin specified to create some buffer space, so it looks better.
     // e.g. it's 20px out of bounds, we nudge it 20px back in + margin
     const tooltipStyle = getComputedStyle(this);
-    const containingSelector = this.containWithin ?? defaultContainerSelector;
-    const containingEl = closestComposedNode(this, containingSelector);
+    const containingEl =
+      closestComposedNode(this, '#' + this.bounds) ?? getMediaController(this);
     if (!containingEl) return;
     const { x: containerX, width: containerWidth } =
       containingEl.getBoundingClientRect();
@@ -263,15 +262,15 @@ class MediaTooltip extends globalThis.HTMLElement {
   }
 
   /**
-   * Get or set tooltip container selector that will constrain the tooltips horizontal
-   * position. A css selector that matches one of the tooltips parents.
+   * Get or set tooltip container ID selector that will constrain the tooltips
+   * horizontal position.
    */
-  get containWithin(): string | undefined {
-    return getStringAttr(this, Attributes.CONTAIN_WITHIN);
+  get bounds(): string | undefined {
+    return getStringAttr(this, Attributes.BOUNDS);
   }
 
-  set containWithin(value: string | undefined) {
-    setStringAttr(this, Attributes.CONTAIN_WITHIN, value);
+  set bounds(value: string | undefined) {
+    setStringAttr(this, Attributes.BOUNDS, value);
   }
 }
 
