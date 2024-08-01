@@ -98,6 +98,7 @@ template.innerHTML = /*html*/ `
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  * @attr {('top'|'right'|'bottom'|'left'|'none')} tooltipplacement - The placement of the tooltip, defaults to "top"
+ * @attr {boolean} notooltip - Hides the tooltip if this attribute is present
  *
  * @cssproperty --media-primary-color - Default color of text and icon.
  * @cssproperty --media-secondary-color - Default color of button background.
