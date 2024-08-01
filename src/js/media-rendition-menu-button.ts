@@ -14,6 +14,11 @@ const renditionIcon = /*html*/ `<svg aria-hidden="true" viewBox="0 0 24 24">
 
 const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
+  <style>
+    :host([aria-expanded="true"]) slot[name=tooltip] {
+      display: none;
+    }
+  </style>
   <slot name="icon">${renditionIcon}</slot>
 `;
 
@@ -33,7 +38,7 @@ class MediaRenditionMenuButton extends MediaChromeMenuButton {
   }
 
   constructor() {
-    super({ slotTemplate });
+    super({ slotTemplate, tooltipContent: 'Quality' });
   }
 
   connectedCallback(): void {

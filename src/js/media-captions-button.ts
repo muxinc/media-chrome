@@ -28,12 +28,22 @@ slotTemplate.innerHTML = /*html*/ `
     :host(:not([aria-checked="true"])) slot[name=on] {
       display: none !important;
     }
+
+    :host([aria-checked="true"]) slot[name=tooltip-enable],
+    :host(:not([aria-checked="true"])) slot[name=tooltip-disable] {
+      display: none;
+    }
   </style>
 
   <slot name="icon">
     <slot name="on">${ccIconOn}</slot>
     <slot name="off">${ccIconOff}</slot>
   </slot>
+`;
+
+const tooltipContent = /*html*/ `
+  <slot name="tooltip-enable">Enable captions</slot>
+  <slot name="tooltip-disable">Disable captions</slot>
 `;
 
 const updateAriaChecked = (el: HTMLElement) => {
@@ -62,7 +72,7 @@ class MediaCaptionsButton extends MediaChromeButton {
   private _captionsReady: boolean;
 
   constructor(options: any = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent, ...options });
     // Internal variable to keep track of when we have some or no captions (or subtitles, if using subtitles fallback)
     // Used for `default-showing` behavior.
     this._captionsReady = false;

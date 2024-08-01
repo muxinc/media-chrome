@@ -23,6 +23,10 @@ slotTemplate.innerHTML = /*html*/ `
       min-width: 5ch;
       padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
     }
+    
+    :host([aria-expanded="true"]) slot[name=tooltip] {
+      display: none;
+    }
   </style>
   <slot name="icon"></slot>
 `;
@@ -49,7 +53,7 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   container: HTMLSlotElement;
 
   constructor(options = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent: 'Playback rate', ...options });
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }

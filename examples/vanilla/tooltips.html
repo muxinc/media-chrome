@@ -53,6 +53,33 @@
   <body>     
     <main>
       <h1>Tooltips</h1>
+
+      <h2>All buttons</h2>
+
+      <media-controller style="--media-tooltip-container-margin: 10px; min-width: 700px;">
+        <video
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+          muted
+        ></video>
+        <media-control-bar style="display: flexbox; gap: 5px;">
+          <media-airplay-button></media-airplay-button>
+          <media-audio-track-menu-button></media-audio-track-menu-button>
+          <media-captions-menu-button></media-captions-menu-button>
+          <media-captions-button></media-captions-button>
+          <media-cast-button></media-cast-button>
+          <media-fullscreen-button></media-fullscreen-button>
+          <media-mute-button></media-mute-button>
+          <media-pip-button></media-pip-button>
+          <media-play-button></media-play-button>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-playback-rate-menu-button></media-playback-rate-menu-button>
+          <media-rendition-menu-button></media-rendition-menu-button>
+          <media-seek-backward-button></media-seek-backward-button>
+          <media-seek-forward-button></media-seek-forward-button>
+          <media-settings-menu-button></media-settings-menu-button>
+        </media-control-bar>
+      </media-controller>
       
       <h2>On their own (no arrows when <code>position="none"</code>)</h2>
 

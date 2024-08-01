@@ -38,7 +38,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   }
 
   constructor(options = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent: 'Seek backward', ...options });
   }
 
   connectedCallback(): void {

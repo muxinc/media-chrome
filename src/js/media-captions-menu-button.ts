@@ -29,6 +29,10 @@ slotTemplate.innerHTML = /*html*/ `
     :host(:not([aria-checked="true"])) slot[name=on] {
       display: none !important;
     }
+
+    :host([aria-expanded="true"]) slot[name=tooltip] {
+      display: none;
+    }
   </style>
 
   <slot name="icon">
@@ -63,7 +67,7 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
   #captionsReady: boolean;
 
   constructor(options: Record<string, any> = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent: 'Captions', ...options });
     // Internal variable to keep track of when we have some or no captions (or subtitles, if using subtitles fallback)
     // Used for `default-showing` behavior.
     this.#captionsReady = false;

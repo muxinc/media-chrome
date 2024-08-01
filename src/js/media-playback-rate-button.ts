@@ -45,7 +45,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   container: HTMLSlotElement;
 
   constructor(options = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent: 'Playback rate', ...options });
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }

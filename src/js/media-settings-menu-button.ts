@@ -5,6 +5,11 @@ import { nouns } from './labels/labels.js';
 
 const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
+  <style>
+    :host([aria-expanded="true"]) slot[name=tooltip] {
+      display: none;
+    }
+  </style>
   <slot name="icon">
     <svg aria-hidden="true" viewBox="0 0 24 24">
       <path d="M4.5 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm7.5 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm7.5 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
@@ -21,7 +26,7 @@ class MediaSettingsMenuButton extends MediaChromeMenuButton {
   }
 
   constructor() {
-    super({ slotTemplate });
+    super({ slotTemplate, tooltipContent: 'Settings' });
   }
 
   connectedCallback(): void {

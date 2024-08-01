@@ -15,6 +15,11 @@ const audioTrackIcon = /*html*/ `<svg aria-hidden="true" viewBox="0 0 24 24">
 
 const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
+  <style>
+    :host([aria-expanded="true"]) slot[name=tooltip] {
+      display: none;
+    }
+  </style>
   <slot name="icon">${audioTrackIcon}</slot>
 `;
 
@@ -34,7 +39,7 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
   }
 
   constructor() {
-    super({ slotTemplate });
+    super({ slotTemplate, tooltipContent: 'Audio' });
   }
 
   connectedCallback(): void {
