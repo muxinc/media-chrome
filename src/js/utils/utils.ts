@@ -97,3 +97,6 @@ export function isNumericString(str: any): boolean {
  */
 export const delay = (ms: number): Promise<void> =>
   new Promise((resolve) => setTimeout(resolve, ms));
+
+export const capitalize = (str: string) =>
+  str && str[0].toUpperCase() + str.slice(1);

@@ -16,6 +16,7 @@ import {
   setBooleanAttr,
   setStringAttr,
 } from './utils/element-utils.js';
+import { capitalize } from './utils/utils.js';
 
 const enterFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
   <path d="M16 3v2.5h3.5V9H22V3h-6ZM4 9h2.5V5.5H10V3H4v6Zm15.5 9.5H16V21h6v-6h-2.5v3.5ZM6.5 15H4v6h6v-2.5H6.5V15Z"/>
@@ -56,8 +57,8 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const tooltipContent = /*html*/ `
-  <slot name="tooltip-enter">Enter fullscreen</slot>
-  <slot name="tooltip-exit">Exit fullscreen</slot>
+  <slot name="tooltip-enter">${capitalize(verbs.ENTER_FULLSCREEN())}</slot>
+  <slot name="tooltip-exit">${capitalize(verbs.EXIT_FULLSCREEN())}</slot>
 `;
 
 const updateAriaLabel = (el: MediaFullscreenButton) => {

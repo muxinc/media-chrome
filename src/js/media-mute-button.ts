@@ -3,6 +3,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 import { getStringAttr, setStringAttr } from './utils/element-utils.js';
+import { capitalize } from './utils/utils.js';
 
 const { MEDIA_VOLUME_LEVEL } = MediaUIAttributes;
 
@@ -54,8 +55,8 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const tooltipContent = /*html*/ `
-  <slot name="tooltip-mute">Mute</slot>
-  <slot name="tooltip-unmute">Unmute</slot>
+  <slot name="tooltip-mute">${capitalize(verbs.MUTE())}</slot>
+  <slot name="tooltip-unmute">${capitalize(verbs.UNMUTE())}</slot>
 `;
 
 const updateAriaLabel = (el: MediaMuteButton) => {
