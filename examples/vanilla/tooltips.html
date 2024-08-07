@@ -61,7 +61,11 @@
           slot="media"
           src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
           muted
-        ></video>
+        >
+          <track label="English" kind="captions" srclang="en" src="../vtt/elephantsdream/captions.en.vtt" default></track>
+        </video>
+        <media-playback-rate-menu anchor="auto" hidden></media-playback-rate-menu>
+        <media-captions-menu anchor="auto" hidden></media-captions-menu>
         <media-control-bar style="display: flex; gap: 5px;">
           <media-airplay-button></media-airplay-button>
           <media-audio-track-menu-button></media-audio-track-menu-button>
