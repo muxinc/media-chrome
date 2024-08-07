@@ -246,6 +246,16 @@ class MediaChromeButton extends globalThis.HTMLElement {
     ) {
       this.tooltipEl.placement = newValue;
     }
+
+    // The tooltips label, and subsequently it's size and position, are a function
+    // of the buttons state, so we greedily assume we need account for any form
+    // of state change by reacting to all attribute changes, even if sometimes the
+    // update might be redundant
+    if (this.tooltipEl) {
+      // conditional chaining accounts for scenarios where the tooltip element isn't
+      // yet defined
+      this.tooltipEl?.updateXOffset?.();
+    }
   }
 
   connectedCallback() {
