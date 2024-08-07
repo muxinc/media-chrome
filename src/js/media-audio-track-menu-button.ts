@@ -1,7 +1,7 @@
 import { MediaUIAttributes } from './constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { nouns } from './labels/labels.js';
+import { nouns, tooltipLabels } from './labels/labels.js';
 import {
   getStringAttr,
   setStringAttr,
@@ -39,7 +39,7 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
   }
 
   constructor() {
-    super({ slotTemplate, tooltipContent: 'Audio' });
+    super({ slotTemplate, tooltipContent: tooltipLabels.AUDIO_TRACK_MENU });
   }
 
   connectedCallback(): void {

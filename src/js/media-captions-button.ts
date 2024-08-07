@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { nouns } from './labels/labels.js';
+import { nouns, tooltipLabels } from './labels/labels.js';
 import {
   areSubsOn,
   parseTextTracksStr,
@@ -42,8 +42,8 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const tooltipContent = /*html*/ `
-  <slot name="tooltip-enable">Enable captions</slot>
-  <slot name="tooltip-disable">Disable captions</slot>
+  <slot name="tooltip-enable">${tooltipLabels.ENABLE_CAPTIONS}</slot>
+  <slot name="tooltip-disable">${tooltipLabels.DISABLE_CAPTIONS}</slot>
 `;
 
 const updateAriaChecked = (el: HTMLElement) => {

@@ -1,6 +1,6 @@
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
+import { nouns, tooltipLabels } from './labels/labels.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { getMediaController } from './utils/element-utils.js';
 import {
@@ -67,7 +67,7 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
   #captionsReady: boolean;
 
   constructor(options: Record<string, any> = {}) {
-    super({ slotTemplate, tooltipContent: 'Captions', ...options });
+    super({ slotTemplate, tooltipContent: tooltipLabels.CAPTIONS, ...options });
     // Internal variable to keep track of when we have some or no captions (or subtitles, if using subtitles fallback)
     // Used for `default-showing` behavior.
     this.#captionsReady = false;

@@ -1,9 +1,8 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
+import { tooltipLabels, verbs } from './labels/labels.js';
 import { getStringAttr, setStringAttr } from './utils/element-utils.js';
-import { capitalize } from './utils/utils.js';
 
 const { MEDIA_VOLUME_LEVEL } = MediaUIAttributes;
 
@@ -55,8 +54,8 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const tooltipContent = /*html*/ `
-  <slot name="tooltip-mute">${capitalize(verbs.MUTE())}</slot>
-  <slot name="tooltip-unmute">${capitalize(verbs.UNMUTE())}</slot>
+  <slot name="tooltip-mute">${tooltipLabels.MUTE}</slot>
+  <slot name="tooltip-unmute">${tooltipLabels.UNMUTE}</slot>
 `;
 
 const updateAriaLabel = (el: MediaMuteButton) => {
