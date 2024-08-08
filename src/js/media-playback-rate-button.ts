@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
+import { nouns, tooltipLabels } from './labels/labels.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
 
@@ -45,7 +45,11 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   container: HTMLSlotElement;
 
   constructor(options = {}) {
-    super({ slotTemplate, ...options });
+    super({
+      slotTemplate,
+      tooltipContent: tooltipLabels.PLAYBACK_RATE,
+      ...options,
+    });
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }

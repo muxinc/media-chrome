@@ -1,12 +1,21 @@
 import { MediaStateReceiverAttributes } from './constants.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
+import MediaTooltip, { TooltipPlacement } from './media-tooltip.js';
+import {
+  getOrInsertCSSRule,
+  getStringAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 
-const template = document.createElement('template');
+const Attributes = {
+  TOOLTIP_PLACEMENT: 'tooltipplacement',
+};
 
+const template = document.createElement('template');
 template.innerHTML = /*html*/ `
 <style>
   :host {
+    position: relative;
     font: var(--media-font,
       var(--media-font-weight, bold)
       var(--media-font-size, 14px) /
@@ -61,7 +70,27 @@ template.innerHTML = /*html*/ `
     max-height: 100%;
     min-width: 100%;
   }
+
+  media-tooltip {
+    opacity: 0;
+    transition: opacity .3s;
+  }
+
+  :host(:hover) media-tooltip,
+  :host(:focus-visible) media-tooltip {
+    opacity: 1;
+  }
+
+  :host([notooltip]) slot[name="tooltip"] {
+    display: none;
+  }
 </style>
+
+<slot name="tooltip">
+  <media-tooltip>
+    <slot name="tooltip-content"></slot>
+  </media-tooltip>
+</slot>
 `;
 
 /**
@@ -69,6 +98,8 @@ template.innerHTML = /*html*/ `
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
+ * @attr {('top'|'right'|'bottom'|'left'|'none')} tooltipplacement - The placement of the tooltip, defaults to "top"
+ * @attr {boolean} notooltip - Hides the tooltip if this attribute is present
  *
  * @cssproperty --media-primary-color - Default color of text and icon.
  * @cssproperty --media-secondary-color - Default color of button background.
@@ -96,15 +127,22 @@ class MediaChromeButton extends globalThis.HTMLElement {
   #mediaController;
   preventClick = false;
   nativeEl: DocumentFragment;
+  tooltipEl: MediaTooltip = null;
+  tooltipContent: string = '';
 
   static get observedAttributes() {
-    return ['disabled', MediaStateReceiverAttributes.MEDIA_CONTROLLER];
+    return [
+      'disabled',
+      Attributes.TOOLTIP_PLACEMENT,
+      MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+    ];
   }
 
   constructor(
     options: Partial<{
       slotTemplate: HTMLTemplateElement;
       defaultContent: string;
+      tooltipContent: string;
     }> = {}
   ) {
     super();
@@ -124,9 +162,17 @@ class MediaChromeButton extends globalThis.HTMLElement {
         slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
       }
 
+      if (options.tooltipContent) {
+        buttonHTML.querySelector('slot[name="tooltip-content"]').innerHTML =
+          options.tooltipContent ?? '';
+        this.tooltipContent = options.tooltipContent;
+      }
+
       this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
       this.shadowRoot.appendChild(buttonHTML);
+
+      this.tooltipEl = this.shadowRoot.querySelector('media-tooltip');
     }
   }
 
@@ -134,6 +180,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
     if (!this.preventClick) {
       this.handleClick(e);
     }
+
+    // Timeout needed to wait for a new "tick" of event loop otherwise
+    // measured position does not take into account the new tooltip content
+    setTimeout(this.tooltipEl.updateXOffset, 0);
   };
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
@@ -189,6 +239,22 @@ class MediaChromeButton extends globalThis.HTMLElement {
       } else {
         this.disable();
       }
+    } else if (
+      attrName === Attributes.TOOLTIP_PLACEMENT &&
+      this.tooltipEl &&
+      newValue !== oldValue
+    ) {
+      this.tooltipEl.placement = newValue;
+    }
+
+    // The tooltips label, and subsequently it's size and position, are a function
+    // of the buttons state, so we greedily assume we need account for any form
+    // of state change by reacting to all attribute changes, even if sometimes the
+    // update might be redundant
+    if (this.tooltipEl) {
+      // conditional chaining accounts for scenarios where the tooltip element isn't
+      // yet defined
+      this.tooltipEl?.updateXOffset?.();
     }
   }
 
@@ -214,6 +280,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
         this.getRootNode()?.getElementById(mediaControllerId);
       this.#mediaController?.associateElement?.(this);
     }
+
+    globalThis.customElements
+      .whenDefined('media-tooltip')
+      .then(this.setupTooltip.bind(this));
   }
 
   disconnectedCallback() {
@@ -221,6 +291,11 @@ class MediaChromeButton extends globalThis.HTMLElement {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
+
+    this.removeEventListener('mouseenter', this.tooltipEl?.updateXOffset);
+    this.removeEventListener('focus', this.tooltipEl?.updateXOffset);
+    this.removeEventListener('click', this.#clickListener);
+    this.tooltipEl = null;
   }
 
   get keysUsed() {
@@ -228,10 +303,30 @@ class MediaChromeButton extends globalThis.HTMLElement {
   }
 
   /**
+   * Get or set tooltip placement
+   */
+  get tooltipPlacement(): TooltipPlacement | undefined {
+    return getStringAttr(this, Attributes.TOOLTIP_PLACEMENT);
+  }
+
+  set tooltipPlacement(value: TooltipPlacement | undefined) {
+    setStringAttr(this, Attributes.TOOLTIP_PLACEMENT, value);
+  }
+
+  /**
    * @abstract
    * @argument {Event} e
    */
   handleClick(e) {} // eslint-disable-line
+
+  // Called when we know the tooltip is ready / defined
+  setupTooltip() {
+    this.addEventListener('mouseenter', this.tooltipEl.updateXOffset);
+    this.addEventListener('focus', this.tooltipEl.updateXOffset);
+    this.addEventListener('click', this.#clickListener);
+    const initialPlacement = this.tooltipPlacement;
+    if (initialPlacement) this.tooltipEl.placement = initialPlacement;
+  }
 }
 
 if (!globalThis.customElements.get('media-chrome-button')) {

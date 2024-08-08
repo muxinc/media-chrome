@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { nouns } from './labels/labels.js';
+import { nouns, tooltipLabels } from './labels/labels.js';
 import {
   areSubsOn,
   parseTextTracksStr,
@@ -28,12 +28,22 @@ slotTemplate.innerHTML = /*html*/ `
     :host(:not([aria-checked="true"])) slot[name=on] {
       display: none !important;
     }
+
+    :host([aria-checked="true"]) slot[name=tooltip-enable],
+    :host(:not([aria-checked="true"])) slot[name=tooltip-disable] {
+      display: none;
+    }
   </style>
 
   <slot name="icon">
     <slot name="on">${ccIconOn}</slot>
     <slot name="off">${ccIconOff}</slot>
   </slot>
+`;
+
+const tooltipContent = /*html*/ `
+  <slot name="tooltip-enable">${tooltipLabels.ENABLE_CAPTIONS}</slot>
+  <slot name="tooltip-disable">${tooltipLabels.DISABLE_CAPTIONS}</slot>
 `;
 
 const updateAriaChecked = (el: HTMLElement) => {
@@ -62,7 +72,7 @@ class MediaCaptionsButton extends MediaChromeButton {
   private _captionsReady: boolean;
 
   constructor(options: any = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent, ...options });
     // Internal variable to keep track of when we have some or no captions (or subtitles, if using subtitles fallback)
     // Used for `default-showing` behavior.
     this._captionsReady = false;

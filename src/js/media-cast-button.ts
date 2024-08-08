@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
+import { tooltipLabels, verbs } from './labels/labels.js';
 import {
   getBooleanAttr,
   setBooleanAttr,
@@ -18,22 +18,34 @@ slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${
     MediaUIAttributes.MEDIA_IS_CASTING
-  }]) slot:not([name=exit]):not([name=icon]) {
+  }]) slot[name=icon] slot:not([name=exit]) {
     display: none !important;
   }
 
   ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
   :host(:not([${
     MediaUIAttributes.MEDIA_IS_CASTING
-  }])) slot:not([name=enter]):not([name=icon]) {
+  }])) slot[name=icon] slot:not([name=enter]) {
     display: none !important;
   }
+
+  :host([${MediaUIAttributes.MEDIA_IS_CASTING}]) slot[name=tooltip-enter],
+    :host(:not([${
+      MediaUIAttributes.MEDIA_IS_CASTING
+    }])) slot[name=tooltip-exit] {
+      display: none;
+    }
   </style>
 
   <slot name="icon">
     <slot name="enter">${enterIcon}</slot>
     <slot name="exit">${exitIcon}</slot>
   </slot>
+`;
+
+const tooltipContent = /*html*/ `
+  <slot name="tooltip-enter">${tooltipLabels.START_CAST}</slot>
+  <slot name="tooltip-exit">${tooltipLabels.STOP_CAST}</slot>
 `;
 
 const updateAriaLabel = (el: MediaCastButton) => {
@@ -61,7 +73,7 @@ class MediaCastButton extends MediaChromeButton {
   }
 
   constructor(options = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent, ...options });
   }
 
   connectedCallback(): void {

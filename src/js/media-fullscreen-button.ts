@@ -9,7 +9,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
+import { tooltipLabels, verbs } from './labels/labels.js';
 import {
   getBooleanAttr,
   getStringAttr,
@@ -28,24 +28,36 @@ const exitFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${
-    MediaUIAttributes.MEDIA_IS_FULLSCREEN
-  }]) slot:not([name=exit]):not([name=icon]) {
-    display: none !important;
-  }
+    :host([${
+      MediaUIAttributes.MEDIA_IS_FULLSCREEN
+    }]) slot[name=icon] slot:not([name=exit]) {
+      display: none !important;
+    }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_FULLSCREEN
-  }])) slot:not([name=enter]):not([name=icon]) {
-    display: none !important;
-  }
+    ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+    :host(:not([${
+      MediaUIAttributes.MEDIA_IS_FULLSCREEN
+    }])) slot[name=icon] slot:not([name=enter]) {
+      display: none !important;
+    }
+
+    :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot[name=tooltip-enter],
+    :host(:not([${
+      MediaUIAttributes.MEDIA_IS_FULLSCREEN
+    }])) slot[name=tooltip-exit] {
+      display: none;
+    }
   </style>
 
   <slot name="icon">
     <slot name="enter">${enterFullscreenIcon}</slot>
     <slot name="exit">${exitFullscreenIcon}</slot>
   </slot>
+`;
+
+const tooltipContent = /*html*/ `
+  <slot name="tooltip-enter">${tooltipLabels.ENTER_FULLSCREEN}</slot>
+  <slot name="tooltip-exit">${tooltipLabels.EXIT_FULLSCREEN}</slot>
 `;
 
 const updateAriaLabel = (el: MediaFullscreenButton) => {
@@ -75,7 +87,7 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   constructor(options: object = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent, ...options });
   }
 
   connectedCallback(): void {

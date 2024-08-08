@@ -1,7 +1,7 @@
 import { MediaUIAttributes } from './constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { nouns } from './labels/labels.js';
+import { nouns, tooltipLabels } from './labels/labels.js';
 import {
   getStringAttr,
   setStringAttr,
@@ -14,6 +14,11 @@ const renditionIcon = /*html*/ `<svg aria-hidden="true" viewBox="0 0 24 24">
 
 const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
+  <style>
+    :host([aria-expanded="true"]) slot[name=tooltip] {
+      display: none;
+    }
+  </style>
   <slot name="icon">${renditionIcon}</slot>
 `;
 
@@ -33,7 +38,7 @@ class MediaRenditionMenuButton extends MediaChromeMenuButton {
   }
 
   constructor() {
-    super({ slotTemplate });
+    super({ slotTemplate, tooltipContent: tooltipLabels.RENDITIONS });
   }
 
   connectedCallback(): void {

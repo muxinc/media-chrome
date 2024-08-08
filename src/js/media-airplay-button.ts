@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
+import { tooltipLabels, verbs } from './labels/labels.js';
 import {
   getStringAttr,
   setStringAttr,
@@ -17,24 +17,36 @@ const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${
-    MediaUIAttributes.MEDIA_IS_AIRPLAYING
-  }]) slot:not([name=exit]):not([name=icon]) {
-    display: none !important;
-  }
+    :host([${
+      MediaUIAttributes.MEDIA_IS_AIRPLAYING
+    }]) slot[name=icon] slot:not([name=exit]) {
+      display: none !important;
+    }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_AIRPLAYING
-  }])) slot:not([name=enter]):not([name=icon]) {
-    display: none !important;
-  }
+    ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+    :host(:not([${
+      MediaUIAttributes.MEDIA_IS_AIRPLAYING
+    }])) slot[name=icon] slot:not([name=enter]) {
+      display: none !important;
+    }
+
+    :host([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]) slot[name=tooltip-enter],
+    :host(:not([${
+      MediaUIAttributes.MEDIA_IS_AIRPLAYING
+    }])) slot[name=tooltip-exit] {
+      display: none;
+    }
   </style>
 
   <slot name="icon">
     <slot name="enter">${airplayIcon}</slot>
     <slot name="exit">${airplayIcon}</slot>
   </slot>
+`;
+
+const tooltipContent = /*html*/ `
+  <slot name="tooltip-enter">${tooltipLabels.ENTER_AIRPLAY}</slot>
+  <slot name="tooltip-exit">${tooltipLabels.EXIT_AIRPLAY}</slot>
 `;
 
 const updateAriaLabel = (el: MediaAirplayButton): void => {
@@ -66,7 +78,7 @@ class MediaAirplayButton extends MediaChromeButton {
   }
 
   constructor(options: { slotTemplate?: HTMLTemplateElement } = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent, ...options });
   }
 
   connectedCallback(): void {
