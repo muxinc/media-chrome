@@ -27,10 +27,13 @@ prependTemplate.innerHTML = /*html*/ `
       height: 100%;
     }
 
-    media-controller:not([mediasubtitleslist]) media-captions-selectmenu,
     media-captions-button:not([mediasubtitleslist]),
-    media-rendition-selectmenu[mediarenditionunavailable],
-    media-audio-track-selectmenu[mediaaudiotrackunavailable],
+    media-captions-menu:not([mediasubtitleslist]),
+    media-captions-menu-button:not([mediasubtitleslist]),
+    media-audio-track-menu[mediaaudiotrackunavailable],
+    media-audio-track-menu-button[mediaaudiotrackunavailable],
+    media-rendition-menu[mediarenditionunavailable],
+    media-rendition-menu-button[mediarenditionunavailable],
     media-volume-range[mediavolumeunavailable],
     media-airplay-button[mediaairplayunavailable],
     media-fullscreen-button[mediafullscreenunavailable],
