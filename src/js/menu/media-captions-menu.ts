@@ -1,6 +1,6 @@
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { getMediaController } from './utils/element-utils.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
+import { getMediaController } from '../utils/element-utils.js';
 import {
   MediaChromeMenu,
   createMenuItem,
@@ -10,8 +10,8 @@ import {
   parseTextTracksStr,
   stringifyTextTrackList,
   formatTextTrackObj,
-} from './utils/captions.js';
-import { TextTrackLike } from './utils/TextTrackLike.js';
+} from '../utils/captions.js';
+import { TextTrackLike } from '../utils/TextTrackLike.js';
 
 const ccIcon = /*html*/ `
   <svg aria-hidden="true" viewBox="0 0 26 24" part="captions-indicator indicator">

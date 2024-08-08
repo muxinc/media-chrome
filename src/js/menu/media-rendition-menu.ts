@@ -1,17 +1,17 @@
-import { globalThis } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
+import { globalThis } from '../utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 import {
   getMediaController,
   getStringAttr,
   setStringAttr,
-} from './utils/element-utils.js';
-import { parseRenditionList } from './utils/utils.js';
+} from '../utils/element-utils.js';
+import { parseRenditionList } from '../utils/utils.js';
 import {
   MediaChromeMenu,
   createMenuItem,
   createIndicator,
 } from './media-chrome-menu.js';
-import { Rendition } from './media-store/state-mediator.js';
+import { Rendition } from '../media-store/state-mediator.js';
 
 /**
  * @extends {MediaChromeMenu}

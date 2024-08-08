@@ -5,6 +5,11 @@
     <title>Media Chrome Basic Audio and Video Usage Example</title>
     <script type="module" src="../../dist/index.js"></script>
     <style>
+      /* Hide custom elements that are not defined yet */
+      :not(:defined) {
+        display: none;
+      }
+
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
         display: block;         /* expands the container if preload=none */
