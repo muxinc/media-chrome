@@ -13,7 +13,8 @@ const indicatorSVG =
 const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-
+  :host { --media-tooltip-display: none; }
+  
   slot[name=indicator] > *,
   :host ::slotted([slot=indicator]) {
     ${/* Override styles for icon-only buttons */ ''}

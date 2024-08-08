@@ -1,6 +1,6 @@
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
+import { nouns, tooltipLabels } from './labels/labels.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import {
@@ -22,6 +22,10 @@ slotTemplate.innerHTML = /*html*/ `
     :host {
       min-width: 5ch;
       padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
+    }
+    
+    :host([aria-expanded="true"]) slot[name=tooltip] {
+      display: none;
     }
   </style>
   <slot name="icon"></slot>
@@ -49,7 +53,11 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   container: HTMLSlotElement;
 
   constructor(options = {}) {
-    super({ slotTemplate, ...options });
+    super({
+      slotTemplate,
+      tooltipContent: tooltipLabels.PLAYBACK_RATE,
+      ...options,
+    });
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }

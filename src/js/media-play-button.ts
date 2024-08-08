@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
+import { tooltipLabels, verbs } from './labels/labels.js';
 import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
 
 const playIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
@@ -15,19 +15,26 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
 const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
-  :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause] {
-    display: none !important;
-  }
+    :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause],
+    :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=play] {
+      display: none !important;
+    }
 
-  :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=play] {
-    display: none !important;
-  }
+    :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=tooltip-pause],
+    :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=tooltip-play] {
+      display: none;
+    }
   </style>
 
   <slot name="icon">
     <slot name="play">${playIcon}</slot>
     <slot name="pause">${pauseIcon}</slot>
   </slot>
+`;
+
+const tooltipContent = /*html*/ `
+  <slot name="tooltip-play">${tooltipLabels.PLAY}</slot>
+  <slot name="tooltip-pause">${tooltipLabels.PAUSE}</slot>
 `;
 
 const updateAriaLabel = (el: any): void => {
@@ -54,7 +61,7 @@ class MediaPlayButton extends MediaChromeButton {
   }
 
   constructor(options = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent, ...options });
   }
 
   connectedCallback(): void {

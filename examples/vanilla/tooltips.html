@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Tooltips</title>
+    <script type="module" src="../../dist/index.js"></script>
+    <style>
+      body {
+        background: #eee;
+        padding: 50px;
+      }
+      
+      .examples {
+        margin-top: 20px;
+      }
+      
+      media-controller {
+        max-width: 300px;
+      }
+      
+      media-control-bar {
+        margin: 10px;
+      }
+
+      code {
+        color: maroon;
+      }
+
+      .custom-btn {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: lightblue;
+        border: 2px solid #333;
+        color: #333;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+      }
+      .custom-btn media-tooltip {
+        opacity: 0;
+        transition: opacity .3s;
+      }
+      .custom-btn:hover media-tooltip {
+        opacity: 1;
+      }
+    </style>
+  </head>
+  <body>     
+    <main>
+      <h1>Tooltips</h1>
+
+      <h2>All buttons</h2>
+
+      <media-controller style="--media-tooltip-container-margin: 10px; min-width: 700px;">
+        <video
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+          muted
+        >
+          <track label="English" kind="captions" srclang="en" src="../vtt/elephantsdream/captions.en.vtt" default></track>
+        </video>
+        <media-playback-rate-menu anchor="auto" hidden></media-playback-rate-menu>
+        <media-captions-menu anchor="auto" hidden></media-captions-menu>
+        <media-control-bar style="display: flex; gap: 5px;">
+          <media-airplay-button></media-airplay-button>
+          <media-audio-track-menu-button></media-audio-track-menu-button>
+          <media-captions-menu-button></media-captions-menu-button>
+          <media-captions-button></media-captions-button>
+          <media-cast-button></media-cast-button>
+          <media-fullscreen-button></media-fullscreen-button>
+          <media-mute-button></media-mute-button>
+          <media-pip-button></media-pip-button>
+          <media-play-button></media-play-button>
+          <media-playback-rate-button></media-playback-rate-button>
+          <media-playback-rate-menu-button></media-playback-rate-menu-button>
+          <media-rendition-menu-button></media-rendition-menu-button>
+          <media-seek-backward-button></media-seek-backward-button>
+          <media-seek-forward-button></media-seek-forward-button>
+          <media-settings-menu-button></media-settings-menu-button>
+        </media-control-bar>
+      </media-controller>
+      
+      <h2>On their own (no arrows when <code>position="none"</code>)</h2>
+
+      <div>
+        <media-tooltip placement="none">Settings</media-tooltip>
+        <br><br>
+        <media-tooltip placement="none">Play</media-tooltip>
+        <br><br>
+        <media-tooltip placement="none">Pause</media-tooltip>
+      </div>
+
+      <h2>As part of button controls</h2>
+
+      <media-controller style="--media-tooltip-container-margin: 10px;">
+        <video
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+          muted
+        ></video>
+        <media-control-bar style="display: flex; justify-content: space-between;">
+          <media-play-button></media-play-button>
+          <media-play-button></media-play-button>
+        </media-control-bar>
+      </media-controller>
+
+      <h2>Overriding tooltip label <small>(and constraining x position)</small></h2>
+      <media-controller style="--media-tooltip-container-margin: 10px;">
+        <video
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+          muted
+        ></video>
+        <media-control-bar style="display: flex; justify-content: space-between;">
+          <media-play-button>
+            <span slot="tooltip-play"><strong>Play</strong> the movie! <img src="/examples/vanilla/images/spacebar.svg" width="12"></span>
+            <span slot="tooltip-pause">Please <i>stop</i>... <img src="/examples/vanilla/images/spacebar.svg" width="12"></strong></span>
+          </media-play-button>
+          <media-play-button>
+            <span slot="tooltip-play">Play......</span>
+            <span slot="tooltip-pause">Pause........</span>
+          </media-play-button>
+        </media-control-bar>
+      </media-controller>
+
+      <h2>Hiding</h2>
+
+      <h3>with CSS</h3>
+
+      <media-play-button style="--media-tooltip-display: none;"></media-play-button>
+
+      <h3>with a <code>notooltip</code> attribute</h3>
+
+      <media-play-button notooltip></media-play-button>
+
+      <h2>Positioning</h2>
+
+      <div style="display: flex; gap: 25px;">
+        <div>
+          <div>Top</div>
+          <media-play-button tooltipplacement="top"></media-play-button>  
+        </div>
+        <div>
+          <div>Right</div>
+          <media-play-button tooltipplacement="right"></media-play-button>  
+        </div>
+        <div>
+          <div>Bottom</div>
+          <media-play-button tooltipplacement="bottom"></media-play-button>  
+        </div>
+        <div>
+          <div>Left</div>
+          <media-play-button tooltipplacement="left"></media-play-button>
+        </div>
+      </div>
+
+      <h2>Entirely custom tooltip element</h2>
+
+      <media-controller>
+        <video
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+          muted
+        ></video>
+        <media-play-button style="margin-top: 1.5em">
+          <style>
+            .my-tooltip {
+              position: absolute;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              left: 50%;
+              bottom: calc(100% + 5px);
+              transform: translate(-50%, 0);
+              color: #fff;
+              font-weight: 700;
+              background: linear-gradient(45deg, red, yellow, blue, red);
+              white-space: nowrap;
+              width: 110px;
+              height: 26px;
+              border-radius: 13px;
+              opacity: 0;
+              pointer-events: none;
+              scale: 0;
+              transition: all .3s cubic-bezier(0.34, 2.5, 0.7, 1);
+              transform-origin: 0 bottom;
+              font-family: "Comic Sans MS", "Comic Sans", cursive;
+              font-size: 18px;
+            }
+            media-play-button:hover .my-tooltip {
+              opacity: 1;
+              scale: 1;
+            }
+            media-play-button[mediapaused] #play { display: block; }
+            media-play-button[mediapaused] #pause { display: none; }
+            media-play-button #play { display: none; }
+            media-play-button #pause { display: block; }
+          </style>
+          <div slot="tooltip" class="my-tooltip">
+            <marquee>
+              <div id="play">Play</div>
+              <div id="pause">Pause</div>
+            </marquee>
+          </div>
+        </media-play-button>
+      </media-controller>
+
+      <h2>Theming</h2>
+
+      <media-controller>
+        <video
+          slot="media"
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
+          muted
+        ></video>
+        <media-control-bar style="gap: 10px">
+          <media-play-button style="--media-primary-color: #000; --media-secondary-color: #fff;"></media-play-button>
+          <media-play-button style="
+            --media-primary-color: #f00;
+            --media-secondary-color: cyan;
+          "></media-play-button>
+          <media-play-button style="
+            --media-primary-color: #0f0;
+            --media-secondary-color: #333;
+            --media-tooltip-background: #000;
+            --media-tooltip-arrow-color: #0f0;
+            --media-tooltip-arrow-width: 20px;
+            --media-tooltip-arrow-height: 5px;
+            --media-tooltip-border: 1px solid #0f0;
+            --media-tooltip-border-radius: 2px;
+          "></media-play-button>
+        </media-control-bar>
+      </media-controller>
+
+      <h2>Placing within a custom button</h2>
+      <div style="display: flex;">
+        <div class="custom-btn">+<media-tooltip placement="right">Add</media-tooltip></div>
+      </div>
+
+	    <div class="examples">
+        <a href="./">View more examples</a>
+      </div>
+    </main>
+  </body>
+</html>

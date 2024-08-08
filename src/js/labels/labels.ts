@@ -1,5 +1,29 @@
 export type LabelOptions = { seekOffset?: number; playbackRate?: number };
 
+export const tooltipLabels = {
+  ENTER_AIRPLAY: 'Start airplay',
+  EXIT_AIRPLAY: 'Stop airplay',
+  AUDIO_TRACK_MENU: 'Audio',
+  CAPTIONS: 'Captions',
+  ENABLE_CAPTIONS: 'Enable captions',
+  DISABLE_CAPTIONS: 'Disable captions',
+  START_CAST: 'Start casting',
+  STOP_CAST: 'Stop casting',
+  ENTER_FULLSCREEN: 'Enter fullscreen mode',
+  EXIT_FULLSCREEN: 'Exit fullscreen mode',
+  MUTE: 'Mute',
+  UNMUTE: 'Unmute',
+  ENTER_PIP: 'Enter picture in picture mode',
+  EXIT_PIP: 'Enter picture in picture mode',
+  PLAY: 'Play',
+  PAUSE: 'Pause',
+  PLAYBACK_RATE: 'Playback rate',
+  RENDITIONS: 'Quality',
+  SEEK_BACKWARD: 'Seek backward',
+  SEEK_FORWARD: 'Seek forward',
+  SETTINGS: 'Settings',
+};
+
 export const nouns: Record<string, (options?: LabelOptions) => string> = {
   AUDIO_PLAYER: () => 'audio player',
   VIDEO_PLAYER: () => 'video player',

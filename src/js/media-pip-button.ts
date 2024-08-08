@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
+import { tooltipLabels, verbs } from './labels/labels.js';
 import {
   getBooleanAttr,
   getStringAttr,
@@ -18,15 +18,20 @@ slotTemplate.innerHTML = /*html*/ `
   <style>
   :host([${
     MediaUIAttributes.MEDIA_IS_PIP
-  }]) slot:not([name=exit]):not([name=icon]) {
+  }]) slot[name=icon] slot:not([name=exit]) {
     display: none !important;
   }
 
   ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
   :host(:not([${
     MediaUIAttributes.MEDIA_IS_PIP
-  }])) slot:not([name=enter]):not([name=icon]) {
+  }])) slot[name=icon] slot:not([name=enter]) {
     display: none !important;
+  }
+
+  :host([${MediaUIAttributes.MEDIA_IS_PIP}]) slot[name=tooltip-enter],
+  :host(:not([${MediaUIAttributes.MEDIA_IS_PIP}])) slot[name=tooltip-exit] {
+    display: none;
   }
   </style>
 
@@ -34,6 +39,11 @@ slotTemplate.innerHTML = /*html*/ `
     <slot name="enter">${pipIcon}</slot>
     <slot name="exit">${pipIcon}</slot>
   </slot>
+`;
+
+const tooltipContent = /*html*/ `
+  <slot name="tooltip-enter">${tooltipLabels.ENTER_PIP}</slot>
+  <slot name="tooltip-exit">${tooltipLabels.EXIT_PIP}</slot>
 `;
 
 const updateAriaLabel = (el: MediaPipButton): void => {
@@ -61,7 +71,7 @@ class MediaPipButton extends MediaChromeButton {
   }
 
   constructor(options: object = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent, ...options });
   }
 
   connectedCallback(): void {

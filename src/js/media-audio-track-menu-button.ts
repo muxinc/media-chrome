@@ -1,7 +1,7 @@
 import { MediaUIAttributes } from './constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { nouns } from './labels/labels.js';
+import { nouns, tooltipLabels } from './labels/labels.js';
 import {
   getStringAttr,
   setStringAttr,
@@ -15,6 +15,11 @@ const audioTrackIcon = /*html*/ `<svg aria-hidden="true" viewBox="0 0 24 24">
 
 const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
+  <style>
+    :host([aria-expanded="true"]) slot[name=tooltip] {
+      display: none;
+    }
+  </style>
   <slot name="icon">${audioTrackIcon}</slot>
 `;
 
@@ -34,7 +39,7 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
   }
 
   constructor() {
-    super({ slotTemplate });
+    super({ slotTemplate, tooltipContent: tooltipLabels.AUDIO_TRACK_MENU });
   }
 
   connectedCallback(): void {

@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
+import { tooltipLabels, verbs } from './labels/labels.js';
 import { getStringAttr, setStringAttr } from './utils/element-utils.js';
 
 const { MEDIA_VOLUME_LEVEL } = MediaUIAttributes;
@@ -22,21 +22,26 @@ const slotTemplate = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
   <style>
   ${/* Default to High slot/icon. */ ''}
-  :host(:not([${MEDIA_VOLUME_LEVEL}])) slot:not([name=high]):not([name=icon]), 
-  :host([${MEDIA_VOLUME_LEVEL}=high]) slot:not([name=high]):not([name=icon]) {
+  :host(:not([${MEDIA_VOLUME_LEVEL}])) slot[name=icon] slot:not([name=high]), 
+  :host([${MEDIA_VOLUME_LEVEL}=high]) slot[name=icon] slot:not([name=high]) {
     display: none !important;
   }
 
-  :host([${MEDIA_VOLUME_LEVEL}=off]) slot:not([name=off]):not([name=icon]) {
+  :host([${MEDIA_VOLUME_LEVEL}=off]) slot[name=icon] slot:not([name=off]) {
     display: none !important;
   }
 
-  :host([${MEDIA_VOLUME_LEVEL}=low]) slot:not([name=low]):not([name=icon]) {
+  :host([${MEDIA_VOLUME_LEVEL}=low]) slot[name=icon] slot:not([name=low]) {
     display: none !important;
   }
 
-  :host([${MEDIA_VOLUME_LEVEL}=medium]) slot:not([name=medium]):not([name=icon]) {
+  :host([${MEDIA_VOLUME_LEVEL}=medium]) slot[name=icon] slot:not([name=medium]) {
     display: none !important;
+  }
+
+  :host(:not([${MEDIA_VOLUME_LEVEL}=off])) slot[name=tooltip-unmute],
+  :host([${MEDIA_VOLUME_LEVEL}=off]) slot[name=tooltip-mute] {
+    display: none;
   }
   </style>
 
@@ -46,6 +51,11 @@ slotTemplate.innerHTML = /*html*/ `
     <slot name="medium">${lowIcon}</slot>
     <slot name="high">${highIcon}</slot>
   </slot>
+`;
+
+const tooltipContent = /*html*/ `
+  <slot name="tooltip-mute">${tooltipLabels.MUTE}</slot>
+  <slot name="tooltip-unmute">${tooltipLabels.UNMUTE}</slot>
 `;
 
 const updateAriaLabel = (el: MediaMuteButton) => {
@@ -71,7 +81,7 @@ class MediaMuteButton extends MediaChromeButton {
   }
 
   constructor(options: object = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, tooltipContent, ...options });
   }
 
   connectedCallback(): void {
