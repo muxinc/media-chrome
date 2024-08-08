@@ -1,9 +1,9 @@
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { InvokeEvent } from './utils/events.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
+import { InvokeEvent } from '../utils/events.js';
 import {
   getDocumentOrShadowRoot,
   containsComposedNode,
-} from './utils/element-utils.js';
+} from '../utils/element-utils.js';
 import type MediaChromeMenu from './media-chrome-menu.js';
 
 const template: HTMLTemplateElement = document.createElement('template');

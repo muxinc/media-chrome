@@ -17,6 +17,11 @@ import {
   MediaFullscreenButton,
   MediaPosterImage,
 } from 'media-chrome/react';
+import {
+  MediaPlaybackRateMenu,
+  MediaPlaybackRateMenuButton,
+} from 'media-chrome/react/menu';
+
 import { useState } from 'react';
 
 const chromeStyles = {
@@ -79,6 +84,7 @@ export const Player = () => {
           slot="centered-chrome"
           style={{ '--media-loading-indicator-icon-height': '200px' }}
         ></MediaLoadingIndicator>
+        <MediaPlaybackRateMenu hidden anchor="auto" />
         <MediaControlBar>
           <MediaPlayButton></MediaPlayButton>
           <MediaSeekBackwardButton seekOffset={10}></MediaSeekBackwardButton>
@@ -88,6 +94,7 @@ export const Player = () => {
           <MediaMuteButton></MediaMuteButton>
           <MediaVolumeRange></MediaVolumeRange>
           <MediaPlaybackRateButton></MediaPlaybackRateButton>
+          <MediaPlaybackRateMenuButton></MediaPlaybackRateMenuButton>
           <MediaCaptionsButton></MediaCaptionsButton>
           <MediaAirplayButton></MediaAirplayButton>
           <MediaPipButton></MediaPipButton>
