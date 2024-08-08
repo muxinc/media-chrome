@@ -1,6 +1,6 @@
-import { globalThis } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { parseAudioTrackList } from './utils/utils.js';
+import { globalThis } from '../utils/server-safe-globals.js';
+import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
+import { parseAudioTrackList } from '../utils/utils.js';
 import {
   MediaChromeMenu,
   createMenuItem,
@@ -10,8 +10,8 @@ import {
   getStringAttr,
   setStringAttr,
   getMediaController,
-} from './utils/element-utils.js';
-import { TextTrackLike } from './utils/TextTrackLike.js';
+} from '../utils/element-utils.js';
+import { TextTrackLike } from '../utils/TextTrackLike.js';
 
 /**
  * @extends {MediaChromeMenu}

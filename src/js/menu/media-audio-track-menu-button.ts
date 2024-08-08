@@ -1,12 +1,12 @@
-import { MediaUIAttributes } from './constants.js';
+import { MediaUIAttributes } from '../constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { nouns, tooltipLabels } from './labels/labels.js';
+import { globalThis, document } from '../utils/server-safe-globals.js';
+import { nouns, tooltipLabels } from '../labels/labels.js';
 import {
   getStringAttr,
   setStringAttr,
   getMediaController,
-} from './utils/element-utils.js';
+} from '../utils/element-utils.js';
 
 const audioTrackIcon = /*html*/ `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M11 17H9.5V7H11v10Zm-3-3H6.5v-4H8v4Zm6-5h-1.5v6H14V9Zm3 7h-1.5V8H17v8Z"/>
