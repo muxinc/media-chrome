@@ -29,6 +29,12 @@
       "require": "./dist/cjs/react/index.js",
       "default": "./dist/react/index.js"
     },
+    "./react/menu": {
+      "types": "./dist/react/menu/index.d.ts",
+      "import": "./dist/react/menu/index.js",
+      "require": "./dist/cjs/react/menu/index.js",
+      "default": "./dist/react/menu/index.js"
+    },
     "./react/media-store": {
       "types": "./dist/react/media-store.d.ts",
       "import": "./dist/react/media-store.js",
@@ -71,7 +77,7 @@
     "build:iife:index": "esbuild src/js/index.ts --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome",
     "build:iife:all": "esbuild src/js/all.ts --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome",
     "build:react": "node ./scripts/react/build.js",
-    "postbuild:react": "esbuild dist/react/*.js dist/react/common/*.js --target=es2019 --format=cjs --outdir=dist/cjs/react",
+    "postbuild:react": "esbuild \"dist/react/**/*.js\" --target=es2019 --format=cjs --outdir=dist/cjs/react",
     "build": "run-s build:types build:esm build:cjs build:iife:* build:react",
     "watch": "run-p watch:types watch:build",
     "watch:types": "yarn build:types -w",

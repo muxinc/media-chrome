@@ -22,10 +22,10 @@ const toPascalCase = (kebabText) => {
   return kebabText.replace(/(^\w|-\w)/g, clearAndUpper);
 };
 
-const toImportsStr = ({ importPath }) => {
+const toImportsStr = ({ importPath, utilsBase }) => {
   return `import React from "react";
 import "${importPath}";
-import { toNativeProps } from "./common/utils.js";
+import { toNativeProps } from "${utilsBase}/common/utils.js";
 `;
 };
 
@@ -116,18 +116,21 @@ const entryPointsToReactModulesIterable = (
           const importPathObj = path.parse(importPathAbs);
           // Remove `-element` suffix for React modules
           const name = importPathObj.name.replace(/-element$/, '');
+
+          const relativeDir = path.dirname(path.relative(distRoot, importPathAbs));
+          const distReactRoot = path.join(distRoot, 'react', relativeDir);
+
           const modulePathAbs = path.format({
-            dir: distRoot,
+            dir: distReactRoot,
             name,
             ext: '.js',
           });
           const tsDeclPathAbs = path.format({
-            dir: distRoot,
+            dir: distReactRoot,
             name,
             ext: '.d.ts',
           });
 
-          const importPathRelative = path.relative(distRoot, importPathAbs);
           return import(importPath)
             .then((_) => {
               const customElementNames = getDefinedCustomElements();
@@ -144,8 +147,13 @@ const entryPointsToReactModulesIterable = (
                 }
               );
 
+              fs.mkdirSync(path.dirname(modulePathAbs), { recursive: true });
+
+              const importPathRelative = path.relative(distReactRoot, importPathAbs);
+              const utilsBase = path.dirname(path.relative(importPathAbs, distRoot));
               const moduleStr = `${toImportsStr({
                 importPath: importPathRelative,
+                utilsBase,
               })}\n${componentsWithExports.join('\n')}`;
 
               fs.writeFileSync(modulePathAbs, moduleStr);
@@ -196,9 +204,11 @@ const createReactWrapperModules = async ({
       return;
     }
 
-    fs.mkdirSync(distRoot, { recursive: true });
+    const distReactRoot = path.join(distRoot, 'react');
 
-    const commonModulesDistPath = path.join(distRoot, 'common');
+    fs.mkdirSync(distReactRoot, { recursive: true });
+
+    const commonModulesDistPath = path.join(distReactRoot, 'common');
     fs.mkdirSync(commonModulesDistPath, { recursive: true });
     fs.readdirSync(commonModulesSrcRoot, { withFileTypes: true }).forEach(
       (dirEntryObj) => {
@@ -240,9 +250,10 @@ export { toCustomElementReactWrapperModule };
 
 // EXTERNALIZEABLE/CONFIG CODE BEGIN
 const projectRoot = path.join(__dirname, '..', '..');
-const distRoot = path.join(projectRoot, 'dist', 'react');
+const distRoot = path.join(projectRoot, 'dist');
 const entryPoints = [
   path.join(projectRoot, 'dist', 'index.js'),
+  path.join(projectRoot, 'dist', 'menu', 'index.js'),
   path.join(projectRoot, 'dist', 'media-theme-element.js')
 ];
 const setupGlobalsAsync = async () => {
