@@ -23,6 +23,12 @@
       "require": "./dist/cjs/index.js",
       "default": "./dist/index.js"
     },
+    "./menu": {
+      "types": "./dist/menu/index.d.ts",
+      "import": "./dist/menu/index.js",
+      "require": "./dist/cjs/menu/index.js",
+      "default": "./dist/menu/index.js"
+    },
     "./react": {
       "types": "./dist/react/index.d.ts",
       "import": "./dist/react/index.js",
@@ -42,11 +48,23 @@
       "default": "./dist/react/media-store.js"
     },
     "./dist/react": {
+      "types": "./dist/react/index.d.ts",
       "import": "./dist/react/index.js",
       "require": "./dist/cjs/react/index.js",
       "default": "./dist/react/index.js"
     },
+    "./dist/menu": {
+      "types": "./dist/menu/index.d.ts",
+      "import": "./dist/menu/index.js",
+      "require": "./dist/cjs/menu/index.js",
+      "default": "./dist/menu/index.js"
+    },
     "./dist/cjs/*": "./dist/cjs/*",
+    "./dist/menu/*": {
+      "import": "./dist/menu/*",
+      "require": "./dist/cjs/menu/*",
+      "default": "./dist/menu/*"
+    },
     "./dist/react/*": {
       "import": "./dist/react/*",
       "require": "./dist/cjs/react/*",
