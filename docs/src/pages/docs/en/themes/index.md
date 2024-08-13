@@ -14,6 +14,13 @@ the context.
 Themes provide a great solution for changing the look and feel of your player,
 and wrap your media controls up in a nice and portable package.
 
+> Remember to add the seperate media-theme-element module for the theme component.
+
+```js
+import "media-chrome";
+import "media-chrome/media-theme-element";
+```
+
 ## Basics
 
 Themes are created primarily with HTML + CSS and its contents are defined in a 
