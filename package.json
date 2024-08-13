@@ -74,6 +74,17 @@
       "import": "./dist/*",
       "require": "./dist/cjs/*",
       "default": "./dist/*"
+    },
+    "./*.js": {
+      "import": "./dist/*.js",
+      "require": "./dist/cjs/*.js",
+      "default": "./dist/*.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js",
+      "require": "./dist/cjs/*.js",
+      "default": "./dist/*.js"
     }
   },
   "customElements": "dist/custom-elements.json",
