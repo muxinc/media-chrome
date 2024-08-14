@@ -38,7 +38,7 @@ You can find the [documentation for v0.x of media-chrome here.](https://v0.media
 ### Video Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@3/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
 
 <media-controller>
   <video
@@ -73,7 +73,7 @@ You can find the [documentation for v0.x of media-chrome here.](https://v0.media
 ### Audio Example
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@3/+esm"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
 
 <media-controller audio>
   <audio
