@@ -26,7 +26,7 @@ Here's a high level overview:
 - `media-chrome-listbox`, `media-chrome-option`, `media-chrome-selectmenu` and variants for captions, playback rate, rendition and audio tracks are now deprecated. Instead you can use the new menu components.
 
 **Menu components moved to separate import**
-- The menu components that were included by default in v3 are now moved to a separate import. This gives you more granular control and can save some extra weight in the final JS bundle if you don't need these components. You can import them from `media-chrome/dist/menu/index.js`.
+- The menu components that were included by default in v3 are now moved to a separate import. This gives you more granular control and can save some extra weight in the final JS bundle if you don't need these components. You can import them from `media-chrome/menu`.
 
 
 ### Example of HTML changes
@@ -106,7 +106,7 @@ Here's a high level overview:
 
 ```html
   <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/dist/menu/index.js/+esm"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/menu/+esm"></script>
 
   <media-controller>
     <mux-video
