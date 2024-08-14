@@ -1,3 +1,19 @@
+# [4.0.0](https://github.com/muxinc/media-chrome/compare/v3.2.5...v4.0.0) (2024-08-14)
+
+
+### Bug Fixes
+
+* .ts files in dist + CE analyzer bug ([#936](https://github.com/muxinc/media-chrome/issues/936)) ([c3d2441](https://github.com/muxinc/media-chrome/commit/c3d2441092c5f2f00e66df95a76785ecdf18431d))
+* add menu, dist/menu, module wildcard exports ([#955](https://github.com/muxinc/media-chrome/issues/955)) ([ea406e1](https://github.com/muxinc/media-chrome/commit/ea406e1b200184e174af0120b11d063304ae2b2e))
+* add small TS fixes + improvements ([#943](https://github.com/muxinc/media-chrome/issues/943)) ([bc80ab9](https://github.com/muxinc/media-chrome/commit/bc80ab9796a0fe77151cb3fbe8f30ece521c43c7))
+
+
+### Features
+
+* convert JS files to typescript ([#931](https://github.com/muxinc/media-chrome/issues/931)) ([101a4b1](https://github.com/muxinc/media-chrome/commit/101a4b186c4fdcfa74aef7407b256b1ddabd969f))
+
+
+
 ## [3.2.5](https://github.com/muxinc/media-chrome/compare/v3.2.4...v3.2.5) (2024-07-25)
 
 
