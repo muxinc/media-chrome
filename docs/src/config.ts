@@ -121,6 +121,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Migrating to 1.0', link: 'docs/en/migration/from-0.x-to-1.0' },
       { text: 'Migrating to 2.0', link: 'docs/en/migration/from-1.x-to-2.0' },
       { text: 'Migrating to 3.0', link: 'docs/en/migration/from-2.x-to-3.0' },
+      { text: 'Migrating to 4.0', link: 'docs/en/migration/from-3.x-to-4.0' },
       { text: 'Showcase', link: 'docs/en/showcase' },
     ],
   },
