@@ -95,46 +95,47 @@ export function getStaticPaths({ paginate }: GetStaticPathsOptions) {
         sourcePath: 'examples/vanilla/control-elements/media-playback-rate-menu.html',
       }
     },
-    {
-      params: { example: 'tailwind-audio-theme' },
-      props: {
-        title: 'Tailwind Audio Theme',
-        group: 'Themes',
-        sourcePath: 'examples/vanilla/themes/tailwind-audio-theme.html',
-      }
-    },
-    {
-      params: { example: 'minimal-theme' },
-      props: {
-        title: 'Minimal Theme',
-        group: 'Themes',
-        sourcePath: 'examples/vanilla/themes/minimal-theme.html',
-      }
-    },
-    {
-      params: { example: 'microvideo-theme' },
-      props: {
-        title: 'Microvideo Theme',
-        group: 'Themes',
-        sourcePath: 'examples/vanilla/themes/microvideo-theme.html',
-      }
-    },
-    {
-      params: { example: 'demuxed-2022-theme' },
-      props: {
-        title: 'Demuxed 2022 Theme',
-        group: 'Themes',
-        sourcePath: 'examples/vanilla/themes/demuxed-2022-theme.html',
-      }
-    },
-    {
-      params: { example: 'youtube-theme' },
-      props: {
-        title: 'Youtube Theme',
-        group: 'Themes',
-        sourcePath: 'examples/vanilla/themes/youtube-theme.html',
-      }
-    },
+    // Remove themes from examples. todo: fix `media-chrome` dependency.
+    // {
+    //   params: { example: 'tailwind-audio-theme' },
+    //   props: {
+    //     title: 'Tailwind Audio Theme',
+    //     group: 'Themes',
+    //     sourcePath: 'examples/vanilla/themes/tailwind-audio-theme.html',
+    //   }
+    // },
+    // {
+    //   params: { example: 'minimal-theme' },
+    //   props: {
+    //     title: 'Minimal Theme',
+    //     group: 'Themes',
+    //     sourcePath: 'examples/vanilla/themes/minimal-theme.html',
+    //   }
+    // },
+    // {
+    //   params: { example: 'microvideo-theme' },
+    //   props: {
+    //     title: 'Microvideo Theme',
+    //     group: 'Themes',
+    //     sourcePath: 'examples/vanilla/themes/microvideo-theme.html',
+    //   }
+    // },
+    // {
+    //   params: { example: 'demuxed-2022-theme' },
+    //   props: {
+    //     title: 'Demuxed 2022 Theme',
+    //     group: 'Themes',
+    //     sourcePath: 'examples/vanilla/themes/demuxed-2022-theme.html',
+    //   }
+    // },
+    // {
+    //   params: { example: 'youtube-theme' },
+    //   props: {
+    //     title: 'Youtube Theme',
+    //     group: 'Themes',
+    //     sourcePath: 'examples/vanilla/themes/youtube-theme.html',
+    //   }
+    // },
   ]
 }
 
