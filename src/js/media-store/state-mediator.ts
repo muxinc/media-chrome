@@ -84,6 +84,7 @@ export type StateOption = {
   defaultStreamType?: StreamTypes;
   defaultDuration?: number;
   liveEdgeOffset?: number;
+  seekToLiveOffset?: number;
   noVolumePref?: boolean;
   noSubtitlesLangPref?: boolean;
 };

@@ -135,9 +135,12 @@ export const requestMap: RequestMap = {
       const notDvr = !(
         stateMediator.mediaTargetLiveWindow.get(stateOwners) > 0
       );
-      const liveEdgeTime = stateMediator.mediaSeekable.get(stateOwners)?.[1];
+      const seekableEnd = stateMediator.mediaSeekable.get(stateOwners)?.[1];
+
       // Only seek to live if we are live, not DVR, and have a known seekable end
-      if (notDvr && liveEdgeTime) {
+      if (notDvr && seekableEnd) {
+        const seekToLiveOffset = stateOwners.options?.seekToLiveOffset ?? 0;
+        const liveEdgeTime = seekableEnd - seekToLiveOffset;
         stateMediator.mediaCurrentTime.set(liveEdgeTime, stateOwners);
       }
     }
@@ -186,9 +189,11 @@ export const requestMap: RequestMap = {
     // This is an example of a specialized state change request "action" that doesn't need a specialized
     // state facade model
     const key = 'mediaCurrentTime';
-    const value = stateMediator.mediaSeekable.get(stateOwners)?.[1];
+    const seekableEnd = stateMediator.mediaSeekable.get(stateOwners)?.[1];
     // If we don't have a known seekable end (which represents the live edge), bail early
-    if (!Number.isNaN(Number(value))) return;
+    if (!Number.isNaN(Number(seekableEnd))) return;
+    const seekToLiveOffset = stateOwners.options?.seekToLiveOffset ?? 0;
+    const value = seekableEnd - seekToLiveOffset;
     stateMediator[key].set(value, stateOwners);
   },
   // Text Tracks state change requests
