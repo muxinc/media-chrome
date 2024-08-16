@@ -205,6 +205,27 @@ See also:
 </media-controller>
 ```
 
+### seektoliveoffset
+
+`seektoliveoffset` (positive number, seconds)
+
+For live media streams the `seektoliveoffset` defines the delta, in seconds, from the latest playable/seekable time that should count as the target time when seeking to live. 
+
+By default, this value is equal to the value of `liveedgeoffset` attribute. The `<media-live-button>` element uses this to seek to the live edge. This value is also used when user unpauses a live stream, if `noaautoseektolive` attribute is not specified.
+
+One may want to use this attribute with a value lower than `liveedgeoffset` to prevent `<media-live-button>` indicator flickering after the seek to live request.
+
+See also:
+- [liveedgeoffset attribute](#liveedgeoffset)
+- [noautoseektolive attribute](#noautoseektolive)
+- [mediastreamtype description](../stream-type)
+
+```html
+<media-controller liveedgeoffset="10" seektoliveoffset="7">
+  ...
+</media-controller>
+```
+
 ### noautoseektolive
 
 `noautoseektolive` (boolean)
