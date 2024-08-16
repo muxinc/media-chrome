@@ -1,3 +1,17 @@
+# [4.1.0](https://github.com/muxinc/media-chrome/compare/v4.0.0...v4.1.0) (2024-08-16)
+
+
+### Bug Fixes
+
+* theme render flicker (breakpoints) ([#960](https://github.com/muxinc/media-chrome/issues/960)) ([63fa896](https://github.com/muxinc/media-chrome/commit/63fa896ce2f52c018f6feb6069f79c411c56d4f8))
+
+
+### Features
+
+* remove example themes ([#961](https://github.com/muxinc/media-chrome/issues/961)) ([5ba6489](https://github.com/muxinc/media-chrome/commit/5ba6489f6f2219f43d65e62cb03bbb98d1f832ce))
+
+
+
 # [4.0.0](https://github.com/muxinc/media-chrome/compare/v3.2.5...v4.0.0) (2024-08-14)
 
 
