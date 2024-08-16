@@ -28,6 +28,8 @@ Here's a high level overview:
 **Menu components moved to separate import**
 - The menu components that were included by default in v3 are now moved to a separate import. This gives you more granular control and can save some extra weight in the final JS bundle if you don't need these components. You can import them from `media-chrome/menu`.
 
+**Example themes are removed from the package**
+- The example themes are removed from the package (dist/themes/\*), but not to worry, most themes will live on in https://player.style!
 
 ### Example of HTML changes
 
