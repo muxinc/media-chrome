@@ -5,7 +5,11 @@ import {
   TextTrackKinds,
 } from '../constants.js';
 import { containsComposedNode } from '../utils/element-utils.js';
-import { enterFullscreen, exitFullscreen, isFullscreen } from '../utils/fullscreen-api.js';
+import {
+  enterFullscreen,
+  exitFullscreen,
+  isFullscreen,
+} from '../utils/fullscreen-api.js';
 import {
   airplaySupported,
   castSupported,
@@ -85,6 +89,7 @@ export type StateOption = {
   defaultDuration?: number;
   liveEdgeOffset?: number;
   seekToLiveOffset?: number;
+  noAutoSeekToLive?: boolean;
   noVolumePref?: boolean;
   noSubtitlesLangPref?: boolean;
 };
@@ -884,7 +889,11 @@ export const stateMediator: StateMediator = {
     // older Safari version may require webkit-specific events
     rootEvents: ['fullscreenchange', 'webkitfullscreenchange'],
     // iOS requires webkit-specific events on the video.
-    mediaEvents: ['webkitbeginfullscreen', 'webkitendfullscreen', 'webkitpresentationmodechanged']
+    mediaEvents: [
+      'webkitbeginfullscreen',
+      'webkitendfullscreen',
+      'webkitpresentationmodechanged',
+    ],
   },
   mediaIsCasting: {
     // Note this relies on a customized castable-video element.

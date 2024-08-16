@@ -128,17 +128,16 @@ export const requestMap: RequestMap = {
     const key = 'mediaPaused';
     const value = false;
 
-    const live =
+    const isLive =
       stateMediator.mediaStreamType.get(stateOwners) === StreamTypes.LIVE;
+    const canAutoSeekToLive = !stateOwners.options?.noAutoSeekToLive;
+    const isDVR = stateMediator.mediaTargetLiveWindow.get(stateOwners) > 0;
 
-    if (live) {
-      const notDvr = !(
-        stateMediator.mediaTargetLiveWindow.get(stateOwners) > 0
-      );
+    if (isLive && canAutoSeekToLive && !isDVR) {
       const seekableEnd = stateMediator.mediaSeekable.get(stateOwners)?.[1];
 
       // Only seek to live if we are live, not DVR, and have a known seekable end
-      if (notDvr && seekableEnd) {
+      if (seekableEnd) {
         const seekToLiveOffset = stateOwners.options?.seekToLiveOffset ?? 0;
         const liveEdgeTime = seekableEnd - seekToLiveOffset;
         stateMediator.mediaCurrentTime.set(liveEdgeTime, stateOwners);
@@ -190,8 +189,10 @@ export const requestMap: RequestMap = {
     // state facade model
     const key = 'mediaCurrentTime';
     const seekableEnd = stateMediator.mediaSeekable.get(stateOwners)?.[1];
+
     // If we don't have a known seekable end (which represents the live edge), bail early
     if (!Number.isNaN(Number(seekableEnd))) return;
+
     const seekToLiveOffset = stateOwners.options?.seekToLiveOffset ?? 0;
     const value = seekableEnd - seekToLiveOffset;
     stateMediator[key].set(value, stateOwners);
