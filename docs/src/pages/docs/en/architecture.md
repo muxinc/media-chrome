@@ -4,11 +4,11 @@ description: Architecture
 layout: ../../../layouts/MainLayout.astro
 ---
 
-Any control element can _send_ user input to the [`MediaController`](https://github.com/muxinc/media-chrome/blob/main/src/js/media-controller.js#L33) and _receive_ media state from the `MediaController`.
+Any control element can _send_ user input to the [`MediaController`](https://github.com/muxinc/media-chrome/blob/main/src/js/media-controller.ts#L63) and _receive_ media state from the `MediaController`.
 
 ### Sending
 
-The `MediaController` receives user input via [`MediaUIEvents`](https://github.com/muxinc/media-chrome/blob/main/src/js/constants.js#L1) like `MediaUIEvents.MEDIA_PLAY_REQUEST` or `MediaUIEvents.MEDIA_SEEK_REQUEST`. The `MediaController` may receive these events in one of two ways:
+The `MediaController` receives user input via [`MediaUIEvents`](https://github.com/muxinc/media-chrome/blob/main/src/js/constants.ts#L1) like `MediaUIEvents.MEDIA_PLAY_REQUEST` or `MediaUIEvents.MEDIA_SEEK_REQUEST`. The `MediaController` may receive these events in one of two ways:
 
 - From a control element that is nested under the `<media-controller>` element (see [diagram 1](#1-by-media-controller-nesting)).
   The DOM element that will receive bubbling up events from the control element is the `<media-controller>` element, it's also called an **associated element** in the codebase.
@@ -27,7 +27,7 @@ The `MediaController` receives user input via [`MediaUIEvents`](https://github.c
   Now the DOM events are received by the **associated element** and passed through to the `MediaController`.
 
   All Media Chrome elements support the `mediacontroller` attribute and can be made an **associated element**.
-  Simple HTML elements can be made associated elements but require some [JavaScript](https://github.com/muxinc/media-chrome/blob/main/src/js/media-control-bar.js#L60-L64) to get this to work.
+  Simple HTML elements can be made associated elements but require some [JavaScript](https://github.com/muxinc/media-chrome/blob/main/src/js/media-control-bar.ts#L69-L72) to get this to work.
 
 ### Receiving
 
@@ -35,7 +35,7 @@ The `MediaController` propagates media state by setting `MediaUIAttributes` on o
 
 Any **associated element** or any of its descendants can receive media state from the `MediaController`, as long as the elements are identifiable as something that should receive media state (aka identifiable as a **media state receiver**). Elements are identified as media state receivers in one of two ways:
 
-- The native Media Chrome web components will have this built in and they do this by having the [`MediaUIAttributes`](https://github.com/muxinc/media-chrome/blob/main/src/js/constants.js#L24) listed in the web component `observedAttributes` array.
+- The native Media Chrome web components will have this built in and they do this by having the [`MediaUIAttributes`](https://github.com/muxinc/media-chrome/blob/main/src/js/constants.ts#L95) listed in the web component `observedAttributes` array.
 
   ```js
   class MediaPlayButton extends MediaChromeButton {
