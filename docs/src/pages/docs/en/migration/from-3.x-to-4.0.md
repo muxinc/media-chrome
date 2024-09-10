@@ -81,6 +81,55 @@ Here's a high level overview:
   </media-controller>
 ```
 
+### Deprecated experimental selectmenu related components
+
+This example shows changes to `media-rendition-selectmenu`, but the same general structural changes apply to all of the following:
+
+- `<media-rendition-selectmenu>`
+- `<media-audio-track-selectmenu>`
+- `<media-captions-selectmenu>`
+- `<media-playback-rate-selectmenu>`
+
+**Before**
+
+```html
+  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@3/+esm"></script>
+
+  <media-controller>
+    <mux-video
+      slot="media"
+      src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
+    ></mux-video>
+    <media-control-bar>
+      <media-rendition-selectmenu>
+        <media-rendition-button slot="button"></media-rendition-button>
+        <media-rendition-listbox slot="listbox"></media-rendition-listbox>
+      </media-rendition-selectmenu>
+    </media-control-bar>
+  </media-controller>
+```
+
+**After**
+
+The menu and button are seperate components, as opposed to being nested. `anchor="auto"` indicates that it should automatically find and attach itself to the seperated menu component.
+
+```html
+  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/menu/+esm"></script>
+
+  <media-controller>
+    <mux-video
+      slot="media"
+      src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
+    ></mux-video>
+    <media-rendition-menu anchor="auto" hidden></media-rendition-menu>
+    <media-control-bar>
+      <media-rendition-menu-button></media-rendition-menu-button>
+    </media-control-bar>
+  </media-controller>
+```
+
+
 #### Menu components moved to separate import
 
 **Before**
