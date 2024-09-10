@@ -28,6 +28,10 @@ template.innerHTML = /*html*/ `
     ::slotted(media-clip-selector) {
       flex-grow: 1;
     }
+
+    ::slotted([role="menu"]) {
+      position: absolute;
+    }
   </style>
 
   <slot></slot>
