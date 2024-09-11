@@ -307,8 +307,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #mediaController: MediaController | null = null;
   #previouslyFocused: HTMLElement | null = null;
   #invokerElement: HTMLElement | null = null;
-  #keysSoFar = '';
-  #clearKeysTimeout: number | null = null;
   #previousItems = new Set<MediaChromeMenuItem>();
   #mutationObserver: MutationObserver;
   #isPopover = false;
