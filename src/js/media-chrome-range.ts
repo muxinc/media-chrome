@@ -326,7 +326,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   container: HTMLElement;
-  range: any;
+  range: HTMLInputElement;
   appearance: HTMLElement;
 
   constructor() {

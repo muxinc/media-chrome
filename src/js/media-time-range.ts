@@ -5,6 +5,7 @@ import './media-preview-time-display.js';
 import './media-preview-chapter-display.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { nouns } from './labels/labels.js';
+import { isValidNumber } from './utils/utils.js';
 import { formatAsTimePhrase } from './utils/time.js';
 import { isElementVisible } from './utils/element-utils.js';
 import { RangeAnimation } from './utils/range-animation.js';
@@ -512,7 +513,10 @@ class MediaTimeRange extends MediaChromeRange {
   #updateRange = (value: number): void => {
     if (this.dragging) return;
 
-    this.range.valueAsNumber = value;
+    if (isValidNumber(value)) {
+      this.range.valueAsNumber = value;
+    }
+
     this.updateBar();
   };
 
