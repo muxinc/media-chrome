@@ -126,6 +126,13 @@ class MediaRenditionMenu extends MediaChromeMenu {
       (a: any, b: any) => b.height - a.height
     );
 
+    for (const rendition of renditionList) {
+      // `selected` is not serialized in the rendition list because
+      // each selection would cause a re-render of the menu.
+      // @ts-ignore
+      rendition.selected = rendition.id === this.mediaRenditionSelected;
+    }
+
     this.defaultSlot.textContent = '';
 
     const isAuto = !this.mediaRenditionSelected;
