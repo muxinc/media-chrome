@@ -193,6 +193,8 @@ export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
  *
  */
 export type StateMediator = {
+  mediaWidth: ReadonlyFacadeProp<number>;
+  mediaHeight: ReadonlyFacadeProp<number>;
   mediaPaused: FacadeProp<HTMLMediaElement['paused']>;
   mediaHasPlayed: ReadonlyFacadeProp<boolean>;
   mediaEnded: ReadonlyFacadeProp<HTMLMediaElement['ended']>;
@@ -281,6 +283,20 @@ export const prepareStateOwners = async (
 };
 
 export const stateMediator: StateMediator = {
+  mediaWidth: {
+    get(stateOwners) {
+      const { media } = stateOwners;
+      return media?.videoWidth ?? 0;
+    },
+    mediaEvents: ['resize'],
+  },
+  mediaHeight: {
+    get(stateOwners) {
+      const { media } = stateOwners;
+      return media?.videoHeight ?? 0;
+    },
+    mediaEvents: ['resize'],
+  },
   mediaPaused: {
     get(stateOwners) {
       const { media } = stateOwners;

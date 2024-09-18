@@ -398,7 +398,8 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     const descriptionSlot = this.shadowRoot.querySelector(
       'slot[name="description"]'
     );
-    const description = this.submenuElement.checkedItems?.[0]?.text;
+    const checkedItem = this.submenuElement.checkedItems?.[0];
+    const description = checkedItem?.dataset.description ?? checkedItem?.text;
 
     const span = document.createElement('span');
     span.textContent = description ?? '';

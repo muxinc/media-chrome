@@ -42,6 +42,8 @@ export const MediaUIProps = {
   MEDIA_CAST_UNAVAILABLE: 'mediaCastUnavailable',
   MEDIA_RENDITION_UNAVAILABLE: 'mediaRenditionUnavailable',
   MEDIA_AUDIO_TRACK_UNAVAILABLE: 'mediaAudioTrackUnavailable',
+  MEDIA_WIDTH: 'mediaWidth',
+  MEDIA_HEIGHT: 'mediaHeight',
   MEDIA_PAUSED: 'mediaPaused',
   MEDIA_HAS_PLAYED: 'mediaHasPlayed',
   MEDIA_ENDED: 'mediaEnded',
