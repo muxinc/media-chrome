@@ -51,6 +51,7 @@ export const Attributes = {
   HOTKEYS: 'hotkeys',
   KEYS_USED: 'keysused',
   LIVE_EDGE_OFFSET: 'liveedgeoffset',
+  SEEK_TO_LIVE_OFFSET: 'seektoliveoffset',
   NO_AUTO_SEEK_TO_LIVE: 'noautoseektolive',
   NO_HOTKEYS: 'nohotkeys',
   NO_VOLUME_PREF: 'novolumepref',
@@ -72,6 +73,7 @@ export const Attributes = {
  * @attr {string} hotkeys
  * @attr {string} keysused
  * @attr {string} liveedgeoffset
+ * @attr {string} seektoliveoffset
  * @attr {boolean} noautoseektolive
  * @attr {boolean} novolumepref
  * @attr {boolean} nosubtitleslangpref
@@ -144,6 +146,12 @@ class MediaController extends MediaContainer {
         liveEdgeOffset: this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)
           ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
           : undefined,
+        seekToLiveOffset: this.hasAttribute(Attributes.SEEK_TO_LIVE_OFFSET)
+          ? +this.getAttribute(Attributes.SEEK_TO_LIVE_OFFSET)
+          : this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)
+          ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
+          : undefined,
+        noAutoSeekToLive: this.hasAttribute(Attributes.NO_AUTO_SEEK_TO_LIVE),
         // NOTE: This wasn't updated if it was changed later. Should it be? (CJP)
         noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
         noSubtitlesLangPref: this.hasAttribute(
@@ -235,6 +243,25 @@ class MediaController extends MediaContainer {
           liveEdgeOffset: this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)
             ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
             : undefined,
+          seekToLiveOffset: !this.hasAttribute(Attributes.SEEK_TO_LIVE_OFFSET)
+            ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
+            : undefined,
+        },
+      });
+    } else if (attrName === Attributes.SEEK_TO_LIVE_OFFSET) {
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          seekToLiveOffset: this.hasAttribute(Attributes.SEEK_TO_LIVE_OFFSET)
+            ? +this.getAttribute(Attributes.SEEK_TO_LIVE_OFFSET)
+            : undefined,
+        },
+      });
+    } else if (attrName === Attributes.NO_AUTO_SEEK_TO_LIVE) {
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          noAutoSeekToLive: this.hasAttribute(Attributes.NO_AUTO_SEEK_TO_LIVE),
         },
       });
     } else if (attrName === Attributes.FULLSCREEN_ELEMENT) {
