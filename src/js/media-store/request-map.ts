@@ -188,7 +188,7 @@ export const requestMap: RequestMap = {
     const key = 'mediaCurrentTime';
     const value = stateMediator.mediaSeekable.get(stateOwners)?.[1];
     // If we don't have a known seekable end (which represents the live edge), bail early
-    if (!Number.isNaN(Number(value))) return;
+    if (Number.isNaN(Number(value))) return;
     stateMediator[key].set(value, stateOwners);
   },
   // Text Tracks state change requests
