@@ -44,6 +44,9 @@ template.innerHTML = /*html*/ `
       position: relative;
       display: inline-block;
       line-height: 0;
+    }
+
+    :host(:not([${Attributes.AUDIO}])) {
       background-color: var(--media-background-color, #000);
     }
 
