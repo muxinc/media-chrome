@@ -6,6 +6,8 @@ import {
   getStringAttr,
   setStringAttr,
   getMediaController,
+  getNumericAttr,
+  setNumericAttr,
 } from '../utils/element-utils.js';
 
 const renditionIcon = /*html*/ `<svg aria-hidden="true" viewBox="0 0 24 24">
@@ -34,6 +36,7 @@ class MediaRenditionMenuButton extends MediaChromeMenuButton {
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_RENDITION_SELECTED,
       MediaUIAttributes.MEDIA_RENDITION_UNAVAILABLE,
+      MediaUIAttributes.MEDIA_HEIGHT,
     ];
   }
 
@@ -63,6 +66,14 @@ class MediaRenditionMenuButton extends MediaChromeMenuButton {
 
   set mediaRenditionSelected(id: string) {
     setStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
+  }
+
+  get mediaHeight(): number {
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_HEIGHT);
+  }
+
+  set mediaHeight(height: number) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_HEIGHT, height);
   }
 }
 

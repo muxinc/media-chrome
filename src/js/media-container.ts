@@ -296,6 +296,8 @@ class MediaContainer extends globalThis.HTMLElement {
               MediaUIAttributes.MEDIA_RENDITION_LIST,
               MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST,
               MediaUIAttributes.MEDIA_CHAPTERS_CUES,
+              MediaUIAttributes.MEDIA_WIDTH,
+              MediaUIAttributes.MEDIA_HEIGHT,
             ].includes(name as any)
         )
     );
