@@ -1,4 +1,4 @@
-import MediaTextDisplay from './media-text-display.js';
+import { MediaTextDisplay } from './media-text-display.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
 import { getStringAttr, setStringAttr } from './utils/element-utils.js';
