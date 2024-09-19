@@ -1,3 +1,16 @@
+## [4.1.1](https://github.com/muxinc/media-chrome/compare/v4.1.0...v4.1.1) (2024-09-19)
+
+
+### Bug Fixes
+
+* CJS issue with default & named import ([#972](https://github.com/muxinc/media-chrome/issues/972)) ([5eea616](https://github.com/muxinc/media-chrome/commit/5eea616964749e35d006fa218fef595acff69919)), closes [#886](https://github.com/muxinc/media-chrome/issues/886)
+* NaN valueAsNumber Safari error ([#967](https://github.com/muxinc/media-chrome/issues/967)) ([3906cca](https://github.com/muxinc/media-chrome/commit/3906ccaf53fad1a8c82eb456cb27ff77acba5c4e)), closes [#947](https://github.com/muxinc/media-chrome/issues/947)
+* position menu absolute in control bar ([#966](https://github.com/muxinc/media-chrome/issues/966)) ([3dbd3ff](https://github.com/muxinc/media-chrome/commit/3dbd3ffdc53ca655571e9a1039a08686e5d5e57d))
+* seek to live action ([#973](https://github.com/muxinc/media-chrome/issues/973)) ([40c546b](https://github.com/muxinc/media-chrome/commit/40c546b5c84e0f7ed7ea979e3fe67a8ee4ca2579))
+* show current playing quality in settings ([#970](https://github.com/muxinc/media-chrome/issues/970)) ([92b6bd6](https://github.com/muxinc/media-chrome/commit/92b6bd6e93cfbcfcd06e24dc5507c37acd6b1491)), closes [#877](https://github.com/muxinc/media-chrome/issues/877)
+
+
+
 # [4.1.0](https://github.com/muxinc/media-chrome/compare/v4.0.0...v4.1.0) (2024-08-16)
 
 
