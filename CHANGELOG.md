@@ -1,3 +1,12 @@
+## [4.1.3](https://github.com/muxinc/media-chrome/compare/v4.1.2...v4.1.3) (2024-09-24)
+
+
+### Bug Fixes
+
+* Safari (webkit) style tag styles not applied ([#982](https://github.com/muxinc/media-chrome/issues/982)) ([980b1af](https://github.com/muxinc/media-chrome/commit/980b1af0ba23c968b74df1895b286e79dc3a3cd1))
+
+
+
 ## [4.1.2](https://github.com/muxinc/media-chrome/compare/v4.1.1...v4.1.2) (2024-09-24)
 
 
