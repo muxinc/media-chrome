@@ -215,7 +215,7 @@ export function getCSSRule(
 ): CSSStyleRule | undefined {
   let style;
 
-  for (style of styleParent.querySelectorAll('style')) {
+  for (style of styleParent.querySelectorAll('style:not([media])') ?? []) {
     // Catch this error. e.g. browser extension adds style tags.
     //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
     //   Not allowed to access cross-origin stylesheet
@@ -240,7 +240,7 @@ export function insertCSSRule(
   styleParent: Element | ShadowRoot,
   selectorText: string
 ): CSSStyleRule | undefined {
-  const styles = styleParent.querySelectorAll('style') ?? [];
+  const styles = styleParent.querySelectorAll('style:not([media])') ?? [];
   const style = styles?.[styles.length - 1];
 
   // If there is no style sheet return an empty style rule.

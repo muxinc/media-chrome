@@ -641,7 +641,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     const realBottom = isBottomCalc ? bottom : parseFloat(computedStyle.bottom);
     const maxHeight = boundsRect.height - realBottom - parseFloat(computedStyle.marginBottom);
 
-    style.setProperty('--_menu-max-height', `${maxHeight}px`);
+    // Safari required directly setting the element style property instead of
+    // updating the style node for the styles to be refreshed.
+    this.style.setProperty('--_menu-max-height', `${maxHeight}px`);
   }
 
   /**
