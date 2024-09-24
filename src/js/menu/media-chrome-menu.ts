@@ -649,12 +649,10 @@ class MediaChromeMenu extends globalThis.HTMLElement {
    * @param  {boolean} animate
    */
   #resizeMenu(animate: boolean) {
-    /** @type {MediaChromeMenuItem} */
     const expandedMenuItem = this.querySelector(
       '[role="menuitem"][aria-haspopup][aria-expanded="true"]'
     ) as MediaChromeMenuItem;
 
-    /** @type {MediaChromeMenu} */
     const expandedSubmenu = expandedMenuItem?.querySelector(
       '[role="menu"]'
     ) as MediaChromeMenu;
@@ -698,8 +696,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
 
     // If there are no menu items, focus on the first focusable child.
-
-    /** @type {HTMLElement} */
     const focusable = this.querySelector(
       '[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]'
     ) as HTMLElement;
@@ -725,7 +721,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   get #backButtonElement() {
-    /** @type {HTMLSlotElement} */
     const headerSlot = this.shadowRoot.querySelector(
       'slot[name="header"]'
     ) as HTMLSlotElement;
@@ -762,7 +757,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     this.#checkSubmenuHasExpanded();
 
-    /** @type {MediaChromeMenuItem[]} */
     const menuItemsWithSubmenu = Array.from(
       this.querySelectorAll('[role="menuitem"][aria-haspopup]')
     ) as MediaChromeMenuItem[];
