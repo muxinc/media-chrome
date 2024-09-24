@@ -1,3 +1,12 @@
+## [4.1.2](https://github.com/muxinc/media-chrome/compare/v4.1.1...v4.1.2) (2024-09-24)
+
+
+### Bug Fixes
+
+* menu Safari bug and top overflow bug ([#981](https://github.com/muxinc/media-chrome/issues/981)) ([33c66db](https://github.com/muxinc/media-chrome/commit/33c66db5ffde314aac37daa4093e56740cf0e5cc)), closes [#980](https://github.com/muxinc/media-chrome/issues/980)
+
+
+
 ## [4.1.1](https://github.com/muxinc/media-chrome/compare/v4.1.0...v4.1.1) (2024-09-19)
 
 
