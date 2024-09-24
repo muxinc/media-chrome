@@ -7,7 +7,7 @@ import {
   getActiveElement,
   containsComposedNode,
   closestComposedNode,
-  getOrInsertCSSRule,
+  insertCSSRule,
   getMediaController,
   getAttributeMediaController,
   getDocumentOrShadowRoot,
@@ -311,6 +311,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #previousItems = new Set<MediaChromeMenuItem>();
   #mutationObserver: MutationObserver;
   #isPopover = false;
+  #cssRule: CSSStyleRule | null = null;
 
   nativeEl: HTMLElement;
   container: HTMLElement;
@@ -380,6 +381,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   connectedCallback(): void {
+    this.#cssRule = insertCSSRule(this.shadowRoot, ':host');
+
     this.#updateLayoutStyle();
 
     if (!this.hasAttribute('disabled')) {
@@ -626,8 +629,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     const right = boundsRect.width - x - menuWidth;
     const bottom = boundsRect.height - y - this.offsetHeight;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-
+    const { style } = this.#cssRule;
     style.setProperty('position', 'absolute');
     style.setProperty('right', `${Math.max(0, right)}px`);
     style.setProperty('--_menu-bottom', `${bottom}px`);
@@ -639,9 +641,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     const realBottom = isBottomCalc ? bottom : parseFloat(computedStyle.bottom);
     const maxHeight = boundsRect.height - realBottom - parseFloat(computedStyle.marginBottom);
 
-    // Safari required setting something directly on the element style property
-    // instead of updating the style node for getting all the styles to take effect.
-    this.style.setProperty('--_menu-max-height', `${maxHeight}px`);
+    style.setProperty('--_menu-max-height', `${maxHeight}px`);
   }
 
   /**
@@ -657,7 +657,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       '[role="menu"]'
     ) as MediaChromeMenu;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    const { style } = this.#cssRule;
 
     if (!animate) {
       style.setProperty('--media-menu-transition-in', 'none');
