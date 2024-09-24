@@ -251,9 +251,12 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   render(): void {
     this.renderer?.update(this.props);
 
-    const { style } = getOrInsertCSSRule(this.renderRoot, ':host');
-    if (style.visibility === 'hidden') {
-      style.removeProperty('visibility');
+    // The style tag must be connected to the DOM before it has a sheet.
+    if (this.renderRoot.isConnected) {
+      const { style } = getOrInsertCSSRule(this.renderRoot, ':host');
+      if (style.visibility === 'hidden') {
+        style.removeProperty('visibility');
+      }
     }
   }
 }
