@@ -130,32 +130,22 @@ template.innerHTML = /*html*/ `
       will-change: transform;
     }
 
-    #background,
     #track {
-      border-radius: var(--media-range-track-border-radius, 1px);
-      position: absolute;
-      width: 100%;
-      height: 100%;
-    }
-
-    #background {
       background: var(--media-range-track-background, rgb(255 255 255 / .2));
-      backdrop-filter: var(--media-range-track-background-backdrop-filter);
-      -webkit-backdrop-filter: var(--media-range-track-background-backdrop-filter);
-    }
-
-    #track {
+      border-radius: var(--media-range-track-border-radius, 1px);
       border: var(--media-range-track-border, none);
       outline: var(--media-range-track-outline);
       outline-offset: var(--media-range-track-outline-offset);
       backdrop-filter: var(--media-range-track-backdrop-filter);
       -webkit-backdrop-filter: var(--media-range-track-backdrop-filter);
       box-shadow: var(--media-range-track-box-shadow, none);
+      position: absolute;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
     }
 
     #progress,
-    #highlight,
     #pointer {
       position: absolute;
       height: 100%;
@@ -207,7 +197,6 @@ template.innerHTML = /*html*/ `
       height: var(--media-range-segment-hover-height, 7px);
     }
 
-    #background,
     #track {
       clip-path: url(#segments-clipping);
     }
@@ -239,14 +228,12 @@ template.innerHTML = /*html*/ `
   <div id="container">
     <div id="startpoint"></div>
     <div id="endpoint"></div>
-    <div id="appearance" part="appearance">
-      <div id="background"></div>
-      <div id="track">
-        <div id="highlight"></div>
+    <div id="appearance">
+      <div id="track" part="track">
         <div id="pointer"></div>
-        <div id="progress"></div>
+        <div id="progress" part="progress"></div>
       </div>
-      <div id="thumb"></div>
+      <div id="thumb" part="thumb"></div>
       <svg id="segments"><clipPath id="segments-clipping"></clipPath></svg>
     </div>
     <input id="range" type="range" min="0" max="1" step="any" value="0">
@@ -260,7 +247,9 @@ template.innerHTML = /*html*/ `
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
  *
- * @csspart appearance - The appearance of the range containing the background, track and thumb.
+ * @csspart track - The runnable track of the range.
+ * @csspart progress - The progress part of the track.
+ * @csspart thumb - The thumb of the range.
  *
  * @cssproperty --media-primary-color - Default color of range bar.
  * @cssproperty --media-secondary-color - Default color of range background.
@@ -285,8 +274,8 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-range-thumb-transform - `transform` of range thumb.
  * @cssproperty --media-range-thumb-opacity - `opacity` of range thumb.
  *
- * @cssproperty [--media-range-bar-color = var(--media-primary-color, rgb(238 238 238))] - `color_value` of range bar (elapsed progress).
- * @cssproperty [--media-range-track-color = transparent] - `color_value` of range track (remaining progress).
+ * @cssproperty [--media-range-bar-color = var(--media-primary-color, rgb(238 238 238))] - `background` of range progress.
+ * @cssproperty --media-range-track-background - `background` of range track background.
  * @cssproperty --media-range-track-backdrop-filter - `backdrop-filter` of range track.
  * @cssproperty --media-range-track-width - `width` of range track.
  * @cssproperty --media-range-track-height - `height` of range track.
@@ -298,9 +287,6 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-range-track-transition - `transition` of range track.
  * @cssproperty --media-range-track-translate-x - `translate` x-coordinate of range track.
  * @cssproperty --media-range-track-translate-y - `translate` y-coordinate of range track.
- *
- * @cssproperty --media-range-track-background - `background` of range track background.
- * @cssproperty --media-range-track-background-backdrop-filter - `backdrop-filter` of range track background.
  *
  * @cssproperty --media-time-range-hover-display - `display` of range hover zone.
  * @cssproperty --media-time-range-hover-bottom - `bottom` of range hover zone.
