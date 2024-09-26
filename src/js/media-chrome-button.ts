@@ -171,9 +171,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
       this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
       this.shadowRoot.appendChild(buttonHTML);
-
-      this.tooltipEl = this.shadowRoot.querySelector('media-tooltip');
     }
+
+    this.tooltipEl = this.shadowRoot.querySelector('media-tooltip');
   }
 
   #clickListener = (e) => {
@@ -183,8 +183,14 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
     // Timeout needed to wait for a new "tick" of event loop otherwise
     // measured position does not take into account the new tooltip content
-    setTimeout(this.tooltipEl.updateXOffset, 0);
+    setTimeout(this.#positionTooltip, 0);
   };
+
+  #positionTooltip = () => {
+    // Conditional chaining accounts for scenarios
+    // where the tooltip element isn't yet defined.
+    this.tooltipEl?.updateXOffset?.();
+  }
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
@@ -251,11 +257,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     // of the buttons state, so we greedily assume we need account for any form
     // of state change by reacting to all attribute changes, even if sometimes the
     // update might be redundant
-    if (this.tooltipEl) {
-      // conditional chaining accounts for scenarios where the tooltip element isn't
-      // yet defined
-      this.tooltipEl?.updateXOffset?.();
-    }
+    this.#positionTooltip();
   }
 
   connectedCallback() {
@@ -292,10 +294,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
 
-    this.removeEventListener('mouseenter', this.tooltipEl?.updateXOffset);
-    this.removeEventListener('focus', this.tooltipEl?.updateXOffset);
+    this.removeEventListener('mouseenter', this.#positionTooltip);
+    this.removeEventListener('focus', this.#positionTooltip);
     this.removeEventListener('click', this.#clickListener);
-    this.tooltipEl = null;
   }
 
   get keysUsed() {
@@ -321,11 +322,14 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   // Called when we know the tooltip is ready / defined
   setupTooltip() {
-    this.addEventListener('mouseenter', this.tooltipEl.updateXOffset);
-    this.addEventListener('focus', this.tooltipEl.updateXOffset);
+    this.addEventListener('mouseenter', this.#positionTooltip);
+    this.addEventListener('focus', this.#positionTooltip);
     this.addEventListener('click', this.#clickListener);
+
     const initialPlacement = this.tooltipPlacement;
-    if (initialPlacement) this.tooltipEl.placement = initialPlacement;
+    if (initialPlacement && this.tooltipEl) {
+      this.tooltipEl.placement = initialPlacement;
+    }
   }
 }
 
