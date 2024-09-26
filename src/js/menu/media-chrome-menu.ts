@@ -141,15 +141,14 @@ template.innerHTML = /*html*/ `
       transform: translate(-100%, 0);
     }
 
-    slot[name="header"] {
-      display: flex;
+    slot[name="header"][hidden] {
+      display: none;
+    }
+
+    slot[name="header"]::slotted(*) {
       padding: .4em .7em;
       border-bottom: 1px solid rgb(255 255 255 / .25);
       cursor: default;
-    }
-
-    slot[name="header"][hidden] {
-      display: none;
     }
 
     button[part~="back"] {
@@ -197,7 +196,7 @@ template.innerHTML = /*html*/ `
   </style>
   <style id="layout-row" media="width:0">
 
-    slot[name="header"] {
+    slot[name="header"]::slotted(*) {
       padding: .4em .5em;
     }
 
@@ -222,14 +221,16 @@ template.innerHTML = /*html*/ `
   </style>
   <div id="container">
     <slot name="header" hidden>
-      <button part="back button" aria-label="Back to previous menu">
-        <slot name="back-icon">
-          <svg aria-hidden="true" viewBox="0 0 20 24" part="back indicator">
-            <path d="m11.88 17.585.742-.669-4.2-4.665 4.2-4.666-.743-.669-4.803 5.335 4.803 5.334Z"/>
-          </svg>
-        </slot>
-        <slot name="title"></slot>
-      </button>
+      <div>
+        <button part="back button" aria-label="Back to previous menu">
+          <slot name="back-icon">
+            <svg aria-hidden="true" viewBox="0 0 20 24" part="back indicator">
+              <path d="m11.88 17.585.742-.669-4.2-4.665 4.2-4.666-.743-.669-4.803 5.335 4.803 5.334Z"/>
+            </svg>
+          </slot>
+          <slot name="title"></slot>
+        </button>
+      </div>
     </slot>
     <slot></slot>
   </div>
