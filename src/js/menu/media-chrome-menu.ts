@@ -141,27 +141,30 @@ template.innerHTML = /*html*/ `
       transform: translate(-100%, 0);
     }
 
-    slot[name="header"] {
-      display: flex;
-      padding: .4em .7em;
-      border-bottom: 1px solid rgb(255 255 255 / .25);
-      cursor: default;
+    button {
+      background: none;
+      color: inherit;
+      border: none;
+      padding: 0;
+      font: inherit;
+      outline: inherit;
+      display: inline-flex;
+      align-items: center;
     }
 
     slot[name="header"][hidden] {
       display: none;
     }
 
-    button[part~="back"] {
-      background: none;
-      color: inherit;
-      border: none;
-      padding: 0;
-      font: inherit;
-      cursor: pointer;
-      outline: inherit;
-      display: inline-flex;
-      align-items: center;
+    slot[name="header"] > *,
+    slot[name="header"]::slotted(*) {
+      padding: .4em .7em;
+      border-bottom: 1px solid rgb(255 255 255 / .25);
+      cursor: default;
+    }
+
+    slot[name="header"] > button[part~="back"],
+    slot[name="header"]::slotted(button[part~="back"]) {
       cursor: pointer;
     }
 
@@ -197,7 +200,8 @@ template.innerHTML = /*html*/ `
   </style>
   <style id="layout-row" media="width:0">
 
-    slot[name="header"] {
+    slot[name="header"] > *,
+    slot[name="header"]::slotted(*) {
       padding: .4em .5em;
     }
 
@@ -729,7 +733,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     return headerSlot
       .assignedElements({ flatten: true })
       ?.find(
-        (el) => el.part.contains('back') && el.part.contains('button')
+        (el) => el.matches('button[part~="back"]')
       ) as HTMLElement;
   }
 
