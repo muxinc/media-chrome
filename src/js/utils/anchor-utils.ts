@@ -47,7 +47,11 @@ function getRectRelativeToOffsetParent(
   offsetParent: Element
 ): Rect {
   const rect = element.getBoundingClientRect();
-  const offsetRect = offsetParent.getBoundingClientRect();
+  // offsetParent returns null in the following situations:
+  // - The element or any ancestor has the display property set to none.
+  // - The element has the position property set to fixed (Firefox returns <body>).
+  // - The element is <body> or <html>.
+  const offsetRect = offsetParent?.getBoundingClientRect() ?? { x: 0, y: 0 };
   return {
     x: rect.x - offsetRect.x,
     y: rect.y - offsetRect.y,
