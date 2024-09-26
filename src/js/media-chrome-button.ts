@@ -285,7 +285,19 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
     globalThis.customElements
       .whenDefined('media-tooltip')
-      .then(this.setupTooltip.bind(this));
+      .then(() => this.#setupTooltip());
+  }
+
+  // Called when we know the tooltip is ready / defined
+  #setupTooltip() {
+    this.addEventListener('mouseenter', this.#positionTooltip);
+    this.addEventListener('focus', this.#positionTooltip);
+    this.addEventListener('click', this.#clickListener);
+
+    const initialPlacement = this.tooltipPlacement;
+    if (initialPlacement && this.tooltipEl) {
+      this.tooltipEl.placement = initialPlacement;
+    }
   }
 
   disconnectedCallback() {
@@ -319,18 +331,6 @@ class MediaChromeButton extends globalThis.HTMLElement {
    * @argument {Event} e
    */
   handleClick(e) {} // eslint-disable-line
-
-  // Called when we know the tooltip is ready / defined
-  setupTooltip() {
-    this.addEventListener('mouseenter', this.#positionTooltip);
-    this.addEventListener('focus', this.#positionTooltip);
-    this.addEventListener('click', this.#clickListener);
-
-    const initialPlacement = this.tooltipPlacement;
-    if (initialPlacement && this.tooltipEl) {
-      this.tooltipEl.placement = initialPlacement;
-    }
-  }
 }
 
 if (!globalThis.customElements.get('media-chrome-button')) {
