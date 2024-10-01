@@ -72,13 +72,18 @@ template.innerHTML = /*html*/ `
   }
 
   media-tooltip {
+    ${/** Make sure unpositioned tooltip doesn't cause page overflow (scroll). */ ''}
+    max-width: 0;
+    overflow-x: hidden;
     opacity: 0;
-    transition: opacity .3s;
+    transition: opacity .3s, max-width 0s 9s;
   }
 
   :host(:hover) media-tooltip,
   :host(:focus-visible) media-tooltip {
+    max-width: 100vw;
     opacity: 1;
+    transition: opacity .3s;
   }
 
   :host([notooltip]) slot[name="tooltip"] {
