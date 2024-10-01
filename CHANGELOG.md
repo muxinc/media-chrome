@@ -1,3 +1,15 @@
+## [4.1.4](https://github.com/muxinc/media-chrome/compare/v4.1.3...v4.1.4) (2024-10-01)
+
+
+### Bug Fixes
+
+* restructure menu header for styling ([#989](https://github.com/muxinc/media-chrome/issues/989)) ([f99f8ed](https://github.com/muxinc/media-chrome/commit/f99f8edf2ab1440b4f8b4d014320e784c4e746d3)), closes [#987](https://github.com/muxinc/media-chrome/issues/987)
+* suppressHydrationWarning bug ([#992](https://github.com/muxinc/media-chrome/issues/992)) ([2d392f2](https://github.com/muxinc/media-chrome/commit/2d392f24ea18bf2e9a6d873b2b2a933599c76692))
+* tooltip causing page overflow ([#994](https://github.com/muxinc/media-chrome/issues/994)) ([135151f](https://github.com/muxinc/media-chrome/commit/135151f70eb940acf5f212f643d6799175889d86)), closes [#991](https://github.com/muxinc/media-chrome/issues/991)
+* tooltip type error ([#988](https://github.com/muxinc/media-chrome/issues/988)) ([281c9cd](https://github.com/muxinc/media-chrome/commit/281c9cd27b616428f415d2b5f8f8810613ed8b9b)), closes [#986](https://github.com/muxinc/media-chrome/issues/986)
+
+
+
 ## [4.1.3](https://github.com/muxinc/media-chrome/compare/v4.1.2...v4.1.3) (2024-09-24)
 
 
