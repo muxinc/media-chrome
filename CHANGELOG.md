@@ -1,3 +1,12 @@
+## [4.1.5](https://github.com/muxinc/media-chrome/compare/v4.1.4...v4.1.5) (2024-10-03)
+
+
+### Bug Fixes
+
+* chapters event w/ preload none ([#995](https://github.com/muxinc/media-chrome/issues/995)) ([906203e](https://github.com/muxinc/media-chrome/commit/906203e68207a9ced4013b3401712605001fe77c))
+
+
+
 ## [4.1.4](https://github.com/muxinc/media-chrome/compare/v4.1.3...v4.1.4) (2024-10-01)
 
 
