@@ -685,12 +685,21 @@ export const stateMediator: StateMediator = {
           'track[kind="chapters"][default][src]'
         );
 
+        /* If `media` is a custom media element search in its shadow DOM. */
+        const shadowChaptersTrack = media.shadowRoot?.querySelector(
+          ':is(video,audio) > track[kind="chapters"][default][src]'
+        );
+
         /** @ts-ignore */
         chaptersTrack?.addEventListener('load', handler);
+        /** @ts-ignore */
+        shadowChaptersTrack?.addEventListener('load', handler);
 
         return () => {
           /** @ts-ignore */
           chaptersTrack?.removeEventListener('load', handler);
+          /** @ts-ignore */
+          shadowChaptersTrack?.removeEventListener('load', handler);
         };
       },
     ],
