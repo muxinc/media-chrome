@@ -21,6 +21,7 @@ import {
   toggleSubtitleTracks,
 } from './util.js';
 import { getTextTracksList } from '../utils/captions.js';
+import { isValidNumber } from '../utils/utils.js';
 
 export type Rendition = {
   src?: string;
@@ -432,8 +433,7 @@ export const stateMediator: StateMediator = {
     },
     set(value, stateOwners) {
       const { media } = stateOwners;
-      // If the media supports readyState and it's not ready, don't set currentTime
-      if (!media || media.readyState === 0) return;
+      if (!media || !isValidNumber(value)) return;
       media.currentTime = value;
     },
     mediaEvents: ['timeupdate', 'loadedmetadata'],
