@@ -58,8 +58,11 @@ template.innerHTML = /*html*/ `
       contain: layout;
     }
 
-    #highlight {
+    #buffered {
       background: var(--media-time-range-buffered-color, rgb(255 255 255 / .4));
+      position: absolute;
+      height: 100%;
+      will-change: width;
     }
 
     #preview-rail,
@@ -335,6 +338,7 @@ const calcTimeFromRangeValue = (
  * @attr {string} mediapreviewimage - (read-only) Set to the timeline preview image URL.
  * @attr {string} mediapreviewtime - (read-only) Set to the timeline preview time.
  *
+ * @csspart buffered - A CSS part that selects the buffered bar element.
  * @csspart box - A CSS part that selects both the preview and current box elements.
  * @csspart preview-box - A CSS part that selects the preview box element.
  * @csspart current-box - A CSS part that selects the current box element.
@@ -420,6 +424,9 @@ class MediaTimeRange extends MediaChromeRange {
     super();
 
     this.container.appendChild(template.content.cloneNode(true));
+
+    const track = this.shadowRoot.querySelector('#track');
+    track.insertAdjacentHTML('afterbegin', '<div id="buffered" part="buffered"></div>');
 
     this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
@@ -708,7 +715,7 @@ class MediaTimeRange extends MediaChromeRange {
       relativeBufferedEnd = 1;
     }
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#highlight');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, '#buffered');
     style.setProperty('width', `${relativeBufferedEnd * 100}%`);
   }
 
