@@ -5,16 +5,10 @@
     <title>Media Chrome Mobile Video Usage Example</title>
     <script type="module" src="../../dist/index.js"></script>
     <style>
-      body {
-        width: 100vw;
-        height: 100vh;
-        margin: 0px;
-      }
-
       /** add styles to prevent CLS (Cumulative Layout Shift) */
       media-controller:not([audio]) {
         display: block;         /* expands the container if preload=none */
-        max-width: 320px;       /* allows the container to shrink if small */
+        max-width: 375px;       /* allows the container to shrink if small */
         aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
       }
 
@@ -43,18 +37,15 @@
         display: flex;
         flex-flow: row nowrap;
         align-items: center;
-        justify-content: space-evenly;
+        justify-content: center;
+        gap: 6%;
+        margin: -5% auto 0;
+        width: 60%;
       }
 
-      *[slot='centered-chrome'] {
-        margin: 0 15%;
-        --media-control-hover-background: none;
-        --media-control-background: none;
-      }
-
-      *[slot='centered-chrome']
-        :is(media-play-button, media-seek-backward-button, media-seek-forward-button) {
-        padding: 0px;
+      *[slot='centered-chrome'] [role='button'] {
+        border-radius: 50%;
+        aspect-ratio: 1;
       }
 
       *[slot='centered-chrome'] media-play-button {
@@ -64,20 +55,22 @@
       *[slot='centered-chrome']
         :is(media-seek-backward-button, media-seek-forward-button) {
         width: 15%;
+        padding: 8px;
       }
 
-      .seek-control-bar {
-        padding: 0 5px;
-      }
-
-      .seek-control-bar > * {
+      media-time-range {
+        --media-range-track-height: 5px;
+        --media-range-track-backdrop-filter: blur(5px);
+        --media-range-padding: 0;
+        --media-range-thumb-opacity: 0;
         background: none;
-        height: auto;
-        padding: 0px;
+        height: var(--media-range-track-height);
+        width: 100%;
       }
 
-      .seek-control-bar > media-time-range {
-        padding-right: 5px;
+      .spacer {
+        background: rgb(20 20 30 / .7);
+        flex-grow: 1;
       }
     </style>
   </head>
@@ -87,7 +80,7 @@
       <media-controller autohide="2">
         <video
           slot="media"
-          src="https://stream.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/high.mp4"
+          src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/high.mp4"
           preload="none"
           muted
           crossorigin
@@ -97,25 +90,23 @@
             label="thumbnails"
             default
             kind="metadata"
-            src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/storyboard.vtt"
+            src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/storyboard.vtt"
           />
         </video>
         <media-poster-image
           slot="poster"
-          src="https://image.mux.com/DS00Spx1CV902MCtPj5WknGlR102V5HFkDe/thumbnail.jpg"
-          placeholdersrc="data:image/jpeg;base64,/9j/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEPERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAASACADASIAAhEBAxEB/8QAGgABAAIDAQAAAAAAAAAAAAAAAAMEAgUGCP/EACkQAAEDAgMIAgMAAAAAAAAAAAEAAgMEBgUREgcUITFSkZTRQaEiscH/xAAYAQACAwAAAAAAAAAAAAAAAAAABQIDBv/EAB0RAAICAQUAAAAAAAAAAAAAAAABAgMFERUxwfD/2gAMAwEAAhEDEQA/AOZh2P2k/LOhq/Lf7VuPYvZxLQ6iqgXchvrxn9rpY7ojYCBU0IJ5HU3h9rU3NcGJVcVNJh2K4fDPTztlbm5reGRDhnxIzBPwkUc9RJ6dDHaLYojj2HWYeeH1nmSe1OzYXZJ54fW+ZJ7VeWrbO4SPuedpI/IOnB/TgsxJh4yIuGYu+TvAH9UXnafItWJmuTy1oZ0t7JoZ0t7Ii0InGhnS3smhnS3siIA//9k="
+          src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
         ></media-poster-image>
         <div slot="centered-chrome" class="centered-controls-overlay">
           <media-seek-backward-button></media-seek-backward-button>
           <media-play-button></media-play-button>
           <media-seek-forward-button></media-seek-forward-button>
         </div>
-        <media-control-bar class="seek-control-bar">
-          <media-time-range></media-time-range>
-          <media-time-display showduration remaining></media-time-display>
-        </media-control-bar>
+        <media-time-range></media-time-range>
         <media-control-bar>
           <media-mute-button></media-mute-button>
+          <media-time-display showduration remaining></media-time-display>
+          <div class="spacer"></div>
           <media-playback-rate-button></media-playback-rate-button>
           <media-pip-button></media-pip-button>
           <media-fullscreen-button></media-fullscreen-button>
