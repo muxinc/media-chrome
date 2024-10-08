@@ -92,7 +92,7 @@ template.innerHTML = /*html*/ `
 </style>
 
 <slot name="tooltip">
-  <media-tooltip part="tooltip">
+  <media-tooltip part="tooltip" aria-hidden="true">
     <slot name="tooltip-content"></slot>
   </media-tooltip>
 </slot>
