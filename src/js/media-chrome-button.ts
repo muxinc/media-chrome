@@ -74,7 +74,7 @@ template.innerHTML = /*html*/ `
   media-tooltip {
     ${/** Make sure unpositioned tooltip doesn't cause page overflow (scroll). */ ''}
     max-width: 0;
-    overflow-x: hidden;
+    overflow-x: clip;
     opacity: 0;
     transition: opacity .3s, max-width 0s 9s;
   }
