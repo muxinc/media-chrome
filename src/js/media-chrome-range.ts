@@ -1,7 +1,6 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import {
-  insertCSSRule,
   getOrInsertCSSRule,
   getPointProgressOnLine,
 } from './utils/element-utils.js';
@@ -388,6 +387,10 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.#cssRules.pointer = getOrInsertCSSRule(this.shadowRoot, '#pointer');
     this.#cssRules.progress = getOrInsertCSSRule(this.shadowRoot, '#progress');
     this.#cssRules.thumb = getOrInsertCSSRule(this.shadowRoot, '#thumb');
+    this.#cssRules.activeSegment = getOrInsertCSSRule(
+      this.shadowRoot,
+      '#segments-clipping rect:nth-child(0)'
+    );
 
     const mediaControllerId = this.getAttribute(
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
@@ -447,11 +450,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.container.classList.toggle('segments', !!segments?.length);
 
     if (!segments?.length) return;
-
-    this.#cssRules.activeSegment = insertCSSRule(
-      this.shadowRoot,
-      '#segments-clipping rect:nth-child(0)'
-    );
 
     const normalized = [
       ...new Set([
