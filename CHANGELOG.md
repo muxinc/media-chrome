@@ -1,3 +1,20 @@
+# [4.2.0](https://github.com/muxinc/media-chrome/compare/v4.1.5...v4.2.0) (2024-10-08)
+
+
+### Bug Fixes
+
+* add button tooltip part for more styling ([#996](https://github.com/muxinc/media-chrome/issues/996)) ([92542f9](https://github.com/muxinc/media-chrome/commit/92542f961acde0ec5fffc966b5e12c6bebe8071b))
+* make tooltip not focusable to fix a11y ([#1004](https://github.com/muxinc/media-chrome/issues/1004)) ([66bb595](https://github.com/muxinc/media-chrome/commit/66bb595d24c35b513fc1987c2fbfbe957bf32b2d))
+* seeking when preload is none ([#997](https://github.com/muxinc/media-chrome/issues/997)) ([5000cc3](https://github.com/muxinc/media-chrome/commit/5000cc3f8c254afc02474033d11b15313512ec30)), closes [#910](https://github.com/muxinc/media-chrome/issues/910)
+* Use overflow clip in tooltip button to prevent scrollbar ([#1002](https://github.com/muxinc/media-chrome/issues/1002)) ([d3a8bf1](https://github.com/muxinc/media-chrome/commit/d3a8bf11ba9f71b19d72a831b7098df01206cdcc)), closes [#994](https://github.com/muxinc/media-chrome/issues/994) [#1000](https://github.com/muxinc/media-chrome/issues/1000)
+
+
+### Features
+
+* add range CSS parts ([#990](https://github.com/muxinc/media-chrome/issues/990)) ([4c6298f](https://github.com/muxinc/media-chrome/commit/4c6298f65a318a14c2e01f10d6a6441d01edadf0)), closes [#921](https://github.com/muxinc/media-chrome/issues/921) [#983](https://github.com/muxinc/media-chrome/issues/983)
+
+
+
 ## [4.1.5](https://github.com/muxinc/media-chrome/compare/v4.1.4...v4.1.5) (2024-10-03)
 
 
