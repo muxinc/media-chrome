@@ -1,3 +1,12 @@
+## [4.2.1](https://github.com/muxinc/media-chrome/compare/v4.2.0...v4.2.1) (2024-10-10)
+
+
+### Bug Fixes
+
+* sticky chapter on mouseout ([#1005](https://github.com/muxinc/media-chrome/issues/1005)) ([cf792bd](https://github.com/muxinc/media-chrome/commit/cf792bdd4c32c4da97646a0a3eb03676913960c5)), closes [#999](https://github.com/muxinc/media-chrome/issues/999)
+
+
+
 # [4.2.0](https://github.com/muxinc/media-chrome/compare/v4.1.5...v4.2.0) (2024-10-08)
 
 
