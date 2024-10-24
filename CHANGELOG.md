@@ -1,3 +1,12 @@
+## [4.2.2](https://github.com/muxinc/media-chrome/compare/v4.2.1...v4.2.2) (2024-10-24)
+
+
+### Bug Fixes
+
+* iOS volume support bug ([#1012](https://github.com/muxinc/media-chrome/issues/1012)) ([5b57c93](https://github.com/muxinc/media-chrome/commit/5b57c930fad1e22836bc825ee9bacbe05b1def88)), closes [#1011](https://github.com/muxinc/media-chrome/issues/1011)
+
+
+
 ## [4.2.1](https://github.com/muxinc/media-chrome/compare/v4.2.0...v4.2.1) (2024-10-10)
 
 
