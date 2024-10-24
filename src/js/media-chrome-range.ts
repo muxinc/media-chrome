@@ -172,7 +172,8 @@ template.innerHTML = /*html*/ `
       }
     }
 
-    #thumb {
+    #thumb,
+    ::slotted([slot=thumb]) {
       width: var(--media-range-thumb-width, 10px);
       height: var(--media-range-thumb-height, 10px);
       margin-left: calc(var(--media-range-thumb-width, 10px) / -2);
@@ -232,7 +233,9 @@ template.innerHTML = /*html*/ `
         <div id="pointer"></div>
         <div id="progress" part="progress"></div>
       </div>
-      <div id="thumb" part="thumb"></div>
+      <slot name="thumb">
+        <div id="thumb" part="thumb"></div>
+      </slot>
       <svg id="segments"><clipPath id="segments-clipping"></clipPath></svg>
     </div>
     <input id="range" type="range" min="0" max="1" step="any" value="0">
@@ -242,6 +245,8 @@ template.innerHTML = /*html*/ `
 
 /**
  * @extends {HTMLElement}
+ *
+ * @slot thumb - The thumb element to use for the range.
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
@@ -386,7 +391,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
 
     this.#cssRules.pointer = getOrInsertCSSRule(this.shadowRoot, '#pointer');
     this.#cssRules.progress = getOrInsertCSSRule(this.shadowRoot, '#progress');
-    this.#cssRules.thumb = getOrInsertCSSRule(this.shadowRoot, '#thumb');
+    this.#cssRules.thumb = getOrInsertCSSRule(this.shadowRoot, '#thumb, ::slotted([slot="thumb"])');
     this.#cssRules.activeSegment = getOrInsertCSSRule(
       this.shadowRoot,
       '#segments-clipping rect:nth-child(0)'
