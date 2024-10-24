@@ -183,6 +183,7 @@ template.innerHTML = /*html*/ `
       transition: var(--media-range-thumb-transition);
       transform: var(--media-range-thumb-transform, none);
       opacity: var(--media-range-thumb-opacity, 1);
+      display: block;
       position: absolute;
       left: 0;
       cursor: pointer;
@@ -232,7 +233,7 @@ template.innerHTML = /*html*/ `
         <div id="pointer"></div>
         <div id="progress" part="progress"></div>
       </div>
-      <div id="thumb" part="thumb"></div>
+      <slot name="thumb" id="thumb" part="thumb"></slot>
       <svg id="segments"><clipPath id="segments-clipping"></clipPath></svg>
     </div>
     <input id="range" type="range" min="0" max="1" step="any" value="0">
@@ -242,6 +243,8 @@ template.innerHTML = /*html*/ `
 
 /**
  * @extends {HTMLElement}
+ *
+ * @slot thumb - The thumb element to use for the range.
  *
  * @attr {boolean} disabled - The Boolean disabled attribute makes the element not mutable or focusable.
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
