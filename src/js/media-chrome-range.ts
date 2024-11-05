@@ -177,16 +177,19 @@ template.innerHTML = /*html*/ `
       width: var(--media-range-thumb-width, 10px);
       height: var(--media-range-thumb-height, 10px);
       margin-left: calc(var(--media-range-thumb-width, 10px) / -2);
-      border: var(--media-range-thumb-border, none);
-      border-radius: var(--media-range-thumb-border-radius, 10px);
-      background: var(--media-range-thumb-background, var(--media-primary-color, rgb(238 238 238)));
-      box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
       transition: var(--media-range-thumb-transition);
       transform: var(--media-range-thumb-transform, none);
       opacity: var(--media-range-thumb-opacity, 1);
       position: absolute;
       left: 0;
       cursor: pointer;
+    }
+
+    #thumb {
+      border-radius: var(--media-range-thumb-border-radius, 10px);
+      background: var(--media-range-thumb-background, var(--media-primary-color, rgb(238 238 238)));
+      box-shadow: var(--media-range-thumb-box-shadow, 1px 1px 1px transparent);
+      border: var(--media-range-thumb-border, none);
     }
 
     :host([disabled]) #thumb {
