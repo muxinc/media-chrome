@@ -15,30 +15,18 @@ template.innerHTML = /*html*/ `
         var(--media-text-content-height, var(--media-control-height, 24px))
         var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
       color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-      background: var(--media-dialog-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
-      border-radius: var(--media-dialog-border-radius);
-      border: var(--media-dialog-border, none);
+      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8)));
       display: var(--media-dialog-display, inline-flex);
-      transition: var(--media-dialog-transition-in,
-        visibility 0s,
-        opacity .2s ease-out,
-        transform .15s ease-out
-      ) !important;
+      transition: visibility 0s, opacity .2s ease-out, transform .15s ease-out !important;
       ${/* ^^Prevent transition override by media-container */ ''}
-      visibility: var(--media-dialog-visibility, visible);
-      opacity: var(--media-dialog-opacity, 1);
-      transform: var(--media-dialog-transform-in, translateY(0) scale(1));
+      transform: translateY(0) scale(1);
     }
 
     :host([hidden]) {
-      transition: var(--media-dialog-transition-out,
-        visibility .15s ease-in,
-        opacity .15s ease-in,
-        transform .15s ease-in
-      ) !important;
-      visibility: var(--media-dialog-hidden-visibility, hidden);
-      opacity: var(--media-dialog-hidden-opacity, 0);
-      transform: var(--media-dialog-transform-out, translateY(2px) scale(.99));
+      transition: visibility .15s ease-in, opacity .15s ease-in, transform .15s ease-in !important;
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(2px) scale(.99);
       pointer-events: none;
     }
   </style>
@@ -61,17 +49,6 @@ export const Attributes = {
  *
  * @cssproperty --media-control-background - `background` of control.
  * @cssproperty --media-dialog-display - `display` of dialog.
- * @cssproperty --media-dialog-background - `background` of dialog.
- * @cssproperty --media-dialog-border-radius - `border-radius` of dialog.
- * @cssproperty --media-dialog-border - `border` of dialog.
- * @cssproperty --media-dialog-transition-in - `transition` of dialog when showing.
- * @cssproperty --media-dialog-transition-out - `transition` of dialog when hiding.
- * @cssproperty --media-dialog-visibility - `visibility` of dialog when showing.
- * @cssproperty --media-dialog-hidden-visibility - `visibility` of dialog when hiding.
- * @cssproperty --media-dialog-opacity - `opacity` of dialog when showing.
- * @cssproperty --media-dialog-hidden-opacity - `opacity` of dialog when hiding.
- * @cssproperty --media-dialog-transform-in - `transform` of dialog when showing.
- * @cssproperty --media-dialog-transform-out - `transform` of dialog when hiding.
  *
  * @cssproperty --media-font - `font` shorthand property.
  * @cssproperty --media-font-weight - `font-weight` property.
