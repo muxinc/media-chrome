@@ -121,7 +121,7 @@ export function getDocumentOrShadowRoot(
  */
 export function isElementVisible(
   element: HTMLElement,
-  depth: number = 3
+  { depth = 3, checkOpacity = true, checkVisibilityCSS = true } = {}
 ): boolean {
   // Supported by Chrome and Firefox https://caniuse.com/mdn-api_element_checkvisibility
   // https://drafts.csswg.org/cssom-view-1/#dom-element-checkvisibility
@@ -129,8 +129,8 @@ export function isElementVisible(
   if (element.checkVisibility) {
     // @ts-ignore
     return element.checkVisibility({
-      checkOpacity: true,
-      checkVisibilityCSS: true,
+      checkOpacity,
+      checkVisibilityCSS,
     });
   }
   // Check if the element or its ancestors are hidden.
@@ -138,8 +138,8 @@ export function isElementVisible(
   while (el && depth > 0) {
     const style = getComputedStyle(el);
     if (
-      style.opacity === '0' ||
-      style.visibility === 'hidden' ||
+      (checkOpacity && style.opacity === '0') ||
+      (checkVisibilityCSS && style.visibility === 'hidden') ||
       style.display === 'none'
     ) {
       return false;
