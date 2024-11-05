@@ -1,3 +1,12 @@
+## [4.2.3](https://github.com/muxinc/media-chrome/compare/v4.2.2...v4.2.3) (2024-11-05)
+
+
+### Bug Fixes
+
+* tooltip overflow causing scrollbar ([#1018](https://github.com/muxinc/media-chrome/issues/1018)) ([181aec2](https://github.com/muxinc/media-chrome/commit/181aec22c7122c5a1bb3f4a653e652d868fe1f48)), closes [#1017](https://github.com/muxinc/media-chrome/issues/1017)
+
+
+
 ## [4.2.2](https://github.com/muxinc/media-chrome/compare/v4.2.1...v4.2.2) (2024-10-24)
 
 
