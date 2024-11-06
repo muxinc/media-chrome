@@ -33,7 +33,7 @@
     "clsx": "^2.0.0",
     "hastscript": "^8.0.0",
     "html-escaper": "^3.0.3",
-    "media-chrome": "latest",
+    "media-chrome": "link:..",
     "mux-embed": "^4.30.0",
     "parse5": "^7.1.2",
     "preact": "^10.18.2",

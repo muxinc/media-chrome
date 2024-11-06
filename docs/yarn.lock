@@ -3388,10 +3388,9 @@ mdast-util-to-string@^4.0.0:
   dependencies:
     "@types/mdast" "^4.0.0"
 
-media-chrome@latest:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/media-chrome/-/media-chrome-4.1.0.tgz#d3db5f7010311f3cea2483e4d703f518cd365c4b"
-  integrity sha512-rzuYoXiCvn+3vRim9pXcdIIXZmPAZHZbN9AUl0crdUOSv2tdEFJ6v/IxlJ8T3o4+YrHsrUCUNnu2Yai6mY6Qqg==
+"media-chrome@link:..":
+  version "0.0.0"
+  uid ""
 
 merge-stream@^2.0.0:
   version "2.0.0"
