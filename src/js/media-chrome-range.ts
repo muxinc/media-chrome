@@ -176,10 +176,10 @@ template.innerHTML = /*html*/ `
     ::slotted([slot=thumb]) {
       width: var(--media-range-thumb-width, 10px);
       height: var(--media-range-thumb-height, 10px);
-      margin-left: calc(var(--media-range-thumb-width, 10px) / -2);
       transition: var(--media-range-thumb-transition);
       transform: var(--media-range-thumb-transform, none);
       opacity: var(--media-range-thumb-opacity, 1);
+      translate: -50%;
       position: absolute;
       left: 0;
       cursor: pointer;
