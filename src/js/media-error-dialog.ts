@@ -2,10 +2,8 @@ import { MediaUIAttributes } from './constants.js';
 import { errors } from './labels/labels.js';
 import { MediaChromeDialog } from './media-chrome-dialog.js';
 import {
-  getBooleanAttr,
   getNumericAttr,
   getStringAttr,
-  setBooleanAttr,
   setNumericAttr,
   setStringAttr,
 } from './utils/element-utils.js';
@@ -41,16 +39,15 @@ function getErrorMessage(errorCode?: number | string, errorMessage?: string) {
   const parts = message.split(':');
 
   if (parts.length === 2) {
-    return /*html*/`
+    return /*html*/ `
       <h3>${parts[0]}</h3>
       <p>${parts[1]}</p>
     `;
   }
-  return /*html*/`<p>${message}</p> `;
+  return /*html*/ `<p>${message}</p> `;
 }
 
 const observedAttributes: string[] = [
-  MediaUIAttributes.MEDIA_PAUSED,
   MediaUIAttributes.MEDIA_ERROR_CODE,
   MediaUIAttributes.MEDIA_ERROR_MESSAGE,
 ];
@@ -68,24 +65,15 @@ class MediaErrorDialog extends MediaChromeDialog {
     // Add this conditional to prevent endless loop by setting the hidden attribute.
     if (!observedAttributes.includes(attrName)) return;
 
-    const shouldHide = shouldHideErrorDialog(this.mediaErrorCode);
-    this.hidden = !this.mediaPaused || shouldHide;
+    this.hidden = shouldHideErrorDialog(this.mediaErrorCode);
 
-    if (!shouldHide) {
+    if (!this.hidden) {
       this.shadowRoot.querySelector('slot').name = `error-${this.mediaErrorCode}`;
       this.shadowRoot.querySelector('#content').innerHTML = getErrorMessage(
         this.mediaErrorCode,
         this.mediaErrorMessage
       );
     }
-  }
-
-  get mediaPaused() {
-    return getBooleanAttr(this, 'mediapaused');
-  }
-
-  set mediaPaused(value) {
-    setBooleanAttr(this, 'mediapaused', value);
   }
 
   get mediaErrorCode() {
