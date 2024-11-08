@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Error Dialog</title>
+    <script type="module" src="../../../dist/index.js"></script>
+    <style>
+      /* Hide custom elements that are not defined yet */
+      :not(:defined) {
+        display: none;
+      }
+
+      h2 {
+        margin-top: 2rem;
+      }
+
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: grid;          /* expands the container if preload=none */
+        max-width: 540px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
+      video,
+      img[slot="poster"] {
+        grid-area: 1 / 1;     /* position poster img on top of video element */
+        width: 100%;          /* prevents video to expand beyond its container */
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>MediaErrorDialog</h1>
+
+    <h2>Non existing mp4</h2>
+
+    <media-controller defaultsubtitles>
+      <video
+        slot="media"
+        src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB00/low.mp4"
+        muted
+        crossorigin
+      ></video>
+      <img slot="poster" src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13" />
+      <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+      <media-error-dialog hidden></media-error-dialog>
+      <media-control-bar>
+        <media-play-button></media-play-button>
+        <media-mute-button></media-mute-button>
+        <media-time-range></media-time-range>
+        <media-time-display></media-time-display>
+        <media-fullscreen-button></media-fullscreen-button>
+      </media-control-bar>
+    </media-controller>
+
+    <div style="max-width: 540px">
+      <h2>Error 2 (MEDIA_ERR_NETWORK)</h2>
+      <media-error-dialog mediaerrorcode="2" mediapaused></media-error-dialog>
+
+      <h2>Error 3 (MEDIA_ERR_DECODE)</h2>
+      <media-error-dialog mediaerrorcode="3" mediapaused></media-error-dialog>
+
+      <h2>Error 4 (MEDIA_ERR_SRC_NOT_SUPPORTED)</h2>
+      <media-error-dialog mediaerrorcode="4" mediapaused></media-error-dialog>
+
+      <h2>Error 5 (MEDIA_ERR_ENCRYPTED)</h2>
+      <media-error-dialog mediaerrorcode="5" mediapaused></media-error-dialog>
+
+      <h2>Error 2 with custom message via <code>error-2</code> slot</h2>
+      <media-error-dialog mediaerrorcode="2" mediapaused>
+        <div slot="error-2">This is a custom message</div>
+      </media-error-dialog>
+    </div>
+
+    <br>
+
+    <div class="examples">
+      <a href="../">View more examples</a>
+    </div>
+  </body>
+</html>

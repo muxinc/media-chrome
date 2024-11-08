@@ -1,37 +1,59 @@
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import {
   containsComposedNode,
   getActiveElement,
+  namedNodeMapToObject,
 } from './utils/element-utils.js';
 import { InvokeEvent } from './utils/events.js';
 
-const template: HTMLTemplateElement = document.createElement('template');
-template.innerHTML = /*html*/ `
-  <style>
-    :host {
-      font: var(--media-font,
-        var(--media-font-weight, normal)
-        var(--media-font-size, 14px) /
-        var(--media-text-content-height, var(--media-control-height, 24px))
-        var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
-      color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-      background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8)));
-      display: var(--media-dialog-display, inline-flex);
-      transition: visibility 0s, opacity .2s ease-out, transform .15s ease-out !important;
-      ${/* ^^Prevent transition override by media-container */ ''}
-      transform: translateY(0) scale(1);
-    }
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        font: var(--media-font,
+          var(--media-font-weight, normal)
+          var(--media-font-size, 14px) /
+          var(--media-text-content-height, var(--media-control-height, 24px))
+          var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+        color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
+        display: var(--media-dialog-display, inline-flex);
+        width: 100%;
+        height: 100%;
+        justify-content: center;
+        align-items: center;
+        transition: visibility 0s, opacity .2s ease-out, transform .15s ease-out !important;
+        ${/* ^^Prevent transition override by media-container */ ''}
+        transform: translateY(0) scale(1);
+      }
 
-    :host([hidden]) {
-      transition: visibility .15s ease-in, opacity .15s ease-in, transform .15s ease-in !important;
-      visibility: hidden;
-      opacity: 0;
-      transform: translateY(2px) scale(.99);
-      pointer-events: none;
-    }
-  </style>
-  <slot></slot>
-`;
+      :host([hidden]) {
+        transition: visibility .15s ease-in, opacity .15s ease-in, transform .15s ease-in !important;
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(2px) scale(.99);
+        pointer-events: none;
+      }
+
+      #content {
+        display: flex;
+        position: relative;
+        box-sizing: border-box;
+        width: min(320px, 100%);
+        word-wrap: break-word;
+        max-height: 100%;
+        overflow: auto;
+        text-align: center;
+        line-height: 1.4;
+      }
+    </style>
+  `;
+}
+
+function getSlotTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <slot id="content"></slot>
+  `;
+}
 
 export const Attributes = {
   HIDDEN: 'hidden',
@@ -57,12 +79,14 @@ export const Attributes = {
  * @cssproperty --media-text-content-height - `line-height` of text.
  */
 class MediaChromeDialog extends globalThis.HTMLElement {
-  static template: HTMLTemplateElement = template;
+  static getTemplateHTML = getTemplateHTML;
+  static getSlotTemplateHTML = getSlotTemplateHTML;
 
   static get observedAttributes() {
     return [Attributes.HIDDEN, Attributes.ANCHOR];
   }
 
+  #isInit = false;
   #previouslyFocused: HTMLElement | null = null;
   #invokerElement: HTMLElement | null = null;
 
@@ -71,19 +95,26 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   constructor() {
     super();
 
+    this.addEventListener('invoke', this);
+    this.addEventListener('focusout', this);
+    this.addEventListener('keydown', this);
+  }
+
+  #init() {
+    if (this.#isInit) return;
+    this.#isInit = true;
+
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       this.attachShadow({ mode: 'open' });
 
-      this.nativeEl = (
-        this.constructor as typeof MediaChromeDialog
-      ).template.content.cloneNode(true) as HTMLElement;
-      this.shadowRoot.append(this.nativeEl);
-    }
+      const attrs = namedNodeMapToObject(this.attributes);
 
-    this.addEventListener('invoke', this);
-    this.addEventListener('focusout', this);
-    this.addEventListener('keydown', this);
+      this.shadowRoot.innerHTML = /*html*/ `
+        ${(this.constructor as typeof MediaChromeDialog).getTemplateHTML(attrs)}
+        ${(this.constructor as typeof MediaChromeDialog).getSlotTemplateHTML(attrs)}
+      `;
+    }
   }
 
   handleEvent(event: Event) {
@@ -101,16 +132,16 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   }
 
   connectedCallback(): void {
+    this.#init();
+
     if (!this.role) {
       this.role = 'dialog';
     }
   }
 
-  attributeChangedCallback(
-    attrName: string,
-    oldValue: string | null,
-    newValue: string | null
-  ) {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+    this.#init();
+
     if (attrName === Attributes.HIDDEN && newValue !== oldValue) {
       if (this.hidden) {
         this.#handleClosed();
@@ -152,11 +183,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
       this.#previouslyFocused?.focus();
 
       // If the menu was opened by a click, close it when selecting an item.
-      if (
-        this.#invokerElement &&
-        this.#invokerElement !== event.relatedTarget &&
-        !this.hidden
-      ) {
+      if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && !this.hidden) {
         this.hidden = true;
       }
     }

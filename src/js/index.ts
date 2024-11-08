@@ -13,6 +13,7 @@ import MediaChromeDialog from './media-chrome-dialog.js';
 import MediaChromeRange from './media-chrome-range.js';
 import MediaControlBar from './media-control-bar.js';
 import MediaDurationDisplay from './media-duration-display.js';
+import MediaErrorDialog from './media-error-dialog.js';
 import MediaFullscreenButton from './media-fullscreen-button.js';
 import MediaGestureReceiver from './media-gesture-receiver.js';
 import MediaLiveButton from './media-live-button.js';
@@ -42,6 +43,7 @@ export {
   MediaControlBar,
   MediaController,
   MediaDurationDisplay,
+  MediaErrorDialog,
   MediaFullscreenButton,
   MediaGestureReceiver,
   MediaLiveButton,
