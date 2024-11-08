@@ -1,3 +1,4 @@
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
 import { errors } from './labels/labels.js';
 import { MediaChromeDialog } from './media-chrome-dialog.js';
