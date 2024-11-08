@@ -14,7 +14,7 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
     <style>
       #content {
         background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8)));
-        flex-direction: column;
+        display: block;
         padding: 1.2em 1.5em;
       }
 
