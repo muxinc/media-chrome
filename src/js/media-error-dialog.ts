@@ -33,7 +33,7 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
 }
 
 function shouldHideErrorDialog(errorCode?: number) {
-  return !errorCode || errors[errorCode] == null;
+  return !errorCode || errors[errorCode] === null;
 }
 
 function getErrorMessage(errorCode?: number | string, errorMessage?: string) {

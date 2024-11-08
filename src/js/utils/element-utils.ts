@@ -2,8 +2,8 @@ import { MediaStateReceiverAttributes } from '../constants.js';
 import type MediaController from '../media-controller.js';
 
 export function namedNodeMapToObject(namedNodeMap: NamedNodeMap) {
-  let obj = {};
-  for (let attr of namedNodeMap) {
+  const obj = {};
+  for (const attr of namedNodeMap) {
     obj[attr.name] = attr.value;
   }
   return obj;

@@ -4,6 +4,24 @@
     <meta name="viewport" content="width=device-width" />
     <title>Media Error Dialog</title>
     <script type="module" src="../../../dist/index.js"></script>
+    <script type="module">
+      import { CustomVideoElement } from 'https://cdn.jsdelivr.net/npm/custom-media-element/+esm';
+
+      class CustomVideo extends CustomVideoElement {
+        #error;
+
+        get error() {
+          return this.#error ?? super.error;
+        }
+
+        set error(value) {
+          this.#error = value;
+        }
+      }
+
+      globalThis.customElements.define('custom-video', CustomVideo);
+    </script>
+
     <style>
       /* Hide custom elements that are not defined yet */
       :not(:defined) {
@@ -38,12 +56,12 @@
     <h2>Non existing mp4</h2>
 
     <media-controller defaultsubtitles>
-      <video
+      <custom-video
         slot="media"
         src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB00/low.mp4"
         muted
         crossorigin
-      ></video>
+      ></custom-video>
       <img slot="poster" src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13" />
       <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
       <media-error-dialog hidden></media-error-dialog>
@@ -55,6 +73,18 @@
         <media-fullscreen-button></media-fullscreen-button>
       </media-control-bar>
     </media-controller>
+
+    <h2>Custom error code for custom media elements</h2>
+    <script>
+      function setError() {
+        const video = document.querySelector('custom-video');
+        const customError = new Error('Custom Error: This is a custom error!');
+        customError.code = 42;
+        video.error = customError;
+        video.dispatchEvent(new Event('error'));
+      }
+    </script>
+    <button onclick="setError()">Set error code 42</button>
 
     <div style="max-width: 540px">
       <h2>Error 2 (MEDIA_ERR_NETWORK)</h2>
