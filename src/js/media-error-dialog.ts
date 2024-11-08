@@ -37,7 +37,16 @@ function shouldHideErrorDialog(errorCode?: number) {
 }
 
 function getErrorMessage(errorCode?: number | string, errorMessage?: string) {
-  return errors[+errorCode] ?? errorMessage ?? '';
+  const message = errors[+errorCode] ?? errorMessage ?? '';
+  const parts = message.split(':');
+
+  if (parts.length === 2) {
+    return /*html*/`
+      <h3>${parts[0]}</h3>
+      <p>${parts[1]}</p>
+    `;
+  }
+  return /*html*/`<p>${message}</p> `;
 }
 
 const observedAttributes: string[] = [

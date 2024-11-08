@@ -1,10 +1,10 @@
 export type LabelOptions = { seekOffset?: number; playbackRate?: number };
 
 export const errors = {
-  2: '<h3>Network Error</h3><p>A network error caused the media download to fail.</p>',
-  3: '<h3>Decode Error</h3><p>A media error caused playback to be aborted. The media could be corrupt or your browser does not support this format.</p>',
-  4: '<h3>Source Not Supported</h3><p>An unsupported error occurred. The server or network failed, or your browser does not support this format.</p>',
-  5: '<h3>Encryption Error</h3><p>The media is encrypted and there are no keys to decrypt it.</p>',
+  2: 'Network Error: A network error caused the media download to fail.',
+  3: 'Decode Error: A media error caused playback to be aborted. The media could be corrupt or your browser does not support this format.',
+  4: 'Source Not Supported: An unsupported error occurred. The server or network failed, or your browser does not support this format.',
+  5: 'Encryption Error: The media is encrypted and there are no keys to decrypt it.',
 };
 
 export const tooltipLabels = {
