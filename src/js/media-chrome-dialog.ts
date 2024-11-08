@@ -71,7 +71,6 @@ export const Attributes = {
  * @cssproperty --media-secondary-color - Default color of background.
  * @cssproperty --media-text-color - `color` of text.
  *
- * @cssproperty --media-control-background - `background` of control.
  * @cssproperty --media-dialog-display - `display` of dialog.
  *
  * @cssproperty --media-font - `font` shorthand property.

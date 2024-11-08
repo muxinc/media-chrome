@@ -53,6 +53,12 @@ const observedAttributes: string[] = [
   MediaUIAttributes.MEDIA_ERROR_MESSAGE,
 ];
 
+/**
+ * @attr {number} mediaerrorcode - (read-only) The error code for the current media error.
+ * @attr {string} mediaerrormessage - (read-only) The error message for the current media error.
+ *
+ * @cssproperty --media-control-background - `background` of control.
+ */
 class MediaErrorDialog extends MediaChromeDialog {
   static getSlotTemplateHTML = getSlotTemplateHTML;
 
