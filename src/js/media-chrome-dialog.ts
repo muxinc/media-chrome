@@ -52,6 +52,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         line-height: 1.4;
       }
     </style>
+    ${this.getSlotTemplateHTML(_attrs)}
   `;
 }
 
@@ -128,7 +129,6 @@ class MediaChromeDialog extends globalThis.HTMLElement {
 
       this.shadowRoot.innerHTML = /*html*/ `
         ${(this.constructor as typeof MediaChromeDialog).getTemplateHTML(attrs)}
-        ${(this.constructor as typeof MediaChromeDialog).getSlotTemplateHTML(attrs)}
       `;
     }
   }
