@@ -200,6 +200,12 @@ template.innerHTML = /*html*/ `
     ::slotted([role="dialog"]) {
       align-self: center;
     }
+
+    ::slotted(media-error-dialog) {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+    }
   </style>
 
   <slot name="media" part="layer media-layer"></slot>

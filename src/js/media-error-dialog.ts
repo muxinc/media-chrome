@@ -12,8 +12,11 @@ import {
 function getSlotTemplateHTML(attrs: Record<string, string>) {
   return /*html*/ `
     <style>
+      :host {
+        background: rgb(20 20 30 / .8);
+      }
+
       #content {
-        background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8)));
         display: block;
         padding: 1.2em 1.5em;
       }
