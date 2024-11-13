@@ -31,8 +31,8 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
   `;
 }
 
-function shouldHideErrorDialog(errorCode?: number) {
-  return !errorCode || errors[errorCode] === null;
+function shouldOpenErrorDialog(errorCode?: number) {
+  return errorCode && errors[errorCode] !== null;
 }
 
 function getErrorMessage(errorCode?: number | string, errorMessage?: string) {
@@ -72,9 +72,9 @@ class MediaErrorDialog extends MediaChromeDialog {
     // Add this conditional to prevent endless loop by setting the hidden attribute.
     if (!observedAttributes.includes(attrName)) return;
 
-    this.hidden = shouldHideErrorDialog(this.mediaErrorCode);
+    this.open = shouldOpenErrorDialog(this.mediaErrorCode);
 
-    if (!this.hidden) {
+    if (this.open) {
       this.shadowRoot.querySelector('slot').name = `error-${this.mediaErrorCode}`;
       this.shadowRoot.querySelector('#content').innerHTML = getErrorMessage(
         this.mediaErrorCode,

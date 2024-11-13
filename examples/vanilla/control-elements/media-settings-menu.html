@@ -99,10 +99,7 @@
         crossorigin
       ></mux-video>
       <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
-      <media-chrome-dialog
-        id="settings"
-        hidden
-      >
+      <media-chrome-dialog id="settings">
         <media-captions-menu>
           <div slot="header">Captions</div>
         </media-captions-menu>
@@ -118,7 +115,7 @@
         <media-mute-button></media-mute-button>
         <media-time-range></media-time-range>
         <media-time-display></media-time-display>
-        <!-- Link menu button and menu with invoketarget<->id -->
+        <!-- Link menu button and dialog with invoketarget<->id -->
         <media-settings-menu-button invoketarget="settings"></media-settings-menu-button>
         <media-fullscreen-button></media-fullscreen-button>
       </media-control-bar>

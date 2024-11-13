@@ -2,7 +2,9 @@ import { globalThis } from './utils/server-safe-globals.js';
 import {
   containsComposedNode,
   getActiveElement,
+  getBooleanAttr,
   namedNodeMapToObject,
+  setBooleanAttr,
 } from './utils/element-utils.js';
 import { InvokeEvent } from './utils/events.js';
 
@@ -22,17 +24,20 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         height: 100%;
         justify-content: center;
         align-items: center;
-        transition: visibility 0s, opacity .2s ease-out, transform .15s ease-out !important;
-        ${/* ^^Prevent transition override by media-container */ ''}
-        transform: translateY(0) scale(1);
-      }
-
-      :host([hidden]) {
         transition: visibility .15s ease-in, opacity .15s ease-in, transform .15s ease-in !important;
         visibility: hidden;
-        opacity: 0;
+        ${/* Prevent opacity override by media-container */ ''}
+        opacity: 0 !important;
         transform: translateY(2px) scale(.99);
         pointer-events: none;
+      }
+
+      :host([open]) {
+        visibility: visible;
+        opacity: 1 !important;
+        ${/* Prevent transition override by media-container */ ''}
+        transition: visibility 0s, opacity .2s ease-out, transform .15s ease-out !important;
+        transform: translateY(0) scale(1);
       }
 
       #content {
@@ -58,7 +63,7 @@ function getSlotTemplateHTML(_attrs: Record<string, string>) {
 }
 
 export const Attributes = {
-  HIDDEN: 'hidden',
+  OPEN: 'open',
   ANCHOR: 'anchor',
 };
 
@@ -66,6 +71,8 @@ export const Attributes = {
  * @extends {HTMLElement}
  *
  * @slot - Default slotted elements.
+ *
+ * @attr {boolean} open - The open state of the dialog.
  *
  * @cssproperty --media-primary-color - Default color of text / icon.
  * @cssproperty --media-secondary-color - Default color of background.
@@ -84,7 +91,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   static getSlotTemplateHTML = getSlotTemplateHTML;
 
   static get observedAttributes() {
-    return [Attributes.HIDDEN, Attributes.ANCHOR];
+    return [Attributes.OPEN, Attributes.ANCHOR];
   }
 
   #isInit = false;
@@ -99,6 +106,14 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     this.addEventListener('invoke', this);
     this.addEventListener('focusout', this);
     this.addEventListener('keydown', this);
+  }
+
+  get open() {
+    return getBooleanAttr(this, Attributes.OPEN);
+  }
+
+  set open(value) {
+    setBooleanAttr(this, Attributes.OPEN, value);
   }
 
   #init() {
@@ -143,11 +158,11 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     this.#init();
 
-    if (attrName === Attributes.HIDDEN && newValue !== oldValue) {
-      if (this.hidden) {
-        this.#handleClosed();
-      } else {
+    if (attrName === Attributes.OPEN && newValue !== oldValue) {
+      if (this.open) {
         this.#handleOpen();
+      } else {
+        this.#handleClosed();
       }
     }
   }
@@ -175,7 +190,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     this.#invokerElement = event.relatedTarget as HTMLElement;
 
     if (!containsComposedNode(this, event.relatedTarget as Node)) {
-      this.hidden = !this.hidden;
+      this.open = !this.open;
     }
   }
 
@@ -183,9 +198,9 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     if (!containsComposedNode(this, event.relatedTarget as Node)) {
       this.#previouslyFocused?.focus();
 
-      // If the menu was opened by a click, close it when selecting an item.
-      if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && !this.hidden) {
-        this.hidden = true;
+      // If the dialog was opened by a click, close it when selecting an item.
+      if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && this.open) {
+        this.open = false;
       }
     }
   }
@@ -222,7 +237,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     } else if (key === 'Escape') {
       // Go back to the previous menu or close the menu.
       this.#previouslyFocused?.focus();
-      this.hidden = true;
+      this.open = false;
     }
   }
 }
