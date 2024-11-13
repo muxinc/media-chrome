@@ -29,7 +29,7 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
       }
     </style>
     <slot name="error-${attrs.mediaerrorcode}" id="content">
-      ${getErrorMessage(attrs.mediaerrorcode, attrs.mediaerrormessage)}
+      ${formatErrorMessage(attrs.mediaerrorcode, attrs.mediaerrormessage)}
     </slot>
   `;
 }
@@ -38,7 +38,7 @@ function shouldOpenErrorDialog(errorCode?: number) {
   return errorCode && errors[errorCode] !== null;
 }
 
-function getErrorMessage(errorCode?: number | string, errorMessage?: string) {
+function formatErrorMessage(errorCode?: number | string, errorMessage?: string) {
   const message: string = errors[+errorCode] ?? errorMessage ?? '';
   const parts = message.split(':', 2);
 
@@ -64,6 +64,7 @@ const observedAttributes: string[] = [
  */
 class MediaErrorDialog extends MediaChromeDialog {
   static getSlotTemplateHTML = getSlotTemplateHTML;
+  static formatErrorMessage = formatErrorMessage;
 
   static get observedAttributes() {
     return [...super.observedAttributes, ...observedAttributes];
@@ -79,10 +80,9 @@ class MediaErrorDialog extends MediaChromeDialog {
 
     if (this.open) {
       this.shadowRoot.querySelector('slot').name = `error-${this.mediaErrorCode}`;
-      this.shadowRoot.querySelector('#content').innerHTML = getErrorMessage(
-        this.mediaErrorCode,
-        this.mediaErrorMessage
-      );
+      this.shadowRoot.querySelector('#content').innerHTML = (
+        this.constructor as typeof MediaErrorDialog
+      ).formatErrorMessage(this.mediaErrorCode, this.mediaErrorMessage);
     }
   }
 
