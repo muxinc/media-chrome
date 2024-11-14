@@ -29,7 +29,7 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
       }
     </style>
     <slot name="error-${attrs.mediaerrorcode}" id="content">
-      ${formatErrorMessage(attrs.mediaerrorcode, attrs.mediaerrormessage)}
+      ${formatErrorMessage(+attrs.mediaerrorcode, attrs.mediaerrormessage)}
     </slot>
   `;
 }
@@ -38,8 +38,8 @@ function shouldOpenErrorDialog(errorCode?: number) {
   return errorCode && errors[errorCode] !== null;
 }
 
-function formatErrorMessage(errorCode?: number | string, errorMessage?: string) {
-  const message: string = errors[+errorCode] ?? errorMessage ?? '';
+function formatErrorMessage(errorCode?: number, errorMessage?: string) {
+  const message: string = errors[errorCode] ?? errorMessage ?? '';
   const parts = message.split(':', 2);
 
   if (parts.length === 2) {

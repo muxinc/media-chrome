@@ -291,14 +291,14 @@ export const stateMediator: StateMediator = {
       const { media } = stateOwners;
       return media?.error?.code;
     },
-    mediaEvents: ['error'],
+    mediaEvents: ['emptied', 'error'],
   },
   mediaErrorMessage: {
     get(stateOwners) {
       const { media } = stateOwners;
       return media?.error?.message ?? '';
     },
-    mediaEvents: ['error'],
+    mediaEvents: ['emptied', 'error'],
   },
   mediaWidth: {
     get(stateOwners) {
