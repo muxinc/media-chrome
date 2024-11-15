@@ -169,16 +169,26 @@ class MediaChromeDialog extends globalThis.HTMLElement {
 
   #handleOpen() {
     this.#invokerElement?.setAttribute('aria-expanded', 'true');
+    this.dispatchEvent(new Event('open', { composed: true, bubbles: true }));
     // Focus when the transition ends.
     this.addEventListener('transitionend', () => this.focus(), { once: true });
   }
 
   #handleClosed() {
     this.#invokerElement?.setAttribute('aria-expanded', 'false');
+    this.dispatchEvent(new Event('close', { composed: true, bubbles: true }));
   }
 
   focus() {
     this.#previouslyFocused = getActiveElement();
+
+    // https://w3c.github.io/uievents/#event-type-focus
+    const focusCancelled = !this.dispatchEvent(new Event('focus', { composed: true, cancelable: true }));
+    // https://w3c.github.io/uievents/#event-type-focusin
+    const focusInCancelled = !this.dispatchEvent(new Event('focusin', { composed: true, bubbles: true, cancelable: true }));
+
+    // If `event.preventDefault()` was called in a listener prevent focusing.
+    if (focusCancelled || focusInCancelled) return;
 
     const focusable: HTMLElement | null = this.querySelector(
       '[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]'
