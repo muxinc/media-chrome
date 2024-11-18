@@ -29,12 +29,7 @@ const documentShim = {
   },
   addEventListener() { },
   removeEventListener() { },
-  /**
-   *
-   * @param {Event} event
-   * @returns {boolean}
-   */
-  dispatchEvent(event /* eslint-disable-line @typescript-eslint/no-unused-vars */) {
+  dispatchEvent(_event: Event) {
     return false;
   },
 } as unknown as typeof globalThis['document'];
@@ -57,22 +52,11 @@ const globalThisShim = {
     whenDefined: function () { },
   },
   localStorage: {
-    /**
-     * @param {string} key
-     * @returns {string|null}
-     */
-    getItem(key /* eslint-disable-line @typescript-eslint/no-unused-vars */) {
+    getItem(_key: string) {
       return null;
     },
-    /**
-     * @param {string} key
-     * @param {string} value
-     */
-    setItem(key, value) { }, // eslint-disable-line @typescript-eslint/no-unused-vars
-    /**
-     * @param {string} key
-     */
-    removeItem(key) { }, // eslint-disable-line @typescript-eslint/no-unused-vars
+    setItem(_key: string, _value: string) { },
+    removeItem(_key: string) { },
   },
   CustomEvent: function CustomEvent() { },
   getComputedStyle: function () { },
@@ -82,10 +66,7 @@ const globalThisShim = {
       return '';
     },
   },
-  /**
-   * @param {string} media
-   */
-  matchMedia(media) {
+  matchMedia(media: string) {
     return {
       matches: false,
       media,

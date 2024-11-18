@@ -85,6 +85,8 @@ export const toggleSubtitleTracks = (stateOwners, force: boolean): void => {
 export const areValuesEq = (x: any, y: any): boolean => {
   // If both are strictly equal, they're equal
   if (x === y) return true;
+  // If either is null, they're not equal
+  if (x == null || y == null) return false;
   // If their types don't match, they're not equal
   if (typeof x !== typeof y) return false;
   // Treat NaNs as equal

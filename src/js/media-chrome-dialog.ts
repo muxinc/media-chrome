@@ -8,7 +8,6 @@ import {
 } from './utils/element-utils.js';
 import { InvokeEvent } from './utils/events.js';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getTemplateHTML(_attrs: Record<string, string>) {
   return /*html*/ `
     <style>
@@ -56,7 +55,6 @@ function getTemplateHTML(_attrs: Record<string, string>) {
   `;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getSlotTemplateHTML(_attrs: Record<string, string>) {
   return /*html*/ `
     <slot id="content"></slot>

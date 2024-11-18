@@ -196,6 +196,7 @@ export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
 export type StateMediator = {
   mediaErrorCode: ReadonlyFacadeProp<MediaError['code']>;
   mediaErrorMessage: ReadonlyFacadeProp<MediaError['message']>;
+  mediaError: ReadonlyFacadeProp<MediaError>;
   mediaWidth: ReadonlyFacadeProp<number>;
   mediaHeight: ReadonlyFacadeProp<number>;
   mediaPaused: FacadeProp<HTMLMediaElement['paused']>;
@@ -286,6 +287,15 @@ export const prepareStateOwners = async (
 };
 
 export const stateMediator: StateMediator = {
+  mediaError: {
+    get(stateOwners) {
+      const { media } = stateOwners;
+      // Add additional error info via the `mediaError` element property only.
+      // This can be used in the MediaErrorDialog.formatErrorMessage() method.
+      return media?.error;
+    },
+    mediaEvents: ['emptied', 'error'],
+  },
   mediaErrorCode: {
     get(stateOwners) {
       const { media } = stateOwners;

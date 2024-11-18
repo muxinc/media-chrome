@@ -38,7 +38,7 @@ function shouldOpenErrorDialog(errorCode?: number) {
   return errorCode && errors[errorCode] !== null;
 }
 
-function formatErrorMessage(errorCode?: number, errorMessage?: string) {
+function formatErrorMessage(errorCode?: number, errorMessage?: string, _error?: any) {
   const message: string = errors[errorCode] ?? errorMessage ?? '';
   const parts = message.split(':', 2);
 
@@ -70,6 +70,8 @@ class MediaErrorDialog extends MediaChromeDialog {
     return [...super.observedAttributes, ...observedAttributes];
   }
 
+  #mediaError = null;
+
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
@@ -82,8 +84,16 @@ class MediaErrorDialog extends MediaChromeDialog {
       this.shadowRoot.querySelector('slot').name = `error-${this.mediaErrorCode}`;
       this.shadowRoot.querySelector('#content').innerHTML = (
         this.constructor as typeof MediaErrorDialog
-      ).formatErrorMessage(this.mediaErrorCode, this.mediaErrorMessage);
+      ).formatErrorMessage(this.mediaErrorCode, this.mediaErrorMessage, this.mediaError);
     }
+  }
+
+  get mediaError() {
+    return this.#mediaError;
+  }
+
+  set mediaError(value) {
+    this.#mediaError = value;
   }
 
   get mediaErrorCode() {

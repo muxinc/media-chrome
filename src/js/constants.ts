@@ -46,6 +46,7 @@ export const MediaUIProps = {
   MEDIA_CURRENT_TIME: 'mediaCurrentTime',
   MEDIA_DURATION: 'mediaDuration',
   MEDIA_ENDED: 'mediaEnded',
+  MEDIA_ERROR: 'mediaError',
   MEDIA_ERROR_CODE: 'mediaErrorCode',
   MEDIA_ERROR_MESSAGE: 'mediaErrorMessage',
   MEDIA_FULLSCREEN_UNAVAILABLE: 'mediaFullscreenUnavailable',
