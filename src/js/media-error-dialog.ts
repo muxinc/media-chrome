@@ -9,6 +9,12 @@ import {
   setStringAttr,
 } from './utils/element-utils.js';
 
+type MediaErrorLike = {
+  code: number;
+  message: string;
+  [key: string]: any;
+};
+
 function getSlotTemplateHTML(attrs: Record<string, string>) {
   return /*html*/ `
     <style>
@@ -29,7 +35,7 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
       }
     </style>
     <slot name="error-${attrs.mediaerrorcode}" id="content">
-      ${formatErrorMessage(+attrs.mediaerrorcode, attrs.mediaerrormessage)}
+      ${formatErrorMessage({ code: +attrs.mediaerrorcode, message: attrs.mediaerrormessage })}
     </slot>
   `;
 }
@@ -38,8 +44,8 @@ function shouldOpenErrorDialog(errorCode?: number) {
   return errorCode && errors[errorCode] !== null;
 }
 
-function formatErrorMessage(errorCode?: number, errorMessage?: string, _error?: any) {
-  const message: string = errors[errorCode] ?? errorMessage ?? '';
+function formatErrorMessage(error: MediaErrorLike) {
+  const message: string = errors[error.code] ?? error.message ?? '';
   const parts = message.split(':', 2);
 
   if (parts.length === 2) {
@@ -70,7 +76,7 @@ class MediaErrorDialog extends MediaChromeDialog {
     return [...super.observedAttributes, ...observedAttributes];
   }
 
-  #mediaError = null;
+  #mediaError: MediaErrorLike | null = null;
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -84,15 +90,18 @@ class MediaErrorDialog extends MediaChromeDialog {
       this.shadowRoot.querySelector('slot').name = `error-${this.mediaErrorCode}`;
       this.shadowRoot.querySelector('#content').innerHTML = (
         this.constructor as typeof MediaErrorDialog
-      ).formatErrorMessage(this.mediaErrorCode, this.mediaErrorMessage, this.mediaError);
+      ).formatErrorMessage(this.mediaError ?? {
+        code: this.mediaErrorCode,
+        message: this.mediaErrorMessage,
+      });
     }
   }
 
-  get mediaError() {
+  get mediaError(): MediaErrorLike | null {
     return this.#mediaError;
   }
 
-  set mediaError(value) {
+  set mediaError(value: MediaErrorLike | null) {
     this.#mediaError = value;
   }
 
