@@ -8,6 +8,15 @@ import {
 } from './utils/element-utils.js';
 import { InvokeEvent } from './utils/events.js';
 
+/**
+ * Get the template HTML for the dialog with the given attributes.
+ *
+ * This is a static method that can be called on the class and can be
+ * overridden by subclasses to customize the template.
+ *
+ * Another static method, `getSlotTemplateHTML`, is called by this method
+ * which can be separately overridden to customize the slot template.
+ */
 function getTemplateHTML(_attrs: Record<string, string>) {
   return /*html*/ `
     <style>
@@ -53,6 +62,12 @@ function getTemplateHTML(_attrs: Record<string, string>) {
   `;
 }
 
+/**
+ * Get the slot template HTML for the dialog with the given attributes.
+ *
+ * This is a static method that can be called on the class and can be
+ * overridden by subclasses to customize the slot template.
+ */
 function getSlotTemplateHTML(_attrs: Record<string, string>) {
   return /*html*/ `
     <slot id="content"></slot>
@@ -82,6 +97,11 @@ export const Attributes = {
  * @cssproperty --media-font-family - `font-family` property.
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
+ *
+ * @event {Event} open - Dispatched when the dialog is opened.
+ * @event {Event} close - Dispatched when the dialog is closed.
+ * @event {Event} focus - Dispatched when the dialog is focused.
+ * @event {Event} focusin - Dispatched when the dialog is focused in.
  */
 class MediaChromeDialog extends globalThis.HTMLElement {
   static getTemplateHTML = getTemplateHTML;
