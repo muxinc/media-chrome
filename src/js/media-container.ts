@@ -89,11 +89,11 @@ template.innerHTML = /*html*/ `
        */ ''
     }
     :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) ::slotted([slot=gestures-chrome]),
+      Attributes.GESTURES_DISABLED
+    }]) ::slotted([slot=gestures-chrome]),
     :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) media-gesture-receiver[slot=gestures-chrome] {
+      Attributes.GESTURES_DISABLED
+    }]) media-gesture-receiver[slot=gestures-chrome] {
       display: none;
     }
 
@@ -151,7 +151,7 @@ template.innerHTML = /*html*/ `
     ${/* Only add these if auto hide is not disabled */ ''}
     ::slotted(:not([slot=media]):not([slot=poster]):not([${
       Attributes.NO_AUTOHIDE
-    }]):not([hidden])) {
+    }]):not([hidden]):not([role=dialog])) {
       opacity: 1;
       transition: opacity 0.25s;
     }
@@ -160,23 +160,23 @@ template.innerHTML = /*html*/ `
       /* Hide controls when inactive, not paused, not audio and auto hide not disabled */ ''
     }
     :host([${Attributes.USER_INACTIVE}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${
-  MediaUIAttributes.MEDIA_IS_CASTING
-}]):not([${
-  Attributes.AUDIO
-}])) ::slotted(:not([slot=media]):not([slot=poster]):not([${
-  Attributes.NO_AUTOHIDE
-}])) {
+      MediaUIAttributes.MEDIA_PAUSED
+    }]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${
+      MediaUIAttributes.MEDIA_IS_CASTING
+    }]):not([${
+      Attributes.AUDIO
+    }])) ::slotted(:not([slot=media]):not([slot=poster]):not([${
+      Attributes.NO_AUTOHIDE
+    }]):not([role=dialog])) {
       opacity: 0;
       transition: opacity 1s;
     }
 
     :host([${Attributes.USER_INACTIVE}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
-  Attributes.AUDIO
-}])) ::slotted([slot=media]) {
+      MediaUIAttributes.MEDIA_PAUSED
+    }]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
+      Attributes.AUDIO
+    }])) ::slotted([slot=media]) {
       cursor: none;
     }
 
@@ -188,8 +188,8 @@ template.innerHTML = /*html*/ `
       /* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''
     }
     :host(:not([${Attributes.AUDIO}])[${
-  MediaUIAttributes.MEDIA_HAS_PLAYED
-}]) slot[name=poster] {
+      MediaUIAttributes.MEDIA_HAS_PLAYED
+    }]) slot[name=poster] {
       display: none;
     }
 

@@ -81,7 +81,7 @@ class MediaErrorDialog extends MediaChromeDialog {
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    // Add this conditional to prevent endless loop by setting the hidden attribute.
+    // Add this conditional to prevent endless loop by setting the open attribute.
     if (!observedAttributes.includes(attrName)) return;
 
     this.open = shouldOpenErrorDialog(this.mediaErrorCode);

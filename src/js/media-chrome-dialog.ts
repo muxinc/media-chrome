@@ -23,19 +23,17 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         height: 100%;
         justify-content: center;
         align-items: center;
-        transition: visibility .15s ease-in, opacity .15s ease-in, transform .15s ease-in !important;
+        transition: visibility .15s ease-in, opacity .15s ease-in, transform .15s ease-in;
         visibility: hidden;
-        ${/* Prevent opacity override by media-container */ ''}
-        opacity: 0 !important;
+        opacity: 0;
         transform: translateY(2px) scale(.99);
         pointer-events: none;
       }
 
       :host([open]) {
         visibility: visible;
-        opacity: 1 !important;
-        ${/* Prevent transition override by media-container */ ''}
-        transition: visibility 0s, opacity .2s ease-out, transform .15s ease-out !important;
+        opacity: 1;
+        transition: visibility 0s, opacity .2s ease-out, transform .15s ease-out;
         transform: translateY(0) scale(1);
       }
 
