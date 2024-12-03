@@ -193,7 +193,7 @@ template.innerHTML = /*html*/ `
       display: none;
     }
 
-    slot[name=top-layer]::slotted(*) {
+    slot[name=dialog]::slotted(*) {
       z-index: 2;
     }
 
@@ -220,7 +220,7 @@ template.innerHTML = /*html*/ `
     ${/* default, effectively "bottom-chrome" */ ''}
     <slot part="bottom chrome"></slot>
   </span>
-  <slot name="top-layer" part="layer top-layer"></slot>
+  <slot name="dialog" part="layer dialog-layer"></slot>
 `;
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
