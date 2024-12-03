@@ -103,7 +103,7 @@ template.innerHTML = /*html*/ `
        * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
        */ ''
     }
-    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([hidden])) {
+    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([role=dialog]):not([hidden])) {
       pointer-events: auto;
     }
 
@@ -193,18 +193,18 @@ template.innerHTML = /*html*/ `
       display: none;
     }
 
-    ::slotted([role="menu"]) {
-      align-self: end;
+    slot[name=top-layer]::slotted(*) {
+      z-index: 2;
     }
 
-    ::slotted([role="dialog"]) {
+    ::slotted([role=dialog]) {
+      width: 100%;
+      height: 100%;
       align-self: center;
     }
 
-    ::slotted(media-error-dialog) {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
+    ::slotted([role=menu]) {
+      align-self: end;
     }
   </style>
 
@@ -220,6 +220,7 @@ template.innerHTML = /*html*/ `
     ${/* default, effectively "bottom-chrome" */ ''}
     <slot part="bottom chrome"></slot>
   </span>
+  <slot name="top-layer" part="layer top-layer"></slot>
 `;
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);

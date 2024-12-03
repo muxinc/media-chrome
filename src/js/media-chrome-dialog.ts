@@ -28,8 +28,6 @@ function getTemplateHTML(_attrs: Record<string, string>) {
           var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
         color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
         display: var(--media-dialog-display, inline-flex);
-        width: 100%;
-        height: 100%;
         justify-content: center;
         align-items: center;
         transition: display .15s, opacity .15s ease-in, transform .15s ease-in;
@@ -44,6 +42,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         transition-behavior: allow-discrete;
         opacity: 1;
         transform: translateY(0) scale(1);
+        pointer-events: auto;
       }
 
       #content {
