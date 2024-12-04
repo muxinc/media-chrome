@@ -28,9 +28,7 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
       }
 
       h3,
-      p,
-      ::slotted(h3),
-      ::slotted(p) {
+      p {
         margin-block: 0 .3em;
       }
     </style>
