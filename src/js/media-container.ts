@@ -305,6 +305,7 @@ class MediaContainer extends globalThis.HTMLElement {
               MediaUIAttributes.MEDIA_CHAPTERS_CUES,
               MediaUIAttributes.MEDIA_WIDTH,
               MediaUIAttributes.MEDIA_HEIGHT,
+              MediaUIAttributes.MEDIA_ERROR,
               MediaUIAttributes.MEDIA_ERROR_MESSAGE,
             ].includes(name as any)
         )
@@ -406,8 +407,6 @@ class MediaContainer extends globalThis.HTMLElement {
 
     // Handles the case when the slotted media element is a slot element itself.
     // e.g. chaining media slots for media themes.
-
-    /** @type {HTMLSlotElement} */
     const chainedSlot = this.querySelector(
       ':scope > slot[slot=media]'
     ) as HTMLSlotElement;
@@ -428,7 +427,7 @@ class MediaContainer extends globalThis.HTMLElement {
   // Could share this code with media-chrome-html-element instead
   attributeChangedCallback(
     attrName: string,
-    oldValue: string,
+    _oldValue: string,
     newValue: string
   ) {
     if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
@@ -437,18 +436,7 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   // First direct child with slot=media, or null
-  /**
-   * @returns {HTMLVideoElement &
-   * {buffered,
-   * webkitEnterFullscreen?,
-   * webkitExitFullscreen?,
-   * requestCast?,
-   * webkitShowPlaybackTargetPicker?,
-   * videoTracks?,
-   * }}
-   */
   get media(): HTMLVideoElement | null {
-    /** @type {HTMLVideoElement} */
     let media = this.querySelector(':scope > [slot=media]') as HTMLVideoElement;
 
     // Chaining media slots for media templates
@@ -459,9 +447,6 @@ class MediaContainer extends globalThis.HTMLElement {
     return media;
   }
 
-  /**
-   * @param {HTMLMediaElement} media
-   */
   async handleMediaUpdated(media: HTMLMediaElement) {
     // Anything "falsy" couldn't act as a media element.
     if (!media) return;
@@ -513,16 +498,10 @@ class MediaContainer extends globalThis.HTMLElement {
 
   /**
    * @abstract
-   * @param {HTMLMediaElement} media
    */
-  mediaSetCallback(media: HTMLMediaElement) {} // eslint-disable-line
+  mediaSetCallback(_media: HTMLMediaElement) {}
 
-  /**
-   * @param {HTMLMediaElement} media
-   */
-  mediaUnsetCallback(
-    media: HTMLMediaElement // eslint-disable-line
-  ) {
+  mediaUnsetCallback(_media: HTMLMediaElement) {
     this.#currentMedia = null;
   }
 

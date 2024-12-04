@@ -137,10 +137,7 @@ const createMediaStore = ({
   };
 
   /** @TODO How to model initial state for values not (currently) provided via the facade? (CJP) */
-  /**
-   * @type {Partial<MediaState>}
-   */
-  let state = Object.freeze({
+  let state: Partial<MediaState> = Object.freeze({
     mediaPreviewTime: undefined,
     mediaPreviewImage: undefined,
     mediaPreviewCoords: undefined,
@@ -495,7 +492,8 @@ const createMediaStore = ({
       // For any state change request "actions"/"events" of media (and related) state,
       // these are handled by the `RequestMap`, which defines a function for a given change request type
       // that is responsible for what should happen as a result
-      if (requestMap[type]) {
+      // If a fatal error occurred, we should not process any more state change requests.
+      if (requestMap[type] && state.mediaErrorCode == null) {
         // Most state change requests do not directly update the media state. Instead
         // they will typically interact in some way or another with one or more of the `StateOwner`s (like the media element).
         // For some of our media UI state, however, it does directly update state. In those cases,
