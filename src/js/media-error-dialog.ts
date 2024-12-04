@@ -45,16 +45,12 @@ function shouldOpenErrorDialog(errorCode?: number) {
 }
 
 function formatErrorMessage(error: MediaErrorLike) {
-  const message: string = errors[error.code] ?? error.message ?? '';
-  const parts = message.split(':', 2);
-
-  if (parts.length === 2) {
-    return /*html*/ `
-      <h3>${parts[0]}</h3>
-      <p>${parts[1]}</p>
-    `;
-  }
-  return /*html*/ `<p>${message}</p> `;
+  const title: string = errors[error.code]?.title ?? '';
+  const message: string = errors[error.code]?.message ?? error.message ?? '';
+  let html = '';
+  if (title) html += `<h3>${title}</h3>`;
+  if (message) html += `<p>${message}</p>`;
+  return html;
 }
 
 const observedAttributes: string[] = [
