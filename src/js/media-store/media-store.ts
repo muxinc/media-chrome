@@ -492,7 +492,9 @@ const createMediaStore = ({
       // For any state change request "actions"/"events" of media (and related) state,
       // these are handled by the `RequestMap`, which defines a function for a given change request type
       // that is responsible for what should happen as a result
-      // If a fatal error occurred, we should not process any more state change requests.
+      // If a fatal error occurred, we should not process any more state change requests,
+      // but we should process updates to state owners or options/defaults, handled below,
+      // which is why we don't simply early bail here.
       if (requestMap[type] && state.mediaErrorCode == null) {
         // Most state change requests do not directly update the media state. Instead
         // they will typically interact in some way or another with one or more of the `StateOwner`s (like the media element).
