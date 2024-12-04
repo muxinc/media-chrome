@@ -74,6 +74,10 @@ class MediaErrorDialog extends MediaChromeDialog {
 
   #mediaError: MediaErrorLike | null = null;
 
+  formatErrorMessage(error: MediaErrorLike) {
+    return (this.constructor as typeof MediaErrorDialog).formatErrorMessage(error);
+  }
+
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
@@ -84,12 +88,12 @@ class MediaErrorDialog extends MediaChromeDialog {
 
     if (this.open) {
       this.shadowRoot.querySelector('slot').name = `error-${this.mediaErrorCode}`;
-      this.shadowRoot.querySelector('#content').innerHTML = (
-        this.constructor as typeof MediaErrorDialog
-      ).formatErrorMessage(this.mediaError ?? {
-        code: this.mediaErrorCode,
-        message: this.mediaErrorMessage,
-      });
+      this.shadowRoot.querySelector('#content').innerHTML = this.formatErrorMessage(
+        this.mediaError ?? {
+          code: this.mediaErrorCode,
+          message: this.mediaErrorMessage,
+        }
+      );
     }
   }
 
