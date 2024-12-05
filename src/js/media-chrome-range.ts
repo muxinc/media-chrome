@@ -29,7 +29,6 @@ template.innerHTML = /*html*/ `
       cursor: pointer;
       pointer-events: auto;
       touch-action: none; ${/* Prevent scrolling when dragging on mobile. */ ''}
-      z-index: 1; ${/* Apply z-index to overlap buttons below. */ ''}
     }
 
     ${/* Reset before `outline` on track could be set by a CSS var */ ''}

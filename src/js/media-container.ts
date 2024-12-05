@@ -193,10 +193,6 @@ template.innerHTML = /*html*/ `
       display: none;
     }
 
-    slot[name=dialog]::slotted(*) {
-      z-index: 2;
-    }
-
     ::slotted([role=dialog]) {
       width: 100%;
       height: 100%;
