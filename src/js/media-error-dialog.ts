@@ -1,6 +1,6 @@
 import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
-import { errors } from './labels/labels.js';
+import { formatError } from './labels/labels.js';
 import { MediaChromeDialog } from './media-chrome-dialog.js';
 import {
   getNumericAttr,
@@ -38,13 +38,12 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
   `;
 }
 
-function shouldOpenErrorDialog(errorCode?: number) {
-  return errorCode && errors[errorCode] !== null;
+function shouldOpenErrorDialog(error: MediaErrorLike) {
+  return error.code && formatError(error) !== null;
 }
 
 function formatErrorMessage(error: MediaErrorLike) {
-  const title: string = errors[error.code]?.title ?? '';
-  const message: string = errors[error.code]?.message ?? error.message ?? '';
+  const { title, message } = formatError(error) ?? {};
   let html = '';
   if (title) html += `<h3>${title}</h3>`;
   if (message) html += `<p>${message}</p>`;
@@ -82,16 +81,16 @@ class MediaErrorDialog extends MediaChromeDialog {
     // Add this conditional to prevent endless loop by setting the open attribute.
     if (!observedAttributes.includes(attrName)) return;
 
-    this.open = shouldOpenErrorDialog(this.mediaErrorCode);
+    const mediaError = this.mediaError ?? {
+      code: this.mediaErrorCode,
+      message: this.mediaErrorMessage,
+    };
+
+    this.open = shouldOpenErrorDialog(mediaError);
 
     if (this.open) {
       this.shadowRoot.querySelector('slot').name = `error-${this.mediaErrorCode}`;
-      this.shadowRoot.querySelector('#content').innerHTML = this.formatErrorMessage(
-        this.mediaError ?? {
-          code: this.mediaErrorCode,
-          message: this.mediaErrorMessage,
-        }
-      );
+      this.shadowRoot.querySelector('#content').innerHTML = this.formatErrorMessage(mediaError);
     }
   }
 

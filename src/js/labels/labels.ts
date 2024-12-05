@@ -1,25 +1,33 @@
 export type LabelOptions = { seekOffset?: number; playbackRate?: number };
 
-// Setting a code explicitely to null makes the error not show up in the UI.
-export const errors = {
-  1: null,
-  2: {
-    title: 'Network Error',
-    message: 'A network error caused the media download to fail.',
-  },
-  3: {
-    title: 'Decode Error',
-    message: 'A media error caused playback to be aborted. The media could be corrupt or your browser does not support this format.',
-  },
-  4: {
-    title: 'Source Not Supported',
-    message: 'An unsupported error occurred. The server or network failed, or your browser does not support this format.',
-  },
-  5: {
-    title: 'Encryption Error',
-    message: 'The media is encrypted and there are no keys to decrypt it.',
-  },
+export type MediaErrorLike = {
+  code: number;
+  message: string;
+  [key: string]: any;
 };
+
+const defaultErrorTitles = {
+  2: 'Network Error',
+  3: 'Decode Error',
+  4: 'Source Not Supported',
+  5: 'Encryption Error',
+};
+
+const defaultErrorMessages = {
+  2: 'A network error caused the media download to fail.',
+  3: 'A media error caused playback to be aborted. The media could be corrupt or your browser does not support this format.',
+  4: 'An unsupported error occurred. The server or network failed, or your browser does not support this format.',
+  5: 'The media is encrypted and there are no keys to decrypt it.',
+};
+
+// Returning null makes the error not show up in the UI.
+export const formatError = (error: MediaErrorLike) => {
+  if (error.code === 1) return null;
+  return {
+    title: defaultErrorTitles[error.code] ?? `Error ${error.code}`,
+    message: defaultErrorMessages[error.code] ?? error.message
+  };
+}
 
 export const tooltipLabels = {
   ENTER_AIRPLAY: 'Start airplay',

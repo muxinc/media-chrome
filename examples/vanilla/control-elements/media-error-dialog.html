@@ -73,7 +73,7 @@
     <script>
       function setError() {
         const video = document.querySelector('custom-video');
-        const customError = new Error('Custom Error: This is a custom error!');
+        const customError = new Error('This is a custom error with code 42!');
         customError.code = 42;
         video.error = customError;
         video.dispatchEvent(new Event('error'));
@@ -96,7 +96,8 @@
 
       <h2>Error 2 with custom message via <code>error-2</code> slot</h2>
       <media-error-dialog mediaerrorcode="2">
-        <div slot="error-2">This is a custom message</div>
+        <h3 slot="error-2">Custom Error 2</h3>
+        <p slot="error-2">This is a custom message</p>
       </media-error-dialog>
     </div>
 
