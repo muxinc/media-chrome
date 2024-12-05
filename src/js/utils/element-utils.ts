@@ -1,6 +1,14 @@
 import { MediaStateReceiverAttributes } from '../constants.js';
 import type MediaController from '../media-controller.js';
 
+export function namedNodeMapToObject(namedNodeMap: NamedNodeMap) {
+  const obj = {};
+  for (const attr of namedNodeMap) {
+    obj[attr.name] = attr.value;
+  }
+  return obj;
+}
+
 /**
  * Get the media controller element from the `mediacontroller` attribute or closest ancestor.
  * @param host - The element to search for the media controller.

@@ -305,7 +305,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     ];
   }
 
-  static formatMenuItemText(text: string): string {
+  static formatMenuItemText(text: string, _data?: any): string {
     return text;
   }
 
@@ -463,8 +463,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   formatMenuItemText(text: string, data?: any) {
-    // @ts-ignore
-    return this.constructor.formatMenuItemText(text, data);
+    return (this.constructor as typeof MediaChromeMenu).formatMenuItemText(text, data);
   }
 
   get anchor() {

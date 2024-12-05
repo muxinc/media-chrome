@@ -89,11 +89,11 @@ template.innerHTML = /*html*/ `
        */ ''
     }
     :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) ::slotted([slot=gestures-chrome]),
+      Attributes.GESTURES_DISABLED
+    }]) ::slotted([slot=gestures-chrome]),
     :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) media-gesture-receiver[slot=gestures-chrome] {
+      Attributes.GESTURES_DISABLED
+    }]) media-gesture-receiver[slot=gestures-chrome] {
       display: none;
     }
 
@@ -103,7 +103,7 @@ template.innerHTML = /*html*/ `
        * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
        */ ''
     }
-    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([hidden])) {
+    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([role=dialog]):not([hidden])) {
       pointer-events: auto;
     }
 
@@ -151,7 +151,7 @@ template.innerHTML = /*html*/ `
     ${/* Only add these if auto hide is not disabled */ ''}
     ::slotted(:not([slot=media]):not([slot=poster]):not([${
       Attributes.NO_AUTOHIDE
-    }]):not([hidden])) {
+    }]):not([hidden]):not([role=dialog])) {
       opacity: 1;
       transition: opacity 0.25s;
     }
@@ -160,23 +160,23 @@ template.innerHTML = /*html*/ `
       /* Hide controls when inactive, not paused, not audio and auto hide not disabled */ ''
     }
     :host([${Attributes.USER_INACTIVE}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${
-  MediaUIAttributes.MEDIA_IS_CASTING
-}]):not([${
-  Attributes.AUDIO
-}])) ::slotted(:not([slot=media]):not([slot=poster]):not([${
-  Attributes.NO_AUTOHIDE
-}])) {
+      MediaUIAttributes.MEDIA_PAUSED
+    }]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${
+      MediaUIAttributes.MEDIA_IS_CASTING
+    }]):not([${
+      Attributes.AUDIO
+    }])) ::slotted(:not([slot=media]):not([slot=poster]):not([${
+      Attributes.NO_AUTOHIDE
+    }]):not([role=dialog])) {
       opacity: 0;
       transition: opacity 1s;
     }
 
     :host([${Attributes.USER_INACTIVE}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
-  Attributes.AUDIO
-}])) ::slotted([slot=media]) {
+      MediaUIAttributes.MEDIA_PAUSED
+    }]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
+      Attributes.AUDIO
+    }])) ::slotted([slot=media]) {
       cursor: none;
     }
 
@@ -188,17 +188,19 @@ template.innerHTML = /*html*/ `
       /* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''
     }
     :host(:not([${Attributes.AUDIO}])[${
-  MediaUIAttributes.MEDIA_HAS_PLAYED
-}]) slot[name=poster] {
+      MediaUIAttributes.MEDIA_HAS_PLAYED
+    }]) slot[name=poster] {
       display: none;
     }
 
-    ::slotted([role="menu"]) {
-      align-self: end;
+    ::slotted([role=dialog]) {
+      width: 100%;
+      height: 100%;
+      align-self: center;
     }
 
-    ::slotted([role="dialog"]) {
-      align-self: center;
+    ::slotted([role=menu]) {
+      align-self: end;
     }
   </style>
 
@@ -214,6 +216,7 @@ template.innerHTML = /*html*/ `
     ${/* default, effectively "bottom-chrome" */ ''}
     <slot part="bottom chrome"></slot>
   </span>
+  <slot name="dialog" part="layer dialog-layer"></slot>
 `;
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
@@ -298,6 +301,8 @@ class MediaContainer extends globalThis.HTMLElement {
               MediaUIAttributes.MEDIA_CHAPTERS_CUES,
               MediaUIAttributes.MEDIA_WIDTH,
               MediaUIAttributes.MEDIA_HEIGHT,
+              MediaUIAttributes.MEDIA_ERROR,
+              MediaUIAttributes.MEDIA_ERROR_MESSAGE,
             ].includes(name as any)
         )
     );
@@ -398,8 +403,6 @@ class MediaContainer extends globalThis.HTMLElement {
 
     // Handles the case when the slotted media element is a slot element itself.
     // e.g. chaining media slots for media themes.
-
-    /** @type {HTMLSlotElement} */
     const chainedSlot = this.querySelector(
       ':scope > slot[slot=media]'
     ) as HTMLSlotElement;
@@ -420,7 +423,7 @@ class MediaContainer extends globalThis.HTMLElement {
   // Could share this code with media-chrome-html-element instead
   attributeChangedCallback(
     attrName: string,
-    oldValue: string,
+    _oldValue: string,
     newValue: string
   ) {
     if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
@@ -429,18 +432,7 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   // First direct child with slot=media, or null
-  /**
-   * @returns {HTMLVideoElement &
-   * {buffered,
-   * webkitEnterFullscreen?,
-   * webkitExitFullscreen?,
-   * requestCast?,
-   * webkitShowPlaybackTargetPicker?,
-   * videoTracks?,
-   * }}
-   */
   get media(): HTMLVideoElement | null {
-    /** @type {HTMLVideoElement} */
     let media = this.querySelector(':scope > [slot=media]') as HTMLVideoElement;
 
     // Chaining media slots for media templates
@@ -451,9 +443,6 @@ class MediaContainer extends globalThis.HTMLElement {
     return media;
   }
 
-  /**
-   * @param {HTMLMediaElement} media
-   */
   async handleMediaUpdated(media: HTMLMediaElement) {
     // Anything "falsy" couldn't act as a media element.
     if (!media) return;
@@ -505,16 +494,10 @@ class MediaContainer extends globalThis.HTMLElement {
 
   /**
    * @abstract
-   * @param {HTMLMediaElement} media
    */
-  mediaSetCallback(media: HTMLMediaElement) {} // eslint-disable-line
+  mediaSetCallback(_media: HTMLMediaElement) {}
 
-  /**
-   * @param {HTMLMediaElement} media
-   */
-  mediaUnsetCallback(
-    media: HTMLMediaElement // eslint-disable-line
-  ) {
+  mediaUnsetCallback(_media: HTMLMediaElement) {
     this.#currentMedia = null;
   }
 
