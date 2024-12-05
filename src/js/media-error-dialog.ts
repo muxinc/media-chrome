@@ -45,8 +45,8 @@ function shouldOpenErrorDialog(error: MediaErrorLike) {
 function formatErrorMessage(error: MediaErrorLike) {
   const { title, message } = formatError(error) ?? {};
   let html = '';
-  if (title) html += `<h3>${title}</h3>`;
-  if (message) html += `<p>${message}</p>`;
+  if (title) html += `<slot name="error-${error.code}-title"><h3>${title}</h3></slot>`;
+  if (message) html += `<slot name="error-${error.code}-message"><p>${message}</p></slot>`;
   return html;
 }
 
