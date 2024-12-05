@@ -1,3 +1,17 @@
+# [4.3.0](https://github.com/muxinc/media-chrome/compare/v4.2.3...v4.3.0) (2024-12-05)
+
+
+### Features
+
+* add media-error-dialog ([#1024](https://github.com/muxinc/media-chrome/issues/1024)) ([3fc95a2](https://github.com/muxinc/media-chrome/commit/3fc95a2f7c19f50b6fc7c6d664ada2458dd48e3b))
+
+
+### Reverts
+
+* Revert "docs: use latest instead of symlink" (#1019) ([0c161f4](https://github.com/muxinc/media-chrome/commit/0c161f468eefd13e4c91af1ba295310b48a8ff1e)), closes [#1019](https://github.com/muxinc/media-chrome/issues/1019)
+
+
+
 ## [4.2.3](https://github.com/muxinc/media-chrome/compare/v4.2.2...v4.2.3) (2024-11-05)
 
 
