@@ -1,6 +1,6 @@
 {
   "name": "media-chrome",
-  "version": "4.2.3",
+  "version": "4.3.0",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
   "author": "@muxinc",
   "license": "MIT",
@@ -164,7 +164,12 @@
     "rules": {
       "@typescript-eslint/ban-ts-comment": "off",
       "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ]
     },
     "parserOptions": {
       "ecmaVersion": 2022,
