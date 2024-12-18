@@ -7,7 +7,8 @@ import {
   StreamTypes,
   VolumeLevels,
 } from '../constants.js';
-import createMediaStore, {
+import {
+  createMediaStore,
   type MediaState,
   type MediaStore,
 } from '../media-store/media-store.js';

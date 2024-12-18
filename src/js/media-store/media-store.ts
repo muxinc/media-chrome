@@ -116,7 +116,7 @@ type MediaStoreConfig = {
  * A factory for creating a `MediaStore` instance.
  * @param mediaStoreConfig - Configuration object for the `MediaStore`.
  */
-const createMediaStore = ({
+export const createMediaStore = ({
   media,
   fullscreenElement,
   documentElement,
@@ -556,5 +556,3 @@ const createMediaStore = ({
     },
   };
 };
-
-export default createMediaStore;
