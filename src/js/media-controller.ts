@@ -28,7 +28,7 @@ import {
   setNumericAttr,
   setStringAttr,
 } from './utils/element-utils.js';
-import createMediaStore, { MediaStore } from './media-store/media-store.js';
+import { createMediaStore, MediaStore } from './media-store/media-store.js';
 import { CustomElement } from './utils/CustomElement.js';
 
 const ButtonPressedKeys = [
