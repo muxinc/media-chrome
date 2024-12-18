@@ -556,3 +556,5 @@ export const createMediaStore = ({
     },
   };
 };
+
+export default createMediaStore;
