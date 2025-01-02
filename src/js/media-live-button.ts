@@ -42,7 +42,7 @@ slotTemplate.innerHTML = /*html*/ `
     between slotted items and default slots.
   */ ''
   }
-  <slot name="spacer">&nbsp;</slot><slot name="text">LIVE</slot>
+  <slot name="spacer">&nbsp;</slot><slot name="text">${verbs.LIVE()}</slot>
 `;
 
 const updateAriaAttributes = (el: MediaLiveButton): void => {
