@@ -1,3 +1,8 @@
+import i18next, { initI18n } from '../i18n/i18n.js';
+initI18n();
+
+const { t: translationStrings } = i18next;
+
 export type LabelOptions = { seekOffset?: number; playbackRate?: number };
 
 export type MediaErrorLike = {
@@ -30,63 +35,68 @@ export const formatError = (error: MediaErrorLike) => {
 }
 
 export const tooltipLabels = {
-  ENTER_AIRPLAY: 'Start airplay',
-  EXIT_AIRPLAY: 'Stop airplay',
-  AUDIO_TRACK_MENU: 'Audio',
-  CAPTIONS: 'Captions',
-  ENABLE_CAPTIONS: 'Enable captions',
-  DISABLE_CAPTIONS: 'Disable captions',
-  START_CAST: 'Start casting',
-  STOP_CAST: 'Stop casting',
-  ENTER_FULLSCREEN: 'Enter fullscreen mode',
-  EXIT_FULLSCREEN: 'Exit fullscreen mode',
-  MUTE: 'Mute',
-  UNMUTE: 'Unmute',
-  ENTER_PIP: 'Enter picture in picture mode',
-  EXIT_PIP: 'Enter picture in picture mode',
-  PLAY: 'Play',
-  PAUSE: 'Pause',
-  PLAYBACK_RATE: 'Playback rate',
-  RENDITIONS: 'Quality',
-  SEEK_BACKWARD: 'Seek backward',
-  SEEK_FORWARD: 'Seek forward',
-  SETTINGS: 'Settings',
+  ENTER_AIRPLAY: translationStrings('tooltips.enterAirplay'),
+  EXIT_AIRPLAY: translationStrings('tooltips.exitAirplay'),
+  AUDIO_TRACK_MENU: translationStrings('tooltips.audioTrackMenu'),
+  CAPTIONS: translationStrings('tooltips.captions'),
+  ENABLE_CAPTIONS: translationStrings('tooltips.enableCaptions'),
+  DISABLE_CAPTIONS: translationStrings('tooltips.disableCaptions'),
+  START_CAST: translationStrings('tooltips.startCast'),
+  STOP_CAST: translationStrings('tooltips.stopCast'),
+  ENTER_FULLSCREEN: translationStrings('tooltips.enterFullscreen'),
+  EXIT_FULLSCREEN: translationStrings('tooltips.exitFullscreen'),
+  MUTE: translationStrings('tooltips.mute'),
+  UNMUTE: translationStrings('tooltips.unmute'),
+  ENTER_PIP: translationStrings('tooltips.enterPip'),
+  EXIT_PIP: translationStrings('tooltips.exitPip'),
+  PLAY: translationStrings('tooltips.play'),
+  PAUSE: translationStrings('tooltips.pause'),
+  PLAYBACK_RATE: translationStrings('tooltips.playbackRate'),
+  RENDITIONS: translationStrings('tooltips.renditions'),
+  SEEK_BACKWARD: translationStrings('tooltips.seekBackward'),
+  SEEK_FORWARD: translationStrings('tooltips.seekForward'),
+  SETTINGS: translationStrings('tooltips.settings'),
 };
 
 export const nouns: Record<string, (options?: LabelOptions) => string> = {
-  AUDIO_PLAYER: () => 'audio player',
-  VIDEO_PLAYER: () => 'video player',
-  VOLUME: () => 'volume',
-  SEEK: () => 'seek',
-  CLOSED_CAPTIONS: () => 'closed captions',
+  AUDIO_PLAYER: () => translationStrings('nouns.audioPlayer'),
+  VIDEO_PLAYER: () => translationStrings('nouns.videoPlayer'),
+  VOLUME: () => translationStrings('nouns.volume'),
+  SEEK: () => translationStrings('nouns.seek'),
+  CLOSED_CAPTIONS: () => translationStrings('nouns.closedCaptions'),
   PLAYBACK_RATE: ({ playbackRate = 1 } = {}) =>
-    `current playback rate ${playbackRate}`,
-  PLAYBACK_TIME: () => `playback time`,
-  MEDIA_LOADING: () => `media loading`,
-  SETTINGS: () => `settings`,
-  AUDIO_TRACKS: () => `audio tracks`,
-  QUALITY: () => `quality`,
+    `${translationStrings('nouns.playbackRate')} ${playbackRate}`,
+  PLAYBACK_TIME: () => translationStrings('nouns.playbackTime'),
+  MEDIA_LOADING: () => translationStrings('nouns.mediaLoading'),
+  SETTINGS: () => translationStrings('nouns.settings'),
+  AUDIO_TRACKS: () => translationStrings('nouns.audioTracks'),
+  QUALITY: () => translationStrings('nouns.quality'),
 };
 
 export const verbs: Record<string, (options?: LabelOptions) => string> = {
-  PLAY: () => 'play',
-  PAUSE: () => 'pause',
-  MUTE: () => 'mute',
-  UNMUTE: () => 'unmute',
-  ENTER_AIRPLAY: () => 'start airplay',
-  EXIT_AIRPLAY: () => 'stop airplay',
-  ENTER_CAST: () => 'start casting',
-  EXIT_CAST: () => 'stop casting',
-  ENTER_FULLSCREEN: () => 'enter fullscreen mode',
-  EXIT_FULLSCREEN: () => 'exit fullscreen mode',
-  ENTER_PIP: () => 'enter picture in picture mode',
-  EXIT_PIP: () => 'exit picture in picture mode',
+  PLAY: () => translationStrings('verbs.play'),
+  PAUSE: () => translationStrings('verbs.pause'),
+  MUTE: () => translationStrings('verbs.mute'),
+  UNMUTE: () => translationStrings('verbs.unmute'),
+  LIVE: () => translationStrings('verbs.live'),
+  ENTER_AIRPLAY: () => translationStrings('verbs.enterAirplay'),
+  EXIT_AIRPLAY: () => translationStrings('verbs.exitAirplay'),
+  ENTER_CAST: () => translationStrings('verbs.enterCast'),
+  EXIT_CAST: () => translationStrings('verbs.exitCast'),
+  ENTER_FULLSCREEN: () => translationStrings('verbs.enterFullscreen'),
+  EXIT_FULLSCREEN: () => translationStrings('verbs.exitFullscreen'),
+  ENTER_PIP: () => translationStrings('verbs.enterPip'),
+  EXIT_PIP: () => translationStrings('verbs.exitPip'),
   SEEK_FORWARD_N_SECS: ({ seekOffset = 30 } = {}) =>
-    `seek forward ${seekOffset} seconds`,
+    `${translationStrings(
+      'verbs.seekForward'
+    )} ${seekOffset} ${translationStrings('verbs.seconds')}`,
   SEEK_BACK_N_SECS: ({ seekOffset = 30 } = {}) =>
-    `seek back ${seekOffset} seconds`,
-  SEEK_LIVE: () => 'seek to live',
-  PLAYING_LIVE: () => 'playing live',
+    `${translationStrings('verbs.seekBack')} ${seekOffset} ${translationStrings(
+      'verbs.seconds'
+    )}`,
+  SEEK_LIVE: () => translationStrings('verbs.seekLive'),
+  PLAYING_LIVE: () => translationStrings('verbs.playingLive'),
 };
 
 export default {

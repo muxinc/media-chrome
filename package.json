@@ -100,11 +100,11 @@
     "manifest": "npx @custom-elements-manifest/analyzer analyze --config scripts/custom-elements-manifest.config.js",
     "postmanifest": "rimraf 'dist/**/media-*'",
     "build:types": "tsc",
-    "build:esm": "esbuild \"src/js/**/*.*s*\" --target=es2019 --format=esm --outdir=dist",
-    "build:cjs": "esbuild \"src/js/**/*.*s*\" --target=es2019 --format=cjs --outdir=dist/cjs",
+    "build:esm": "esbuild \"src/js/**/*.*s*\" --target=es2019 --format=esm --bundle --outdir=dist --loader:.json=json",
+    "build:cjs": "esbuild \"src/js/**/*.*s*\" --target=es2019 --format=cjs --outdir=dist/cjs --loader:.json=json",
     "postbuild:cjs": "echo '{\"type\": \"commonjs\"}' > ./dist/cjs/package.json",
-    "build:iife:index": "esbuild src/js/index.ts --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome",
-    "build:iife:all": "esbuild src/js/all.ts --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome",
+    "build:iife:index": "esbuild src/js/index.ts --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome --loader:.json=json",
+    "build:iife:all": "esbuild src/js/all.ts --bundle --target=es2019 --format=iife --outdir=dist/iife --minify --sourcemap --global-name=MediaChrome --loader:.json=json",
     "build:react": "node ./scripts/react/build.js",
     "postbuild:react": "esbuild \"dist/react/**/*.js\" --target=es2019 --format=cjs --outdir=dist/cjs/react",
     "build": "run-s build:types build:esm build:cjs build:iife:* build:react",
@@ -184,5 +184,9 @@
     "media",
     "player",
     "controls"
-  ]
+  ],
+  "dependencies": {
+    "i18next": "^24.0.5",
+    "i18next-browser-languagedetector": "^8.0.2"
+  }
 }
