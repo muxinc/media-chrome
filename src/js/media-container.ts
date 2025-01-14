@@ -169,7 +169,7 @@ template.innerHTML = /*html*/ `
       Attributes.NO_AUTOHIDE
     }]):not([role=dialog])) {
       opacity: 0;
-      transition: opacity 1s;
+      transition: var(--media-hide-transition, opacity 1s);
     }
 
     :host([${Attributes.USER_INACTIVE}]:not([${
@@ -285,6 +285,7 @@ function getBreakpoints(breakpoints: Record<string, string>, width: number) {
  *
  * @cssprop --media-background-color - `background-color` of container.
  * @cssprop --media-slot-display - `display` of the media slot (default none for [audio] usage).
+ * @cssprop --media-hide-transition - `transition` used to define the animation effect when hiding the container.
  */
 class MediaContainer extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
