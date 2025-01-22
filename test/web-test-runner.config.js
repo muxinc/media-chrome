@@ -16,7 +16,7 @@ const config = {
   /** Amount of test files per browser to test concurrently */
   // concurrency: 1,
 
-  browsers: [chromeLauncher({ launchOptions: { args: ['--headless=old'] } })],
+  browsers: [chromeLauncher({ launchOptions: { args: ['--headless'] } })],
 };
 
 if (process.argv.some((arg) => arg.includes('--all'))) {
