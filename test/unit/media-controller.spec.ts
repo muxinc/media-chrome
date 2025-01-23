@@ -295,6 +295,8 @@ describe('receiving state / dispatching (bubbling) events', () => {
       MediaUIAttributes.MEDIA_VOLUME_LEVEL
     );
 
+    await aTimeout(200);
+
     await video.play();
 
     assert(!mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED));
