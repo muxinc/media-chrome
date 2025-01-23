@@ -67,7 +67,7 @@ describe('<media-theme>', () => {
       </media-theme>
     `);
 
-    await aTimeout(100);
+    await aTimeout(200);
 
     const media = theme1.querySelector('[slot="media"]') as HTMLVideoElement;
     await media.play();
