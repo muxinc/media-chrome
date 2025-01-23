@@ -1,3 +1,12 @@
+## [4.3.1](https://github.com/muxinc/media-chrome/compare/v4.3.0...v4.3.1) (2025-01-23)
+
+
+### Bug Fixes
+
+* revert theme render flicker (breakpoints) ([#1055](https://github.com/muxinc/media-chrome/issues/1055)) ([1b8dad5](https://github.com/muxinc/media-chrome/commit/1b8dad5c5eefc739148fd0731c3594d55f02c998)), closes [#960](https://github.com/muxinc/media-chrome/issues/960)
+
+
+
 # [4.3.0](https://github.com/muxinc/media-chrome/compare/v4.2.3...v4.3.0) (2024-12-05)
 
 
