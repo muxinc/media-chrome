@@ -224,10 +224,10 @@ const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 const defaultBreakpoints = 'sm:384 md:576 lg:768 xl:960';
 
 function resizeCallback(entry: ResizeObserverEntry) {
-  setBreakpoints(entry.target as HTMLElement, entry.contentRect.width);
+  setBreakpoints(entry.target as MediaContainer, entry.contentRect.width);
 }
 
-function setBreakpoints(container: HTMLElement, width: number) {
+function setBreakpoints(container: MediaContainer, width: number) {
   if (!container.isConnected) return;
 
   const breakpoints =
@@ -258,6 +258,17 @@ function setBreakpoints(container: HTMLElement, width: number) {
     });
 
     container.dispatchEvent(evt);
+  }
+
+  if (!container.breakpointsComputed) {
+    container.breakpointsComputed = true;
+
+    container.dispatchEvent(
+      new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_COMPUTED, {
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 }
 
@@ -524,16 +535,6 @@ class MediaContainer extends globalThis.HTMLElement {
 
       // Once we've completed, reset the pending cb flag to false
       this.#isResizePending = false;
-
-      if (!this.breakpointsComputed) {
-        this.breakpointsComputed = true;
-        this.dispatchEvent(
-          new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_COMPUTED, {
-            bubbles: true,
-            composed: true,
-          })
-        );
-      }
     }, 0);
 
     this.#isResizePending = true;
