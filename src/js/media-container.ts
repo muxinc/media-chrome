@@ -399,6 +399,9 @@ class MediaContainer extends globalThis.HTMLElement {
     // This allows things like autoplay and programmatic playing to also initiate hiding controls (CJP)
     this.setAttribute(Attributes.USER_INACTIVE, '');
 
+    // Set breakpoints on connect since we delay resize observer callbacks.
+    setBreakpoints(this, this.getBoundingClientRect().width);
+
     this.addEventListener('pointerdown', this);
     this.addEventListener('pointermove', this);
     this.addEventListener('pointerup', this);
