@@ -638,6 +638,78 @@ class MediaContainer extends globalThis.HTMLElement {
   get autohide(): string {
     return (this.#autohide === undefined ? 2 : this.#autohide).toString();
   }
+
+  get breakpoints(): string | undefined {
+    return this.getAttribute(Attributes.BREAKPOINTS);
+  }
+
+  set breakpoints(value: string | undefined) {
+    if (value) {
+      this.setAttribute(Attributes.BREAKPOINTS, '');
+    } else {
+      this.removeAttribute(Attributes.BREAKPOINTS);
+    }
+  }
+
+  get audio(): boolean | undefined {
+    return this.hasAttribute(Attributes.AUDIO);
+  }
+
+  set audio(value: boolean | undefined) {
+    if (value) {
+      this.setAttribute(Attributes.AUDIO, '');
+    } else {
+      this.removeAttribute(Attributes.AUDIO);
+    }
+  }
+
+  get gesturesDisabled(): boolean | undefined {
+    return this.hasAttribute(Attributes.GESTURES_DISABLED);
+  }
+
+  set gesturesDisabled(value: boolean | undefined) {
+    if (value) {
+      this.setAttribute(Attributes.GESTURES_DISABLED, '');
+    } else {
+      this.removeAttribute(Attributes.GESTURES_DISABLED);
+    }
+  }
+
+  get keyboardControl(): boolean | undefined {
+    return this.hasAttribute(Attributes.KEYBOARD_CONTROL);
+  }
+
+  set keyboardControl(value: boolean | undefined) {
+    if (value) {
+      this.setAttribute(Attributes.KEYBOARD_CONTROL, '');
+    } else {
+      this.removeAttribute(Attributes.KEYBOARD_CONTROL);
+    }
+  }
+
+  get noAutoHide(): boolean | undefined {
+    return this.hasAttribute(Attributes.NO_AUTOHIDE);
+  }
+
+  set noAutoHide(value: boolean | undefined) {
+    if (value) {
+      this.setAttribute(Attributes.NO_AUTOHIDE, '');
+    } else {
+      this.removeAttribute(Attributes.NO_AUTOHIDE);
+    }
+  }
+
+  get userInteractive(): boolean | undefined {
+    return this.hasAttribute(Attributes.USER_INACTIVE);
+  }
+
+  set userInteractive(value: boolean | undefined) {
+    if (value) {
+      this.setAttribute(Attributes.USER_INACTIVE, '');
+    } else {
+      this.removeAttribute(Attributes.USER_INACTIVE);
+    }
+  }
 }
 
 if (!globalThis.customElements.get('media-container')) {

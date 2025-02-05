@@ -12,6 +12,7 @@ import {
 import MediaController from './media-controller.js';
 export const Attributes = {
   LOADING_DELAY: 'loadingdelay',
+  NO_AUTOHIDE: 'noautohide',
 };
 
 const DEFAULT_LOADING_DELAY = 500;
@@ -206,6 +207,30 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
 
   set mediaLoading(value: boolean) {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING, value);
+  }
+
+  get mediaController(): string | undefined {
+    return this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
+  }
+
+  set mediaController(value: string | undefined) {
+    if (value) {
+      this.setAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER, '');
+    } else {
+      this.removeAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
+    }
+  }
+
+  get noAutoHide(): boolean | undefined {
+    return this.hasAttribute(Attributes.NO_AUTOHIDE);
+  }
+
+  set noAutoHide(value: boolean | undefined) {
+    if (value) {
+      this.setAttribute(Attributes.NO_AUTOHIDE, '');
+    } else {
+      this.removeAttribute(Attributes.NO_AUTOHIDE);
+    }
   }
 }
 
