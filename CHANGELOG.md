@@ -1,3 +1,28 @@
+# [4.4.0](https://github.com/muxinc/media-chrome/compare/v4.3.1...v4.4.0) (2025-01-29)
+
+
+### Bug Fixes
+
+* move breakpointsComputed set to better place ([#1064](https://github.com/muxinc/media-chrome/issues/1064)) ([43c58e8](https://github.com/muxinc/media-chrome/commit/43c58e8bf6ab9ba313fea460c1238525d16b37c8))
+* remove media container observers on disconnect ([#1061](https://github.com/muxinc/media-chrome/issues/1061)) ([a7b339a](https://github.com/muxinc/media-chrome/commit/a7b339a02e084026f722d387cac8994139c08ff3))
+* set breakpoints on connect ([#1057](https://github.com/muxinc/media-chrome/issues/1057)) ([bfa4459](https://github.com/muxinc/media-chrome/commit/bfa44597ab967fdd70b5ee0f09b3183eb92a177f))
+
+
+### Features
+
+* CSS vars to customize <media-controller> hide transition ([#1051](https://github.com/muxinc/media-chrome/issues/1051)) ([e334971](https://github.com/muxinc/media-chrome/commit/e334971721692ca04582039dba34093033cb1402)), closes [#874](https://github.com/muxinc/media-chrome/issues/874)
+
+
+
+## [4.3.1](https://github.com/muxinc/media-chrome/compare/v4.3.0...v4.3.1) (2025-01-23)
+
+
+### Bug Fixes
+
+* revert theme render flicker (breakpoints) ([#1055](https://github.com/muxinc/media-chrome/issues/1055)) ([1b8dad5](https://github.com/muxinc/media-chrome/commit/1b8dad5c5eefc739148fd0731c3594d55f02c998)), closes [#960](https://github.com/muxinc/media-chrome/issues/960)
+
+
+
 # [4.3.0](https://github.com/muxinc/media-chrome/compare/v4.2.3...v4.3.0) (2024-12-05)
 
 

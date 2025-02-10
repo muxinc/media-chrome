@@ -1,6 +1,5 @@
 import { MediaStateChangeEvents } from './constants.js';
 import MediaController from './media-controller.js';
-import { getOrInsertCSSRule } from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { TemplateInstance } from './utils/template-parts.js';
 import { processor } from './utils/template-processor.js';
@@ -14,10 +13,6 @@ const observedMediaAttributes = {
   mediastreamtype: 'streamtype',
 };
 
-// For hiding the media-theme element until the breakpoints are available
-// display: none can't be used because it would prevent the element or its
-// children (media-controller) from getting dimensions.
-
 const prependTemplate = document.createElement('template');
 
 prependTemplate.innerHTML = /*html*/ `
@@ -25,9 +20,6 @@ prependTemplate.innerHTML = /*html*/ `
     :host {
       display: inline-block;
       line-height: 0;
-
-      /* Hide theme element until the breakpoints are available to avoid flicker. */
-      visibility: hidden;
     }
 
     media-controller {
@@ -250,14 +242,6 @@ export class MediaThemeElement extends globalThis.HTMLElement {
 
   render(): void {
     this.renderer?.update(this.props);
-
-    // The style tag must be connected to the DOM before it has a sheet.
-    if (this.renderRoot.isConnected) {
-      const { style } = getOrInsertCSSRule(this.renderRoot, ':host');
-      if (style.visibility === 'hidden') {
-        style.removeProperty('visibility');
-      }
-    }
   }
 }
 
