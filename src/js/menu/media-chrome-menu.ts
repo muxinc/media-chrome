@@ -106,15 +106,8 @@ template.innerHTML = /*html*/ `
     } 
 
     @-moz-document url-prefix() {
-      :host::after{
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: var(--media-settings-menu-background,
-        var(--media-menu-background,
-        var(--media-control-background,
-        var(--media-secondary-color, rgb(20 20 30)))));
-        z-index: -1;
+      :host{
+        background: rgb(20 20 30);
       }
     }
 

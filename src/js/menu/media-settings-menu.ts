@@ -6,8 +6,7 @@ const template: HTMLTemplateElement = document.createElement('template');
 // prettier-ignore
 template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <style>
-    :host {
-      background: var(--media-settings-menu-background,
+    :host {     background: var(--media-settings-menu-background,
         var(--media-menu-background,
         var(--media-control-background,
         var(--media-secondary-color, rgb(20 20 30 / .8)))));
@@ -16,16 +15,9 @@ template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
       overflow: hidden;
     }
 
-     @-moz-document url-prefix() {
-      :host::after{
-        content: "";
-        position: absolute;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background: var(--media-settings-menu-background,
-        var(--media-menu-background,
-        var(--media-control-background,
-        var(--media-secondary-color, rgb(20 20 30)))));
-        z-index: -1;
+      @-moz-document url-prefix() {
+      :host{
+        background: rgb(20 20 30);
       }
     }
 
