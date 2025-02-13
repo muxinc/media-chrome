@@ -1,3 +1,17 @@
+# [4.5.0](https://github.com/muxinc/media-chrome/compare/v4.4.0...v4.5.0) (2025-02-13)
+
+
+### Bug Fixes
+
+* hide error dialog on playback recovery ([#1065](https://github.com/muxinc/media-chrome/issues/1065)) ([4d21bd7](https://github.com/muxinc/media-chrome/commit/4d21bd7170dc7739aa9489929d80a01d50afa60e))
+
+
+### Features
+
+* add range `thumb` slot ([#1013](https://github.com/muxinc/media-chrome/issues/1013)) ([beb0955](https://github.com/muxinc/media-chrome/commit/beb0955646ca003238b01ae20bc824b019de5c5c))
+
+
+
 # [4.4.0](https://github.com/muxinc/media-chrome/compare/v4.3.1...v4.4.0) (2025-01-29)
 
 

@@ -131,6 +131,25 @@ Set the `preview` slot to an empty element to remove the default preview element
 </media-controller>`}
 />
 
+## Thumb slot
+
+<SandpackContainer
+  editorHeight={330}
+  html={`<media-controller>
+  <video 
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+  <media-control-bar>
+    <media-time-range>
+      <svg slot="thumb">
+        <circle fill="#df2c2c" cx="5" cy="5" r="5"/>
+      </svg>
+    </media-time-range>
+  </media-control-bar>
+</media-controller>`}
+/>
 
 
 ## Styling
