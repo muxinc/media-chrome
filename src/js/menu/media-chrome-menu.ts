@@ -103,6 +103,12 @@ template.innerHTML = /*html*/ `
       position: relative;
       bottom: var(--_menu-bottom);
       box-sizing: border-box;
+    } 
+
+    @-moz-document url-prefix() {
+      :host{
+        background: rgb(20 20 30);
+      }
     }
 
     :host([hidden]) {
@@ -463,7 +469,10 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   formatMenuItemText(text: string, data?: any) {
-    return (this.constructor as typeof MediaChromeMenu).formatMenuItemText(text, data);
+    return (this.constructor as typeof MediaChromeMenu).formatMenuItemText(
+      text,
+      data
+    );
   }
 
   get anchor() {
@@ -479,7 +488,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
    */
   get anchorElement() {
     if (this.anchor) {
-      return getDocumentOrShadowRoot(this)?.querySelector<HTMLElement>(`#${this.anchor}`);
+      return getDocumentOrShadowRoot(this)?.querySelector<HTMLElement>(
+        `#${this.anchor}`
+      );
     }
     return null;
   }
@@ -640,9 +651,11 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     // Determine the real bottom value that is used for the max-height calculation.
     // `bottom` could have been overridden externally.
     const computedStyle = getComputedStyle(this);
-    const isBottomCalc = style.getPropertyValue('--_menu-bottom') === computedStyle.bottom;
+    const isBottomCalc =
+      style.getPropertyValue('--_menu-bottom') === computedStyle.bottom;
     const realBottom = isBottomCalc ? bottom : parseFloat(computedStyle.bottom);
-    const maxHeight = boundsRect.height - realBottom - parseFloat(computedStyle.marginBottom);
+    const maxHeight =
+      boundsRect.height - realBottom - parseFloat(computedStyle.marginBottom);
 
     // Safari required directly setting the element style property instead of
     // updating the style node for the styles to be refreshed.
@@ -731,9 +744,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     ) as HTMLSlotElement;
     return headerSlot
       .assignedElements({ flatten: true })
-      ?.find(
-        (el) => el.matches('button[part~="back"]')
-      ) as HTMLElement;
+      ?.find((el) => el.matches('button[part~="back"]')) as HTMLElement;
   }
 
   handleSelect(event: MouseEvent | KeyboardEvent): void {
