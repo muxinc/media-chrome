@@ -2,10 +2,6 @@ import { TextTrackKinds, TextTrackModes } from '../constants.js';
 import { getTextTracksList, updateTracksModeTo } from '../utils/captions.js';
 import { TextTrackLike } from '../utils/TextTrackLike.js';
 
-export const isMediaPlaying = (media) => {
-  return !media.paused && !media.ended && media.readyState > 2;
-}
-
 export const getSubtitleTracks = (stateOwners): TextTrackLike[] => {
   return getTextTracksList(stateOwners.media, (textTrack) => {
     return [TextTrackKinds.SUBTITLES, TextTrackKinds.CAPTIONS].includes(

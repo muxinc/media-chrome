@@ -18,7 +18,6 @@ import {
 import {
   getShowingSubtitleTracks,
   getSubtitleTracks,
-  isMediaPlaying,
   toggleSubtitleTracks,
 } from './util.js';
 import { getTextTracksList } from '../utils/captions.js';
@@ -291,7 +290,7 @@ export const stateMediator: StateMediator = {
   mediaError: {
     get(stateOwners, event) {
       const { media } = stateOwners;
-      if (event?.type === 'playing' && isMediaPlaying(media)) return;
+      if (event?.type === 'playing') return;
       // Add additional error info via the `mediaError` element property only.
       // This can be used in the MediaErrorDialog.formatErrorMessage() method.
       return media?.error;
@@ -301,7 +300,7 @@ export const stateMediator: StateMediator = {
   mediaErrorCode: {
     get(stateOwners, event) {
       const { media } = stateOwners;
-      if (event?.type === 'playing' && isMediaPlaying(media)) return;
+      if (event?.type === 'playing') return;
       return media?.error?.code;
     },
     mediaEvents: ['emptied', 'error', 'playing'],
@@ -309,7 +308,7 @@ export const stateMediator: StateMediator = {
   mediaErrorMessage: {
     get(stateOwners, event) {
       const { media } = stateOwners;
-      if (event?.type === 'playing' && isMediaPlaying(media)) return;
+      if (event?.type === 'playing') return;
       return media?.error?.message ?? '';
     },
     mediaEvents: ['emptied', 'error', 'playing'],
