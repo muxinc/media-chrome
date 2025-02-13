@@ -17,7 +17,7 @@ import { Rendition } from '../media-store/state-mediator.js';
 
 /**
  * @extends {MediaChromeMenu}
- * 
+ *
  * @slot - Default slotted elements.
  * @slot header - An element shown at the top of the menu.
  * @slot checked-indicator - An icon element indicating a checked menu-item.
@@ -153,9 +153,13 @@ class MediaRenditionMenu extends MediaChromeMenu {
       this.defaultSlot.append(item);
     }
 
+    const text = isAuto
+      ? this.formatMenuItemText(`Auto (${this.mediaHeight}p)`)
+      : this.formatMenuItemText('Auto');
+
     const item = createMenuItem({
       type: 'radio',
-      text: this.formatMenuItemText('Auto'),
+      text,
       value: 'auto',
       checked: isAuto,
     });
@@ -168,6 +172,15 @@ class MediaRenditionMenu extends MediaChromeMenu {
   }
 
   #onChange(): void {
+    const autoOption = this.defaultSlot.querySelector('[value="auto"]');
+    const isAuto = autoOption.part.contains('checked');
+
+    if (isAuto) {
+      autoOption.textContent = `Auto (${this.mediaHeight}p)`;
+    } else {
+      autoOption.textContent = 'Auto';
+    }
+
     if (this.value == null) return;
 
     const event = new globalThis.CustomEvent(
