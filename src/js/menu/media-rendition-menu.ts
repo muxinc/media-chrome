@@ -174,13 +174,8 @@ class MediaRenditionMenu extends MediaChromeMenu {
   #onChange(): void {
     const autoOption = this.defaultSlot.querySelector('[value="auto"]');
     const isAuto = autoOption.part.contains('checked');
-
-    if (isAuto) {
-      autoOption.textContent = `Auto (${this.mediaHeight}p)`;
-    } else {
-      autoOption.textContent = 'Auto';
-    }
-
+    autoOption.textContent = isAuto ? `Auto (${this.mediaHeight}p)` : 'Auto';
+    
     if (this.value == null) return;
 
     const event = new globalThis.CustomEvent(
