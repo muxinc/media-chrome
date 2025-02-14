@@ -184,5 +184,8 @@
     "media",
     "player",
     "controls"
-  ]
+  ],
+  "dependencies": {
+    "ce-la-react": "^0.1.3"
+  }
 }

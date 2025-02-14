@@ -32,6 +32,8 @@ import MediaTimeDisplay from './media-time-display.js';
 import MediaTimeRange from './media-time-range.js';
 import MediaTooltip from './media-tooltip.js';
 import MediaVolumeRange from './media-volume-range.js';
+import MediaContainer from './media-container.js';
+import MediaTextDisplay from './media-text-display.js';
 
 export {
   MediaAirplayButton,
@@ -62,4 +64,6 @@ export {
   MediaTimeRange,
   MediaTooltip,
   MediaVolumeRange,
+  MediaContainer,
+  MediaTextDisplay,
 };

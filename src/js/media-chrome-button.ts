@@ -9,6 +9,8 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 
 const Attributes = {
   TOOLTIP_PLACEMENT: 'tooltipplacement',
+  DISABLED: 'disabled',
+  NO_TOOLTIP: 'notooltip',
 };
 
 const template = document.createElement('template');
@@ -72,7 +74,9 @@ template.innerHTML = /*html*/ `
   }
 
   media-tooltip {
-    ${/** Make sure unpositioned tooltip doesn't cause page overflow (scroll). */ ''}
+    ${
+      /** Make sure unpositioned tooltip doesn't cause page overflow (scroll). */ ''
+    }
     max-width: 0;
     overflow-x: clip;
     opacity: 0;
@@ -195,7 +199,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     // Conditional chaining accounts for scenarios
     // where the tooltip element isn't yet defined.
     this.tooltipEl?.updateXOffset?.();
-  }
+  };
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
@@ -272,10 +276,6 @@ class MediaChromeButton extends globalThis.HTMLElement {
       `var(--media-control-display, var(--${this.localName}-display, inline-flex))`
     );
 
-    if (!this.hasAttribute('disabled')) {
-      this.enable();
-    }
-
     this.setAttribute('role', 'button');
 
     const mediaControllerId = this.getAttribute(
@@ -295,9 +295,11 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   // Called when we know the tooltip is ready / defined
   #setupTooltip() {
-    this.addEventListener('mouseenter', this.#positionTooltip);
-    this.addEventListener('focus', this.#positionTooltip);
-    this.addEventListener('click', this.#clickListener);
+    if (!this.hasAttribute('disabled')) {
+      this.enable();
+    } else {
+      this.disable();
+    }
 
     const initialPlacement = this.tooltipPlacement;
     if (initialPlacement && this.tooltipEl) {
@@ -329,6 +331,42 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   set tooltipPlacement(value: TooltipPlacement | undefined) {
     setStringAttr(this, Attributes.TOOLTIP_PLACEMENT, value);
+  }
+
+  get mediaController(): string | undefined {
+    return this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
+  }
+
+  set mediaController(value: string | undefined) {
+    if (value) {
+      this.setAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER, '');
+    } else {
+      this.removeAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
+    }
+  }
+
+  get disabled(): boolean | undefined {
+    return this.hasAttribute(Attributes.DISABLED);
+  }
+
+  set disabled(value: boolean | undefined) {
+    if (value) {
+      this.setAttribute(Attributes.DISABLED, 'true');
+    } else {
+      this.removeAttribute(Attributes.DISABLED);
+    }
+  }
+
+  get noTooltip(): boolean | undefined {
+    return this.hasAttribute(Attributes.NO_TOOLTIP);
+  }
+
+  set noTooltip(value: boolean | undefined) {
+    if (value) {
+      this.setAttribute(Attributes.NO_TOOLTIP, '');
+    } else {
+      this.removeAttribute(Attributes.NO_TOOLTIP);
+    }
   }
 
   /**

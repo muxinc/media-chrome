@@ -11,3 +11,4 @@ export { MediaPlaybackRateMenu } from './media-playback-rate-menu.js';
 export { MediaPlaybackRateMenuButton } from './media-playback-rate-menu-button.js';
 export { MediaRenditionMenu } from './media-rendition-menu.js';
 export { MediaRenditionMenuButton } from './media-rendition-menu-button.js';
+export { MediaChromeMenuButton } from './media-chrome-menu-button.js';
