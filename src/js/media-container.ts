@@ -687,11 +687,11 @@ class MediaContainer extends globalThis.HTMLElement {
     }
   }
 
-  get noAutoHide(): boolean | undefined {
+  get noAutohide(): boolean | undefined {
     return this.hasAttribute(Attributes.NO_AUTOHIDE);
   }
 
-  set noAutoHide(value: boolean | undefined) {
+  set noAutohide(value: boolean | undefined) {
     if (value) {
       this.setAttribute(Attributes.NO_AUTOHIDE, '');
     } else {

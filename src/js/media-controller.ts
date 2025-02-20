@@ -225,11 +225,11 @@ class MediaController extends MediaContainer {
     }
   }
 
-  get noHotKeys() {
+  get noHotkeys() {
     return this.hasAttribute(Attributes.NO_HOTKEYS);
   }
 
-  set noHotKeys(value) {
+  set noHotkeys(value) {
     if (value) {
       this.setAttribute(Attributes.NO_HOTKEYS, '');
     } else {

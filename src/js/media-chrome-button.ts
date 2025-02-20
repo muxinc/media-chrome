@@ -1,8 +1,10 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import MediaTooltip, { TooltipPlacement } from './media-tooltip.js';
 import {
+  getBooleanAttr,
   getOrInsertCSSRule,
   getStringAttr,
+  setBooleanAttr,
   setStringAttr,
 } from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
@@ -295,6 +297,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   // Called when we know the tooltip is ready / defined
   #setupTooltip() {
+    this.addEventListener('mouseenter', this.#positionTooltip);
+    this.addEventListener('focus', this.#positionTooltip);
+
     if (!this.hasAttribute('disabled')) {
       this.enable();
     } else {
@@ -334,39 +339,27 @@ class MediaChromeButton extends globalThis.HTMLElement {
   }
 
   get mediaController(): string | undefined {
-    return this.getAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
+    return getStringAttr(this, MediaStateReceiverAttributes.MEDIA_CONTROLLER);
   }
 
   set mediaController(value: string | undefined) {
-    if (value) {
-      this.setAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER, '');
-    } else {
-      this.removeAttribute(MediaStateReceiverAttributes.MEDIA_CONTROLLER);
-    }
+    setStringAttr(this, MediaStateReceiverAttributes.MEDIA_CONTROLLER, value);
   }
 
   get disabled(): boolean | undefined {
-    return this.hasAttribute(Attributes.DISABLED);
+    return getBooleanAttr(this, Attributes.DISABLED);
   }
 
   set disabled(value: boolean | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.DISABLED, 'true');
-    } else {
-      this.removeAttribute(Attributes.DISABLED);
-    }
+    setBooleanAttr(this, Attributes.DISABLED, value);
   }
 
   get noTooltip(): boolean | undefined {
-    return this.hasAttribute(Attributes.NO_TOOLTIP);
+    return getBooleanAttr(this, Attributes.NO_TOOLTIP);
   }
 
   set noTooltip(value: boolean | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.NO_TOOLTIP, '');
-    } else {
-      this.removeAttribute(Attributes.NO_TOOLTIP);
-    }
+    setBooleanAttr(this, Attributes.DISABLED, value);
   }
 
   /**
