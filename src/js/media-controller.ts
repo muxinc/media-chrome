@@ -25,6 +25,7 @@ import {
 } from './constants.js';
 import {
   getBooleanAttr,
+  getNumericAttr,
   getStringAttr,
   setBooleanAttr,
   setNumericAttr,
@@ -208,12 +209,12 @@ class MediaController extends MediaContainer {
     setStringAttr(this, Attributes.DEFAULT_STREAM_TYPE, value);
   }
 
-  get defaultDuration(): string | undefined {
-    return getStringAttr(this, Attributes.DEFAULT_DURATION);
+  get defaultDuration(): number | undefined {
+    return getNumericAttr(this, Attributes.DEFAULT_DURATION);
   }
 
-  set defaultDuration(value: string | undefined) {
-    setStringAttr(this, Attributes.DEFAULT_DURATION, value);
+  set defaultDuration(value: number | undefined) {
+    setNumericAttr(this, Attributes.DEFAULT_DURATION, value);
   }
 
   get noHotkeys(): boolean | undefined {
@@ -232,12 +233,12 @@ class MediaController extends MediaContainer {
     setStringAttr(this, Attributes.KEYS_USED, value);
   }
 
-  get liveEdgeOffset(): string | undefined {
-    return getStringAttr(this, Attributes.LIVE_EDGE_OFFSET);
+  get liveEdgeOffset(): number | undefined {
+    return getNumericAttr(this, Attributes.LIVE_EDGE_OFFSET);
   }
 
-  set liveEdgeOffset(value: string | undefined) {
-    setStringAttr(this, Attributes.LIVE_EDGE_OFFSET, value);
+  set liveEdgeOffset(value: number | undefined) {
+    setNumericAttr(this, Attributes.LIVE_EDGE_OFFSET, value);
   }
 
   get noAutoSeekToLive(): boolean | undefined {
