@@ -80,7 +80,8 @@ template.innerHTML = /*html*/ `
         var(--media-text-content-height, var(--media-control-height, 24px))
         var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
       color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-      background: var(--media-menu-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
+      --_menu-bg: rgb(20 20 30 / .8);
+      background: var(--media-menu-background, var(--media-control-background, var(--media-secondary-color, var(--_menu-bg))));
       border-radius: var(--media-menu-border-radius);
       border: var(--media-menu-border, none);
       display: var(--media-menu-display, inline-flex);
@@ -107,7 +108,7 @@ template.innerHTML = /*html*/ `
 
     @-moz-document url-prefix() {
       :host{
-        background: rgb(20 20 30);
+        --_menu-bg: rgb(20 20 30);
       }
     }
 

@@ -6,18 +6,20 @@ const template: HTMLTemplateElement = document.createElement('template');
 // prettier-ignore
 template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <style>
-    :host {     background: var(--media-settings-menu-background,
-        var(--media-menu-background,
-        var(--media-control-background,
-        var(--media-secondary-color, rgb(20 20 30 / .8)))));
+    :host {
+      --_menu-bg: rgb(20 20 30 / .8);
+      background: var(--media-settings-menu-background,
+          var(--media-menu-background,
+            var(--media-control-background,
+              var(--media-secondary-color, rgb(20 20 30 / .8)))));
       min-width: var(--media-settings-menu-min-width, 170px);
       border-radius: 2px 2px 0 0;
       overflow: hidden;
     }
 
-      @-moz-document url-prefix() {
+    @-moz-document url-prefix() {
       :host{
-        background: rgb(20 20 30);
+        --_menu-bg: rgb(20 20 30);
       }
     }
 
