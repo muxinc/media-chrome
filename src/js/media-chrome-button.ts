@@ -360,7 +360,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
   }
 
   set noTooltip(value: boolean | undefined) {
-    setBooleanAttr(this, Attributes.DISABLED, value);
+    setBooleanAttr(this, Attributes.NO_TOOLTIP, value);
   }
 
   /**
