@@ -80,7 +80,7 @@ export const Player = () => {
         ></MediaPosterImage>
         <MediaLoadingIndicator
           suppressHydrationWarning
-          noAutoHide
+          noAutohide
           slot="centered-chrome"
           style={{ '--media-loading-indicator-icon-height': '200px' } as any}
         ></MediaLoadingIndicator>
