@@ -12,4 +12,3 @@ sandbox/*
 ## testing
 /coverage/
 *.sublime-*
-package-lock.json
