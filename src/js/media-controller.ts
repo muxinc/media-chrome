@@ -24,6 +24,8 @@ import {
   MediaUIProps,
 } from './constants.js';
 import {
+  getBooleanAttr,
+  getStringAttr,
   setBooleanAttr,
   setNumericAttr,
   setStringAttr,
@@ -190,123 +192,84 @@ class MediaController extends MediaContainer {
     });
   }
 
-  get defaultSubtitles() {
-    return this.hasAttribute(Attributes.DEFAULT_SUBTITLES);
+  get defaultSubtitles(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.DEFAULT_SUBTITLES);
   }
 
-  set defaultSubtitles(value) {
-    if (value) {
-      this.setAttribute(Attributes.DEFAULT_SUBTITLES, '');
-    } else {
-      this.removeAttribute(Attributes.DEFAULT_SUBTITLES);
-    }
+  set defaultSubtitles(value: boolean) {
+    setBooleanAttr(this, Attributes.DEFAULT_SUBTITLES, value);
   }
 
   get defaultStreamType(): string | undefined {
-    return this.getAttribute(Attributes.DEFAULT_STREAM_TYPE);
+    return getStringAttr(this, Attributes.DEFAULT_STREAM_TYPE);
   }
 
   set defaultStreamType(value: string | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.DEFAULT_STREAM_TYPE, '');
-    } else {
-      this.removeAttribute(Attributes.DEFAULT_STREAM_TYPE);
-    }
+    setStringAttr(this, Attributes.DEFAULT_STREAM_TYPE, value);
   }
+
   get defaultDuration(): string | undefined {
-    return this.getAttribute(Attributes.DEFAULT_DURATION);
+    return getStringAttr(this, Attributes.DEFAULT_DURATION);
   }
 
   set defaultDuration(value: string | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.DEFAULT_DURATION, '');
-    } else {
-      this.removeAttribute(Attributes.DEFAULT_DURATION);
-    }
+    setStringAttr(this, Attributes.DEFAULT_DURATION, value);
   }
 
-  get noHotkeys() {
-    return this.hasAttribute(Attributes.NO_HOTKEYS);
+  get noHotkeys(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_HOTKEYS);
   }
 
-  set noHotkeys(value) {
-    if (value) {
-      this.setAttribute(Attributes.NO_HOTKEYS, '');
-    } else {
-      this.removeAttribute(Attributes.NO_HOTKEYS);
-    }
+  set noHotkeys(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_HOTKEYS, value);
   }
 
   get keysUsed(): string | undefined {
-    return this.getAttribute(Attributes.KEYS_USED);
+    return getStringAttr(this, Attributes.KEYS_USED);
   }
 
   set keysUsed(value: string | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.KEYS_USED, '');
-    } else {
-      this.removeAttribute(Attributes.KEYS_USED);
-    }
+    setStringAttr(this, Attributes.KEYS_USED, value);
   }
 
   get liveEdgeOffset(): string | undefined {
-    return this.getAttribute(Attributes.LIVE_EDGE_OFFSET);
+    return getStringAttr(this, Attributes.LIVE_EDGE_OFFSET);
   }
 
   set liveEdgeOffset(value: string | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.LIVE_EDGE_OFFSET, '');
-    } else {
-      this.removeAttribute(Attributes.LIVE_EDGE_OFFSET);
-    }
+    setStringAttr(this, Attributes.LIVE_EDGE_OFFSET, value);
   }
 
-  get noAutoSeekToLive() {
-    return this.hasAttribute(Attributes.NO_AUTO_SEEK_TO_LIVE);
+  get noAutoSeekToLive(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_AUTO_SEEK_TO_LIVE);
   }
 
-  set noAutoSeekToLive(value) {
-    if (value) {
-      this.setAttribute(Attributes.NO_AUTO_SEEK_TO_LIVE, '');
-    } else {
-      this.removeAttribute(Attributes.NO_AUTO_SEEK_TO_LIVE);
-    }
+  set noAutoSeekToLive(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_AUTO_SEEK_TO_LIVE, value);
   }
 
-  get noVolumePref() {
-    return this.hasAttribute(Attributes.NO_VOLUME_PREF);
+  get noVolumePref(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_VOLUME_PREF);
   }
 
-  set noVolumePref(value) {
-    if (value) {
-      this.setAttribute(Attributes.NO_VOLUME_PREF, '');
-    } else {
-      this.removeAttribute(Attributes.NO_VOLUME_PREF);
-    }
+  set noVolumePref(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_VOLUME_PREF, value);
   }
 
-  get noSubtitlesLangPref() {
-    return this.hasAttribute(Attributes.NO_SUBTITLES_LANG_PREF);
+  get noSubtitlesLangPref(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_SUBTITLES_LANG_PREF);
   }
 
-  set noSubtitlesLangPref(value) {
-    if (value) {
-      this.setAttribute(Attributes.NO_SUBTITLES_LANG_PREF, '');
-    } else {
-      this.removeAttribute(Attributes.NO_SUBTITLES_LANG_PREF);
-    }
+  set noSubtitlesLangPref(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_SUBTITLES_LANG_PREF, value);
   }
 
-  get noDefaultStore() {
-    return this.hasAttribute(Attributes.NO_DEFAULT_STORE);
+  get noDefaultStore(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_DEFAULT_STORE);
   }
 
-  set noDefaultStore(value) {
-    if (value) {
-      this.setAttribute(Attributes.NO_DEFAULT_STORE, '');
-    } else {
-      this.removeAttribute(Attributes.NO_DEFAULT_STORE);
-    }
+  set noDefaultStore(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_DEFAULT_STORE, value);
   }
 
   attributeChangedCallback(
@@ -565,15 +528,11 @@ class MediaController extends MediaContainer {
   }
 
   get hotkeys(): string | undefined {
-    return this.getAttribute(Attributes.HOTKEYS);
+    return getStringAttr(this, Attributes.HOTKEYS);
   }
 
   set hotkeys(value: string | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.HOTKEYS, '');
-    } else {
-      this.removeAttribute(Attributes.HOTKEYS);
-    }
+    setStringAttr(this, Attributes.HOTKEYS, value);
   }
 
   keyboardShortcutHandler(e: KeyboardEvent) {

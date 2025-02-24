@@ -299,6 +299,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
   #setupTooltip() {
     this.addEventListener('mouseenter', this.#positionTooltip);
     this.addEventListener('focus', this.#positionTooltip);
+    this.addEventListener('click', this.#clickListener);
 
     if (!this.hasAttribute('disabled')) {
       this.enable();

@@ -13,6 +13,12 @@ import { nouns } from './labels/labels.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
+import {
+  getBooleanAttr,
+  getStringAttr,
+  setBooleanAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
 
 export const Attributes = {
   AUDIO: 'audio',
@@ -640,75 +646,51 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   get breakpoints(): string | undefined {
-    return this.getAttribute(Attributes.BREAKPOINTS);
+    return getStringAttr(this, Attributes.BREAKPOINTS);
   }
 
   set breakpoints(value: string | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.BREAKPOINTS, '');
-    } else {
-      this.removeAttribute(Attributes.BREAKPOINTS);
-    }
+    setStringAttr(this, Attributes.BREAKPOINTS, value);
   }
 
   get audio(): boolean | undefined {
-    return this.hasAttribute(Attributes.AUDIO);
+    return getBooleanAttr(this, Attributes.AUDIO);
   }
 
   set audio(value: boolean | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.AUDIO, '');
-    } else {
-      this.removeAttribute(Attributes.AUDIO);
-    }
+    setBooleanAttr(this, Attributes.AUDIO, value);
   }
 
   get gesturesDisabled(): boolean | undefined {
-    return this.hasAttribute(Attributes.GESTURES_DISABLED);
+    return getBooleanAttr(this, Attributes.GESTURES_DISABLED);
   }
 
   set gesturesDisabled(value: boolean | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.GESTURES_DISABLED, '');
-    } else {
-      this.removeAttribute(Attributes.GESTURES_DISABLED);
-    }
+    setBooleanAttr(this, Attributes.GESTURES_DISABLED, value);
   }
 
   get keyboardControl(): boolean | undefined {
-    return this.hasAttribute(Attributes.KEYBOARD_CONTROL);
+    return getBooleanAttr(this, Attributes.KEYBOARD_CONTROL);
   }
 
   set keyboardControl(value: boolean | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.KEYBOARD_CONTROL, '');
-    } else {
-      this.removeAttribute(Attributes.KEYBOARD_CONTROL);
-    }
+    setBooleanAttr(this, Attributes.KEYBOARD_CONTROL, value);
   }
 
   get noAutohide(): boolean | undefined {
-    return this.hasAttribute(Attributes.NO_AUTOHIDE);
+    return getBooleanAttr(this, Attributes.NO_AUTOHIDE);
   }
 
   set noAutohide(value: boolean | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.NO_AUTOHIDE, '');
-    } else {
-      this.removeAttribute(Attributes.NO_AUTOHIDE);
-    }
+    setBooleanAttr(this, Attributes.NO_AUTOHIDE, value);
   }
 
   get userInteractive(): boolean | undefined {
-    return this.hasAttribute(Attributes.USER_INACTIVE);
+    return getBooleanAttr(this, Attributes.USER_INACTIVE);
   }
 
   set userInteractive(value: boolean | undefined) {
-    if (value) {
-      this.setAttribute(Attributes.USER_INACTIVE, '');
-    } else {
-      this.removeAttribute(Attributes.USER_INACTIVE);
-    }
+    setBooleanAttr(this, Attributes.USER_INACTIVE, value);
   }
 }
 
