@@ -7,13 +7,20 @@ const template: HTMLTemplateElement = document.createElement('template');
 template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
   <style>
     :host {
+      --_menu-bg: rgb(20 20 30 / .8);
       background: var(--media-settings-menu-background,
-        var(--media-menu-background,
-        var(--media-control-background,
-        var(--media-secondary-color, rgb(20 20 30 / .8)))));
+          var(--media-menu-background,
+            var(--media-control-background,
+              var(--media-secondary-color, var(--_menu-bg)))));
       min-width: var(--media-settings-menu-min-width, 170px);
       border-radius: 2px 2px 0 0;
       overflow: hidden;
+    }
+
+    @-moz-document url-prefix() {
+      :host{
+        --_menu-bg: rgb(20 20 30);
+      }
     }
 
     :host([role="menu"]) {
@@ -46,7 +53,9 @@ class MediaSettingsMenu extends MediaChromeMenu {
    */
   get anchorElement() {
     if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector<HTMLElement>('media-settings-menu-button');
+    return getMediaController(this).querySelector<HTMLElement>(
+      'media-settings-menu-button'
+    );
   }
 }
 
