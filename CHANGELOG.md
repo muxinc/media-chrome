@@ -1,3 +1,17 @@
+# [4.6.0](https://github.com/muxinc/media-chrome/compare/v4.5.0...v4.6.0) (2025-02-25)
+
+
+### Bug Fixes
+
+* firefox pip activates when clicked through on settings menu ([#1074](https://github.com/muxinc/media-chrome/issues/1074)) ([778b503](https://github.com/muxinc/media-chrome/commit/778b5030717960099ef732b79593d7ab725a04f9))
+
+
+### Features
+
+* Refactor to use ce-la-react to add type definitions for JSX attributes ([#1068](https://github.com/muxinc/media-chrome/issues/1068)) ([d20dd95](https://github.com/muxinc/media-chrome/commit/d20dd957b53d0eecaf1176d15e23f829c26e941d))
+
+
+
 # [4.5.0](https://github.com/muxinc/media-chrome/compare/v4.4.0...v4.5.0) (2025-02-13)
 
 
