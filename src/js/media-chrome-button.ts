@@ -278,6 +278,12 @@ class MediaChromeButton extends globalThis.HTMLElement {
       `var(--media-control-display, var(--${this.localName}-display, inline-flex))`
     );
 
+    if (!this.hasAttribute('disabled')) {
+      this.enable();
+    } else {
+      this.disable();
+    }
+
     this.setAttribute('role', 'button');
 
     const mediaControllerId = this.getAttribute(
@@ -300,12 +306,6 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.addEventListener('mouseenter', this.#positionTooltip);
     this.addEventListener('focus', this.#positionTooltip);
     this.addEventListener('click', this.#clickListener);
-
-    if (!this.hasAttribute('disabled')) {
-      this.enable();
-    } else {
-      this.disable();
-    }
 
     const initialPlacement = this.tooltipPlacement;
     if (initialPlacement && this.tooltipEl) {
