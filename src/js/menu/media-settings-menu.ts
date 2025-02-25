@@ -11,7 +11,7 @@ template.innerHTML = MediaChromeMenu.template.innerHTML + /*html*/`
       background: var(--media-settings-menu-background,
           var(--media-menu-background,
             var(--media-control-background,
-              var(--media-secondary-color, rgb(20 20 30 / .8)))));
+              var(--media-secondary-color, var(--_menu-bg)))));
       min-width: var(--media-settings-menu-min-width, 170px);
       border-radius: 2px 2px 0 0;
       overflow: hidden;
