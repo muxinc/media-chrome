@@ -69,6 +69,18 @@
       </media-control-bar>
     </media-controller>
 
+    <h2>Custom error code for custom media elements</h2>
+    <script>
+      function setCustomError() {
+        const video = document.querySelector('custom-video');
+        const customError = new Error('This is a custom error with code 42!');
+        customError.code = 42;
+        video.error = customError;
+        video.dispatchEvent(new Event('error'));
+      }
+    </script>
+    <button onclick="setCustomError()">Set error code 42</button>
+
     <h2>Hide error on recovery</h2>
 
     <media-controller defaultsubtitles>
@@ -110,19 +122,13 @@
       }
     </script>
 
-    <h2>Custom error code for custom media elements</h2>
-    <script>
-      function setError() {
-        const video = document.querySelector('custom-video');
-        const customError = new Error('This is a custom error with code 42!');
-        customError.code = 42;
-        video.error = customError;
-        video.dispatchEvent(new Event('error'));
-      }
-    </script>
-    <button onclick="setError()">Set error code 42</button>
-
     <div style="max-width: 540px">
+      <h2>No error code (should not display or fade out on page load)</h2>
+      <media-error-dialog></media-error-dialog>
+
+      <h2>Empty error code (should not display or fade out on page load)</h2>
+      <media-error-dialog mediaerrorcode=""></media-error-dialog>
+
       <h2>Error 2 (MEDIA_ERR_NETWORK)</h2>
       <media-error-dialog mediaerrorcode="2"></media-error-dialog>
 

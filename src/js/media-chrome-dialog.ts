@@ -5,6 +5,7 @@ import {
   getBooleanAttr,
   namedNodeMapToObject,
   setBooleanAttr,
+  getOrInsertCSSRule,
 } from './utils/element-utils.js';
 import { InvokeEvent } from './utils/events.js';
 
@@ -30,16 +31,19 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         display: var(--media-dialog-display, inline-flex);
         justify-content: center;
         align-items: center;
-        transition: display .15s, opacity .15s ease-in, transform .15s ease-in;
+        ${
+          /** The hide transition is defined below after a short delay. */ ''
+        }
         transition-behavior: allow-discrete;
+        visibility: hidden;
         opacity: 0;
         transform: translateY(2px) scale(.99);
         pointer-events: none;
       }
 
       :host([open]) {
-        transition: display .2s, opacity .2s ease-out, transform .15s ease-out;
-        transition-behavior: allow-discrete;
+        transition: display .2s, visibility 0s, opacity .2s ease-out, transform .15s ease-out;
+        visibility: visible;
         opacity: 1;
         transform: translateY(0) scale(1);
         pointer-events: auto;
@@ -145,6 +149,15 @@ class MediaChromeDialog extends globalThis.HTMLElement {
       this.shadowRoot.innerHTML = /*html*/ `
         ${(this.constructor as typeof MediaChromeDialog).getTemplateHTML(attrs)}
       `;
+
+      // Delay setting the transition to prevent seeing the transition from default start styles.
+      queueMicrotask(() => {
+        const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+        style.setProperty(
+          'transition',
+          `display .15s, visibility .15s, opacity .15s ease-in, transform .15s ease-in`
+        );
+      });
     }
   }
 
