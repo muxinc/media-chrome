@@ -1,3 +1,12 @@
+## [4.6.1](https://github.com/muxinc/media-chrome/compare/v4.6.0...v4.6.1) (2025-02-27)
+
+
+### Bug Fixes
+
+* dialog accessibility hidden, page load bug ([#1082](https://github.com/muxinc/media-chrome/issues/1082)) ([374eee3](https://github.com/muxinc/media-chrome/commit/374eee3755de98df1afd748c6a1521fa8bf69cdd))
+
+
+
 # [4.6.0](https://github.com/muxinc/media-chrome/compare/v4.5.0...v4.6.0) (2025-02-25)
 
 
