@@ -17,7 +17,7 @@ import { Rendition } from '../media-store/state-mediator.js';
 
 /**
  * @extends {MediaChromeMenu}
- * 
+ *
  * @slot - Default slotted elements.
  * @slot header - An element shown at the top of the menu.
  * @slot checked-indicator - An icon element indicating a checked menu-item.
@@ -51,6 +51,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       oldValue !== newValue
     ) {
       this.value = newValue ?? 'auto';
+      this.#render();
     } else if (
       attrName === MediaUIAttributes.MEDIA_RENDITION_LIST &&
       oldValue !== newValue
@@ -115,11 +116,15 @@ class MediaRenditionMenu extends MediaChromeMenu {
 
   #render(): void {
     if (
-      this.#prevState.mediaRenditionList === JSON.stringify(this.mediaRenditionList) &&
+      this.#prevState.mediaRenditionList ===
+        JSON.stringify(this.mediaRenditionList) &&
       this.#prevState.mediaHeight === this.mediaHeight
-    ) return;
+    )
+      return;
 
-    this.#prevState.mediaRenditionList = JSON.stringify(this.mediaRenditionList);
+    this.#prevState.mediaRenditionList = JSON.stringify(
+      this.mediaRenditionList
+    );
     this.#prevState.mediaHeight = this.mediaHeight;
 
     const renditionList = this.mediaRenditionList.sort(
@@ -133,9 +138,22 @@ class MediaRenditionMenu extends MediaChromeMenu {
       rendition.selected = rendition.id === this.mediaRenditionSelected;
     }
 
-    this.defaultSlot.textContent = '';
+    // aca se borraban los items para volver a crearlos ahora no
+    //this.defaultSlot.textContent = '';
 
     const isAuto = !this.mediaRenditionSelected;
+
+    // Get existing menu items from the DOM
+
+    const existingRenditionsElements = this.defaultSlot.assignedNodes({
+      flatten: true,
+    });
+
+    const existingRenditionsList = existingRenditionsElements.map((item) => {
+      return item.textContent.replace('p', '');
+    });
+
+    console.log({ existingRenditionsList });
 
     for (const rendition of renditionList) {
       const text = this.formatMenuItemText(
@@ -150,21 +168,51 @@ class MediaRenditionMenu extends MediaChromeMenu {
         checked: rendition.selected && !isAuto,
       });
       item.prepend(createIndicator(this, 'checked-indicator'));
-      this.defaultSlot.append(item);
+
+      //checkeo si existe el elemento si no existe lo agrego
+
+      console.log(
+        'existe?',
+        existingRenditionsList.includes(rendition.height.toString()),
+        rendition.height
+      );
+
+      !existingRenditionsList.includes(rendition.height.toString()) &&
+        this.defaultSlot.append(item);
     }
 
-    const item = createMenuItem({
-      type: 'radio',
-      text: this.formatMenuItemText('Auto'),
-      value: 'auto',
-      checked: isAuto,
-    });
+    // Obtengo elemento auto
+    const AutoElement = this.defaultSlot
+      .assignedNodes({ flatten: true })
+      .find(
+        (node) =>
+          node instanceof Element && node.getAttribute('value') === 'auto'
+      );
 
-    const autoDescription = this.mediaHeight > 0 ? `Auto (${this.mediaHeight}p)` : 'Auto';
-    item.dataset.description = autoDescription;
+    console.log({ AutoElement });
 
-    item.prepend(createIndicator(this, 'checked-indicator'));
-    this.defaultSlot.append(item);
+    //si no existe el elemento auto lo creamos de lo contrario le actualizo el texto
+
+    if (!AutoElement) {
+      const autoItem = createMenuItem({
+        type: 'radio',
+        text: this.formatMenuItemText('Auto'),
+        value: 'auto',
+        checked: isAuto,
+      });
+
+      const autoDescription =
+        this.mediaHeight > 0 ? `Auto (${this.mediaHeight}p)` : 'Auto';
+      autoItem.dataset.description = autoDescription;
+
+      autoItem.prepend(createIndicator(this, 'checked-indicator'));
+      this.defaultSlot.append(autoItem);
+    } else {
+      const autoDescription =
+        this.mediaHeight > 0 ? `Auto (${this.mediaHeight}p)` : 'Auto';
+
+      AutoElement.textContent = autoDescription;
+    }
   }
 
   #onChange(): void {
