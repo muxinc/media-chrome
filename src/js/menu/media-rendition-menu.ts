@@ -51,6 +51,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       oldValue !== newValue
     ) {
       this.value = newValue ?? 'auto';
+      this.#render();
     } else if (
       attrName === MediaUIAttributes.MEDIA_RENDITION_LIST &&
       oldValue !== newValue
@@ -172,10 +173,6 @@ class MediaRenditionMenu extends MediaChromeMenu {
   }
 
   #onChange(): void {
-    const autoOption = this.defaultSlot.querySelector('[value="auto"]');
-    const isAuto = autoOption.part.contains('checked');
-    autoOption.textContent = isAuto ? `Auto (${this.mediaHeight}p)` : 'Auto';
-    
     if (this.value == null) return;
 
     const event = new globalThis.CustomEvent(
