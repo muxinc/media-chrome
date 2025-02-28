@@ -4,9 +4,9 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
 const { dirname } = path;
-import { GlobalThis } from '../../dist/utils/server-safe-globals.js';
 
 const __filename = fileURLToPath(import.meta.url);
+import { GlobalThis } from '../../dist/utils/server-safe-globals.js';
 const __dirname = dirname(__filename);
 
 // Notes about the current implementation of the React wrapper compiler:
@@ -26,7 +26,8 @@ const toPascalCase = (kebabText) => {
 const toImportsStr = ({ importPath }) => {
   return `import React from "react";
 import { createComponent } from 'ce-la-react';
-import * as Modules from "${importPath}"`;
+import * as Modules from "${importPath}"
+`;
 };
 
 const toReactComponentStr = (config) => {
@@ -43,6 +44,25 @@ export const ${ReactComponentName} = createComponent({
 const toCustomElementReactWrapperModule = (config) => {
   return `${toReactComponentStr(config)}`;
 };
+// TYPESCRIPT DECLARATION FILE STRING CREATION CODE BEGIN
+const toTypeImportsAndGenericDefinitionsStr = ({importPath}) => {
+  return `import { createComponent } from "ce-la-react";
+import * as Modules from "${importPath}"
+`;
+};
+
+const toDeclarationStr = (config) => {
+  const { elementName } = config;
+  const ReactComponentName = toPascalCase(elementName);
+  return `export declare const ${ReactComponentName}: ReturnType<typeof createComponent<Modules.${ReactComponentName}>>;`;
+};
+
+const toCustomElementReactTypeDeclaration = (config) => {
+ return `${toDeclarationStr(config)}`;
+};
+// TYPESCRIPT DECLARATION FILE STRING CREATION CODE END
+
+// BUILD BEGIN
 
 const entryPointsToReactModulesIterable = (
   entryPoints,
@@ -71,6 +91,11 @@ const entryPointsToReactModulesIterable = (
             name,
             ext: '.js',
           });
+          const tsDeclPathAbs = path.format({
+            dir: distReactRoot,
+            name,
+            ext: '.d.ts',
+          });
 
           return import(importPath)
             .then((_) => {
@@ -91,19 +116,34 @@ const entryPointsToReactModulesIterable = (
               fs.mkdirSync(path.dirname(modulePathAbs), { recursive: true });
 
               const importPathRelative = path.relative(distReactRoot, importPathAbs);
+              const utilsBase = path.dirname(path.relative(importPathAbs, distRoot));
               const moduleStr = `${toImportsStr({
-                importPath: importPathRelative
+                importPath: importPathRelative,
+                utilsBase
               })}\n${componentsWithExports.join('\n')}`;
 
               fs.writeFileSync(modulePathAbs, moduleStr);
 
+              const declarationsWithExports = undefinedCustomElementNames.map(
+                (elementName) => {
+                  return toCustomElementReactTypeDeclaration({ elementName });
+                }
+              );
 
+              const tsDeclStr = `${toTypeImportsAndGenericDefinitionsStr({
+                importPath: importPathRelative})}\n${declarationsWithExports.join(
+                '\n'
+              )}`;
+
+              fs.writeFileSync(tsDeclPathAbs, tsDeclStr);
 
               alreadyDefinedCustomElementNames = [...customElementNames];
 
               return {
                 modulePath: modulePathAbs,
                 moduleContents: moduleStr,
+                tsDeclarationPath: tsDeclPathAbs,
+                tsDeclarationContents: tsDeclStr,
               };
             })
             .then((moduleDef) => {
