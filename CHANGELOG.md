@@ -1,3 +1,17 @@
+# [4.7.0](https://github.com/muxinc/media-chrome/compare/v4.6.1...v4.7.0) (2025-02-28)
+
+
+### Bug Fixes
+
+* 4.6.0+ no longer has typings for React ([#1085](https://github.com/muxinc/media-chrome/issues/1085)) ([0dfa1d6](https://github.com/muxinc/media-chrome/commit/0dfa1d6dcff7c722221f50bf5d211921d67c9bc2))
+
+
+### Features
+
+* show Auto(mediaHeight) in rendition menu ([#1075](https://github.com/muxinc/media-chrome/issues/1075)) ([005d305](https://github.com/muxinc/media-chrome/commit/005d305ecc19b9e7ed5be2a0230a41360ed66bb6)), closes [#1052](https://github.com/muxinc/media-chrome/issues/1052)
+
+
+
 ## [4.6.1](https://github.com/muxinc/media-chrome/compare/v4.6.0...v4.6.1) (2025-02-27)
 
 
