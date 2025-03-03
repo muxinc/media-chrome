@@ -3,7 +3,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
-import currentTranslations from './utils/translation-helper.js';
+import { getCurrentTranslations } from './utils/translation-helper.js';
 
 const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
@@ -48,7 +48,7 @@ slotTemplate.innerHTML = /*html*/ `
   */ ''
   }
   <slot name="spacer">&nbsp;</slot><slot name="text">${
-    currentTranslations.verbs.live
+    getCurrentTranslations().verbs.live
   }</slot>
 `;
 

@@ -1,4 +1,4 @@
-import currentTranslations from '../utils/translation-helper.js';
+import { getCurrentTranslations } from '../utils/translation-helper.js';
 
 export type LabelOptions = { seekOffset?: number; playbackRate?: number };
 
@@ -32,63 +32,67 @@ export const formatError = (error: MediaErrorLike) => {
 };
 
 export const tooltipLabels = {
-  ENTER_AIRPLAY: currentTranslations.tooltips.enterAirplay,
-  EXIT_AIRPLAY: currentTranslations.tooltips.exitAirplay,
-  AUDIO_TRACK_MENU: currentTranslations.tooltips.audioTrackMenu,
-  CAPTIONS: currentTranslations.tooltips.captions,
-  ENABLE_CAPTIONS: currentTranslations.tooltips.enableCaptions,
-  DISABLE_CAPTIONS: currentTranslations.tooltips.disableCaptions,
-  START_CAST: currentTranslations.tooltips.startCast,
-  STOP_CAST: currentTranslations.tooltips.stopCast,
-  ENTER_FULLSCREEN: currentTranslations.tooltips.enterFullscreen,
-  EXIT_FULLSCREEN: currentTranslations.tooltips.exitFullscreen,
-  MUTE: currentTranslations.tooltips.mute,
-  UNMUTE: currentTranslations.tooltips.unmute,
-  ENTER_PIP: currentTranslations.tooltips.enterPip,
-  EXIT_PIP: currentTranslations.tooltips.exitPip,
-  PLAY: currentTranslations.tooltips.play,
-  PAUSE: currentTranslations.tooltips.pause,
-  PLAYBACK_RATE: currentTranslations.tooltips.playbackRate,
-  RENDITIONS: currentTranslations.tooltips.renditions,
-  SEEK_BACKWARD: currentTranslations.tooltips.seekBackward,
-  SEEK_FORWARD: currentTranslations.tooltips.seekForward,
-  SETTINGS: currentTranslations.tooltips.settings,
+  ENTER_AIRPLAY: getCurrentTranslations().tooltips.enterAirplay,
+  EXIT_AIRPLAY: getCurrentTranslations().tooltips.exitAirplay,
+  AUDIO_TRACK_MENU: getCurrentTranslations().tooltips.audioTrackMenu,
+  CAPTIONS: getCurrentTranslations().tooltips.captions,
+  ENABLE_CAPTIONS: getCurrentTranslations().tooltips.enableCaptions,
+  DISABLE_CAPTIONS: getCurrentTranslations().tooltips.disableCaptions,
+  START_CAST: getCurrentTranslations().tooltips.startCast,
+  STOP_CAST: getCurrentTranslations().tooltips.stopCast,
+  ENTER_FULLSCREEN: getCurrentTranslations().tooltips.enterFullscreen,
+  EXIT_FULLSCREEN: getCurrentTranslations().tooltips.exitFullscreen,
+  MUTE: getCurrentTranslations().tooltips.mute,
+  UNMUTE: getCurrentTranslations().tooltips.unmute,
+  ENTER_PIP: getCurrentTranslations().tooltips.enterPip,
+  EXIT_PIP: getCurrentTranslations().tooltips.exitPip,
+  PLAY: getCurrentTranslations().tooltips.play,
+  PAUSE: getCurrentTranslations().tooltips.pause,
+  PLAYBACK_RATE: getCurrentTranslations().tooltips.playbackRate,
+  RENDITIONS: getCurrentTranslations().tooltips.renditions,
+  SEEK_BACKWARD: getCurrentTranslations().tooltips.seekBackward,
+  SEEK_FORWARD: getCurrentTranslations().tooltips.seekForward,
+  SETTINGS: getCurrentTranslations().tooltips.settings,
 };
 
 export const nouns: Record<string, (options?: LabelOptions) => string> = {
-  AUDIO_PLAYER: () => currentTranslations.nouns.audioPlayer,
-  VIDEO_PLAYER: () => currentTranslations.nouns.videoPlayer,
-  VOLUME: () => currentTranslations.nouns.volume,
-  SEEK: () => currentTranslations.nouns.seek,
-  CLOSED_CAPTIONS: () => currentTranslations.nouns.closedCaptions,
+  AUDIO_PLAYER: () => getCurrentTranslations().nouns.audioPlayer,
+  VIDEO_PLAYER: () => getCurrentTranslations().nouns.videoPlayer,
+  VOLUME: () => getCurrentTranslations().nouns.volume,
+  SEEK: () => getCurrentTranslations().nouns.seek,
+  CLOSED_CAPTIONS: () => getCurrentTranslations().nouns.closedCaptions,
   PLAYBACK_RATE: ({ playbackRate = 1 } = {}) =>
-    `${currentTranslations.nouns.playbackRate} ${playbackRate}`,
-  PLAYBACK_TIME: () => currentTranslations.nouns.playbackTime,
-  MEDIA_LOADING: () => currentTranslations.nouns.mediaLoading,
-  SETTINGS: () => currentTranslations.nouns.settings,
-  AUDIO_TRACKS: () => currentTranslations.nouns.audioTracks,
-  QUALITY: () => currentTranslations.nouns.quality,
+    `${getCurrentTranslations().nouns.playbackRate} ${playbackRate}`,
+  PLAYBACK_TIME: () => getCurrentTranslations().nouns.playbackTime,
+  MEDIA_LOADING: () => getCurrentTranslations().nouns.mediaLoading,
+  SETTINGS: () => getCurrentTranslations().nouns.settings,
+  AUDIO_TRACKS: () => getCurrentTranslations().nouns.audioTracks,
+  QUALITY: () => getCurrentTranslations().nouns.quality,
 };
 
 export const verbs: Record<string, (options?: LabelOptions) => string> = {
-  PLAY: () => currentTranslations.verbs.play,
-  PAUSE: () => currentTranslations.verbs.pause,
-  MUTE: () => currentTranslations.verbs.mute,
-  UNMUTE: () => currentTranslations.verbs.unmute,
-  ENTER_AIRPLAY: () => currentTranslations.verbs.enterAirplay,
-  EXIT_AIRPLAY: () => currentTranslations.verbs.exitAirplay,
-  ENTER_CAST: () => currentTranslations.verbs.enterCast,
-  EXIT_CAST: () => currentTranslations.verbs.exitCast,
-  ENTER_FULLSCREEN: () => currentTranslations.verbs.enterFullscreen,
-  EXIT_FULLSCREEN: () => currentTranslations.verbs.exitFullscreen,
-  ENTER_PIP: () => currentTranslations.verbs.enterPip,
-  EXIT_PIP: () => currentTranslations.verbs.exitPip,
+  PLAY: () => getCurrentTranslations().verbs.play,
+  PAUSE: () => getCurrentTranslations().verbs.pause,
+  MUTE: () => getCurrentTranslations().verbs.mute,
+  UNMUTE: () => getCurrentTranslations().verbs.unmute,
+  ENTER_AIRPLAY: () => getCurrentTranslations().verbs.enterAirplay,
+  EXIT_AIRPLAY: () => getCurrentTranslations().verbs.exitAirplay,
+  ENTER_CAST: () => getCurrentTranslations().verbs.enterCast,
+  EXIT_CAST: () => getCurrentTranslations().verbs.exitCast,
+  ENTER_FULLSCREEN: () => getCurrentTranslations().verbs.enterFullscreen,
+  EXIT_FULLSCREEN: () => getCurrentTranslations().verbs.exitFullscreen,
+  ENTER_PIP: () => getCurrentTranslations().verbs.enterPip,
+  EXIT_PIP: () => getCurrentTranslations().verbs.exitPip,
   SEEK_FORWARD_N_SECS: ({ seekOffset = 30 } = {}) =>
-    `${currentTranslations.verbs.seekForward} ${seekOffset} ${currentTranslations.verbs.seconds}`,
+    `${getCurrentTranslations().verbs.seekForward} ${seekOffset} ${
+      getCurrentTranslations().verbs.seconds
+    }`,
   SEEK_BACK_N_SECS: ({ seekOffset = 30 } = {}) =>
-    `${currentTranslations.verbs.seekBack} ${seekOffset} ${currentTranslations.verbs.seconds}`,
-  SEEK_LIVE: () => currentTranslations.verbs.seekLive,
-  PLAYING_LIVE: () => currentTranslations.verbs.playingLive,
+    `${getCurrentTranslations().verbs.seekBack} ${seekOffset} ${
+      getCurrentTranslations().verbs.seconds
+    }`,
+  SEEK_LIVE: () => getCurrentTranslations().verbs.seekLive,
+  PLAYING_LIVE: () => getCurrentTranslations().verbs.playingLive,
 };
 
 export default {

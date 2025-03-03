@@ -1,6 +1,6 @@
-import { TranslationType } from '../utils/translation-helper';
+import { TranslateDictionary } from '../translation-helper.js';
 
-export const En: TranslationType = {
+export const En: TranslateDictionary = {
   tooltips: {
     enterAirplay: 'Start airplay',
     exitAirplay: 'Stop airplay',

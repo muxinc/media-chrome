@@ -1,9 +1,6 @@
-import { En } from '../lang/en.js';
-import { Es } from '../lang/es.js';
-import { Fr } from '../lang/fr.js';
-import { Pt } from '../lang/pt.js';
+import { En } from './translation/en.js';
 
-export type TranslationType = {
+export type TranslateDictionary = {
   tooltips: {
     enterAirplay: string;
     exitAirplay: string;
@@ -62,18 +59,20 @@ export type TranslationType = {
   };
 };
 
-const translationsLanguages: Record<string, TranslationType> = {
-  es: Es,
+const translationsLanguages: Record<string, TranslateDictionary> = {
   en: En,
-  fr: Fr,
-  pt: Pt,
 };
 
-const getBrowserLanguage = (): string =>
-  navigator.language.split('-')[0] || 'en';
+export const addTranslation = (
+  langCode: string,
+  languageDictionary: TranslateDictionary
+) => {
+  translationsLanguages[langCode] = languageDictionary;
+};
 
-const getPreferredLanguage = (): string => getBrowserLanguage();
+export const getCurrentTranslations = () => {
+  const getBrowserLanguage = () => navigator.language.split('-')[0] || 'en';
+  const getPreferredLanguage = () => getBrowserLanguage();
 
-const currentTranslations = translationsLanguages[getPreferredLanguage()] || En;
-
-export default currentTranslations;
+  return translationsLanguages[getPreferredLanguage()] || En;
+};

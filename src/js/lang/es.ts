@@ -1,6 +1,9 @@
-import { TranslationType } from '../utils/translation-helper';
+import {
+  addTranslation,
+  TranslateDictionary,
+} from '../utils/translation-helper.js';
 
-export const Es: TranslationType = {
+export const Es: TranslateDictionary = {
   tooltips: {
     enterAirplay: 'Iniciar AirPlay',
     exitAirplay: 'Detener AirPlay',
@@ -58,3 +61,5 @@ export const Es: TranslationType = {
     seconds: 'segundos',
   },
 };
+
+addTranslation('es', Es);
