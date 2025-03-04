@@ -1,3 +1,12 @@
+## [4.7.1](https://github.com/muxinc/media-chrome/compare/v4.7.0...v4.7.1) (2025-03-04)
+
+
+### Bug Fixes
+
+* MediaTheme React type ([#1089](https://github.com/muxinc/media-chrome/issues/1089)) ([3a7c933](https://github.com/muxinc/media-chrome/commit/3a7c933407b020ec84d96277c3a4cb413f2d5f4a))
+
+
+
 # [4.7.0](https://github.com/muxinc/media-chrome/compare/v4.6.1...v4.7.0) (2025-02-28)
 
 
