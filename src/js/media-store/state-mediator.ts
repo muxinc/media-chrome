@@ -389,6 +389,33 @@ export const stateMediator: StateMediator = {
     set(value, stateOwners) {
       const { media } = stateOwners;
       if (!media) return;
+
+      try {
+        const volumeBeforeMute = globalThis.localStorage.getItem(
+          'media-chrome-pref-volume-before-mute'
+        );
+        if (value) {
+          if (!volumeBeforeMute || volumeBeforeMute === '0') {
+            globalThis.localStorage.setItem(
+              'media-chrome-pref-volume-before-mute',
+              media.volume.toString()
+            );
+          }
+          media.volume = 0;
+          globalThis.localStorage.setItem('media-chrome-pref-volume', '0');
+        } else {
+          if (volumeBeforeMute !== null) {
+            media.volume = +volumeBeforeMute;
+            globalThis.localStorage.setItem(
+              'media-chrome-pref-volume',
+              volumeBeforeMute
+            );
+          }
+        }
+      } catch (err) {
+        // ignore
+      }
+
       media.muted = value;
     },
     mediaEvents: ['volumechange'],
@@ -412,6 +439,12 @@ export const stateMediator: StateMediator = {
             'media-chrome-pref-volume',
             value.toString()
           );
+          if (!media.muted && value > 0) {
+            globalThis.localStorage.setItem(
+              'media-chrome-pref-volume-before-mute',
+              value.toString()
+            );
+          }
         }
       } catch (err) {
         // ignore
@@ -428,9 +461,28 @@ export const stateMediator: StateMediator = {
         if (noVolumePref) return;
         /** @TODO How should we handle globalThis dependencies/"state ownership"? (CJP) */
         try {
+          const { media } = stateOwners;
+          if (!media) return;
+
           const volumePref = globalThis.localStorage.getItem(
             'media-chrome-pref-volume'
           );
+          const volumeBeforeMute = globalThis.localStorage.getItem(
+            'media-chrome-pref-volume-before-mute'
+          );
+          const muteState = volumePref === '0';
+
+          if (muteState) {
+            media.muted = true;
+            if (volumeBeforeMute !== null) {
+              media.volume = +volumeBeforeMute;
+            }
+          } else {
+            if (volumePref !== null) {
+              media.volume = +volumePref;
+            }
+          }
+
           if (volumePref == null) return;
           stateMediator.mediaVolume.set(+volumePref, stateOwners);
           handler(+volumePref);
