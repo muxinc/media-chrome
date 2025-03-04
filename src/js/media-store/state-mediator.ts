@@ -391,26 +391,19 @@ export const stateMediator: StateMediator = {
       if (!media) return;
 
       try {
-        const volumeBeforeMute = globalThis.localStorage.getItem(
-          'media-chrome-pref-volume-before-mute'
-        );
         if (value) {
-          if (!volumeBeforeMute || volumeBeforeMute === '0') {
-            globalThis.localStorage.setItem(
-              'media-chrome-pref-volume-before-mute',
-              media.volume.toString()
-            );
-          }
+          globalThis.localStorage.setItem('is-muted', 'true');
+          globalThis.localStorage.setItem(
+            'media-chrome-pref-volume',
+            media.volume.toString()
+          );
           media.volume = 0;
-          globalThis.localStorage.setItem('media-chrome-pref-volume', '0');
         } else {
-          if (volumeBeforeMute !== null) {
-            media.volume = +volumeBeforeMute;
-            globalThis.localStorage.setItem(
-              'media-chrome-pref-volume',
-              volumeBeforeMute
-            );
-          }
+          globalThis.localStorage.setItem('is-muted', 'false');
+          const prefVolume = globalThis.localStorage.getItem(
+            'media-chrome-pref-volume'
+          );
+          media.volume = +prefVolume;
         }
       } catch (err) {
         // ignore
@@ -439,12 +432,6 @@ export const stateMediator: StateMediator = {
             'media-chrome-pref-volume',
             value.toString()
           );
-          if (!media.muted && value > 0) {
-            globalThis.localStorage.setItem(
-              'media-chrome-pref-volume-before-mute',
-              value.toString()
-            );
-          }
         }
       } catch (err) {
         // ignore
@@ -467,16 +454,11 @@ export const stateMediator: StateMediator = {
           const volumePref = globalThis.localStorage.getItem(
             'media-chrome-pref-volume'
           );
-          const volumeBeforeMute = globalThis.localStorage.getItem(
-            'media-chrome-pref-volume-before-mute'
-          );
-          const muteState = volumePref === '0';
+          const isMuted =
+            globalThis.localStorage.getItem('is-muted') === 'true';
 
-          if (muteState) {
+          if (isMuted) {
             media.muted = true;
-            if (volumeBeforeMute !== null) {
-              media.volume = +volumeBeforeMute;
-            }
           } else {
             if (volumePref !== null) {
               media.volume = +volumePref;
