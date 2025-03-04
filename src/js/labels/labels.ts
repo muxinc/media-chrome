@@ -1,4 +1,4 @@
-import { getCurrentTranslations } from '../utils/translation-helper.js';
+import { t } from '../utils/i18n.js';
 
 export type LabelOptions = { seekOffset?: number; playbackRate?: number };
 
@@ -31,68 +31,66 @@ export const formatError = (error: MediaErrorLike) => {
   };
 };
 
+const translation = t;
+
 export const tooltipLabels = {
-  ENTER_AIRPLAY: getCurrentTranslations().tooltips.enterAirplay,
-  EXIT_AIRPLAY: getCurrentTranslations().tooltips.exitAirplay,
-  AUDIO_TRACK_MENU: getCurrentTranslations().tooltips.audioTrackMenu,
-  CAPTIONS: getCurrentTranslations().tooltips.captions,
-  ENABLE_CAPTIONS: getCurrentTranslations().tooltips.enableCaptions,
-  DISABLE_CAPTIONS: getCurrentTranslations().tooltips.disableCaptions,
-  START_CAST: getCurrentTranslations().tooltips.startCast,
-  STOP_CAST: getCurrentTranslations().tooltips.stopCast,
-  ENTER_FULLSCREEN: getCurrentTranslations().tooltips.enterFullscreen,
-  EXIT_FULLSCREEN: getCurrentTranslations().tooltips.exitFullscreen,
-  MUTE: getCurrentTranslations().tooltips.mute,
-  UNMUTE: getCurrentTranslations().tooltips.unmute,
-  ENTER_PIP: getCurrentTranslations().tooltips.enterPip,
-  EXIT_PIP: getCurrentTranslations().tooltips.exitPip,
-  PLAY: getCurrentTranslations().tooltips.play,
-  PAUSE: getCurrentTranslations().tooltips.pause,
-  PLAYBACK_RATE: getCurrentTranslations().tooltips.playbackRate,
-  RENDITIONS: getCurrentTranslations().tooltips.renditions,
-  SEEK_BACKWARD: getCurrentTranslations().tooltips.seekBackward,
-  SEEK_FORWARD: getCurrentTranslations().tooltips.seekForward,
-  SETTINGS: getCurrentTranslations().tooltips.settings,
+  ENTER_AIRPLAY: translation('Start airplay'),
+  EXIT_AIRPLAY: translation('Stop airplay'),
+  AUDIO_TRACK_MENU: translation('Audio'),
+  CAPTIONS: translation('Captions'),
+  ENABLE_CAPTIONS: translation('Enable captions'),
+  DISABLE_CAPTIONS: translation('Disable captions'),
+  START_CAST: translation('Start casting'),
+  STOP_CAST: translation('Stop casting'),
+  ENTER_FULLSCREEN: translation('Enter fullscreen mode'),
+  EXIT_FULLSCREEN: translation('Exit fullscreen mode'),
+  MUTE: translation('Mute'),
+  UNMUTE: translation('Unmute'),
+  ENTER_PIP: translation('Enter picture in picture mode'),
+  EXIT_PIP: translation('Exit picture in picture mode'),
+  PLAY: translation('Play'),
+  PAUSE: translation('Pause'),
+  PLAYBACK_RATE: translation('Playback rate'),
+  RENDITIONS: translation('Quality'),
+  SEEK_BACKWARD: translation('Seek backward'),
+  SEEK_FORWARD: translation('Seek forward'),
+  SETTINGS: translation('Settings'),
 };
 
 export const nouns: Record<string, (options?: LabelOptions) => string> = {
-  AUDIO_PLAYER: () => getCurrentTranslations().nouns.audioPlayer,
-  VIDEO_PLAYER: () => getCurrentTranslations().nouns.videoPlayer,
-  VOLUME: () => getCurrentTranslations().nouns.volume,
-  SEEK: () => getCurrentTranslations().nouns.seek,
-  CLOSED_CAPTIONS: () => getCurrentTranslations().nouns.closedCaptions,
+  AUDIO_PLAYER: () => translation('audio player'),
+  VIDEO_PLAYER: () => translation('video player'),
+  VOLUME: () => translation('volume'),
+  SEEK: () => translation('seek'),
+  CLOSED_CAPTIONS: () => translation('closed captions'),
   PLAYBACK_RATE: ({ playbackRate = 1 } = {}) =>
-    `${getCurrentTranslations().nouns.playbackRate} ${playbackRate}`,
-  PLAYBACK_TIME: () => getCurrentTranslations().nouns.playbackTime,
-  MEDIA_LOADING: () => getCurrentTranslations().nouns.mediaLoading,
-  SETTINGS: () => getCurrentTranslations().nouns.settings,
-  AUDIO_TRACKS: () => getCurrentTranslations().nouns.audioTracks,
-  QUALITY: () => getCurrentTranslations().nouns.quality,
+    `${translation('Playback rate')} ${playbackRate}`,
+  PLAYBACK_TIME: () => translation('playback time'),
+  MEDIA_LOADING: () => translation('media loading'),
+  SETTINGS: () => translation('settings'),
+  AUDIO_TRACKS: () => translation('audio tracks'),
+  QUALITY: () => translation('quality'),
 };
 
 export const verbs: Record<string, (options?: LabelOptions) => string> = {
-  PLAY: () => getCurrentTranslations().verbs.play,
-  PAUSE: () => getCurrentTranslations().verbs.pause,
-  MUTE: () => getCurrentTranslations().verbs.mute,
-  UNMUTE: () => getCurrentTranslations().verbs.unmute,
-  ENTER_AIRPLAY: () => getCurrentTranslations().verbs.enterAirplay,
-  EXIT_AIRPLAY: () => getCurrentTranslations().verbs.exitAirplay,
-  ENTER_CAST: () => getCurrentTranslations().verbs.enterCast,
-  EXIT_CAST: () => getCurrentTranslations().verbs.exitCast,
-  ENTER_FULLSCREEN: () => getCurrentTranslations().verbs.enterFullscreen,
-  EXIT_FULLSCREEN: () => getCurrentTranslations().verbs.exitFullscreen,
-  ENTER_PIP: () => getCurrentTranslations().verbs.enterPip,
-  EXIT_PIP: () => getCurrentTranslations().verbs.exitPip,
+  PLAY: () => translation('play'),
+  PAUSE: () => translation('pause'),
+  MUTE: () => translation('mute'),
+  UNMUTE: () => translation('unmute'),
+  ENTER_AIRPLAY: () => translation('start airplay'),
+  EXIT_AIRPLAY: () => translation('stop airplay'),
+  ENTER_CAST: () => translation('start casting'),
+  EXIT_CAST: () => translation('stop casting'),
+  ENTER_FULLSCREEN: () => translation('enter fullscreen mode'),
+  EXIT_FULLSCREEN: () => translation('exit fullscreen mode'),
+  ENTER_PIP: () => translation('enter picture in picture mode'),
+  EXIT_PIP: () => translation('exit picture in picture mode'),
   SEEK_FORWARD_N_SECS: ({ seekOffset = 30 } = {}) =>
-    `${getCurrentTranslations().verbs.seekForward} ${seekOffset} ${
-      getCurrentTranslations().verbs.seconds
-    }`,
+    `${translation('seek forward')} ${seekOffset} ${translation('seconds')}`,
   SEEK_BACK_N_SECS: ({ seekOffset = 30 } = {}) =>
-    `${getCurrentTranslations().verbs.seekBack} ${seekOffset} ${
-      getCurrentTranslations().verbs.seconds
-    }`,
-  SEEK_LIVE: () => getCurrentTranslations().verbs.seekLive,
-  PLAYING_LIVE: () => getCurrentTranslations().verbs.playingLive,
+    `${translation('seek back')} ${seekOffset} ${translation('seconds')}`,
+  SEEK_LIVE: () => translation('seek to live'),
+  PLAYING_LIVE: () => translation('playing live'),
 };
 
 export default {

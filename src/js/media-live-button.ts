@@ -3,7 +3,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { verbs } from './labels/labels.js';
 import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
-import { getCurrentTranslations } from './utils/translation-helper.js';
+import { t as translation } from './utils/i18n.js';
 
 const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
@@ -47,9 +47,9 @@ slotTemplate.innerHTML = /*html*/ `
     between slotted items and default slots.
   */ ''
   }
-  <slot name="spacer">&nbsp;</slot><slot name="text">${
-    getCurrentTranslations().verbs.live
-  }</slot>
+  <slot name="spacer">&nbsp;</slot><slot name="text">${translation(
+    'LIVE'
+  )}</slot>
 `;
 
 const updateAriaAttributes = (el: MediaLiveButton): void => {
