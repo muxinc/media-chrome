@@ -391,22 +391,12 @@ export const stateMediator: StateMediator = {
       if (!media) return;
 
       try {
-        if (value) {
-          globalThis.localStorage.setItem('is-muted', 'true');
-          globalThis.localStorage.setItem(
-            'media-chrome-pref-volume',
-            media.volume.toString()
-          );
-          media.volume = 0;
-        } else {
-          globalThis.localStorage.setItem('is-muted', 'false');
-          const volumePref = globalThis.localStorage.getItem(
-            'media-chrome-pref-volume'
-          );
-          media.volume = +volumePref;
-        }
+        globalThis.localStorage.setItem(
+          'media-chrome-pref-muted',
+          value ? 'true' : 'false'
+        );
       } catch (e) {
-        console.debug('Error setting muted state or volume pref', e);
+        console.debug('Error setting muted pref', e);
       }
 
       media.muted = value;
@@ -454,11 +444,12 @@ export const stateMediator: StateMediator = {
           const volumePref = globalThis.localStorage.getItem(
             'media-chrome-pref-volume'
           );
-          const isMuted =
-            globalThis.localStorage.getItem('is-muted') === 'true';
+          const mutedPref =
+            globalThis.localStorage.getItem('media-chrome-pref-muted') ===
+            'true';
 
-          media.muted = isMuted;
-          if (!isMuted && volumePref !== null) {
+          media.muted = mutedPref;
+          if (!mutedPref && volumePref !== null) {
             media.volume = +volumePref;
           }
 
