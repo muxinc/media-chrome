@@ -16,6 +16,7 @@ export const En = {
   Play: 'Play',
   Pause: 'Pause',
   'Playback rate': 'Playback rate',
+  'Playback rate {playbackRate}': 'Playback rate {playbackRate}',
   Quality: 'Quality',
   'Seek backward': 'Seek backward',
   'Seek forward': 'Seek forward',
@@ -47,9 +48,8 @@ export const En = {
   'exit picture in picture mode': 'exit picture in picture mode',
   'seek to live': 'seek to live',
   'playing live': 'playing live',
-  'seek back': 'seek back',
-  'seek forward': 'seek forward',
-  seconds: 'seconds',
+  'seek back {seekOffset} seconds': 'seek back {seekOffset} seconds',
+  'seek forward {seekOffset} seconds': 'seek forward {seekOffset} seconds',
 } as const;
 
 export type TranslateKeys = keyof typeof En;

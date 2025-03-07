@@ -1,4 +1,4 @@
-import { En, TranslateDictionary, TranslateKeys } from './translation/en.js';
+import { En, TranslateDictionary, TranslateKeys } from '../lang/en.js';
 
 const translationsLanguages = {
   en: En,
@@ -11,9 +11,19 @@ export const addTranslation = (
   translationsLanguages[langCode] = languageDictionary;
 };
 
-export const t = (key: TranslateKeys) => {
+export const t = (
+  key: TranslateKeys,
+  variables: Record<string, string | number> = {}
+) => {
   const getBrowserLanguage = () => navigator.language.split('-')[0] || 'en';
   const getPreferredLanguage = () => getBrowserLanguage();
 
-  return translationsLanguages[getPreferredLanguage()]?.[key] || En[key];
+  const result =
+    translationsLanguages[getPreferredLanguage()]?.[key] || En[key];
+
+  return result.replace(/\{(\w+)\}/g, (_, varName) =>
+    variables[varName] !== undefined
+      ? String(variables[varName])
+      : `{${varName}}`
+  );
 };

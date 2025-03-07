@@ -64,7 +64,7 @@ export const nouns: Record<string, (options?: LabelOptions) => string> = {
   SEEK: () => translation('seek'),
   CLOSED_CAPTIONS: () => translation('closed captions'),
   PLAYBACK_RATE: ({ playbackRate = 1 } = {}) =>
-    `${translation('Playback rate')} ${playbackRate}`,
+    `${translation('Playback rate {playbackRate}', { playbackRate })}`,
   PLAYBACK_TIME: () => translation('playback time'),
   MEDIA_LOADING: () => translation('media loading'),
   SETTINGS: () => translation('settings'),
@@ -86,9 +86,9 @@ export const verbs: Record<string, (options?: LabelOptions) => string> = {
   ENTER_PIP: () => translation('enter picture in picture mode'),
   EXIT_PIP: () => translation('exit picture in picture mode'),
   SEEK_FORWARD_N_SECS: ({ seekOffset = 30 } = {}) =>
-    `${translation('seek forward')} ${seekOffset} ${translation('seconds')}`,
+    `${(translation('seek forward {seekOffset} seconds'), { seekOffset })}`,
   SEEK_BACK_N_SECS: ({ seekOffset = 30 } = {}) =>
-    `${translation('seek back')} ${seekOffset} ${translation('seconds')}`,
+    `${translation('seek back {seekOffset} seconds', { seekOffset })}`,
   SEEK_LIVE: () => translation('seek to live'),
   PLAYING_LIVE: () => translation('playing live'),
 };

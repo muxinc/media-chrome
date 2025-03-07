@@ -1,5 +1,5 @@
 import { addTranslation } from '../utils/i18n.js';
-import { TranslateDictionary } from '../utils/translation/en.js';
+import { TranslateDictionary } from '../lang/en.js';
 
 export const Es: TranslateDictionary = {
   'Start airplay': 'Iniciar AirPlay',
@@ -19,6 +19,7 @@ export const Es: TranslateDictionary = {
   Play: 'Reproducir',
   Pause: 'Pausar',
   'Playback rate': 'Velocidad de reproducción',
+  'Playback rate {playbackRate}': 'Velocidad de reproducción {playbackRate}',
   Quality: 'Calidad',
   'Seek backward': 'Retroceder',
   'Seek forward': 'Avanzar',
@@ -49,9 +50,8 @@ export const Es: TranslateDictionary = {
   'exit picture in picture mode': 'salir del modo imagen en imagen',
   'seek to live': 'ir a la transmisión en vivo',
   'playing live': 'reproduciendo en vivo',
-  'seek back': 'retroceder',
-  'seek forward': 'avanzar',
-  seconds: 'segundos',
+  'seek back {seekOffset} seconds': 'retroceder {seekOffset} segundos',
+  'seek forward {seekOffset} seconds': 'avanzar {seekOffset} segundos',
 };
 
 addTranslation('es', Es);
