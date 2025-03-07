@@ -446,14 +446,14 @@ export const stateMediator: StateMediator = {
           );
           const mutedPref =
             globalThis.localStorage.getItem('media-chrome-pref-muted') ===
-            'true';            
+            'true';
 
           if (volumePref == null) return;
           stateMediator.mediaVolume.set(+volumePref, stateOwners);
           stateMediator.mediaMuted.set(mutedPref, stateOwners);
           handler(+volumePref);
         } catch (e) {
-          console.debug('Error getting muted state or volume pref', e);
+          console.debug('Error getting muted or volume pref', e);
         }
       },
     ],
