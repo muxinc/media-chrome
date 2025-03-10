@@ -2,7 +2,6 @@ import {
   MediaUIAttributes,
   MediaStateReceiverAttributes,
 } from './constants.js';
-import { nouns } from './labels/labels.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import {
   getBooleanAttr,
@@ -10,6 +9,7 @@ import {
   getOrInsertCSSRule,
 } from './utils/element-utils.js';
 import MediaController from './media-controller.js';
+import { t } from './utils/i18n.js';
 export const Attributes = {
   LOADING_DELAY: 'loadingdelay',
 };
@@ -85,7 +85,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
 </style>
 
 <slot name="icon">${loadingIndicatorIcon}</slot>
-<div id="status" role="status" aria-live="polite">${nouns.MEDIA_LOADING()}</div>
+<div id="status" role="status" aria-live="polite">${t('media loading')}</div>
 `;
 
 /**

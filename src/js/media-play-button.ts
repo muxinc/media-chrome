@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { tooltipLabels, verbs } from './labels/labels.js';
+import { t } from './utils/i18n.js';
 import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
 
 const playIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
@@ -33,12 +33,12 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const tooltipContent = /*html*/ `
-  <slot name="tooltip-play">${tooltipLabels.PLAY}</slot>
-  <slot name="tooltip-pause">${tooltipLabels.PAUSE}</slot>
+  <slot name="tooltip-play">${t('Play')}</slot>
+  <slot name="tooltip-pause">${t('Pause')}</slot>
 `;
 
 const updateAriaLabel = (el: any): void => {
-  const label = el.mediaPaused ? verbs.PLAY() : verbs.PAUSE();
+  const label = el.mediaPaused ? t('play') : t('pause');
   el.setAttribute('aria-label', label);
 };
 

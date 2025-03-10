@@ -37,7 +37,7 @@ export const En = {
   pause: 'pause',
   mute: 'mute',
   unmute: 'unmute',
-  LIVE: 'LIVE',
+  live: 'live',
   'start airplay': 'start airplay',
   'stop airplay': 'stop airplay',
   'start casting': 'start casting',
@@ -50,6 +50,19 @@ export const En = {
   'playing live': 'playing live',
   'seek back {seekOffset} seconds': 'seek back {seekOffset} seconds',
   'seek forward {seekOffset} seconds': 'seek forward {seekOffset} seconds',
+
+  'Network Error': 'Network Error',
+  'Decode Error': 'Decode Error',
+  'Source Not Supported': 'Source Not Supported',
+  'Encryption Error': 'Encryption Error',
+  'A network error caused the media download to fail.':
+    'A network error caused the media download to fail.',
+  'A media error caused playback to be aborted. The media could be corrupt or your browser does not support this format.':
+    'A media error caused playback to be aborted. The media could be corrupt or your browser does not support this format.',
+  'An unsupported error occurred. The server or network failed, or your browser does not support this format.':
+    'An unsupported error occurred. The server or network failed, or your browser does not support this format.',
+  'The media is encrypted and there are no keys to decrypt it.':
+    'The media is encrypted and there are no keys to decrypt it.',
 } as const;
 
 export type TranslateKeys = keyof typeof En;

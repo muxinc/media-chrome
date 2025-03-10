@@ -1,5 +1,5 @@
 import { addTranslation } from '../utils/i18n.js';
-import { TranslateDictionary } from '../lang/en.js';
+import type { TranslateDictionary } from '../lang/en.js';
 
 export const Es: TranslateDictionary = {
   'Start airplay': 'Iniciar AirPlay',
@@ -39,7 +39,7 @@ export const Es: TranslateDictionary = {
   pause: 'pausar',
   mute: 'silenciar',
   unmute: 'reactivar sonido',
-  LIVE: 'EN VIVO',
+  live: 'en vivo',
   'start airplay': 'iniciar AirPlay',
   'stop airplay': 'detener AirPlay',
   'start casting': 'iniciar transmisión',
@@ -52,6 +52,18 @@ export const Es: TranslateDictionary = {
   'playing live': 'reproduciendo en vivo',
   'seek back {seekOffset} seconds': 'retroceder {seekOffset} segundos',
   'seek forward {seekOffset} seconds': 'avanzar {seekOffset} segundos',
+  'Network Error': 'Error de red',
+  'Decode Error': 'Error de decodificación',
+  'Source Not Supported': 'Fuente no compatible',
+  'Encryption Error': 'Error de cifrado',
+  'A network error caused the media download to fail.':
+    'Un error de red causó la falla en la descarga del contenido.',
+  'A media error caused playback to be aborted. The media could be corrupt or your browser does not support this format.':
+    'Un error de medios causó la interrupción de la reproducción. El contenido podría estar dañado o tu navegador no admite este formato.',
+  'An unsupported error occurred. The server or network failed, or your browser does not support this format.':
+    'Ocurrió un error de incompatibilidad. El servidor o la red fallaron, o tu navegador no admite este formato.',
+  'The media is encrypted and there are no keys to decrypt it.':
+    'El contenido está cifrado y no hay claves disponibles para descifrarlo.',
 };
 
 addTranslation('es', Es);

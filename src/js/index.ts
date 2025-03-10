@@ -1,5 +1,4 @@
 export * as constants from './constants.js';
-export { default as labels } from './labels/labels.js';
 export * as timeUtils from './utils/time.js';
 
 // Import media-controller first to ensure it's available for other components

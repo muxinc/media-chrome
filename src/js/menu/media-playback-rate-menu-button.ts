@@ -1,6 +1,5 @@
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaUIAttributes } from '../constants.js';
-import { nouns, tooltipLabels } from '../labels/labels.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { AttributeTokenList } from '../utils/attribute-token-list.js';
 import {
@@ -8,6 +7,7 @@ import {
   setNumericAttr,
   getMediaController,
 } from '../utils/element-utils.js';
+import { t } from '../utils/i18n.js';
 
 export const Attributes = {
   RATES: 'rates',
@@ -55,7 +55,7 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   constructor(options = {}) {
     super({
       slotTemplate,
-      tooltipContent: tooltipLabels.PLAYBACK_RATE,
+      tooltipContent: t('Playback rate'),
       ...options,
     });
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
@@ -78,7 +78,10 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
         ? newPlaybackRate
         : DEFAULT_RATE;
       this.container.innerHTML = `${playbackRate}x`;
-      this.setAttribute('aria-label', nouns.PLAYBACK_RATE({ playbackRate }));
+      this.setAttribute(
+        'aria-label',
+        t('Playback rate {playbackRate}', { playbackRate })
+      );
     }
   }
 

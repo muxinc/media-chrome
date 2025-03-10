@@ -1,9 +1,10 @@
 import { expect, fixture } from '@open-wc/testing';
 import { spy } from 'sinon';
 import { MediaUIAttributes, MediaUIEvents } from '../../src/js/constants.js';
-import { verbs } from '../../src/js/labels/labels.js';
+
 import '../../src/js/media-play-button.js';
 import { MediaPlayButton } from '../../src/js/media-play-button.js';
+import { t } from '../../src/js/utils/i18n.js';
 
 describe('<media-play-button>', () => {
   it('passes the a11y audit', async () => {
@@ -25,7 +26,7 @@ describe('<media-play-button>', () => {
     });
 
     it('should expect pause actions', async () => {
-      expect(el.getAttribute('aria-label')).equals(verbs.PAUSE());
+      expect(el.getAttribute('aria-label')).equals(t('pause'));
     });
 
     it('should show pause', () => {
@@ -75,7 +76,7 @@ describe('<media-play-button>', () => {
     });
 
     it('should expect play actions', async () => {
-      expect(el.getAttribute('aria-label')).equals(verbs.PLAY());
+      expect(el.getAttribute('aria-label')).equals(t('play'));
     });
 
     it('should show play', () => {

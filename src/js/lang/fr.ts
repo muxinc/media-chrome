@@ -1,5 +1,5 @@
 import { addTranslation } from '../utils/i18n.js';
-import { TranslateDictionary } from '../lang/en.js';
+import type { TranslateDictionary } from '../lang/en.js';
 
 export const Fr: TranslateDictionary = {
   'Start airplay': 'Démarrer la diffusion AirPlay',
@@ -40,7 +40,7 @@ export const Fr: TranslateDictionary = {
   pause: 'pause',
   mute: 'désactiver le son',
   unmute: 'activer le son',
-  LIVE: 'en direct',
+  live: 'en direct',
   'start airplay': 'démarrer la diffusion AirPlay',
   'stop airplay': 'arrêter la diffusion AirPlay',
   'start casting': 'démarrer la diffusion (cast)',
@@ -53,6 +53,18 @@ export const Fr: TranslateDictionary = {
   'playing live': 'lecture en direct',
   'seek back {seekOffset} seconds': 'reculer {seekOffset} secondes',
   'seek forward {seekOffset} seconds': 'avancer {seekOffset} secondes',
+  'Network Error': 'Erreur réseau',
+  'Decode Error': 'Erreur de décodage',
+  'Source Not Supported': 'Source non supportée',
+  'Encryption Error': 'Erreur de chiffrement',
+  'A network error caused the media download to fail.':
+    'Une erreur réseau a causé l’échec du téléchargement du média.',
+  'A media error caused playback to be aborted. The media could be corrupt or your browser does not support this format.':
+    'Une erreur de média a provoqué l’interruption de la lecture. Le média peut être corrompu ou votre navigateur ne prend pas en charge ce format.',
+  'An unsupported error occurred. The server or network failed, or your browser does not support this format.':
+    'Une erreur non supportée s’est produite. Le serveur ou le réseau a échoué, ou votre navigateur ne prend pas en charge ce format.',
+  'The media is encrypted and there are no keys to decrypt it.':
+    'Le média est chiffré et il n’y a pas de clés pour le déchiffrer.',
 };
 
 addTranslation('fr', Fr);

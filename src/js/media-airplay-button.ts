@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { tooltipLabels, verbs } from './labels/labels.js';
+import { t } from './utils/i18n.js';
 import {
   getStringAttr,
   setStringAttr,
@@ -45,14 +45,12 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const tooltipContent = /*html*/ `
-  <slot name="tooltip-enter">${tooltipLabels.ENTER_AIRPLAY}</slot>
-  <slot name="tooltip-exit">${tooltipLabels.EXIT_AIRPLAY}</slot>
+  <slot name="tooltip-enter">${t('start airplay')}</slot>
+  <slot name="tooltip-exit">${t('stop airplay')}</slot>
 `;
 
 const updateAriaLabel = (el: MediaAirplayButton): void => {
-  const label = el.mediaIsAirplaying
-    ? verbs.EXIT_AIRPLAY()
-    : verbs.ENTER_AIRPLAY();
+  const label = el.mediaIsAirplaying ? t('stop airplay') : t('start airplay');
   el.setAttribute('aria-label', label);
 };
 

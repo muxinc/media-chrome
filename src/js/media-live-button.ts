@@ -1,9 +1,8 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { verbs } from './labels/labels.js';
 import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
-import { t as translation } from './utils/i18n.js';
+import { t } from './utils/i18n.js';
 
 const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
@@ -34,7 +33,7 @@ slotTemplate.innerHTML = /*html*/ `
     cursor: not-allowed;
   }
 
-  slot[name=indicator]{
+  slot[name=text]{
     text-transform: uppercase;
   }
 
@@ -47,14 +46,12 @@ slotTemplate.innerHTML = /*html*/ `
     between slotted items and default slots.
   */ ''
   }
-  <slot name="spacer">&nbsp;</slot><slot name="text">${translation(
-    'LIVE'
-  )}</slot>
+  <slot name="spacer">&nbsp;</slot><slot name="text">${t('live')}</slot>
 `;
 
 const updateAriaAttributes = (el: MediaLiveButton): void => {
   const isPausedOrNotLive = el.mediaPaused || !el.mediaTimeIsLive;
-  const label = isPausedOrNotLive ? verbs.SEEK_LIVE() : verbs.PLAYING_LIVE();
+  const label = isPausedOrNotLive ? t('seek to live') : t('playing live');
   el.setAttribute('aria-label', label);
 
   isPausedOrNotLive
