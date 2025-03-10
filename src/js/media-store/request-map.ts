@@ -15,7 +15,7 @@ import { StateMediator, StateOwners } from './state-mediator.js';
 import { MediaState } from './media-store.js';
 
 export type MediaUIEventsType =
-  typeof MediaUIEvents[keyof typeof MediaUIEvents];
+typeof MediaUIEvents[keyof typeof MediaUIEvents];
 export type MediaRequestTypes = Exclude<
   MediaUIEventsType,
   | 'registermediastatereceiver'
@@ -161,10 +161,13 @@ export const requestMap: RequestMap = {
   [MediaUIEvents.MEDIA_UNMUTE_REQUEST](stateMediator, stateOwners) {
     const key = 'mediaMuted';
     const value = false;
-    // If we've unmuted but our volume is currently 0, automatically set it to some low volume
-    if (!stateMediator.mediaVolume.get(stateOwners)) {
-      stateMediator.mediaVolume.set(0.25, stateOwners);
-    }
+    const volumePref =
+      +globalThis.localStorage.getItem('media-chrome-pref-volume');
+    // If we've unmuted but the current volume is 0, restore the preferred volume or set it to some low volume
+    stateMediator.mediaVolume.set(
+      volumePref > 0.25 ? volumePref : 0.25,
+      stateOwners
+    );
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_VOLUME_REQUEST](stateMediator, stateOwners, { detail }) {
@@ -174,6 +177,10 @@ export const requestMap: RequestMap = {
     // NOTE: "pseudo-muted" is currently modeled via MEDIA_VOLUME_LEVEL === "off" (CJP)
     if (value && stateMediator.mediaMuted.get(stateOwners)) {
       stateMediator.mediaMuted.set(false, stateOwners);
+    }
+    // If we've adjusted the volume to 0 and are unmuted, automatically mute.
+    if(value === '0' && !stateMediator.mediaMuted.get(stateOwners)){
+      stateMediator.mediaMuted.set(true, stateOwners);
     }
     stateMediator[key].set(value, stateOwners);
   },

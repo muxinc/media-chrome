@@ -389,9 +389,33 @@ export const stateMediator: StateMediator = {
     set(value, stateOwners) {
       const { media } = stateOwners;
       if (!media) return;
+
+      try {
+        globalThis.localStorage.setItem(
+          'media-chrome-pref-muted',
+          value ? 'true' : 'false'
+        );
+      } catch (e) {
+        console.debug('Error setting muted pref', e);
+      }
+
       media.muted = value;
     },
     mediaEvents: ['volumechange'],
+    stateOwnersUpdateHandlers: [
+      (handler, stateOwners) => {
+        try {
+          const mutedPref =
+            globalThis.localStorage.getItem('media-chrome-pref-muted') ===
+            'true';
+
+          stateMediator.mediaMuted.set(mutedPref, stateOwners);
+          handler(mutedPref);
+        } catch (e) {
+          console.debug('Error getting muted pref', e);
+        }
+      },
+    ],
   },
   mediaVolume: {
     get(stateOwners) {
@@ -413,8 +437,8 @@ export const stateMediator: StateMediator = {
             value.toString()
           );
         }
-      } catch (err) {
-        // ignore
+      } catch (e) {
+        console.debug('Error setting volume pref', e);
       }
       if (!Number.isFinite(+value)) return;
       media.volume = +value;
@@ -428,9 +452,13 @@ export const stateMediator: StateMediator = {
         if (noVolumePref) return;
         /** @TODO How should we handle globalThis dependencies/"state ownership"? (CJP) */
         try {
+          const { media } = stateOwners;
+          if (!media) return;
+
           const volumePref = globalThis.localStorage.getItem(
             'media-chrome-pref-volume'
           );
+
           if (volumePref == null) return;
           stateMediator.mediaVolume.set(+volumePref, stateOwners);
           handler(+volumePref);
