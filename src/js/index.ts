@@ -1,5 +1,6 @@
 export * as constants from './constants.js';
 export * as timeUtils from './utils/time.js';
+export { t } from './utils/i18n.js';
 
 // Import media-controller first to ensure it's available for other components
 // when calling `associateElement(this)` in connectedCallback.

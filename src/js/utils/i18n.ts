@@ -11,15 +11,13 @@ export const addTranslation = (
   translationsLanguages[langCode] = languageDictionary;
 };
 
+const getBrowserLanguage = () => navigator.language.split('-')[0] || 'en';
+
 export const t = (
   key: TranslateKeys,
   variables: Record<string, string | number> = {}
 ) => {
-  const getBrowserLanguage = () => navigator.language.split('-')[0] || 'en';
-  const getPreferredLanguage = () => getBrowserLanguage();
-
-  const result =
-    translationsLanguages[getPreferredLanguage()]?.[key] || En[key];
+  const result = translationsLanguages[getBrowserLanguage()]?.[key] || En[key];
 
   return result.replace(/\{(\w+)\}/g, (_, varName) =>
     variables[varName] !== undefined

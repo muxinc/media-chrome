@@ -87,10 +87,10 @@
       "default": "./dist/*.js"
     },
     "./lang/*": {
-      "types": "./lang/*.d.ts",
-      "import": "./lang/*.js",
-      "require": "./lang/*.js",
-      "default": "./lang/*.js"
+      "types": "./dist/lang/*.d.ts",
+      "import": "./dist/lang/*.js",
+      "require": "./dist/lang/*.js",
+      "default": "./dist/lang/*.js"
     }
   },
   "customElements": "dist/custom-elements.json",
