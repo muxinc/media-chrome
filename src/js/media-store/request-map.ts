@@ -15,7 +15,7 @@ import { StateMediator, StateOwners } from './state-mediator.js';
 import { MediaState } from './media-store.js';
 
 export type MediaUIEventsType =
-typeof MediaUIEvents[keyof typeof MediaUIEvents];
+  typeof MediaUIEvents[keyof typeof MediaUIEvents];
 export type MediaRequestTypes = Exclude<
   MediaUIEventsType,
   | 'registermediastatereceiver'
