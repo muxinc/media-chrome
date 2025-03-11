@@ -408,7 +408,9 @@ export const stateMediator: StateMediator = {
         const {
           options: { noMutedPref },
         } = stateOwners;
-        if (noMutedPref) return;
+        const { media } = stateOwners;
+        // The muted enabled attribute should still override the preference.
+        if (!media || media.muted || noMutedPref) return;
         try {
           const mutedPref =
             globalThis.localStorage.getItem('media-chrome-pref-muted') ===
