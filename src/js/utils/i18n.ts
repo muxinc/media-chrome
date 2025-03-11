@@ -11,7 +11,7 @@ export const addTranslation = (
   translationsLanguages[langCode] = languageDictionary;
 };
 
-const getBrowserLanguage = () => navigator.language.split('-')[0] || 'en';
+const getBrowserLanguage = () => globalThis.navigator?.language.split('-')[0] || 'en';
 
 export const t = (
   key: TranslateKeys,
