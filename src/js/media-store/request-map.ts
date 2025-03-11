@@ -178,10 +178,6 @@ export const requestMap: RequestMap = {
     if (value && stateMediator.mediaMuted.get(stateOwners)) {
       stateMediator.mediaMuted.set(false, stateOwners);
     }
-    // If we've adjusted the volume to 0 and are unmuted, automatically mute.
-    if(value === '0' && !stateMediator.mediaMuted.get(stateOwners)){
-      stateMediator.mediaMuted.set(true, stateOwners);
-    }
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_SEEK_REQUEST](stateMediator, stateOwners, { detail }) {
