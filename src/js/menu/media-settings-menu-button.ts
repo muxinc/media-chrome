@@ -1,7 +1,7 @@
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import { getMediaController } from '../utils/element-utils.js';
-import { nouns, tooltipLabels } from '../labels/labels.js';
+import { t } from '../utils/i18n.js';
 
 const slotTemplate: HTMLTemplateElement = document.createElement('template');
 slotTemplate.innerHTML = /*html*/ `
@@ -26,12 +26,12 @@ class MediaSettingsMenuButton extends MediaChromeMenuButton {
   }
 
   constructor() {
-    super({ slotTemplate, tooltipContent: tooltipLabels.SETTINGS });
+    super({ slotTemplate, tooltipContent: t('Settings') });
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute('aria-label', nouns.SETTINGS());
+    this.setAttribute('aria-label', t('settings'));
   }
 
   /**

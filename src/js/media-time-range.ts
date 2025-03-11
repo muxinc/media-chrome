@@ -4,7 +4,6 @@ import './media-preview-thumbnail.js';
 import './media-preview-time-display.js';
 import './media-preview-chapter-display.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
 import { isValidNumber } from './utils/utils.js';
 import { formatAsTimePhrase } from './utils/time.js';
 import { isElementVisible } from './utils/element-utils.js';
@@ -20,6 +19,7 @@ import {
   getStringAttr,
   setStringAttr,
 } from './utils/element-utils.js';
+import { t } from './utils/i18n.js';
 
 type Rects = {
   box: { width: number; min: number; max: number };
@@ -426,7 +426,10 @@ class MediaTimeRange extends MediaChromeRange {
     this.container.appendChild(template.content.cloneNode(true));
 
     const track = this.shadowRoot.querySelector('#track');
-    track.insertAdjacentHTML('afterbegin', '<div id="buffered" part="buffered"></div>');
+    track.insertAdjacentHTML(
+      'afterbegin',
+      '<div id="buffered" part="buffered"></div>'
+    );
 
     this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
@@ -445,7 +448,7 @@ class MediaTimeRange extends MediaChromeRange {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.range.setAttribute('aria-label', nouns.SEEK());
+    this.range.setAttribute('aria-label', t('seek'));
     this.#toggleRangeAnimation();
 
     // NOTE: Adding an event listener to an ancestor here.

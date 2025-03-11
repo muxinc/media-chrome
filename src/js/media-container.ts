@@ -9,10 +9,10 @@
 */
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
-import { nouns } from './labels/labels.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
+import { t } from './utils/i18n.js';
 import {
   getBooleanAttr,
   getStringAttr,
@@ -408,7 +408,7 @@ class MediaContainer extends globalThis.HTMLElement {
     observeResize(this, this.#handleResize);
 
     const isAudioChrome = this.getAttribute(Attributes.AUDIO) != null;
-    const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
+    const label = isAudioChrome ? t('audio player') : t('video player');
     this.setAttribute('role', 'region');
     this.setAttribute('aria-label', label);
 

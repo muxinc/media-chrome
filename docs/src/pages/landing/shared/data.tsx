@@ -17,7 +17,7 @@ import {
 } from "media-chrome/react";
 import type { MediaChromeListItem } from "../../../types";
 // @ts-ignore
-import { labels, timeUtils } from "media-chrome";
+import { timeUtils, t } from "media-chrome";
 
 const { formatAsTimePhrase } = timeUtils;
 
@@ -29,7 +29,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaController,
     a11y: {
       role: "region",
-      "aria-label": labels.VIDEO_PLAYER(),
+      "aria-label": t("video player"),
     },
   },
   {
@@ -43,7 +43,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaPlayButton,
     a11y: {
       role: "button",
-      "aria-label": labels.PLAY(),
+      "aria-label": t("play"),
     },
   },
   {
@@ -52,7 +52,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaSeekForwardButton,
     a11y: {
       role: "button",
-      "aria-label": labels.SEEK_FORWARD_N_SECS({ seekOffset: 30 }),
+      "aria-label": t("seek forward {seekOffset} seconds", { seekOffset: 30 }),
     },
   },
   {
@@ -61,7 +61,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaSeekBackwardButton,
     a11y: {
       role: "button",
-      "aria-label": labels.SEEK_BACK_N_SECS({ seekOffset: 30 }),
+      "aria-label": t("seek back {seekOffset} seconds", { seekOffset: 30 }),
     },
   },
   {
@@ -70,7 +70,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaMuteButton,
     a11y: {
       role: "button",
-      "aria-label": labels.MUTE(),
+      "aria-label": t("mute"),
     },
   },
   {
@@ -79,7 +79,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaVolumeRange,
     a11y: {
       role: "slider",
-      "aria-label": labels.VOLUME(),
+      "aria-label": t("volume"),
       "aria-valuetext": `${65}%`,
     },
   },
@@ -90,7 +90,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaTimeRange,
     a11y: {
       role: "slider",
-      "aria-label": labels.SEEK(),
+      "aria-label": t("seek"),
       "aria-valuetext": `${formatAsTimePhrase(-234)} of ${formatAsTimePhrase(
         360
       )}`,
@@ -109,7 +109,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     a11y: {
       role: "slider",
       // NOTE: Should add a label for media-time-display in media-chrome!
-      "aria-label": labels.PLAYBACK_TIME(),
+      "aria-label": t("playback time"),
       "aria-valuetext": `${formatAsTimePhrase(-234)} of ${formatAsTimePhrase(
         360
       )}`,
@@ -122,7 +122,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaCaptionsButton,
     a11y: {
       role: "switch",
-      "aria-label": labels.CLOSED_CAPTIONS(),
+      "aria-label": t("closed captions"),
     },
   },
   {
@@ -131,7 +131,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaPlaybackRateButton,
     a11y: {
       role: "button",
-      "aria-label": labels.PLAYBACK_RATE({ playbackRate: 1 }),
+      "aria-label": t("Playback rate {playbackRate}", { playbackRate: 1 }),
     },
   },
   {
@@ -141,7 +141,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaPipButton,
     a11y: {
       role: "button",
-      "aria-label": labels.ENTER_PIP(),
+      "aria-label": t("Enter picture in picture mode"),
     },
   },
   {
@@ -150,7 +150,7 @@ const mediaChromeListItems: MediaChromeListItem[] = [
     component: MediaFullscreenButton,
     a11y: {
       role: "button",
-      "aria-label": labels.ENTER_FULLSCREEN(),
+      "aria-label": t("enter fullscreen mode"),
     },
   },
 ];

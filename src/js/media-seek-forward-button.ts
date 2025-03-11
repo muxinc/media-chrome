@@ -2,7 +2,7 @@ import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
-import { tooltipLabels, verbs } from './labels/labels.js';
+import { t } from './utils/i18n.js';
 import { getSlotted, updateIconText } from './utils/element-utils.js';
 
 export const Attributes = {
@@ -40,7 +40,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
   constructor(options = {}) {
     super({
       slotTemplate,
-      tooltipContent: tooltipLabels.SEEK_FORWARD,
+      tooltipContent: t('Seek forward'),
       ...options,
     });
   }
@@ -83,7 +83,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
     setNumericAttr(this, Attributes.SEEK_OFFSET, value);
     this.setAttribute(
       'aria-label',
-      verbs.SEEK_FORWARD_N_SECS({ seekOffset: this.seekOffset })
+      t('seek forward {seekOffset} seconds', { seekOffset: this.seekOffset })
     );
     updateIconText(getSlotted(this, 'icon'), this.seekOffset as any);
   }
