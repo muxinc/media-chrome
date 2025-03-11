@@ -86,6 +86,7 @@ export type StateOption = {
   defaultDuration?: number;
   liveEdgeOffset?: number;
   noVolumePref?: boolean;
+  noMutedPref?: boolean;
   noSubtitlesLangPref?: boolean;
 };
 
@@ -404,6 +405,10 @@ export const stateMediator: StateMediator = {
     mediaEvents: ['volumechange'],
     stateOwnersUpdateHandlers: [
       (handler, stateOwners) => {
+        const {
+          options: { noMutedPref },
+        } = stateOwners;
+        if (noMutedPref) return;
         try {
           const mutedPref =
             globalThis.localStorage.getItem('media-chrome-pref-muted') ===
