@@ -71,7 +71,7 @@
 
     <h2>Custom error code for custom media elements</h2>
     <script>
-      function setError() {
+      function setCustomError() {
         const video = document.querySelector('custom-video');
         const customError = new Error('This is a custom error with code 42!');
         customError.code = 42;
@@ -79,9 +79,56 @@
         video.dispatchEvent(new Event('error'));
       }
     </script>
-    <button onclick="setError()">Set error code 42</button>
+    <button onclick="setCustomError()">Set error code 42</button>
+
+    <h2>Hide error on recovery</h2>
+
+    <media-controller defaultsubtitles>
+      <custom-video
+        id="recoverable-video"
+        slot="media"
+        src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/low.mp4"
+        muted
+        crossorigin
+      ></custom-video>
+      <img slot="poster" src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13" />
+      <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+      <media-error-dialog slot="dialog"></media-error-dialog>
+      <media-control-bar>
+        <media-play-button></media-play-button>
+        <media-mute-button></media-mute-button>
+        <media-time-range></media-time-range>
+        <media-time-display></media-time-display>
+        <media-fullscreen-button></media-fullscreen-button>
+      </media-control-bar>
+    </media-controller>
+    <br>
+    <button onclick="recoverAndPlay()">Play</button>
+
+    <script>
+      function setError() {
+        const video = document.querySelector('#recoverable-video');
+        const customError = new Error('');
+        customError.code = 2;
+        video.error = customError;
+        video.dispatchEvent(new Event('error'));
+      }
+
+      setError();
+
+      function recoverAndPlay() {
+        const video = document.querySelector('#recoverable-video');
+        video.play();
+      }
+    </script>
 
     <div style="max-width: 540px">
+      <h2>No error code (should not display or fade out on page load)</h2>
+      <media-error-dialog></media-error-dialog>
+
+      <h2>Empty error code (should not display or fade out on page load)</h2>
+      <media-error-dialog mediaerrorcode=""></media-error-dialog>
+
       <h2>Error 2 (MEDIA_ERR_NETWORK)</h2>
       <media-error-dialog mediaerrorcode="2"></media-error-dialog>
 

@@ -6,6 +6,7 @@ import fs from 'fs';
 const { dirname } = path;
 
 const __filename = fileURLToPath(import.meta.url);
+import { GlobalThis } from '../../dist/utils/server-safe-globals.js';
 const __dirname = dirname(__filename);
 
 // Notes about the current implementation of the React wrapper compiler:
@@ -22,77 +23,42 @@ const toPascalCase = (kebabText) => {
   return kebabText.replace(/(^\w|-\w)/g, clearAndUpper);
 };
 
-const toImportsStr = ({ importPath, utilsBase }) => {
+const toImportsStr = ({ importPath }) => {
   return `import React from "react";
-import "${importPath}";
-import { toNativeProps } from "${utilsBase}/common/utils.js";
+import { createComponent } from 'ce-la-react';
+import * as Modules from "${importPath}"
 `;
 };
 
 const toReactComponentStr = (config) => {
   const { elementName } = config;
   const ReactComponentName = toPascalCase(elementName);
-  return `/** @type { import("react").HTMLElement } */
-const ${ReactComponentName} = React.forwardRef(({ children = [], ...props }, ref) => {
-  return React.createElement('${elementName}', { ...toNativeProps(props), ref, suppressHydrationWarning: true }, children);
+  return `
+export const ${ReactComponentName} = createComponent({
+  tagName: "${elementName}",
+  elementClass: Modules.${ReactComponentName},
+  react: React,
 });`;
 };
 
-const toExportsStr = (config) => {
-  const { elementName } = config;
-  const ReactComponentName = toPascalCase(elementName);
-  return `export { ${ReactComponentName} };`;
-};
-
 const toCustomElementReactWrapperModule = (config) => {
-  const moduleStr = `${toReactComponentStr(config)}
-
-${toExportsStr(config)}
-`;
-
-  return moduleStr;
+  return `${toReactComponentStr(config)}`;
 };
-// REACT MODULE STRING CREATION CODE END
-
 // TYPESCRIPT DECLARATION FILE STRING CREATION CODE BEGIN
-const toTypeImportsAndGenericDefinitionsStr = () => {
-  return `import type React from 'react';
-
-import type * as CSS from 'csstype';
-declare global {
-  interface Element {
-    slot?: string;
-  }
-}
-
-declare module 'csstype' {
-  interface Properties {
-    // Should add generic support for any CSS variables
-    [index: \`--\${string}\`]: any;
-  }
-}
-
-type GenericProps = { [k: string]: any };
-type GenericElement = HTMLElement;
-
-type GenericForwardRef = React.ForwardRefExoticComponent<
-  GenericProps & React.RefAttributes<GenericElement | undefined>
->;
+const toTypeImportsAndGenericDefinitionsStr = ({importPath}) => {
+  return `import { createComponent } from "ce-la-react";
+import * as Modules from "${importPath}"
 `;
 };
 
 const toDeclarationStr = (config) => {
   const { elementName } = config;
   const ReactComponentName = toPascalCase(elementName);
-  return `declare const ${ReactComponentName}: GenericForwardRef;`;
+  return `export declare const ${ReactComponentName}: ReturnType<typeof createComponent<Modules.${ReactComponentName}>>;`;
 };
 
 const toCustomElementReactTypeDeclaration = (config) => {
-  const typeDeclarationStr = `${toDeclarationStr(config)}
-${toExportsStr(config)}
-`;
-
-  return typeDeclarationStr;
+ return `${toDeclarationStr(config)}`;
 };
 // TYPESCRIPT DECLARATION FILE STRING CREATION CODE END
 
@@ -153,7 +119,7 @@ const entryPointsToReactModulesIterable = (
               const utilsBase = path.dirname(path.relative(importPathAbs, distRoot));
               const moduleStr = `${toImportsStr({
                 importPath: importPathRelative,
-                utilsBase,
+                utilsBase
               })}\n${componentsWithExports.join('\n')}`;
 
               fs.writeFileSync(modulePathAbs, moduleStr);
@@ -164,7 +130,8 @@ const entryPointsToReactModulesIterable = (
                 }
               );
 
-              const tsDeclStr = `${toTypeImportsAndGenericDefinitionsStr()}\n${declarationsWithExports.join(
+              const tsDeclStr = `${toTypeImportsAndGenericDefinitionsStr({
+                importPath: importPathRelative})}\n${declarationsWithExports.join(
                 '\n'
               )}`;
 
@@ -227,7 +194,7 @@ const createReactWrapperModules = async ({
 
     try {
       for await (let moduleDef of moduleCreateAsyncIterable) {
-        const { modulePath, moduleContents } = moduleDef;
+        const { modulePath } = moduleDef;
         console.log(
           'React module wrapper created!',
           'path (absolute):',
@@ -254,21 +221,14 @@ const distRoot = path.join(projectRoot, 'dist');
 const entryPoints = [
   path.join(projectRoot, 'dist', 'index.js'),
   path.join(projectRoot, 'dist', 'menu', 'index.js'),
-  path.join(projectRoot, 'dist', 'media-theme-element.js')
+  path.join(projectRoot, 'dist', 'media-theme.js')
 ];
 const setupGlobalsAsync = async () => {
-  const customElementNames = await import(
-    path.join(projectRoot, 'dist', 'utils', 'server-safe-globals.js')
-  ).then((exports) => {
-    Object.assign(globalThis, exports.globalThis);
-    globalThis.customElementNames = [];
-    globalThis.customElements.define = (name, _classRef) =>
-      globalThis.customElementNames.push(name);
-    // NOTE: The current implementation relies on the fact that `customElementNames` will be mutated
-    // to add the Custom Element html name for every element that's defined as a result of loading/importing the entryPoints modules (CJP).
-    return globalThis.customElementNames;
-  });
-  return customElementNames;
+  const globalThis = GlobalThis;
+  globalThis.customElementNames = [];
+  globalThis.customElements.define = (name, _classRef) =>
+    globalThis.customElementNames.push(name);
+  return globalThis.customElementNames;
 };
 
 createReactWrapperModules({ entryPoints, setupGlobalsAsync, distRoot });

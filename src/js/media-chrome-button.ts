@@ -1,14 +1,18 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import MediaTooltip, { TooltipPlacement } from './media-tooltip.js';
 import {
+  getBooleanAttr,
   getOrInsertCSSRule,
   getStringAttr,
+  setBooleanAttr,
   setStringAttr,
 } from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 
 const Attributes = {
   TOOLTIP_PLACEMENT: 'tooltipplacement',
+  DISABLED: 'disabled',
+  NO_TOOLTIP: 'notooltip',
 };
 
 const template = document.createElement('template');
@@ -72,7 +76,9 @@ template.innerHTML = /*html*/ `
   }
 
   media-tooltip {
-    ${/** Make sure unpositioned tooltip doesn't cause page overflow (scroll). */ ''}
+    ${
+      /** Make sure unpositioned tooltip doesn't cause page overflow (scroll). */ ''
+    }
     max-width: 0;
     overflow-x: clip;
     opacity: 0;
@@ -195,7 +201,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     // Conditional chaining accounts for scenarios
     // where the tooltip element isn't yet defined.
     this.tooltipEl?.updateXOffset?.();
-  }
+  };
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
@@ -274,6 +280,8 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
     if (!this.hasAttribute('disabled')) {
       this.enable();
+    } else {
+      this.disable();
     }
 
     this.setAttribute('role', 'button');
@@ -329,6 +337,30 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   set tooltipPlacement(value: TooltipPlacement | undefined) {
     setStringAttr(this, Attributes.TOOLTIP_PLACEMENT, value);
+  }
+
+  get mediaController(): string | undefined {
+    return getStringAttr(this, MediaStateReceiverAttributes.MEDIA_CONTROLLER);
+  }
+
+  set mediaController(value: string | undefined) {
+    setStringAttr(this, MediaStateReceiverAttributes.MEDIA_CONTROLLER, value);
+  }
+
+  get disabled(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.DISABLED);
+  }
+
+  set disabled(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.DISABLED, value);
+  }
+
+  get noTooltip(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_TOOLTIP);
+  }
+
+  set noTooltip(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_TOOLTIP, value);
   }
 
   /**

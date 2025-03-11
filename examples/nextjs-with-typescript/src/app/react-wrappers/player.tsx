@@ -51,7 +51,7 @@ export const Player = () => {
         </span>
       </div>
       <br />
-      {mounted && (<MediaController style={chromeStyles} defaultSubtitles noDefaultStore={noDefaultStore}>
+      {mounted && (<MediaController hotkeys={"noarrowleft noarrowright"} style={chromeStyles as any} gesturesDisabled defaultSubtitles noDefaultStore={noDefaultStore}>
         <video
           suppressHydrationWarning
           slot="media"
@@ -80,9 +80,9 @@ export const Player = () => {
         ></MediaPosterImage>
         <MediaLoadingIndicator
           suppressHydrationWarning
-          noautohide
+          noAutohide
           slot="centered-chrome"
-          style={{ '--media-loading-indicator-icon-height': '200px' }}
+          style={{ '--media-loading-indicator-icon-height': '200px' } as any}
         ></MediaLoadingIndicator>
         <MediaPlaybackRateMenu hidden anchor="auto" />
         <MediaControlBar>

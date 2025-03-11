@@ -13,6 +13,12 @@ import { observeResize, unobserveResize } from './utils/resize-observer.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
 import { t } from './utils/i18n.js';
+import {
+  getBooleanAttr,
+  getStringAttr,
+  setBooleanAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
 
 export const Attributes = {
   AUDIO: 'audio',
@@ -637,6 +643,54 @@ class MediaContainer extends globalThis.HTMLElement {
 
   get autohide(): string {
     return (this.#autohide === undefined ? 2 : this.#autohide).toString();
+  }
+
+  get breakpoints(): string | undefined {
+    return getStringAttr(this, Attributes.BREAKPOINTS);
+  }
+
+  set breakpoints(value: string | undefined) {
+    setStringAttr(this, Attributes.BREAKPOINTS, value);
+  }
+
+  get audio(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.AUDIO);
+  }
+
+  set audio(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.AUDIO, value);
+  }
+
+  get gesturesDisabled(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.GESTURES_DISABLED);
+  }
+
+  set gesturesDisabled(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.GESTURES_DISABLED, value);
+  }
+
+  get keyboardControl(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.KEYBOARD_CONTROL);
+  }
+
+  set keyboardControl(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.KEYBOARD_CONTROL, value);
+  }
+
+  get noAutohide(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_AUTOHIDE);
+  }
+
+  set noAutohide(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_AUTOHIDE, value);
+  }
+
+  get userInteractive(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.USER_INACTIVE);
+  }
+
+  set userInteractive(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.USER_INACTIVE, value);
   }
 }
 
