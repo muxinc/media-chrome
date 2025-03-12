@@ -146,8 +146,9 @@
     "typescript-eslint": "^7.14.1",
     "wet-run": "^1.2.0"
   },
-  "resolutions": {
-    "source-map": "^0.7.4"
+  "overrides": {
+    "source-map": "^0.7.4",
+    "playwright": "1.49.1"
   },
   "prettier": {
     "trailingComma": "es5",
