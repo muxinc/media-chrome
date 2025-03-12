@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "format": "prettier --write .",
-    "dev": "(cd .. && yarn watch) & astro dev",
+    "dev": "(cd .. && npm run watch) & astro dev",
     "start": "astro dev",
     "check": "astro check && tsc",
-    "prebuild": "cd .. && yarn && yarn manifest && yarn build",
+    "prebuild": "cd .. && npm i && npm run manifest && npm run build",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -33,7 +33,7 @@
     "clsx": "^2.0.0",
     "hastscript": "^8.0.0",
     "html-escaper": "^3.0.3",
-    "media-chrome": "link:..",
+    "media-chrome": "file:..",
     "mux-embed": "^4.30.0",
     "parse5": "^7.1.2",
     "preact": "^10.18.2",

@@ -115,10 +115,10 @@
     "postbuild:react": "esbuild \"dist/react/**/*.js\" --target=es2019 --format=cjs --outdir=dist/cjs/react",
     "build": "run-s build:types build:esm build:cjs build:iife:* build:react",
     "watch": "run-p watch:types watch:build",
-    "watch:types": "yarn build:types -w",
-    "watch:build": "run-p 'build:esm --watch=forever' 'build:cjs --watch=forever' 'build:iife:* --watch=forever'",
+    "watch:types": "npm run build:types -- -w",
+    "watch:build": "run-p 'build:esm -- --watch=forever' 'build:cjs -- --watch=forever' 'build:iife:* -- --watch=forever'",
     "dev": "run-p watch serve",
-    "start": "yarn dev",
+    "start": "npm run dev",
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
     "serve": "wet serve --cors --livereload --redirect :examples/vanilla/ --log-level error"
   },
@@ -146,8 +146,9 @@
     "typescript-eslint": "^7.14.1",
     "wet-run": "^1.2.0"
   },
-  "resolutions": {
-    "source-map": "^0.7.4"
+  "overrides": {
+    "source-map": "^0.7.4",
+    "playwright": "1.49.1"
   },
   "prettier": {
     "trailingComma": "es5",
