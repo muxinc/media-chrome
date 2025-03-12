@@ -1,3 +1,12 @@
+# [4.8.0](https://github.com/muxinc/media-chrome/compare/v4.7.1...v4.8.0) (2025-03-12)
+
+
+### Features
+
+* persist muted enabled state ([#1088](https://github.com/muxinc/media-chrome/issues/1088)) ([94b3ea8](https://github.com/muxinc/media-chrome/commit/94b3ea8c341c019d13fd905d659016e0fda2b33a)), closes [#1072](https://github.com/muxinc/media-chrome/issues/1072)
+
+
+
 ## [4.7.1](https://github.com/muxinc/media-chrome/compare/v4.7.0...v4.7.1) (2025-03-04)
 
 
