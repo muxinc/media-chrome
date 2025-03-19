@@ -2,7 +2,6 @@ import { MediaStateReceiverAttributes } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import {
   getOrInsertCSSRule,
-  getPointProgressOnLine,
 } from './utils/element-utils.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
 
@@ -515,12 +514,10 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   getPointerRatio(evt) {
-    const pointerRatio = getPointProgressOnLine(
-      evt.clientX,
-      evt.clientY,
-      this.#startpoint.getBoundingClientRect(),
-      this.#endpoint.getBoundingClientRect()
-    );
+    const startRect = this.#startpoint.getBoundingClientRect();
+    const endRect = this.#endpoint.getBoundingClientRect();
+    const pointerRatio =
+      (evt.clientX - startRect.left) / (endRect.left - startRect.left);
     return Math.max(0, Math.min(1, pointerRatio));
   }
 
