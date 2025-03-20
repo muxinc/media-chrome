@@ -173,14 +173,20 @@ export function getPointProgressOnLine(
   p1: Point,
   p2: Point
 ): number {
-  const segment = distance(p1, p2);
-  const toStart = distance(p1, { x, y });
-  const toEnd = distance(p2, { x, y });
-  if (toStart > segment || toEnd > segment) {
-    // Point is outside the line segment, so clamp it to the nearest end
-    return toStart > toEnd ? 1 : 0;
+  // Determine if the line is more vertical than horizontal
+  const isVertical = Math.abs(p2.y - p1.y) > Math.abs(p2.x - p1.x);
+
+  if (isVertical) {
+    // For vertical lines, calculate progress from bottom to top
+    const totalHeight = p2.y - p1.y;
+    const progress = (y - p1.y) / totalHeight;
+    return Math.max(0, Math.min(1, progress));
+  } else {
+    // For horizontal lines, calculate progress from left to right
+    const totalWidth = p2.x - p1.x;
+    const progress = (x - p1.x) / totalWidth;
+    return Math.max(0, Math.min(1, progress));
   }
-  return toStart / segment;
 }
 
 export function distance(p1: Point, p2: Point) {

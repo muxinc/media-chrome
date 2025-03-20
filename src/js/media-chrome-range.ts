@@ -2,6 +2,7 @@ import { MediaStateReceiverAttributes } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import {
   getOrInsertCSSRule,
+  getPointProgressOnLine,
 } from './utils/element-utils.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
 
@@ -516,9 +517,13 @@ class MediaChromeRange extends globalThis.HTMLElement {
   getPointerRatio(evt) {
     const startRect = this.#startpoint.getBoundingClientRect();
     const endRect = this.#endpoint.getBoundingClientRect();
-    const pointerRatio =
-      (evt.clientX - startRect.left) / (endRect.left - startRect.left);
-    return Math.max(0, Math.min(1, pointerRatio));
+    
+    return getPointProgressOnLine(
+      evt.clientX,
+      evt.clientY,
+      { x: startRect.left, y: startRect.bottom },
+      { x: endRect.left, y: endRect.top }
+    );
   }
 
   get dragging() {
