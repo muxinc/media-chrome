@@ -515,13 +515,12 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   getPointerRatio(evt) {
-    const pointerRatio = getPointProgressOnLine(
+    return getPointProgressOnLine(
       evt.clientX,
       evt.clientY,
       this.#startpoint.getBoundingClientRect(),
       this.#endpoint.getBoundingClientRect()
     );
-    return Math.max(0, Math.min(1, pointerRatio));
   }
 
   get dragging() {

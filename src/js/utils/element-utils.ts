@@ -173,14 +173,15 @@ export function getPointProgressOnLine(
   p1: Point,
   p2: Point
 ): number {
-  const segment = distance(p1, p2);
-  const toStart = distance(p1, { x, y });
-  const toEnd = distance(p2, { x, y });
-  if (toStart > segment || toEnd > segment) {
-    // Point is outside the line segment, so clamp it to the nearest end
-    return toStart > toEnd ? 1 : 0;
-  }
-  return toStart / segment;
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  const lengthSquared = dx * dx + dy * dy;
+
+  if (lengthSquared === 0) return 0; // Avoid division by zero if p1 === p2
+
+  const projection = ((x - p1.x) * dx + (y - p1.y) * dy) / lengthSquared;
+
+  return Math.max(0, Math.min(1, projection)); // Clamp between 0 and 1
 }
 
 export function distance(p1: Point, p2: Point) {
