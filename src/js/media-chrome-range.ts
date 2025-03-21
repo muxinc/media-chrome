@@ -515,14 +515,11 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   getPointerRatio(evt) {
-    const startRect = this.#startpoint.getBoundingClientRect();
-    const endRect = this.#endpoint.getBoundingClientRect();
-    
     return getPointProgressOnLine(
       evt.clientX,
       evt.clientY,
-      { x: startRect.left, y: startRect.bottom },
-      { x: endRect.left, y: endRect.top }
+      this.#startpoint.getBoundingClientRect(),
+      this.#endpoint.getBoundingClientRect()
     );
   }
 
