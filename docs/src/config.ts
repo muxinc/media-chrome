@@ -116,6 +116,9 @@ export const SIDEBAR: Sidebar = {
       { text: 'Get started', link: 'docs/en/react/get-started' },
       { text: 'MediaStore hooks', link: 'docs/en/react/hooks' },
     ],
+    Internationalization: [
+      { text: 'Adding Language Support', link: 'docs/en/internationalization/adding-language-support' },
+    ],
     Resources: [
       { text: 'Styling Reference', link: 'docs/en/reference/styling' },
       { text: 'Migrating to 1.0', link: 'docs/en/migration/from-0.x-to-1.0' },
