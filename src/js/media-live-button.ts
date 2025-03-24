@@ -30,7 +30,7 @@ slotTemplate.innerHTML = /*html*/ `
   }
 
   :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) {
-    cursor: not-allowed;
+    cursor: var(--custom-cursor, not-allowed);
   }
 
   slot[name=text]{

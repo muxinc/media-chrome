@@ -28,6 +28,7 @@ export const Attributes = {
   KEYBOARD_CONTROL: 'keyboardcontrol',
   NO_AUTOHIDE: 'noautohide',
   USER_INACTIVE: 'userinactive',
+  ALWAYS_HIDE_CONTROLS: 'alwayshidecontrols',
 };
 
 const template: HTMLTemplateElement = document.createElement('template');
@@ -185,6 +186,16 @@ template.innerHTML = /*html*/ `
 }])) ::slotted([slot=media]) {
       cursor: none;
     }
+
+    :host([${Attributes.USER_INACTIVE}][${
+  Attributes.ALWAYS_HIDE_CONTROLS
+}]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([${
+  MediaUIAttributes.MEDIA_IS_CASTING
+}]):not([${Attributes.AUDIO}])) * {
+     --custom-cursor: none;
+     cursor: none;
+    }
+
 
     ::slotted(media-control-bar)  {
       align-self: stretch;
@@ -564,8 +575,12 @@ class MediaContainer extends globalThis.HTMLElement {
     clearTimeout(this.#inactiveTimeout);
 
     // If hovering over something other than controls, we're free to make inactive
+
+    const alwaysFadeControls = this.hasAttribute(
+      Attributes.ALWAYS_HIDE_CONTROLS
+    );
     // @ts-ignore
-    if ([this, this.media].includes(event.target)) {
+    if ([this, this.media].includes(event.target) || alwaysFadeControls) {
       this.#scheduleInactive();
     }
   }
@@ -602,7 +617,7 @@ class MediaContainer extends globalThis.HTMLElement {
     this.setAttribute(Attributes.USER_INACTIVE, '');
 
     const evt = new globalThis.CustomEvent(
-      MediaStateChangeEvents.USER_INACTIVE,
+      MediaStateChangeEvents.USER_INACTIVE_CHANGE,
       { composed: true, bubbles: true, detail: true }
     );
     this.dispatchEvent(evt);
@@ -614,7 +629,7 @@ class MediaContainer extends globalThis.HTMLElement {
     this.removeAttribute(Attributes.USER_INACTIVE);
 
     const evt = new globalThis.CustomEvent(
-      MediaStateChangeEvents.USER_INACTIVE,
+      MediaStateChangeEvents.USER_INACTIVE_CHANGE,
       { composed: true, bubbles: true, detail: false }
     );
     this.dispatchEvent(evt);
@@ -683,6 +698,14 @@ class MediaContainer extends globalThis.HTMLElement {
 
   set noAutohide(value: boolean | undefined) {
     setBooleanAttr(this, Attributes.NO_AUTOHIDE, value);
+  }
+
+  get alwaysHideControls(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.ALWAYS_HIDE_CONTROLS);
+  }
+
+  set alwaysHideControls(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.ALWAYS_HIDE_CONTROLS, value);
   }
 
   get userInteractive(): boolean | undefined {

@@ -108,7 +108,7 @@ export const MediaUIAttributes = MediaUIPropsEntries.reduce(
 ) as MediaUIAttributes;
 
 const AdditionalStateChangeEvents = {
-  USER_INACTIVE: 'userinactivechange',
+  USER_INACTIVE_CHANGE: 'userinactivechange',
   BREAKPOINTS_CHANGE: 'breakpointchange',
   BREAKPOINTS_COMPUTED: 'breakpointscomputed',
 } as const;
@@ -186,7 +186,8 @@ export const TextTrackKinds = {
   METADATA: 'metadata',
 } as const;
 
-export type TextTrackKinds = typeof TextTrackKinds[keyof typeof TextTrackKinds];
+export type TextTrackKinds =
+  (typeof TextTrackKinds)[keyof typeof TextTrackKinds];
 
 export const TextTrackModes = {
   DISABLED: 'disabled',
@@ -220,7 +221,7 @@ export const AvailabilityStates = {
 } as const;
 
 export type AvailabilityStates =
-  typeof AvailabilityStates[keyof typeof AvailabilityStates];
+  (typeof AvailabilityStates)[keyof typeof AvailabilityStates];
 
 export const StreamTypes = {
   LIVE: 'live',
@@ -228,7 +229,7 @@ export const StreamTypes = {
   UNKNOWN: 'unknown',
 } as const;
 
-export type StreamTypes = typeof StreamTypes[keyof typeof StreamTypes];
+export type StreamTypes = (typeof StreamTypes)[keyof typeof StreamTypes];
 
 export const VolumeLevels = {
   HIGH: 'high',
