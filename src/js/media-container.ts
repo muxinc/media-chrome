@@ -576,11 +576,11 @@ class MediaContainer extends globalThis.HTMLElement {
 
     // If hovering over something other than controls, we're free to make inactive
 
-    const alwaysFadeControls = this.hasAttribute(
+    const alwaysHideControls = this.hasAttribute(
       Attributes.ALWAYS_HIDE_CONTROLS
     );
     // @ts-ignore
-    if ([this, this.media].includes(event.target) || alwaysFadeControls) {
+    if ([this, this.media].includes(event.target) || alwaysHideControls) {
       this.#scheduleInactive();
     }
   }
