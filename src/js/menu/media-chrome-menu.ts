@@ -167,12 +167,12 @@ template.innerHTML = /*html*/ `
     slot[name="header"]::slotted(*) {
       padding: .4em .7em;
       border-bottom: 1px solid rgb(255 255 255 / .25);
-      cursor: var(--custom-cursor, default);
+      cursor: var(--media-cursor, default);
     }
 
     slot[name="header"] > button[part~="back"],
     slot[name="header"]::slotted(button[part~="back"]) {
-      cursor: var(--custom-cursor, pointer);
+      cursor: var(--media-cursor, pointer);
     }
 
     svg[part~="back"] {

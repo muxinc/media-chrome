@@ -24,6 +24,6 @@
 
 @layer components {
   button, [role="button"] {
-    cursor: var(--custom-cursor, pointer);
+    cursor: var(--media-cursor, pointer);
   }
 }

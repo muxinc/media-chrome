@@ -28,7 +28,7 @@ export const Attributes = {
   KEYBOARD_CONTROL: 'keyboardcontrol',
   NO_AUTOHIDE: 'noautohide',
   USER_INACTIVE: 'userinactive',
-  ALWAYS_HIDE_CONTROLS: 'alwayshidecontrols',
+  AUTOHIDE_OVER_CONTROLS: 'autohideovercontrols',
 };
 
 const template: HTMLTemplateElement = document.createElement('template');
@@ -179,7 +179,7 @@ template.innerHTML = /*html*/ `
       transition: var(--media-control-transition-out, opacity 1s);
     }
 
-    :host([${Attributes.USER_INACTIVE}]:not([${
+    :host([${Attributes.USER_INACTIVE}]:not([${Attributes.NO_AUTOHIDE}]):not([${
   MediaUIAttributes.MEDIA_PAUSED
 }]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
   Attributes.AUDIO
@@ -188,11 +188,11 @@ template.innerHTML = /*html*/ `
     }
 
     :host([${Attributes.USER_INACTIVE}][${
-  Attributes.ALWAYS_HIDE_CONTROLS
-}]:not([${MediaUIAttributes.MEDIA_PAUSED}]):not([${
-  MediaUIAttributes.MEDIA_IS_CASTING
-}]):not([${Attributes.AUDIO}])) * {
-     --custom-cursor: none;
+  Attributes.AUTOHIDE_OVER_CONTROLS
+}]:not([${Attributes.NO_AUTOHIDE}]):not([${
+  MediaUIAttributes.MEDIA_PAUSED
+}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${Attributes.AUDIO}])) * {
+     --media-cursor: none;
      cursor: none;
     }
 
@@ -576,11 +576,11 @@ class MediaContainer extends globalThis.HTMLElement {
 
     // If hovering over something other than controls, we're free to make inactive
 
-    const alwaysHideControls = this.hasAttribute(
-      Attributes.ALWAYS_HIDE_CONTROLS
+    const autohideOverControls = this.hasAttribute(
+      Attributes.AUTOHIDE_OVER_CONTROLS
     );
     // @ts-ignore
-    if ([this, this.media].includes(event.target) || alwaysHideControls) {
+    if ([this, this.media].includes(event.target) || autohideOverControls) {
       this.#scheduleInactive();
     }
   }
@@ -700,12 +700,12 @@ class MediaContainer extends globalThis.HTMLElement {
     setBooleanAttr(this, Attributes.NO_AUTOHIDE, value);
   }
 
-  get alwaysHideControls(): boolean | undefined {
-    return getBooleanAttr(this, Attributes.ALWAYS_HIDE_CONTROLS);
+  get autohideOverControls(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.AUTOHIDE_OVER_CONTROLS);
   }
 
-  set alwaysHideControls(value: boolean | undefined) {
-    setBooleanAttr(this, Attributes.ALWAYS_HIDE_CONTROLS, value);
+  set autohideOverControls(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.AUTOHIDE_OVER_CONTROLS, value);
   }
 
   get userInteractive(): boolean | undefined {

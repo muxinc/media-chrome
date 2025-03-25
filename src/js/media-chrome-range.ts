@@ -26,7 +26,7 @@ template.innerHTML = /*html*/ `
       position: relative;
       width: 100px;
       transition: background .15s linear;
-      cursor: var(--custom-cursor, pointer);
+      cursor: var(--media-cursor, pointer);
       pointer-events: auto;
       touch-action: none; ${/* Prevent scrolling when dragging on mobile. */ ''}
     }
@@ -80,7 +80,7 @@ template.innerHTML = /*html*/ `
       height: var(--media-time-range-hover-height, max(100% + 7px, 25px));
       width: 100%;
       position: absolute;
-      cursor: var(--custom-cursor, pointer);
+      cursor: var(--media-cursor, pointer);
 
       -webkit-appearance: none; ${
         /* Hides the slider so that custom slider can be made */ ''
@@ -181,7 +181,7 @@ template.innerHTML = /*html*/ `
       translate: -50%;
       position: absolute;
       left: 0;
-      cursor: var(--custom-cursor, pointer);
+      cursor: var(--media-cursor, pointer);
     }
 
     #thumb {

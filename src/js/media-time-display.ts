@@ -115,7 +115,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
       this.shadowRoot,
       ':host(:hover:not([notoggle]))'
     );
-    style.setProperty('cursor', 'var(--custom-cursor, pointer)');
+    style.setProperty('cursor', 'var(--media-cursor, pointer)');
     style.setProperty(
       'background',
       'var(--media-control-hover-background, rgba(50 50 70 / .7))'
