@@ -281,7 +281,6 @@ class MediaController extends MediaContainer {
   }
 
   set language(value: string | undefined) {
-    console.log('value', value);
     setStringAttr(this, Attributes.LANGUAGE, value);
   }
 
