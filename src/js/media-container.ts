@@ -305,6 +305,7 @@ function getBreakpoints(breakpoints: Record<string, string>, width: number) {
  *
  * @attr {boolean} audio
  * @attr {string} autohide
+ * @attr {boolean} autohideovercontrols
  * @attr {string} breakpoints
  * @attr {boolean} gesturesdisabled
  * @attr {boolean} keyboardcontrol
