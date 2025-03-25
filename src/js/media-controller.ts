@@ -33,6 +33,7 @@ import {
 } from './utils/element-utils.js';
 import { createMediaStore, MediaStore } from './media-store/media-store.js';
 import { CustomElement } from './utils/CustomElement.js';
+import { i18n } from './utils/i18n.js';
 
 const ButtonPressedKeys = [
   'ArrowLeft',
@@ -61,6 +62,7 @@ export const Attributes = {
   NO_DEFAULT_STORE: 'nodefaultstore',
   KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
   KEYBOARD_BACKWARD_SEEK_OFFSET: 'keyboardbackwardseekoffset',
+  LANGUAGE: 'language',
 };
 
 /**
@@ -87,7 +89,8 @@ class MediaController extends MediaContainer {
       Attributes.HOTKEYS,
       Attributes.DEFAULT_STREAM_TYPE,
       Attributes.DEFAULT_SUBTITLES,
-      Attributes.DEFAULT_DURATION
+      Attributes.DEFAULT_DURATION,
+      Attributes.LANGUAGE
     );
   }
 
@@ -273,6 +276,15 @@ class MediaController extends MediaContainer {
     setBooleanAttr(this, Attributes.NO_DEFAULT_STORE, value);
   }
 
+  get language(): string | undefined {
+    return getStringAttr(this, Attributes.LANGUAGE);
+  }
+
+  set language(value: string | undefined) {
+    console.log('value', value);
+    setStringAttr(this, Attributes.LANGUAGE, value);
+  }
+
   attributeChangedCallback(
     attrName: string,
     oldValue: string | null,
@@ -333,6 +345,8 @@ class MediaController extends MediaContainer {
         type: 'fullscreenelementchangerequest',
         detail: this.fullscreenElement,
       });
+    } else if (attrName === Attributes.LANGUAGE && newValue !== oldValue) {
+      i18n.setLanguage(newValue);
     }
   }
 
