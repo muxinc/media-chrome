@@ -25,7 +25,7 @@ Use this to enable audio chrome UI, which will not have any of the slots describ
 
 `autohide (seconds, default: 2)` (video only)
 
-Use this to autohide all controls/chrome (except for the `media`) after `n` seconds of inactivity, unless the media is paused. To disable `autohide`, set the value to -1.
+Use this to autohide all controls/chrome (except for the `media`) and the cursor after `n` seconds of inactivity, unless the media is paused. This only works if the controls are not being hovered. To disable `autohide`, set the value to -1.
 
 Example:
 
@@ -41,6 +41,20 @@ Example (`autohide` disabled):
 
 ```html
 <media-controller autohide="-1">
+  ...
+</media-controller>
+```
+
+### autohideovercontrols
+
+`autohideovercontrols (boolean)` 
+
+This attribute extends `autohide` by also hiding the controls and cursor, even if they are being hovered, in addition to the usual `autohide` behavior. If the media is paused, the controls and cursor remains visible.
+
+Example:
+
+```html
+<media-controller autohide autohideovercontrols>
   ...
 </media-controller>
 ```

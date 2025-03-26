@@ -35,7 +35,7 @@ template.innerHTML = `
     }
 
     #startHandle, #endHandle {
-      cursor: pointer;
+      cursor: var(--media-cursor, pointer);
       height: 80%;
       width: ${HANDLE_W}px;
       border-radius: 4px;

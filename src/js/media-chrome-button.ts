@@ -35,7 +35,7 @@ template.innerHTML = /*html*/ `
     box-sizing: border-box;
     transition: background .15s linear;
     pointer-events: auto;
-    cursor: pointer;
+    cursor: var(--media-cursor, pointer);
     -webkit-tap-highlight-color: transparent;
   }
 

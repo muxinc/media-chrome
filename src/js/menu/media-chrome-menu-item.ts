@@ -16,7 +16,7 @@ template.innerHTML = /*html*/ `
       );
       outline: var(--media-menu-item-outline, 0);
       outline-offset: var(--media-menu-item-outline-offset, -1px);
-      cursor: pointer;
+      cursor: var(--media-cursor, pointer);
       display: flex;
       align-items: center;
       align-self: stretch;
@@ -34,7 +34,7 @@ template.innerHTML = /*html*/ `
     }
 
     :host(:hover) {
-      cursor: pointer;
+      cursor: var(--media-cursor, pointer);
       background: var(--media-menu-item-hover-background, rgb(92 92 102 / .5));
       outline: var(--media-menu-item-hover-outline);
       outline-offset: var(--media-menu-item-hover-outline-offset,  var(--media-menu-item-outline-offset, -1px));

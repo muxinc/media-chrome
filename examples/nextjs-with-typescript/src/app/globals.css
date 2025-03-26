@@ -21,3 +21,9 @@
     text-wrap: balance;
   }
 }
+
+@layer components {
+  button, [role="button"] {
+    cursor: var(--media-cursor, pointer);
+  }
+}
