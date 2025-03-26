@@ -701,6 +701,10 @@ export const stateMediator: StateMediator = {
           toggleSubtitleTracks(stateOwners, true);
         };
 
+        media.addEventListener(
+          'loadstart',
+          updateDefaultSubtitlesCallback
+        );
         media.textTracks?.addEventListener(
           'addtrack',
           updateDefaultSubtitlesCallback
@@ -710,10 +714,11 @@ export const stateMediator: StateMediator = {
           updateDefaultSubtitlesCallback
         );
 
-        // Invoke immediately as well, in case subs/cc tracks are already added
-        updateDefaultSubtitlesCallback();
-
         return () => {
+          media.removeEventListener(
+            'loadstart',
+            updateDefaultSubtitlesCallback
+          );
           media.textTracks?.removeEventListener(
             'addtrack',
             updateDefaultSubtitlesCallback
