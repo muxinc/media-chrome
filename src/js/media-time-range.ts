@@ -4,7 +4,7 @@ import './media-preview-thumbnail.js';
 import './media-preview-time-display.js';
 import './media-preview-chapter-display.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { nouns } from './labels/labels.js';
+import { isValidNumber } from './utils/utils.js';
 import { formatAsTimePhrase } from './utils/time.js';
 import { isElementVisible } from './utils/element-utils.js';
 import { RangeAnimation } from './utils/range-animation.js';
@@ -19,6 +19,7 @@ import {
   getStringAttr,
   setStringAttr,
 } from './utils/element-utils.js';
+import { t } from './utils/i18n.js';
 
 type Rects = {
   box: { width: number; min: number; max: number };
@@ -57,8 +58,11 @@ template.innerHTML = /*html*/ `
       contain: layout;
     }
 
-    #highlight {
+    #buffered {
       background: var(--media-time-range-buffered-color, rgb(255 255 255 / .4));
+      position: absolute;
+      height: 100%;
+      will-change: width;
     }
 
     #preview-rail,
@@ -334,6 +338,7 @@ const calcTimeFromRangeValue = (
  * @attr {string} mediapreviewimage - (read-only) Set to the timeline preview image URL.
  * @attr {string} mediapreviewtime - (read-only) Set to the timeline preview time.
  *
+ * @csspart buffered - A CSS part that selects the buffered bar element.
  * @csspart box - A CSS part that selects both the preview and current box elements.
  * @csspart preview-box - A CSS part that selects the preview box element.
  * @csspart current-box - A CSS part that selects the current box element.
@@ -420,6 +425,12 @@ class MediaTimeRange extends MediaChromeRange {
 
     this.container.appendChild(template.content.cloneNode(true));
 
+    const track = this.shadowRoot.querySelector('#track');
+    track.insertAdjacentHTML(
+      'afterbegin',
+      '<div id="buffered" part="buffered"></div>'
+    );
+
     this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
     this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
     this.#currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
@@ -437,7 +448,7 @@ class MediaTimeRange extends MediaChromeRange {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.range.setAttribute('aria-label', nouns.SEEK());
+    this.range.setAttribute('aria-label', t('seek'));
     this.#toggleRangeAnimation();
 
     // NOTE: Adding an event listener to an ancestor here.
@@ -512,7 +523,10 @@ class MediaTimeRange extends MediaChromeRange {
   #updateRange = (value: number): void => {
     if (this.dragging) return;
 
-    this.range.valueAsNumber = value;
+    if (isValidNumber(value)) {
+      this.range.valueAsNumber = value;
+    }
+
     this.updateBar();
   };
 
@@ -704,7 +718,7 @@ class MediaTimeRange extends MediaChromeRange {
       relativeBufferedEnd = 1;
     }
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#highlight');
+    const { style } = getOrInsertCSSRule(this.shadowRoot, '#buffered');
     style.setProperty('width', `${relativeBufferedEnd * 100}%`);
   }
 

@@ -1,6 +1,14 @@
 import { MediaStateReceiverAttributes } from '../constants.js';
 import type MediaController from '../media-controller.js';
 
+export function namedNodeMapToObject(namedNodeMap: NamedNodeMap) {
+  const obj = {};
+  for (const attr of namedNodeMap) {
+    obj[attr.name] = attr.value;
+  }
+  return obj;
+}
+
 /**
  * Get the media controller element from the `mediacontroller` attribute or closest ancestor.
  * @param host - The element to search for the media controller.
@@ -121,7 +129,7 @@ export function getDocumentOrShadowRoot(
  */
 export function isElementVisible(
   element: HTMLElement,
-  depth: number = 3
+  { depth = 3, checkOpacity = true, checkVisibilityCSS = true } = {}
 ): boolean {
   // Supported by Chrome and Firefox https://caniuse.com/mdn-api_element_checkvisibility
   // https://drafts.csswg.org/cssom-view-1/#dom-element-checkvisibility
@@ -129,8 +137,8 @@ export function isElementVisible(
   if (element.checkVisibility) {
     // @ts-ignore
     return element.checkVisibility({
-      checkOpacity: true,
-      checkVisibilityCSS: true,
+      checkOpacity,
+      checkVisibilityCSS,
     });
   }
   // Check if the element or its ancestors are hidden.
@@ -138,8 +146,8 @@ export function isElementVisible(
   while (el && depth > 0) {
     const style = getComputedStyle(el);
     if (
-      style.opacity === '0' ||
-      style.visibility === 'hidden' ||
+      (checkOpacity && style.opacity === '0') ||
+      (checkVisibilityCSS && style.visibility === 'hidden') ||
       style.display === 'none'
     ) {
       return false;
@@ -165,14 +173,15 @@ export function getPointProgressOnLine(
   p1: Point,
   p2: Point
 ): number {
-  const segment = distance(p1, p2);
-  const toStart = distance(p1, { x, y });
-  const toEnd = distance(p2, { x, y });
-  if (toStart > segment || toEnd > segment) {
-    // Point is outside the line segment, so clamp it to the nearest end
-    return toStart > toEnd ? 1 : 0;
-  }
-  return toStart / segment;
+  const dx = p2.x - p1.x;
+  const dy = p2.y - p1.y;
+  const lengthSquared = dx * dx + dy * dy;
+
+  if (lengthSquared === 0) return 0; // Avoid division by zero if p1 === p2
+
+  const projection = ((x - p1.x) * dx + (y - p1.y) * dy) / lengthSquared;
+
+  return Math.max(0, Math.min(1, projection)); // Clamp between 0 and 1
 }
 
 export function distance(p1: Point, p2: Point) {
@@ -215,7 +224,7 @@ export function getCSSRule(
 ): CSSStyleRule | undefined {
   let style;
 
-  for (style of styleParent.querySelectorAll('style')) {
+  for (style of styleParent.querySelectorAll('style:not([media])') ?? []) {
     // Catch this error. e.g. browser extension adds style tags.
     //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
     //   Not allowed to access cross-origin stylesheet
@@ -240,7 +249,7 @@ export function insertCSSRule(
   styleParent: Element | ShadowRoot,
   selectorText: string
 ): CSSStyleRule | undefined {
-  const styles = styleParent.querySelectorAll('style') ?? [];
+  const styles = styleParent.querySelectorAll('style:not([media])') ?? [];
   const style = styles?.[styles.length - 1];
 
   // If there is no style sheet return an empty style rule.

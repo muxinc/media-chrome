@@ -1,24 +1,5 @@
-// declare module 'media-chrome/dist/labels/labels' {
-//   export interface nouns {
-//       [k: string]: function({ [k: string]: any }): string;
-//   };
-//   export interface verbs {
-//       [k: string]: function({ [k: string]: any }): string;
-//   };
-// }
+
 declare module "media-chrome" {
-  type labels = {
-    nouns: {
-      [k: string]: (
-        x?: Partial<{ seekOffset: number; playbackRate: number }>
-      ) => string;
-    };
-    verbs: {
-      [k: string]: (
-        x?: Partial<{ seekOffset: number; playbackRate: number }>
-      ) => string;
-    };
-  };
 }
 
 export type ARIARole =

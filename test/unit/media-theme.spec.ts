@@ -1,4 +1,4 @@
-import { assert, fixture, waitUntil } from '@open-wc/testing';
+import { assert, fixture, waitUntil, aTimeout } from '@open-wc/testing';
 import { MediaUIAttributes } from '../../src/js/constants.js';
 import '../../src/js/index.js';
 import '../../src/js/media-theme-element.js';
@@ -66,6 +66,8 @@ describe('<media-theme>', () => {
         <video slot="media" muted src="https://stream.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/low.mp4"></video>
       </media-theme>
     `);
+
+    await aTimeout(200);
 
     const media = theme1.querySelector('[slot="media"]') as HTMLVideoElement;
     await media.play();

@@ -44,7 +44,7 @@ export function generateCssVars() {
       // Add the extracted CSS var defaults if none were declared in the JS doc yet.
       const cssDefaults = cssPropertyDefaults[moduleDoc.path];
 
-      for (let prop of classDeclaration.cssProperties ?? []) {
+      for (let prop of classDeclaration?.cssProperties ?? []) {
         if (!prop.default && cssDefaults[prop.name]) {
           prop.default = cssDefaults[prop.name];
         }
@@ -58,7 +58,7 @@ export function generateCssVars() {
         if (cls.superclass?.name) {
           const SuperClass = getClasses(manifest).find(({ name }) => cls.superclass.name === name);
 
-          for (let cssProp of SuperClass.cssProperties ?? []) {
+          for (let cssProp of SuperClass?.cssProperties ?? []) {
             if (!cls.cssProperties) cls.cssProperties = [];
             if (!cls.cssProperties.find(p => p.name === cssProp.name)) {
               cls.cssProperties.push(cssProp);

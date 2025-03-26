@@ -25,6 +25,7 @@ import {
   toggleSubtitleTracks,
 } from './util.js';
 import { getTextTracksList } from '../utils/captions.js';
+import { isValidNumber } from '../utils/utils.js';
 
 export type Rendition = {
   src?: string;
@@ -91,6 +92,7 @@ export type StateOption = {
   seekToLiveOffset?: number;
   noAutoSeekToLive?: boolean;
   noVolumePref?: boolean;
+  noMutedPref?: boolean;
   noSubtitlesLangPref?: boolean;
 };
 
@@ -199,6 +201,11 @@ export type FacadeProp<T, S = T, D = T> = ReadonlyFacadeProp<T, D> & {
  *
  */
 export type StateMediator = {
+  mediaErrorCode: ReadonlyFacadeProp<MediaError['code']>;
+  mediaErrorMessage: ReadonlyFacadeProp<MediaError['message']>;
+  mediaError: ReadonlyFacadeProp<MediaError>;
+  mediaWidth: ReadonlyFacadeProp<number>;
+  mediaHeight: ReadonlyFacadeProp<number>;
   mediaPaused: FacadeProp<HTMLMediaElement['paused']>;
   mediaHasPlayed: ReadonlyFacadeProp<boolean>;
   mediaEnded: ReadonlyFacadeProp<HTMLMediaElement['ended']>;
@@ -287,6 +294,46 @@ export const prepareStateOwners = async (
 };
 
 export const stateMediator: StateMediator = {
+  mediaError: {
+    get(stateOwners, event) {
+      const { media } = stateOwners;
+      if (event?.type === 'playing') return;
+      // Add additional error info via the `mediaError` element property only.
+      // This can be used in the MediaErrorDialog.formatErrorMessage() method.
+      return media?.error;
+    },
+    mediaEvents: ['emptied', 'error', 'playing'],
+  },
+  mediaErrorCode: {
+    get(stateOwners, event) {
+      const { media } = stateOwners;
+      if (event?.type === 'playing') return;
+      return media?.error?.code;
+    },
+    mediaEvents: ['emptied', 'error', 'playing'],
+  },
+  mediaErrorMessage: {
+    get(stateOwners, event) {
+      const { media } = stateOwners;
+      if (event?.type === 'playing') return;
+      return media?.error?.message ?? '';
+    },
+    mediaEvents: ['emptied', 'error', 'playing'],
+  },
+  mediaWidth: {
+    get(stateOwners) {
+      const { media } = stateOwners;
+      return media?.videoWidth ?? 0;
+    },
+    mediaEvents: ['resize'],
+  },
+  mediaHeight: {
+    get(stateOwners) {
+      const { media } = stateOwners;
+      return media?.videoHeight ?? 0;
+    },
+    mediaEvents: ['resize'],
+  },
   mediaPaused: {
     get(stateOwners) {
       const { media } = stateOwners;
@@ -349,9 +396,39 @@ export const stateMediator: StateMediator = {
     set(value, stateOwners) {
       const { media } = stateOwners;
       if (!media) return;
+
+      try {
+        globalThis.localStorage.setItem(
+          'media-chrome-pref-muted',
+          value ? 'true' : 'false'
+        );
+      } catch (e) {
+        console.debug('Error setting muted pref', e);
+      }
+
       media.muted = value;
     },
     mediaEvents: ['volumechange'],
+    stateOwnersUpdateHandlers: [
+      (handler, stateOwners) => {
+        const {
+          options: { noMutedPref },
+        } = stateOwners;
+        const { media } = stateOwners;
+        // The muted enabled attribute should still override the preference.
+        if (!media || media.muted || noMutedPref) return;
+        try {
+          const mutedPref =
+            globalThis.localStorage.getItem('media-chrome-pref-muted') ===
+            'true';
+
+          stateMediator.mediaMuted.set(mutedPref, stateOwners);
+          handler(mutedPref);
+        } catch (e) {
+          console.debug('Error getting muted pref', e);
+        }
+      },
+    ],
   },
   mediaVolume: {
     get(stateOwners) {
@@ -373,8 +450,8 @@ export const stateMediator: StateMediator = {
             value.toString()
           );
         }
-      } catch (err) {
-        // ignore
+      } catch (e) {
+        console.debug('Error setting volume pref', e);
       }
       if (!Number.isFinite(+value)) return;
       media.volume = +value;
@@ -388,9 +465,13 @@ export const stateMediator: StateMediator = {
         if (noVolumePref) return;
         /** @TODO How should we handle globalThis dependencies/"state ownership"? (CJP) */
         try {
+          const { media } = stateOwners;
+          if (!media) return;
+
           const volumePref = globalThis.localStorage.getItem(
             'media-chrome-pref-volume'
           );
+
           if (volumePref == null) return;
           stateMediator.mediaVolume.set(+volumePref, stateOwners);
           handler(+volumePref);
@@ -422,8 +503,7 @@ export const stateMediator: StateMediator = {
     },
     set(value, stateOwners) {
       const { media } = stateOwners;
-      // If the media supports readyState and it's not ready, don't set currentTime
-      if (!media || media.readyState === 0) return;
+      if (!media || !isValidNumber(value)) return;
       media.currentTime = value;
     },
     mediaEvents: ['timeupdate', 'loadedmetadata'],
@@ -675,12 +755,21 @@ export const stateMediator: StateMediator = {
           'track[kind="chapters"][default][src]'
         );
 
+        /* If `media` is a custom media element search in its shadow DOM. */
+        const shadowChaptersTrack = media.shadowRoot?.querySelector(
+          ':is(video,audio) > track[kind="chapters"][default][src]'
+        );
+
         /** @ts-ignore */
         chaptersTrack?.addEventListener('load', handler);
+        /** @ts-ignore */
+        shadowChaptersTrack?.addEventListener('load', handler);
 
         return () => {
           /** @ts-ignore */
           chaptersTrack?.removeEventListener('load', handler);
+          /** @ts-ignore */
+          shadowChaptersTrack?.removeEventListener('load', handler);
         };
       },
     ],

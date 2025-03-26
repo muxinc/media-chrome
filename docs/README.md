@@ -5,10 +5,10 @@ Built with [astro.build](https://docs.astro.build/en/getting-started/)
 # Running Locally
 
 ```
-yarn install
+npm install
 ```
 
 ```
-yarn dev
+npm run dev
 ```
 

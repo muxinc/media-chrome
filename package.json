@@ -1,6 +1,6 @@
 {
   "name": "media-chrome",
-  "version": "4.1.0",
+  "version": "4.8.0",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
   "author": "@muxinc",
   "license": "MIT",
@@ -85,6 +85,12 @@
       "import": "./dist/*.js",
       "require": "./dist/cjs/*.js",
       "default": "./dist/*.js"
+    },
+    "./lang/*": {
+      "types": "./dist/lang/*.d.ts",
+      "import": "./dist/lang/*.js",
+      "require": "./dist/lang/*.js",
+      "default": "./dist/lang/*.js"
     }
   },
   "customElements": "dist/custom-elements.json",
@@ -109,10 +115,10 @@
     "postbuild:react": "esbuild \"dist/react/**/*.js\" --target=es2019 --format=cjs --outdir=dist/cjs/react",
     "build": "run-s build:types build:esm build:cjs build:iife:* build:react",
     "watch": "run-p watch:types watch:build",
-    "watch:types": "yarn build:types -w",
-    "watch:build": "run-p 'build:esm --watch=forever' 'build:cjs --watch=forever' 'build:iife:* --watch=forever'",
+    "watch:types": "npm run build:types -- -w",
+    "watch:build": "run-p 'build:esm -- --watch=forever' 'build:cjs -- --watch=forever' 'build:iife:* -- --watch=forever'",
     "dev": "run-p watch serve",
-    "start": "yarn dev",
+    "start": "npm run dev",
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
     "serve": "wet serve --cors --livereload --redirect :examples/vanilla/ --log-level error"
   },
@@ -126,8 +132,8 @@
     "@types/mocha": "^10.0.6",
     "@types/react": "^18.2.65",
     "@web/dev-server-esbuild": "^1.0.2",
-    "@web/test-runner": "^0.15.0",
-    "@web/test-runner-playwright": "^0.9.0",
+    "@web/test-runner": "^0.19.0",
+    "@web/test-runner-playwright": "^0.11.0",
     "cem-plugin-vs-code-custom-data-generator": "^1.4.1",
     "esbuild": "^0.20.0",
     "eslint": "^8.56.0",
@@ -140,8 +146,9 @@
     "typescript-eslint": "^7.14.1",
     "wet-run": "^1.2.0"
   },
-  "resolutions": {
-    "source-map": "^0.7.4"
+  "overrides": {
+    "source-map": "^0.7.4",
+    "playwright": "1.49.1"
   },
   "prettier": {
     "trailingComma": "es5",
@@ -163,7 +170,13 @@
     ],
     "rules": {
       "@typescript-eslint/ban-ts-comment": "off",
-      "@typescript-eslint/no-explicit-any": "off"
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ]
     },
     "parserOptions": {
       "ecmaVersion": 2022,
@@ -178,5 +191,8 @@
     "media",
     "player",
     "controls"
-  ]
+  ],
+  "dependencies": {
+    "ce-la-react": "^0.1.3"
+  }
 }

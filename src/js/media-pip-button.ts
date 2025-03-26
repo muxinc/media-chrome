@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { tooltipLabels, verbs } from './labels/labels.js';
+import { t } from './utils/i18n.js';
 import {
   getBooleanAttr,
   getStringAttr,
@@ -42,12 +42,14 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const tooltipContent = /*html*/ `
-  <slot name="tooltip-enter">${tooltipLabels.ENTER_PIP}</slot>
-  <slot name="tooltip-exit">${tooltipLabels.EXIT_PIP}</slot>
+  <slot name="tooltip-enter">${t('Enter picture in picture mode')}</slot>
+  <slot name="tooltip-exit">${t('Exit picture in picture mode')}</slot>
 `;
 
 const updateAriaLabel = (el: MediaPipButton): void => {
-  const label = el.mediaIsPip ? verbs.EXIT_PIP() : verbs.ENTER_PIP();
+  const label = el.mediaIsPip
+    ? t('exit picture in picture mode')
+    : t('enter picture in picture mode');
   el.setAttribute('aria-label', label);
 };
 

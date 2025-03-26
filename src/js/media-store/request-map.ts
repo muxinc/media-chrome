@@ -191,10 +191,11 @@ export const requestMap: RequestMap = {
     const seekableEnd = stateMediator.mediaSeekable.get(stateOwners)?.[1];
 
     // If we don't have a known seekable end (which represents the live edge), bail early
-    if (!Number.isNaN(Number(seekableEnd))) return;
+    if (Number.isNaN(Number(seekableEnd))) return;
 
     const seekToLiveOffset = stateOwners.options?.seekToLiveOffset ?? 0;
     const value = seekableEnd - seekToLiveOffset;
+
     stateMediator[key].set(value, stateOwners);
   },
   // Text Tracks state change requests

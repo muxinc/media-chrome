@@ -24,11 +24,14 @@ import {
   MediaUIProps,
 } from './constants.js';
 import {
+  getBooleanAttr,
+  getNumericAttr,
+  getStringAttr,
   setBooleanAttr,
   setNumericAttr,
   setStringAttr,
 } from './utils/element-utils.js';
-import createMediaStore, { MediaStore } from './media-store/media-store.js';
+import { createMediaStore, MediaStore } from './media-store/media-store.js';
 import { CustomElement } from './utils/CustomElement.js';
 
 const ButtonPressedKeys = [
@@ -196,6 +199,86 @@ class MediaController extends MediaContainer {
       type: 'fullscreenelementchangerequest',
       detail: this.fullscreenElement,
     });
+  }
+
+  get defaultSubtitles(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.DEFAULT_SUBTITLES);
+  }
+
+  set defaultSubtitles(value: boolean) {
+    setBooleanAttr(this, Attributes.DEFAULT_SUBTITLES, value);
+  }
+
+  get defaultStreamType(): string | undefined {
+    return getStringAttr(this, Attributes.DEFAULT_STREAM_TYPE);
+  }
+
+  set defaultStreamType(value: string | undefined) {
+    setStringAttr(this, Attributes.DEFAULT_STREAM_TYPE, value);
+  }
+
+  get defaultDuration(): number | undefined {
+    return getNumericAttr(this, Attributes.DEFAULT_DURATION);
+  }
+
+  set defaultDuration(value: number | undefined) {
+    setNumericAttr(this, Attributes.DEFAULT_DURATION, value);
+  }
+
+  get noHotkeys(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_HOTKEYS);
+  }
+
+  set noHotkeys(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_HOTKEYS, value);
+  }
+
+  get keysUsed(): string | undefined {
+    return getStringAttr(this, Attributes.KEYS_USED);
+  }
+
+  set keysUsed(value: string | undefined) {
+    setStringAttr(this, Attributes.KEYS_USED, value);
+  }
+
+  get liveEdgeOffset(): number | undefined {
+    return getNumericAttr(this, Attributes.LIVE_EDGE_OFFSET);
+  }
+
+  set liveEdgeOffset(value: number | undefined) {
+    setNumericAttr(this, Attributes.LIVE_EDGE_OFFSET, value);
+  }
+
+  get noAutoSeekToLive(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_AUTO_SEEK_TO_LIVE);
+  }
+
+  set noAutoSeekToLive(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_AUTO_SEEK_TO_LIVE, value);
+  }
+
+  get noVolumePref(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_VOLUME_PREF);
+  }
+
+  set noVolumePref(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_VOLUME_PREF, value);
+  }
+
+  get noSubtitlesLangPref(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_SUBTITLES_LANG_PREF);
+  }
+
+  set noSubtitlesLangPref(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_SUBTITLES_LANG_PREF, value);
+  }
+
+  get noDefaultStore(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_DEFAULT_STORE);
+  }
+
+  set noDefaultStore(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_DEFAULT_STORE, value);
   }
 
   attributeChangedCallback(
@@ -472,8 +555,12 @@ class MediaController extends MediaContainer {
     this.removeEventListener('keyup', this.#keyUpHandler);
   }
 
-  get hotkeys() {
-    return this.#hotKeys;
+  get hotkeys(): string | undefined {
+    return getStringAttr(this, Attributes.HOTKEYS);
+  }
+
+  set hotkeys(value: string | undefined) {
+    setStringAttr(this, Attributes.HOTKEYS, value);
   }
 
   keyboardShortcutHandler(e: KeyboardEvent) {

@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { tooltipLabels, verbs } from './labels/labels.js';
+import { t } from './utils/i18n.js';
 import {
   getBooleanAttr,
   setBooleanAttr,
@@ -44,12 +44,12 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const tooltipContent = /*html*/ `
-  <slot name="tooltip-enter">${tooltipLabels.START_CAST}</slot>
-  <slot name="tooltip-exit">${tooltipLabels.STOP_CAST}</slot>
+  <slot name="tooltip-enter">${t('Start casting')}</slot>
+  <slot name="tooltip-exit">${t('Stop casting')}</slot>
 `;
 
 const updateAriaLabel = (el: MediaCastButton) => {
-  const label = el.mediaIsCasting ? verbs.EXIT_CAST() : verbs.ENTER_CAST();
+  const label = el.mediaIsCasting ? t('stop casting') : t('start casting');
   el.setAttribute('aria-label', label);
 };
 

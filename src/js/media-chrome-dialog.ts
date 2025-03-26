@@ -1,52 +1,84 @@
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import {
   containsComposedNode,
   getActiveElement,
+  getBooleanAttr,
+  namedNodeMapToObject,
+  setBooleanAttr,
+  getOrInsertCSSRule,
 } from './utils/element-utils.js';
 import { InvokeEvent } from './utils/events.js';
 
-const template: HTMLTemplateElement = document.createElement('template');
-template.innerHTML = /*html*/ `
-  <style>
-    :host {
-      font: var(--media-font,
-        var(--media-font-weight, normal)
-        var(--media-font-size, 14px) /
-        var(--media-text-content-height, var(--media-control-height, 24px))
-        var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
-      color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-      background: var(--media-dialog-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
-      border-radius: var(--media-dialog-border-radius);
-      border: var(--media-dialog-border, none);
-      display: var(--media-dialog-display, inline-flex);
-      transition: var(--media-dialog-transition-in,
-        visibility 0s,
-        opacity .2s ease-out,
-        transform .15s ease-out
-      ) !important;
-      ${/* ^^Prevent transition override by media-container */ ''}
-      visibility: var(--media-dialog-visibility, visible);
-      opacity: var(--media-dialog-opacity, 1);
-      transform: var(--media-dialog-transform-in, translateY(0) scale(1));
-    }
+/**
+ * Get the template HTML for the dialog with the given attributes.
+ *
+ * This is a static method that can be called on the class and can be
+ * overridden by subclasses to customize the template.
+ *
+ * Another static method, `getSlotTemplateHTML`, is called by this method
+ * which can be separately overridden to customize the slot template.
+ */
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        font: var(--media-font,
+          var(--media-font-weight, normal)
+          var(--media-font-size, 14px) /
+          var(--media-text-content-height, var(--media-control-height, 24px))
+          var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+        color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
+        display: var(--media-dialog-display, inline-flex);
+        justify-content: center;
+        align-items: center;
+        ${
+          /** The hide transition is defined below after a short delay. */ ''
+        }
+        transition-behavior: allow-discrete;
+        visibility: hidden;
+        opacity: 0;
+        transform: translateY(2px) scale(.99);
+        pointer-events: none;
+      }
 
-    :host([hidden]) {
-      transition: var(--media-dialog-transition-out,
-        visibility .15s ease-in,
-        opacity .15s ease-in,
-        transform .15s ease-in
-      ) !important;
-      visibility: var(--media-dialog-hidden-visibility, hidden);
-      opacity: var(--media-dialog-hidden-opacity, 0);
-      transform: var(--media-dialog-transform-out, translateY(2px) scale(.99));
-      pointer-events: none;
-    }
-  </style>
-  <slot></slot>
-`;
+      :host([open]) {
+        transition: display .2s, visibility 0s, opacity .2s ease-out, transform .15s ease-out;
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+      }
+
+      #content {
+        display: flex;
+        position: relative;
+        box-sizing: border-box;
+        width: min(320px, 100%);
+        word-wrap: break-word;
+        max-height: 100%;
+        overflow: auto;
+        text-align: center;
+        line-height: 1.4;
+      }
+    </style>
+    ${this.getSlotTemplateHTML(_attrs)}
+  `;
+}
+
+/**
+ * Get the slot template HTML for the dialog with the given attributes.
+ *
+ * This is a static method that can be called on the class and can be
+ * overridden by subclasses to customize the slot template.
+ */
+function getSlotTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <slot id="content"></slot>
+  `;
+}
 
 export const Attributes = {
-  HIDDEN: 'hidden',
+  OPEN: 'open',
   ANCHOR: 'anchor',
 };
 
@@ -55,37 +87,34 @@ export const Attributes = {
  *
  * @slot - Default slotted elements.
  *
+ * @attr {boolean} open - The open state of the dialog.
+ *
  * @cssproperty --media-primary-color - Default color of text / icon.
  * @cssproperty --media-secondary-color - Default color of background.
  * @cssproperty --media-text-color - `color` of text.
  *
- * @cssproperty --media-control-background - `background` of control.
  * @cssproperty --media-dialog-display - `display` of dialog.
- * @cssproperty --media-dialog-background - `background` of dialog.
- * @cssproperty --media-dialog-border-radius - `border-radius` of dialog.
- * @cssproperty --media-dialog-border - `border` of dialog.
- * @cssproperty --media-dialog-transition-in - `transition` of dialog when showing.
- * @cssproperty --media-dialog-transition-out - `transition` of dialog when hiding.
- * @cssproperty --media-dialog-visibility - `visibility` of dialog when showing.
- * @cssproperty --media-dialog-hidden-visibility - `visibility` of dialog when hiding.
- * @cssproperty --media-dialog-opacity - `opacity` of dialog when showing.
- * @cssproperty --media-dialog-hidden-opacity - `opacity` of dialog when hiding.
- * @cssproperty --media-dialog-transform-in - `transform` of dialog when showing.
- * @cssproperty --media-dialog-transform-out - `transform` of dialog when hiding.
  *
  * @cssproperty --media-font - `font` shorthand property.
  * @cssproperty --media-font-weight - `font-weight` property.
  * @cssproperty --media-font-family - `font-family` property.
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
+ *
+ * @event {Event} open - Dispatched when the dialog is opened.
+ * @event {Event} close - Dispatched when the dialog is closed.
+ * @event {Event} focus - Dispatched when the dialog is focused.
+ * @event {Event} focusin - Dispatched when the dialog is focused in.
  */
 class MediaChromeDialog extends globalThis.HTMLElement {
-  static template: HTMLTemplateElement = template;
+  static getTemplateHTML = getTemplateHTML;
+  static getSlotTemplateHTML = getSlotTemplateHTML;
 
   static get observedAttributes() {
-    return [Attributes.HIDDEN, Attributes.ANCHOR];
+    return [Attributes.OPEN, Attributes.ANCHOR];
   }
 
+  #isInit = false;
   #previouslyFocused: HTMLElement | null = null;
   #invokerElement: HTMLElement | null = null;
 
@@ -94,19 +123,42 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   constructor() {
     super();
 
+    this.addEventListener('invoke', this);
+    this.addEventListener('focusout', this);
+    this.addEventListener('keydown', this);
+  }
+
+  get open() {
+    return getBooleanAttr(this, Attributes.OPEN);
+  }
+
+  set open(value) {
+    setBooleanAttr(this, Attributes.OPEN, value);
+  }
+
+  #init() {
+    if (this.#isInit) return;
+    this.#isInit = true;
+
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       this.attachShadow({ mode: 'open' });
 
-      this.nativeEl = (
-        this.constructor as typeof MediaChromeDialog
-      ).template.content.cloneNode(true) as HTMLElement;
-      this.shadowRoot.append(this.nativeEl);
-    }
+      const attrs = namedNodeMapToObject(this.attributes);
 
-    this.addEventListener('invoke', this);
-    this.addEventListener('focusout', this);
-    this.addEventListener('keydown', this);
+      this.shadowRoot.innerHTML = /*html*/ `
+        ${(this.constructor as typeof MediaChromeDialog).getTemplateHTML(attrs)}
+      `;
+
+      // Delay setting the transition to prevent seeing the transition from default start styles.
+      queueMicrotask(() => {
+        const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+        style.setProperty(
+          'transition',
+          `display .15s, visibility .15s, opacity .15s ease-in, transform .15s ease-in`
+        );
+      });
+    }
   }
 
   handleEvent(event: Event) {
@@ -124,37 +176,47 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   }
 
   connectedCallback(): void {
+    this.#init();
+
     if (!this.role) {
       this.role = 'dialog';
     }
   }
 
-  attributeChangedCallback(
-    attrName: string,
-    oldValue: string | null,
-    newValue: string | null
-  ) {
-    if (attrName === Attributes.HIDDEN && newValue !== oldValue) {
-      if (this.hidden) {
-        this.#handleClosed();
-      } else {
+  attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {
+    this.#init();
+
+    if (attrName === Attributes.OPEN && newValue !== oldValue) {
+      if (this.open) {
         this.#handleOpen();
+      } else {
+        this.#handleClosed();
       }
     }
   }
 
   #handleOpen() {
     this.#invokerElement?.setAttribute('aria-expanded', 'true');
+    this.dispatchEvent(new Event('open', { composed: true, bubbles: true }));
     // Focus when the transition ends.
     this.addEventListener('transitionend', () => this.focus(), { once: true });
   }
 
   #handleClosed() {
     this.#invokerElement?.setAttribute('aria-expanded', 'false');
+    this.dispatchEvent(new Event('close', { composed: true, bubbles: true }));
   }
 
   focus() {
     this.#previouslyFocused = getActiveElement();
+
+    // https://w3c.github.io/uievents/#event-type-focus
+    const focusCancelled = !this.dispatchEvent(new Event('focus', { composed: true, cancelable: true }));
+    // https://w3c.github.io/uievents/#event-type-focusin
+    const focusInCancelled = !this.dispatchEvent(new Event('focusin', { composed: true, bubbles: true, cancelable: true }));
+
+    // If `event.preventDefault()` was called in a listener prevent focusing.
+    if (focusCancelled || focusInCancelled) return;
 
     const focusable: HTMLElement | null = this.querySelector(
       '[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]'
@@ -166,7 +228,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     this.#invokerElement = event.relatedTarget as HTMLElement;
 
     if (!containsComposedNode(this, event.relatedTarget as Node)) {
-      this.hidden = !this.hidden;
+      this.open = !this.open;
     }
   }
 
@@ -174,13 +236,9 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     if (!containsComposedNode(this, event.relatedTarget as Node)) {
       this.#previouslyFocused?.focus();
 
-      // If the menu was opened by a click, close it when selecting an item.
-      if (
-        this.#invokerElement &&
-        this.#invokerElement !== event.relatedTarget &&
-        !this.hidden
-      ) {
-        this.hidden = true;
+      // If the dialog was opened by a click, close it when selecting an item.
+      if (this.#invokerElement && this.#invokerElement !== event.relatedTarget && this.open) {
+        this.open = false;
       }
     }
   }
@@ -217,7 +275,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     } else if (key === 'Escape') {
       // Go back to the previous menu or close the menu.
       this.#previouslyFocused?.focus();
-      this.hidden = true;
+      this.open = false;
     }
   }
 }

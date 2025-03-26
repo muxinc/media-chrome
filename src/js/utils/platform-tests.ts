@@ -23,7 +23,33 @@ export const hasVolumeSupportAsync = async (
   if (!mediaEl) return false;
   const prevVolume = mediaEl.volume;
   mediaEl.volume = prevVolume / 2 + 0.1;
-  await delay(0);
+  // Remove event listeners later via an abort controller.
+  const abortController = new AbortController();
+  const volumeSupported = await Promise.race([
+    dispatchedVolumeChange(mediaEl, abortController.signal),
+    volumeChanged(mediaEl, prevVolume),
+  ]);
+  abortController.abort();
+  return volumeSupported;
+};
+
+const dispatchedVolumeChange = (mediaEl: HTMLVideoElement, signal: AbortSignal) => {
+  // If the volumechange event is dispatched, it means the volume property is supported.
+  return new Promise<boolean>((resolve) => {
+    mediaEl.addEventListener('volumechange', () => resolve(true), { signal });
+  });
+};
+
+const volumeChanged = async (mediaEl: HTMLVideoElement, prevVolume: number) => {
+  // iOS Safari doesn't allow setting volume programmatically but it will
+  // change the volume property for a short time before reverting.
+  // On heavy sites this can take a while to revert so we need to wait at least
+  // 100ms to make sure the volume has not changed.
+  // If there is no change sooner, return false early to minimize UI jank.
+  for (let i = 0; i < 10; i++) {
+    if (mediaEl.volume === prevVolume) return false;
+    await delay(10);
+  }
   return mediaEl.volume !== prevVolume;
 };
 

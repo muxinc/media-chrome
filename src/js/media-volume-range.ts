@@ -1,7 +1,7 @@
 import { globalThis } from './utils/server-safe-globals.js';
 import { MediaChromeRange } from './media-chrome-range.js';
 import { MediaUIAttributes, MediaUIEvents } from './constants.js';
-import { nouns } from './labels/labels.js';
+import { t } from './utils/i18n.js';
 import {
   getBooleanAttr,
   getNumericAttr,
@@ -18,7 +18,7 @@ const toVolume = (el: any): number => {
   return el.mediaVolume;
 };
 
-const formatAsPercentString = ({ value }: { value: number }): string =>
+const formatAsPercentString = (value: number): string =>
   `${Math.round(value * 100)}%`;
 
 /**
@@ -57,7 +57,7 @@ class MediaVolumeRange extends MediaChromeRange {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.range.setAttribute('aria-label', nouns.VOLUME());
+    this.range.setAttribute('aria-label', t('volume'));
   }
 
   attributeChangedCallback(
@@ -74,7 +74,7 @@ class MediaVolumeRange extends MediaChromeRange {
       this.range.valueAsNumber = toVolume(this);
       this.range.setAttribute(
         'aria-valuetext',
-        formatAsPercentString(this.range)
+        formatAsPercentString(this.range.valueAsNumber)
       );
       this.updateBar();
     }

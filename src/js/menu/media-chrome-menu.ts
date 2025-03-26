@@ -7,7 +7,7 @@ import {
   getActiveElement,
   containsComposedNode,
   closestComposedNode,
-  getOrInsertCSSRule,
+  insertCSSRule,
   getMediaController,
   getAttributeMediaController,
   getDocumentOrShadowRoot,
@@ -80,7 +80,8 @@ template.innerHTML = /*html*/ `
         var(--media-text-content-height, var(--media-control-height, 24px))
         var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
       color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-      background: var(--media-menu-background, var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .8))));
+      --_menu-bg: rgb(20 20 30 / .8);
+      background: var(--media-menu-background, var(--media-control-background, var(--media-secondary-color, var(--_menu-bg))));
       border-radius: var(--media-menu-border-radius);
       border: var(--media-menu-border, none);
       display: var(--media-menu-display, inline-flex);
@@ -101,7 +102,14 @@ template.innerHTML = /*html*/ `
       ${/* Prevent overflowing a flex container */ ''}
       min-height: 0;
       position: relative;
+      bottom: var(--_menu-bottom);
       box-sizing: border-box;
+    } 
+
+    @-moz-document url-prefix() {
+      :host{
+        --_menu-bg: rgb(20 20 30);
+      }
     }
 
     :host([hidden]) {
@@ -140,27 +148,30 @@ template.innerHTML = /*html*/ `
       transform: translate(-100%, 0);
     }
 
-    slot[name="header"] {
-      display: flex;
-      padding: .4em .7em;
-      border-bottom: 1px solid rgb(255 255 255 / .25);
-      cursor: default;
+    button {
+      background: none;
+      color: inherit;
+      border: none;
+      padding: 0;
+      font: inherit;
+      outline: inherit;
+      display: inline-flex;
+      align-items: center;
     }
 
     slot[name="header"][hidden] {
       display: none;
     }
 
-    button[part~="back"] {
-      background: none;
-      color: inherit;
-      border: none;
-      padding: 0;
-      font: inherit;
-      cursor: pointer;
-      outline: inherit;
-      display: inline-flex;
-      align-items: center;
+    slot[name="header"] > *,
+    slot[name="header"]::slotted(*) {
+      padding: .4em .7em;
+      border-bottom: 1px solid rgb(255 255 255 / .25);
+      cursor: default;
+    }
+
+    slot[name="header"] > button[part~="back"],
+    slot[name="header"]::slotted(button[part~="back"]) {
       cursor: pointer;
     }
 
@@ -196,7 +207,8 @@ template.innerHTML = /*html*/ `
   </style>
   <style id="layout-row" media="width:0">
 
-    slot[name="header"] {
+    slot[name="header"] > *,
+    slot[name="header"]::slotted(*) {
       padding: .4em .5em;
     }
 
@@ -300,7 +312,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     ];
   }
 
-  static formatMenuItemText(text: string): string {
+  static formatMenuItemText(text: string, _data?: any): string {
     return text;
   }
 
@@ -310,6 +322,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #previousItems = new Set<MediaChromeMenuItem>();
   #mutationObserver: MutationObserver;
   #isPopover = false;
+  #cssRule: CSSStyleRule | null = null;
 
   nativeEl: HTMLElement;
   container: HTMLElement;
@@ -379,6 +392,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   connectedCallback(): void {
+    this.#cssRule = insertCSSRule(this.shadowRoot, ':host');
+
     this.#updateLayoutStyle();
 
     if (!this.hasAttribute('disabled')) {
@@ -455,8 +470,10 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   formatMenuItemText(text: string, data?: any) {
-    // @ts-ignore
-    return this.constructor.formatMenuItemText(text, data);
+    return (this.constructor as typeof MediaChromeMenu).formatMenuItemText(
+      text,
+      data
+    );
   }
 
   get anchor() {
@@ -472,7 +489,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
    */
   get anchorElement() {
     if (this.anchor) {
-      return getDocumentOrShadowRoot(this)?.querySelector<HTMLElement>(`#${this.anchor}`);
+      return getDocumentOrShadowRoot(this)?.querySelector<HTMLElement>(
+        `#${this.anchor}`
+      );
     }
     return null;
   }
@@ -576,12 +595,10 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #handleOpen() {
     this.#invokerElement?.setAttribute('aria-expanded', 'true');
 
-    // Wait one animation frame so the element dimensions are updated.
-    requestAnimationFrame(() => this.#positionMenu(false));
-
     // Focus when the transition ends.
     this.addEventListener('transitionend', () => this.focus(), { once: true });
 
+    // A resize callback is also fired when the menu is opened.
     observeResize(getBoundsElement(this), this.#handleBoundsResize);
     observeResize(this, this.#handleMenuResize);
   }
@@ -594,20 +611,19 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   #handleBoundsResize = () => {
-    this.#positionMenu(false);
+    this.#positionMenu();
     this.#resizeMenu(false);
   };
 
   #handleMenuResize = () => {
-    this.#positionMenu(false);
+    this.#positionMenu();
   };
 
   /**
    * Updates the popover menu position based on the anchor element.
-   * @param  {boolean} animate
    * @param  {number} [menuWidth]
    */
-  #positionMenu(animate: boolean, menuWidth?: number) {
+  #positionMenu(menuWidth?: number) {
     // Can't position if the menu doesn't have an anchor and isn't a child of a media controller.
     if (this.hasAttribute('mediacontroller') && !this.anchor) return;
 
@@ -624,24 +640,27 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     const bounds = getBoundsElement(this);
     const boundsRect = bounds.getBoundingClientRect();
-    const anchorRect = this.anchorElement.getBoundingClientRect();
 
     const right = boundsRect.width - x - menuWidth;
     const bottom = boundsRect.height - y - this.offsetHeight;
-    const maxHeight = boundsRect.height - anchorRect.height;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-
-    if (!animate) {
-      style.setProperty('--media-menu-transition-in', 'none');
-    }
-
+    const { style } = this.#cssRule;
     style.setProperty('position', 'absolute');
     style.setProperty('right', `${Math.max(0, right)}px`);
-    style.setProperty('bottom', `${bottom}px`);
-    style.setProperty('--_menu-max-height', `${maxHeight}px`);
+    style.setProperty('--_menu-bottom', `${bottom}px`);
 
-    style.removeProperty('--media-menu-transition-in');
+    // Determine the real bottom value that is used for the max-height calculation.
+    // `bottom` could have been overridden externally.
+    const computedStyle = getComputedStyle(this);
+    const isBottomCalc =
+      style.getPropertyValue('--_menu-bottom') === computedStyle.bottom;
+    const realBottom = isBottomCalc ? bottom : parseFloat(computedStyle.bottom);
+    const maxHeight =
+      boundsRect.height - realBottom - parseFloat(computedStyle.marginBottom);
+
+    // Safari required directly setting the element style property instead of
+    // updating the style node for the styles to be refreshed.
+    this.style.setProperty('--_menu-max-height', `${maxHeight}px`);
   }
 
   /**
@@ -649,17 +668,15 @@ class MediaChromeMenu extends globalThis.HTMLElement {
    * @param  {boolean} animate
    */
   #resizeMenu(animate: boolean) {
-    /** @type {MediaChromeMenuItem} */
     const expandedMenuItem = this.querySelector(
       '[role="menuitem"][aria-haspopup][aria-expanded="true"]'
     ) as MediaChromeMenuItem;
 
-    /** @type {MediaChromeMenu} */
     const expandedSubmenu = expandedMenuItem?.querySelector(
       '[role="menu"]'
     ) as MediaChromeMenu;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+    const { style } = this.#cssRule;
 
     if (!animate) {
       style.setProperty('--media-menu-transition-in', 'none');
@@ -677,12 +694,12 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       this.style.setProperty('min-width', `${width}px`);
       this.style.setProperty('min-height', `${height}px`);
 
-      this.#positionMenu(animate, width);
+      this.#positionMenu(width);
     } else {
       this.style.removeProperty('min-width');
       this.style.removeProperty('min-height');
 
-      this.#positionMenu(animate);
+      this.#positionMenu();
     }
 
     style.removeProperty('--media-menu-transition-in');
@@ -698,8 +715,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
 
     // If there are no menu items, focus on the first focusable child.
-
-    /** @type {HTMLElement} */
     const focusable = this.querySelector(
       '[autofocus], [tabindex]:not([tabindex="-1"]), [role="menu"]'
     ) as HTMLElement;
@@ -725,15 +740,12 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   get #backButtonElement() {
-    /** @type {HTMLSlotElement} */
     const headerSlot = this.shadowRoot.querySelector(
       'slot[name="header"]'
     ) as HTMLSlotElement;
     return headerSlot
       .assignedElements({ flatten: true })
-      ?.find(
-        (el) => el.part.contains('back') && el.part.contains('button')
-      ) as HTMLElement;
+      ?.find((el) => el.matches('button[part~="back"]')) as HTMLElement;
   }
 
   handleSelect(event: MouseEvent | KeyboardEvent): void {
@@ -762,7 +774,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     this.#checkSubmenuHasExpanded();
 
-    /** @type {MediaChromeMenuItem[]} */
     const menuItemsWithSubmenu = Array.from(
       this.querySelectorAll('[role="menuitem"][aria-haspopup]')
     ) as MediaChromeMenuItem[];

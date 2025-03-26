@@ -2,6 +2,7 @@ import {
   closestComposedNode,
   getMediaController,
   getStringAttr,
+  isElementVisible,
   setStringAttr,
 } from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
@@ -190,6 +191,10 @@ class MediaTooltip extends globalThis.HTMLElement {
   // such that it doesn't spill out of the left or right sides. Only applies
   // to 'top' and 'bottom' placed tooltips.
   updateXOffset = () => {
+    // If the tooltip is hidden don't offset the tooltip because it could be
+    // positioned offscreen causing scrollbars to appear.
+    if (!isElementVisible(this, { checkOpacity: false, checkVisibilityCSS: false })) return;
+
     const placement = this.placement;
 
     // we don't offset against tooltips coming out of left and right sides

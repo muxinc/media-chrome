@@ -4,6 +4,8 @@ import {
   getMediaController,
   getStringAttr,
   setStringAttr,
+  getNumericAttr,
+  setNumericAttr,
 } from '../utils/element-utils.js';
 import { parseRenditionList } from '../utils/utils.js';
 import {
@@ -15,7 +17,7 @@ import { Rendition } from '../media-store/state-mediator.js';
 
 /**
  * @extends {MediaChromeMenu}
- * 
+ *
  * @slot - Default slotted elements.
  * @slot header - An element shown at the top of the menu.
  * @slot checked-indicator - An icon element indicating a checked menu-item.
@@ -30,11 +32,12 @@ class MediaRenditionMenu extends MediaChromeMenu {
       MediaUIAttributes.MEDIA_RENDITION_LIST,
       MediaUIAttributes.MEDIA_RENDITION_SELECTED,
       MediaUIAttributes.MEDIA_RENDITION_UNAVAILABLE,
+      MediaUIAttributes.MEDIA_HEIGHT,
     ];
   }
 
   #renditionList: Rendition[] = [];
-  #prevState;
+  #prevState: Record<string, any> = {};
 
   attributeChangedCallback(
     attrName: string,
@@ -48,11 +51,17 @@ class MediaRenditionMenu extends MediaChromeMenu {
       oldValue !== newValue
     ) {
       this.value = newValue ?? 'auto';
+      this.#render();
     } else if (
       attrName === MediaUIAttributes.MEDIA_RENDITION_LIST &&
       oldValue !== newValue
     ) {
       this.#renditionList = parseRenditionList(newValue);
+      this.#render();
+    } else if (
+      attrName === MediaUIAttributes.MEDIA_HEIGHT &&
+      oldValue !== newValue
+    ) {
       this.#render();
     }
   }
@@ -97,13 +106,33 @@ class MediaRenditionMenu extends MediaChromeMenu {
     setStringAttr(this, MediaUIAttributes.MEDIA_RENDITION_SELECTED, id);
   }
 
+  get mediaHeight(): number {
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_HEIGHT);
+  }
+
+  set mediaHeight(height: number) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_HEIGHT, height);
+  }
+
   #render(): void {
-    if (this.#prevState === JSON.stringify(this.mediaRenditionList)) return;
-    this.#prevState = JSON.stringify(this.mediaRenditionList);
+    if (
+      this.#prevState.mediaRenditionList === JSON.stringify(this.mediaRenditionList) &&
+      this.#prevState.mediaHeight === this.mediaHeight
+    ) return;
+
+    this.#prevState.mediaRenditionList = JSON.stringify(this.mediaRenditionList);
+    this.#prevState.mediaHeight = this.mediaHeight;
 
     const renditionList = this.mediaRenditionList.sort(
       (a: any, b: any) => b.height - a.height
     );
+
+    for (const rendition of renditionList) {
+      // `selected` is not serialized in the rendition list because
+      // each selection would cause a re-render of the menu.
+      // @ts-ignore
+      rendition.selected = rendition.id === this.mediaRenditionSelected;
+    }
 
     this.defaultSlot.textContent = '';
 
@@ -125,12 +154,20 @@ class MediaRenditionMenu extends MediaChromeMenu {
       this.defaultSlot.append(item);
     }
 
+    const text = isAuto
+      ? this.formatMenuItemText(`Auto (${this.mediaHeight}p)`)
+      : this.formatMenuItemText('Auto');
+
     const item = createMenuItem({
       type: 'radio',
-      text: this.formatMenuItemText('Auto'),
+      text,
       value: 'auto',
       checked: isAuto,
     });
+
+    const autoDescription = this.mediaHeight > 0 ? `Auto (${this.mediaHeight}p)` : 'Auto';
+    item.dataset.description = autoDescription;
+
     item.prepend(createIndicator(this, 'checked-indicator'));
     this.defaultSlot.append(item);
   }

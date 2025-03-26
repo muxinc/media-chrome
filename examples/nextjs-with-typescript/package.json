@@ -14,9 +14,9 @@
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.14",
     "@mux/mux-video": "^0.17.5",
-    "media-chrome": "link:../../",
+    "media-chrome": "file:../../",
     "next": "14.1.3",
-    "react": "link:../../node_modules/react",
+    "react": "file:../../node_modules/react",
     "react-dom": "^18"
   },
   "devDependencies": {

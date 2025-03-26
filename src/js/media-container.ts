@@ -9,10 +9,16 @@
 */
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
-import { nouns } from './labels/labels.js';
-import { observeResize } from './utils/resize-observer.js';
+import { observeResize, unobserveResize } from './utils/resize-observer.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
+import { t } from './utils/i18n.js';
+import {
+  getBooleanAttr,
+  getStringAttr,
+  setBooleanAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
 
 export const Attributes = {
   AUDIO: 'audio',
@@ -103,7 +109,7 @@ template.innerHTML = /*html*/ `
        * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
        */ ''
     }
-    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([hidden])) {
+    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([role=dialog]):not([hidden])) {
       pointer-events: auto;
     }
 
@@ -151,9 +157,9 @@ template.innerHTML = /*html*/ `
     ${/* Only add these if auto hide is not disabled */ ''}
     ::slotted(:not([slot=media]):not([slot=poster]):not([${
       Attributes.NO_AUTOHIDE
-    }]):not([hidden])) {
+    }]):not([hidden]):not([role=dialog])) {
       opacity: 1;
-      transition: opacity 0.25s;
+      transition: var(--media-control-transition-in, opacity 0.25s);
     }
 
     ${
@@ -167,9 +173,9 @@ template.innerHTML = /*html*/ `
   Attributes.AUDIO
 }])) ::slotted(:not([slot=media]):not([slot=poster]):not([${
   Attributes.NO_AUTOHIDE
-}])) {
+}]):not([role=dialog])) {
       opacity: 0;
-      transition: opacity 1s;
+      transition: var(--media-control-transition-out, opacity 1s);
     }
 
     :host([${Attributes.USER_INACTIVE}]:not([${
@@ -193,12 +199,14 @@ template.innerHTML = /*html*/ `
       display: none;
     }
 
-    ::slotted([role="menu"]) {
-      align-self: end;
+    ::slotted([role=dialog]) {
+      width: 100%;
+      height: 100%;
+      align-self: center;
     }
 
-    ::slotted([role="dialog"]) {
-      align-self: center;
+    ::slotted([role=menu]) {
+      align-self: end;
     }
   </style>
 
@@ -214,6 +222,7 @@ template.innerHTML = /*html*/ `
     ${/* default, effectively "bottom-chrome" */ ''}
     <slot part="bottom chrome"></slot>
   </span>
+  <slot name="dialog" part="layer dialog-layer"></slot>
 `;
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
@@ -221,10 +230,10 @@ const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 const defaultBreakpoints = 'sm:384 md:576 lg:768 xl:960';
 
 function resizeCallback(entry: ResizeObserverEntry) {
-  setBreakpoints(entry.target as HTMLElement, entry.contentRect.width);
+  setBreakpoints(entry.target as MediaContainer, entry.contentRect.width);
 }
 
-function setBreakpoints(container: HTMLElement, width: number) {
+function setBreakpoints(container: MediaContainer, width: number) {
   if (!container.isConnected) return;
 
   const breakpoints =
@@ -256,6 +265,17 @@ function setBreakpoints(container: HTMLElement, width: number) {
 
     container.dispatchEvent(evt);
   }
+
+  if (!container.breakpointsComputed) {
+    container.breakpointsComputed = true;
+
+    container.dispatchEvent(
+      new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_COMPUTED, {
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
 }
 
 function createBreakpointMap(breakpoints: string) {
@@ -282,6 +302,8 @@ function getBreakpoints(breakpoints: Record<string, string>, width: number) {
  *
  * @cssprop --media-background-color - `background-color` of container.
  * @cssprop --media-slot-display - `display` of the media slot (default none for [audio] usage).
+ * @cssprop --media-control-transition-out - `transition` used to define the animation effect when hiding the container.
+ * @cssprop --media-control-transition-in - `transition` used to define the animation effect when showing the container.
  */
 class MediaContainer extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
@@ -296,6 +318,10 @@ class MediaContainer extends globalThis.HTMLElement {
               MediaUIAttributes.MEDIA_RENDITION_LIST,
               MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST,
               MediaUIAttributes.MEDIA_CHAPTERS_CUES,
+              MediaUIAttributes.MEDIA_WIDTH,
+              MediaUIAttributes.MEDIA_HEIGHT,
+              MediaUIAttributes.MEDIA_ERROR,
+              MediaUIAttributes.MEDIA_ERROR_MESSAGE,
             ].includes(name as any)
         )
     );
@@ -316,88 +342,8 @@ class MediaContainer extends globalThis.HTMLElement {
       this.shadowRoot.appendChild(template.content.cloneNode(true));
     }
 
-    // Watch for child adds/removes and update the media element if necessary
-    const mutationCallback = (mutationsList: MutationRecord[]) => {
-      const media = this.media;
-
-      for (const mutation of mutationsList) {
-        if (mutation.type === 'childList') {
-          // Media element being removed
-          mutation.removedNodes.forEach((node: Element) => {
-            // Is this a direct child media element of media-controller?
-            // TODO: This accuracy doesn't matter after moving away from media attrs.
-            // Could refactor so we can always just call 'dispose' on any removed media el.
-            if (node.slot == 'media' && mutation.target == this) {
-              // Check if this was the current media by if it was the first
-              // el with slot=media in the child list. There could be multiple.
-              let previousSibling =
-                mutation.previousSibling &&
-                (mutation.previousSibling as Element).previousElementSibling;
-
-              // Must have been first if no prev sibling or new media
-              if (!previousSibling || !media) {
-                this.mediaUnsetCallback(node as HTMLMediaElement);
-              } else {
-                // Check if any prev siblings had a slot=media
-                // Should remain true otherwise
-                let wasFirst = previousSibling.slot !== 'media';
-                while (
-                  (previousSibling =
-                    previousSibling.previousSibling as Element) !== null
-                ) {
-                  if (previousSibling.slot == 'media') wasFirst = false;
-                }
-                if (wasFirst) this.mediaUnsetCallback(node as HTMLMediaElement);
-              }
-            }
-          });
-
-          // Controls or media element being added
-          // No need to inject anything if media=null
-          if (media) {
-            mutation.addedNodes.forEach((node) => {
-              if (node === media) {
-                // Update all controls with new media if this is the new media
-                this.handleMediaUpdated(media);
-              }
-            });
-          }
-        }
-      }
-    };
-
-    const mutationObserver = new MutationObserver(mutationCallback);
-    mutationObserver.observe(this, { childList: true, subtree: true });
-
-    let pendingResizeCb = false;
-    const deferResizeCallback = (entry: ResizeObserverEntry) => {
-      // Already have a pending async breakpoint computation, so go ahead and bail
-      if (pendingResizeCb) return;
-      // Just in case it takes too long (which will cause an error to throw),
-      // do the breakpoint computation asynchronously
-      setTimeout(() => {
-        resizeCallback(entry);
-        // Once we've completed, reset the pending cb flag to false
-        pendingResizeCb = false;
-
-        if (!this.breakpointsComputed) {
-          this.breakpointsComputed = true;
-          this.dispatchEvent(
-            new CustomEvent(MediaStateChangeEvents.BREAKPOINTS_COMPUTED, {
-              bubbles: true,
-              composed: true,
-            })
-          );
-        }
-      }, 0);
-      pendingResizeCb = true;
-    };
-    observeResize(this, deferResizeCallback);
-
     // Handles the case when the slotted media element is a slot element itself.
     // e.g. chaining media slots for media themes.
-
-    /** @type {HTMLSlotElement} */
     const chainedSlot = this.querySelector(
       ':scope > slot[slot=media]'
     ) as HTMLSlotElement;
@@ -418,7 +364,7 @@ class MediaContainer extends globalThis.HTMLElement {
   // Could share this code with media-chrome-html-element instead
   attributeChangedCallback(
     attrName: string,
-    oldValue: string,
+    _oldValue: string,
     newValue: string
   ) {
     if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
@@ -427,18 +373,7 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   // First direct child with slot=media, or null
-  /**
-   * @returns {HTMLVideoElement &
-   * {buffered,
-   * webkitEnterFullscreen?,
-   * webkitExitFullscreen?,
-   * requestCast?,
-   * webkitShowPlaybackTargetPicker?,
-   * videoTracks?,
-   * }}
-   */
   get media(): HTMLVideoElement | null {
-    /** @type {HTMLVideoElement} */
     let media = this.querySelector(':scope > [slot=media]') as HTMLVideoElement;
 
     // Chaining media slots for media templates
@@ -449,9 +384,6 @@ class MediaContainer extends globalThis.HTMLElement {
     return media;
   }
 
-  /**
-   * @param {HTMLMediaElement} media
-   */
   async handleMediaUpdated(media: HTMLMediaElement) {
     // Anything "falsy" couldn't act as a media element.
     if (!media) return;
@@ -471,8 +403,12 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   connectedCallback(): void {
+    // Watch for child adds/removes and update the media element if necessary
+    this.#mutationObserver.observe(this, { childList: true, subtree: true });
+    observeResize(this, this.#handleResize);
+
     const isAudioChrome = this.getAttribute(Attributes.AUDIO) != null;
-    const label = isAudioChrome ? nouns.AUDIO_PLAYER() : nouns.VIDEO_PLAYER();
+    const label = isAudioChrome ? t('audio player') : t('video player');
     this.setAttribute('role', 'region');
     this.setAttribute('aria-label', label);
 
@@ -481,6 +417,9 @@ class MediaContainer extends globalThis.HTMLElement {
     // Assume user is inactive until they're not (aka userinactive by default is true)
     // This allows things like autoplay and programmatic playing to also initiate hiding controls (CJP)
     this.setAttribute(Attributes.USER_INACTIVE, '');
+
+    // Set breakpoints on connect since we delay resize observer callbacks.
+    setBreakpoints(this, this.getBoundingClientRect().width);
 
     this.addEventListener('pointerdown', this);
     this.addEventListener('pointermove', this);
@@ -492,6 +431,9 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   disconnectedCallback(): void {
+    this.#mutationObserver.disconnect();
+    unobserveResize(this, this.#handleResize);
+
     // When disconnected from the DOM, remove root node and media event listeners
     // to prevent memory leaks and unneeded invisble UI updates.
     if (this.media) {
@@ -503,16 +445,10 @@ class MediaContainer extends globalThis.HTMLElement {
 
   /**
    * @abstract
-   * @param {HTMLMediaElement} media
    */
-  mediaSetCallback(media: HTMLMediaElement) {} // eslint-disable-line
+  mediaSetCallback(_media: HTMLMediaElement) {}
 
-  /**
-   * @param {HTMLMediaElement} media
-   */
-  mediaUnsetCallback(
-    media: HTMLMediaElement // eslint-disable-line
-  ) {
+  mediaUnsetCallback(_media: HTMLMediaElement) {
     this.#currentMedia = null;
   }
 
@@ -542,6 +478,75 @@ class MediaContainer extends globalThis.HTMLElement {
         break;
     }
   }
+
+  #mutationObserver = new MutationObserver(this.#handleMutation.bind(this));
+  #handleMutation(mutationsList: MutationRecord[]) {
+    const media = this.media;
+
+    for (const mutation of mutationsList) {
+      if (mutation.type !== 'childList') continue;
+
+      const removedNodes = mutation.removedNodes as NodeListOf<Element>;
+
+      // Media element being removed
+      for (const node of removedNodes) {
+        // Is this a direct child media element of media-controller?
+        // TODO: This accuracy doesn't matter after moving away from media attrs.
+        // Could refactor so we can always just call 'dispose' on any removed media el.
+        if (node.slot != 'media' || mutation.target != this) continue;
+
+        // Check if this was the current media by if it was the first
+        // el with slot=media in the child list. There could be multiple.
+        let previousSibling =
+          mutation.previousSibling &&
+          (mutation.previousSibling as Element).previousElementSibling;
+
+        // Must have been first if no prev sibling or new media
+        if (!previousSibling || !media) {
+          this.mediaUnsetCallback(node as HTMLMediaElement);
+        } else {
+          // Check if any prev siblings had a slot=media
+          // Should remain true otherwise
+          let wasFirst = previousSibling.slot !== 'media';
+
+          while (
+            (previousSibling = previousSibling.previousSibling as Element) !==
+            null
+          ) {
+            if (previousSibling.slot == 'media') wasFirst = false;
+          }
+
+          if (wasFirst) this.mediaUnsetCallback(node as HTMLMediaElement);
+        }
+      }
+
+      // Controls or media element being added
+      // No need to inject anything if media=null
+      if (media) {
+        for (const node of mutation.addedNodes) {
+          // Update all controls with new media if this is the new media
+          if (node === media) this.handleMediaUpdated(media);
+        }
+      }
+    }
+  }
+
+  #isResizePending = false;
+  #handleResize = (entry: ResizeObserverEntry) => {
+    // Already have a pending async breakpoint computation, so go ahead and bail
+    if (this.#isResizePending) return;
+
+    // Just in case it takes too long (which will cause an error to throw),
+    // do the breakpoint computation asynchronously
+    setTimeout(() => {
+      resizeCallback(entry);
+
+      // Once we've completed, reset the pending cb flag to false
+      this.#isResizePending = false;
+    }, 0);
+
+    this.#isResizePending = true;
+  };
 
   #handlePointerMove(event: PointerEvent) {
     if (event.pointerType !== 'mouse') {
@@ -638,6 +643,54 @@ class MediaContainer extends globalThis.HTMLElement {
 
   get autohide(): string {
     return (this.#autohide === undefined ? 2 : this.#autohide).toString();
+  }
+
+  get breakpoints(): string | undefined {
+    return getStringAttr(this, Attributes.BREAKPOINTS);
+  }
+
+  set breakpoints(value: string | undefined) {
+    setStringAttr(this, Attributes.BREAKPOINTS, value);
+  }
+
+  get audio(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.AUDIO);
+  }
+
+  set audio(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.AUDIO, value);
+  }
+
+  get gesturesDisabled(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.GESTURES_DISABLED);
+  }
+
+  set gesturesDisabled(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.GESTURES_DISABLED, value);
+  }
+
+  get keyboardControl(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.KEYBOARD_CONTROL);
+  }
+
+  set keyboardControl(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.KEYBOARD_CONTROL, value);
+  }
+
+  get noAutohide(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_AUTOHIDE);
+  }
+
+  set noAutohide(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_AUTOHIDE, value);
+  }
+
+  get userInteractive(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.USER_INACTIVE);
+  }
+
+  set userInteractive(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.USER_INACTIVE, value);
   }
 }
 

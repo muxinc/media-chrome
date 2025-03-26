@@ -1,6 +1,6 @@
 export * as constants from './constants.js';
-export { default as labels } from './labels/labels.js';
 export * as timeUtils from './utils/time.js';
+export { t } from './utils/i18n.js';
 
 // Import media-controller first to ensure it's available for other components
 // when calling `associateElement(this)` in connectedCallback.
@@ -13,6 +13,7 @@ import MediaChromeDialog from './media-chrome-dialog.js';
 import MediaChromeRange from './media-chrome-range.js';
 import MediaControlBar from './media-control-bar.js';
 import MediaDurationDisplay from './media-duration-display.js';
+import MediaErrorDialog from './media-error-dialog.js';
 import MediaFullscreenButton from './media-fullscreen-button.js';
 import MediaGestureReceiver from './media-gesture-receiver.js';
 import MediaLiveButton from './media-live-button.js';
@@ -31,6 +32,8 @@ import MediaTimeDisplay from './media-time-display.js';
 import MediaTimeRange from './media-time-range.js';
 import MediaTooltip from './media-tooltip.js';
 import MediaVolumeRange from './media-volume-range.js';
+import MediaContainer from './media-container.js';
+import MediaTextDisplay from './media-text-display.js';
 
 export {
   MediaAirplayButton,
@@ -42,6 +45,7 @@ export {
   MediaControlBar,
   MediaController,
   MediaDurationDisplay,
+  MediaErrorDialog,
   MediaFullscreenButton,
   MediaGestureReceiver,
   MediaLiveButton,
@@ -60,4 +64,6 @@ export {
   MediaTimeRange,
   MediaTooltip,
   MediaVolumeRange,
+  MediaContainer,
+  MediaTextDisplay,
 };

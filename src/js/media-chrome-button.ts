@@ -1,14 +1,18 @@
 import { MediaStateReceiverAttributes } from './constants.js';
 import MediaTooltip, { TooltipPlacement } from './media-tooltip.js';
 import {
+  getBooleanAttr,
   getOrInsertCSSRule,
   getStringAttr,
+  setBooleanAttr,
   setStringAttr,
 } from './utils/element-utils.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 
 const Attributes = {
   TOOLTIP_PLACEMENT: 'tooltipplacement',
+  DISABLED: 'disabled',
+  NO_TOOLTIP: 'notooltip',
 };
 
 const template = document.createElement('template');
@@ -72,13 +76,20 @@ template.innerHTML = /*html*/ `
   }
 
   media-tooltip {
+    ${
+      /** Make sure unpositioned tooltip doesn't cause page overflow (scroll). */ ''
+    }
+    max-width: 0;
+    overflow-x: clip;
     opacity: 0;
-    transition: opacity .3s;
+    transition: opacity .3s, max-width 0s 9s;
   }
 
   :host(:hover) media-tooltip,
   :host(:focus-visible) media-tooltip {
+    max-width: 100vw;
     opacity: 1;
+    transition: opacity .3s;
   }
 
   :host([notooltip]) slot[name="tooltip"] {
@@ -87,7 +98,7 @@ template.innerHTML = /*html*/ `
 </style>
 
 <slot name="tooltip">
-  <media-tooltip>
+  <media-tooltip part="tooltip" aria-hidden="true">
     <slot name="tooltip-content"></slot>
   </media-tooltip>
 </slot>
@@ -171,9 +182,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
       this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
 
       this.shadowRoot.appendChild(buttonHTML);
-
-      this.tooltipEl = this.shadowRoot.querySelector('media-tooltip');
     }
+
+    this.tooltipEl = this.shadowRoot.querySelector('media-tooltip');
   }
 
   #clickListener = (e) => {
@@ -183,7 +194,13 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
     // Timeout needed to wait for a new "tick" of event loop otherwise
     // measured position does not take into account the new tooltip content
-    setTimeout(this.tooltipEl.updateXOffset, 0);
+    setTimeout(this.#positionTooltip, 0);
+  };
+
+  #positionTooltip = () => {
+    // Conditional chaining accounts for scenarios
+    // where the tooltip element isn't yet defined.
+    this.tooltipEl?.updateXOffset?.();
   };
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
@@ -251,11 +268,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     // of the buttons state, so we greedily assume we need account for any form
     // of state change by reacting to all attribute changes, even if sometimes the
     // update might be redundant
-    if (this.tooltipEl) {
-      // conditional chaining accounts for scenarios where the tooltip element isn't
-      // yet defined
-      this.tooltipEl?.updateXOffset?.();
-    }
+    this.#positionTooltip();
   }
 
   connectedCallback() {
@@ -267,6 +280,8 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
     if (!this.hasAttribute('disabled')) {
       this.enable();
+    } else {
+      this.disable();
     }
 
     this.setAttribute('role', 'button');
@@ -283,7 +298,19 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
     globalThis.customElements
       .whenDefined('media-tooltip')
-      .then(this.setupTooltip.bind(this));
+      .then(() => this.#setupTooltip());
+  }
+
+  // Called when we know the tooltip is ready / defined
+  #setupTooltip() {
+    this.addEventListener('mouseenter', this.#positionTooltip);
+    this.addEventListener('focus', this.#positionTooltip);
+    this.addEventListener('click', this.#clickListener);
+
+    const initialPlacement = this.tooltipPlacement;
+    if (initialPlacement && this.tooltipEl) {
+      this.tooltipEl.placement = initialPlacement;
+    }
   }
 
   disconnectedCallback() {
@@ -292,10 +319,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
 
-    this.removeEventListener('mouseenter', this.tooltipEl?.updateXOffset);
-    this.removeEventListener('focus', this.tooltipEl?.updateXOffset);
+    this.removeEventListener('mouseenter', this.#positionTooltip);
+    this.removeEventListener('focus', this.#positionTooltip);
     this.removeEventListener('click', this.#clickListener);
-    this.tooltipEl = null;
   }
 
   get keysUsed() {
@@ -313,20 +339,35 @@ class MediaChromeButton extends globalThis.HTMLElement {
     setStringAttr(this, Attributes.TOOLTIP_PLACEMENT, value);
   }
 
+  get mediaController(): string | undefined {
+    return getStringAttr(this, MediaStateReceiverAttributes.MEDIA_CONTROLLER);
+  }
+
+  set mediaController(value: string | undefined) {
+    setStringAttr(this, MediaStateReceiverAttributes.MEDIA_CONTROLLER, value);
+  }
+
+  get disabled(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.DISABLED);
+  }
+
+  set disabled(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.DISABLED, value);
+  }
+
+  get noTooltip(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_TOOLTIP);
+  }
+
+  set noTooltip(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_TOOLTIP, value);
+  }
+
   /**
    * @abstract
    * @argument {Event} e
    */
   handleClick(e) {} // eslint-disable-line
-
-  // Called when we know the tooltip is ready / defined
-  setupTooltip() {
-    this.addEventListener('mouseenter', this.tooltipEl.updateXOffset);
-    this.addEventListener('focus', this.tooltipEl.updateXOffset);
-    this.addEventListener('click', this.#clickListener);
-    const initialPlacement = this.tooltipPlacement;
-    if (initialPlacement) this.tooltipEl.placement = initialPlacement;
-  }
 }
 
 if (!globalThis.customElements.get('media-chrome-button')) {

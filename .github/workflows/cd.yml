@@ -53,11 +53,32 @@ jobs:
           # this line is required for the setup-node action to be able to run the npm publish below.
           registry-url: 'https://registry.npmjs.org'
       - uses: fregante/setup-git-user@v1
-      - run: yarn install --frozen-lockfile
-      - run: yarn lint
-      - run: yarn test
-      - run: yarn manifest
-      - run: yarn build
+      - run: npm ci
+      - run: npm run lint
+
+      # Install Playwright after linting, so that we have a faster linting process.
+      # Caching logic adapted from https://github.com/microsoft/playwright/issues/7249#issuecomment-1385567519
+      - name: Store Playwright's Version
+        run: |
+          PLAYWRIGHT_VERSION=$(npm view @web/test-runner-playwright dependencies.playwright)
+          echo "Playwright's Version: $PLAYWRIGHT_VERSION"
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+
+      - name: Cache Playwright Browsers for Playwright's Version
+        id: cache-playwright-browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
+
+      - run: npx playwright install --with-deps
+        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+      - run: npx playwright install-deps
+        if: steps.cache-playwright-browsers.outputs.cache-hit == 'true'
+      - run: npm test -- --all
+
+      - run: npm run manifest
+      - run: npm run build
       - run: npx --yes wet-run@1.2.2 release ${{ inputs.version }} ${{ inputs.dryrun && '--dry-run' || '' }} ${{ inputs.prerelease && format('--prerelease {0}', inputs.prerelease) || '' }} --provenance --changelog --github-release --log-level verbose
       - name: Get NPM version
         id: npm-version

@@ -1,7 +1,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { tooltipLabels, verbs } from './labels/labels.js';
+import { t } from './utils/i18n.js';
 import { getStringAttr, setStringAttr } from './utils/element-utils.js';
 
 const { MEDIA_VOLUME_LEVEL } = MediaUIAttributes;
@@ -54,13 +54,13 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const tooltipContent = /*html*/ `
-  <slot name="tooltip-mute">${tooltipLabels.MUTE}</slot>
-  <slot name="tooltip-unmute">${tooltipLabels.UNMUTE}</slot>
+  <slot name="tooltip-mute">${t('Mute')}</slot>
+  <slot name="tooltip-unmute">${t('Unmute')}</slot>
 `;
 
 const updateAriaLabel = (el: MediaMuteButton) => {
   const muted = el.mediaVolumeLevel === 'off';
-  const label = muted ? verbs.UNMUTE() : verbs.MUTE();
+  const label = muted ? t('unmute') : t('mute');
   el.setAttribute('aria-label', label);
 };
 

@@ -9,7 +9,7 @@
 import { MediaChromeButton } from './media-chrome-button.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { tooltipLabels, verbs } from './labels/labels.js';
+import { t } from './utils/i18n.js';
 import {
   getBooleanAttr,
   getStringAttr,
@@ -56,14 +56,14 @@ slotTemplate.innerHTML = /*html*/ `
 `;
 
 const tooltipContent = /*html*/ `
-  <slot name="tooltip-enter">${tooltipLabels.ENTER_FULLSCREEN}</slot>
-  <slot name="tooltip-exit">${tooltipLabels.EXIT_FULLSCREEN}</slot>
+  <slot name="tooltip-enter">${t('Enter fullscreen mode')}</slot>
+  <slot name="tooltip-exit">${t('Exit fullscreen mode')}</slot>
 `;
 
 const updateAriaLabel = (el: MediaFullscreenButton) => {
   const label = el.mediaIsFullscreen
-    ? verbs.EXIT_FULLSCREEN()
-    : verbs.ENTER_FULLSCREEN();
+    ? t('exit fullscreen mode')
+    : t('enter fullscreen mode');
   el.setAttribute('aria-label', label);
 };
 

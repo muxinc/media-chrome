@@ -1,6 +1,7 @@
+import process from 'node:process';
 import { esbuildPlugin } from '@web/dev-server-esbuild';
 import { playwrightLauncher } from '@web/test-runner-playwright';
-import process from 'node:process';
+import { chromeLauncher } from '@web/test-runner';
 
 const config = {
   /** Test files to run */
@@ -14,6 +15,8 @@ const config = {
 
   /** Amount of test files per browser to test concurrently */
   // concurrency: 1,
+
+  browsers: [chromeLauncher({ launchOptions: { args: ['--headless'] } })],
 };
 
 if (process.argv.some((arg) => arg.includes('--all'))) {

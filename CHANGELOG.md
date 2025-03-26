@@ -1,3 +1,207 @@
+# [4.8.0](https://github.com/muxinc/media-chrome/compare/v4.7.1...v4.8.0) (2025-03-12)
+
+
+### Features
+
+* persist muted enabled state ([#1088](https://github.com/muxinc/media-chrome/issues/1088)) ([94b3ea8](https://github.com/muxinc/media-chrome/commit/94b3ea8c341c019d13fd905d659016e0fda2b33a)), closes [#1072](https://github.com/muxinc/media-chrome/issues/1072)
+
+
+
+## [4.7.1](https://github.com/muxinc/media-chrome/compare/v4.7.0...v4.7.1) (2025-03-04)
+
+
+### Bug Fixes
+
+* MediaTheme React type ([#1089](https://github.com/muxinc/media-chrome/issues/1089)) ([3a7c933](https://github.com/muxinc/media-chrome/commit/3a7c933407b020ec84d96277c3a4cb413f2d5f4a))
+
+
+
+# [4.7.0](https://github.com/muxinc/media-chrome/compare/v4.6.1...v4.7.0) (2025-02-28)
+
+
+### Bug Fixes
+
+* 4.6.0+ no longer has typings for React ([#1085](https://github.com/muxinc/media-chrome/issues/1085)) ([0dfa1d6](https://github.com/muxinc/media-chrome/commit/0dfa1d6dcff7c722221f50bf5d211921d67c9bc2))
+
+
+### Features
+
+* show Auto(mediaHeight) in rendition menu ([#1075](https://github.com/muxinc/media-chrome/issues/1075)) ([005d305](https://github.com/muxinc/media-chrome/commit/005d305ecc19b9e7ed5be2a0230a41360ed66bb6)), closes [#1052](https://github.com/muxinc/media-chrome/issues/1052)
+
+
+
+## [4.6.1](https://github.com/muxinc/media-chrome/compare/v4.6.0...v4.6.1) (2025-02-27)
+
+
+### Bug Fixes
+
+* dialog accessibility hidden, page load bug ([#1082](https://github.com/muxinc/media-chrome/issues/1082)) ([374eee3](https://github.com/muxinc/media-chrome/commit/374eee3755de98df1afd748c6a1521fa8bf69cdd))
+
+
+
+# [4.6.0](https://github.com/muxinc/media-chrome/compare/v4.5.0...v4.6.0) (2025-02-25)
+
+
+### Bug Fixes
+
+* firefox pip activates when clicked through on settings menu ([#1074](https://github.com/muxinc/media-chrome/issues/1074)) ([778b503](https://github.com/muxinc/media-chrome/commit/778b5030717960099ef732b79593d7ab725a04f9))
+
+
+### Features
+
+* Refactor to use ce-la-react to add type definitions for JSX attributes ([#1068](https://github.com/muxinc/media-chrome/issues/1068)) ([d20dd95](https://github.com/muxinc/media-chrome/commit/d20dd957b53d0eecaf1176d15e23f829c26e941d))
+
+
+
+# [4.5.0](https://github.com/muxinc/media-chrome/compare/v4.4.0...v4.5.0) (2025-02-13)
+
+
+### Bug Fixes
+
+* hide error dialog on playback recovery ([#1065](https://github.com/muxinc/media-chrome/issues/1065)) ([4d21bd7](https://github.com/muxinc/media-chrome/commit/4d21bd7170dc7739aa9489929d80a01d50afa60e))
+
+
+### Features
+
+* add range `thumb` slot ([#1013](https://github.com/muxinc/media-chrome/issues/1013)) ([beb0955](https://github.com/muxinc/media-chrome/commit/beb0955646ca003238b01ae20bc824b019de5c5c))
+
+
+
+# [4.4.0](https://github.com/muxinc/media-chrome/compare/v4.3.1...v4.4.0) (2025-01-29)
+
+
+### Bug Fixes
+
+* move breakpointsComputed set to better place ([#1064](https://github.com/muxinc/media-chrome/issues/1064)) ([43c58e8](https://github.com/muxinc/media-chrome/commit/43c58e8bf6ab9ba313fea460c1238525d16b37c8))
+* remove media container observers on disconnect ([#1061](https://github.com/muxinc/media-chrome/issues/1061)) ([a7b339a](https://github.com/muxinc/media-chrome/commit/a7b339a02e084026f722d387cac8994139c08ff3))
+* set breakpoints on connect ([#1057](https://github.com/muxinc/media-chrome/issues/1057)) ([bfa4459](https://github.com/muxinc/media-chrome/commit/bfa44597ab967fdd70b5ee0f09b3183eb92a177f))
+
+
+### Features
+
+* CSS vars to customize <media-controller> hide transition ([#1051](https://github.com/muxinc/media-chrome/issues/1051)) ([e334971](https://github.com/muxinc/media-chrome/commit/e334971721692ca04582039dba34093033cb1402)), closes [#874](https://github.com/muxinc/media-chrome/issues/874)
+
+
+
+## [4.3.1](https://github.com/muxinc/media-chrome/compare/v4.3.0...v4.3.1) (2025-01-23)
+
+
+### Bug Fixes
+
+* revert theme render flicker (breakpoints) ([#1055](https://github.com/muxinc/media-chrome/issues/1055)) ([1b8dad5](https://github.com/muxinc/media-chrome/commit/1b8dad5c5eefc739148fd0731c3594d55f02c998)), closes [#960](https://github.com/muxinc/media-chrome/issues/960)
+
+
+
+# [4.3.0](https://github.com/muxinc/media-chrome/compare/v4.2.3...v4.3.0) (2024-12-05)
+
+
+### Features
+
+* add media-error-dialog ([#1024](https://github.com/muxinc/media-chrome/issues/1024)) ([3fc95a2](https://github.com/muxinc/media-chrome/commit/3fc95a2f7c19f50b6fc7c6d664ada2458dd48e3b))
+
+
+### Reverts
+
+* Revert "docs: use latest instead of symlink" (#1019) ([0c161f4](https://github.com/muxinc/media-chrome/commit/0c161f468eefd13e4c91af1ba295310b48a8ff1e)), closes [#1019](https://github.com/muxinc/media-chrome/issues/1019)
+
+
+
+## [4.2.3](https://github.com/muxinc/media-chrome/compare/v4.2.2...v4.2.3) (2024-11-05)
+
+
+### Bug Fixes
+
+* tooltip overflow causing scrollbar ([#1018](https://github.com/muxinc/media-chrome/issues/1018)) ([181aec2](https://github.com/muxinc/media-chrome/commit/181aec22c7122c5a1bb3f4a653e652d868fe1f48)), closes [#1017](https://github.com/muxinc/media-chrome/issues/1017)
+
+
+
+## [4.2.2](https://github.com/muxinc/media-chrome/compare/v4.2.1...v4.2.2) (2024-10-24)
+
+
+### Bug Fixes
+
+* iOS volume support bug ([#1012](https://github.com/muxinc/media-chrome/issues/1012)) ([5b57c93](https://github.com/muxinc/media-chrome/commit/5b57c930fad1e22836bc825ee9bacbe05b1def88)), closes [#1011](https://github.com/muxinc/media-chrome/issues/1011)
+
+
+
+## [4.2.1](https://github.com/muxinc/media-chrome/compare/v4.2.0...v4.2.1) (2024-10-10)
+
+
+### Bug Fixes
+
+* sticky chapter on mouseout ([#1005](https://github.com/muxinc/media-chrome/issues/1005)) ([cf792bd](https://github.com/muxinc/media-chrome/commit/cf792bdd4c32c4da97646a0a3eb03676913960c5)), closes [#999](https://github.com/muxinc/media-chrome/issues/999)
+
+
+
+# [4.2.0](https://github.com/muxinc/media-chrome/compare/v4.1.5...v4.2.0) (2024-10-08)
+
+
+### Bug Fixes
+
+* add button tooltip part for more styling ([#996](https://github.com/muxinc/media-chrome/issues/996)) ([92542f9](https://github.com/muxinc/media-chrome/commit/92542f961acde0ec5fffc966b5e12c6bebe8071b))
+* make tooltip not focusable to fix a11y ([#1004](https://github.com/muxinc/media-chrome/issues/1004)) ([66bb595](https://github.com/muxinc/media-chrome/commit/66bb595d24c35b513fc1987c2fbfbe957bf32b2d))
+* seeking when preload is none ([#997](https://github.com/muxinc/media-chrome/issues/997)) ([5000cc3](https://github.com/muxinc/media-chrome/commit/5000cc3f8c254afc02474033d11b15313512ec30)), closes [#910](https://github.com/muxinc/media-chrome/issues/910)
+* Use overflow clip in tooltip button to prevent scrollbar ([#1002](https://github.com/muxinc/media-chrome/issues/1002)) ([d3a8bf1](https://github.com/muxinc/media-chrome/commit/d3a8bf11ba9f71b19d72a831b7098df01206cdcc)), closes [#994](https://github.com/muxinc/media-chrome/issues/994) [#1000](https://github.com/muxinc/media-chrome/issues/1000)
+
+
+### Features
+
+* add range CSS parts ([#990](https://github.com/muxinc/media-chrome/issues/990)) ([4c6298f](https://github.com/muxinc/media-chrome/commit/4c6298f65a318a14c2e01f10d6a6441d01edadf0)), closes [#921](https://github.com/muxinc/media-chrome/issues/921) [#983](https://github.com/muxinc/media-chrome/issues/983)
+
+
+
+## [4.1.5](https://github.com/muxinc/media-chrome/compare/v4.1.4...v4.1.5) (2024-10-03)
+
+
+### Bug Fixes
+
+* chapters event w/ preload none ([#995](https://github.com/muxinc/media-chrome/issues/995)) ([906203e](https://github.com/muxinc/media-chrome/commit/906203e68207a9ced4013b3401712605001fe77c))
+
+
+
+## [4.1.4](https://github.com/muxinc/media-chrome/compare/v4.1.3...v4.1.4) (2024-10-01)
+
+
+### Bug Fixes
+
+* restructure menu header for styling ([#989](https://github.com/muxinc/media-chrome/issues/989)) ([f99f8ed](https://github.com/muxinc/media-chrome/commit/f99f8edf2ab1440b4f8b4d014320e784c4e746d3)), closes [#987](https://github.com/muxinc/media-chrome/issues/987)
+* suppressHydrationWarning bug ([#992](https://github.com/muxinc/media-chrome/issues/992)) ([2d392f2](https://github.com/muxinc/media-chrome/commit/2d392f24ea18bf2e9a6d873b2b2a933599c76692))
+* tooltip causing page overflow ([#994](https://github.com/muxinc/media-chrome/issues/994)) ([135151f](https://github.com/muxinc/media-chrome/commit/135151f70eb940acf5f212f643d6799175889d86)), closes [#991](https://github.com/muxinc/media-chrome/issues/991)
+* tooltip type error ([#988](https://github.com/muxinc/media-chrome/issues/988)) ([281c9cd](https://github.com/muxinc/media-chrome/commit/281c9cd27b616428f415d2b5f8f8810613ed8b9b)), closes [#986](https://github.com/muxinc/media-chrome/issues/986)
+
+
+
+## [4.1.3](https://github.com/muxinc/media-chrome/compare/v4.1.2...v4.1.3) (2024-09-24)
+
+
+### Bug Fixes
+
+* Safari (webkit) style tag styles not applied ([#982](https://github.com/muxinc/media-chrome/issues/982)) ([980b1af](https://github.com/muxinc/media-chrome/commit/980b1af0ba23c968b74df1895b286e79dc3a3cd1))
+
+
+
+## [4.1.2](https://github.com/muxinc/media-chrome/compare/v4.1.1...v4.1.2) (2024-09-24)
+
+
+### Bug Fixes
+
+* menu Safari bug and top overflow bug ([#981](https://github.com/muxinc/media-chrome/issues/981)) ([33c66db](https://github.com/muxinc/media-chrome/commit/33c66db5ffde314aac37daa4093e56740cf0e5cc)), closes [#980](https://github.com/muxinc/media-chrome/issues/980)
+
+
+
+## [4.1.1](https://github.com/muxinc/media-chrome/compare/v4.1.0...v4.1.1) (2024-09-19)
+
+
+### Bug Fixes
+
+* CJS issue with default & named import ([#972](https://github.com/muxinc/media-chrome/issues/972)) ([5eea616](https://github.com/muxinc/media-chrome/commit/5eea616964749e35d006fa218fef595acff69919)), closes [#886](https://github.com/muxinc/media-chrome/issues/886)
+* NaN valueAsNumber Safari error ([#967](https://github.com/muxinc/media-chrome/issues/967)) ([3906cca](https://github.com/muxinc/media-chrome/commit/3906ccaf53fad1a8c82eb456cb27ff77acba5c4e)), closes [#947](https://github.com/muxinc/media-chrome/issues/947)
+* position menu absolute in control bar ([#966](https://github.com/muxinc/media-chrome/issues/966)) ([3dbd3ff](https://github.com/muxinc/media-chrome/commit/3dbd3ffdc53ca655571e9a1039a08686e5d5e57d))
+* seek to live action ([#973](https://github.com/muxinc/media-chrome/issues/973)) ([40c546b](https://github.com/muxinc/media-chrome/commit/40c546b5c84e0f7ed7ea979e3fe67a8ee4ca2579))
+* show current playing quality in settings ([#970](https://github.com/muxinc/media-chrome/issues/970)) ([92b6bd6](https://github.com/muxinc/media-chrome/commit/92b6bd6e93cfbcfcd06e24dc5507c37acd6b1491)), closes [#877](https://github.com/muxinc/media-chrome/issues/877)
+
+
+
 # [4.1.0](https://github.com/muxinc/media-chrome/compare/v4.0.0...v4.1.0) (2024-08-16)
 
 
