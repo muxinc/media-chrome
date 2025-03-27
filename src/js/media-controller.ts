@@ -33,7 +33,7 @@ import {
 } from './utils/element-utils.js';
 import { createMediaStore, MediaStore } from './media-store/media-store.js';
 import { CustomElement } from './utils/CustomElement.js';
-import { i18n } from './utils/i18n.js';
+import { setLanguage } from './utils/i18n.js';
 
 const ButtonPressedKeys = [
   'ArrowLeft',
@@ -345,7 +345,7 @@ class MediaController extends MediaContainer {
         detail: this.fullscreenElement,
       });
     } else if (attrName === Attributes.LANGUAGE && newValue !== oldValue) {
-      i18n.setLanguage(newValue);
+      setLanguage(newValue);
     }
   }
 
