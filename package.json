@@ -86,7 +86,7 @@
       "require": "./dist/cjs/*.js",
       "default": "./dist/*.js"
     },
-    "./dist/lang/*": {
+    "./lang/*": {
       "types": "./dist/lang/*.d.ts",
       "import": "./dist/lang/*.js",
       "require": "./dist/lang/*.js",
