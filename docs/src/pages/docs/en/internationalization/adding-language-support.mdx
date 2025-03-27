@@ -1,0 +1,57 @@
+---
+title: Adding Language Support
+description: Adding Language Support
+layout: ../../../../layouts/MainLayout.astro
+---
+
+Media Chrome supports multiple languages for its UI components. By default, it uses English, but you can include additional languages by loading the corresponding language module.
+## Available Languages
+Currently, the supported languages are:
+
+- **English** (default)
+- **Spanish** (`es`)
+- **French** (`fr`)
+- **Portuguese** (`pt`)
+
+## How to Include a Language
+
+### Using HTML
+To add support for a specific language in an HTML file, include the corresponding language module using a `<script>` tag:
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/lang/pt.js"></script>
+```
+
+Replace `pt.js` with the appropriate language code (`es.js`, `fr.js`, etc.) for other languages.
+
+> **Note:** This only works with the non-bundled version of Media Chrome (`https://cdn.jsdelivr.net/npm/media-chrome@4`) and not the **`/+esm`** version. This is required because the `i18n.js` module must be imported separately to properly manage state.
+
+### Using JavaScript
+If you are working with JavaScript, you can import the language module as follows:
+
+```js
+import "media-chrome/lang/pt.js";
+```
+
+Again, replace `pt.js` with the desired language code.
+
+## How Language Selection Works
+Media Chrome automatically detects the user's preferred language based on their browser settings. If the corresponding language file has been imported, the UI will switch to that language.
+
+If the user’s preferred language is not available, the UI will fall back to English.
+
+
+## Adding a New Language
+If you want to add support for a new language, you can create your own language file by extending an existing one, such as `es.js`. Here’s how:
+
+1. Copy the contents of an existing language file (e.g., `es.js`).
+2. Modify the translations to match your desired language.
+3. Save it as a new file, e.g., `de.js` for German.
+4. Import it into your project using:
+
+   ```js
+   import "./path-to-your-lang/de.js";
+   ```
+
+5. Ensure the browser can detect and apply the language based on user preferences.
+
