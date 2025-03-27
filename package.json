@@ -41,12 +41,6 @@
       "require": "./dist/cjs/react/menu/index.js",
       "default": "./dist/react/menu/index.js"
     },
-    "./react/media-store": {
-      "types": "./dist/react/media-store.d.ts",
-      "import": "./dist/react/media-store.js",
-      "require": "./dist/cjs/react/index.js",
-      "default": "./dist/react/media-store.js"
-    },
     "./dist/react": {
       "types": "./dist/react/index.d.ts",
       "import": "./dist/react/index.js",
@@ -60,16 +54,6 @@
       "default": "./dist/menu/index.js"
     },
     "./dist/cjs/*": "./dist/cjs/*",
-    "./dist/menu/*": {
-      "import": "./dist/menu/*",
-      "require": "./dist/cjs/menu/*",
-      "default": "./dist/menu/*"
-    },
-    "./dist/react/*": {
-      "import": "./dist/react/*",
-      "require": "./dist/cjs/react/*",
-      "default": "./dist/react/*"
-    },
     "./dist/*": {
       "import": "./dist/*",
       "require": "./dist/cjs/*",
@@ -85,12 +69,6 @@
       "import": "./dist/*.js",
       "require": "./dist/cjs/*.js",
       "default": "./dist/*.js"
-    },
-    "./lang/*": {
-      "types": "./dist/lang/*.d.ts",
-      "import": "./dist/lang/*.js",
-      "require": "./dist/lang/*.js",
-      "default": "./dist/lang/*.js"
     }
   },
   "customElements": "dist/custom-elements.json",
@@ -126,6 +104,9 @@
     "type": "git",
     "url": "git+https://github.com/muxinc/media-chrome.git"
   },
+  "dependencies": {
+    "ce-la-react": "^0.1.3"
+  },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.10.2",
     "@open-wc/testing": "^3.1.6",
@@ -140,6 +121,7 @@
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "react": "^18.2.0",
+    "resolve.exports": "^2.0.3",
     "rimraf": "^3.0.2",
     "sinon": "^14.0.1",
     "typescript": "^5.5.2",
@@ -191,8 +173,5 @@
     "media",
     "player",
     "controls"
-  ],
-  "dependencies": {
-    "ce-la-react": "^0.1.3"
-  }
+  ]
 }
