@@ -276,7 +276,7 @@ class MediaController extends MediaContainer {
     setBooleanAttr(this, Attributes.NO_DEFAULT_STORE, value);
   }
 
-  get language(): string | undefined {
+  get lang(): string | undefined {
     return getStringAttr(this, Attributes.LANGUAGE);
   }
 
