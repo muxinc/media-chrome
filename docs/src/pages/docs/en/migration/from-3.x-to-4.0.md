@@ -58,7 +58,7 @@ Here's a high level overview:
 **After**
 
 ```html
-  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4.8.0/+esm"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
 
   <style>
     media-controller {
@@ -114,8 +114,8 @@ This example shows changes to `media-rendition-selectmenu`, but the same general
 The menu and button are seperate components, as opposed to being nested. `anchor="auto"` indicates that it should automatically find and attach itself to the seperated menu component.
 
 ```html
-  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4.8.0/+esm"></script>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4.8.0/menu/+esm"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/menu/+esm"></script>
 
   <media-controller>
     <mux-video
@@ -156,8 +156,8 @@ The menu and button are seperate components, as opposed to being nested. `anchor
 **After**
 
 ```html
-  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4.8.0/+esm"></script>
-  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4.8.0/menu/+esm"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/+esm"></script>
+  <script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/menu/+esm"></script>
 
   <media-controller>
     <mux-video
