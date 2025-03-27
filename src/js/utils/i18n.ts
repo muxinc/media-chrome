@@ -10,8 +10,6 @@ export const setLanguage = (langCode: string) => {
   currentLanguage = langCode;
 };
 
-export const getLanguage = () => currentLanguage;
-
 export const addTranslation = (
   langCode: string,
   languageDictionary: TranslateDictionary
