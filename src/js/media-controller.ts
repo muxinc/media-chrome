@@ -63,7 +63,7 @@ export const Attributes = {
   NO_DEFAULT_STORE: 'nodefaultstore',
   KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
   KEYBOARD_BACKWARD_SEEK_OFFSET: 'keyboardbackwardseekoffset',
-  LANGUAGE: 'lang',
+  LANG: 'lang',
 };
 
 /**
@@ -83,6 +83,7 @@ export const Attributes = {
  * @attr {boolean} novolumepref
  * @attr {boolean} nosubtitleslangpref
  * @attr {boolean} nodefaultstore
+ * @attr {string} lang
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {
@@ -92,7 +93,7 @@ class MediaController extends MediaContainer {
       Attributes.DEFAULT_STREAM_TYPE,
       Attributes.DEFAULT_SUBTITLES,
       Attributes.DEFAULT_DURATION,
-      Attributes.LANGUAGE
+      Attributes.LANG
     );
   }
 
@@ -284,14 +285,6 @@ class MediaController extends MediaContainer {
     setBooleanAttr(this, Attributes.NO_DEFAULT_STORE, value);
   }
 
-  get lang(): string | undefined {
-    return getStringAttr(this, Attributes.LANGUAGE);
-  }
-
-  set lang(value: string | undefined) {
-    setStringAttr(this, Attributes.LANGUAGE, value);
-  }
-
   attributeChangedCallback(
     attrName: string,
     oldValue: string | null,
@@ -371,7 +364,7 @@ class MediaController extends MediaContainer {
         type: 'fullscreenelementchangerequest',
         detail: this.fullscreenElement,
       });
-    } else if (attrName === Attributes.LANGUAGE && newValue !== oldValue) {
+    } else if (attrName === Attributes.LANG && newValue !== oldValue) {
       setLanguage(newValue);
     }
   }
