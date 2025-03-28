@@ -74,6 +74,25 @@ as `breakpointx` attributes on media-controller and as `breakpointx`
 </media-controller>
 ```
 
+### lang
+
+`lang` (string)
+
+Use this to manually set the language for the controls. This can be useful if you have the preferred user language stored somewhere outside of Media Chrome. The default value is the preferred language based on their browser settings with a fallback to `en` (English).
+
+NOTE: Only English is included in the main Media Chrome bundle. If you want to use another language, you will need to import the appropriate localization file in your project. See [adding language support](../internationalization/adding-language-support).
+
+Example:
+
+```html
+<media-controller lang="fr">
+  ...
+</media-controller>
+```
+
+This will set the language to French. The media-controller will use this value to determine which translations to use for any text displayed in the UI.
+
+
 ### defaultsubtitles
 
 `defaultsubtitles` (boolean)
