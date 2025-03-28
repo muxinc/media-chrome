@@ -154,11 +154,10 @@ export const isFullscreen = (stateOwners) => {
     }
 
     // If there is no shadowRoot or the shadowRoot exists but does not contain the fullScreenElement, no need to proceed further.
-    // Fallback: check if currentFullscreenElement is exactly fullscreenElement or if it contains fullscreenElement in its light DOM,
+    // Fallback: check if currentFullscreenElement contains fullscreenElement in its light DOM,
     // since there's no shadow DOM to traverse.
     if (!currentRoot || !currentRoot.contains(fullscreenElement)) {      
-      return currentFullscreenElement === fullscreenElement || 
-        currentFullscreenElement.contains(fullscreenElement);
+      return currentFullscreenElement.contains(fullscreenElement);
     }
 
     // If we get here, the shadowRoot exists and does contain the fullscreenElement,
