@@ -1,3 +1,21 @@
+# [4.9.0](https://github.com/muxinc/media-chrome/compare/v4.8.0...v4.9.0) (2025-03-28)
+
+
+### Bug Fixes
+
+* race condition w/ default subtitles (Vue) ([#1106](https://github.com/muxinc/media-chrome/issues/1106)) ([98f2dff](https://github.com/muxinc/media-chrome/commit/98f2dffaeda9610bce1845cf13bbad3224286fc3))
+* simplify exports, resolve tests. fix lang prop type issue ([#1108](https://github.com/muxinc/media-chrome/issues/1108)) ([08b2c2c](https://github.com/muxinc/media-chrome/commit/08b2c2c3152fd354803c09463908b13a4fd2dcd7))
+* timerange thumb and tooltip drift mobile ([#1098](https://github.com/muxinc/media-chrome/issues/1098)) ([fe3e214](https://github.com/muxinc/media-chrome/commit/fe3e2144d5f073ad9cdbc378a62e90816550a20a)), closes [#883](https://github.com/muxinc/media-chrome/issues/883)
+
+
+### Features
+
+* Add seektoliveoffset attribute ([#958](https://github.com/muxinc/media-chrome/issues/958)) ([0f4feac](https://github.com/muxinc/media-chrome/commit/0f4feac296c211b8b4db4d8eceedea7e0d117f6e))
+* hide-cursor-controls-on-inactivity ([#1101](https://github.com/muxinc/media-chrome/issues/1101)) ([849b680](https://github.com/muxinc/media-chrome/commit/849b68054f71ab81204ca7c651ce11c80ab2ecfe)), closes [#756](https://github.com/muxinc/media-chrome/issues/756)
+* set i18n through media-controller ([#1105](https://github.com/muxinc/media-chrome/issues/1105)) ([1425887](https://github.com/muxinc/media-chrome/commit/14258873885e2303b8643f7e05129060a030caaf))
+
+
+
 # [4.8.0](https://github.com/muxinc/media-chrome/compare/v4.7.1...v4.8.0) (2025-03-12)
 
 
