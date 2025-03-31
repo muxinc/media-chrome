@@ -52,6 +52,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Styling', link: 'docs/en/styling' },
     ],
     Guides: [
+      { text: 'Media controller', link: 'docs/en/components/media-controller' },
       { text: 'Media element', link: 'docs/en/media-element' },
       { text: 'Prevent layout shift', link: 'docs/en/prevent-layout-shift' },
       { text: 'Position controls', link: 'docs/en/position-controls' },
