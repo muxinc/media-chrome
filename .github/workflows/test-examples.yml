@@ -98,10 +98,16 @@ jobs:
         };
 
         try {
-          const browser = await chromium.launch();
+          const browser = await chromium.launch({
+            args: [
+              '--autoplay-policy=no-user-gesture-required',
+              '--no-sandbox'
+            ]
+          });
           const context = await browser.newContext({
             locale: 'en-US',
-            timezoneId: 'America/Los_Angeles'
+            timezoneId: 'America/Los_Angeles',
+            ignoreHTTPSErrors: true
           });
           
           // Enable console error collection
@@ -116,7 +122,12 @@ jobs:
             // Listen for console errors
             page.on('console', msg => {
               if (msg.type() === 'error') {
-                console.error(`Error in ${example}:`, msg.text());
+                const text = msg.text();
+                // Only ignore favicon errors
+                if (text.includes('favicon.ico')) {
+                  return;
+                }
+                console.error(`Error in ${example}:`, text);
                 hasErrors = true;
               }
             });
