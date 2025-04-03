@@ -50,6 +50,7 @@ export const SIDEBAR: Sidebar = {
     Basics: [
       { text: 'Get started', link: 'docs/en/get-started' },
       { text: 'Styling', link: 'docs/en/styling' },
+      { text: 'React', link: 'docs/en/react' },
     ],
     Guides: [
       { text: 'Media element', link: 'docs/en/media-element' },
@@ -58,6 +59,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Responsive controls', link: 'docs/en/responsive-controls' },
       { text: 'Keyboard shortcuts', link: 'docs/en/keyboard-shortcuts' },
       { text: 'Audio player', link: 'docs/en/audio-player' },
+      { text: 'React hooks', link: 'docs/en/hooks' },
     ],
     'Media Elements': [
       { text: 'Cloudflare Video', link: 'docs/en/media-elements/cloudflare-video' },
@@ -110,11 +112,7 @@ export const SIDEBAR: Sidebar = {
     Advanced: [
       { text: 'Stream Type', link: 'docs/en/stream-type' },
       { text: 'Design Principles', link: 'docs/en/design-principles' },
-      { text: 'Architecture', link: 'docs/en/architecture' },
-    ],
-    React: [
-      { text: 'Get started', link: 'docs/en/react/get-started' },
-      { text: 'MediaStore hooks', link: 'docs/en/react/hooks' },
+      { text: 'Architecture', link: 'docs/en/architecture' }
     ],
     Internationalization: [
       { text: 'Adding Language Support', link: 'docs/en/internationalization/adding-language-support' },
