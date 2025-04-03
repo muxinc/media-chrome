@@ -43,9 +43,41 @@ jobs:
         import path from 'path';
         import { fileURLToPath } from 'url';
         import { readdir, stat } from 'fs/promises';
+        import http from 'http';
+        import { readFile } from 'fs/promises';
 
         const __filename = fileURLToPath(import.meta.url);
         const __dirname = path.dirname(__filename);
+
+        // Start local server
+        const server = http.createServer(async (req, res) => {
+          try {
+            const filePath = path.join(process.cwd(), req.url === '/' ? 'index.html' : req.url);
+            const content = await readFile(filePath);
+            const ext = path.extname(filePath);
+            
+            // Set content type based on file extension
+            const contentTypes = {
+              '.html': 'text/html',
+              '.js': 'text/javascript',
+              '.css': 'text/css',
+              '.json': 'application/json',
+              '.png': 'image/png',
+              '.jpg': 'image/jpg',
+              '.svg': 'image/svg+xml'
+            };
+            
+            res.setHeader('Content-Type', contentTypes[ext] || 'text/plain');
+            res.end(content);
+          } catch (error) {
+            res.statusCode = 404;
+            res.end('File not found');
+          }
+        });
+        
+        const port = 3000;
+        await new Promise((resolve) => server.listen(port, resolve));
+        console.log(`Server running at http://localhost:${port}`);
 
         const walkDir = async (dir) => {
           const examples = [];
@@ -65,7 +97,7 @@ jobs:
           return examples;
         };
 
-        (async () => {
+        try {
           const browser = await chromium.launch();
           const context = await browser.newContext();
           
@@ -93,8 +125,9 @@ jobs:
             });
             
             try {
-              // Load the page and wait for network idle
-              await page.goto(`file://${path.resolve(example)}`, {
+              // Load the page via HTTP server
+              const url = `http://localhost:${port}/${example}`;
+              await page.goto(url, {
                 waitUntil: 'networkidle'
               });
               
@@ -115,8 +148,11 @@ jobs:
           if (hasErrors) {
             process.exit(1);
           }
-        })();
+        } finally {
+          // Cleanup: stop the server
+          server.close();
+        }
         EOF
         
     - name: Run tests
-      run: node test-examples.js --experimental-modules
+      run: node test-examples.js
