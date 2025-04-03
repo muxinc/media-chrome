@@ -99,7 +99,10 @@ jobs:
 
         try {
           const browser = await chromium.launch();
-          const context = await browser.newContext();
+          const context = await browser.newContext({
+            locale: 'en-US',
+            timezoneId: 'America/Los_Angeles'
+          });
           
           // Enable console error collection
           let hasErrors = false;
