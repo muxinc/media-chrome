@@ -1,5 +1,7 @@
 ---
-import Sandpack from "./Sandpack";
+import LangTabs from "./LangTabsContainer.astro";
+import SandpackHTML from "./SandpackHTML";
+import SandpackReact from "./SandpackReact";
 
 let {
   editorHeight = 230,
@@ -9,16 +11,13 @@ let {
   ...props
 } = Astro.props as Props;
 
+const showHTML = props.html || props.css
+const showReact = props.react
+
 if (typeof editorHeight === 'number') editorHeight = `${editorHeight}px`;
 ---
 
-<style is:global define:vars={{ previewAspectRatio, editorHeight }}>
-
-  .sp-container {
-    margin-top: 1.25rem;
-    margin-bottom: 1.25rem;
-  }
-
+<style is:global define:vars={{ previewAspectRatio, editorHeight }}>  
   @media (min-width: 768px) {
     .sp-container {
       height: var(--editorHeight) !important;
@@ -32,7 +31,6 @@ if (typeof editorHeight === 'number') editorHeight = `${editorHeight}px`;
     position: relative;
     overflow: hidden;
   }
-
   .sp-container.sp-stacked > astro-island {
     display: block;
     position: absolute;
@@ -142,13 +140,26 @@ if (typeof editorHeight === 'number') editorHeight = `${editorHeight}px`;
   }
 </style>
 
-<div class={`sp-container${stacked ? ' sp-stacked' : ''}${reversed ? ' sp-reversed' : ''}`}>
-  <Sandpack
-    client:load
-    editorHeight={editorHeight}
-    {...props}
-  />
-</div>
+<LangTabs>
+  {showHTML ? (
+    <div slot="html" class={`sp-container${stacked ? ' sp-stacked' : ''}${reversed ? ' sp-reversed' : ''}`}>
+      <SandpackHTML
+        client:load
+        editorHeight={editorHeight}
+        {...props}
+      />
+    </div>
+  ) : null}
+  {showReact ? (
+    <div slot="react" class={`sp-container${stacked ? ' sp-stacked' : ''}${reversed ? ' sp-reversed' : ''}`}>
+      <SandpackReact
+        client:load
+        editorHeight={editorHeight}
+        {...props}
+      />
+    </div>
+  ) : null}
+</LangTabs>
 
 <script>
   // Allow autoplay and fullscreen in Sandpack previews

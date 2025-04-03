@@ -49,7 +49,7 @@ Here's an example of how such a custom media element could look like:
   stacked
   reversed
   active={false}
-  files={{
+  htmlFiles={{
     'play-pause-element.js': {
       active: true,
       code: `class PlayPauseElement extends globalThis.HTMLElement {
@@ -126,7 +126,7 @@ extends from `CustomVideoElement`.
   dependencies={{
     'custom-media-element': 'latest'
   }}
-  files={{
+  htmlFiles={{
     'custom-video-element.js': {
       active: true,
       code: `import { CustomVideoElement } from 'custom-media-element';

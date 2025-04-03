@@ -1,0 +1,42 @@
+---
+import LangTabs from "./LangTabs.jsx";
+---
+
+<style is:global>
+  .tab-root {
+    --langHeight: 2.1875rem;
+    margin-top: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .tab-root .contain {
+    margin-top: 0;
+  }
+  .tab-root [role="tablist"] {
+    height: var(--langHeight) !important;
+    display: flex;
+    gap: 0.21875rem;
+  }
+  .tab-root [role="tablist"] button {
+    height: 1.75rem !important;
+    border: 1px solid var(--theme-divider) !important;
+    border-radius: 9999px !important;
+    padding: 0.4375rem 0.875rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    color: var(--theme-text) !important;
+    background: var(--theme-bg) !important;
+  }
+  .tab-root [role="tablist"] button[aria-selected="true"] {
+    border-color: var(--theme-text-accent-contrast) !important;
+    color: var(--theme-text-accent-contrast) !important;
+    background-color: var(--theme-bg-accent) !important;
+  }
+</style>
+
+<LangTabs 
+  client:load
+>
+  <slot name="html" slot="html" />
+  <slot name="react" slot="react" />
+</LangTabs>
+

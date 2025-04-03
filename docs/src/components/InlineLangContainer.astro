@@ -1,0 +1,6 @@
+---
+import InlineLang from "./InlineLang.jsx";
+const { html, react } = Astro.props
+---
+
+<InlineLang html={html} react={react} client:load />
