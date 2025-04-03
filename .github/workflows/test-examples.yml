@@ -122,6 +122,7 @@ jobs:
             // Listen for console errors
             page.on('console', msg => {
               if (msg.type() === 'error') {
+                console.log(msg);
                 const text = msg.text();
                 // Only ignore favicon errors
                 if (text.includes('favicon.ico')) {
