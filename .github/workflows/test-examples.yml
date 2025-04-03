@@ -1,0 +1,102 @@
+name: Test HTML Examples
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+
+jobs:
+  test-examples:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Install dependencies
+      run: |
+        npm install -g playwright
+        npx playwright install --with-deps chromium
+        
+    - name: Create test script
+      run: |
+        cat << 'EOF' > test-examples.js
+        const { chromium } = require('playwright');
+        const path = require('path');
+        const fs = require('fs');
+
+        (async () => {
+          const browser = await chromium.launch();
+          const context = await browser.newContext();
+          
+          // Enable console error collection
+          let hasErrors = false;
+          
+          // Get all HTML files in examples directory
+          const examples = [];
+          function walkDir(dir) {
+            const files = fs.readdirSync(dir);
+            files.forEach(file => {
+              const filePath = path.join(dir, file);
+              if (fs.statSync(filePath).isDirectory()) {
+                walkDir(filePath);
+              } else if (file.endsWith('.html')) {
+                examples.push(filePath);
+              }
+            });
+          }
+          
+          walkDir('examples');
+          
+          for (const example of examples) {
+            const page = await context.newPage();
+            
+            // Listen for console errors
+            page.on('console', msg => {
+              if (msg.type() === 'error') {
+                console.error(`Error in ${example}:`, msg.text());
+                hasErrors = true;
+              }
+            });
+            
+            // Listen for page errors
+            page.on('pageerror', error => {
+              console.error(`Page error in ${example}:`, error);
+              hasErrors = true;
+            });
+            
+            try {
+              // Load the page and wait for network idle
+              await page.goto(`file://${path.resolve(example)}`, {
+                waitUntil: 'networkidle'
+              });
+              
+              // Wait a bit to catch any async errors
+              await page.waitForTimeout(1000);
+              
+              console.log(`✓ Tested ${example}`);
+            } catch (error) {
+              console.error(`Failed to load ${example}:`, error);
+              hasErrors = true;
+            } finally {
+              await page.close();
+            }
+          }
+          
+          await browser.close();
+          
+          if (hasErrors) {
+            process.exit(1);
+          }
+        })();
+        EOF
+        
+    - name: Run tests
+      run: node test-examples.js
