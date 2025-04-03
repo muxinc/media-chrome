@@ -28,9 +28,31 @@ jobs:
     - name: Create test script
       run: |
         cat << 'EOF' > test-examples.js
-        const { chromium } = require('playwright');
-        const path = require('path');
-        const fs = require('fs');
+        import { chromium } from 'playwright';
+        import path from 'path';
+        import { fileURLToPath } from 'url';
+        import { readdir, stat } from 'fs/promises';
+
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+
+        const walkDir = async (dir) => {
+          const examples = [];
+          const files = await readdir(dir);
+          
+          for (const file of files) {
+            const filePath = path.join(dir, file);
+            const stats = await stat(filePath);
+            
+            if (stats.isDirectory()) {
+              examples.push(...(await walkDir(filePath)));
+            } else if (file.endsWith('.html')) {
+              examples.push(filePath);
+            }
+          }
+          
+          return examples;
+        };
 
         (async () => {
           const browser = await chromium.launch();
@@ -40,20 +62,7 @@ jobs:
           let hasErrors = false;
           
           // Get all HTML files in examples directory
-          const examples = [];
-          function walkDir(dir) {
-            const files = fs.readdirSync(dir);
-            files.forEach(file => {
-              const filePath = path.join(dir, file);
-              if (fs.statSync(filePath).isDirectory()) {
-                walkDir(filePath);
-              } else if (file.endsWith('.html')) {
-                examples.push(filePath);
-              }
-            });
-          }
-          
-          walkDir('examples');
+          const examples = await walkDir('examples');
           
           for (const example of examples) {
             const page = await context.newPage();
@@ -99,4 +108,4 @@ jobs:
         EOF
         
     - name: Run tests
-      run: node test-examples.js
+      run: node test-examples.js --experimental-modules
