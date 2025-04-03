@@ -20,10 +20,21 @@ jobs:
       with:
         node-version: '18'
         
-    - name: Install dependencies
+    - name: Create test package
       run: |
-        npm install -g playwright
-        npx playwright install --with-deps chromium
+        cat << 'EOF' > package.json
+        {
+          "name": "test-examples",
+          "type": "module",
+          "dependencies": {
+            "playwright": "1.49.1"
+          }
+        }
+        EOF
+        npm install
+        
+    - name: Install browser
+      run: npx playwright install chromium
         
     - name: Create test script
       run: |
