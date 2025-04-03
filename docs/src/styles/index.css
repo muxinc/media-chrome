@@ -293,6 +293,11 @@ code {
   word-break: break-word;
 }
 
+:root.theme-dark .astro-code,
+:root.theme-dark .astro-code span {
+  color: var(--shiki-dark) !important;
+}
+
 pre.astro-code > code {
   all: unset;
 }
@@ -329,7 +334,7 @@ table {
 pre {
   -webkit-font-smoothing: antialiased;
   font-size: .8125em; /* 13px */
-  background-color: hsla(0, 0%, 16%, 1.00) !important;
+  background-color: var(--theme-code-bg) !important;
 }
 
 td,
