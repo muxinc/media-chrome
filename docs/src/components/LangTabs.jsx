@@ -1,13 +1,14 @@
 /** @jsxImportSource react */
 import * as Tabs from '@radix-ui/react-tabs'
 import { useStore } from '@nanostores/react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import $lang, { Langs } from '../stores/lang'
 
 export default function LangTabs(props) {
   const showHTML = props.html?.props?.value
   const showReact = props.react?.props?.value
   const currentLang = useStore($lang)
+  const [renderLang, setRenderLang] = useState(currentLang)
 
   // Load saved preference on mount
   useEffect(() => {
@@ -22,8 +23,13 @@ export default function LangTabs(props) {
     localStorage.setItem('preferred-lang', currentLang)
   }, [currentLang])
 
+  // we do this in a useEffect to avoid hydration errors
+  useEffect(() => {
+    setRenderLang(currentLang)
+  }, [currentLang])
+
   return (
-    <Tabs.Root value={currentLang} onValueChange={$lang.set} className="tab-root">
+    <Tabs.Root value={renderLang} onValueChange={$lang.set} className="tab-root">
     <Tabs.List>
       {showHTML ? <Tabs.Trigger value={Langs.HTML}>HTML</Tabs.Trigger> : null}
       {showReact ? <Tabs.Trigger value={Langs.React}>React</Tabs.Trigger> : null}

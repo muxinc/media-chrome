@@ -1,8 +1,15 @@
 import { useStore } from "@nanostores/react";
 import $lang, { Langs } from "../stores/lang";
+import { useEffect, useState } from "react";
 
 export default function InlineLang({ html, react }) {
-  // TODO hydration problems with store
   const currentLang = useStore($lang)
-  return <code>{currentLang === Langs.HTML ? html : react}</code>
+  const [renderLang, setRenderLang] = useState(Langs.HTML)
+
+  // we do this in a useEffect to avoid hydration errors
+  useEffect(() => {
+    setRenderLang(currentLang)
+  }, [currentLang])
+
+  return <code>{renderLang === Langs.HTML ? html : react}</code>
 }
