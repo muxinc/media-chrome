@@ -31,7 +31,7 @@ Just to have a baseline, let's start with a simple player UI built with Media Ch
 While the component looks pretty good out of the box, maybe you want a slightly different color palette. To help make these styling cases easier, Media Chrome provides a set of well defined [CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/--*) (also known as "CSS Variables"). Here's an example where we've changed the default color of the `<media-play-button>`'s icon, background, and hover background.
 
 <SandpackContainer
-  active="css"
+  isCSSActive
   css={`media-play-button {
   --media-icon-color: lightpink;
   --media-control-background: rgb(27 54 93 / 0.85);
@@ -87,7 +87,7 @@ Here's a basic example of using CSS transitions with the optional `icon` slot, r
 
 <SandpackContainer
   height={365}
-  active="css"
+  isCSSActive
   html={`<media-controller>
   <video
     slot="media"
@@ -163,7 +163,7 @@ To demonstrate this, here's an example with several more components, including a
 
 <SandpackContainer
   stacked
-  active="css"
+  isCSSActive
   previewAspectRatio={2.4}
   editorHeight={450}
   css={`media-controller {
@@ -210,7 +210,7 @@ In the previous example, we added several components, including a captions butto
 Below is an example of how you can hide specific components using media state attributes. Check the component's docs to see a list of all media state attributes it will receive.
 
 <SandpackContainer
-  active="css"
+  isCSSActive
   css={`media-controller {
   --media-primary-color: lightpink;
   --media-secondary-color: rgb(27 54 93 / 0.85);
@@ -265,7 +265,7 @@ We've already seen a number of ways to customize the look and feel of things in 
 
 <SandpackContainer
   stacked
-  active="css"
+  isCSSActive
   previewAspectRatio={2.4}
   editorHeight={450}
   css={`media-controller {
@@ -350,7 +350,7 @@ In the example, we've also replaced the `<div>` we were using to lay out our Med
 In order to make responsive design easy, we've built in a concept of "breakpoints" for `<media-controller>`, which allows you to build UIs based on the player's size (and not just the page size). In the example below, you can see a basic implementation of a "mobile first" responsive design, where we apply the most generic styles for the smallest, "mobile" UI and then override them as the player UI gets larger. Like earlier examples, we can take advantage of attribute selectors, this time using `breakpointmd` for our standard "desktop" UI cutoff. I've also included a simple "extra large" (`breakpointxl`) example that makes all of the controls larger (**_NOTE_**: For this XL example, you'll probably need to open the example in Code Sandbox).
 
 <SandpackContainer
-  active="css"
+  isCSSActive
   editorHeight={300}
   css={`media-controller {
   --media-primary-color: lightpink;
@@ -483,7 +483,7 @@ Like many features in Media Chrome, while we have some reasonable default values
 Most of our components are simple enough to style in the fairly simple ways we've covered thus far. However, a few of our components are made up of some more complex parts. For these, you can directly style these "sub-components" or "sub-sections" by using [CSS `::part()` pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/::part), which are similar to [pseudo-element selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements). Below is an example where we've customized some styles on the `<media-time-range>`'s thumbnail and time preview box part (visible when hovering over the component). We've also added a transluscent overlay using one of the `<media-controller>` parts that fades in/fades out just like the control components. You can find the list of `<media-time-range>` parts [here](./components/media-time-range#css-parts).
 
 <SandpackContainer
-  active="css"
+  isCSSActive
   css={`media-time-range {
     --media-primary-color: lightpink;
     --media-secondary-color: rgb(27 54 93 / 0.85);
