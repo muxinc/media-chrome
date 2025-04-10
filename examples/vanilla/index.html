@@ -3,6 +3,11 @@
   <head>
     <meta name="viewport" content="width=device-width" />
     <title>Media Chrome Examples</title>
+    <!-- this page is getting hit with a lot of traffic, so we've enabled analytics to figure out where it's coming from -->
+    <script type="module">
+      import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics@1.5.0/+esm'
+      inject();
+    </script>
   </head>
   <body>
     <h1>Explore the examples</h1>
