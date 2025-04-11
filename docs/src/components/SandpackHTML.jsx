@@ -1,12 +1,6 @@
 /** @jsxImportSource react */
 import Sandpack from "./SandpackBase";
-// import { Sandpack } from "@codesandbox/sandpack-react";
 import mediaChromeRaw from "../../node_modules/media-chrome/dist/iife/all.js?raw";
-
-export const Active = {
-  HTML: 'html',
-  CSS: 'css',
-};
 
 export default function ComponentSandpack({
   html,
@@ -20,9 +14,10 @@ export default function ComponentSandpack({
   externalResources = [],
   files = {},
   dependencies = {},
-  active = Active.HTML,
+  isCSSActive = false,
   ...props
 }) {
+  const isHTMLActive = !isCSSActive && !Object.values(files).some(file => file.active);
 
   const importPaths = [
     '@internals/media-chrome/all',
@@ -81,7 +76,7 @@ export default function ComponentSandpack({
           code: mediaChromeRaw,
         },
         "/index.html": {
-          active: active === Active.HTML,
+          active: isHTMLActive,
           code: `${html}`
         },
         '/index.js': {
@@ -104,7 +99,7 @@ ${hiddenCss}`,
           hidden: true,
         },
         ...(css ? {'/custom-styles.css': {
-          active: active === Active.CSS,
+          active: isCSSActive,
           code: `${css}`
         }} : {}),
         ...files
