@@ -100,6 +100,7 @@ class MediaController extends MediaContainer {
   mediaStateReceivers: HTMLElement[] = [];
   associatedElementSubscriptions: Map<HTMLElement, () => void> = new Map();
 
+  #isAutoplay = false;
   #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
   #fullscreenElement: HTMLElement;
   #mediaStore: MediaStore;
@@ -122,7 +123,7 @@ class MediaController extends MediaContainer {
         // Make sure to propagate initial state, even if still undefined (CJP)
         if (stateName in prevState && prevState[stateName] === stateValue)
           return;
-        this.propagateMediaState(stateName, stateValue);
+        this.propagateMediaState(stateName, stateValue, this.#isAutoplay);
         const attrName = stateName.toLowerCase();
         const evt = new globalThis.CustomEvent(
           AttributeToStateChangeEventMap[attrName],
@@ -376,6 +377,27 @@ class MediaController extends MediaContainer {
       this.#setupDefaultStore();
     }
 
+    // If the media element has the 'autoplay' attribute, simulate a "playing" state and
+    // display the loading indicator while metadata is loading (to have some visual feedback)
+    if (this.media?.hasAttribute('autoplay')) {
+      this.#isAutoplay = true;
+      setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, false);
+      setBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING, true);
+      
+      // Once the real 'play' event fires, end the simulation
+      const onActualPlay = () => {
+        this.#isAutoplay = false;
+        this.media?.removeEventListener('play', onActualPlay);
+        // Trigger a state update with the real paused/ended values
+        this.#mediaStateCallback({
+          paused: this.media?.paused,
+          ended: this.media?.ended,
+        });
+      };
+    
+      this.media?.addEventListener('play', onActualPlay, { once: true });
+    }
+    
     this.#mediaStore?.dispatch({
       type: 'documentelementchangerequest',
       detail: document,
@@ -445,8 +467,8 @@ class MediaController extends MediaContainer {
     });
   }
 
-  propagateMediaState(stateName: string, state: any) {
-    propagateMediaState(this.mediaStateReceivers, stateName, state);
+  propagateMediaState(stateName: string, state: any, isAutoplay = false) {
+    propagateMediaState(this.mediaStateReceivers, stateName, state, isAutoplay);
   }
 
   associateElement(element: HTMLElement) {
@@ -504,7 +526,7 @@ class MediaController extends MediaContainer {
     if (this.#mediaStore) {
       Object.entries(this.#mediaStore.getState()).forEach(
         ([stateName, stateValue]) => {
-          propagateMediaState([el], stateName, stateValue);
+          propagateMediaState([el], stateName, stateValue, this.#isAutoplay);
         }
       );
     }
@@ -843,15 +865,20 @@ const traverseForMediaStateReceivers = (
 const propagateMediaState = (
   els: HTMLElement[],
   stateName: string,
-  val: any
+  val: any,
+  isAutoplay = false
 ): void => {
   els.forEach((el) => {
+    const attrName = stateName.toLowerCase();
+    // Block mediaPaused updates if we're simulating autoplay
+    if (attrName === MediaUIAttributes.MEDIA_PAUSED && isAutoplay) {
+      return;
+    } 
     if (stateName in el) {
       el[stateName] = val;
       return;
     }
     const relevantAttrs = getMediaUIAttributesFrom(el);
-    const attrName = stateName.toLowerCase();
     if (!relevantAttrs.includes(attrName)) return;
     setAttr(el, attrName, val);
   });
