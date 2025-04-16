@@ -129,7 +129,7 @@ class MediaController extends MediaContainer {
           AttributeToStateChangeEventMap[attrName],
           { composed: true, detail: stateValue }
         );
-
+        
         this.dispatchEvent(evt);
       });
       prevState = nextState;
@@ -376,10 +376,10 @@ class MediaController extends MediaContainer {
     if (!this.#mediaStore && !this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
       this.#setupDefaultStore();
     }
-
-    // If the media element has the 'autoplay' attribute, simulate a "playing" state and
-    // display the loading indicator while metadata is loading (to have some visual feedback)
-    if (this.media?.hasAttribute('autoplay')) {
+    
+    // If the media element has the 'autoplay' and 'muted' attributes, simulate a "playing" state and
+    // display the loading indicator while metadata is still loading (to have some visual feedback)
+    if (this.media?.hasAttribute('autoplay') && this.media?.hasAttribute('muted')) {
       this.#isAutoplay = true;
       setBooleanAttr(this, MediaUIAttributes.MEDIA_PAUSED, false);
       setBooleanAttr(this, MediaUIAttributes.MEDIA_LOADING, true);
@@ -397,7 +397,7 @@ class MediaController extends MediaContainer {
     
       this.media?.addEventListener('play', onActualPlay, { once: true });
     }
-    
+
     this.#mediaStore?.dispatch({
       type: 'documentelementchangerequest',
       detail: document,
