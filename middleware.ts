@@ -6,9 +6,11 @@ export const config = {
 
 const allowedDomains = [
   process.env.VERCEL_URL,
+  process.env.VERCEL_BRANCH_URL,
+  process.env.VERCEL_PROJECT_PRODUCTION_URL,
   'localhost',
   '127.0.0.1'
-];
+].filter(Boolean);
 
 const get403 = (url: URL) => 
   new Response(
