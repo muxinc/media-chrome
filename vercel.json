@@ -6,20 +6,5 @@
     "source": "/examples/", "destination": "/examples/vanilla/"
   }, {
     "source": "/examples/:path((?!vanilla/).*)", "destination": "/examples/vanilla/:path*"
-  }],
-  "headers": [
-    {
-      "source": "/dist/(.*)\\.js",
-      "headers": [
-        {
-          "key": "Cross-Origin-Resource-Policy",
-          "value": "same-origin"
-        },
-        {
-          "key": "X-Robots-Tag",
-          "value": "noindex, nofollow"
-        }
-      ]
-    }
-  ]
+  }]
 }
