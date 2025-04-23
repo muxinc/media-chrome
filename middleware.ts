@@ -25,13 +25,19 @@ export default function middleware(request: Request): Response {
   const referer = request.headers.get('referer');
   const url = new URL(request.url);
 
-  if (!referer) return get403(url);
+  if (!referer) {
+    console.warn(`No referer header found for request to ${url}`);
+    return get403(url);
+  }
   
   const refererUrl = new URL(referer);
   const isAllowedDomain = allowedDomains.some(domain => 
     refererUrl.hostname === domain || refererUrl.hostname.endsWith(`.${domain}`)
   );
   
-  if (!isAllowedDomain) return get403(url);
+  if (!isAllowedDomain) {
+    console.warn(`Blocked request from disallowed domain: ${refererUrl.hostname}. Allowed domains: ${allowedDomains.join(', ')}`);
+    return get403(url);
+  }
   return next();
 }
