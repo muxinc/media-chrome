@@ -1036,7 +1036,7 @@ export const stateMediator: StateMediator = {
           globalThis.WebKitPlaybackTargetAvailabilityEvent
         )
       ) {
-        console.warn(
+        console.error(
           'MediaChrome: received a request to select AirPlay but AirPlay is not supported in this environment'
         );
         return;

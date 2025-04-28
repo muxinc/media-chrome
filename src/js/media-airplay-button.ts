@@ -36,6 +36,10 @@ slotTemplate.innerHTML = /*html*/ `
     }])) slot[name=tooltip-exit] {
       display: none;
     }
+
+    :host([${MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE}]) {
+      display: none;
+    }
   </style>
 
   <slot name="icon">

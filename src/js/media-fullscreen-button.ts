@@ -47,6 +47,11 @@ slotTemplate.innerHTML = /*html*/ `
     }])) slot[name=tooltip-exit] {
       display: none;
     }
+
+    :host([${MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE}]) {
+      display: none;
+    }
+
   </style>
 
   <slot name="icon">
@@ -133,6 +138,13 @@ class MediaFullscreenButton extends MediaChromeButton {
     const eventName = this.mediaIsFullscreen
       ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
       : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
+      console.log('dispatching', "fullscreen", eventName);
+
+      
+    this.dispatchEvent(
+      new globalThis.CustomEvent("toggleFullScreen", { composed: true, bubbles: true })
+    );
+      
     this.dispatchEvent(
       new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
     );
