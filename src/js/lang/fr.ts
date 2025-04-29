@@ -24,6 +24,7 @@ export const Fr: TranslateDictionary = {
   'Seek backward': 'Reculer',
   'Seek forward': 'Avancer',
   Settings: 'Paramètres',
+  Auto: 'Auto',
   'audio player': 'lecteur audio',
   'video player': 'lecteur vidéo',
   volume: 'volume',
@@ -41,6 +42,7 @@ export const Fr: TranslateDictionary = {
   mute: 'désactiver le son',
   unmute: 'activer le son',
   live: 'en direct',
+  Off: 'Désactivé',
   'start airplay': 'démarrer la diffusion AirPlay',
   'stop airplay': 'arrêter la diffusion AirPlay',
   'start casting': 'démarrer la diffusion (cast)',
@@ -66,5 +68,5 @@ export const Fr: TranslateDictionary = {
   'The media is encrypted and there are no keys to decrypt it.':
     'Le média est chiffré et il n’y a pas de clés pour le déchiffrer.',
 };
-
+console.log('Adding French translation');
 addTranslation('fr', Fr);
