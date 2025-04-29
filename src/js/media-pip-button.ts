@@ -33,10 +33,6 @@ slotTemplate.innerHTML = /*html*/ `
   :host(:not([${MediaUIAttributes.MEDIA_IS_PIP}])) slot[name=tooltip-exit] {
     display: none;
   }
-
-  :host([${MediaUIAttributes.MEDIA_PIP_UNAVAILABLE}]) {
-    display: none;
-  }
   </style>
 
   <slot name="icon">
