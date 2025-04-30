@@ -68,5 +68,5 @@ export const Fr: TranslateDictionary = {
   'The media is encrypted and there are no keys to decrypt it.':
     'Le média est chiffré et il n’y a pas de clés pour le déchiffrer.',
 };
-console.log('Adding French translation');
+
 addTranslation('fr', Fr);

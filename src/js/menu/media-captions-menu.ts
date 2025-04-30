@@ -123,7 +123,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     const isOff = !this.value;
     const item = createMenuItem({
       type: 'radio',
-      text: t('Off'),
+      text: this.formatMenuItemText(t('Off')),
       value: 'off',
       checked: isOff,
     });
