@@ -32,30 +32,34 @@ import { document } from './server-safe-globals.js';
 export const enterFullscreen = (stateOwners) => {
   const { media, fullscreenElement } = stateOwners;
 
-  // NOTE: Since the fullscreenElement can change and may be a web component,
-  // we should not define this at the module level. As an optimization,
-  // we could only define/update this somehow based on state owner changes. (CJP)
-  const enterFullscreenKey =
-    fullscreenElement && 'requestFullscreen' in fullscreenElement
-      ? 'requestFullscreen'
-      : fullscreenElement && 'webkitRequestFullScreen' in fullscreenElement
-      ? 'webkitRequestFullScreen'
-      : undefined;
+  try {
+    // NOTE: Since the fullscreenElement can change and may be a web component,
+    // we should not define this at the module level. As an optimization,
+    // we could only define/update this somehow based on state owner changes. (CJP)
+    const enterFullscreenKey =
+      fullscreenElement && 'requestFullscreen' in fullscreenElement
+        ? 'requestFullscreen'
+        : fullscreenElement && 'webkitRequestFullScreen' in fullscreenElement
+        ? 'webkitRequestFullScreen'
+        : undefined;
 
-  // Entering fullscreen cases (browser-specific)
-  if (enterFullscreenKey) {
-    // NOTE: Since the "official" enter fullscreen method yields a Promise that rejects
-    // if already in fullscreen, this accounts for those cases.
-    const maybePromise = fullscreenElement[enterFullscreenKey]?.();
-    if (maybePromise instanceof Promise) {
-      return maybePromise.catch(() => {});
+    // Entering fullscreen cases (browser-specific)
+    if (enterFullscreenKey) {
+      // NOTE: Since the "official" enter fullscreen method yields a Promise that rejects
+      // if already in fullscreen, this accounts for those cases.
+      const maybePromise = fullscreenElement[enterFullscreenKey]?.();
+      if (maybePromise instanceof Promise) {
+        return maybePromise.catch(() => {});
+      }
+    } else if (media?.webkitEnterFullscreen) {
+      // Media element fullscreen using iOS API
+      media.webkitEnterFullscreen();
+    } else if (media?.requestFullscreen) {
+      // So media els don't have to implement multiple APIs.
+      media.requestFullscreen();
     }
-  } else if (media?.webkitEnterFullscreen) {
-    // Media element fullscreen using iOS API
-    media.webkitEnterFullscreen();
-  } else if (media?.requestFullscreen) {
-    // So media els don't have to implement multiple APIs.
-    media.requestFullscreen();
+  } catch (e) {
+    console.error(e);
   }
 };
 
