@@ -4,7 +4,7 @@ const translationsLanguages = {
   en: En,
 };
 
-let currentLanguage = globalThis.navigator?.language.split('-')[0] || 'en';
+let currentLanguage = globalThis.navigator?.language?.split('-')[0] || 'en';
 
 export const setLanguage = (langCode: string) => {
   currentLanguage = langCode;
