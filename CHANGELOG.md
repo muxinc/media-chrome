@@ -1,3 +1,12 @@
+## [4.9.1](https://github.com/muxinc/media-chrome/compare/v4.9.0...v4.9.1) (2025-05-01)
+
+
+### Bug Fixes
+
+* Check that language exists before splitting ([#1131](https://github.com/muxinc/media-chrome/issues/1131)) ([741562d](https://github.com/muxinc/media-chrome/commit/741562d6ec45935fb31822f67a72419e62a254aa))
+
+
+
 # [4.9.0](https://github.com/muxinc/media-chrome/compare/v4.8.0...v4.9.0) (2025-03-28)
 
 
