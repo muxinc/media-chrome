@@ -10,6 +10,7 @@ const LOADING_DELAY = 500;
  * @returns A react component for showing a backdrop/overlay with a loading indicator when the media is loading
  */
 const LoadingBackdrop = ({ loadingDelay = LOADING_DELAY }) => {
+  /** @TODO Figure out why LoadingBackdrop state is initially undefined after nextjs + react major version upgrade (CJP) */
   /**
    * The useMediaSelector() hook is how you get the latest bit(s) of media state you care about in your component.
    * NOTE: in this case, we're actually combining two bits of media state (mediaLoading and mediaPaused), since,
@@ -17,7 +18,7 @@ const LoadingBackdrop = ({ loadingDelay = LOADING_DELAY }) => {
    * so we'll only get an updated value/rerender when the *resultant* boolean value changes.
    */
   const mediaLoading = useMediaSelector(
-    (state) => state.mediaLoading && !state.mediaPaused
+    (state) => state?.mediaLoading && !state?.mediaPaused
   );
 
   // Example implementation of a delay in showing loading indicator when loading media starts (but quickly hiding it when it's done)
