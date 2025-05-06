@@ -1,6 +1,7 @@
 import {
   MediaUIAttributes,
   MediaStateReceiverAttributes,
+  MediaUIProps,
 } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import {
@@ -9,6 +10,7 @@ import {
   getOrInsertCSSRule,
   setStringAttr,
   getStringAttr,
+  getMediaController,
 } from './utils/element-utils.js';
 import MediaController from './media-controller.js';
 import { t } from './utils/i18n.js';
@@ -91,6 +93,14 @@ svg, img, ::slotted(svg), ::slotted(img) {
 <div id="status" role="status" aria-live="polite">${t('media loading')}</div>
 `;
 
+const updateStatusText = (el: MediaLoadingIndicator) => {
+  const status = el.shadowRoot?.querySelector('#status');
+  if (status) {
+    const loadingText = t('media loading');
+    status.textContent = loadingText;
+  }
+}
+
 /**
  * @slot icon - The element shown for when the media is in a buffering state.
  *
@@ -113,6 +123,7 @@ svg, img, ::slotted(svg), ::slotted(img) {
 class MediaLoadingIndicator extends globalThis.HTMLElement {
   #mediaController: MediaController;
   #delay = DEFAULT_LOADING_DELAY;
+  protected _langObserver: MutationObserver;
 
   static get observedAttributes(): string[] {
     return [
@@ -120,6 +131,7 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
       MediaUIAttributes.MEDIA_PAUSED,
       MediaUIAttributes.MEDIA_LOADING,
       Attributes.LOADING_DELAY,
+      MediaUIProps.LANG,
     ];
   }
 
@@ -152,6 +164,9 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
         this.#mediaController?.associateElement?.(this);
       }
     }
+    if(attrName === Attributes.LANG && oldValue !== newValue) {
+      updateStatusText(this);
+    }
   }
 
   connectedCallback(): void {
@@ -165,6 +180,20 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
       );
       this.#mediaController?.associateElement?.(this);
     }
+
+    const controller = getMediaController(this);
+    this._langObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === MediaUIProps.LANG) {
+          const newLang = controller.getAttribute(MediaUIProps.LANG);
+          this.lang = newLang;
+          updateStatusText(this);
+        }
+      }
+    });
+  
+    this._langObserver.observe(controller, { attributes: true });
+    
   }
 
   disconnectedCallback(): void {

@@ -1,4 +1,4 @@
-import { MediaUIAttributes } from '../constants.js';
+import { MediaUIAttributes, MediaUIProps } from '../constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import {
@@ -23,6 +23,19 @@ slotTemplate.innerHTML = /*html*/ `
   <slot name="icon">${audioTrackIcon}</slot>
 `;
 
+const createTooltipContent = () => /*html*/ `
+  ${t('Audio')}
+`;
+
+const updateAriaLabelTooltip = (el: MediaAudioTrackMenuButton) => {
+  el.setAttribute('aria-label', t('Audio'));
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
+};
+
 /**
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the selected audio track id.
  * @attr {(unavailable|unsupported)} mediaaudiotrackunavailable - (read-only) Set if audio track selection is unavailable.
@@ -39,12 +52,12 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
   }
 
   constructor() {
-    super({ slotTemplate, tooltipContent: t('Audio') });
+    super({ slotTemplate, tooltipContent: createTooltipContent(), updateAriaLabelTooltip: () => updateAriaLabelTooltip(this) });
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute('aria-label', t('Audio'));
+    updateAriaLabelTooltip(this);
   }
 
   attributeChangedCallback(
@@ -53,6 +66,9 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
     newValue: string | null
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
+    if (attrName === MediaUIProps.LANG) {
+      updateAriaLabelTooltip(this);
+    }
   }
 
   /**

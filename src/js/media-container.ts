@@ -8,11 +8,11 @@
   * Auto-hide controls on inactivity while playing
 */
 import { globalThis, document } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
+import { MediaUIAttributes, MediaStateChangeEvents, MediaUIProps } from './constants.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
-import { t } from './utils/i18n.js';
+import { setLanguage, t } from './utils/i18n.js';
 import {
   getBooleanAttr,
   getStringAttr,
@@ -236,6 +236,13 @@ template.innerHTML = /*html*/ `
   <slot name="dialog" part="layer dialog-layer"></slot>
 `;
 
+const updateAriaLabel = (el: MediaContainer) => {
+  const isAudioChrome = el.getAttribute(Attributes.AUDIO) != null;
+  const label = isAudioChrome ? t('audio player') : t('video player');
+  el.setAttribute('role', 'region');
+  el.setAttribute('aria-label', label);
+};
+
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
 const defaultBreakpoints = 'sm:384 md:576 lg:768 xl:960';
@@ -311,6 +318,7 @@ function getBreakpoints(breakpoints: Record<string, string>, width: number) {
  * @attr {boolean} keyboardcontrol
  * @attr {boolean} noautohide
  * @attr {boolean} userinactive
+ * @attr {string} lang
  *
  * @cssprop --media-background-color - `background-color` of container.
  * @cssprop --media-slot-display - `display` of the media slot (default none for [audio] usage).
@@ -320,7 +328,7 @@ function getBreakpoints(breakpoints: Record<string, string>, width: number) {
 class MediaContainer extends globalThis.HTMLElement {
   static get observedAttributes(): string[] {
     return (
-      [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED]
+      [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED, MediaUIProps.LANG]
         .concat(MEDIA_UI_ATTRIBUTE_NAMES)
         // Filter out specific / complex data media UI attributes
         // that shouldn't be propagated to this state receiver element.
@@ -382,6 +390,10 @@ class MediaContainer extends globalThis.HTMLElement {
     if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
       this.autohide = newValue;
     }
+    else if (attrName === MediaUIProps.LANG && newValue !== _oldValue) {
+      setLanguage(newValue);
+      updateAriaLabel(this);
+    }
   }
 
   // First direct child with slot=media, or null
@@ -418,11 +430,7 @@ class MediaContainer extends globalThis.HTMLElement {
     // Watch for child adds/removes and update the media element if necessary
     this.#mutationObserver.observe(this, { childList: true, subtree: true });
     observeResize(this, this.#handleResize);
-
-    const isAudioChrome = this.getAttribute(Attributes.AUDIO) != null;
-    const label = isAudioChrome ? t('audio player') : t('video player');
-    this.setAttribute('role', 'region');
-    this.setAttribute('aria-label', label);
+    updateAriaLabel(this);
 
     this.handleMediaUpdated(this.media);
 

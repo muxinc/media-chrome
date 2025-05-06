@@ -1,4 +1,4 @@
-import { MediaStateReceiverAttributes } from '../constants.js';
+import { MediaStateReceiverAttributes, MediaUIProps } from '../constants.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import { computePosition } from '../utils/anchor-utils.js';
 import { observeResize, unobserveResize } from '../utils/resize-observer.js';
@@ -301,6 +301,7 @@ export const Attributes = {
  */
 class MediaChromeMenu extends globalThis.HTMLElement {
   static template: HTMLTemplateElement = template;
+  protected _langObserver: MutationObserver;
 
   static get observedAttributes(): string[] {
     return [
@@ -347,6 +348,19 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     ) as HTMLSlotElement;
 
     this.shadowRoot.addEventListener('slotchange', this);
+
+    const controller = getMediaController(this);
+    this._langObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === MediaUIProps.LANG) {
+          const newLang = controller.getAttribute(MediaUIProps.LANG);
+          this.lang = newLang;
+        }
+      }
+    });
+  
+    this._langObserver.observe(controller, { attributes: true });
+    
 
     this.#mutationObserver = new MutationObserver(this.#handleMenuItems);
     this.#mutationObserver.observe(this.defaultSlot, { childList: true });
@@ -523,6 +537,14 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     if (!item) return;
 
     this.#selectItem(item);
+  }
+
+  get lang(): string {
+    return this.getAttribute(MediaUIProps.LANG);
+  }
+
+  set lang(value: string) {
+    this.setAttribute(MediaUIProps.LANG, value);
   }
 
   #handleSlotChange(event: Event) {

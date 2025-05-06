@@ -1,5 +1,5 @@
 import { globalThis } from '../utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
+import { MediaUIAttributes, MediaUIEvents, MediaUIProps } from '../constants.js';
 import {
   getMediaController,
   getStringAttr,
@@ -33,6 +33,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       MediaUIAttributes.MEDIA_RENDITION_SELECTED,
       MediaUIAttributes.MEDIA_RENDITION_UNAVAILABLE,
       MediaUIAttributes.MEDIA_HEIGHT,
+      MediaUIProps.LANG,
     ];
   }
 
@@ -63,6 +64,9 @@ class MediaRenditionMenu extends MediaChromeMenu {
       oldValue !== newValue
     ) {
       this.#render();
+    }
+    if (attrName === MediaUIProps.LANG && oldValue !== newValue) {
+      this.#triggerRender();
     }
   }
 
@@ -170,6 +174,12 @@ class MediaRenditionMenu extends MediaChromeMenu {
 
     item.prepend(createIndicator(this, 'checked-indicator'));
     this.defaultSlot.append(item);
+  }
+
+  #triggerRender(): void {
+    this.#prevState.mediaRenditionList = undefined; // Reset previous state to force re-render
+    this.#prevState.mediaHeight = undefined;
+    this.#render();
   }
 
   #onChange(): void {

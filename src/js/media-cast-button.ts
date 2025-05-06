@@ -43,14 +43,19 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const tooltipContent = /*html*/ `
+const createTooltipContent = () => /*html*/ `
   <slot name="tooltip-enter">${t('Start casting')}</slot>
   <slot name="tooltip-exit">${t('Stop casting')}</slot>
 `;
 
-const updateAriaLabel = (el: MediaCastButton) => {
+const updateAriaLabelTooltip = (el: MediaCastButton) => {
   const label = el.mediaIsCasting ? t('stop casting') : t('start casting');
   el.setAttribute('aria-label', label);
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
 };
 
 /**
@@ -73,12 +78,12 @@ class MediaCastButton extends MediaChromeButton {
   }
 
   constructor(options = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
+    super({ slotTemplate, tooltipContent: createTooltipContent(), updateAriaLabelTooltip: ()=> updateAriaLabelTooltip(this), ...options });
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabel(this);
+    updateAriaLabelTooltip(this);
   }
 
   attributeChangedCallback(
@@ -88,8 +93,8 @@ class MediaCastButton extends MediaChromeButton {
   ) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_IS_CASTING) {
-      updateAriaLabel(this);
+    if (attrName === MediaUIAttributes.MEDIA_IS_CASTING || attrName === MediaUIAttributes.LANG) {
+      updateAriaLabelTooltip(this);
     }
   }
 

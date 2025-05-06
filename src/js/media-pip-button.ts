@@ -41,16 +41,21 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const tooltipContent = /*html*/ `
+const createTooltipContent = () => /*html*/ `
   <slot name="tooltip-enter">${t('Enter picture in picture mode')}</slot>
   <slot name="tooltip-exit">${t('Exit picture in picture mode')}</slot>
 `;
 
-const updateAriaLabel = (el: MediaPipButton): void => {
+const updateAriaLabelTooltip = (el: MediaPipButton): void => {
   const label = el.mediaIsPip
     ? t('exit picture in picture mode')
     : t('enter picture in picture mode');
   el.setAttribute('aria-label', label);
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
 };
 
 /**
@@ -73,11 +78,11 @@ class MediaPipButton extends MediaChromeButton {
   }
 
   constructor(options: object = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
+    super({ slotTemplate, tooltipContent: createTooltipContent(), updateAriaLabelTooltip: ()=> updateAriaLabelTooltip(this), ...options });
   }
 
   connectedCallback(): void {
-    updateAriaLabel(this);
+    updateAriaLabelTooltip(this);
     super.connectedCallback();
   }
 
@@ -87,7 +92,7 @@ class MediaPipButton extends MediaChromeButton {
     newValue: string | null
   ): void {
     if (attrName === MediaUIAttributes.MEDIA_IS_PIP) {
-      updateAriaLabel(this);
+      updateAriaLabelTooltip(this);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }

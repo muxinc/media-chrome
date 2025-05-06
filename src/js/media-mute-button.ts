@@ -53,15 +53,20 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const tooltipContent = /*html*/ `
+const createTooltipContent = () => /*html*/ `
   <slot name="tooltip-mute">${t('Mute')}</slot>
   <slot name="tooltip-unmute">${t('Unmute')}</slot>
 `;
 
-const updateAriaLabel = (el: MediaMuteButton) => {
+const updateAriaLabelTooltip = (el: MediaMuteButton) => {
   const muted = el.mediaVolumeLevel === 'off';
   const label = muted ? t('unmute') : t('mute');
   el.setAttribute('aria-label', label);
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
 };
 
 /**
@@ -81,11 +86,11 @@ class MediaMuteButton extends MediaChromeButton {
   }
 
   constructor(options: object = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
+    super({ slotTemplate, tooltipContent: createTooltipContent(), updateAriaLabelTooltip: ()=> updateAriaLabelTooltip(this), ...options });
   }
 
   connectedCallback(): void {
-    updateAriaLabel(this);
+    updateAriaLabelTooltip(this);
     super.connectedCallback();
   }
 
@@ -95,7 +100,7 @@ class MediaMuteButton extends MediaChromeButton {
     newValue: string | null
   ): void {
     if (attrName === MediaUIAttributes.MEDIA_VOLUME_LEVEL) {
-      updateAriaLabel(this);
+      updateAriaLabelTooltip(this);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }

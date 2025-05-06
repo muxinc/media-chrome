@@ -44,14 +44,19 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const tooltipContent = /*html*/ `
+const createTooltipContent = () => /*html*/ `
   <slot name="tooltip-enter">${t('start airplay')}</slot>
   <slot name="tooltip-exit">${t('stop airplay')}</slot>
 `;
 
-const updateAriaLabel = (el: MediaAirplayButton): void => {
+const updateAriaLabelTooltip = (el: MediaAirplayButton): void => {
   const label = el.mediaIsAirplaying ? t('stop airplay') : t('start airplay');
   el.setAttribute('aria-label', label);
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
 };
 
 /**
@@ -76,12 +81,12 @@ class MediaAirplayButton extends MediaChromeButton {
   }
 
   constructor(options: { slotTemplate?: HTMLTemplateElement } = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
+    super({ slotTemplate, tooltipContent: createTooltipContent(), updateAriaLabelTooltip: ()=> updateAriaLabelTooltip(this), ...options });
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabel(this);
+    updateAriaLabelTooltip(this);
   }
 
   attributeChangedCallback(
@@ -92,7 +97,7 @@ class MediaAirplayButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_IS_AIRPLAYING) {
-      updateAriaLabel(this);
+      updateAriaLabelTooltip(this);
     }
   }
 

@@ -323,6 +323,10 @@ const calcTimeFromRangeValue = (
   return value * (endTime - startTime) + startTime;
 };
 
+const updateAriaLabel = (el: HTMLInputElement) => {
+  el.setAttribute('aria-label', t('seek'));
+};
+
 /**
  * @slot preview - An element that slides along the timeline to the position of the pointer hovering.
  * @slot preview-arrow - An arrow element that slides along the timeline to the position of the pointer hovering.
@@ -448,7 +452,7 @@ class MediaTimeRange extends MediaChromeRange {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.range.setAttribute('aria-label', t('seek'));
+    updateAriaLabel(this.range);
     this.#toggleRangeAnimation();
 
     // NOTE: Adding an event listener to an ancestor here.
@@ -470,7 +474,7 @@ class MediaTimeRange extends MediaChromeRange {
     newValue: string | null
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
-
+    updateAriaLabel(this.range);
     if (oldValue == newValue) return;
 
     if (

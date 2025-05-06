@@ -49,10 +49,16 @@ slotTemplate.innerHTML = /*html*/ `
   <slot name="spacer">&nbsp;</slot><slot name="text">${t('live')}</slot>
 `;
 
-const updateAriaAttributes = (el: MediaLiveButton): void => {
+const updateAriaAttributesLabel = (el: MediaLiveButton): void => {
   const isPausedOrNotLive = el.mediaPaused || !el.mediaTimeIsLive;
   const label = isPausedOrNotLive ? t('seek to live') : t('playing live');
   el.setAttribute('aria-label', label);
+
+  const status = el.shadowRoot?.querySelector('slot[name=text]');
+  if (status) {
+    const liveText = t('live');
+    status.textContent = liveText;
+  }
 
   isPausedOrNotLive
     ? el.removeAttribute('aria-disabled')
@@ -77,11 +83,11 @@ class MediaLiveButton extends MediaChromeButton {
   }
 
   constructor(options: object = {}) {
-    super({ slotTemplate, ...options });
+    super({ slotTemplate, updateAriaLabelTooltip: ()=> updateAriaAttributesLabel(this), ...options });
   }
 
   connectedCallback(): void {
-    updateAriaAttributes(this);
+    updateAriaAttributesLabel(this);
     super.connectedCallback();
   }
 
@@ -91,7 +97,7 @@ class MediaLiveButton extends MediaChromeButton {
     newValue: string | null
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
-    updateAriaAttributes(this);
+    updateAriaAttributesLabel(this);
   }
 
   /**

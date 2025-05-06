@@ -33,7 +33,6 @@ import {
 } from './utils/element-utils.js';
 import { createMediaStore, MediaStore } from './media-store/media-store.js';
 import { CustomElement } from './utils/CustomElement.js';
-import { setLanguage } from './utils/i18n.js';
 
 const ButtonPressedKeys = [
   'ArrowLeft',
@@ -63,7 +62,6 @@ export const Attributes = {
   NO_DEFAULT_STORE: 'nodefaultstore',
   KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
   KEYBOARD_BACKWARD_SEEK_OFFSET: 'keyboardbackwardseekoffset',
-  LANG: 'lang',
 };
 
 /**
@@ -83,7 +81,6 @@ export const Attributes = {
  * @attr {boolean} novolumepref
  * @attr {boolean} nosubtitleslangpref
  * @attr {boolean} nodefaultstore
- * @attr {string} lang
  */
 class MediaController extends MediaContainer {
   static get observedAttributes() {
@@ -93,7 +90,6 @@ class MediaController extends MediaContainer {
       Attributes.DEFAULT_STREAM_TYPE,
       Attributes.DEFAULT_SUBTITLES,
       Attributes.DEFAULT_DURATION,
-      Attributes.LANG
     );
   }
 
@@ -364,9 +360,7 @@ class MediaController extends MediaContainer {
         type: 'fullscreenelementchangerequest',
         detail: this.fullscreenElement,
       });
-    } else if (attrName === Attributes.LANG && newValue !== oldValue) {
-      setLanguage(newValue);
-    }
+    } 
   }
 
   connectedCallback(): void {

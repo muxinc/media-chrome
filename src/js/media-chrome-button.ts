@@ -1,7 +1,8 @@
-import { MediaStateReceiverAttributes } from './constants.js';
+import { MediaStateReceiverAttributes, MediaUIProps } from './constants.js';
 import MediaTooltip, { TooltipPlacement } from './media-tooltip.js';
 import {
   getBooleanAttr,
+  getMediaController,
   getOrInsertCSSRule,
   getStringAttr,
   setBooleanAttr,
@@ -140,11 +141,14 @@ class MediaChromeButton extends globalThis.HTMLElement {
   nativeEl: DocumentFragment;
   tooltipEl: MediaTooltip = null;
   tooltipContent: string = '';
+  updateAriaLabel: () => void;
+  protected _langObserver: MutationObserver;
 
   static get observedAttributes() {
     return [
       'disabled',
       Attributes.TOOLTIP_PLACEMENT,
+      MediaUIProps.LANG,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
     ];
   }
@@ -154,6 +158,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
       slotTemplate: HTMLTemplateElement;
       defaultContent: string;
       tooltipContent: string;
+      updateAriaLabelTooltip?: () => void;
     }> = {}
   ) {
     super();
@@ -177,6 +182,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
         buttonHTML.querySelector('slot[name="tooltip-content"]').innerHTML =
           options.tooltipContent ?? '';
         this.tooltipContent = options.tooltipContent;
+      }
+
+      if (options.updateAriaLabelTooltip) {
+        this.updateAriaLabel = options.updateAriaLabelTooltip;
       }
 
       this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
@@ -296,6 +305,18 @@ class MediaChromeButton extends globalThis.HTMLElement {
       this.#mediaController?.associateElement?.(this);
     }
 
+    const controller = getMediaController(this);
+    this._langObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === MediaUIProps.LANG) {
+          const newLang = controller.getAttribute(MediaUIProps.LANG);
+          this.lang = newLang;
+          this.updateAriaLabel && this.updateAriaLabel();
+        }
+      }
+    });
+  
+    this._langObserver.observe(controller, { attributes: true });
     globalThis.customElements
       .whenDefined('media-tooltip')
       .then(() => this.#setupTooltip());
@@ -361,6 +382,14 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   set noTooltip(value: boolean | undefined) {
     setBooleanAttr(this, Attributes.NO_TOOLTIP, value);
+  }
+
+  get lang(): string {
+    return this.getAttribute(MediaUIProps.LANG);
+  }
+
+  set lang(value: string) {
+    this.setAttribute(MediaUIProps.LANG, value);
   }
 
   /**

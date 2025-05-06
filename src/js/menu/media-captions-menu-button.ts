@@ -41,8 +41,18 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const updateAriaChecked = (el: HTMLElement): void => {
+const createTooltipContent = () => /*html*/ `
+  ${t('Captions')}
+`;
+
+const updateAriaCheckedLabel = (el: HTMLElement): void => {
   el.setAttribute('aria-checked', areSubsOn(el).toString());
+  el.setAttribute('aria-label', t('closed captions'));
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
 };
 
 /**
@@ -67,7 +77,7 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
   #captionsReady: boolean;
 
   constructor(options: Record<string, any> = {}) {
-    super({ slotTemplate, tooltipContent: t('Captions'), ...options });
+    super({ slotTemplate, tooltipContent: createTooltipContent(), updateAriaLabelTooltip: ()=> updateAriaCheckedLabel(this), ...options });
     // Internal variable to keep track of when we have some or no captions (or subtitles, if using subtitles fallback)
     // Used for `default-showing` behavior.
     this.#captionsReady = false;
@@ -75,9 +85,7 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-
-    this.setAttribute('aria-label', t('closed captions'));
-    updateAriaChecked(this);
+    updateAriaCheckedLabel(this);
   }
 
   attributeChangedCallback(
@@ -88,7 +96,7 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
-      updateAriaChecked(this);
+      updateAriaCheckedLabel(this);
     }
   }
 
