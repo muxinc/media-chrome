@@ -155,8 +155,8 @@ class MediaRenditionMenu extends MediaChromeMenu {
     }
 
     const text = isAuto
-      ? this.formatMenuItemText(`${t("Auto")} (${this.mediaHeight}p)`)
-      : this.formatMenuItemText(t("Auto"));
+      ? this.formatMenuItemText(`${t('Auto')} (${this.mediaHeight}p)`)
+      : this.formatMenuItemText(t('Auto'));
 
     const item = createMenuItem({
       type: 'radio',
@@ -165,7 +165,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       checked: isAuto,
     });
 
-    const autoDescription = this.mediaHeight > 0 ? `${t("Auto")} (${this.mediaHeight}p)` : t("Auto");
+    const autoDescription = this.mediaHeight > 0 ? `${t('Auto')} (${this.mediaHeight}p)` : t('Auto');
     item.dataset.description = autoDescription;
 
     item.prepend(createIndicator(this, 'checked-indicator'));
