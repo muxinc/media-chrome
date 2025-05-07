@@ -12,6 +12,7 @@ import {
   formatTextTrackObj,
 } from '../utils/captions.js';
 import { TextTrackLike } from '../utils/TextTrackLike.js';
+import { t } from '../utils/i18n.js';
 
 const ccIcon = /*html*/ `
   <svg aria-hidden="true" viewBox="0 0 26 24" part="captions-indicator indicator">
@@ -122,7 +123,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     const isOff = !this.value;
     const item = createMenuItem({
       type: 'radio',
-      text: this.formatMenuItemText('Off'),
+      text: this.formatMenuItemText(t('Off')),
       value: 'off',
       checked: isOff,
     });
