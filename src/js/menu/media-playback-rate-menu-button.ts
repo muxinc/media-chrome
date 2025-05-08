@@ -31,6 +31,20 @@ slotTemplate.innerHTML = /*html*/ `
   <slot name="icon"></slot>
 `;
 
+const createTooltipContent = () => /*html*/ `
+  ${t('Playback rate')}
+`;
+
+const updateAriaLabelTooltip = (el: MediaPlaybackRateMenuButton, playbackRate: number) => {
+  const label = t('Playback rate {playbackRate}', { playbackRate })
+  el.setAttribute('aria-label', label)
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
+};
+
 /**
  * @attr {string} rates - Set custom playback rates for the user to choose from.
  * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
@@ -55,7 +69,8 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   constructor(options = {}) {
     super({
       slotTemplate,
-      tooltipContent: t('Playback rate'),
+      tooltipContent: createTooltipContent(),
+      updateAriaLabelTooltip: () => updateAriaLabelTooltip(this, DEFAULT_RATE),
       ...options,
     });
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
@@ -78,10 +93,7 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
         ? newPlaybackRate
         : DEFAULT_RATE;
       this.container.innerHTML = `${playbackRate}x`;
-      this.setAttribute(
-        'aria-label',
-        t('Playback rate {playbackRate}', { playbackRate })
-      );
+      updateAriaLabelTooltip(this, playbackRate);
     }
   }
 

@@ -18,6 +18,20 @@ slotTemplate.innerHTML = `
   <slot name="icon">${forwardIcon}</slot>
 `;
 
+const createTooltipContent = () => /*html*/ `
+  ${t('Seek forward')}
+`;
+
+const updateAriaLabelTooltip = (el: MediaSeekForwardButton) => {
+  const label = t('seek forward {seekOffset} seconds', { seekOffset: el.seekOffset && DEFAULT_SEEK_OFFSET })
+  el.setAttribute('aria-label', label)
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
+};
+
 const DEFAULT_TIME = 0;
 
 /**
@@ -40,7 +54,8 @@ class MediaSeekForwardButton extends MediaChromeButton {
   constructor(options = {}) {
     super({
       slotTemplate,
-      tooltipContent: t('Seek forward'),
+      tooltipContent: createTooltipContent(),
+      updateAriaLabelTooltip: () => updateAriaLabelTooltip(this),
       ...options,
     });
   }
@@ -51,6 +66,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
       Attributes.SEEK_OFFSET,
       DEFAULT_SEEK_OFFSET
     );
+    updateAriaLabelTooltip(this);
     super.connectedCallback();
   }
 
@@ -60,6 +76,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
     newValue: string | null
   ): void {
     if (attrName === Attributes.SEEK_OFFSET) {
+      updateAriaLabelTooltip(this);
       this.seekOffset = getNumericAttr(
         this,
         Attributes.SEEK_OFFSET,
@@ -81,10 +98,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
 
   set seekOffset(value: number) {
     setNumericAttr(this, Attributes.SEEK_OFFSET, value);
-    this.setAttribute(
-      'aria-label',
-      t('seek forward {seekOffset} seconds', { seekOffset: this.seekOffset })
-    );
+    updateAriaLabelTooltip(this);
     updateIconText(getSlotted(this, 'icon'), this.seekOffset as any);
   }
 

@@ -17,6 +17,20 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
+const createTooltipContent = () => /*html*/ `
+  ${t('Settings')}
+`;
+
+const updateAriaLabelTooltip = (el: MediaSettingsMenuButton) => {
+  const label = t('settings');
+  el.setAttribute('aria-label', label)
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
+};
+
 /**
  * @attr {string} target - CSS id selector for the element to be targeted by the button.
  */
@@ -26,12 +40,12 @@ class MediaSettingsMenuButton extends MediaChromeMenuButton {
   }
 
   constructor() {
-    super({ slotTemplate, tooltipContent: t('Settings') });
+    super({ slotTemplate, tooltipContent: createTooltipContent(), updateAriaLabelTooltip: () => updateAriaLabelTooltip(this)});
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute('aria-label', t('settings'));
+    updateAriaLabelTooltip(this);
   }
 
   /**

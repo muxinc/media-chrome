@@ -1,6 +1,7 @@
 import { MediaTextDisplay } from './media-text-display.js';
 import {
   getBooleanAttr,
+  getMediaController,
   getNumericAttr,
   getOrInsertCSSRule,
   setBooleanAttr,
@@ -8,7 +9,7 @@ import {
 } from './utils/element-utils.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import { formatAsTimePhrase, formatTime } from './utils/time.js';
-import { MediaUIAttributes } from './constants.js';
+import { MediaUIAttributes, MediaUIProps } from './constants.js';
 import { t } from './utils/i18n.js';
 
 export const Attributes = {
@@ -55,7 +56,7 @@ const formatTimesLabel = (
 
 const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
-const updateAriaValueText = (el: MediaTimeDisplay): void => {
+const updateAriaValueTextLabel = (el: MediaTimeDisplay): void => {
   const currentTime = el.mediaCurrentTime;
   const [, seekableEnd] = el.mediaSeekable ?? [];
   let endTime = null;
@@ -82,6 +83,8 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
   const totalTimePhrase = formatAsTimePhrase(endTime);
   const fullPhrase = `${currentTimePhrase} of ${totalTimePhrase}`;
   el.setAttribute('aria-valuetext', fullPhrase);
+
+  el.setAttribute('aria-label', t('playback time'));
 };
 
 /**
@@ -98,6 +101,7 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
  */
 class MediaTimeDisplay extends MediaTextDisplay {
   #slot: HTMLSlotElement;
+  protected _langObserver: MutationObserver;
 
   static get observedAttributes(): string[] {
     return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
@@ -126,7 +130,22 @@ class MediaTimeDisplay extends MediaTextDisplay {
     }
 
     this.setAttribute('role', 'progressbar');
-    this.setAttribute('aria-label', t('playback time'));
+    updateAriaValueTextLabel(this);
+
+
+    const controller = getMediaController(this);
+    this._langObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === MediaUIProps.LANG) {
+          const newLang = controller.getAttribute(MediaUIProps.LANG);
+          this.lang = newLang;
+          updateAriaValueTextLabel(this);
+        }
+      }
+    });
+  
+    this._langObserver.observe(controller, { attributes: true });
+        
 
     const keyUpHandler = (evt) => {
       const { key } = evt;
@@ -181,6 +200,10 @@ class MediaTimeDisplay extends MediaTextDisplay {
       } else {
         this.disable();
       }
+    }
+
+    if (attrName === MediaUIProps.LANG && newValue !== oldValue) {
+      updateAriaValueTextLabel(this);
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);
@@ -274,7 +297,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   update(): void {
     const timesLabel = formatTimesLabel(this);
-    updateAriaValueText(this);
+    updateAriaValueTextLabel(this);
     // Only update if it changed, timeupdate events are called a few times per second.
     if (timesLabel !== this.#slot.innerHTML) {
       this.#slot.innerHTML = timesLabel;
