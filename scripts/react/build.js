@@ -38,6 +38,13 @@ export const ${ReactComponentName} = createComponent({
   tagName: "${elementName}",
   elementClass: Modules.${ReactComponentName},
   react: React,
+  toAttributeValue: (propValue) => {
+    if (typeof propValue === 'boolean') return propValue ? '' : undefined;
+    if (typeof propValue === 'function') return undefined;
+    if (Array.isArray(propValue)) return propValue.join(' ');
+    if (typeof propValue === 'object' && propValue !== null) return undefined;
+    return propValue;
+  }
 });`;
 };
 
