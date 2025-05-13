@@ -80,15 +80,14 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   /**
    * Get the playback rates for the button.
    */
-  get rates() {
-    // @ts-ignore
+  get rates(): AttributeTokenList | ArrayLike<number> | null | undefined {
     return this.#rates;
   }
 
   /**
    * Set the playback rates for the button.
    */
-  set rates(value: number[] | null) {
+  set rates(value: AttributeTokenList | ArrayLike<number> | null | undefined) {
     if (!value) {
       this.#rates.value = '';
     } else if (Array.isArray(value)) {
@@ -112,7 +111,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const availableRates = Array.from(this.rates.values(), (str) => +str).sort(
+    const availableRates = Array.from(this.#rates.values(), (str) => +str).sort(
       (a, b) => a - b
     );
 

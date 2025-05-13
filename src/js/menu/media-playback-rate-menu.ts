@@ -86,15 +86,14 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   /**
    * Get the playback rates for the button.
    */
-  get rates() {
-    // @ts-ignore
+  get rates(): AttributeTokenList | ArrayLike<number> | null | undefined {
     return this.#rates;
   }
 
   /**
    * Set the playback rates for the button.
    */
-  set rates(value: number[] | undefined) {
+  set rates(value: AttributeTokenList | ArrayLike<number> | null | undefined) {
     if (!value) {
       this.#rates.value = '';
     } else if (Array.isArray(value)) {
