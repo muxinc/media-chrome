@@ -87,11 +87,11 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
    * Will return a DOMTokenList.
    * Setting a value will accept an array of numbers.
    */
-  get rates(): AttributeTokenList | number[] | undefined {
+  get rates(): AttributeTokenList | Array<number> | undefined | string {
     return this.#rates;
   }
 
-  set rates(value: AttributeTokenList | number[] | undefined) {
+  set rates(value: AttributeTokenList | Array<number> | undefined | string ) {
     if (!value) {
       this.#rates.value = '';
     } else if (Array.isArray(value)) {
@@ -118,7 +118,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   #render(): void {
     this.defaultSlot.textContent = '';
 
-    for (const rate of this.rates) {
+    for (const rate of Array.isArray(this.rates) ? this.rates : Array.from(this.#rates)) {
       const item = createMenuItem({
         type: 'radio',
         text: this.formatMenuItemText(`${rate}x`, rate),

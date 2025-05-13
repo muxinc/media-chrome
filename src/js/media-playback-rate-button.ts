@@ -77,15 +77,11 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     }
   }
 
-  /**
-   * @type { AttributeTokenList | Array<number> | undefined} Will return a DOMTokenList.
-   * Setting a value will accept an array of numbers.
-   */
-  get rates() {
+  get rates(): AttributeTokenList | Array<number> | undefined | string {
     return this.#rates;
   }
 
-  set rates(value) {
+  set rates(value: AttributeTokenList | Array<number> | undefined | string ) {
     if (!value) {
       this.#rates.value = '';
     } else if (Array.isArray(value)) {
@@ -109,18 +105,29 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const availableRates = Array.from(this.rates.values(), (str) => +str).sort(
-      (a, b) => a - b
-    );
+    const ratesList =
+      this.rates instanceof AttributeTokenList
+        ? Array.from(this.rates.values(), Number)
+        : Array.isArray(this.rates)
+        ? this.rates
+        : [];
 
-    const detail =
+    const availableRates = ratesList.filter((r) => !Number.isNaN(r)).sort((a, b) => a - b);
+
+    const nextRate =
       availableRates.find((r) => r > this.mediaPlaybackRate) ??
       availableRates[0] ??
       DEFAULT_RATE;
+
     const evt = new globalThis.CustomEvent(
       MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST,
-      { composed: true, bubbles: true, detail }
+      {
+        composed: true,
+        bubbles: true,
+        detail: nextRate,
+      }
     );
+
     this.dispatchEvent(evt);
   }
 }
