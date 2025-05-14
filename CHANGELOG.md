@@ -1,3 +1,19 @@
+# [4.10.0](https://github.com/muxinc/media-chrome/compare/v4.9.1...v4.10.0) (2025-05-14)
+
+
+### Bug Fixes
+
+* Add i18n to settings menu defaults ([#1130](https://github.com/muxinc/media-chrome/issues/1130)) ([fd67cf6](https://github.com/muxinc/media-chrome/commit/fd67cf6a4ae25a009b03a7825cf0fedd271d2226))
+* Add support for language variants in i18n (e.g., en-AU fallback to en if doesn't exists) ([#1136](https://github.com/muxinc/media-chrome/issues/1136)) ([2708eab](https://github.com/muxinc/media-chrome/commit/2708eab48a2737b1d31694a947ebc07b13a44909))
+* React rates array ([#1140](https://github.com/muxinc/media-chrome/issues/1140)) ([ffc38ea](https://github.com/muxinc/media-chrome/commit/ffc38eaaff51723f40f76ced80bedc91d9af1cd2)), closes [#1120](https://github.com/muxinc/media-chrome/issues/1120) [#1139](https://github.com/muxinc/media-chrome/issues/1139)
+
+
+### Features
+
+* Add Chinese (Simplified and Traditional) translations ([#1134](https://github.com/muxinc/media-chrome/issues/1134)) ([bdaf0bf](https://github.com/muxinc/media-chrome/commit/bdaf0bfa7d8164db3630479ce81ecdc0ca70d511))
+
+
+
 ## [4.9.1](https://github.com/muxinc/media-chrome/compare/v4.9.0...v4.9.1) (2025-05-01)
 
 
