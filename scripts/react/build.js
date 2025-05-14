@@ -41,7 +41,7 @@ export const ${ReactComponentName} = createComponent({
   toAttributeValue: (propValue) => {
     if (typeof propValue === 'boolean') return propValue ? '' : undefined;
     if (typeof propValue === 'function') return undefined;
-    const isPrimitive = (v) => typeof v === 'string' || typeof v === 'number';
+    const isPrimitive = (v) => typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean';
     if (Array.isArray(propValue) && propValue.every(isPrimitive)) return propValue.join(' ');
     if (typeof propValue === 'object' && propValue !== null) return undefined;
     return propValue;
