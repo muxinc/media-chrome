@@ -32,14 +32,19 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const tooltipContent = /*html*/ `
+const createTooltipContent = () => /*html*/ `
   <slot name="tooltip-play">${t('Play')}</slot>
   <slot name="tooltip-pause">${t('Pause')}</slot>
 `;
 
-const updateAriaLabel = (el: any): void => {
+const updateAriaLabelTooltip = (el: any): void => {
   const label = el.mediaPaused ? t('play') : t('pause');
   el.setAttribute('aria-label', label);
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
 };
 
 /**
@@ -61,11 +66,11 @@ class MediaPlayButton extends MediaChromeButton {
   }
 
   constructor(options = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
+    super({ slotTemplate, tooltipContent: createTooltipContent(), updateAriaLabelTooltip: ()=> updateAriaLabelTooltip(this), ...options });
   }
 
   connectedCallback(): void {
-    updateAriaLabel(this);
+    updateAriaLabelTooltip(this);
     super.connectedCallback();
   }
 
@@ -75,7 +80,7 @@ class MediaPlayButton extends MediaChromeButton {
     newValue: string | null
   ): void {
     if (attrName === MediaUIAttributes.MEDIA_PAUSED) {
-      updateAriaLabel(this);
+      updateAriaLabelTooltip(this);
     }
     super.attributeChangedCallback(attrName, oldValue, newValue);
   }

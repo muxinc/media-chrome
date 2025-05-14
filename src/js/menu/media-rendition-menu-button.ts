@@ -24,6 +24,20 @@ slotTemplate.innerHTML = /*html*/ `
   <slot name="icon">${renditionIcon}</slot>
 `;
 
+const createTooltipContent = () => /*html*/ `
+  ${t('Quality')}
+`;
+
+const updateAriaLabel = (el: MediaRenditionMenuButton) => {
+  const label = t('quality');
+  el.setAttribute('aria-label', label)
+
+  const tooltip = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltip) {
+    tooltip.innerHTML = createTooltipContent();
+  }
+};
+
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
  * @attr {(unavailable|unsupported)} mediarenditionunavailable - (read-only) Set if rendition selection is unavailable.
@@ -41,12 +55,12 @@ class MediaRenditionMenuButton extends MediaChromeMenuButton {
   }
 
   constructor() {
-    super({ slotTemplate, tooltipContent: t('Quality') });
+    super({ slotTemplate, tooltipContent: createTooltipContent(), updateAriaLabelTooltip: () => updateAriaLabel(this) });
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute('aria-label', t('quality'));
+    updateAriaLabel(this);
   }
 
   /**

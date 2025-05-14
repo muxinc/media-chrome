@@ -1,5 +1,5 @@
 import { globalThis, document } from '../utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
+import { MediaUIAttributes, MediaUIEvents, MediaUIProps } from '../constants.js';
 import { getMediaController } from '../utils/element-utils.js';
 import {
   MediaChromeMenu,
@@ -44,6 +44,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
+      MediaUIProps.LANG,
     ];
   }
 
@@ -67,13 +68,16 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     ) {
       this.value = newValue;
     }
+
+    if (attrName === MediaUIProps.LANG && oldValue !== newValue) {
+      this.#triggerRender();
+    }
   }
 
   connectedCallback(): void {
     super.connectedCallback();
     this.addEventListener('change', this.#onChange);
   }
-
   disconnectedCallback(): void {
     super.disconnectedCallback();
     this.removeEventListener('change', this.#onChange);
@@ -149,6 +153,11 @@ class MediaCaptionsMenu extends MediaChromeMenu {
 
       this.defaultSlot.append(item);
     }
+  }
+
+  #triggerRender(): void {
+    this.#prevState = undefined; // Reset previous state to force re-render
+    this.#render();
   }
 
   #onChange(): void {

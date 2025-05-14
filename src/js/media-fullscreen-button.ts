@@ -55,12 +55,12 @@ slotTemplate.innerHTML = /*html*/ `
   </slot>
 `;
 
-const tooltipContent = /*html*/ `
+const createTooltipContent = () => /*html*/ `
   <slot name="tooltip-enter">${t('Enter fullscreen mode')}</slot>
   <slot name="tooltip-exit">${t('Exit fullscreen mode')}</slot>
 `;
 
-const updateAriaLabel = (el: MediaFullscreenButton) => {
+const updateAriaLabelTooltip = (el: MediaFullscreenButton) => {
   const label = el.mediaIsFullscreen
     ? t('exit fullscreen mode')
     : t('enter fullscreen mode');
@@ -87,12 +87,12 @@ class MediaFullscreenButton extends MediaChromeButton {
   }
 
   constructor(options: object = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
+    super({ slotTemplate, tooltipContent: createTooltipContent(), updateAriaLabelTooltip: ()=> updateAriaLabelTooltip(this), ...options });
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabel(this);
+    updateAriaLabelTooltip(this);
   }
 
   attributeChangedCallback(
@@ -103,7 +103,7 @@ class MediaFullscreenButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
     if (attrName === MediaUIAttributes.MEDIA_IS_FULLSCREEN) {
-      updateAriaLabel(this);
+      updateAriaLabelTooltip(this);
     }
   }
 
