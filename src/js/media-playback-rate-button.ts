@@ -87,7 +87,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   /**
    * Set the playback rates for the button.
    */
-  set rates(value: AttributeTokenList | ArrayLike<number> | null | undefined) {
+  set rates(value: ArrayLike<number> | null | undefined) {
     if (!value) {
       this.#rates.value = '';
     } else if (Array.isArray(value)) {
