@@ -4,7 +4,7 @@ import '../../src/js/media-playback-rate-button.js';
 import MediaPlaybackRateButton from '../../src/js/media-playback-rate-button.js';
 import { AttributeTokenList } from '../../src/js/utils/attribute-token-list.js';
 
-describe('<media-play-button>', () => {
+describe('<media-playback-rate-button>', () => {
   let el;
 
   beforeEach(async () => {
