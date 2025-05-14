@@ -84,7 +84,7 @@ export const Player = () => {
           slot="centered-chrome"
           style={{ '--media-loading-indicator-icon-height': '200px' } as any}
         ></MediaLoadingIndicator>
-        <MediaPlaybackRateMenu hidden anchor="auto" />
+        <MediaPlaybackRateMenu hidden anchor="auto" rates={[.5, 1, 2]} />
         <MediaControlBar>
           <MediaPlayButton></MediaPlayButton>
           <MediaSeekBackwardButton seekOffset={10}></MediaSeekBackwardButton>
@@ -93,7 +93,7 @@ export const Player = () => {
           <MediaTimeDisplay showDuration></MediaTimeDisplay>
           <MediaMuteButton></MediaMuteButton>
           <MediaVolumeRange></MediaVolumeRange>
-          <MediaPlaybackRateButton></MediaPlaybackRateButton>
+          <MediaPlaybackRateButton rates={[.5, 1, 2]}></MediaPlaybackRateButton>
           <MediaPlaybackRateMenuButton></MediaPlaybackRateMenuButton>
           <MediaCaptionsButton></MediaCaptionsButton>
           <MediaAirplayButton></MediaAirplayButton>

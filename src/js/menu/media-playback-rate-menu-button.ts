@@ -1,7 +1,6 @@
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import { MediaUIAttributes } from '../constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
-import { AttributeTokenList } from '../utils/attribute-token-list.js';
 import {
   getNumericAttr,
   setNumericAttr,
@@ -9,11 +8,6 @@ import {
 } from '../utils/element-utils.js';
 import { t } from '../utils/i18n.js';
 
-export const Attributes = {
-  RATES: 'rates',
-};
-
-export const DEFAULT_RATES = [1, 1.2, 1.5, 1.7, 2];
 export const DEFAULT_RATE = 1;
 
 const slotTemplate: HTMLTemplateElement = document.createElement('template');
@@ -42,13 +36,8 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
-      Attributes.RATES,
     ];
   }
-
-  #rates = new AttributeTokenList(this, Attributes.RATES, {
-    defaultValue: DEFAULT_RATES,
-  });
 
   container: HTMLSlotElement;
 
@@ -69,9 +58,6 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === Attributes.RATES) {
-      this.#rates.value = newValue;
-    }
     if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
       const newPlaybackRate = newValue ? +newValue : Number.NaN;
       const playbackRate = !Number.isNaN(newPlaybackRate)
@@ -91,22 +77,6 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
     return getMediaController(this).querySelector('media-playback-rate-menu');
-  }
-
-  /**
-   * Will return a DOMTokenList.
-   * Setting a value will accept an array of numbers.
-   */
-  get rates(): AttributeTokenList | number[] | undefined {
-    return this.#rates;
-  }
-
-  set rates(value: AttributeTokenList | number[] | undefined) {
-    if (!value) {
-      this.#rates.value = '';
-    } else if (Array.isArray(value)) {
-      this.#rates.value = value.join(' ');
-    }
   }
 
   /**
