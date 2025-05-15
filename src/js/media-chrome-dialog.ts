@@ -107,6 +107,7 @@ export const Attributes = {
  * @event {Event} focusin - Dispatched when the dialog is focused in.
  */
 class MediaChromeDialog extends globalThis.HTMLElement {
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
   static getTemplateHTML = getTemplateHTML;
   static getSlotTemplateHTML = getSlotTemplateHTML;
 
@@ -117,8 +118,6 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   #isInit = false;
   #previouslyFocused: HTMLElement | null = null;
   #invokerElement: HTMLElement | null = null;
-
-  nativeEl: HTMLElement;
 
   constructor() {
     super();
@@ -142,7 +141,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow((this.constructor as typeof MediaChromeDialog).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
 

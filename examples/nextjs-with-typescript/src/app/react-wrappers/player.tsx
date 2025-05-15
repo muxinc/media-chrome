@@ -26,6 +26,9 @@ import { useState } from 'react';
 
 const chromeStyles = {
   '--media-primary-color': 'white',
+  display: 'block',
+  width: '100%',
+  aspectRatio: 2.4
 };
 
 const toggleBool = (prev: boolean|undefined) => !prev;
@@ -54,6 +57,7 @@ export const Player = () => {
       {mounted && (<MediaController hotkeys={"noarrowleft noarrowright"} style={chromeStyles as any} gesturesDisabled defaultSubtitles noDefaultStore={noDefaultStore}>
         <video
           suppressHydrationWarning
+          style={{ width: '100%' }}
           slot="media"
           src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
           preload="auto"

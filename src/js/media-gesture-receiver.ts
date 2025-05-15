@@ -7,20 +7,21 @@ import {
 import {
   closestComposedNode,
   getBooleanAttr,
+  namedNodeMapToObject,
   setBooleanAttr,
 } from './utils/element-utils.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement('template');
-
-template.innerHTML = /*html*/ `
-<style>
-  :host {
-    display: var(--media-control-display, var(--media-gesture-receiver-display, inline-block));
-    box-sizing: border-box;
-  }
-</style>
-`;
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        display: var(--media-control-display, var(--media-gesture-receiver-display, inline-block));
+        box-sizing: border-box;
+      }
+    </style>
+  `;
+}
 
 /**
  * @extends {HTMLElement}
@@ -32,6 +33,9 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-control-display - `display` property of control.
  */
 class MediaGestureReceiver extends globalThis.HTMLElement {
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
+  static getTemplateHTML = getTemplateHTML;
+
   #mediaController;
 
   // NOTE: Currently "baking in" actions + attrs until we come up with
@@ -43,34 +47,20 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
     ];
   }
 
-  nativeEl: HTMLElement;
   _pointerType: string;
 
-  constructor(
-    options: {
-      slotTemplate?: HTMLTemplateElement;
-      defaultContent?: string;
-    } = {}
-  ) {
+  constructor() {
     super();
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      const shadow = this.attachShadow({ mode: 'open' });
+      this.attachShadow((this.constructor as typeof MediaGestureReceiver).shadowRootOptions);
 
-      const buttonHTML = template.content.cloneNode(true);
-      this.nativeEl = buttonHTML as HTMLElement;
+      const attrs = namedNodeMapToObject(this.attributes);
 
-      // Slots
-      let slotTemplate = options.slotTemplate;
-
-      if (!slotTemplate) {
-        slotTemplate = document.createElement('template');
-        slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
-      }
-
-      this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
-      shadow.appendChild(buttonHTML);
+      this.shadowRoot.innerHTML = /*html*/ `
+        ${(this.constructor as typeof MediaGestureReceiver).getTemplateHTML(attrs)}
+      `;
     }
   }
 

@@ -102,6 +102,9 @@ function getTemplateHTML(_attrs: Record<string, string>) {
 
     <slot name="tooltip">
       <media-tooltip part="tooltip" aria-hidden="true">
+        <template shadowrootmode="${MediaTooltip.shadowRootOptions.mode}">
+          ${MediaTooltip.getTemplateHTML({})}
+        </template>
         <slot name="tooltip-content">
           ${this.getTooltipContentHTML(_attrs)}
         </slot>
@@ -151,13 +154,13 @@ function getTooltipContentHTML() {
  * @cssproperty --media-button-icon-transition - `transition` of button icon.
  */
 class MediaChromeButton extends globalThis.HTMLElement {
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
   static getTemplateHTML = getTemplateHTML;
   static getSlotTemplateHTML = getSlotTemplateHTML;
   static getTooltipContentHTML = getTooltipContentHTML;
 
   #mediaController;
   preventClick = false;
-  nativeEl: DocumentFragment;
   tooltipEl: MediaTooltip = null;
 
   static get observedAttributes() {
@@ -173,7 +176,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow((this.constructor as typeof MediaChromeButton).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
 

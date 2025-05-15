@@ -7,7 +7,7 @@
   * Position controls at the bottom
   * Auto-hide controls on inactivity while playing
 */
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
@@ -16,9 +16,11 @@ import { t } from './utils/i18n.js';
 import {
   getBooleanAttr,
   getStringAttr,
+  namedNodeMapToObject,
   setBooleanAttr,
   setStringAttr,
 } from './utils/element-utils.js';
+import MediaGestureReceiver from './media-gesture-receiver.js';
 
 export const Attributes = {
   AUDIO: 'audio',
@@ -31,210 +33,214 @@ export const Attributes = {
   AUTOHIDE_OVER_CONTROLS: 'autohideovercontrols',
 };
 
-const template: HTMLTemplateElement = document.createElement('template');
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      ${
+        /*
+        * outline on media is turned off because it is allowed to get focus to faciliate hotkeys.
+        * However, on keyboard interactions, the focus outline is shown,
+        * which is particularly noticeable when going fullscreen via hotkeys.
+        */ ''
+      }
+      :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) ::slotted([slot=media]) {
+        outline: none;
+      }
 
-template.innerHTML = /*html*/ `
-  <style>
-    ${
-      /*
-       * outline on media is turned off because it is allowed to get focus to faciliate hotkeys.
-       * However, on keyboard interactions, the focus outline is shown,
-       * which is particularly noticeable when going fullscreen via hotkeys.
-       */ ''
-    }
-    :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) ::slotted([slot=media]) {
-      outline: none;
-    }
+      :host {
+        box-sizing: border-box;
+        position: relative;
+        display: inline-block;
+        line-height: 0;
+        background-color: var(--media-background-color, #000);
+      }
 
-    :host {
-      box-sizing: border-box;
-      position: relative;
-      display: inline-block;
-      line-height: 0;
-      background-color: var(--media-background-color, #000);
-    }
+      :host(:not([${Attributes.AUDIO}])) [part~=layer]:not([part~=media-layer]) {
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: start;
+        pointer-events: none;
+        background: none;
+      }
 
-    :host(:not([${Attributes.AUDIO}])) [part~=layer]:not([part~=media-layer]) {
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      display: flex;
-      flex-flow: column nowrap;
-      align-items: start;
-      pointer-events: none;
-      background: none;
-    }
+      slot[name=media] {
+        display: var(--media-slot-display, contents);
+      }
 
-    slot[name=media] {
-      display: var(--media-slot-display, contents);
-    }
+      ${
+        /*
+        * when in audio mode, hide the slotted media element by default
+        */ ''
+      }
+      :host([${Attributes.AUDIO}]) slot[name=media] {
+        display: var(--media-slot-display, none);
+      }
 
-    ${
-      /*
-       * when in audio mode, hide the slotted media element by default
-       */ ''
-    }
-    :host([${Attributes.AUDIO}]) slot[name=media] {
-      display: var(--media-slot-display, none);
-    }
+      ${
+        /*
+        * when in audio mode, hide the gesture-layer which causes media-controller to be taller than the control bar
+        */ ''
+      }
+      :host([${Attributes.AUDIO}]) [part~=layer][part~=gesture-layer] {
+        height: 0;
+        display: block;
+      }
 
-    ${
-      /*
-       * when in audio mode, hide the gesture-layer which causes media-controller to be taller than the control bar
-       */ ''
-    }
-    :host([${Attributes.AUDIO}]) [part~=layer][part~=gesture-layer] {
-      height: 0;
-      display: block;
-    }
+      ${
+        /*
+        * if gestures are disabled, don't accept pointer-events
+        */ ''
+      }
+      :host(:not([${Attributes.AUDIO}])[${
+        Attributes.GESTURES_DISABLED
+      }]) ::slotted([slot=gestures-chrome]),
+          :host(:not([${Attributes.AUDIO}])[${
+        Attributes.GESTURES_DISABLED
+      }]) media-gesture-receiver[slot=gestures-chrome] {
+        display: none;
+      }
 
-    ${
-      /*
-       * if gestures are disabled, don't accept pointer-events
-       */ ''
-    }
-    :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) ::slotted([slot=gestures-chrome]),
-    :host(:not([${Attributes.AUDIO}])[${
-  Attributes.GESTURES_DISABLED
-}]) media-gesture-receiver[slot=gestures-chrome] {
-      display: none;
-    }
+      ${
+        /*
+        * any slotted element that isn't a poster or media slot should be pointer-events auto
+        * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
+        */ ''
+      }
+      ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([role=dialog]):not([hidden])) {
+        pointer-events: auto;
+      }
 
-    ${
-      /*
-       * any slotted element that isn't a poster or media slot should be pointer-events auto
-       * we'll want to add here any slotted elements that shouldn't get pointer-events by default when slotted
-       */ ''
-    }
-    ::slotted(:not([slot=media]):not([slot=poster]):not(media-loading-indicator):not([role=dialog]):not([hidden])) {
-      pointer-events: auto;
-    }
+      :host(:not([${Attributes.AUDIO}])) *[part~=layer][part~=centered-layer] {
+        align-items: center;
+        justify-content: center;
+      }
 
-    :host(:not([${Attributes.AUDIO}])) *[part~=layer][part~=centered-layer] {
-      align-items: center;
-      justify-content: center;
-    }
+      :host(:not([${
+        Attributes.AUDIO
+      }])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
+      :host(:not([${
+        Attributes.AUDIO
+      }])) media-gesture-receiver[slot=gestures-chrome] {
+        align-self: stretch;
+        flex-grow: 1;
+      }
 
-    :host(:not([${
-      Attributes.AUDIO
-    }])) ::slotted(media-gesture-receiver[slot=gestures-chrome]),
-    :host(:not([${
-      Attributes.AUDIO
-    }])) media-gesture-receiver[slot=gestures-chrome] {
-      align-self: stretch;
-      flex-grow: 1;
-    }
+      slot[name=middle-chrome] {
+        display: inline;
+        flex-grow: 1;
+        pointer-events: none;
+        background: none;
+      }
 
-    slot[name=middle-chrome] {
-      display: inline;
-      flex-grow: 1;
-      pointer-events: none;
-      background: none;
-    }
+      ${/* Position the media and poster elements to fill the container */ ''}
+      ::slotted([slot=media]),
+      ::slotted([slot=poster]) {
+        width: 100%;
+        height: 100%;
+      }
 
-    ${/* Position the media and poster elements to fill the container */ ''}
-    ::slotted([slot=media]),
-    ::slotted([slot=poster]) {
-      width: 100%;
-      height: 100%;
-    }
+      ${/* Video specific styles */ ''}
+      :host(:not([${Attributes.AUDIO}])) .spacer {
+        flex-grow: 1;
+      }
 
-    ${/* Video specific styles */ ''}
-    :host(:not([${Attributes.AUDIO}])) .spacer {
-      flex-grow: 1;
-    }
+      ${/* Safari needs this to actually make the element fill the window */ ''}
+      :host(:-webkit-full-screen) {
+        ${/* Needs to use !important otherwise easy to break */ ''}
+        width: 100% !important;
+        height: 100% !important;
+      }
 
-    ${/* Safari needs this to actually make the element fill the window */ ''}
-    :host(:-webkit-full-screen) {
-      ${/* Needs to use !important otherwise easy to break */ ''}
-      width: 100% !important;
-      height: 100% !important;
-    }
+      ${/* Only add these if auto hide is not disabled */ ''}
+      ::slotted(:not([slot=media]):not([slot=poster]):not([${
+        Attributes.NO_AUTOHIDE
+      }]):not([hidden]):not([role=dialog])) {
+        opacity: 1;
+        transition: var(--media-control-transition-in, opacity 0.25s);
+      }
 
-    ${/* Only add these if auto hide is not disabled */ ''}
-    ::slotted(:not([slot=media]):not([slot=poster]):not([${
-      Attributes.NO_AUTOHIDE
-    }]):not([hidden]):not([role=dialog])) {
-      opacity: 1;
-      transition: var(--media-control-transition-in, opacity 0.25s);
-    }
+      ${
+        /* Hide controls when inactive, not paused, not audio and auto hide not disabled */ ''
+      }
+      :host([${Attributes.USER_INACTIVE}]:not([${
+        MediaUIAttributes.MEDIA_PAUSED
+      }]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${
+        MediaUIAttributes.MEDIA_IS_CASTING
+      }]):not([${
+        Attributes.AUDIO
+      }])) ::slotted(:not([slot=media]):not([slot=poster]):not([${
+        Attributes.NO_AUTOHIDE
+      }]):not([role=dialog])) {
+        opacity: 0;
+        transition: var(--media-control-transition-out, opacity 1s);
+      }
 
-    ${
-      /* Hide controls when inactive, not paused, not audio and auto hide not disabled */ ''
-    }
-    :host([${Attributes.USER_INACTIVE}]:not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]):not([${
-  MediaUIAttributes.MEDIA_IS_CASTING
-}]):not([${
-  Attributes.AUDIO
-}])) ::slotted(:not([slot=media]):not([slot=poster]):not([${
-  Attributes.NO_AUTOHIDE
-}]):not([role=dialog])) {
-      opacity: 0;
-      transition: var(--media-control-transition-out, opacity 1s);
-    }
+      :host([${Attributes.USER_INACTIVE}]:not([${Attributes.NO_AUTOHIDE}]):not([${
+        MediaUIAttributes.MEDIA_PAUSED
+      }]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
+        Attributes.AUDIO
+      }])) ::slotted([slot=media]) {
+        cursor: none;
+      }
 
-    :host([${Attributes.USER_INACTIVE}]:not([${Attributes.NO_AUTOHIDE}]):not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${
-  Attributes.AUDIO
-}])) ::slotted([slot=media]) {
-      cursor: none;
-    }
-
-    :host([${Attributes.USER_INACTIVE}][${
-  Attributes.AUTOHIDE_OVER_CONTROLS
-}]:not([${Attributes.NO_AUTOHIDE}]):not([${
-  MediaUIAttributes.MEDIA_PAUSED
-}]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${Attributes.AUDIO}])) * {
-     --media-cursor: none;
-     cursor: none;
-    }
+      :host([${Attributes.USER_INACTIVE}][${
+        Attributes.AUTOHIDE_OVER_CONTROLS
+      }]:not([${Attributes.NO_AUTOHIDE}]):not([${
+        MediaUIAttributes.MEDIA_PAUSED
+      }]):not([${MediaUIAttributes.MEDIA_IS_CASTING}]):not([${Attributes.AUDIO}])) * {
+        --media-cursor: none;
+        cursor: none;
+      }
 
 
-    ::slotted(media-control-bar)  {
-      align-self: stretch;
-    }
+      ::slotted(media-control-bar)  {
+        align-self: stretch;
+      }
 
-    ${
-      /* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''
-    }
-    :host(:not([${Attributes.AUDIO}])[${
-  MediaUIAttributes.MEDIA_HAS_PLAYED
-}]) slot[name=poster] {
-      display: none;
-    }
+      ${
+        /* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''
+      }
+      :host(:not([${Attributes.AUDIO}])[${
+        MediaUIAttributes.MEDIA_HAS_PLAYED
+      }]) slot[name=poster] {
+        display: none;
+      }
 
-    ::slotted([role=dialog]) {
-      width: 100%;
-      height: 100%;
-      align-self: center;
-    }
+      ::slotted([role=dialog]) {
+        width: 100%;
+        height: 100%;
+        align-self: center;
+      }
 
-    ::slotted([role=menu]) {
-      align-self: end;
-    }
-  </style>
+      ::slotted([role=menu]) {
+        align-self: end;
+      }
+    </style>
 
-  <slot name="media" part="layer media-layer"></slot>
-  <slot name="poster" part="layer poster-layer"></slot>
-  <slot name="gestures-chrome" part="layer gesture-layer">
-    <media-gesture-receiver slot="gestures-chrome"></media-gesture-receiver>
-  </slot>
-  <span part="layer vertical-layer">
-    <slot name="top-chrome" part="top chrome"></slot>
-    <slot name="middle-chrome" part="middle chrome"></slot>
-    <slot name="centered-chrome" part="layer centered-layer center centered chrome"></slot>
-    ${/* default, effectively "bottom-chrome" */ ''}
-    <slot part="bottom chrome"></slot>
-  </span>
-  <slot name="dialog" part="layer dialog-layer"></slot>
-`;
+    <slot name="media" part="layer media-layer"></slot>
+    <slot name="poster" part="layer poster-layer"></slot>
+    <slot name="gestures-chrome" part="layer gesture-layer">
+      <media-gesture-receiver slot="gestures-chrome">
+        <template shadowrootmode="${MediaGestureReceiver.shadowRootOptions.mode}">
+          ${(MediaGestureReceiver as typeof MediaGestureReceiver).getTemplateHTML({})}
+        </template>
+      </media-gesture-receiver>
+    </slot>
+    <span part="layer vertical-layer">
+      <slot name="top-chrome" part="top chrome"></slot>
+      <slot name="middle-chrome" part="middle chrome"></slot>
+      <slot name="centered-chrome" part="layer centered-layer center centered chrome"></slot>
+      ${/* default, effectively "bottom-chrome" */ ''}
+      <slot part="bottom chrome"></slot>
+    </span>
+    <slot name="dialog" part="layer dialog-layer"></slot>
+  `;
+}
 
 const MEDIA_UI_ATTRIBUTE_NAMES = Object.values(MediaUIAttributes);
 
@@ -318,6 +324,9 @@ function getBreakpoints(breakpoints: Record<string, string>, width: number) {
  * @cssprop --media-control-transition-in - `transition` used to define the animation effect when showing the container.
  */
 class MediaContainer extends globalThis.HTMLElement {
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
+  static getTemplateHTML = getTemplateHTML;
+
   static get observedAttributes(): string[] {
     return (
       [Attributes.AUTOHIDE, Attributes.GESTURES_DISABLED]
@@ -350,8 +359,13 @@ class MediaContainer extends globalThis.HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
-      this.shadowRoot.appendChild(template.content.cloneNode(true));
+      this.attachShadow((this.constructor as typeof MediaContainer).shadowRootOptions);
+
+      const attrs = namedNodeMapToObject(this.attributes);
+
+      this.shadowRoot.innerHTML = /*html*/ `
+        ${(this.constructor as typeof MediaContainer).getTemplateHTML(attrs)}
+      `;
     }
 
     // Handles the case when the slotted media element is a slot element itself.
