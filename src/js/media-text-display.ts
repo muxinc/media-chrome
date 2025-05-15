@@ -4,7 +4,7 @@ import { getOrInsertCSSRule, namedNodeMapToObject } from './utils/element-utils.
 import { globalThis } from './utils/server-safe-globals.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
-function getTemplateHTML(_attrs: Record<string, string>) {
+function getTemplateHTML(_attrs: Record<string, string>, _props: Record<string, any> = {}) {
   return /*html*/ `
     <style>
       :host {
@@ -46,6 +46,13 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         outline: 0;
       }
     </style>
+
+    ${this.getSlotTemplateHTML(_attrs, _props)}
+  `;
+}
+
+function getSlotTemplateHTML(_attrs: Record<string, string>, _props: Record<string, any>) {
+  return /*html*/ `
     <slot></slot>
   `;
 }
@@ -73,6 +80,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
 class MediaTextDisplay extends globalThis.HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
   static getTemplateHTML = getTemplateHTML;
+  static getSlotTemplateHTML = getSlotTemplateHTML;
 
   #mediaController: MediaController | null;
 
