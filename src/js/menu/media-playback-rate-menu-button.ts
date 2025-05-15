@@ -1,4 +1,4 @@
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { globalThis } from '../utils/server-safe-globals.js';
 import { MediaUIAttributes } from '../constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import {
@@ -10,20 +10,25 @@ import { t } from '../utils/i18n.js';
 
 export const DEFAULT_RATE = 1;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-    :host {
-      min-width: 5ch;
-      padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
-    }
-    
-    :host([aria-expanded="true"]) slot[name=tooltip] {
-      display: none;
-    }
-  </style>
-  <slot name="icon"></slot>
-`;
+function getSlotTemplateHTML() {
+  return /*html*/ `
+    <style>
+      :host {
+        min-width: 5ch;
+        padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
+      }
+      
+      :host([aria-expanded="true"]) slot[name=tooltip] {
+        display: none;
+      }
+    </style>
+    <slot name="icon"></slot>
+  `;
+}
+
+function getTooltipContentHTML() {
+  return t('Playback rate');
+}
 
 /**
  * @attr {string} rates - Set custom playback rates for the user to choose from.
@@ -32,6 +37,9 @@ slotTemplate.innerHTML = /*html*/ `
  * @cssproperty [--media-playback-rate-menu-button-display = inline-flex] - `display` property of button.
  */
 class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
@@ -41,12 +49,8 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
 
   container: HTMLSlotElement;
 
-  constructor(options = {}) {
-    super({
-      slotTemplate,
-      tooltipContent: t('Playback rate'),
-      ...options,
-    });
+  constructor() {
+    super();
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
     this.container.innerHTML = `${DEFAULT_RATE}x`;
   }
