@@ -1,9 +1,8 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
+import { getNumericAttr, setNumericAttr, getSlotted, updateIconText } from './utils/element-utils.js';
 import { t } from './utils/i18n.js';
-import { getSlotted, updateIconText } from './utils/element-utils.js';
 
 export const Attributes = {
   SEEK_OFFSET: 'seekoffset',
@@ -13,10 +12,15 @@ const DEFAULT_SEEK_OFFSET = 30;
 
 const backwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(2.18 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3L4.37 7 10 10.94V8a5.54 5.54 0 0 1 1.9 10.48v2.12A7.5 7.5 0 0 0 10 6Z"/></svg>`;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
-slotTemplate.innerHTML = `
-  <slot name="icon">${backwardIcon}</slot>
-`;
+function getSlotTemplateHTML() {
+  return /*html*/ `
+    <slot name="icon">${backwardIcon}</slot>
+  `;
+}
+
+function getTooltipContentHTML() {
+  return t('Seek backward');
+}
 
 const DEFAULT_TIME = 0;
 
@@ -29,6 +33,9 @@ const DEFAULT_TIME = 0;
  * @cssproperty [--media-seek-backward-button-display = inline-flex] - `display` property of button.
  */
 class MediaSeekBackwardButton extends MediaChromeButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
@@ -37,21 +44,13 @@ class MediaSeekBackwardButton extends MediaChromeButton {
     ];
   }
 
-  constructor(options = {}) {
-    super({
-      slotTemplate,
-      tooltipContent: t('Seek backward'),
-      ...options,
-    });
-  }
-
   connectedCallback(): void {
+    super.connectedCallback();
     this.seekOffset = getNumericAttr(
       this,
       Attributes.SEEK_OFFSET,
       DEFAULT_SEEK_OFFSET
     );
-    super.connectedCallback();
   }
 
   attributeChangedCallback(
@@ -59,6 +58,8 @@ class MediaSeekBackwardButton extends MediaChromeButton {
     _oldValue: string | null,
     newValue: string | null
   ): void {
+    super.attributeChangedCallback(attrName, _oldValue, newValue);
+
     if (attrName === Attributes.SEEK_OFFSET) {
       this.seekOffset = getNumericAttr(
         this,
@@ -66,8 +67,6 @@ class MediaSeekBackwardButton extends MediaChromeButton {
         DEFAULT_SEEK_OFFSET
       );
     }
-
-    super.attributeChangedCallback(attrName, _oldValue, newValue);
   }
 
   // Own props
