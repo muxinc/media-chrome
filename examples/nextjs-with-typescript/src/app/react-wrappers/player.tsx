@@ -54,7 +54,7 @@ export const Player = () => {
         </span>
       </div>
       <br />
-      {mounted && (<MediaController hotkeys={"noarrowleft noarrowright"} style={chromeStyles as any} gesturesDisabled defaultSubtitles noDefaultStore={noDefaultStore}>
+      {mounted && (<MediaController hotkeys={"noarrowleft noarrowright"} style={chromeStyles as any} defaultSubtitles noDefaultStore={noDefaultStore}>
         <video
           style={{ width: '100%', aspectRatio: 2.4 }}
           slot="media"
