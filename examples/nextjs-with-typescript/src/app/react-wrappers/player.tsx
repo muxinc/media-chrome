@@ -28,7 +28,8 @@ const chromeStyles = {
   '--media-primary-color': 'white',
   display: 'block',
   width: '100%',
-  aspectRatio: 2.4
+  aspectRatio: 2.4,
+  maxWidth: 960,
 };
 
 const toggleBool = (prev: boolean|undefined) => !prev;

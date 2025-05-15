@@ -12,7 +12,7 @@ export const Attributes = {
 export const DEFAULT_RATES = [1, 1.2, 1.5, 1.7, 2];
 export const DEFAULT_RATE = 1;
 
-function getSlotTemplateHTML() {
+function getSlotTemplateHTML(attrs: Record<string, string>) {
   return /*html*/ `
     <style>
       :host {
@@ -20,7 +20,7 @@ function getSlotTemplateHTML() {
         padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
       }
     </style>
-    <slot name="icon"></slot>
+    <slot name="icon">${attrs['mediaplaybackrate'] || DEFAULT_RATE}x</slot>
   `;
 }
 
@@ -55,7 +55,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   constructor() {
     super();
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
-    this.container.innerHTML = `${DEFAULT_RATE}x`;
+    this.container.innerHTML = `${this.mediaPlaybackRate ?? DEFAULT_RATE}x`;
   }
 
   attributeChangedCallback(

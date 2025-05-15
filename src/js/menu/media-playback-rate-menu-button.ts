@@ -10,7 +10,7 @@ import { t } from '../utils/i18n.js';
 
 export const DEFAULT_RATE = 1;
 
-function getSlotTemplateHTML() {
+function getSlotTemplateHTML(attrs: Record<string, string>) {
   return /*html*/ `
     <style>
       :host {
@@ -22,7 +22,7 @@ function getSlotTemplateHTML() {
         display: none;
       }
     </style>
-    <slot name="icon"></slot>
+    <slot name="icon">${attrs['mediaplaybackrate'] || DEFAULT_RATE}x</slot>
   `;
 }
 
@@ -52,7 +52,7 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   constructor() {
     super();
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
-    this.container.innerHTML = `${DEFAULT_RATE}x`;
+    this.container.innerHTML = `${this.mediaPlaybackRate ?? DEFAULT_RATE}x`;
   }
 
   attributeChangedCallback(
