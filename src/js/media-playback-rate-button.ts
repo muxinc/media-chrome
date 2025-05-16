@@ -96,6 +96,8 @@ class MediaPlaybackRateButton extends MediaChromeButton {
       this.#rates.value = '';
     } else if (Array.isArray(value)) {
       this.#rates.value = value.join(' ');
+    } else if (typeof value === 'string') {
+      this.#rates.value = value;
     }
   }
 
