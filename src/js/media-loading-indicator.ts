@@ -136,10 +136,7 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaLoadingIndicator).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-
-      this.shadowRoot.innerHTML = /*html*/ `
-        ${(this.constructor as typeof MediaLoadingIndicator).getTemplateHTML(attrs)}
-      `;
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaLoadingIndicator).getTemplateHTML(attrs);
     }
   }
 

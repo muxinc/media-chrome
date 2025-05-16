@@ -96,10 +96,7 @@ class MediaTextDisplay extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaTextDisplay).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-
-      this.shadowRoot.innerHTML = /*html*/ `
-        ${(this.constructor as typeof MediaTextDisplay).getTemplateHTML(attrs)}
-      `;
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaTextDisplay).getTemplateHTML(attrs);
     }
   }
 

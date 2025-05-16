@@ -57,10 +57,7 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaGestureReceiver).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-
-      this.shadowRoot.innerHTML = /*html*/ `
-        ${(this.constructor as typeof MediaGestureReceiver).getTemplateHTML(attrs)}
-      `;
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaGestureReceiver).getTemplateHTML(attrs);
     }
   }
 

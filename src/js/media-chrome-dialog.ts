@@ -144,10 +144,7 @@ class MediaChromeDialog extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaChromeDialog).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-
-      this.shadowRoot.innerHTML = /*html*/ `
-        ${(this.constructor as typeof MediaChromeDialog).getTemplateHTML(attrs)}
-      `;
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaChromeDialog).getTemplateHTML(attrs);
 
       // Delay setting the transition to prevent seeing the transition from default start styles.
       queueMicrotask(() => {

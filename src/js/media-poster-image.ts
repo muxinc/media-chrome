@@ -67,10 +67,7 @@ class MediaPosterImage extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaPosterImage).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-
-      this.shadowRoot.innerHTML = /*html*/ `
-        ${(this.constructor as typeof MediaPosterImage).getTemplateHTML(attrs)}
-      `;
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaPosterImage).getTemplateHTML(attrs);
     }
 
     this.image = this.shadowRoot.querySelector('#image');

@@ -338,10 +338,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaChromeMenu).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-
-      this.shadowRoot.innerHTML = /*html*/ `
-        ${(this.constructor as typeof MediaChromeMenu).getTemplateHTML(attrs)}
-      `;
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaChromeMenu).getTemplateHTML(attrs);
     }
 
     this.container = this.shadowRoot.querySelector('#container') as HTMLElement;

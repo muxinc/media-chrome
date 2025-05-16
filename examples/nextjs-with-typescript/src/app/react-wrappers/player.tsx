@@ -101,7 +101,7 @@ export const Player = () => {
           <MediaSeekForwardButton seekOffset={10}></MediaSeekForwardButton>
           <MediaTimeRange></MediaTimeRange>
           <MediaTimeDisplay showDuration mediaDuration={134}></MediaTimeDisplay>
-          <MediaMuteButton></MediaMuteButton>
+          <MediaMuteButton mediaVolumeLevel="off"></MediaMuteButton>
           <MediaVolumeRange></MediaVolumeRange>
           <MediaPlaybackRateButton rates={[.5, 1, 2]}></MediaPlaybackRateButton>
           <MediaPlaybackRateMenuButton></MediaPlaybackRateMenuButton>

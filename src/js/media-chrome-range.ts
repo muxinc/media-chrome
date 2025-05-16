@@ -334,10 +334,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaChromeRange).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-
-      this.shadowRoot.innerHTML = /*html*/ `
-        ${(this.constructor as typeof MediaChromeRange).getTemplateHTML(attrs)}
-      `;
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaChromeRange).getTemplateHTML(attrs);
     }
 
     this.container = this.shadowRoot.querySelector('#container');

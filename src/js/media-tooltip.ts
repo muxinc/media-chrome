@@ -176,10 +176,7 @@ class MediaTooltip extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaTooltip).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-
-      this.shadowRoot.innerHTML = /*html*/ `
-        ${(this.constructor as typeof MediaTooltip).getTemplateHTML(attrs)}
-      `;
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaTooltip).getTemplateHTML(attrs);
     }
 
     this.arrowEl = this.shadowRoot.querySelector('#arrow');
