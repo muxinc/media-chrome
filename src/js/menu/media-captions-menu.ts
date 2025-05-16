@@ -1,4 +1,4 @@
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { globalThis } from '../utils/server-safe-globals.js';
 import { MediaUIAttributes, MediaUIEvents } from '../constants.js';
 import { getMediaController } from '../utils/element-utils.js';
 import {
