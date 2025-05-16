@@ -179,10 +179,12 @@ class MediaChromeButton extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaChromeButton).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-
-      this.shadowRoot.innerHTML = /*html*/ `
-        ${(this.constructor as typeof MediaChromeButton).getTemplateHTML(attrs)}
-      `;
+      const html = (this.constructor as typeof MediaChromeButton).getTemplateHTML(attrs);
+      // From MDN: setHTMLUnsafe should be used instead of ShadowRoot.innerHTML 
+      // when a string of HTML may contain declarative shadow roots.
+      this.shadowRoot.setHTMLUnsafe ?
+        this.shadowRoot.setHTMLUnsafe(html) :
+        this.shadowRoot.innerHTML = html;
     }
 
     this.tooltipEl = this.shadowRoot.querySelector('media-tooltip');

@@ -362,10 +362,12 @@ class MediaContainer extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaContainer).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-
-      this.shadowRoot.innerHTML = /*html*/ `
-        ${(this.constructor as typeof MediaContainer).getTemplateHTML(attrs)}
-      `;
+      const html = (this.constructor as typeof MediaContainer).getTemplateHTML(attrs);
+      // From MDN: setHTMLUnsafe should be used instead of ShadowRoot.innerHTML 
+      // when a string of HTML may contain declarative shadow roots.
+      this.shadowRoot.setHTMLUnsafe ?
+        this.shadowRoot.setHTMLUnsafe(html) :
+        this.shadowRoot.innerHTML = html;
     }
 
     // Handles the case when the slotted media element is a slot element itself.
