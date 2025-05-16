@@ -3,9 +3,10 @@ import {
   getMediaController,
   getStringAttr,
   isElementVisible,
+  namedNodeMapToObject,
   setStringAttr,
 } from './utils/element-utils.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 
 export const Attributes = {
   PLACEMENT: 'placement',
@@ -14,119 +15,118 @@ export const Attributes = {
 
 export type TooltipPlacement = 'top' | 'right' | 'bottom' | 'left' | 'none';
 
-const template: HTMLTemplateElement = document.createElement('template');
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        --_tooltip-background-color: var(--media-tooltip-background-color, var(--media-secondary-color, rgba(20, 20, 30, .7)));
+        --_tooltip-background: var(--media-tooltip-background, var(--_tooltip-background-color));
+        --_tooltip-arrow-half-width: calc(var(--media-tooltip-arrow-width, 12px) / 2);
+        --_tooltip-arrow-height: var(--media-tooltip-arrow-height, 5px);
+        --_tooltip-arrow-background: var(--media-tooltip-arrow-color, var(--_tooltip-background-color));
+        position: relative;
+        pointer-events: none;
+        display: var(--media-tooltip-display, inline-flex);
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        z-index: var(--media-tooltip-z-index, 1);
+        background: var(--_tooltip-background);
+        color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
+        font: var(--media-font,
+          var(--media-font-weight, 400)
+          var(--media-font-size, 13px) /
+          var(--media-text-content-height, var(--media-control-height, 18px))
+          var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+        padding: var(--media-tooltip-padding, .35em .7em);
+        border: var(--media-tooltip-border, none);
+        border-radius: var(--media-tooltip-border-radius, 5px);
+        filter: var(--media-tooltip-filter, drop-shadow(0 0 4px rgba(0, 0, 0, .2)));
+        white-space: var(--media-tooltip-white-space, nowrap);
+      }
 
-template.innerHTML = /*html*/ `
-  <style>
-    :host {
-      --_tooltip-background-color: var(--media-tooltip-background-color, var(--media-secondary-color, rgba(20, 20, 30, .7)));
-      --_tooltip-background: var(--media-tooltip-background, var(--_tooltip-background-color));
-      --_tooltip-arrow-half-width: calc(var(--media-tooltip-arrow-width, 12px) / 2);
-      --_tooltip-arrow-height: var(--media-tooltip-arrow-height, 5px);
-      --_tooltip-arrow-background: var(--media-tooltip-arrow-color, var(--_tooltip-background-color));
-      position: relative;
-      pointer-events: none;
-      display: var(--media-tooltip-display, inline-flex);
-      justify-content: center;
-      align-items: center;
-      box-sizing: border-box;
-      z-index: var(--media-tooltip-z-index, 1);
-      background: var(--_tooltip-background);
-      color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-      font: var(--media-font,
-        var(--media-font-weight, 400)
-        var(--media-font-size, 13px) /
-        var(--media-text-content-height, var(--media-control-height, 18px))
-        var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
-      padding: var(--media-tooltip-padding, .35em .7em);
-      border: var(--media-tooltip-border, none);
-      border-radius: var(--media-tooltip-border-radius, 5px);
-      filter: var(--media-tooltip-filter, drop-shadow(0 0 4px rgba(0, 0, 0, .2)));
-      white-space: var(--media-tooltip-white-space, nowrap);
-    }
+      :host([hidden]) {
+        display: none;
+      }
 
-    :host([hidden]) {
-      display: none;
-    }
+      img, svg {
+        display: inline-block;
+      }
 
-    img, svg {
-      display: inline-block;
-    }
+      #arrow {
+        position: absolute;
+        width: 0px;
+        height: 0px;
+        border-style: solid;
+        display: var(--media-tooltip-arrow-display, block);
+      }
 
-    #arrow {
-      position: absolute;
-      width: 0px;
-      height: 0px;
-      border-style: solid;
-      display: var(--media-tooltip-arrow-display, block);
-    }
+      :host(:not([placement])),
+      :host([placement="top"]) {
+        position: absolute;
+        bottom: calc(100% + var(--media-tooltip-distance, 12px));
+        left: 50%;
+        transform: translate(calc(-50% - var(--media-tooltip-offset-x, 0px)), 0);
+      }
+      :host(:not([placement])) #arrow,
+      :host([placement="top"]) #arrow {
+        top: 100%;
+        left: 50%;
+        border-width: var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width) 0 var(--_tooltip-arrow-half-width);
+        border-color: var(--_tooltip-arrow-background) transparent transparent transparent;
+        transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
+      }
 
-    :host(:not([placement])),
-    :host([placement="top"]) {
-      position: absolute;
-      bottom: calc(100% + var(--media-tooltip-distance, 12px));
-      left: 50%;
-      transform: translate(calc(-50% - var(--media-tooltip-offset-x, 0px)), 0);
-    }
-    :host(:not([placement])) #arrow,
-    :host([placement="top"]) #arrow {
-      top: 100%;
-      left: 50%;
-      border-width: var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width) 0 var(--_tooltip-arrow-half-width);
-      border-color: var(--_tooltip-arrow-background) transparent transparent transparent;
-      transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
-    }
+      :host([placement="right"]) {
+        position: absolute;
+        left: calc(100% + var(--media-tooltip-distance, 12px));
+        top: 50%;
+        transform: translate(0, -50%);
+      }
+      :host([placement="right"]) #arrow {
+        top: 50%;
+        right: 100%;
+        border-width: var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width) 0;
+        border-color: transparent var(--_tooltip-arrow-background) transparent transparent;
+        transform: translate(0, -50%);
+      }
 
-    :host([placement="right"]) {
-      position: absolute;
-      left: calc(100% + var(--media-tooltip-distance, 12px));
-      top: 50%;
-      transform: translate(0, -50%);
-    }
-    :host([placement="right"]) #arrow {
-      top: 50%;
-      right: 100%;
-      border-width: var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width) 0;
-      border-color: transparent var(--_tooltip-arrow-background) transparent transparent;
-      transform: translate(0, -50%);
-    }
+      :host([placement="bottom"]) {
+        position: absolute;
+        top: calc(100% + var(--media-tooltip-distance, 12px));
+        left: 50%;
+        transform: translate(calc(-50% - var(--media-tooltip-offset-x, 0px)), 0);
+      }
+      :host([placement="bottom"]) #arrow {
+        bottom: 100%;
+        left: 50%;
+        border-width: 0 var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width);
+        border-color: transparent transparent var(--_tooltip-arrow-background) transparent;
+        transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
+      }
 
-    :host([placement="bottom"]) {
-      position: absolute;
-      top: calc(100% + var(--media-tooltip-distance, 12px));
-      left: 50%;
-      transform: translate(calc(-50% - var(--media-tooltip-offset-x, 0px)), 0);
-    }
-    :host([placement="bottom"]) #arrow {
-      bottom: 100%;
-      left: 50%;
-      border-width: 0 var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height) var(--_tooltip-arrow-half-width);
-      border-color: transparent transparent var(--_tooltip-arrow-background) transparent;
-      transform: translate(calc(-50% + var(--media-tooltip-offset-x, 0px)), 0);
-    }
-
-    :host([placement="left"]) {
-      position: absolute;
-      right: calc(100% + var(--media-tooltip-distance, 12px));
-      top: 50%;
-      transform: translate(0, -50%);
-    }
-    :host([placement="left"]) #arrow {
-      top: 50%;
-      left: 100%;
-      border-width: var(--_tooltip-arrow-half-width) 0 var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height);
-      border-color: transparent transparent transparent var(--_tooltip-arrow-background);
-      transform: translate(0, -50%);
-    }
-    
-    :host([placement="none"]) #arrow {
-      display: none;
-    }
-
-  </style>
-  <slot></slot>
-  <div id="arrow"></div>
-`;
+      :host([placement="left"]) {
+        position: absolute;
+        right: calc(100% + var(--media-tooltip-distance, 12px));
+        top: 50%;
+        transform: translate(0, -50%);
+      }
+      :host([placement="left"]) #arrow {
+        top: 50%;
+        left: 100%;
+        border-width: var(--_tooltip-arrow-half-width) 0 var(--_tooltip-arrow-half-width) var(--_tooltip-arrow-height);
+        border-color: transparent transparent transparent var(--_tooltip-arrow-background);
+        transform: translate(0, -50%);
+      }
+      
+      :host([placement="none"]) #arrow {
+        display: none;
+      }
+    </style>
+    <slot></slot>
+    <div id="arrow"></div>
+  `;
+}
 
 /**
  * @extends {HTMLElement}
@@ -159,6 +159,9 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-tooltip-arrow-color - Arrow color
  */
 class MediaTooltip extends globalThis.HTMLElement {
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
+  static getTemplateHTML = getTemplateHTML;
+
   static get observedAttributes(): string[] {
     return [Attributes.PLACEMENT, Attributes.BOUNDS];
   }
@@ -170,8 +173,10 @@ class MediaTooltip extends globalThis.HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
-      this.shadowRoot.appendChild(template.content.cloneNode(true));
+      this.attachShadow((this.constructor as typeof MediaTooltip).shadowRootOptions);
+
+      const attrs = namedNodeMapToObject(this.attributes);
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaTooltip).getTemplateHTML(attrs);
     }
 
     this.arrowEl = this.shadowRoot.querySelector('#arrow');

@@ -1,36 +1,36 @@
-import { globalThis, document } from './utils/server-safe-globals.js';
-import { getStringAttr, setStringAttr } from './utils/element-utils.js';
+import { globalThis } from './utils/server-safe-globals.js';
+import { getStringAttr, namedNodeMapToObject, setStringAttr } from './utils/element-utils.js';
 
 export const Attributes = {
   PLACEHOLDER_SRC: 'placeholdersrc',
   SRC: 'src',
 };
 
-const template: HTMLTemplateElement = document.createElement('template');
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        pointer-events: none;
+        display: var(--media-poster-image-display, inline-block);
+        box-sizing: border-box;
+      }
 
-template.innerHTML = /*html*/ `
-  <style>
-    :host {
-      pointer-events: none;
-      display: var(--media-poster-image-display, inline-block);
-      box-sizing: border-box;
-    }
+      img {
+        max-width: 100%;
+        max-height: 100%;
+        min-width: 100%;
+        min-height: 100%;
+        background-repeat: no-repeat;
+        background-position: var(--media-poster-image-background-position, var(--media-object-position, center));
+        background-size: var(--media-poster-image-background-size, var(--media-object-fit, contain));
+        object-fit: var(--media-object-fit, contain);
+        object-position: var(--media-object-position, center);
+      }
+    </style>
 
-    img {
-      max-width: 100%;
-      max-height: 100%;
-      min-width: 100%;
-      min-height: 100%;
-      background-repeat: no-repeat;
-      background-position: var(--media-poster-image-background-position, var(--media-object-position, center));
-      background-size: var(--media-poster-image-background-size, var(--media-object-fit, contain));
-      object-fit: var(--media-object-fit, contain);
-      object-position: var(--media-object-position, center);
-    }
-  </style>
-
-  <img part="poster img" aria-hidden="true" id="image"/>
-`;
+    <img part="poster img" aria-hidden="true" id="image"/>
+  `;
+}
 
 const unsetBackgroundImage = (el: HTMLElement): void => {
   el.style.removeProperty('background-image');
@@ -50,6 +50,9 @@ const setBackgroundImage = (el: HTMLElement, image: string): void => {
  * @cssproperty --media-object-position - `object-position` of poster image.
  */
 class MediaPosterImage extends globalThis.HTMLElement {
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
+  static getTemplateHTML = getTemplateHTML;
+
   static get observedAttributes(): string[] {
     return [Attributes.PLACEHOLDER_SRC, Attributes.SRC];
   }
@@ -61,8 +64,10 @@ class MediaPosterImage extends globalThis.HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
-      this.shadowRoot.appendChild(template.content.cloneNode(true));
+      this.attachShadow((this.constructor as typeof MediaPosterImage).shadowRootOptions);
+
+      const attrs = namedNodeMapToObject(this.attributes);
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaPosterImage).getTemplateHTML(attrs);
     }
 
     this.image = this.shadowRoot.querySelector('#image');

@@ -1,6 +1,6 @@
 import { MediaUIAttributes } from '../constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { globalThis } from '../utils/server-safe-globals.js';
 import {
   getStringAttr,
   setStringAttr,
@@ -14,15 +14,20 @@ const renditionIcon = /*html*/ `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M13.5 2.5h2v6h-2v-2h-11v-2h11v-2Zm4 2h4v2h-4v-2Zm-12 4h2v6h-2v-2h-3v-2h3v-2Zm4 2h12v2h-12v-2Zm1 4h2v6h-2v-2h-8v-2h8v-2Zm4 2h7v2h-7v-2Z" />
 </svg>`;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-    :host([aria-expanded="true"]) slot[name=tooltip] {
-      display: none;
-    }
-  </style>
-  <slot name="icon">${renditionIcon}</slot>
-`;
+function getSlotTemplateHTML() {
+  return /*html*/ `
+    <style>
+      :host([aria-expanded="true"]) slot[name=tooltip] {
+        display: none;
+      }
+    </style>
+    <slot name="icon">${renditionIcon}</slot>
+  `;
+}
+
+function getTooltipContentHTML() {
+  return t('Quality');
+}
 
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
@@ -31,6 +36,9 @@ slotTemplate.innerHTML = /*html*/ `
  * @cssproperty [--media-rendition-menu-button-display = inline-flex] - `display` property of button.
  */
 class MediaRenditionMenuButton extends MediaChromeMenuButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
@@ -38,10 +46,6 @@ class MediaRenditionMenuButton extends MediaChromeMenuButton {
       MediaUIAttributes.MEDIA_RENDITION_UNAVAILABLE,
       MediaUIAttributes.MEDIA_HEIGHT,
     ];
-  }
-
-  constructor() {
-    super({ slotTemplate, tooltipContent: t('Quality') });
   }
 
   connectedCallback(): void {

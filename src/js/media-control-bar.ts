@@ -5,37 +5,38 @@
 */
 import { MediaStateReceiverAttributes } from './constants.js';
 import type MediaController from './media-controller.js';
-import { document, globalThis } from './utils/server-safe-globals.js';
+import { namedNodeMapToObject } from './utils/element-utils.js';
+import { globalThis } from './utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement('template');
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        ${/* Need position to display above video for some reason */ ''}
+        box-sizing: border-box;
+        display: var(--media-control-display, var(--media-control-bar-display, inline-flex));
+        color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
+        --media-loading-indicator-icon-height: 44px;
+      }
 
-template.innerHTML = /*html*/ `
-  <style>
-    :host {
-      ${/* Need position to display above video for some reason */ ''}
-      box-sizing: border-box;
-      display: var(--media-control-display, var(--media-control-bar-display, inline-flex));
-      color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-      --media-loading-indicator-icon-height: 44px;
-    }
+      ::slotted(media-time-range),
+      ::slotted(media-volume-range) {
+        min-height: 100%;
+      }
 
-    ::slotted(media-time-range),
-    ::slotted(media-volume-range) {
-      min-height: 100%;
-    }
+      ::slotted(media-time-range),
+      ::slotted(media-clip-selector) {
+        flex-grow: 1;
+      }
 
-    ::slotted(media-time-range),
-    ::slotted(media-clip-selector) {
-      flex-grow: 1;
-    }
+      ::slotted([role="menu"]) {
+        position: absolute;
+      }
+    </style>
 
-    ::slotted([role="menu"]) {
-      position: absolute;
-    }
-  </style>
-
-  <slot></slot>
-`;
+    <slot></slot>
+  `;
+}
 
 /**
  * @attr {string} mediacontroller - The element `id` of the media controller to connect to (if not nested within).
@@ -48,6 +49,9 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-control-display - `display` property of control.
  */
 class MediaControlBar extends globalThis.HTMLElement {
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
+  static getTemplateHTML = getTemplateHTML;
+
   #mediaController: MediaController | null;
 
   static get observedAttributes(): string[] {
@@ -59,8 +63,10 @@ class MediaControlBar extends globalThis.HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
-      this.shadowRoot.appendChild(template.content.cloneNode(true));
+      this.attachShadow((this.constructor as typeof MediaControlBar).shadowRootOptions);
+
+      const attrs = namedNodeMapToObject(this.attributes);
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaControlBar).getTemplateHTML(attrs);
     }
   }
 

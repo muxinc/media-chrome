@@ -106,7 +106,7 @@
   },
   "dependencies": {
     "@vercel/edge": "^1.2.1",
-    "ce-la-react": "^0.1.3"
+    "ce-la-react": "^0.2.1"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.10.2",
