@@ -31,7 +31,6 @@ function getTooltipContentHTML() {
 }
 
 /**
- * @attr {string} rates - Set custom playback rates for the user to choose from.
  * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
  *
  * @cssproperty [--media-playback-rate-menu-button-display = inline-flex] - `display` property of button.
