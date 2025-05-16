@@ -16,7 +16,7 @@ const Attributes = {
   NO_TOOLTIP: 'notooltip',
 };
 
-function getTemplateHTML(_attrs: Record<string, string>) {
+function getTemplateHTML(_attrs: Record<string, string>, _props: Record<string, any> = {}) {
   return /*html*/ `
     <style>
       :host {
@@ -98,7 +98,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
       }
     </style>
 
-    ${this.getSlotTemplateHTML(_attrs)}
+    ${this.getSlotTemplateHTML(_attrs, _props)}
 
     <slot name="tooltip">
       <media-tooltip part="tooltip" aria-hidden="true">
@@ -113,7 +113,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
   `;
 }
 
-function getSlotTemplateHTML(_attrs: Record<string, string>) {
+function getSlotTemplateHTML(_attrs: Record<string, string>, _props: Record<string, any>) {
   return /*html*/ `
     <slot></slot>
   `;

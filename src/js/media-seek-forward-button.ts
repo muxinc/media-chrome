@@ -10,11 +10,18 @@ export const Attributes = {
 
 const DEFAULT_SEEK_OFFSET = 30;
 
-const forwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(8.9 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3l5.61 4L10 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 10 6Z"/></svg>`;
+const forwardIcon = (seekOffset: number) => `
+  <svg aria-hidden="true" viewBox="0 0 20 24">
+    <defs>
+      <style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style>
+    </defs>
+    <text class="text value" transform="translate(8.9 19.87)">${seekOffset}</text>
+    <path d="M10 6V3l5.61 4L10 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 10 6Z"/>
+  </svg>`;
 
-function getSlotTemplateHTML() {
+function getSlotTemplateHTML(_attrs: Record<string, string>, props: Record<string, any>) {
   return /*html*/ `
-    <slot name="icon">${forwardIcon}</slot>
+    <slot name="icon">${forwardIcon(props.seekOffset)}</slot>
   `;
 }
 
