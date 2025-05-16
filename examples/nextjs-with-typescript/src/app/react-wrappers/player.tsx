@@ -96,7 +96,7 @@ export const Player = () => {
         ></MediaLoadingIndicator>
         <MediaPlaybackRateMenu role="menu" hidden anchor="auto" rates={[.5, 1, 2]} />
         <MediaControlBar>
-          <MediaPlayButton></MediaPlayButton>
+          <MediaPlayButton mediaPaused={true}></MediaPlayButton>
           <MediaSeekBackwardButton seekOffset={10}></MediaSeekBackwardButton>
           <MediaSeekForwardButton seekOffset={10}></MediaSeekForwardButton>
           <MediaTimeRange></MediaTimeRange>
