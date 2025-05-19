@@ -57,6 +57,7 @@ export const Player = () => {
       <br />
       {mounted && (<MediaController hotkeys={"noarrowleft noarrowright"} style={chromeStyles as any} defaultSubtitles noDefaultStore={noDefaultStore}>
         <video
+          suppressHydrationWarning={true}
           style={{ width: '100%', aspectRatio: 2.4 }}
           slot="media"
           src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
