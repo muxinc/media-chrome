@@ -90,8 +90,9 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   /**
    * Set the playback rates for the button.
+   * For React 19+ compatibility, accept a string of space-separated rates.
    */
-  set rates(value: ArrayLike<number> | null | undefined) {
+  set rates(value: ArrayLike<number> | string | null | undefined) {
     if (!value) {
       this.#rates.value = '';
     } else if (Array.isArray(value)) {
