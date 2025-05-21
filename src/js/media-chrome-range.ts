@@ -1,6 +1,7 @@
-import { MediaStateReceiverAttributes } from './constants.js';
+import { MediaStateReceiverAttributes, MediaUIProps } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import {
+  getMediaController,
   getOrInsertCSSRule,
   getPointProgressOnLine,
 } from './utils/element-utils.js';
@@ -308,12 +309,14 @@ class MediaChromeRange extends globalThis.HTMLElement {
   #endpoint;
   #cssRules: Record<string, CSSStyleRule> = {};
   #segments = [];
+  protected _langObserver: MutationObserver;
 
   static get observedAttributes(): string[] {
     return [
       'disabled',
       'aria-disabled',
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+      MediaUIProps.LANG
     ];
   }
 
@@ -412,6 +415,17 @@ class MediaChromeRange extends globalThis.HTMLElement {
       );
       this.#mediaController?.associateElement?.(this);
     }
+    const controller = getMediaController(this);
+    this._langObserver = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === MediaUIProps.LANG) {
+          const newLang = controller.getAttribute(MediaUIProps.LANG);
+          this.lang = newLang;
+        }
+      }
+    });
+  
+    this._langObserver.observe(controller, { attributes: true });
 
     this.updateBar();
 
@@ -528,6 +542,14 @@ class MediaChromeRange extends globalThis.HTMLElement {
 
   get dragging() {
     return this.hasAttribute('dragging');
+  }
+
+  get lang(): string {
+    return this.getAttribute(MediaUIProps.LANG);
+  }
+
+  set lang(value: string) {
+    this.setAttribute(MediaUIProps.LANG, value);
   }
 
   #enableUserEvents() {

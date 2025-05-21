@@ -21,6 +21,11 @@ const toVolume = (el: any): number => {
 const formatAsPercentString = (value: number): string =>
   `${Math.round(value * 100)}%`;
 
+
+const updateAriaLabel = (el: HTMLInputElement) => {
+  el.setAttribute('aria-label', t('volume'));
+};
+
 /**
  * @attr {string} mediavolume - (read-only) Set to the media volume.
  * @attr {boolean} mediamuted - (read-only) Set to the media muted state.
@@ -57,7 +62,7 @@ class MediaVolumeRange extends MediaChromeRange {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.range.setAttribute('aria-label', t('volume'));
+    updateAriaLabel(this.range);
   }
 
   attributeChangedCallback(
@@ -66,7 +71,7 @@ class MediaVolumeRange extends MediaChromeRange {
     newValue: string | null
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
-
+    updateAriaLabel(this.range);
     if (
       attrName === MediaUIAttributes.MEDIA_VOLUME ||
       attrName === MediaUIAttributes.MEDIA_MUTED
