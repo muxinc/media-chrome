@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { t } from './utils/i18n.js';
 import {
@@ -13,40 +13,38 @@ const pipIcon = `<svg aria-hidden="true" viewBox="0 0 28 24">
   <path d="M24 3H4a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h20a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1Zm-1 16H5V5h18v14Zm-3-8h-7v5h7v-5Z"/>
 </svg>`;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-  :host([${
-    MediaUIAttributes.MEDIA_IS_PIP
-  }]) slot[name=icon] slot:not([name=exit]) {
-    display: none !important;
-  }
+function getSlotTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host([${MediaUIAttributes.MEDIA_IS_PIP}]) slot[name=icon] slot:not([name=exit]) {
+        display: none !important;
+      }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_PIP
-  }])) slot[name=icon] slot:not([name=enter]) {
-    display: none !important;
-  }
+      :host(:not([${MediaUIAttributes.MEDIA_IS_PIP}])) slot[name=icon] slot:not([name=enter]) {
+        display: none !important;
+      }
 
-  :host([${MediaUIAttributes.MEDIA_IS_PIP}]) slot[name=tooltip-enter],
-  :host(:not([${MediaUIAttributes.MEDIA_IS_PIP}])) slot[name=tooltip-exit] {
-    display: none;
-  }
-  </style>
+      :host([${MediaUIAttributes.MEDIA_IS_PIP}]) slot[name=tooltip-enter],
+      :host(:not([${MediaUIAttributes.MEDIA_IS_PIP}])) slot[name=tooltip-exit] {
+        display: none;
+      }
+    </style>
 
-  <slot name="icon">
-    <slot name="enter">${pipIcon}</slot>
-    <slot name="exit">${pipIcon}</slot>
-  </slot>
-`;
+    <slot name="icon">
+      <slot name="enter">${pipIcon}</slot>
+      <slot name="exit">${pipIcon}</slot>
+    </slot>
+  `;
+}
 
-const tooltipContent = /*html*/ `
-  <slot name="tooltip-enter">${t('Enter picture in picture mode')}</slot>
-  <slot name="tooltip-exit">${t('Exit picture in picture mode')}</slot>
-`;
+function getTooltipContentHTML() {
+  return /*html*/ `
+    <slot name="tooltip-enter">${t('Enter picture in picture mode')}</slot>
+    <slot name="tooltip-exit">${t('Exit picture in picture mode')}</slot>
+  `;
+}
 
-const updateAriaLabel = (el: MediaPipButton): void => {
+const updateAriaLabel = (el: MediaPipButton) => {
   const label = el.mediaIsPip
     ? t('exit picture in picture mode')
     : t('enter picture in picture mode');
@@ -64,6 +62,9 @@ const updateAriaLabel = (el: MediaPipButton): void => {
  * @cssproperty [--media-pip-button-display = inline-flex] - `display` property of button.
  */
 class MediaPipButton extends MediaChromeButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
@@ -72,13 +73,9 @@ class MediaPipButton extends MediaChromeButton {
     ];
   }
 
-  constructor(options: object = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
-  }
-
   connectedCallback(): void {
-    updateAriaLabel(this);
     super.connectedCallback();
+    updateAriaLabel(this);
   }
 
   attributeChangedCallback(
@@ -86,10 +83,11 @@ class MediaPipButton extends MediaChromeButton {
     oldValue: string | null,
     newValue: string | null
   ): void {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
     if (attrName === MediaUIAttributes.MEDIA_IS_PIP) {
       updateAriaLabel(this);
     }
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**

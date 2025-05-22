@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { t } from './utils/i18n.js';
 import {
@@ -14,40 +14,43 @@ const airplayIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
 </svg>
 `;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-    :host([${
-      MediaUIAttributes.MEDIA_IS_AIRPLAYING
-    }]) slot[name=icon] slot:not([name=exit]) {
-      display: none !important;
-    }
+function getSlotTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host([${
+        MediaUIAttributes.MEDIA_IS_AIRPLAYING
+      }]) slot[name=icon] slot:not([name=exit]) {
+        display: none !important;
+      }
 
-    ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-    :host(:not([${
-      MediaUIAttributes.MEDIA_IS_AIRPLAYING
-    }])) slot[name=icon] slot:not([name=enter]) {
-      display: none !important;
-    }
+      ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+      :host(:not([${
+        MediaUIAttributes.MEDIA_IS_AIRPLAYING
+      }])) slot[name=icon] slot:not([name=enter]) {
+        display: none !important;
+      }
 
-    :host([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]) slot[name=tooltip-enter],
-    :host(:not([${
-      MediaUIAttributes.MEDIA_IS_AIRPLAYING
-    }])) slot[name=tooltip-exit] {
-      display: none;
-    }
-  </style>
+      :host([${MediaUIAttributes.MEDIA_IS_AIRPLAYING}]) slot[name=tooltip-enter],
+      :host(:not([${
+        MediaUIAttributes.MEDIA_IS_AIRPLAYING
+      }])) slot[name=tooltip-exit] {
+        display: none;
+      }
+    </style>
 
-  <slot name="icon">
-    <slot name="enter">${airplayIcon}</slot>
-    <slot name="exit">${airplayIcon}</slot>
-  </slot>
-`;
+    <slot name="icon">
+      <slot name="enter">${airplayIcon}</slot>
+      <slot name="exit">${airplayIcon}</slot>
+    </slot>
+  `;
+}
 
-const tooltipContent = /*html*/ `
-  <slot name="tooltip-enter">${t('start airplay')}</slot>
-  <slot name="tooltip-exit">${t('stop airplay')}</slot>
-`;
+function getTooltipContentHTML() {
+  return /*html*/ `
+    <slot name="tooltip-enter">${t('start airplay')}</slot>
+    <slot name="tooltip-exit">${t('stop airplay')}</slot>
+  `;
+}
 
 const updateAriaLabel = (el: MediaAirplayButton): void => {
   const label = el.mediaIsAirplaying ? t('stop airplay') : t('start airplay');
@@ -67,16 +70,15 @@ const updateAriaLabel = (el: MediaAirplayButton): void => {
  * @event {CustomEvent} mediaairplayrequest
  */
 class MediaAirplayButton extends MediaChromeButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_IS_AIRPLAYING,
       MediaUIAttributes.MEDIA_AIRPLAY_UNAVAILABLE,
     ];
-  }
-
-  constructor(options: { slotTemplate?: HTMLTemplateElement } = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
   }
 
   connectedCallback(): void {

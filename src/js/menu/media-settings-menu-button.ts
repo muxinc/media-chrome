@@ -1,32 +1,36 @@
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { globalThis } from '../utils/server-safe-globals.js';
 import { getMediaController } from '../utils/element-utils.js';
 import { t } from '../utils/i18n.js';
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-    :host([aria-expanded="true"]) slot[name=tooltip] {
-      display: none;
-    }
-  </style>
-  <slot name="icon">
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path d="M4.5 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm7.5 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm7.5 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
-    </svg>
-  </slot>
-`;
+function getSlotTemplateHTML() {
+  return /*html*/ `
+    <style>
+      :host([aria-expanded="true"]) slot[name=tooltip] {
+        display: none;
+      }
+    </style>
+    <slot name="icon">
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M4.5 14.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm7.5 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm7.5 0a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+      </svg>
+    </slot>
+  `;
+}
+
+function getTooltipContentHTML() {
+  return t('Settings');
+}
 
 /**
  * @attr {string} target - CSS id selector for the element to be targeted by the button.
  */
 class MediaSettingsMenuButton extends MediaChromeMenuButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes(): string[] {
     return [...super.observedAttributes, 'target'];
-  }
-
-  constructor() {
-    super({ slotTemplate, tooltipContent: t('Settings') });
   }
 
   connectedCallback(): void {
