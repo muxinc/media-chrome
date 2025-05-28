@@ -1,4 +1,4 @@
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import {
   MediaUIAttributes,
   MediaStateReceiverAttributes,
@@ -6,26 +6,28 @@ import {
 import {
   getOrInsertCSSRule,
   getStringAttr,
+  namedNodeMapToObject,
   setStringAttr,
 } from './utils/element-utils.js';
 import MediaController from './media-controller.js';
 
-const template: HTMLTemplateElement = document.createElement('template');
-template.innerHTML = /*html*/ `
-  <style>
-    :host {
-      box-sizing: border-box;
-      display: var(--media-control-display, var(--media-preview-thumbnail-display, inline-block));
-      overflow: hidden;
-    }
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        box-sizing: border-box;
+        display: var(--media-control-display, var(--media-preview-thumbnail-display, inline-block));
+        overflow: hidden;
+      }
 
-    img {
-      display: none;
-      position: relative;
-    }
-  </style>
-  <img crossorigin loading="eager" decoding="async">
-`;
+      img {
+        display: none;
+        position: relative;
+      }
+    </style>
+    <img crossorigin loading="eager" decoding="async">
+  `;
+}
 
 /**
  *
@@ -37,6 +39,9 @@ template.innerHTML = /*html*/ `
  * @cssproperty [--media-control-display = inline-block] - `display` property of control.
  */
 class MediaPreviewThumbnail extends globalThis.HTMLElement {
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
+  static getTemplateHTML = getTemplateHTML;
+
   #mediaController: MediaController;
 
   static get observedAttributes() {
@@ -55,8 +60,10 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
-      this.shadowRoot.appendChild(template.content.cloneNode(true));
+      this.attachShadow((this.constructor as typeof MediaPreviewThumbnail).shadowRootOptions);
+
+      const attrs = namedNodeMapToObject(this.attributes);
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaPreviewThumbnail).getTemplateHTML(attrs);
     }
   }
 
