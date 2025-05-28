@@ -334,7 +334,12 @@ class MediaChromeRange extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaChromeRange).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-      this.shadowRoot.innerHTML = (this.constructor as typeof MediaChromeRange).getTemplateHTML(attrs);
+      const html = (this.constructor as typeof MediaChromeRange).getTemplateHTML(attrs);
+      // From MDN: setHTMLUnsafe should be used instead of ShadowRoot.innerHTML 
+      // when a string of HTML may contain declarative shadow roots.
+      this.shadowRoot.setHTMLUnsafe ?
+        this.shadowRoot.setHTMLUnsafe(html) :
+        this.shadowRoot.innerHTML = html;
     }
 
     this.container = this.shadowRoot.querySelector('#container');

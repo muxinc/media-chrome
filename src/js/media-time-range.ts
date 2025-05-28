@@ -20,6 +20,7 @@ import {
   setStringAttr,
 } from './utils/element-utils.js';
 import { t } from './utils/i18n.js';
+import MediaPreviewThumbnail from './media-preview-thumbnail.js';
 
 type Rects = {
   box: { width: number; min: number; max: number };
@@ -276,7 +277,11 @@ function getTemplateHTML(_attrs: Record<string, string>) {
     </style>
     <div id="preview-rail">
       <slot name="preview" part="box preview-box">
-        <media-preview-thumbnail></media-preview-thumbnail>
+        <media-preview-thumbnail>
+          <template shadowrootmode="${MediaPreviewThumbnail.shadowRootOptions.mode}">
+            ${MediaPreviewThumbnail.getTemplateHTML({})}
+          </template>
+        </media-preview-thumbnail>
         <media-preview-chapter-display></media-preview-chapter-display>
         <media-preview-time-display></media-preview-time-display>
         <slot name="preview-arrow"><div part="arrow"></div></slot>

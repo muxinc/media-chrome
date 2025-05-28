@@ -227,7 +227,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
     <slot name="gestures-chrome" part="layer gesture-layer">
       <media-gesture-receiver slot="gestures-chrome">
         <template shadowrootmode="${MediaGestureReceiver.shadowRootOptions.mode}">
-          ${(MediaGestureReceiver as typeof MediaGestureReceiver).getTemplateHTML({})}
+          ${MediaGestureReceiver.getTemplateHTML({})}
         </template>
       </media-gesture-receiver>
     </slot>
