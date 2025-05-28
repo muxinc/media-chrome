@@ -133,6 +133,7 @@ class MediaFullscreenButton extends MediaChromeButton {
     const eventName = this.mediaIsFullscreen
       ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
       : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
+      
     this.dispatchEvent(
       new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
     );

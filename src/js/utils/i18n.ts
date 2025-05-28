@@ -1,31 +1,37 @@
 import { En, TranslateDictionary, TranslateKeys } from '../lang/en.js';
 
-const translationsLanguages = {
-  en: En,
+const translations: Record<string, TranslateDictionary> = {
+  en: En
 };
 
-let currentLanguage = globalThis.navigator?.language.split('-')[0] || 'en';
+let currentLang = globalThis.navigator?.language || 'en';
 
 export const setLanguage = (langCode: string) => {
-  currentLanguage = langCode;
+  currentLang = langCode;
 };
 
 export const addTranslation = (
-  langCode: string,
+  lang: string,
   languageDictionary: TranslateDictionary
 ) => {
-  translationsLanguages[langCode] = languageDictionary;
+  translations[lang] = languageDictionary;
+};
+
+const resolveTranslation = (key: TranslateKeys): string => {
+  const [base] = currentLang.split('-');
+
+  return (
+    translations[currentLang]?.[key] ||
+    translations[base]?.[key] ||
+    translations.en?.[key] ||
+    key
+  );
 };
 
 export const t = (
   key: TranslateKeys,
-  variables: Record<string, string | number> = {}
-) => {
-  const result = translationsLanguages[currentLanguage]?.[key] || En[key];
-
-  return result.replace(/\{(\w+)\}/g, (_, varName) =>
-    variables[varName] !== undefined
-      ? String(variables[varName])
-      : `{${varName}}`
+  vars: Record<string, string | number> = {}
+): string =>
+  resolveTranslation(key).replace(/\{(\w+)\}/g, (_, v) =>
+    v in vars ? String(vars[v]) : `{${v}}`
   );
-};

@@ -14,7 +14,7 @@ import {
   createIndicator,
 } from './media-chrome-menu.js';
 import { Rendition } from '../media-store/state-mediator.js';
-
+import {t} from '../utils/i18n.js';
 /**
  * @extends {MediaChromeMenu}
  *
@@ -155,8 +155,8 @@ class MediaRenditionMenu extends MediaChromeMenu {
     }
 
     const text = isAuto
-      ? this.formatMenuItemText(`Auto (${this.mediaHeight}p)`)
-      : this.formatMenuItemText('Auto');
+      ? this.formatMenuItemText(`${t('Auto')} (${this.mediaHeight}p)`)
+      : this.formatMenuItemText(t('Auto'));
 
     const item = createMenuItem({
       type: 'radio',
@@ -165,7 +165,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       checked: isAuto,
     });
 
-    const autoDescription = this.mediaHeight > 0 ? `Auto (${this.mediaHeight}p)` : 'Auto';
+    const autoDescription = this.mediaHeight > 0 ? `${t('Auto')} (${this.mediaHeight}p)` : t('Auto');
     item.dataset.description = autoDescription;
 
     item.prepend(createIndicator(this, 'checked-indicator'));

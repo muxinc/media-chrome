@@ -78,14 +78,16 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   /**
-   * @type { AttributeTokenList | Array<number> | undefined} Will return a DOMTokenList.
-   * Setting a value will accept an array of numbers.
+   * Get the playback rates for the button.
    */
-  get rates() {
+  get rates(): AttributeTokenList | ArrayLike<number> | null | undefined {
     return this.#rates;
   }
 
-  set rates(value) {
+  /**
+   * Set the playback rates for the button.
+   */
+  set rates(value: ArrayLike<number> | null | undefined) {
     if (!value) {
       this.#rates.value = '';
     } else if (Array.isArray(value)) {
@@ -109,7 +111,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   }
 
   handleClick() {
-    const availableRates = Array.from(this.rates.values(), (str) => +str).sort(
+    const availableRates = Array.from(this.#rates.values(), (str) => +str).sort(
       (a, b) => a - b
     );
 
