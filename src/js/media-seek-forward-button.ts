@@ -1,9 +1,8 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
-import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
+import { getNumericAttr, setNumericAttr, getSlotted, updateIconText } from './utils/element-utils.js';
 import { t } from './utils/i18n.js';
-import { getSlotted, updateIconText } from './utils/element-utils.js';
 
 export const Attributes = {
   SEEK_OFFSET: 'seekoffset',
@@ -11,17 +10,29 @@ export const Attributes = {
 
 const DEFAULT_SEEK_OFFSET = 30;
 
-const forwardIcon = `<svg aria-hidden="true" viewBox="0 0 20 24"><defs><style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style></defs><text class="text value" transform="translate(8.9 19.87)">${DEFAULT_SEEK_OFFSET}</text><path d="M10 6V3l5.61 4L10 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 10 6Z"/></svg>`;
+const forwardIcon = (seekOffset: number) => `
+  <svg aria-hidden="true" viewBox="0 0 20 24">
+    <defs>
+      <style>.text{font-size:8px;font-family:Arial-BoldMT, Arial;font-weight:700;}</style>
+    </defs>
+    <text class="text value" transform="translate(8.9 19.87)">${seekOffset}</text>
+    <path d="M10 6V3l5.61 4L10 10.94V8a5.54 5.54 0 0 0-1.9 10.48v2.12A7.5 7.5 0 0 1 10 6Z"/>
+  </svg>`;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
-slotTemplate.innerHTML = `
-  <slot name="icon">${forwardIcon}</slot>
-`;
+function getSlotTemplateHTML(_attrs: Record<string, string>, props: Record<string, any>) {
+  return /*html*/ `
+    <slot name="icon">${forwardIcon(props.seekOffset)}</slot>
+  `;
+}
+
+function getTooltipContentHTML() {
+  return t('Seek forward');
+}
 
 const DEFAULT_TIME = 0;
 
 /**
- * @slot icon - The element shown for the seek forward button’s display.
+ * @slot icon - The element shown for the seek forward button's display.
  *
  * @attr {string} seekoffset - Adjusts how much time (in seconds) the playhead should seek forward.
  * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
@@ -29,6 +40,9 @@ const DEFAULT_TIME = 0;
  * @cssproperty [--media-seek-forward-button-display = inline-flex] - `display` property of button.
  */
 class MediaSeekForwardButton extends MediaChromeButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
@@ -37,21 +51,13 @@ class MediaSeekForwardButton extends MediaChromeButton {
     ];
   }
 
-  constructor(options = {}) {
-    super({
-      slotTemplate,
-      tooltipContent: t('Seek forward'),
-      ...options,
-    });
-  }
-
   connectedCallback(): void {
+    super.connectedCallback();
     this.seekOffset = getNumericAttr(
       this,
       Attributes.SEEK_OFFSET,
       DEFAULT_SEEK_OFFSET
     );
-    super.connectedCallback();
   }
 
   attributeChangedCallback(
@@ -59,6 +65,8 @@ class MediaSeekForwardButton extends MediaChromeButton {
     _oldValue: string | null,
     newValue: string | null
   ): void {
+    super.attributeChangedCallback(attrName, _oldValue, newValue);
+
     if (attrName === Attributes.SEEK_OFFSET) {
       this.seekOffset = getNumericAttr(
         this,
@@ -66,8 +74,6 @@ class MediaSeekForwardButton extends MediaChromeButton {
         DEFAULT_SEEK_OFFSET
       );
     }
-
-    super.attributeChangedCallback(attrName, _oldValue, newValue);
   }
 
   // Own props

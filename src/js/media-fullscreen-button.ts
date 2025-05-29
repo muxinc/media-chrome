@@ -7,7 +7,7 @@
   If none, the button will make the media fullscreen.
 */
 import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { t } from './utils/i18n.js';
 import {
@@ -25,40 +25,43 @@ const exitFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
   <path d="M18.5 6.5V3H16v6h6V6.5h-3.5ZM16 21h2.5v-3.5H22V15h-6v6ZM4 17.5h3.5V21H10v-6H4v2.5Zm3.5-11H4V9h6V3H7.5v3.5Z"/>
 </svg>`;
 
-const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-    :host([${
-      MediaUIAttributes.MEDIA_IS_FULLSCREEN
-    }]) slot[name=icon] slot:not([name=exit]) {
-      display: none !important;
-    }
+function getSlotTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host([${
+        MediaUIAttributes.MEDIA_IS_FULLSCREEN
+      }]) slot[name=icon] slot:not([name=exit]) {
+        display: none !important;
+      }
 
-    ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-    :host(:not([${
-      MediaUIAttributes.MEDIA_IS_FULLSCREEN
-    }])) slot[name=icon] slot:not([name=enter]) {
-      display: none !important;
-    }
+      ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+      :host(:not([${
+        MediaUIAttributes.MEDIA_IS_FULLSCREEN
+      }])) slot[name=icon] slot:not([name=enter]) {
+        display: none !important;
+      }
 
-    :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot[name=tooltip-enter],
-    :host(:not([${
-      MediaUIAttributes.MEDIA_IS_FULLSCREEN
-    }])) slot[name=tooltip-exit] {
-      display: none;
-    }
-  </style>
+      :host([${MediaUIAttributes.MEDIA_IS_FULLSCREEN}]) slot[name=tooltip-enter],
+      :host(:not([${
+        MediaUIAttributes.MEDIA_IS_FULLSCREEN
+      }])) slot[name=tooltip-exit] {
+        display: none;
+      }
+    </style>
 
-  <slot name="icon">
-    <slot name="enter">${enterFullscreenIcon}</slot>
-    <slot name="exit">${exitFullscreenIcon}</slot>
-  </slot>
-`;
+    <slot name="icon">
+      <slot name="enter">${enterFullscreenIcon}</slot>
+      <slot name="exit">${exitFullscreenIcon}</slot>
+    </slot>
+  `;
+}
 
-const tooltipContent = /*html*/ `
-  <slot name="tooltip-enter">${t('Enter fullscreen mode')}</slot>
-  <slot name="tooltip-exit">${t('Exit fullscreen mode')}</slot>
-`;
+function getTooltipContentHTML() {
+  return /*html*/ `
+    <slot name="tooltip-enter">${t('Enter fullscreen mode')}</slot>
+    <slot name="tooltip-exit">${t('Exit fullscreen mode')}</slot>
+  `;
+}
 
 const updateAriaLabel = (el: MediaFullscreenButton) => {
   const label = el.mediaIsFullscreen
@@ -78,16 +81,15 @@ const updateAriaLabel = (el: MediaFullscreenButton) => {
  * @cssproperty [--media-fullscreen-button-display = inline-flex] - `display` property of button.
  */
 class MediaFullscreenButton extends MediaChromeButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_IS_FULLSCREEN,
       MediaUIAttributes.MEDIA_FULLSCREEN_UNAVAILABLE,
     ];
-  }
-
-  constructor(options: object = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
   }
 
   connectedCallback(): void {
