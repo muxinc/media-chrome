@@ -742,7 +742,7 @@ export const stateMediator: StateMediator = {
 
       return Array.from(chaptersTrack?.cues ?? []).map(
         ({ text, startTime, endTime }: VTTCue) => ({
-          text,
+          text: text ? new DOMParser().parseFromString(text, 'text/html').body.textContent || text : text,
           startTime,
           endTime,
         })
