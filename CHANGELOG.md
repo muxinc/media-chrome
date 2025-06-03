@@ -1,3 +1,12 @@
+# [4.11.0](https://github.com/muxinc/media-chrome/compare/v4.10.0...v4.11.0) (2025-06-03)
+
+
+### Features
+
+* use getTemplateHTML (React SSR support) ([#1142](https://github.com/muxinc/media-chrome/issues/1142)) ([535ff62](https://github.com/muxinc/media-chrome/commit/535ff62ce724368a3b85a1c7976ba9502de72ab1)), closes [#1143](https://github.com/muxinc/media-chrome/issues/1143) [/github.com/muxinc/ce-la-react/blob/main/src/ce-la-react.ts#L305-L323](https://github.com//github.com/muxinc/ce-la-react/blob/main/src/ce-la-react.ts/issues/L305-L323)
+
+
+
 # [4.10.0](https://github.com/muxinc/media-chrome/compare/v4.9.1...v4.10.0) (2025-05-14)
 
 
