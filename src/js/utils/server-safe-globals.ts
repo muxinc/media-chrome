@@ -72,6 +72,15 @@ const globalThisShim = {
       media,
     };
   },
+  DOMParser: class DOMParser {
+    parseFromString(string: string, _contentType: string) {
+      return {
+        body: {
+          textContent: string
+        }
+      };
+    }
+  },
 } as unknown as typeof globalThis;
 
 export const isServer =

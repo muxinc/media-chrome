@@ -293,6 +293,9 @@ export const prepareStateOwners = async (
   );
 };
 
+const domParser = new globalThis.DOMParser();
+const parseHtmlToText = (text: string) => text ? domParser.parseFromString(text, 'text/html').body.textContent || text : text;
+
 export const stateMediator: StateMediator = {
   mediaError: {
     get(stateOwners, event) {
@@ -742,7 +745,7 @@ export const stateMediator: StateMediator = {
 
       return Array.from(chaptersTrack?.cues ?? []).map(
         ({ text, startTime, endTime }: VTTCue) => ({
-          text: text ? new DOMParser().parseFromString(text, 'text/html').body.textContent || text : text,
+          text: parseHtmlToText(text),
           startTime,
           endTime,
         })
