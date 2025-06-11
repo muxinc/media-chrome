@@ -40,9 +40,14 @@ function getTooltipContentHTML() {
   `;
 }
 
-const updateAriaLabel = (el: MediaPlayButton) => {
+const updateAriaLabelTooltip = (el: MediaPlayButton) => {
   const label = el.mediaPaused ? t('play') : t('pause');
   el.setAttribute('aria-label', label);
+
+  const playSlot = el.shadowRoot?.querySelector('slot[name="tooltip-play"]');
+  const pauseSlot = el.shadowRoot?.querySelector('slot[name="tooltip-pause"]');
+  if (playSlot) playSlot.textContent = t('Play');
+  if (pauseSlot) pauseSlot.textContent = t('Pause');
 };
 
 /**
@@ -63,12 +68,13 @@ class MediaPlayButton extends MediaChromeButton {
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_PAUSED,
       MediaUIAttributes.MEDIA_ENDED,
+      MediaUIAttributes.MEDIA_LANG
     ];
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabel(this);
+    updateAriaLabelTooltip(this);
   }
 
   attributeChangedCallback(
@@ -78,8 +84,8 @@ class MediaPlayButton extends MediaChromeButton {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_PAUSED) {
-      updateAriaLabel(this);
+    if (attrName === MediaUIAttributes.MEDIA_PAUSED || attrName === MediaUIAttributes.MEDIA_LANG) {
+      updateAriaLabelTooltip(this);
     }
   }
 

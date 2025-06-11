@@ -242,6 +242,7 @@ export type StateMediator = {
     'NO_DEVICES_AVAILABLE' | 'NOT_CONNECTED' | 'CONNECTING' | 'CONNECTED'
   >;
   mediaIsAirplaying: FacadeProp<boolean>;
+  mediaLang: ReadonlyFacadeProp<string | undefined>;
   mediaFullscreenUnavailable: ReadonlyFacadeProp<
     AvailabilityStates | undefined
   >;
@@ -1229,5 +1230,33 @@ export const stateMediator: StateMediator = {
     },
     mediaEvents: ['emptied', 'loadstart'],
     audioTracksEvents: ['addtrack', 'removetrack'],
+  },
+  mediaLang: {
+    get(stateOwners) {
+      const mediaController = stateOwners.media.parentElement;
+      return mediaController.lang ?? 'en';
+    },
+    mediaEvents: ['langchange'],
+    stateOwnersUpdateHandlers: [
+      (handler, stateOwners) => {
+        const mediaController = stateOwners.media.parentElement;
+        if (!mediaController) return;
+
+        const mutationObserver = new MutationObserver((records) => {
+          for (const rec of records) {
+            if (rec.attributeName === 'lang') {
+              console.log('contain', mediaController.getAttribute('lang'));
+              handler(mediaController.getAttribute('lang') ?? '');
+            }
+          }
+        });
+        mutationObserver.observe(mediaController, {
+          attributes: true,
+          attributeFilter: ['lang'],
+        });
+
+        return () => mutationObserver.disconnect();
+      },
+    ],
   },
 };
