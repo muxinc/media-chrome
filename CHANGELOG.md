@@ -1,3 +1,12 @@
+## [4.11.1](https://github.com/muxinc/media-chrome/compare/v4.11.0...v4.11.1) (2025-06-12)
+
+
+### Bug Fixes
+
+* decode special characters in chapter text ([#1150](https://github.com/muxinc/media-chrome/issues/1150)) ([5558480](https://github.com/muxinc/media-chrome/commit/555848039ea2625052084d992d5d5e6ace40279e)), closes [#1132](https://github.com/muxinc/media-chrome/issues/1132)
+
+
+
 # [4.11.0](https://github.com/muxinc/media-chrome/compare/v4.10.0...v4.11.0) (2025-06-03)
 
 
