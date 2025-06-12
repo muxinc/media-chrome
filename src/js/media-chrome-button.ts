@@ -1,4 +1,7 @@
-import { MediaStateReceiverAttributes } from './constants.js';
+import {
+  MediaStateReceiverAttributes,
+  MediaUIAttributes,
+} from './constants.js';
 import MediaTooltip, { TooltipPlacement } from './media-tooltip.js';
 import {
   getBooleanAttr,
@@ -168,6 +171,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
       'disabled',
       Attributes.TOOLTIP_PLACEMENT,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+      MediaUIAttributes.MEDIA_LANG
     ];
   }
 
@@ -364,6 +368,14 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   set noTooltip(value: boolean | undefined) {
     setBooleanAttr(this, Attributes.NO_TOOLTIP, value);
+  }
+
+  get lang(): string | undefined {
+    return getStringAttr(this, MediaUIAttributes.MEDIA_LANG);
+  }
+
+  set lang(value: string | undefined) {
+    setStringAttr(this, MediaUIAttributes.MEDIA_LANG, value);
   }
 
   /**
