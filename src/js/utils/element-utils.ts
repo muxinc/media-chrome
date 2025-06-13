@@ -390,3 +390,33 @@ export function setStringAttr(
 
   el.setAttribute(attrName, nextValue);
 }
+
+/**
+ * Finds an element by ID across shadow DOM boundaries
+ * @param root - The root element to start searching from (Document, ShadowRoot, or Element)
+ * @param id - The ID of the element to find
+ * @returns The found element or null
+ */
+export function findElementAcrossShadowDOM(root: Document | ShadowRoot | Element, id: string): Element | null {
+  // First try direct getElementById if we're in a Document
+  if (root instanceof Document) {
+    const element = root.getElementById(id);
+    if (element) return element;
+  }
+
+  // Search in the current root
+  const element = root.querySelector(`#${id}`);
+  if (element) return element;
+
+  // Search in all shadow roots
+  const shadowRoots = Array.from(root.querySelectorAll('*'))
+    .map(el => el.shadowRoot)
+    .filter(Boolean) as ShadowRoot[];
+
+  for (const shadowRoot of shadowRoots) {
+    const element = findElementAcrossShadowDOM(shadowRoot, id);
+    if (element) return element;
+  }
+
+  return null;
+}
