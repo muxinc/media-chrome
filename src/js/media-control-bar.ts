@@ -5,7 +5,7 @@
 */
 import { MediaStateReceiverAttributes } from './constants.js';
 import type MediaController from './media-controller.js';
-import { namedNodeMapToObject } from './utils/element-utils.js';
+import { namedNodeMapToObject, findElementAcrossShadowDOM } from './utils/element-utils.js';
 import { globalThis } from './utils/server-safe-globals.js';
 
 function getTemplateHTML(_attrs: Record<string, string>) {
@@ -81,8 +81,7 @@ class MediaControlBar extends globalThis.HTMLElement {
         this.#mediaController = null;
       }
       if (newValue && this.isConnected) {
-        // @ts-ignore
-        this.#mediaController = this.getRootNode()?.getElementById(newValue);
+        this.#mediaController = findElementAcrossShadowDOM(this.getRootNode() as Document | ShadowRoot | HTMLElement, newValue) as MediaController;
         this.#mediaController?.associateElement?.(this);
       }
     }
@@ -93,10 +92,7 @@ class MediaControlBar extends globalThis.HTMLElement {
       MediaStateReceiverAttributes.MEDIA_CONTROLLER
     );
     if (mediaControllerId) {
-      // @ts-ignore
-      this.#mediaController = (this.getRootNode() as Document)?.getElementById(
-        mediaControllerId
-      );
+      this.#mediaController = findElementAcrossShadowDOM(this.getRootNode() as Document | ShadowRoot | Element, mediaControllerId) as MediaController;
       this.#mediaController?.associateElement?.(this);
     }
   }
