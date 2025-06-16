@@ -94,6 +94,7 @@ export type StateOption = {
   noVolumePref?: boolean;
   noMutedPref?: boolean;
   noSubtitlesLangPref?: boolean;
+  mediaLang?: string;
 };
 
 /**
@@ -1233,30 +1234,8 @@ export const stateMediator: StateMediator = {
   },
   mediaLang: {
     get(stateOwners) {
-      const mediaController = stateOwners.media.parentElement;
-      return mediaController.lang ?? 'en';
+      const { options: { mediaLang } = {} } = stateOwners;
+      return mediaLang ?? 'en';
     },
-    mediaEvents: ['langchange'],
-    stateOwnersUpdateHandlers: [
-      (handler, stateOwners) => {
-        const mediaController = stateOwners.media.parentElement;
-        if (!mediaController) return;
-
-        const mutationObserver = new MutationObserver((records) => {
-          for (const rec of records) {
-            if (rec.attributeName === 'lang') {
-              console.log('contain', mediaController.getAttribute('lang'));
-              handler(mediaController.getAttribute('lang') ?? '');
-            }
-          }
-        });
-        mutationObserver.observe(mediaController, {
-          attributes: true,
-          attributeFilter: ['lang'],
-        });
-
-        return () => mutationObserver.disconnect();
-      },
-    ],
   },
 };

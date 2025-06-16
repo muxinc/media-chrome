@@ -366,9 +366,12 @@ class MediaController extends MediaContainer {
       });
     } else if (attrName === Attributes.LANG && newValue !== oldValue) {
       setLanguage(newValue);
-      this.dispatchEvent(
-        new Event('langchange')
-      );
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          mediaLang: newValue,
+        },
+      });
     }
   }
 
