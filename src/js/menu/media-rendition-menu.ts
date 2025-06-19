@@ -14,7 +14,7 @@ import {
   createIndicator,
 } from './media-chrome-menu.js';
 import { Rendition } from '../media-store/state-mediator.js';
-import {t} from '../utils/i18n.js';
+import { t } from '../utils/i18n.js';
 /**
  * @extends {MediaChromeMenu}
  *
@@ -62,6 +62,8 @@ class MediaRenditionMenu extends MediaChromeMenu {
       attrName === MediaUIAttributes.MEDIA_HEIGHT &&
       oldValue !== newValue
     ) {
+      this.#render();
+    } else if (attrName === MediaUIAttributes.MEDIA_LANG) {
       this.#render();
     }
   }
@@ -115,30 +117,52 @@ class MediaRenditionMenu extends MediaChromeMenu {
   }
 
   #render(): void {
-    if (
-      this.#prevState.mediaRenditionList === JSON.stringify(this.mediaRenditionList) &&
-      this.#prevState.mediaHeight === this.mediaHeight
-    ) return;
+    const currentRenditionState = JSON.stringify(this.mediaRenditionList);
+    const currentHeight = this.mediaHeight;
+    const isAuto = !this.mediaRenditionSelected;
 
-    this.#prevState.mediaRenditionList = JSON.stringify(this.mediaRenditionList);
-    this.#prevState.mediaHeight = this.mediaHeight;
+    const oldAutoItem = this.defaultSlot.querySelector('[value="auto"]');
+    if (oldAutoItem) oldAutoItem.remove();
+
+    const autoText = isAuto
+      ? this.formatMenuItemText(`${t('Auto')} (${currentHeight}p)`)
+      : this.formatMenuItemText(t('Auto'));
+
+    const autoItem = createMenuItem({
+      type: 'radio',
+      text: autoText,
+      value: 'auto',
+      checked: isAuto,
+    });
+
+    const autoDescription =
+      currentHeight > 0 ? `${t('Auto')} (${currentHeight}p)` : t('Auto');
+
+    autoItem.dataset.description = autoDescription;
+    autoItem.prepend(createIndicator(this, 'checked-indicator'));
+    this.defaultSlot.append(autoItem);
+
+    if (
+      this.#prevState.mediaRenditionList === currentRenditionState &&
+      this.#prevState.mediaHeight === currentHeight
+    )
+      return;
+
+    this.#prevState.mediaRenditionList = currentRenditionState;
+    this.#prevState.mediaHeight = currentHeight;
+
+    [...this.defaultSlot.children].forEach((child) => {
+      if (child.getAttribute('value') !== 'auto') child.remove();
+    });
 
     const renditionList = this.mediaRenditionList.sort(
       (a: any, b: any) => b.height - a.height
     );
 
     for (const rendition of renditionList) {
-      // `selected` is not serialized in the rendition list because
-      // each selection would cause a re-render of the menu.
       // @ts-ignore
       rendition.selected = rendition.id === this.mediaRenditionSelected;
-    }
 
-    this.defaultSlot.textContent = '';
-
-    const isAuto = !this.mediaRenditionSelected;
-
-    for (const rendition of renditionList) {
       const text = this.formatMenuItemText(
         `${Math.min(rendition.width as number, rendition.height as number)}p`,
         rendition
@@ -153,23 +177,6 @@ class MediaRenditionMenu extends MediaChromeMenu {
       item.prepend(createIndicator(this, 'checked-indicator'));
       this.defaultSlot.append(item);
     }
-
-    const text = isAuto
-      ? this.formatMenuItemText(`${t('Auto')} (${this.mediaHeight}p)`)
-      : this.formatMenuItemText(t('Auto'));
-
-    const item = createMenuItem({
-      type: 'radio',
-      text,
-      value: 'auto',
-      checked: isAuto,
-    });
-
-    const autoDescription = this.mediaHeight > 0 ? `${t('Auto')} (${this.mediaHeight}p)` : t('Auto');
-    item.dataset.description = autoDescription;
-
-    item.prepend(createIndicator(this, 'checked-indicator'));
-    this.defaultSlot.append(item);
   }
 
   #onChange(): void {

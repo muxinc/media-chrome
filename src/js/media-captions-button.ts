@@ -49,8 +49,13 @@ function getTooltipContentHTML() {
   `;
 }
 
-const updateAriaChecked = (el: HTMLElement) => {
+const updateAriaCheckedTooltip = (el: HTMLElement) => {
   el.setAttribute('aria-checked', areSubsOn(el).toString());
+
+  const enterSlot = el.shadowRoot?.querySelector('slot[name="tooltip-enable"]');
+  const exitSlot = el.shadowRoot?.querySelector('slot[name="tooltip-disable"]');
+  if (enterSlot) enterSlot.textContent = t('Enable captions');
+  if (exitSlot) exitSlot.textContent = t('Disable captions');
 };
 
 /**
@@ -79,7 +84,7 @@ class MediaCaptionsButton extends MediaChromeButton {
     super.connectedCallback();
     this.setAttribute('role', 'switch');
     this.setAttribute('aria-label', t('closed captions'));
-    updateAriaChecked(this);
+    updateAriaCheckedTooltip(this);
   }
 
   attributeChangedCallback(
@@ -89,8 +94,8 @@ class MediaCaptionsButton extends MediaChromeButton {
   ) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
-      updateAriaChecked(this);
+    if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING || attrName === MediaUIAttributes.MEDIA_LANG) {
+      updateAriaCheckedTooltip(this);
     }
   }
 

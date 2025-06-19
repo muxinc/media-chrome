@@ -1,4 +1,4 @@
-import { MediaStateReceiverAttributes } from '../constants.js';
+import { MediaStateReceiverAttributes, MediaUIAttributes } from '../constants.js';
 import { globalThis, document } from '../utils/server-safe-globals.js';
 import { computePosition } from '../utils/anchor-utils.js';
 import { observeResize, unobserveResize } from '../utils/resize-observer.js';
@@ -312,6 +312,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       Attributes.STYLE,
       Attributes.ANCHOR,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+      MediaUIAttributes.MEDIA_LANG,
     ];
   }
 

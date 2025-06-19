@@ -51,9 +51,14 @@ function getTooltipContentHTML() {
   `;
 }
 
-const updateAriaLabel = (el: MediaCastButton) => {
+const updateAriaLabelTooltip = (el: MediaCastButton) => {
   const label = el.mediaIsCasting ? t('stop casting') : t('start casting');
   el.setAttribute('aria-label', label);
+
+  const enterSlot = el.shadowRoot?.querySelector('slot[name="tooltip-enter"]');
+  const exitSlot = el.shadowRoot?.querySelector('slot[name="tooltip-exit"]');
+  if (enterSlot) enterSlot.textContent = t('start casting');
+  if (exitSlot) exitSlot.textContent = t('stop casting');
 };
 
 /**
@@ -80,7 +85,7 @@ class MediaCastButton extends MediaChromeButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabel(this);
+    updateAriaLabelTooltip(this);
   }
 
   attributeChangedCallback(
@@ -90,8 +95,8 @@ class MediaCastButton extends MediaChromeButton {
   ) {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_IS_CASTING) {
-      updateAriaLabel(this);
+    if (attrName === MediaUIAttributes.MEDIA_IS_CASTING || attrName === MediaUIAttributes.MEDIA_LANG) {
+      updateAriaLabelTooltip(this);
     }
   }
 

@@ -29,6 +29,14 @@ function getTooltipContentHTML() {
   return t('Quality');
 }
 
+const updateAriaLabelTooltip = (el: MediaRenditionMenuButton) => {
+  const label = t('quality');
+  el.setAttribute('aria-label', label);
+
+  const tooltipContent = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltipContent) tooltipContent.textContent = t('Quality');
+};
+
 /**
  * @attr {string} mediarenditionselected - (read-only) Set to the selected rendition id.
  * @attr {(unavailable|unsupported)} mediarenditionunavailable - (read-only) Set if rendition selection is unavailable.
@@ -50,7 +58,20 @@ class MediaRenditionMenuButton extends MediaChromeMenuButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute('aria-label', t('quality'));
+    updateAriaLabelTooltip(this);
+  }
+
+  attributeChangedCallback(
+    attrName: string,
+    oldValue: string | null,
+    newValue: string | null
+  ): void {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
+    if (attrName === MediaUIAttributes.MEDIA_LANG) {
+      updateAriaLabelTooltip(this);
+    }
+
   }
 
   /**

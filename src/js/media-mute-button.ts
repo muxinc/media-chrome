@@ -58,10 +58,15 @@ function getTooltipContentHTML() {
   `;
 }
 
-const updateAriaLabel = (el: MediaMuteButton) => {
+const updateAriaLabelTooltip = (el: MediaMuteButton) => {
   const muted = el.mediaVolumeLevel === 'off';
   const label = muted ? t('unmute') : t('mute');
   el.setAttribute('aria-label', label);
+
+  const muteSlot = el.shadowRoot?.querySelector('slot[name="tooltip-mute"]');
+  const unmuteSlot = el.shadowRoot?.querySelector('slot[name="tooltip-unmute"]');
+  if (muteSlot) muteSlot.textContent = t('Mute');
+  if (unmuteSlot) unmuteSlot.textContent = t('Unmute');
 };
 
 /**
@@ -85,7 +90,7 @@ class MediaMuteButton extends MediaChromeButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabel(this);
+    updateAriaLabelTooltip(this);
   }
 
   attributeChangedCallback(
@@ -95,8 +100,8 @@ class MediaMuteButton extends MediaChromeButton {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_VOLUME_LEVEL) {
-      updateAriaLabel(this);
+    if (attrName === MediaUIAttributes.MEDIA_VOLUME_LEVEL || attrName === MediaUIAttributes.MEDIA_LANG) {
+      updateAriaLabelTooltip(this);
     }
   }
 

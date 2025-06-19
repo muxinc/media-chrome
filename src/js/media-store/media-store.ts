@@ -527,7 +527,7 @@ export const createMediaStore = ({
           // responsible for managing/monitoring `defaultSubtitles` in the `defaultStateMediator`. (CJP)
           stateOwners.options[optionName] = optionValue;
         });
-        // updateStateFromFacade();
+        updateStateFromFacade();
       }
     },
     getState() {

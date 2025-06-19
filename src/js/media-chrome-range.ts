@@ -1,4 +1,4 @@
-import { MediaStateReceiverAttributes } from './constants.js';
+import { MediaStateReceiverAttributes, MediaUIAttributes } from './constants.js';
 import { globalThis, document } from './utils/server-safe-globals.js';
 import {
   getOrInsertCSSRule,
@@ -319,6 +319,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
       'disabled',
       'aria-disabled',
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+      MediaUIAttributes.MEDIA_LANG,
     ];
   }
 

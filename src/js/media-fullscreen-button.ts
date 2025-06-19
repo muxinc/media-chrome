@@ -63,11 +63,16 @@ function getTooltipContentHTML() {
   `;
 }
 
-const updateAriaLabel = (el: MediaFullscreenButton) => {
+const updateAriaLabelTooltip = (el: MediaFullscreenButton) => {
   const label = el.mediaIsFullscreen
     ? t('exit fullscreen mode')
     : t('enter fullscreen mode');
   el.setAttribute('aria-label', label);
+
+  const enterSlot = el.shadowRoot?.querySelector('slot[name="tooltip-enter"]');
+  const exitSlot = el.shadowRoot?.querySelector('slot[name="tooltip-exit"]');
+  if (enterSlot) enterSlot.textContent = t('enter fullscreen mode');
+  if (exitSlot) exitSlot.textContent = t('exit fullscreen mode');
 };
 
 /**
@@ -94,7 +99,7 @@ class MediaFullscreenButton extends MediaChromeButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabel(this);
+    updateAriaLabelTooltip(this);
   }
 
   attributeChangedCallback(
@@ -104,8 +109,8 @@ class MediaFullscreenButton extends MediaChromeButton {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_IS_FULLSCREEN) {
-      updateAriaLabel(this);
+    if (attrName === MediaUIAttributes.MEDIA_IS_FULLSCREEN || attrName === MediaUIAttributes.MEDIA_LANG) {
+      updateAriaLabelTooltip(this);
     }
   }
 

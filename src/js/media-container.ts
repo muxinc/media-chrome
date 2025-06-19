@@ -306,6 +306,12 @@ function getBreakpoints(breakpoints: Record<string, string>, width: number) {
   });
 }
 
+const updateAriaLabel = (el: MediaContainer) => {
+  const isAudioChrome = el.getAttribute(Attributes.AUDIO) != null;
+  const label = isAudioChrome ? t('audio player') : t('video player');
+  el.setAttribute('aria-label', label);
+};
+
 /**
  * @extends {HTMLElement}
  *
@@ -398,6 +404,9 @@ class MediaContainer extends globalThis.HTMLElement {
     if (attrName.toLowerCase() == Attributes.AUTOHIDE) {
       this.autohide = newValue;
     }
+    if (attrName === MediaUIAttributes.MEDIA_LANG) {
+      updateAriaLabel(this);
+    } 
   }
 
   // First direct child with slot=media, or null
@@ -435,10 +444,9 @@ class MediaContainer extends globalThis.HTMLElement {
     this.#mutationObserver.observe(this, { childList: true, subtree: true });
     observeResize(this, this.#handleResize);
 
-    const isAudioChrome = this.getAttribute(Attributes.AUDIO) != null;
-    const label = isAudioChrome ? t('audio player') : t('video player');
+
     this.setAttribute('role', 'region');
-    this.setAttribute('aria-label', label);
+    updateAriaLabel(this);
 
     this.handleMediaUpdated(this.media);
 

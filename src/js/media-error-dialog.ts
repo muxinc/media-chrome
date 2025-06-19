@@ -53,6 +53,7 @@ function formatErrorMessage(error: MediaErrorLike) {
 const observedAttributes: string[] = [
   MediaUIAttributes.MEDIA_ERROR_CODE,
   MediaUIAttributes.MEDIA_ERROR_MESSAGE,
+  MediaUIAttributes.MEDIA_LANG,
 ];
 
 /**
@@ -90,6 +91,10 @@ class MediaErrorDialog extends MediaChromeDialog {
 
     if (this.open) {
       this.shadowRoot.querySelector('slot').name = `error-${this.mediaErrorCode}`;
+      this.shadowRoot.querySelector('#content').innerHTML =
+        this.formatErrorMessage(mediaError);
+    }
+    if (attrName === MediaUIAttributes.MEDIA_LANG) {
       this.shadowRoot.querySelector('#content').innerHTML = this.formatErrorMessage(mediaError);
     }
   }

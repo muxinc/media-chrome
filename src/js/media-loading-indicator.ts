@@ -93,6 +93,11 @@ function getTemplateHTML(_attrs: Record<string, string>) {
   `;
 }
 
+const updateStatusText = (el: MediaLoadingIndicator): void => {
+  const textDiv = el.shadowRoot?.querySelector('#status');
+  if (textDiv) textDiv.textContent = t('media loading');
+};
+
 /**
  * @slot icon - The element shown for when the media is in a buffering state.
  *
@@ -125,6 +130,7 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
       MediaUIAttributes.MEDIA_PAUSED,
       MediaUIAttributes.MEDIA_LOADING,
       Attributes.LOADING_DELAY,
+      MediaUIAttributes.MEDIA_LANG,
     ];
   }
 
@@ -157,6 +163,9 @@ class MediaLoadingIndicator extends globalThis.HTMLElement {
         this.#mediaController = this.getRootNode()?.getElementById(newValue);
         this.#mediaController?.associateElement?.(this);
       }
+    }
+    else if (attrName === MediaUIAttributes.MEDIA_LANG ) {
+      updateStatusText(this);
     }
   }
 

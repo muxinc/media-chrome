@@ -30,6 +30,15 @@ function getTooltipContentHTML() {
   return t('Playback rate');
 }
 
+const updateAriaLabelTooltip = (el: MediaPlaybackRateMenuButton) => {
+  const playbackRate = el.getAttribute(MediaUIAttributes.MEDIA_PLAYBACK_RATE)
+  const label = t('Playback rate {playbackRate}', { playbackRate });
+  el.setAttribute('aria-label', label);
+
+  const tooltipContent = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltipContent) tooltipContent.textContent = t('Playback rate');
+};
+
 /**
  * @attr {string} mediaplaybackrate - (read-only) Set to the media playback rate.
  *
@@ -61,16 +70,13 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
+    if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE || attrName === MediaUIAttributes.MEDIA_LANG) {
       const newPlaybackRate = newValue ? +newValue : Number.NaN;
       const playbackRate = !Number.isNaN(newPlaybackRate)
         ? newPlaybackRate
         : DEFAULT_RATE;
       this.container.innerHTML = `${playbackRate}x`;
-      this.setAttribute(
-        'aria-label',
-        t('Playback rate {playbackRate}', { playbackRate })
-      );
+      updateAriaLabelTooltip(this);
     }
   }
 

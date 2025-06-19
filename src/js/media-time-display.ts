@@ -22,6 +22,7 @@ const CombinedAttributes = [
   MediaUIAttributes.MEDIA_CURRENT_TIME,
   MediaUIAttributes.MEDIA_DURATION,
   MediaUIAttributes.MEDIA_SEEKABLE,
+  MediaUIAttributes.MEDIA_LANG,
 ];
 
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
@@ -86,6 +87,11 @@ function getSlotTemplateHTML(_attrs: Record<string, string>, props: Record<strin
   `;
 }
 
+const updateAriaLabel = (el: MediaTextDisplay) => {
+  const label = t('playback time');
+  el.setAttribute('aria-label', label);
+};
+
 /**
  * @attr {boolean} remaining - Toggle on to show the remaining time instead of elapsed time.
  * @attr {boolean} showduration - Toggle on to show the duration.
@@ -130,7 +136,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
     }
 
     this.setAttribute('role', 'progressbar');
-    this.setAttribute('aria-label', t('playback time'));
+    updateAriaLabel(this);
 
     const keyUpHandler = (evt) => {
       const { key } = evt;
@@ -185,6 +191,9 @@ class MediaTimeDisplay extends MediaTextDisplay {
       } else {
         this.disable();
       }
+    }
+    else if (attrName === MediaUIAttributes.MEDIA_LANG) {
+      updateAriaLabel(this);
     }
 
     super.attributeChangedCallback(attrName, oldValue, newValue);

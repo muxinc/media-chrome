@@ -31,6 +31,15 @@ function getTooltipContentHTML() {
 
 const DEFAULT_TIME = 0;
 
+const updateAriaLabelTooltip = (el: MediaSeekForwardButton) => {
+  const seekOffset = el.getAttribute(Attributes.SEEK_OFFSET)
+  const label = t('seek forward {seekOffset} seconds', { seekOffset: seekOffset })
+  el.setAttribute('aria-label', label);
+
+  const tooltipContent = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltipContent) tooltipContent.textContent = t('Seek forward');
+};
+
 /**
  * @slot icon - The element shown for the seek forward button's display.
  *
@@ -73,6 +82,9 @@ class MediaSeekForwardButton extends MediaChromeButton {
         Attributes.SEEK_OFFSET,
         DEFAULT_SEEK_OFFSET
       );
+    }
+    else if (attrName === MediaUIAttributes.MEDIA_LANG){
+      updateAriaLabelTooltip(this);
     }
   }
 

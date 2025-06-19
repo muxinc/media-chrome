@@ -31,6 +31,15 @@ function getTooltipContentHTML() {
 
 const DEFAULT_TIME = 0;
 
+const updateAriaLabelTooltip = (el: MediaSeekBackwardButton) => {
+  const seekOffset = el.getAttribute(Attributes.SEEK_OFFSET)
+  const label = t('seek back {seekOffset} seconds', { seekOffset: seekOffset })
+  el.setAttribute('aria-label', label);
+
+  const tooltipContent = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltipContent) tooltipContent.textContent = t('Seek backward');
+};
+
 /**
  * @slot icon - The element shown for the seek backward button’s display.
  *
@@ -73,6 +82,9 @@ class MediaSeekBackwardButton extends MediaChromeButton {
         Attributes.SEEK_OFFSET,
         DEFAULT_SEEK_OFFSET
       );
+    }
+    else if (attrName === MediaUIAttributes.MEDIA_LANG){
+      updateAriaLabelTooltip(this);
     }
   }
 

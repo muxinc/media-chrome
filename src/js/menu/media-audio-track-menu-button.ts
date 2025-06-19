@@ -27,6 +27,15 @@ function getSlotTemplateHTML() {
 function getTooltipContentHTML() {
   return t('Audio');
 }
+
+const updateAriaLabelTooltip = (el: MediaAudioTrackMenuButton) => {
+  const label = t('Audio')
+  el.setAttribute('aria-label', label);
+
+  const tooltipContent = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
+  if (tooltipContent) tooltipContent.textContent = t('Audio');
+};
+
 /**
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the selected audio track id.
  * @attr {(unavailable|unsupported)} mediaaudiotrackunavailable - (read-only) Set if audio track selection is unavailable.
@@ -48,6 +57,18 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
   connectedCallback(): void {
     super.connectedCallback();
     this.setAttribute('aria-label', t('Audio'));
+  }
+
+  attributeChangedCallback(
+    attrName: string,
+    _oldValue: string | null,
+    newValue: string | null
+  ): void {
+    super.attributeChangedCallback(attrName, _oldValue, newValue);
+
+    if (attrName === MediaUIAttributes.MEDIA_LANG){
+      updateAriaLabelTooltip(this);
+    }
   }
 
   /**
