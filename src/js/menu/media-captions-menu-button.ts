@@ -46,12 +46,8 @@ function getTooltipContentHTML() {
   return t('Captions');
 }
 
-const updateAriaCheckedTooltip = (el: HTMLElement): void => {
+const updateAriaChecked = (el: HTMLElement): void => {
   el.setAttribute('aria-checked', areSubsOn(el).toString());
-  el.setAttribute('aria-label', t('closed captions'));
-
-  const tooltipContent = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
-  if (tooltipContent) tooltipContent.textContent = t('Captions');
 };
 
 /**
@@ -78,7 +74,9 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaCheckedTooltip(this);
+
+    this.setAttribute('aria-label', t('closed captions'));
+    updateAriaChecked(this);
   }
 
   attributeChangedCallback(
@@ -88,8 +86,8 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING || attrName === MediaUIAttributes.MEDIA_LANG) {
-      updateAriaCheckedTooltip(this);
+    if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
+      updateAriaChecked(this);
     }
   }
 

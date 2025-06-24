@@ -34,16 +34,6 @@ function getTooltipContentHTML() {
  *
  * @cssproperty [--media-playback-rate-button-display = inline-flex] - `display` property of button.
  */
-
-const updateAriaLabelTooltip = (el: MediaPlaybackRateButton) => {
-  const playbackRate = el.getAttribute(MediaUIAttributes.MEDIA_PLAYBACK_RATE)
-  const label = t('Playback rate {playbackRate}', { playbackRate });
-  el.setAttribute('aria-label', label);
-
-  const tooltipContent = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
-  if (tooltipContent) tooltipContent.textContent = t('Playback rate');
-};
-
 class MediaPlaybackRateButton extends MediaChromeButton {
   static getSlotTemplateHTML = getSlotTemplateHTML;
   static getTooltipContentHTML = getTooltipContentHTML;
@@ -78,15 +68,17 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     if (attrName === Attributes.RATES) {
       this.#rates.value = newValue;
     }
-    if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE || attrName === MediaUIAttributes.MEDIA_LANG) {
+    if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
       const newPlaybackRate = newValue ? +newValue : Number.NaN;
       const playbackRate = !Number.isNaN(newPlaybackRate)
         ? newPlaybackRate
         : DEFAULT_RATE;
       this.container.innerHTML = `${playbackRate}x`;
-      updateAriaLabelTooltip(this);
+      this.setAttribute(
+        'aria-label',
+        t('Playback rate {playbackRate}', { playbackRate })
+      );
     }
-
   }
 
   /**

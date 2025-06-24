@@ -52,14 +52,9 @@ function getTooltipContentHTML() {
   `;
 }
 
-const updateAriaLabelTooltip = (el: MediaAirplayButton): void => {
+const updateAriaLabel = (el: MediaAirplayButton): void => {
   const label = el.mediaIsAirplaying ? t('stop airplay') : t('start airplay');
   el.setAttribute('aria-label', label);
-
-  const enterSlot = el.shadowRoot?.querySelector('slot[name="tooltip-enter"]');
-  const exitSlot = el.shadowRoot?.querySelector('slot[name="tooltip-exit"]');
-  if (enterSlot) enterSlot.textContent = t('start airplay');
-  if (exitSlot) exitSlot.textContent = t('stop airplay');
 };
 
 /**
@@ -88,7 +83,7 @@ class MediaAirplayButton extends MediaChromeButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabelTooltip(this);
+    updateAriaLabel(this);
   }
 
   attributeChangedCallback(
@@ -98,8 +93,8 @@ class MediaAirplayButton extends MediaChromeButton {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_IS_AIRPLAYING || attrName === MediaUIAttributes.MEDIA_LANG) {
-      updateAriaLabelTooltip(this);
+    if (attrName === MediaUIAttributes.MEDIA_IS_AIRPLAYING) {
+      updateAriaLabel(this);
     }
   }
 

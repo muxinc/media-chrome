@@ -30,7 +30,7 @@ type Rects = {
 
 const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
 
-const updateAriaValueText = (el: MediaTimeRange): void => {
+const updateAriaValueText = (el: any): void => {
   const range = el.range;
   const currentTimePhrase = formatAsTimePhrase(+calcTimeFromRangeValue(el));
   const totalTimePhrase = formatAsTimePhrase(+el.mediaSeekableEnd);
@@ -330,11 +330,6 @@ const calcTimeFromRangeValue = (
   return value * (endTime - startTime) + startTime;
 };
 
-const updateAriaLabel = (el: MediaChromeRange) => {
-  const label = t('seek');
-  el.setAttribute('aria-label', label);
-};
-
 /**
  * @slot preview - An element that slides along the timeline to the position of the pointer hovering.
  * @slot preview-arrow - An arrow element that slides along the timeline to the position of the pointer hovering.
@@ -461,7 +456,7 @@ class MediaTimeRange extends MediaChromeRange {
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabel(this);
+    this.range.setAttribute('aria-label', t('seek'));
     this.#toggleRangeAnimation();
 
     // NOTE: Adding an event listener to an ancestor here.
@@ -511,9 +506,6 @@ class MediaTimeRange extends MediaChromeRange {
     ) {
       this.mediaChaptersCues = this.#mediaChaptersCues;
       this.updateBar();
-    }
-    else if (attrName === MediaUIAttributes.MEDIA_LANG) {
-      updateAriaLabel(this);
     }
   }
 

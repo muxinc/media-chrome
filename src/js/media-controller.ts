@@ -164,9 +164,6 @@ class MediaController extends MediaContainer {
         noSubtitlesLangPref: this.hasAttribute(
           Attributes.NO_SUBTITLES_LANG_PREF
         ),
-        mediaLang: this.hasAttribute(Attributes.LANG)
-          ? this.getAttribute(Attributes.LANG)
-          : 'en',
       },
     });
   }

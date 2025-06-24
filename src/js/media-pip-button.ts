@@ -44,16 +44,11 @@ function getTooltipContentHTML() {
   `;
 }
 
-const updateAriaLabelTooltip = (el: MediaPipButton) => {
+const updateAriaLabel = (el: MediaPipButton) => {
   const label = el.mediaIsPip
     ? t('exit picture in picture mode')
     : t('enter picture in picture mode');
   el.setAttribute('aria-label', label);
-
-  const enterSlot = el.shadowRoot?.querySelector('slot[name="tooltip-enter"]');
-  const exitSlot = el.shadowRoot?.querySelector('slot[name="tooltip-exit"]');
-  if (enterSlot) enterSlot.textContent = t('enter picture in picture mode');
-  if (exitSlot) exitSlot.textContent = t('exit picture in picture mode');
 };
 
 /**
@@ -80,7 +75,7 @@ class MediaPipButton extends MediaChromeButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabelTooltip(this);
+    updateAriaLabel(this);
   }
 
   attributeChangedCallback(
@@ -90,8 +85,8 @@ class MediaPipButton extends MediaChromeButton {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_IS_PIP || attrName === MediaUIAttributes.MEDIA_LANG) {
-      updateAriaLabelTooltip(this);
+    if (attrName === MediaUIAttributes.MEDIA_IS_PIP) {
+      updateAriaLabel(this);
     }
   }
 

@@ -2,7 +2,6 @@ import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
 import { globalThis } from '../utils/server-safe-globals.js';
 import { getMediaController } from '../utils/element-utils.js';
 import { t } from '../utils/i18n.js';
-import { MediaUIAttributes } from '../constants.js';
 
 function getSlotTemplateHTML() {
   return /*html*/ `
@@ -23,14 +22,6 @@ function getTooltipContentHTML() {
   return t('Settings');
 }
 
-const updateAriaLabelTooltip = (el: MediaSettingsMenuButton) => {
-  const label = t('settings');
-  el.setAttribute('aria-label', label);
-
-  const tooltipContent = el.shadowRoot?.querySelector('slot[name="tooltip-content"]');
-  if (tooltipContent) tooltipContent.textContent = t('Settings');
-};
-
 /**
  * @attr {string} target - CSS id selector for the element to be targeted by the button.
  */
@@ -44,19 +35,7 @@ class MediaSettingsMenuButton extends MediaChromeMenuButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaLabelTooltip(this)
-  }
-
-  attributeChangedCallback(
-    attrName: string,
-    oldValue: string | null,
-    newValue: string | null
-  ): void {
-    super.attributeChangedCallback(attrName, oldValue, newValue);
-
-    if (attrName === MediaUIAttributes.MEDIA_LANG) {
-      updateAriaLabelTooltip(this);
-    }
+    this.setAttribute('aria-label', t('settings'));
   }
 
   /**

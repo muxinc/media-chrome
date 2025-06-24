@@ -68,9 +68,6 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     ) {
       this.value = newValue;
     }
-    else if (attrName === MediaUIAttributes.MEDIA_LANG) {
-      this.#render();
-    }
   }
 
   connectedCallback(): void {
@@ -118,49 +115,42 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     setSubtitlesListAttr(this, MediaUIAttributes.MEDIA_SUBTITLES_SHOWING, list);
   }
 
-#render(): void {
-  // Always update "Off" item
-  const isOff = !this.value;
+  #render(): void {
+    if (this.#prevState === JSON.stringify(this.mediaSubtitlesList)) return;
+    this.#prevState = JSON.stringify(this.mediaSubtitlesList);
 
-  // Remove existing "Off" item if present
-  const oldOffItem = this.defaultSlot.querySelector('[value="off"]');
-  if (oldOffItem) oldOffItem.remove();
+    this.defaultSlot.textContent = '';
 
-  const offItem = createMenuItem({
-    type: 'radio',
-    text: this.formatMenuItemText(t('Off')),
-    value: 'off',
-    checked: isOff,
-  });
-  offItem.prepend(createIndicator(this, 'checked-indicator'));
-  this.defaultSlot.prepend(offItem); 
-
-  const currentState = JSON.stringify(this.mediaSubtitlesList);
-  if (this.#prevState === currentState) return; 
-
-  this.#prevState = currentState;
-
-  [...this.defaultSlot.children].forEach(child => {
-    if (child.getAttribute('value') !== 'off') child.remove();
-  });
-
-  for (const subs of this.mediaSubtitlesList) {
-    const value = formatTextTrackObj(subs);
+    const isOff = !this.value;
     const item = createMenuItem({
       type: 'radio',
-      text: this.formatMenuItemText(subs.label, subs),
-      value,
-      checked: this.value == value,
+      text: this.formatMenuItemText(t('Off')),
+      value: 'off',
+      checked: isOff,
     });
     item.prepend(createIndicator(this, 'checked-indicator'));
-
-    if ((subs.kind ?? 'subs') === 'captions') {
-      item.append(createIndicator(this, 'captions-indicator'));
-    }
-
     this.defaultSlot.append(item);
+
+    const subtitlesList = this.mediaSubtitlesList;
+
+    for (const subs of subtitlesList) {
+      const item = createMenuItem({
+        type: 'radio',
+        text: this.formatMenuItemText(subs.label, subs),
+        value: formatTextTrackObj(subs),
+        checked: this.value == formatTextTrackObj(subs),
+      });
+      item.prepend(createIndicator(this, 'checked-indicator'));
+
+      // add CC icon for captions
+      const type = subs.kind ?? 'subs';
+      if ((type as string) === 'captions') {
+        item.append(createIndicator(this, 'captions-indicator'));
+      }
+
+      this.defaultSlot.append(item);
+    }
   }
-}
 
   #onChange(): void {
     const showingSubs = this.mediaSubtitlesShowing;
