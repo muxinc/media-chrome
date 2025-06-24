@@ -23,7 +23,6 @@ export const ZhTw: TranslateDictionary = {
   Quality: '畫質',
   'Seek backward': '倒轉',
   'Seek forward': '快轉',
-
   Settings: '設定',
   Auto: '自動',
   'audio player': '音訊播放器',
@@ -41,6 +40,7 @@ export const ZhTw: TranslateDictionary = {
   pause: '暫停',
   mute: '靜音',
   unmute: '取消靜音',
+  chapter: '章節: {chapterName}',
   live: '直播',
   Off: '關閉',
   'start airplay': '開始 AirPlay 投放',

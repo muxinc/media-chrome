@@ -23,7 +23,6 @@ export const ZhCn: TranslateDictionary = {
   Quality: '清晰度',
   'Seek backward': '快退',
   'Seek forward': '快进',
-
   Settings: '设置',
   Auto: '自动',
   'audio player': '音频播放器',
@@ -41,6 +40,7 @@ export const ZhCn: TranslateDictionary = {
   pause: '暂停',
   mute: '静音',
   unmute: '恢复音量',
+  chapter: '章节: {chapterName}',
   live: '直播',
   Off: '关闭',
   'start airplay': '开始 AirPlay',

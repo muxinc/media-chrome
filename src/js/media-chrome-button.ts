@@ -270,6 +270,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
     ) {
       this.tooltipEl.placement = newValue;
     }
+    else if (attrName === MediaUIAttributes.MEDIA_LANG) {
+      this.shadowRoot.querySelector('slot[name="tooltip-content"]').innerHTML = (this.constructor as typeof MediaChromeButton).getTooltipContentHTML();
+    }
 
     // The tooltips label, and subsequently it's size and position, are a function
     // of the buttons state, so we greedily assume we need account for any form
@@ -368,14 +371,6 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   set noTooltip(value: boolean | undefined) {
     setBooleanAttr(this, Attributes.NO_TOOLTIP, value);
-  }
-
-  get lang(): string | undefined {
-    return getStringAttr(this, MediaUIAttributes.MEDIA_LANG);
-  }
-
-  set lang(value: string | undefined) {
-    setStringAttr(this, MediaUIAttributes.MEDIA_LANG, value);
   }
 
   /**

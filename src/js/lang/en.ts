@@ -30,7 +30,6 @@ export const En = {
   'current playback rate': 'current playback rate',
   'playback time': 'playback time',
   'media loading': 'media loading',
-
   settings: 'settings',
   'audio tracks': 'audio tracks',
   quality: 'quality',
@@ -38,6 +37,7 @@ export const En = {
   pause: 'pause',
   mute: 'mute',
   unmute: 'unmute',
+  chapter: 'chapter: {chapterName}',
   live: 'live',
   Off: 'Off',
   'start airplay': 'start airplay',

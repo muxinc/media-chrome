@@ -55,6 +55,9 @@ const updateAriaAttributes = (el: MediaLiveButton): void => {
   const label = isPausedOrNotLive ? t('seek to live') : t('playing live');
   el.setAttribute('aria-label', label);
 
+  const textSlot = el.shadowRoot?.querySelector('slot[name="text"]');
+  if (textSlot) textSlot.textContent = t('live');
+
   isPausedOrNotLive
     ? el.removeAttribute('aria-disabled')
     : el.setAttribute('aria-disabled', 'true');
@@ -80,6 +83,7 @@ class MediaLiveButton extends MediaChromeButton {
       ...super.observedAttributes,
       MEDIA_TIME_IS_LIVE,
       MEDIA_PAUSED,
+      MediaUIAttributes.MEDIA_LANG
     ];
   }
 
@@ -95,6 +99,7 @@ class MediaLiveButton extends MediaChromeButton {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
     updateAriaAttributes(this);
+    console.log("chang woo")
   }
 
   /**

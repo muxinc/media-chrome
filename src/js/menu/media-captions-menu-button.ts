@@ -48,6 +48,7 @@ function getTooltipContentHTML() {
 
 const updateAriaChecked = (el: HTMLElement): void => {
   el.setAttribute('aria-checked', areSubsOn(el).toString());
+  el.setAttribute('aria-label', t('closed captions'));
 };
 
 /**
@@ -74,8 +75,6 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-
-    this.setAttribute('aria-label', t('closed captions'));
     updateAriaChecked(this);
   }
 

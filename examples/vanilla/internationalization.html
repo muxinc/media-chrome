@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <title>Media Chrome Advanced Video Usage Example</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/hls-video-element@1.1/+esm"></script>
+    <script type="module" src="../../dist/index.js"></script>
+    <script type="module" src="../../dist/menu/index.js"></script>
+    <script type="module" src="../../dist/lang/es.js"></script>
+    <script type="module" src="../../dist/lang/pt.js"></script>
+    <script type="module" src="../../dist/lang/fr.js"></script>
+    <script type="module" src="../../dist/lang/zh-CN.js"></script>
+    <script type="module" src="../../dist/lang/zh-TW.js"></script>
+    <style>
+      /* Hide custom elements that are not defined yet */
+      :not(:defined) {
+        display: none;
+      }
+
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: grid;          /* expands the container if preload=none */
+        max-width: 960px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
+      hls-video,
+      img[slot="poster"] {
+        grid-area: 1 / 1;     /* position poster img on top of video element */
+        width: 100%;          /* prevents video to expand beyond its container */
+        height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
+      }
+
+      media-audio-track-menu[mediaaudiotrackunavailable],
+      media-audio-track-menu-button[mediaaudiotrackunavailable],
+      media-rendition-menu[mediarenditionunavailable],
+      media-rendition-menu-button[mediarenditionunavailable],
+      media-fullscreen-button[mediafullscreenunavailable],
+      media-airplay-button[mediaairplayunavailable],
+      media-cast-button[mediacastunavailable],
+      media-pip-button[mediapipunavailable] {
+        display: none;
+      }
+
+      media-settings-menu-item[aria-haspopup]:is(
+        :not([submenusize]),
+        [submenusize="0"],
+        [submenusize="1"]
+      ) {
+        display: none;
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- The main tag is used to exclude other body content in https://www.media-chrome.org/docs/en/examples -->
+    <main>
+      <h1>Media Chrome - Internationalization Usage Example</h1>
+
+      <media-controller
+        id="mc"
+        lang='en'
+        defaultsubtitles
+        keyboardforwardseekoffset="15"
+        keyboardbackwardseekoffset="5"
+      >
+        <hls-video
+          id="video"
+          slot="media"
+          src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
+          stream-type="on-demand"
+          preload="metadata"
+          playsinline
+          crossorigin
+        >
+          <track default kind="metadata" label="thumbnails" src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/storyboard.vtt">
+          <track default kind="chapters" src="./vtt/elephantsdream/chapters.vtt">
+        </hls-video>
+        <img
+          slot="poster"
+          srcset="
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=640 640w,
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=960 960w,
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13&width=1280 1280w,
+            https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13 1920w
+          "
+          alt="Elephants Dream"
+          decoding="async"
+        >
+        <media-loading-indicator slot="centered-chrome" noautohide></media-loading-indicator>
+        <media-error-dialog slot="dialog"></media-error-dialog>
+        <media-playback-rate-menu anchor='auto' hidden>
+        </media-playback-rate-menu>
+        <media-rendition-menu anchor='auto' hidden>
+        </media-rendition-menu>
+        <media-captions-menu anchor='auto' hidden>
+        </media-captions-menu>
+        <media-audio-track-menu anchor='auto' hidden>
+        </media-audio-track-menu>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-seek-backward-button seekoffset="5"></media-seek-backward-button>
+          <media-seek-forward-button seekoffset="15"></media-seek-forward-button>
+          <media-mute-button></media-mute-button>
+          <media-time-display></media-time-display>
+          <media-time-range></media-time-range>
+          <media-duration-display></media-duration-display>
+          <media-captions-menu-button></media-captions-menu-button>
+          <media-rendition-menu-button></media-rendition-menu-button>
+          <media-audio-track-menu-button></media-audio-track-menu-button>
+          <media-playback-rate-menu-button></media-playback-rate-menu-button>
+          <media-pip-button></media-pip-button>
+          <media-cast-button></media-cast-button>
+          <media-airplay-button></media-airplay-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+    </main>
+
+    <p>
+      <button onclick='setLang("en")'>Switch to English</button>
+      <button onclick='setLang("es")'>Switch to Spanish</button>
+      <button onclick='setLang("fr")'>Switch to French</button>
+      <button onclick='setLang("pt")'>Switch to Portuguese</button>
+      <button onclick='setLang("zh-CN")'>Switch to Chinese (Simplified)</button>
+      <button onclick='setLang("zh-TW")'>Switch to Chinese (Traditional)</button>
+    </p>
+
+    <script>
+      function setLang(lang) {
+          const mediaController = document.getElementById('mc');
+          mediaController.setAttribute('lang', lang);
+      }
+    </script>
+
+    <div class="examples">
+      <a href="./">View more examples</a>
+    </div>
+  </body>
+</html>
