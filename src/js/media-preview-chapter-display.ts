@@ -41,7 +41,7 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
         this.#slot.textContent = newValue;
 
         if (newValue !== '') {
-          const ariaValueText = t('chapter', {
+          const ariaValueText = t('chapter: {chapterName}', {
             chapterName: newValue,
           });
           this.setAttribute('aria-valuetext', ariaValueText);

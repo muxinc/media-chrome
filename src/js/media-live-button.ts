@@ -83,7 +83,6 @@ class MediaLiveButton extends MediaChromeButton {
       ...super.observedAttributes,
       MEDIA_TIME_IS_LIVE,
       MEDIA_PAUSED,
-      MediaUIAttributes.MEDIA_LANG
     ];
   }
 
@@ -99,7 +98,6 @@ class MediaLiveButton extends MediaChromeButton {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
     updateAriaAttributes(this);
-    console.log("chang woo")
   }
 
   /**

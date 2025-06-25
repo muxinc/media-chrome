@@ -40,7 +40,7 @@ export const Pt: TranslateDictionary = {
   pause: 'pausar',
   mute: 'silenciar',
   unmute: 'ativar som',
-  chapter: 'capítulo: {chapterName}',
+  'chapter: {chapterName}': 'capítulo: {chapterName}',
   live: 'ao vivo',
   Off: 'Desativado',
   'start airplay': 'iniciar AirPlay',

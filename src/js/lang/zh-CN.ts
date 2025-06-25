@@ -40,7 +40,7 @@ export const ZhCn: TranslateDictionary = {
   pause: '暂停',
   mute: '静音',
   unmute: '恢复音量',
-  chapter: '章节: {chapterName}',
+  'chapter: {chapterName}': '章节: {chapterName}',
   live: '直播',
   Off: '关闭',
   'start airplay': '开始 AirPlay',

@@ -53,7 +53,7 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute('aria-label', t('Audio'));
+    updateAriaLabel(this);
   }
 
   attributeChangedCallback(

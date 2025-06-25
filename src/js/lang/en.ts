@@ -37,7 +37,7 @@ export const En = {
   pause: 'pause',
   mute: 'mute',
   unmute: 'unmute',
-  chapter: 'chapter: {chapterName}',
+  'chapter: {chapterName}': 'chapter: {chapterName}',
   live: 'live',
   Off: 'Off',
   'start airplay': 'start airplay',
