@@ -48,6 +48,9 @@ function getTooltipContentHTML() {
 
 const updateAriaChecked = (el: HTMLElement): void => {
   el.setAttribute('aria-checked', areSubsOn(el).toString());
+};
+
+const updateAriaLabel = (el: HTMLElement): void => {
   el.setAttribute('aria-label', t('closed captions'));
 };
 
@@ -70,12 +73,13 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
+      MediaUIAttributes.MEDIA_LANG
     ];
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    updateAriaChecked(this);
+    updateAriaLabel(this);
   }
 
   attributeChangedCallback(
@@ -87,6 +91,9 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
 
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
       updateAriaChecked(this);
+    }
+    else if (attrName === MediaUIAttributes.MEDIA_LANG) {
+      updateAriaLabel(this);
     }
   }
 
