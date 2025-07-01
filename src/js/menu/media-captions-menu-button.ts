@@ -80,6 +80,7 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
   connectedCallback(): void {
     super.connectedCallback();
     updateAriaLabel(this);
+    updateAriaChecked(this);
   }
 
   attributeChangedCallback(
