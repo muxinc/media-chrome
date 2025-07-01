@@ -50,6 +50,10 @@ const updateAriaChecked = (el: HTMLElement): void => {
   el.setAttribute('aria-checked', areSubsOn(el).toString());
 };
 
+const updateAriaLabel = (el: HTMLElement): void => {
+  el.setAttribute('aria-label', t('closed captions'));
+};
+
 /**
  * @slot on - An element that will be shown while closed captions or subtitles are on.
  * @slot off - An element that will be shown while closed captions or subtitles are off.
@@ -69,13 +73,13 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_SUBTITLES_LIST,
       MediaUIAttributes.MEDIA_SUBTITLES_SHOWING,
+      MediaUIAttributes.MEDIA_LANG
     ];
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-
-    this.setAttribute('aria-label', t('closed captions'));
+    updateAriaLabel(this);
     updateAriaChecked(this);
   }
 
@@ -88,6 +92,9 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
 
     if (attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING) {
       updateAriaChecked(this);
+    }
+    else if (attrName === MediaUIAttributes.MEDIA_LANG) {
+      updateAriaLabel(this);
     }
   }
 
