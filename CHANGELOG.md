@@ -1,3 +1,17 @@
+# [4.12.0](https://github.com/muxinc/media-chrome/compare/v4.11.1...v4.12.0) (2025-07-02)
+
+
+### Bug Fixes
+
+* move vercel edge to dev dep ([#1159](https://github.com/muxinc/media-chrome/issues/1159)) ([9b2d6f8](https://github.com/muxinc/media-chrome/commit/9b2d6f87466e978e92c2aff917e6dcaf13a8a69d)), closes [#1158](https://github.com/muxinc/media-chrome/issues/1158)
+
+
+### Features
+
+* dynamic label update on lang attribute change i18n ([#1152](https://github.com/muxinc/media-chrome/issues/1152)) ([1ea8237](https://github.com/muxinc/media-chrome/commit/1ea82373c1dd6ba2f5fd2b3dc6dd25d43752014d))
+
+
+
 ## [4.11.1](https://github.com/muxinc/media-chrome/compare/v4.11.0...v4.11.1) (2025-06-12)
 
 
