@@ -94,7 +94,7 @@
     "build": "run-s build:types build:esm build:cjs build:iife:* build:react",
     "watch": "run-p watch:types watch:build",
     "watch:types": "npm run build:types -- -w",
-    "watch:build": "run-p 'build:esm -- --watch=forever' 'build:cjs -- --watch=forever' 'build:iife:* -- --watch=forever'",
+    "watch:build": "run-p \"build:esm -- --watch=forever\" \"build:cjs -- --watch=forever\" \"build:iife:* -- --watch=forever\"",
     "dev": "run-p watch serve",
     "start": "npm run dev",
     "test": "web-test-runner --coverage --config test/web-test-runner.config.js",
