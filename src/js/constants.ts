@@ -77,6 +77,7 @@ export const MediaUIProps = {
   MEDIA_VOLUME: 'mediaVolume',
   MEDIA_VOLUME_LEVEL: 'mediaVolumeLevel',
   MEDIA_VOLUME_UNAVAILABLE: 'mediaVolumeUnavailable',
+  MEDIA_LANG: 'mediaLang',
   MEDIA_WIDTH: 'mediaWidth',
 } as const;
 

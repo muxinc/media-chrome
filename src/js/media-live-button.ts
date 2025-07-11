@@ -55,6 +55,9 @@ const updateAriaAttributes = (el: MediaLiveButton): void => {
   const label = isPausedOrNotLive ? t('seek to live') : t('playing live');
   el.setAttribute('aria-label', label);
 
+  const textSlot = el.shadowRoot?.querySelector('slot[name="text"]');
+  if (textSlot) textSlot.textContent = t('live');
+
   isPausedOrNotLive
     ? el.removeAttribute('aria-disabled')
     : el.setAttribute('aria-disabled', 'true');

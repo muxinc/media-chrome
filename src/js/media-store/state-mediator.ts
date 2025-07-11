@@ -94,6 +94,7 @@ export type StateOption = {
   noVolumePref?: boolean;
   noMutedPref?: boolean;
   noSubtitlesLangPref?: boolean;
+  mediaLang?: string;
 };
 
 /**
@@ -242,6 +243,7 @@ export type StateMediator = {
     'NO_DEVICES_AVAILABLE' | 'NOT_CONNECTED' | 'CONNECTING' | 'CONNECTED'
   >;
   mediaIsAirplaying: FacadeProp<boolean>;
+  mediaLang: ReadonlyFacadeProp<string | undefined>;
   mediaFullscreenUnavailable: ReadonlyFacadeProp<
     AvailabilityStates | undefined
   >;
@@ -1229,5 +1231,11 @@ export const stateMediator: StateMediator = {
     },
     mediaEvents: ['emptied', 'loadstart'],
     audioTracksEvents: ['addtrack', 'removetrack'],
+  },
+  mediaLang: {
+    get(stateOwners) {
+      const { options: { mediaLang } = {} } = stateOwners;
+      return mediaLang ?? 'en';
+    },
   },
 };

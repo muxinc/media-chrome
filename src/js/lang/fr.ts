@@ -33,7 +33,6 @@ export const Fr: TranslateDictionary = {
   'current playback rate': 'taux de lecture actuel',
   'playback time': 'durée de lecture',
   'media loading': 'chargement des médias',
-
   settings: 'paramètres',
   'audio tracks': 'pistes audio',
   quality: 'qualité',
@@ -41,6 +40,7 @@ export const Fr: TranslateDictionary = {
   pause: 'pause',
   mute: 'désactiver le son',
   unmute: 'activer le son',
+  'chapter: {chapterName}': 'chapitre: {chapterName}',
   live: 'en direct',
   Off: 'Désactivé',
   'start airplay': 'démarrer la diffusion AirPlay',

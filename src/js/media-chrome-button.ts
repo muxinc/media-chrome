@@ -1,4 +1,7 @@
-import { MediaStateReceiverAttributes } from './constants.js';
+import {
+  MediaStateReceiverAttributes,
+  MediaUIAttributes,
+} from './constants.js';
 import MediaTooltip, { TooltipPlacement } from './media-tooltip.js';
 import {
   getBooleanAttr,
@@ -168,6 +171,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
       'disabled',
       Attributes.TOOLTIP_PLACEMENT,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+      MediaUIAttributes.MEDIA_LANG
     ];
   }
 
@@ -265,6 +269,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
       newValue !== oldValue
     ) {
       this.tooltipEl.placement = newValue;
+    }
+    else if (attrName === MediaUIAttributes.MEDIA_LANG) {
+      this.shadowRoot.querySelector('slot[name="tooltip-content"]').innerHTML = (this.constructor as typeof MediaChromeButton).getTooltipContentHTML();
     }
 
     // The tooltips label, and subsequently it's size and position, are a function
