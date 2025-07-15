@@ -1,98 +1,116 @@
+import { globalThis } from '../utils/server-safe-globals.js';
 import { MediaChromeMenu } from './media-chrome-menu.js';
+import { getMediaController } from '../utils/element-utils.js';
+
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+      ${MediaChromeMenu.getTemplateHTML(_attrs)}
+      <style>
+        :host {
+          --_menu-bg: rgb(20 20 30 / .8);
+          background: var(--media-settings-menu-background,
+            var(--media-menu-background,
+              var(--media-control-background,
+                var(--media-secondary-color, var(--_menu-bg)))));
+          min-width: var(--media-settings-menu-min-width, 170px);
+          border-radius: 2px 2px 0 0;
+          overflow: hidden;
+        }
+      </style>
+    `;
+}
 
 class MediaContextMenu extends MediaChromeMenu {
-  #showNativeMenu: boolean = false;
-  #controllers: Element[] = [];
+  static getTemplateHTML = getTemplateHTML;
+  #isContextMenuOpen: boolean = false;
 
   constructor() {
     super();
-    this.hidden = true;
+    this.#updateVisibility();
+  }
+
+  #updateVisibility() {
+    this.hidden = !this.#isContextMenuOpen;
   }
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.#addVideoListeners();
+    getMediaController(this).addEventListener(
+      'contextmenu',
+      this.#onControllerContextMenu
+    );
     this.addEventListener('click', this.#onMenuClick);
   }
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    this.#removeVideoListeners();
+    getMediaController(this).removeEventListener(
+      'contextmenu',
+      this.#onControllerContextMenu
+    );
     this.removeEventListener('click', this.#onMenuClick);
     document.removeEventListener('mousedown', this.#onDocumentClick);
     document.removeEventListener('keydown', this.#onKeyDown);
   }
 
-  #addVideoListeners(): void {
-    this.#removeVideoListeners();
-    this.#controllers = Array.from(
-      document.querySelectorAll('media-controller')
-    );
-    this.#controllers.forEach((controller) => {
-      controller.addEventListener('contextmenu', this.#onControllerContextMenu);
-    });
-  }
-
-  #removeVideoListeners(): void {
-    if (this.#controllers) {
-      this.#controllers.forEach((controller: Element) => {
-        controller.removeEventListener(
-          'contextmenu',
-          this.#onControllerContextMenu
-        );
-      });
-    }
-    this.#controllers = [];
-  }
-
-  #onControllerContextMenu = (event: Event): void => {
+  #onControllerContextMenu = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
     if (target?.nodeName === 'VIDEO') {
-      if (this.#showNativeMenu) {
-        this.#showNativeMenu = false;
-        this.hidden = true;
-        return;
+      if (!this.#isContextMenuOpen) {
+        this.#onContextMenu(event);
+      } else {
+        this.#isContextMenuOpen = false;
+        this.#updateVisibility();
       }
-      event.preventDefault();
-      this.#onContextMenu(event as MouseEvent);
     }
   };
 
   #onContextMenu(event: MouseEvent): void {
+    event.preventDefault();
+    this.#isContextMenuOpen = true;
+
     this.style.position = 'fixed';
     this.style.left = `${event.clientX}px`;
     this.style.top = `${event.clientY}px`;
-    this.hidden = false;
-    this.#showNativeMenu = true;
-    setTimeout(() => {
-      document.addEventListener('mousedown', this.#onDocumentClick, {
-        once: true,
-      });
-      document.addEventListener('keydown', this.#onKeyDown, { once: true });
-    }, 0);
+    this.#updateVisibility();
+
+    document.addEventListener('mousedown', this.#onDocumentClick, {
+      once: true,
+    });
+    document.addEventListener('keydown', this.#onKeyDown, { once: true });
   }
 
   #onDocumentClick = (event: MouseEvent): void => {
-    if (!this.contains(event.target as Node)) {
-      this.hidden = true;
-      this.#showNativeMenu = false;
+    const target = event.target as HTMLElement;
+    const isRightClick = event.button === 2;
+    const isVideo = target?.nodeName === 'VIDEO';
+    const isInsideMenu = this.contains(target);
+
+    if (!isInsideMenu && !(isRightClick && isVideo)) {
+      this.#isContextMenuOpen = false;
+      this.#updateVisibility();
     }
   };
 
   #onKeyDown = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
-      this.hidden = true;
-      this.#showNativeMenu = false;
+      this.#isContextMenuOpen = false;
+      this.#updateVisibility();
     }
   };
 
   #onMenuClick = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
+
     if (target.matches?.('button[invoke="copy"]')) {
-      const input = target.closest('media-context-menu-item')?.querySelector('input[slot="copy"]') as HTMLInputElement | null;
+      const input = target
+        .closest('media-context-menu-item')
+        ?.querySelector('input[slot="copy"]') as HTMLInputElement | null;
       input && navigator.clipboard.writeText(input.value);
-      event.stopPropagation();
     }
+    
+    this.#isContextMenuOpen = false;
+    this.#updateVisibility();
   };
 }
 
