@@ -66,8 +66,8 @@ export const Attributes = {
   NO_DEFAULT_STORE: 'nodefaultstore',
   KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
   KEYBOARD_BACKWARD_SEEK_OFFSET: 'keyboardbackwardseekoffset',
-  KEYBOARD_UP_VOLUME_STEP: 'keyboardvolumeupstep',
-  KEYBOARD_DOWN_VOLUME_STEP: 'keyboardvolumedownstep',
+  KEYBOARD_UP_VOLUME_STEP: 'keyboardupvolumestep',
+  KEYBOARD_DOWN_VOLUME_STEP: 'keyboarddownvolumestep',
   LANG: 'lang',
 };
 
