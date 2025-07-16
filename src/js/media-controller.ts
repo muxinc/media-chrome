@@ -38,6 +38,8 @@ import { setLanguage } from './utils/i18n.js';
 const ButtonPressedKeys = [
   'ArrowLeft',
   'ArrowRight',
+  'ArrowUp',
+  'ArrowDown',
   'Enter',
   ' ',
   'f',
@@ -46,6 +48,7 @@ const ButtonPressedKeys = [
   'c',
 ];
 const DEFAULT_SEEK_OFFSET = 10;
+const DEFAULT_VOLUME_STEP = 0.025;
 
 export const Attributes = {
   DEFAULT_SUBTITLES: 'defaultsubtitles',
@@ -63,6 +66,8 @@ export const Attributes = {
   NO_DEFAULT_STORE: 'nodefaultstore',
   KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
   KEYBOARD_BACKWARD_SEEK_OFFSET: 'keyboardbackwardseekoffset',
+  KEYBOARD_UP_VOLUME_STEP: 'keyboardvolumeupstep',
+  KEYBOARD_DOWN_VOLUME_STEP: 'keyboardvolumedownstep',
   LANG: 'lang',
 };
 
@@ -542,6 +547,12 @@ class MediaController extends MediaContainer {
       return;
     }
 
+    // allow ArrowLeft/ArrowRight for media-volume-range
+    const target = e.target;
+    const isVolumeRange =
+      target instanceof HTMLElement &&
+      target.tagName.toLowerCase() === 'media-volume-range';
+
     // if the pressed key might move the page, we need to preventDefault on keydown
     // because doing so on keyup is too late
     // We also want to make sure that the hotkey hasn't been turned off before doing so
@@ -550,7 +561,8 @@ class MediaController extends MediaContainer {
       !(
         this.#hotKeys.contains(`no${key.toLowerCase()}`) ||
         (key === ' ' && this.#hotKeys.contains('nospace'))
-      )
+      ) &&
+      !isVolumeRange // Only preventDefault if NOT a media-volume-range element
     ) {
       e.preventDefault();
     }
@@ -677,6 +689,32 @@ class MediaController extends MediaContainer {
           0
         );
         evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+          composed: true,
+          bubbles: true,
+          detail,
+        });
+        this.dispatchEvent(evt);
+        break;
+      }
+      case 'ArrowUp': {
+        const step = this.hasAttribute(Attributes.KEYBOARD_UP_VOLUME_STEP)
+          ? +this.getAttribute(Attributes.KEYBOARD_UP_VOLUME_STEP)
+          : DEFAULT_VOLUME_STEP;
+        detail = Math.min((this.mediaStore.getState().mediaVolume ?? 1) + step, 1);
+        evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
+          composed: true,
+          bubbles: true,
+          detail,
+        });
+        this.dispatchEvent(evt);
+        break;
+      }
+      case 'ArrowDown': {
+        const step = this.hasAttribute(Attributes.KEYBOARD_DOWN_VOLUME_STEP)
+          ? +this.getAttribute(Attributes.KEYBOARD_DOWN_VOLUME_STEP)
+          : DEFAULT_VOLUME_STEP;
+        detail = Math.max((this.mediaStore.getState().mediaVolume ?? 1) - step, 0);
+        evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
           composed: true,
           bubbles: true,
           detail,
