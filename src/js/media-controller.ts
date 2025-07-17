@@ -557,7 +557,7 @@ class MediaController extends MediaContainer {
     // because doing so on keyup is too late
     // We also want to make sure that the hotkey hasn't been turned off before doing so
     if (
-      [' ', 'ArrowLeft', 'ArrowRight'].includes(key) &&
+      [' ', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key) &&
       !(
         this.#hotKeys.contains(`no${key.toLowerCase()}`) ||
         (key === ' ' && this.#hotKeys.contains('nospace'))
