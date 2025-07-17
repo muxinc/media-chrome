@@ -547,11 +547,11 @@ class MediaController extends MediaContainer {
       return;
     }
 
-    // allow ArrowLeft/ArrowRight for media-volume-range
     const target = e.target;
-    const isVolumeRange =
+    const isRangeInput =
       target instanceof HTMLElement &&
-      target.tagName.toLowerCase() === 'media-volume-range';
+      (target.tagName.toLowerCase() === 'media-volume-range' ||
+        target.tagName.toLowerCase() === 'media-time-range');
 
     // if the pressed key might move the page, we need to preventDefault on keydown
     // because doing so on keyup is too late
@@ -562,7 +562,7 @@ class MediaController extends MediaContainer {
         this.#hotKeys.contains(`no${key.toLowerCase()}`) ||
         (key === ' ' && this.#hotKeys.contains('nospace'))
       ) &&
-      !isVolumeRange // Only preventDefault if NOT a media-volume-range element
+      !isRangeInput // Only preventDefault if a range input is NOT selected
     ) {
       e.preventDefault();
     }
@@ -700,7 +700,10 @@ class MediaController extends MediaContainer {
         const step = this.hasAttribute(Attributes.KEYBOARD_UP_VOLUME_STEP)
           ? +this.getAttribute(Attributes.KEYBOARD_UP_VOLUME_STEP)
           : DEFAULT_VOLUME_STEP;
-        detail = Math.min((this.mediaStore.getState().mediaVolume ?? 1) + step, 1);
+        detail = Math.min(
+          (this.mediaStore.getState().mediaVolume ?? 1) + step,
+          1
+        );
         evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
           composed: true,
           bubbles: true,
@@ -713,7 +716,10 @@ class MediaController extends MediaContainer {
         const step = this.hasAttribute(Attributes.KEYBOARD_DOWN_VOLUME_STEP)
           ? +this.getAttribute(Attributes.KEYBOARD_DOWN_VOLUME_STEP)
           : DEFAULT_VOLUME_STEP;
-        detail = Math.max((this.mediaStore.getState().mediaVolume ?? 1) - step, 0);
+        detail = Math.max(
+          (this.mediaStore.getState().mediaVolume ?? 1) - step,
+          0
+        );
         evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
           composed: true,
           bubbles: true,
