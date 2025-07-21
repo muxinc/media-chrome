@@ -134,15 +134,17 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     return this.renderRoot.querySelector('media-controller');
   }
 
-  get template() {
-    return this.#template ?? (this.constructor as typeof MediaThemeElement).template;
-  }
+get template(): string | null {
+  return this.getAttribute('template');
+}
 
-  set template(element) {
-    this.#prevTemplateId = null;
-    this.#template = element;
-    this.createRenderer();
+set template(value: string | null) {
+  if (value === null) {
+    this.removeAttribute('template');
+  } else {
+    this.setAttribute('template', value);
   }
+}
 
   get props() {
     const observedAttributes = [
@@ -222,11 +224,11 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   }
 
   createRenderer(): void {
-    if (this.template && this.template !== this.#prevTemplate) {
-      this.#prevTemplate = this.template;
+    if (this.#template && this.#template !== this.#prevTemplate) {
+      this.#prevTemplate = this.#template;
 
       this.renderer = new TemplateInstance(
-        this.template,
+        this.#template,
         this.props,
         // @ts-ignore
         this.constructor.processor
