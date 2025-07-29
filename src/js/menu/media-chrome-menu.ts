@@ -136,7 +136,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         right: -100%;
       }
 
-      #container {
+      :host::part(container) {
         display: flex;
         flex-direction: column;
         min-height: 0;
@@ -144,7 +144,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         transform: translate(0, 0);
       }
 
-      #container.has-expanded {
+      :host::part(container).has-expanded {
         transition: transform .2s ease-in;
         transform: translate(-100%, 0);
       }
@@ -232,7 +232,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         display: var(--media-menu-item-checked-indicator-display, none);
       }
     </style>
-    <div id="container">
+    <div id="container" part="container">
       <slot name="header" hidden>
         <button part="back button" aria-label="Back to previous menu">
           <slot name="back-icon">
