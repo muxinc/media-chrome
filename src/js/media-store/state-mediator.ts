@@ -1066,6 +1066,9 @@ export const stateMediator: StateMediator = {
       const { media } = stateOwners;
       if (!pipSupported || !hasPipSupport(media as HTMLVideoElement))
         return AvailabilityStates.UNSUPPORTED;
+      else if (media?.disablePictureInPicture)
+        return AvailabilityStates.UNAVAILABLE;
+      return undefined;
     },
   },
   mediaVolumeUnavailable: {
