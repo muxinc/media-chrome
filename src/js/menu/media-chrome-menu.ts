@@ -132,6 +132,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         width: 100%;
         min-height: 100%;
         position: absolute;
+        top: 0;
         bottom: 0;
         right: -100%;
       }
