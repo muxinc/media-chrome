@@ -136,7 +136,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         right: -100%;
       }
 
-      :host::part(container) {
+      #container {
         display: flex;
         flex-direction: column;
         min-height: 0;
@@ -144,7 +144,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         transform: translate(0, 0);
       }
 
-      :host::part(container).has-expanded {
+      #container.has-expanded {
         transition: transform .2s ease-in;
         transform: translate(-100%, 0);
       }
