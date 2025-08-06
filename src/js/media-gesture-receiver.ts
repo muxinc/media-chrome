@@ -48,7 +48,6 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
   }
 
   _pointerType: string;
-  _clearPointerTypeTimeout: any | undefined;
 
   constructor() {
     super();
@@ -113,11 +112,6 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
       // Since not all browsers have updated to be spec compliant, where 'click' events should be PointerEvents,
       // we can use use 'pointerdown' to reliably determine the pointer type. (CJP).
       this._pointerType = event.pointerType;
-      // Optional timeout clear — in case click is delayed
-      clearTimeout(this._clearPointerTypeTimeout);
-      this._clearPointerTypeTimeout = setTimeout(() => {
-        this._pointerType = undefined;
-      }, 500);
     } else if (event.type === 'click') {
       // Cannot use composedPath or target because this is a layer on top and pointer events are disabled.
       // Attach to window and check if click is in this element's bounding box to keep <video> right-click menu.
@@ -140,7 +134,6 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
       const pointerType = this._pointerType || 'mouse'; 
       // Only reset after click
       this._pointerType = undefined;
-      clearTimeout(this._clearPointerTypeTimeout);  
       // NOTE: Longer term, we'll likely want to delay this to support double click/double tap (CJP)
       if (pointerType === PointerTypes.TOUCH) {
         this.handleTap(event);
