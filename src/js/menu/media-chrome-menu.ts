@@ -232,7 +232,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         display: var(--media-menu-item-checked-indicator-display, none);
       }
     </style>
-    <div id="container">
+    <div id="container" part="container">
       <slot name="header" hidden>
         <button part="back button" aria-label="Back to previous menu">
           <slot name="back-icon">
