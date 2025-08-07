@@ -134,15 +134,22 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     return this.renderRoot.querySelector('media-controller');
   }
 
-get template(): string | null {
-  return this.getAttribute('template');
-}
+  get template(): string | HTMLTemplateElement | null {
+    return this.getAttribute('template');
+  }
 
-set template(value: string | null) {
-  if (value === null) {
-    this.removeAttribute('template');
-  } else {
-    this.setAttribute('template', value);
+  set template(value: string | HTMLTemplateElement | null) {
+    if (value === null) {
+      this.removeAttribute('template');
+      return;
+    }
+
+    if (typeof value === 'string') {
+      this.setAttribute('template', value);
+    } else if (value instanceof HTMLTemplateElement) {
+      this.#template = value;
+      this.#prevTemplateId = null;
+      this.createRenderer();
   }
 }
 
@@ -191,15 +198,17 @@ set template(value: string | null) {
   }
 
   #updateTemplate(): void {
+    if (this.#template) return;
+
     const templateId = this.getAttribute('template');
     if (!templateId || templateId === this.#prevTemplateId) return;
 
-    // First try to get a template element by id
     const rootNode = this.getRootNode() as Document;
-    const template = rootNode?.getElementById?.(templateId) as HTMLTemplateElement | null;
+    const template = rootNode?.getElementById?.(
+      templateId
+    ) as HTMLTemplateElement | null;
 
     if (template) {
-      // Only save prevTemplateId if a template was found.
       this.#prevTemplateId = templateId;
       this.#template = template;
       this.createRenderer();
@@ -207,10 +216,8 @@ set template(value: string | null) {
     }
 
     if (isValidUrl(templateId)) {
-      // Save prevTemplateId on valid URL before async fetch to prevent duplicate fetch.
       this.#prevTemplateId = templateId;
 
-      // Next try to fetch a HTML file if it looks like a valid URL.
       request(templateId)
         .then((data) => {
           const template = document.createElement('template');
