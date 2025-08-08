@@ -135,7 +135,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   }
 
   get template(): string | HTMLTemplateElement | null {
-    return this.getAttribute('template');
+    return this.#template ?? (this.constructor as typeof MediaThemeElement).template;
   }
 
   set template(value: string | HTMLTemplateElement | null) {
