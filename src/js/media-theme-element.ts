@@ -135,7 +135,9 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   }
 
   get template(): string | HTMLTemplateElement | null {
-    return this.#template ?? (this.constructor as typeof MediaThemeElement).template;
+    return (
+      this.#template ?? (this.constructor as typeof MediaThemeElement).template
+    );
   }
 
   set template(value: string | HTMLTemplateElement | null) {
@@ -150,8 +152,8 @@ export class MediaThemeElement extends globalThis.HTMLElement {
       this.#template = value;
       this.#prevTemplateId = null;
       this.createRenderer();
+    }
   }
-}
 
   get props() {
     const observedAttributes = [
@@ -198,8 +200,6 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   }
 
   #updateTemplate(): void {
-    if (this.#template) return;
-
     const templateId = this.getAttribute('template');
     if (!templateId || templateId === this.#prevTemplateId) return;
 
@@ -231,11 +231,14 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   }
 
   createRenderer(): void {
-    if (this.#template && this.#template !== this.#prevTemplate) {
-      this.#prevTemplate = this.#template;
+    if (
+      this.template instanceof HTMLTemplateElement &&
+      this.template !== this.#prevTemplate
+    ) {
+      this.#prevTemplate = this.template as HTMLTemplateElement;
 
       this.renderer = new TemplateInstance(
-        this.#template,
+        this.template,
         this.props,
         // @ts-ignore
         this.constructor.processor
