@@ -110,13 +110,13 @@ class MediaTimeDisplay extends MediaTextDisplay {
   constructor() {
     super();
 
-    this.#slot = this.shadowRoot.querySelector('slot');
+    this.#slot = this.shadowRoot!.querySelector('slot')!;
     this.#slot.innerHTML = `${formatTimesLabel(this)}`;
   }
 
   connectedCallback(): void {
     const { style } = getOrInsertCSSRule(
-      this.shadowRoot,
+      this.shadowRoot!,
       ':host(:hover:not([notoggle]))'
     );
     style.setProperty('cursor', 'var(--media-cursor, pointer)');
@@ -132,7 +132,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
     this.setAttribute('role', 'progressbar');
     this.setAttribute('aria-label', t('playback time'));
 
-    const keyUpHandler = (evt) => {
+    const keyUpHandler = (evt: KeyboardEvent) => {
       const { key } = evt;
       if (!ButtonPressedKeys.includes(key)) {
         this.removeEventListener('keyup', keyUpHandler);
@@ -239,7 +239,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * Get the duration
    */
   get mediaDuration(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_DURATION);
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_DURATION) || Number.NaN; // Default to NaN if not set
   }
 
   set mediaDuration(time: number) {
@@ -250,7 +250,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * The current time in seconds
    */
   get mediaCurrentTime(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME);
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME ) || 0; // Default to 0 if not set
   }
 
   set mediaCurrentTime(time: number) {
@@ -263,7 +263,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
    */
   get mediaSeekable(): [number, number] {
     const seekable = this.getAttribute(MediaUIAttributes.MEDIA_SEEKABLE);
-    if (!seekable) return undefined;
+    if (!seekable) return [NaN, NaN];
     // Only currently supports a single, contiguous seekable range (CJP)
     return seekable.split(':').map((time) => +time) as [number, number];
   }

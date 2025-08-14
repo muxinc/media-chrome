@@ -66,7 +66,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
       attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING &&
       oldValue !== newValue
     ) {
-      this.value = newValue;
+      this.value = newValue || "";
     }
   }
 
@@ -84,8 +84,8 @@ class MediaCaptionsMenu extends MediaChromeMenu {
    * Returns the anchor element when it is a floating menu.
    */
   get anchorElement(): HTMLElement {
-    if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector('media-captions-menu-button');
+    if (this.anchor !== 'auto') return super.anchorElement!;
+    return getMediaController(this)!.querySelector('media-captions-menu-button')!;
   }
 
   /**
@@ -128,7 +128,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
       value: 'off',
       checked: isOff,
     });
-    item.prepend(createIndicator(this, 'checked-indicator'));
+    item.prepend(createIndicator(this, 'checked-indicator')!);
     this.defaultSlot.append(item);
 
     const subtitlesList = this.mediaSubtitlesList;
@@ -136,16 +136,16 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     for (const subs of subtitlesList) {
       const item = createMenuItem({
         type: 'radio',
-        text: this.formatMenuItemText(subs.label, subs),
+        text: this.formatMenuItemText(subs.label || "", subs),
         value: formatTextTrackObj(subs),
         checked: this.value == formatTextTrackObj(subs),
       });
-      item.prepend(createIndicator(this, 'checked-indicator'));
+      item.prepend(createIndicator(this, 'checked-indicator')!);
 
       // add CC icon for captions
       const type = subs.kind ?? 'subs';
       if ((type as string) === 'captions') {
-        item.append(createIndicator(this, 'captions-indicator'));
+        item.append(createIndicator(this, 'captions-indicator')!);
       }
 
       this.defaultSlot.append(item);

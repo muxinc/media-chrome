@@ -46,11 +46,11 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
     ];
   }
 
-  container: HTMLSlotElement;
+  container!: HTMLSlotElement;
 
   constructor() {
     super();
-    this.container = this.shadowRoot.querySelector('slot[name="icon"]');
+    this.container = this.shadowRoot.querySelector('slot[name="icon"]') as HTMLSlotElement;
     this.container.innerHTML = `${this.mediaPlaybackRate ?? DEFAULT_RATE}x`;
   }
 
@@ -90,7 +90,7 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
       this,
       MediaUIAttributes.MEDIA_PLAYBACK_RATE,
       DEFAULT_RATE
-    );
+    ) ?? DEFAULT_RATE;
   }
 
   set mediaPlaybackRate(value: number) {

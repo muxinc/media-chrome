@@ -51,28 +51,28 @@ class MediaSeekForwardButton extends MediaChromeButton {
     ];
   }
 
-  connectedCallback(): void {
-    super.connectedCallback();
+  constructor() {
+    super();
     this.seekOffset = getNumericAttr(
       this,
       Attributes.SEEK_OFFSET,
       DEFAULT_SEEK_OFFSET
-    );
+    ) ?? DEFAULT_SEEK_OFFSET;
   }
 
   attributeChangedCallback(
     attrName: string,
-    _oldValue: string | null,
+    oldValue: string | null,
     newValue: string | null
   ): void {
-    super.attributeChangedCallback(attrName, _oldValue, newValue);
+    super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === Attributes.SEEK_OFFSET) {
+    if (attrName === Attributes.SEEK_OFFSET && newValue !== oldValue) {
       this.seekOffset = getNumericAttr(
         this,
         Attributes.SEEK_OFFSET,
         DEFAULT_SEEK_OFFSET
-      );
+      ) ?? DEFAULT_SEEK_OFFSET;
     }
   }
 
@@ -82,7 +82,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
    * Seek amount in seconds
    */
   get seekOffset(): number {
-    return getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
+    return getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET) ?? DEFAULT_SEEK_OFFSET;
   }
 
   set seekOffset(value: number) {
@@ -91,7 +91,10 @@ class MediaSeekForwardButton extends MediaChromeButton {
       'aria-label',
       t('seek forward {seekOffset} seconds', { seekOffset: this.seekOffset })
     );
-    updateIconText(getSlotted(this, 'icon'), this.seekOffset as any);
+    const icon = getSlotted(this, 'icon');
+    if (icon) {
+      updateIconText(icon, this.seekOffset as any);
+    }
   }
 
   // Props derived from Media UI Attributes
@@ -104,7 +107,7 @@ class MediaSeekForwardButton extends MediaChromeButton {
       this,
       MediaUIAttributes.MEDIA_CURRENT_TIME,
       DEFAULT_TIME
-    );
+    ) ?? DEFAULT_TIME;
   }
 
   set mediaCurrentTime(time: number) {

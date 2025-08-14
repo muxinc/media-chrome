@@ -145,23 +145,23 @@ class MediaClipSelector extends globalThis.HTMLElement {
     ];
   }
 
-  draggingEl: HTMLElement | null;
-  wrapper: HTMLElement;
-  selection: HTMLElement;
-  playhead: HTMLElement;
-  leftTrim: HTMLElement;
-  spacerFirst: HTMLElement;
-  startHandle: HTMLElement;
-  spacerMiddle: HTMLElement;
-  endHandle: HTMLElement;
-  spacerLast: HTMLElement;
-  initialX: number;
-  thumbnailPreview: HTMLElement;
+  draggingEl: HTMLElement | null = null;
+  wrapper!: HTMLElement;
+  selection!: HTMLElement;
+  playhead!: HTMLElement;
+  leftTrim!: HTMLElement;
+  spacerFirst!: HTMLElement;
+  startHandle!: HTMLElement;
+  spacerMiddle!: HTMLElement;
+  endHandle!: HTMLElement;
+  spacerLast!: HTMLElement;
+  initialX: number = 0;
+  thumbnailPreview!: HTMLElement;
 
-  _clickHandler: () => void;
-  _dragStart: () => void;
-  _dragEnd: () => void;
-  _drag: () => void;
+  _clickHandler!: (evt: MouseEvent) => void;
+  _dragStart!: (evt: MouseEvent) => void;
+  _dragEnd!: () => void;
+  _drag!: (evt: MouseEvent) => void;
 
   constructor() {
     super();
@@ -175,15 +175,15 @@ class MediaClipSelector extends globalThis.HTMLElement {
 
     this.draggingEl = null;
 
-    this.wrapper = this.shadowRoot.querySelector('#selectorContainer');
-    this.selection = this.shadowRoot.querySelector('#selection');
-    this.playhead = this.shadowRoot.querySelector('#playhead');
-    this.leftTrim = this.shadowRoot.querySelector('#leftTrim');
-    this.spacerFirst = this.shadowRoot.querySelector('#spacerFirst');
-    this.startHandle = this.shadowRoot.querySelector('#startHandle');
-    this.spacerMiddle = this.shadowRoot.querySelector('#spacerMiddle');
-    this.endHandle = this.shadowRoot.querySelector('#endHandle');
-    this.spacerLast = this.shadowRoot.querySelector('#spacerLast');
+    this.wrapper = this.shadowRoot!.querySelector('#selectorContainer') as HTMLElement;
+    this.selection = this.shadowRoot!.querySelector('#selection') as HTMLElement;
+    this.playhead = this.shadowRoot!.querySelector('#playhead') as HTMLElement;
+    this.leftTrim = this.shadowRoot!.querySelector('#leftTrim') as HTMLElement;
+    this.spacerFirst = this.shadowRoot!.querySelector('#spacerFirst') as HTMLElement;
+    this.startHandle = this.shadowRoot!.querySelector('#startHandle') as HTMLElement;
+    this.spacerMiddle = this.shadowRoot!.querySelector('#spacerMiddle') as HTMLElement;
+    this.endHandle = this.shadowRoot!.querySelector('#endHandle') as HTMLElement;
+    this.spacerLast = this.shadowRoot!.querySelector('#spacerLast') as HTMLElement;
 
     this._clickHandler = this.handleClick.bind(this);
     this._dragStart = this.dragStart.bind(this);
@@ -204,11 +204,11 @@ class MediaClipSelector extends globalThis.HTMLElement {
   }
 
   get mediaDuration(): number {
-    return +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
+    return +(this.getAttribute(MediaUIAttributes.MEDIA_DURATION) ?? 0);
   }
 
   get mediaCurrentTime(): number {
-    return +this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+    return +(this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) ?? 0);
   }
 
   /*
@@ -218,7 +218,7 @@ class MediaClipSelector extends globalThis.HTMLElement {
    */
   getPlayheadBasedOnMouseEvent(evt: MouseEvent): number {
     const duration = this.mediaDuration;
-    if (!duration) return;
+    if (!duration) return 0;
     const mousePercent = lockBetweenZeroAndOne(this.getMousePercent(evt));
     return mousePercent * duration;
   }
@@ -252,7 +252,7 @@ class MediaClipSelector extends globalThis.HTMLElement {
   }
 
   dragEnd(): void {
-    this.initialX = null;
+    this.initialX = 0;
     this.draggingEl = null;
   }
 
@@ -424,18 +424,17 @@ class MediaClipSelector extends globalThis.HTMLElement {
    */
   enableThumbnails(): void {
     /** @type {HTMLElement} */
-    this.thumbnailPreview = this.shadowRoot.querySelector(
+    this.thumbnailPreview = this.shadowRoot!.querySelector(
       'media-preview-thumbnail'
-    );
-    /** @type {HTMLElement} */
-    const thumbnailContainer = this.shadowRoot.querySelector(
+    ) as HTMLElement;
+    const thumbnailContainer = this.shadowRoot!.querySelector(
       '#thumbnailContainer'
-    );
+    ) as HTMLElement;
     thumbnailContainer.classList.add('enabled');
 
-    let mouseMoveHandler;
+    let mouseMoveHandler: (evt: MouseEvent) => void;
     const trackMouse = () => {
-      mouseMoveHandler = (evt) => {
+      mouseMoveHandler = (evt: MouseEvent) => {
         const duration = this.mediaDuration;
 
         // If no duration we can't calculate which time to show
@@ -460,21 +459,20 @@ class MediaClipSelector extends globalThis.HTMLElement {
       };
       globalThis.window?.addEventListener('mousemove', mouseMoveHandler, false);
     };
-
     const stopTrackingMouse = () => {
-      globalThis.window?.removeEventListener('mousemove', mouseMoveHandler);
+      if (mouseMoveHandler) {
+        globalThis.window?.removeEventListener('mousemove', mouseMoveHandler);
+      }
     };
-
-    // Trigger when the mouse moves over the range
     let rangeEntered = false;
-    const rangeMouseMoveHander = () => {
+    const rangeMouseMoveHandler = () => {
       if (!rangeEntered && this.mediaDuration) {
         rangeEntered = true;
         this.thumbnailPreview.style.display = 'block';
         trackMouse();
 
-        const offRangeHandler = (evt) => {
-          if (evt.target != this && !this.contains(evt.target)) {
+        const offRangeHandler = (evt: MouseEvent) => {
+          if (evt.target != this && !this.contains(evt.target as Node)) {
             this.thumbnailPreview.style.display = 'none';
             globalThis.window?.removeEventListener(
               'mousemove',
@@ -496,13 +494,13 @@ class MediaClipSelector extends globalThis.HTMLElement {
       }
     };
 
-    this.addEventListener('mousemove', rangeMouseMoveHander, false);
+    this.addEventListener('mousemove', rangeMouseMoveHandler, false);
   }
 
   disableThumbnails(): void {
-    const thumbnailContainer = this.shadowRoot.querySelector(
+    const thumbnailContainer = this.shadowRoot!.querySelector(
       '#thumbnailContainer'
-    );
+    ) as HTMLElement;
     thumbnailContainer.classList.remove('enabled');
   }
 }

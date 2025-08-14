@@ -58,7 +58,8 @@ class MediaRenditionMenuButton extends MediaChromeMenuButton {
    */
   get invokeTargetElement(): HTMLElement | null {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
-    return getMediaController(this).querySelector('media-rendition-menu');
+    const controller = getMediaController(this);
+    return controller ? controller.querySelector('media-rendition-menu') : null;
   }
 
   /**
@@ -73,7 +74,7 @@ class MediaRenditionMenuButton extends MediaChromeMenuButton {
   }
 
   get mediaHeight(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_HEIGHT);
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_HEIGHT) ?? 0;
   }
 
   set mediaHeight(height: number) {

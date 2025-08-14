@@ -9,8 +9,8 @@ class EventTarget {
 class Node extends EventTarget { }
 
 class Element extends Node {
-  attributes: NamedNodeMap;
-  childNodes: NodeListOf<ChildNode>;
+  attributes: NamedNodeMap = {} as NamedNodeMap;
+  childNodes: NodeListOf<ChildNode> = [] as unknown as NodeListOf<ChildNode>;
   role: string | null = null;
 }
 

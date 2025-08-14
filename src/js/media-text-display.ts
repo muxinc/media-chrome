@@ -47,7 +47,7 @@ function getTemplateHTML(_attrs: Record<string, string>, _props: Record<string, 
       }
     </style>
 
-    ${this.getSlotTemplateHTML(_attrs, _props)}
+    ${getSlotTemplateHTML(_attrs, _props)}
   `;
 }
 
@@ -82,7 +82,7 @@ class MediaTextDisplay extends globalThis.HTMLElement {
   static getTemplateHTML = getTemplateHTML;
   static getSlotTemplateHTML = getSlotTemplateHTML;
 
-  #mediaController: MediaController | null;
+  #mediaController: MediaController | null = null;
 
   static get observedAttributes(): string[] {
     return [MediaStateReceiverAttributes.MEDIA_CONTROLLER];
@@ -94,9 +94,12 @@ class MediaTextDisplay extends globalThis.HTMLElement {
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
       this.attachShadow((this.constructor as typeof MediaTextDisplay).shadowRootOptions);
+    }
 
+    const shadowRoot = this.shadowRoot;
+    if (shadowRoot) {
       const attrs = namedNodeMapToObject(this.attributes);
-      this.shadowRoot.innerHTML = (this.constructor as typeof MediaTextDisplay).getTemplateHTML(attrs);
+      shadowRoot.innerHTML = (this.constructor as typeof MediaTextDisplay).getTemplateHTML(attrs);
     }
   }
 
@@ -119,11 +122,14 @@ class MediaTextDisplay extends globalThis.HTMLElement {
   }
 
   connectedCallback(): void {
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+  const shadowRoot = this.shadowRoot;
+  if (shadowRoot) {
+    const { style } = getOrInsertCSSRule(shadowRoot, ':host');
     style.setProperty(
       'display',
       `var(--media-control-display, var(--${this.localName}-display, inline-flex))`
     );
+  }
 
     const mediaControllerId = this.getAttribute(
       MediaStateReceiverAttributes.MEDIA_CONTROLLER

@@ -1,14 +1,9 @@
+import { MediaUIAttributes } from './constants.js';
+import { MediaStateReceiverAttributes } from './constants.js';
+import { getStringAttr, setStringAttr } from './utils/element-utils.js';
+import { getOrInsertCSSRule } from './utils/element-utils.js';
+import { namedNodeMapToObject } from './utils/element-utils.js';
 import { globalThis } from './utils/server-safe-globals.js';
-import {
-  MediaUIAttributes,
-  MediaStateReceiverAttributes,
-} from './constants.js';
-import {
-  getOrInsertCSSRule,
-  getStringAttr,
-  namedNodeMapToObject,
-  setStringAttr,
-} from './utils/element-utils.js';
 import MediaController from './media-controller.js';
 
 function getTemplateHTML(_attrs: Record<string, string>) {
@@ -42,7 +37,9 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
   static getTemplateHTML = getTemplateHTML;
 
-  #mediaController: MediaController;
+  #mediaController: MediaController | null = null;
+  imgWidth: number = 0;
+  imgHeight: number = 0;
 
   static get observedAttributes() {
     return [
@@ -51,10 +48,6 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
       MediaUIAttributes.MEDIA_PREVIEW_COORDS,
     ];
   }
-
-  imgWidth: number;
-  imgHeight: number;
-
   constructor() {
     super();
 
@@ -63,7 +56,7 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaPreviewThumbnail).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-      this.shadowRoot.innerHTML = (this.constructor as typeof MediaPreviewThumbnail).getTemplateHTML(attrs);
+      this.shadowRoot!.innerHTML = (this.constructor as typeof MediaPreviewThumbnail).getTemplateHTML(attrs);
     }
   }
 
@@ -160,9 +153,9 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
     const isScalingDown = maxRatio < 1;
     const scale = isScalingDown ? maxRatio : minRatio > 1 ? minRatio : 1;
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-    const imgStyle = getOrInsertCSSRule(this.shadowRoot, 'img').style;
-    const img = this.shadowRoot.querySelector('img');
+    const { style } = getOrInsertCSSRule(this.shadowRoot!, ':host');
+    const imgStyle = getOrInsertCSSRule(this.shadowRoot!, 'img').style;
+    const img = this.shadowRoot!.querySelector('img');
 
     // Revert one set of extremum to its initial value on a known scale direction.
     const extremum = isScalingDown ? 'min' : 'max';
@@ -177,13 +170,13 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
       imgStyle.display = 'block';
     };
 
-    if (img.src !== src) {
-      img.onload = () => {
-        this.imgWidth = img.naturalWidth;
-        this.imgHeight = img.naturalHeight;
+    if (img!.src !== src) {
+      img!.onload = () => {
+        this.imgWidth = img!.naturalWidth;
+        this.imgHeight = img!.naturalHeight;
         resize();
       };
-      img.src = src;
+      img!.src = src;
       resize();
     }
 

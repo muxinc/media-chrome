@@ -14,7 +14,7 @@ const UnitLabels = [
     plural: 'seconds',
   },
 ];
-const toTimeUnitPhrase = (timeUnitValue, unitIndex) => {
+const toTimeUnitPhrase = (timeUnitValue: number, unitIndex: number): string => {
   const unitLabel =
     timeUnitValue === 1
       ? UnitLabels[unitIndex].singular
@@ -28,7 +28,7 @@ const toTimeUnitPhrase = (timeUnitValue, unitIndex) => {
  * @param {number} seconds - a (positive or negative) time, represented as seconds
  * @returns {string} The time, represented as a phrase of hours, minutes, and seconds
  */
-export const formatAsTimePhrase = (seconds) => {
+export const formatAsTimePhrase = (seconds: number): string => {
   if (!isValidNumber(seconds)) return '';
   const positiveSeconds = Math.abs(seconds);
   const negative = positiveSeconds !== seconds;
@@ -79,8 +79,8 @@ export function formatTime(seconds: number, guide?: number): string {
   let s: number | string = Math.floor(seconds % 60);
   let m: number | string = Math.floor((seconds / 60) % 60);
   let h: number | string = Math.floor(seconds / 3600);
-  const gm = Math.floor((guide / 60) % 60);
-  const gh = Math.floor(guide / 3600);
+  const gm = Math.floor((guide ?? 0) / 60) % 60;
+  const gh = Math.floor((guide ?? 0) / 3600);
 
   // handle invalid times
   if (isNaN(seconds) || seconds === Infinity) {
@@ -107,7 +107,7 @@ export function formatTime(seconds: number, guide?: number): string {
 
 export const emptyTimeRanges: TimeRanges = Object.freeze({
   length: 0,
-  start(index) {
+  start(index: number) {
     const unsignedIdx = index >>> 0;
     if (unsignedIdx >= this.length) {
       throw new DOMException(
@@ -116,7 +116,7 @@ export const emptyTimeRanges: TimeRanges = Object.freeze({
     }
     return 0;
   },
-  end(index) {
+  end(index: number) {
     const unsignedIdx = index >>> 0;
     if (unsignedIdx >= this.length) {
       throw new DOMException(

@@ -1,8 +1,8 @@
 import { MediaStateReceiverAttributes } from '../constants.js';
 import type MediaController from '../media-controller.js';
 
-export function namedNodeMapToObject(namedNodeMap: NamedNodeMap) {
-  const obj = {};
+export function namedNodeMapToObject(namedNodeMap: NamedNodeMap): Record<string, string> {
+  const obj: Record<string, string> = {};
   for (const attr of namedNodeMap) {
     obj[attr.name] = attr.value;
   }
@@ -16,9 +16,10 @@ export function namedNodeMapToObject(namedNodeMap: NamedNodeMap) {
 export function getMediaController(
   host: HTMLElement
 ): MediaController | undefined {
+  const controller = closestComposedNode(host, 'media-controller');
   return (
     getAttributeMediaController(host) ??
-    closestComposedNode(host, 'media-controller')
+    (controller as MediaController | null) ?? undefined
   );
 }
 
@@ -57,13 +58,15 @@ export const getAllSlotted = (
   name: string
 ): HTMLCollection | HTMLElement[] => {
   const slotSelector = `slot[name="${name}"]`;
-  const slot: HTMLSlotElement = el.shadowRoot.querySelector(slotSelector);
+  const slot = el.shadowRoot?.querySelector(slotSelector) as HTMLSlotElement | null;
   if (!slot) return [];
   return slot.children;
 };
 
-export const getSlotted = (el: HTMLElement, name: string): HTMLElement =>
-  getAllSlotted(el, name)[0] as HTMLElement;
+export const getSlotted = (el: HTMLElement, name: string): HTMLElement | null => {
+  const slotted = getAllSlotted(el, name);
+  return slotted[0] as HTMLElement | null;
+};
 
 /**
  *
@@ -86,26 +89,30 @@ export const containsComposedNode = (
 export const closestComposedNode = <T extends Element = Element>(
   childNode: Element,
   selector: string
-): T => {
+): T | null => {
   if (!childNode) return null;
   const closest = childNode.closest(selector);
   if (closest) return closest as T;
-  return closestComposedNode(
-    (childNode.getRootNode() as ShadowRoot).host,
-    selector
-  );
+  const root = childNode.getRootNode() as ShadowRoot;
+  const host = root?.host;
+  if (!host) return null;
+  return closestComposedNode(host, selector);
 };
 
 /**
  * Get the active element, accounting for Shadow DOM subtrees.
- * @param root - The root node to search for the active element.
  */
 export function getActiveElement(
-  root: Document | ShadowRoot = document
-): HTMLElement {
-  const activeEl = root?.activeElement;
+  root: Document | ShadowRoot | undefined = document
+): HTMLElement | null {
+  if (!root) return null;
+  const activeEl = root.activeElement as HTMLElement | null;
   if (!activeEl) return null;
-  return getActiveElement(activeEl.shadowRoot) ?? (activeEl as HTMLElement);
+  const shadowRoot = activeEl.shadowRoot;
+  if (shadowRoot) {
+    return getActiveElement(shadowRoot) ?? activeEl;
+  }
+  return activeEl;
 }
 
 /**
@@ -116,11 +123,8 @@ export function getActiveElement(
 export function getDocumentOrShadowRoot(
   node: Node
 ): Document | ShadowRoot | null {
-  const rootNode = node?.getRootNode?.();
-  if (rootNode instanceof ShadowRoot || rootNode instanceof Document) {
-    return rootNode;
-  }
-  return null;
+  const root = node.getRootNode();
+  return root instanceof Document || root instanceof ShadowRoot ? root : null;
 }
 
 /**
@@ -142,7 +146,7 @@ export function isElementVisible(
     });
   }
   // Check if the element or its ancestors are hidden.
-  let el = element;
+  let el: HTMLElement | null = element;
   while (el && depth > 0) {
     const style = getComputedStyle(el);
     if (
@@ -208,73 +212,69 @@ export function getOrInsertCSSRule(
   styleParent: Element | ShadowRoot,
   selectorText: string
 ): CSSStyleRule {
-  const cssRule = getCSSRule(styleParent, (st) => st === selectorText);
-  if (cssRule) return cssRule;
-  return insertCSSRule(styleParent, selectorText);
+  const existingRule = getCSSRule(styleParent, (selector) => selector === selectorText);
+  if (existingRule) return existingRule;
+  
+  const newRule = insertCSSRule(styleParent, selectorText);
+  if (!newRule) {
+    throw new Error(`Failed to insert CSS rule for selector: ${selectorText}`);
+  }
+  return newRule;
 }
 
-/**
- * Get a CSSStyleRule with a selector in an element containing <style> tags.
- * @param  styleParent - The parent element containing <style> tags.
- * @param  predicate - A function that returns true for the desired CSSStyleRule.
- */
 export function getCSSRule(
   styleParent: Element | ShadowRoot,
   predicate: (selectorText: string) => boolean
 ): CSSStyleRule | undefined {
-  let style;
-
-  for (style of styleParent.querySelectorAll('style:not([media])') ?? []) {
-    // Catch this error. e.g. browser extension adds style tags.
-    //   Uncaught DOMException: CSSStyleSheet.cssRules getter:
-    //   Not allowed to access cross-origin stylesheet
-    let cssRules;
-    try {
-      cssRules = style.sheet?.cssRules;
-    } catch {
-      continue;
+  let cssRules: CSSRuleList | undefined;
+  
+  if (styleParent instanceof ShadowRoot) {
+    const style = styleParent.querySelector('style');
+    if (style) {
+      cssRules = (style as HTMLStyleElement).sheet?.cssRules;
     }
-    for (const rule of cssRules ?? []) {
-      if (predicate(rule.selectorText)) return rule;
+  } else if (styleParent instanceof HTMLStyleElement) {
+    cssRules = styleParent.sheet?.cssRules;
+  }
+
+  if (!cssRules) return undefined;
+
+  for (let i = 0; i < cssRules.length; i++) {
+    const rule = cssRules[i];
+    if (rule instanceof CSSStyleRule && predicate(rule.selectorText)) {
+      return rule;
     }
   }
+
+  return undefined;
 }
 
-/**
- * Insert a CSSStyleRule with a selector in an element containing <style> tags.
- * @param styleParent - The parent element containing <style> tags.
- * @param selectorText - The selector text of the CSS rule.
- */
 export function insertCSSRule(
   styleParent: Element | ShadowRoot,
   selectorText: string
 ): CSSStyleRule | undefined {
-  const styles = styleParent.querySelectorAll('style:not([media])') ?? [];
-  const style = styles?.[styles.length - 1];
+  let style: HTMLStyleElement;
 
-  // If there is no style sheet return an empty style rule.
-  if (!style?.sheet) {
-    // The style tag must be connected to the DOM before it has a sheet.
-    // This could indicate a bug. Should the code be moved to connectedCallback?
-    console.warn(
-      'Media Chrome: No style sheet found on style tag of',
-      styleParent
-    );
-
-    return {
-      // @ts-ignore
-      style: {
-        setProperty: () => {},
-        removeProperty: () => '',
-        getPropertyValue: () => '',
-      },
-    };
+  if (styleParent instanceof ShadowRoot) {
+    style = styleParent.querySelector('style') as HTMLStyleElement;
+    if (!style) {
+      style = document.createElement('style');
+      styleParent.appendChild(style);
+    }
+  } else if (styleParent instanceof HTMLStyleElement) {
+    style = styleParent;
+  } else {
+    return undefined;
   }
 
-  style?.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
-  return /** @type {CSSStyleRule} */ style.sheet.cssRules?.[
+  if (!style?.sheet) {
+    return undefined;
+  }
+
+  style.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
+  return style.sheet.cssRules[
     style.sheet.cssRules.length - 1
-  ];
+  ] as CSSStyleRule;
 }
 
 /**

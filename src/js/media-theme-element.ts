@@ -8,7 +8,7 @@ import { camelCase, isNumericString } from './utils/utils.js';
 // Export Template parts for players.
 export * from './utils/template-parts.js';
 
-const observedMediaAttributes = {
+const observedMediaAttributes: { [key: string]: string } = {
   mediatargetlivewindow: 'targetlivewindow',
   mediastreamtype: 'streamtype',
 };
@@ -56,9 +56,9 @@ export class MediaThemeElement extends globalThis.HTMLElement {
 
   renderRoot: ShadowRoot;
   renderer?: TemplateInstance;
-  #template: HTMLTemplateElement;
-  #prevTemplate: HTMLTemplateElement;
-  #prevTemplateId: string | null;
+  #template: HTMLTemplateElement | null = null;
+  #prevTemplate: HTMLTemplateElement | null = null;
+  #prevTemplateId: string | null = null;
 
   constructor() {
     super();
@@ -87,10 +87,13 @@ export class MediaThemeElement extends globalThis.HTMLElement {
           if (target.localName !== 'media-controller') return false;
 
           // Render if this attribute is directly observed.
-          if (observedMediaAttributes[mutation.attributeName]) return true;
+          if (
+            mutation.attributeName &&
+            Object.prototype.hasOwnProperty.call(observedMediaAttributes, mutation.attributeName)
+          ) return true;
 
           // Render if `breakpointx` attributes change.
-          if (mutation.attributeName.startsWith('breakpoint')) return true;
+          if (mutation.attributeName && mutation.attributeName.startsWith('breakpoint')) return true;
 
           return false;
         })
@@ -120,18 +123,18 @@ export class MediaThemeElement extends globalThis.HTMLElement {
 
   #upgradeProperty(prop: string): void {
     if (Object.prototype.hasOwnProperty.call(this, prop)) {
-      const value = this[prop];
+      const value = (this as any)[prop];
       // Delete the set property from this instance.
-      delete this[prop];
+      delete (this as any)[prop];
       // Set the value again via the (prototype) setter on this class.
-      this[prop] = value;
+      (this as any)[prop] = value;
     }
   }
 
   /** @type {HTMLElement & { breakpointsComputed?: boolean }} */
   get mediaController(): MediaController {
     // Expose the media controller if API access is needed
-    return this.renderRoot.querySelector('media-controller');
+    return this.renderRoot.querySelector('media-controller')!;
   }
 
   get template(): string | HTMLTemplateElement | null {
@@ -159,21 +162,20 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     const observedAttributes = [
       ...Array.from(this.mediaController?.attributes ?? []).filter(
         ({ name }) => {
-          return observedMediaAttributes[name] || name.startsWith('breakpoint');
+          return Object.prototype.hasOwnProperty.call(observedMediaAttributes, name) || name.startsWith('breakpoint');
         }
       ),
       ...Array.from(this.attributes),
     ];
 
-    const props = {};
+    const props: { [key: string]: string | number | boolean } = {};
     for (const attr of observedAttributes) {
       const name = observedMediaAttributes[attr.name] ?? camelCase(attr.name);
       let { value } = attr;
 
       if (value != null) {
         if (isNumericString(value)) {
-          // @ts-ignore
-          value = parseFloat(value);
+          value = parseFloat(value).toString();
         }
 
         props[name] = value === '' ? true : value;

@@ -420,28 +420,28 @@ class MediaTimeRange extends MediaChromeRange {
     ];
   }
 
-  #rootNode;
+  #rootNode: Node | null = null;
   #animation;
   #boxes;
-  #previewTime: number;
-  #previewBox: HTMLElement;
-  #currentBox: HTMLElement;
+  #previewTime: number | null = null;
+  #previewBox?: HTMLElement | null;
+  #currentBox?: HTMLElement | null;
   #boxPaddingLeft: number;
   #boxPaddingRight: number;
-  #mediaChaptersCues;
+  #mediaChaptersCues: { startTime: number | undefined; endTime: number | undefined; }[] = [];
 
   constructor() {
     super();
 
-    const track = this.shadowRoot.querySelector('#track');
-    track.insertAdjacentHTML(
+    const track = this.shadowRoot?.querySelector('#track');
+    track?.insertAdjacentHTML(
       'afterbegin',
       '<div id="buffered" part="buffered"></div>'
     );
 
-    this.#boxes = this.shadowRoot.querySelectorAll('[part~="box"]');
-    this.#previewBox = this.shadowRoot.querySelector('[part~="preview-box"]');
-    this.#currentBox = this.shadowRoot.querySelector('[part~="current-box"]');
+    this.#boxes = this.shadowRoot?.querySelectorAll('[part~="box"]');
+    this.#previewBox = this.shadowRoot?.querySelector('[part~="preview-box"]');
+    this.#currentBox = this.shadowRoot?.querySelector('[part~="current-box"]');
 
     const computedStyle = getComputedStyle(this);
     this.#boxPaddingLeft = parseInt(
@@ -491,7 +491,7 @@ class MediaTimeRange extends MediaChromeRange {
     ) {
       this.#animation.update({
         start: calcRangeValueFromTime(this),
-        duration: this.mediaSeekableEnd - this.mediaSeekableStart,
+        duration: (this.mediaSeekableEnd || 0) - this.mediaSeekableStart,
         playbackRate: this.mediaPlaybackRate,
       });
       this.#toggleRangeAnimation();
@@ -523,7 +523,7 @@ class MediaTimeRange extends MediaChromeRange {
       !this.mediaPaused &&
       !this.mediaLoading &&
       !this.mediaEnded &&
-      this.mediaSeekableEnd > 0 &&
+      (this.mediaSeekableEnd ?? 0) > 0 &&
       isElementVisible(this)
     );
   }
@@ -546,7 +546,7 @@ class MediaTimeRange extends MediaChromeRange {
     this.#mediaChaptersCues = value;
 
     this.updateSegments(
-      this.#mediaChaptersCues?.map((c) => ({
+      this.#mediaChaptersCues?.map((c: { startTime: number | undefined; endTime: number | undefined; }) => ({
         start: calcRangeValueFromTime(this, c.startTime),
         end: calcRangeValueFromTime(this, c.endTime),
       }))
@@ -583,7 +583,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   set mediaDuration(value: number | undefined) {
-    setNumericAttr(this, MediaUIAttributes.MEDIA_DURATION, value);
+    setNumericAttr(this, MediaUIAttributes.MEDIA_DURATION, value ?? NaN);
   }
 
   /**
@@ -594,14 +594,14 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   set mediaCurrentTime(value: number | undefined) {
-    setNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, value);
+    setNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, value ?? NaN);
   }
 
   /**
    *
    */
   get mediaPlaybackRate(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, 1);
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_PLAYBACK_RATE, 1) || 1;
   }
 
   set mediaPlaybackRate(value: number) {
@@ -669,7 +669,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   set mediaPreviewImage(value: string | undefined) {
-    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_IMAGE, value);
+    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_IMAGE, value ?? '');
   }
 
   /**
@@ -680,7 +680,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   set mediaPreviewTime(value: number | undefined) {
-    setNumericAttr(this, MediaUIAttributes.MEDIA_PREVIEW_TIME, value);
+    setNumericAttr(this, MediaUIAttributes.MEDIA_PREVIEW_TIME, value ?? NaN);
   }
 
   /**
@@ -691,7 +691,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   set mediaEnded(value: boolean | undefined) {
-    setBooleanAttr(this, MediaUIAttributes.MEDIA_ENDED, value);
+    setBooleanAttr(this, MediaUIAttributes.MEDIA_ENDED, value ?? false);
   }
 
   /* Add a buffered progress bar */
@@ -713,7 +713,7 @@ class MediaTimeRange extends MediaChromeRange {
     let relativeBufferedEnd;
 
     if (!this.mediaEnded) {
-      const currentTime = this.mediaCurrentTime;
+      const currentTime = this.mediaCurrentTime || 0;
       const [, bufferedEnd = this.mediaSeekableStart] =
         buffered.find(
           ([start, end]) => start <= currentTime && currentTime <= end
@@ -726,27 +726,27 @@ class MediaTimeRange extends MediaChromeRange {
       relativeBufferedEnd = 1;
     }
 
-    const { style } = getOrInsertCSSRule(this.shadowRoot, '#buffered');
+    const { style } = getOrInsertCSSRule(this.shadowRoot!, '#buffered');
     style.setProperty('width', `${relativeBufferedEnd * 100}%`);
   }
 
   updateCurrentBox(): void {
     // If there are no elements in the current box no need for expensive style updates.
-    const currentSlot: HTMLSlotElement = this.shadowRoot.querySelector(
+    const currentSlot: HTMLSlotElement = this.shadowRoot!.querySelector(
       'slot[name="current"]'
-    );
+    ) || new HTMLSlotElement;
     if (!currentSlot.assignedElements().length) return;
 
     const currentRailRule = getOrInsertCSSRule(
-      this.shadowRoot,
+      this.shadowRoot!,
       '#current-rail'
     );
     const currentBoxRule = getOrInsertCSSRule(
-      this.shadowRoot,
+      this.shadowRoot!,
       '[part~="current-box"]'
     );
 
-    const rects = this.#getElementRects(this.#currentBox);
+    const rects = this.#getElementRects(this.#currentBox!);
     const boxPos = this.#getBoxPosition(rects, this.range.valueAsNumber);
     const boxShift = this.#getBoxShiftPosition(rects, this.range.valueAsNumber);
 
@@ -807,18 +807,18 @@ class MediaTimeRange extends MediaChromeRange {
 
   #getBoxShiftPosition(rects: Rects, ratio: number) {
     const { width, min, max } = rects.box;
-    const pointerX = ratio * rects.range.width;
+    const pointerX = ratio * rects.range!.width;
 
     if (pointerX < min + this.#boxPaddingLeft) {
       const offset =
-        rects.range.left - rects.bounds.left - this.#boxPaddingLeft;
+        rects.range!.left - rects.bounds!.left - this.#boxPaddingLeft;
       return `${pointerX - width / 2 + offset}px`;
     }
 
     if (pointerX > max - this.#boxPaddingRight) {
       const offset =
-        rects.bounds.right - rects.range.right - this.#boxPaddingRight;
-      return `${pointerX + width / 2 - offset - rects.range.width}px`;
+        rects.bounds!.right - rects.range!.right - this.#boxPaddingRight;
+      return `${pointerX + width / 2 - offset - rects.range!.width}px`;
     }
 
     return 0;
@@ -863,15 +863,15 @@ class MediaTimeRange extends MediaChromeRange {
     if (!duration) return;
 
     const previewRailRule = getOrInsertCSSRule(
-      this.shadowRoot,
+      this.shadowRoot!,
       '#preview-rail'
     );
     const previewBoxRule = getOrInsertCSSRule(
-      this.shadowRoot,
+      this.shadowRoot!,
       '[part~="preview-box"]'
     );
 
-    const rects = this.#getElementRects(this.#previewBox);
+    const rects = this.#getElementRects(this.#previewBox!);
 
     let pointerRatio = (evt.clientX - rects.range.left) / rects.range.width;
     pointerRatio = Math.max(0, Math.min(1, pointerRatio));
@@ -887,7 +887,7 @@ class MediaTimeRange extends MediaChromeRange {
     // At least require a 1s difference before requesting a new preview thumbnail,
     // unless it's at the beginning or end of the timeline.
     const diff =
-      Math.round(this.#previewTime) - Math.round(pointerRatio * duration);
+      Math.round(this.#previewTime ?? 0) - Math.round(pointerRatio * duration);
     if (Math.abs(diff) < 1 && pointerRatio > 0.01 && pointerRatio < 0.99)
       return;
 
@@ -895,7 +895,7 @@ class MediaTimeRange extends MediaChromeRange {
     this.#previewRequest(this.#previewTime);
   }
 
-  #previewRequest(detail): void {
+  #previewRequest(detail: number | null): void {
     this.dispatchEvent(
       new globalThis.CustomEvent(MediaUIEvents.MEDIA_PREVIEW_REQUEST, {
         composed: true,

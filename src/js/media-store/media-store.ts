@@ -125,7 +125,7 @@ export const createMediaStore = ({
   options = {},
   monitorStateOwnersOnlyWithSubscriptions = true,
 }: MediaStoreConfig): MediaStore => {
-  const callbacks = [];
+  const callbacks: Array<(state: Partial<MediaState>) => void> = [];
 
   // We may eventually want to expose the state owners as part of the state
   // or as a specialized getter API for advanced use cases
@@ -182,14 +182,24 @@ export const createMediaStore = ({
     updateState(nextState);
   };
 
-  // Dictionary for event handler storage and cleanup
-  const stateUpdateHandlers = {};
+  type StateUpdateHandlers = {
+    [key: string]: {
+      audioTracksEvents?: EventListener;
+      videoRenditionsEvents?: EventListener;
+      textTracksEvents?: EventListener;
+      remoteEvents?: EventListener;
+      rootEvents?: EventListener;
+      stateOwnersUpdateHandlers?: () => void;
+      mediaEvents?: EventListener;
+    };
+  };
+
+  let nextStateOwners: any = undefined;
 
   // This function will handle all wiring up of event handlers/monitoring of state
   // and will re-compute the general next state whenever any "state owner" is set or updated,
   // which includes the media element, but also the documentElement and the fullscreenElement
   // This is roughly equivalent to what used to be in `mediaSetCallback`/`mediaUnsetCallback` (CJP)
-  let nextStateOwners = undefined;
   const updateStateOwners = async (
     nextStateOwnersDelta: any,
     nextSubscriberCount?: number
@@ -200,6 +210,8 @@ export const createMediaStore = ({
       ...(nextStateOwners ?? {}),
       ...nextStateOwnersDelta,
     };
+
+    const stateUpdateHandlers: StateUpdateHandlers = {};
 
     if (pendingUpdate) return;
 
@@ -328,7 +340,7 @@ export const createMediaStore = ({
         }
       );
       updateStateFromFacade();
-      nextStateOwners = undefined;
+      nextStateOwners = {};
       return;
     }
 
@@ -351,121 +363,135 @@ export const createMediaStore = ({
           stateUpdateHandlers[stateName] = {};
         }
 
-        const handler = (event) => {
+        const handler = (event: Event) => {
           const nextValue = get(stateOwners, event);
           updateState({ [stateName]: nextValue });
         };
 
         let prevHandler;
         // Media Changed, update handlers here
-        prevHandler = stateUpdateHandlers[stateName].mediaEvents;
+        prevHandler = stateUpdateHandlers[stateName]?.mediaEvents;
         mediaEvents.forEach((eventType) => {
           if (prevHandler && teardownMedia) {
             stateOwners.media.removeEventListener(eventType, prevHandler);
-            stateUpdateHandlers[stateName].mediaEvents = undefined;
+            stateUpdateHandlers[stateName]!.mediaEvents = undefined;
           }
           if (setupMedia) {
             nextStateOwners.media.addEventListener(eventType, handler);
-            stateUpdateHandlers[stateName].mediaEvents = handler;
+            stateUpdateHandlers[stateName]!.mediaEvents = handler;
           }
         });
-        prevHandler = stateUpdateHandlers[stateName].textTracksEvents;
+        prevHandler = stateUpdateHandlers[stateName]!.textTracksEvents;
         textTracksEvents.forEach((eventType) => {
           if (prevHandler && teardownTextTracks) {
             stateOwners.media.textTracks?.removeEventListener(
               eventType,
               prevHandler
             );
-            stateUpdateHandlers[stateName].textTracksEvents = undefined;
+            stateUpdateHandlers[stateName]!.textTracksEvents = undefined;
           }
           if (setupTextTracks) {
             nextStateOwners.media.textTracks?.addEventListener(
               eventType,
               handler
             );
-            stateUpdateHandlers[stateName].textTracksEvents = handler;
+            stateUpdateHandlers[stateName]!.textTracksEvents = handler;
           }
         });
-        prevHandler = stateUpdateHandlers[stateName].videoRenditionsEvents;
+        prevHandler = stateUpdateHandlers[stateName]!.videoRenditionsEvents;
         videoRenditionsEvents.forEach((eventType) => {
           if (prevHandler && teardownVideoRenditions) {
             stateOwners.media.videoRenditions?.removeEventListener(
               eventType,
               prevHandler
             );
-            stateUpdateHandlers[stateName].videoRenditionsEvents = undefined;
+            stateUpdateHandlers[stateName]!.videoRenditionsEvents = undefined;
           }
           if (setupVideoRenditions) {
             nextStateOwners.media.videoRenditions?.addEventListener(
               eventType,
               handler
             );
-            stateUpdateHandlers[stateName].videoRenditionsEvents = handler;
+            stateUpdateHandlers[stateName]!.videoRenditionsEvents = handler;
           }
         });
-        prevHandler = stateUpdateHandlers[stateName].audioTracksEvents;
+        prevHandler = stateUpdateHandlers[stateName]!.audioTracksEvents;
         audioTracksEvents.forEach((eventType) => {
           if (prevHandler && teardownAudioTracks) {
-            stateOwners.media.audioTracks?.removeEventListener(
+            stateOwners.media?.audioTracks?.removeEventListener(
               eventType,
               prevHandler
             );
-            stateUpdateHandlers[stateName].audioTracksEvents = undefined;
+            if (stateUpdateHandlers[stateName]) {
+              stateUpdateHandlers[stateName].audioTracksEvents = undefined;
+            }
           }
           if (setupAudioTracks) {
-            nextStateOwners.media.audioTracks?.addEventListener(
+            nextStateOwners.media?.audioTracks?.addEventListener(
               eventType,
               handler
             );
-            stateUpdateHandlers[stateName].audioTracksEvents = handler;
+            if (stateUpdateHandlers[stateName]) {
+              stateUpdateHandlers[stateName].audioTracksEvents = handler;
+            }
           }
         });
-        prevHandler = stateUpdateHandlers[stateName].remoteEvents;
+        prevHandler = stateUpdateHandlers[stateName]?.remoteEvents;
         remoteEvents.forEach((eventType) => {
           if (prevHandler && teardownRemote) {
-            stateOwners.media.remote?.removeEventListener(
+            stateOwners.media?.remote?.removeEventListener(
               eventType,
               prevHandler
             );
-            stateUpdateHandlers[stateName].remoteEvents = undefined;
+            if (stateUpdateHandlers[stateName]) {
+              stateUpdateHandlers[stateName].remoteEvents = undefined;
+            }
           }
           if (setupRemote) {
-            nextStateOwners.media.remote?.addEventListener(eventType, handler);
-            stateUpdateHandlers[stateName].remoteEvents = handler;
+            nextStateOwners.media?.remote?.addEventListener(eventType, handler);
+            if (stateUpdateHandlers[stateName]) {
+              stateUpdateHandlers[stateName].remoteEvents = handler;
+            }
           }
         });
 
-        prevHandler = stateUpdateHandlers[stateName].rootEvents;
+        prevHandler = stateUpdateHandlers[stateName]?.rootEvents;
         rootEvents.forEach((eventType) => {
           if (prevHandler && teardownRootNode) {
-            stateOwners.documentElement.removeEventListener(
+            stateOwners.documentElement?.removeEventListener(
               eventType,
               prevHandler
             );
-            stateUpdateHandlers[stateName].rootEvents = undefined;
+            if (stateUpdateHandlers[stateName]) {
+              stateUpdateHandlers[stateName].rootEvents = undefined;
+            }
           }
           if (setupRootNode) {
-            nextStateOwners.documentElement.addEventListener(
+            nextStateOwners.documentElement?.addEventListener(
               eventType,
               handler
             );
-            stateUpdateHandlers[stateName].rootEvents = handler;
+            if (stateUpdateHandlers[stateName]) {
+              stateUpdateHandlers[stateName].rootEvents = handler;
+            }
           }
         });
 
         // NOTE: Since custom update handlers may depend on *any* state owner
         // we should apply them whenever any state owner changes (CJP)
         const prevHandlerTeardown =
-          stateUpdateHandlers[stateName].stateOwnersUpdateHandlers;
+          stateUpdateHandlers[stateName]?.stateOwnersUpdateHandlers;
         stateOwnersUpdateHandlers.forEach((fn) => {
           if (prevHandlerTeardown && teardownSomething) {
             prevHandlerTeardown();
           }
           if (setupSomething) {
-            stateUpdateHandlers[stateName].stateOwnersUpdateHandlers = fn(
-              handler,
-              nextStateOwners
-            );
+            if (stateUpdateHandlers[stateName]) {
+              stateUpdateHandlers[stateName].stateOwnersUpdateHandlers = fn(
+                handler,
+                nextStateOwners
+              );
+            }
           }
         });
       }
@@ -476,6 +502,7 @@ export const createMediaStore = ({
     });
     updateStateFromFacade();
     nextStateOwners = undefined;
+    return;
   };
 
   updateStateOwners({ media, fullscreenElement, documentElement, options });

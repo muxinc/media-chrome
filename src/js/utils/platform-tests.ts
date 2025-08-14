@@ -93,5 +93,5 @@ export const hasFullscreenSupport = (mediaEl = getTestMediaEl()) => {
 export const fullscreenSupported: boolean = hasFullscreenSupport();
 export const pipSupported: boolean = hasPipSupport();
 export const airplaySupported: boolean =
-  !!globalThis.WebKitPlaybackTargetAvailabilityEvent;
-export const castSupported: boolean = !!globalThis.chrome;
+  !!(globalThis as any).WebKitPlaybackTargetAvailabilityEvent;
+export const castSupported: boolean = !!(globalThis as any).chrome;
