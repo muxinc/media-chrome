@@ -47,7 +47,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
       attrName === MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED &&
       oldValue !== newValue
     ) {
-      this.value = newValue;
+      this.value = newValue || '';
     } else if (
       attrName === MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST &&
       oldValue !== newValue
@@ -108,15 +108,15 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
     this.defaultSlot.textContent = '';
 
     for (const audioTrack of audioTrackList) {
-      const text = this.formatMenuItemText(audioTrack.label, audioTrack);
+      const text = this.formatMenuItemText(audioTrack.label || "", audioTrack);
 
       const item = createMenuItem({
         type: 'radio',
         text,
         value: `${audioTrack.id}`,
-        checked: audioTrack.enabled,
+        checked: audioTrack.enabled || false,
       });
-      item.prepend(createIndicator(this, 'checked-indicator'));
+      item.prepend(createIndicator(this, 'checked-indicator')!);
       this.defaultSlot.append(item);
     }
   }

@@ -32,7 +32,7 @@ function getTooltipContentHTML() {
 const DEFAULT_TIME = 0;
 
 /**
- * @slot icon - The element shown for the seek backward button’s display.
+ * @slot icon - The element shown for the seek backward button's display.
  *
  * @attr {string} seekoffset - Adjusts how much time (in seconds) the playhead should seek backward.
  * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
@@ -51,13 +51,13 @@ class MediaSeekBackwardButton extends MediaChromeButton {
     ];
   }
 
-  connectedCallback(): void {
-    super.connectedCallback();
+  constructor() {
+    super();
     this.seekOffset = getNumericAttr(
       this,
       Attributes.SEEK_OFFSET,
       DEFAULT_SEEK_OFFSET
-    );
+    ) ?? DEFAULT_SEEK_OFFSET;
   }
 
   attributeChangedCallback(
@@ -67,12 +67,12 @@ class MediaSeekBackwardButton extends MediaChromeButton {
   ): void {
     super.attributeChangedCallback(attrName, _oldValue, newValue);
 
-    if (attrName === Attributes.SEEK_OFFSET) {
+    if (attrName === Attributes.SEEK_OFFSET && newValue !== _oldValue) {
       this.seekOffset = getNumericAttr(
         this,
         Attributes.SEEK_OFFSET,
         DEFAULT_SEEK_OFFSET
-      );
+      ) ?? DEFAULT_SEEK_OFFSET;
     }
   }
 
@@ -82,7 +82,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
    * Seek amount in seconds
    */
   get seekOffset(): number {
-    return getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET);
+    return getNumericAttr(this, Attributes.SEEK_OFFSET, DEFAULT_SEEK_OFFSET) ?? DEFAULT_SEEK_OFFSET;
   }
 
   set seekOffset(value: number) {
@@ -104,7 +104,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
       this,
       MediaUIAttributes.MEDIA_CURRENT_TIME,
       DEFAULT_TIME
-    );
+    ) ?? DEFAULT_TIME;
   }
 
   set mediaCurrentTime(time: number) {

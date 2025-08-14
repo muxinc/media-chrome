@@ -100,8 +100,8 @@ export const parseTracks = (trackOrTracks: TrackOrTracks): TextTrackLike[] => {
 export const formatTextTrackObj = (
   { kind, label, language }: TextTrackLike = { kind: 'subtitles' }
 ): string => {
-  if (!label) return language;
-  return `${kind === 'captions' ? 'cc' : 'sb'}:${language}:${encodeURIComponent(
+  if (!label) return language ?? '';
+  return `${kind === 'captions' ? 'cc' : 'sb'}:${language ?? ''}:${encodeURIComponent(
     label
   )}`;
 };
@@ -189,11 +189,15 @@ export const updateTracksModeTo = (
   const preds = parseTracks(tracksToUpdate).map(textTrackObjAsPred);
 
   // A track is identified as a track to update as long as it matches *one* of the preds (i.e. as long as it "looks like" one of "partial TextTrack-like" objects)
-  const isTrackToUpdate = (textTrack) => {
-    return preds.some((pred) => pred(textTrack));
+  interface IsTrackToUpdate {
+    (textTrack: TextTrackLike): boolean;
+  }
+
+  const isTrackToUpdate: IsTrackToUpdate = (textTrack: TextTrackLike): boolean => {
+    return preds.some((pred: (track: TextTrackLike) => boolean) => pred(textTrack));
   };
 
-  Array.from(tracks as any)
+  (Array.from(tracks as any) as TextTrackLike[])
     // 1. Filter to only include tracks to update
     .filter(isTrackToUpdate)
     // 2. Update each of those tracks to the appropriate mode.

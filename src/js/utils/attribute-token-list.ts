@@ -19,8 +19,8 @@ export class AttributeTokenList
   #tokenSet: Set<string> = new Set<string>();
 
   constructor(
-    el?: HTMLElement,
-    attr?: string,
+    el: HTMLElement,
+    attr: string,
     { defaultValue } = { defaultValue: undefined }
   ) {
     this.#el = el;
@@ -54,7 +54,7 @@ export class AttributeTokenList
     return this.value;
   }
 
-  item(index): string {
+  item(index: number): string {
     return [...this.#tokens][index];
   }
 
