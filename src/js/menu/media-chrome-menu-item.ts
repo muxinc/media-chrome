@@ -362,8 +362,6 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     if (slot.name === 'submenu') {
       if (this.submenuElement) {
         this.#submenuConnected();
-      } else {
-        this.#submenuDisconnected();
       }
     }
   }
@@ -404,12 +402,12 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
    * is populated with the text of the first checked item.
    */
   #handleMenuItem = () => {
-    this.setAttribute('submenusize', `${this.submenuElement.items.length}`);
+    this.setAttribute('submenusize', `${this.submenuElement?.items.length}`);
 
     const descriptionSlot = this.shadowRoot.querySelector(
       'slot[name="description"]'
     );
-    const checkedItem = this.submenuElement.checkedItems?.[0];
+    const checkedItem = this.submenuElement?.checkedItems?.[0];
     const description = checkedItem?.dataset.description ?? checkedItem?.text;
 
     const span = document.createElement('span');
