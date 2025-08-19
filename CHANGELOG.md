@@ -1,3 +1,17 @@
+# [4.13.0](https://github.com/muxinc/media-chrome/compare/v4.12.0...v4.13.0) (2025-08-19)
+
+
+### Bug Fixes
+
+* Ensure touch taps on iOS are handled correctly as pointerType "touch" ([#1174](https://github.com/muxinc/media-chrome/issues/1174)) ([1182a82](https://github.com/muxinc/media-chrome/commit/1182a82b17b5701cedf7a78e17edf9f4fdc924ca))
+
+
+### Features
+
+* expose <div> container via part so host DOM styles can target it ([#1172](https://github.com/muxinc/media-chrome/issues/1172)) ([a772d07](https://github.com/muxinc/media-chrome/commit/a772d07b3891672396c6fcf3bb1afcd122412a6f)), closes [#1100](https://github.com/muxinc/media-chrome/issues/1100)
+
+
+
 # [4.12.0](https://github.com/muxinc/media-chrome/compare/v4.11.1...v4.12.0) (2025-07-02)
 
 
