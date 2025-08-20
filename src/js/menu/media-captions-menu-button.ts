@@ -106,7 +106,7 @@ class MediaCaptionsMenuButton extends MediaChromeMenuButton {
     if (this.invokeTarget != undefined) return super.invokeTargetElement;
     const controller = getMediaController(this);
     if (!controller) return null;
-    return controller.querySelector('media-captions-menu') as HTMLElement | null;
+    return controller ? controller.querySelector('media-rendition-menu') : null;
   }
 
   /**

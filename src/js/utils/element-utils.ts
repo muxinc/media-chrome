@@ -105,14 +105,12 @@ export const closestComposedNode = <T extends Element = Element>(
 export function getActiveElement(
   root: Document | ShadowRoot | undefined = document
 ): HTMLElement | null {
-  if (!root) return null;
-  const activeEl = root.activeElement as HTMLElement | null;
-  if (!activeEl) return null;
+  
+  if (!root?.activeElement) return null;
+  const activeEl = root.activeElement as HTMLElement;
+
   const shadowRoot = activeEl.shadowRoot;
-  if (shadowRoot) {
-    return getActiveElement(shadowRoot) ?? activeEl;
-  }
-  return activeEl;
+  return shadowRoot ? getActiveElement(shadowRoot) ?? activeEl : activeEl;
 }
 
 /**
@@ -222,6 +220,12 @@ export function getOrInsertCSSRule(
   return newRule;
 }
 
+/**
+ * Get a CSSStyleRule with a selector in an element containing <style> tags.
+ * @param  styleParent - The parent element containing <style> tags.
+ * @param  predicate - A function that returns true for the desired CSSStyleRule.
+ */
+
 export function getCSSRule(
   styleParent: Element | ShadowRoot,
   predicate: (selectorText: string) => boolean
@@ -249,6 +253,12 @@ export function getCSSRule(
   return undefined;
 }
 
+/**
+ * Insert a CSSStyleRule with a selector in an element containing <style> tags.
+ * @param styleParent - The parent element containing <style> tags.
+ * @param selectorText - The selector text of the CSS rule.
+ */
+
 export function insertCSSRule(
   styleParent: Element | ShadowRoot,
   selectorText: string
@@ -266,8 +276,14 @@ export function insertCSSRule(
   } else {
     return undefined;
   }
-
+  // If there is no style sheet return an empty style rule.
   if (!style?.sheet) {
+     // The style tag must be connected to the DOM before it has a sheet.
+    // This could indicate a bug. Should the code be moved to connectedCallback?
+    console.warn(
+      'Media Chrome: No style sheet found on style tag of',
+      styleParent
+    );
     return undefined;
   }
 

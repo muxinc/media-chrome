@@ -62,12 +62,12 @@ class MediaSeekForwardButton extends MediaChromeButton {
 
   attributeChangedCallback(
     attrName: string,
-    oldValue: string | null,
+    _oldValue: string | null,
     newValue: string | null
   ): void {
-    super.attributeChangedCallback(attrName, oldValue, newValue);
+    super.attributeChangedCallback(attrName, _oldValue, newValue);
 
-    if (attrName === Attributes.SEEK_OFFSET && newValue !== oldValue) {
+    if (attrName === Attributes.SEEK_OFFSET && newValue !== _oldValue) {
       this.seekOffset = getNumericAttr(
         this,
         Attributes.SEEK_OFFSET,
