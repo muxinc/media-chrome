@@ -1,5 +1,4 @@
-import { MediaUIAttributes } from './constants.js';
-import { MediaStateReceiverAttributes } from './constants.js';
+import { MediaUIAttributes , MediaStateReceiverAttributes } from './constants.js';
 import { getStringAttr, setStringAttr, getOrInsertCSSRule, namedNodeMapToObject } from './utils/element-utils.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import MediaController from './media-controller.js';
