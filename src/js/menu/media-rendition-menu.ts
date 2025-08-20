@@ -81,9 +81,11 @@ class MediaRenditionMenu extends MediaChromeMenu {
    */
   get anchorElement() {
     if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector<HTMLElement>(
+    const controller = getMediaController(this);
+    if (!controller) return null;
+    return controller.querySelector<HTMLElement>(
       'media-rendition-menu-button'
-    );
+    ) ?? null;
   }
 
   get mediaRenditionList(): Rendition[] {
@@ -107,7 +109,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
   }
 
   get mediaHeight(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_HEIGHT);
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_HEIGHT) ?? 0;
   }
 
   set mediaHeight(height: number) {
@@ -148,9 +150,12 @@ class MediaRenditionMenu extends MediaChromeMenu {
         type: 'radio',
         text,
         value: `${rendition.id}`,
-        checked: rendition.selected && !isAuto,
+        checked: !!(rendition.selected && !isAuto),
       });
-      item.prepend(createIndicator(this, 'checked-indicator'));
+      const indicator = createIndicator(this, 'checked-indicator');
+      if (indicator) {
+        item.prepend(indicator);
+      }
       this.defaultSlot.append(item);
     }
 
@@ -168,7 +173,10 @@ class MediaRenditionMenu extends MediaChromeMenu {
     const autoDescription = this.mediaHeight > 0 ? `${t('Auto')} (${this.mediaHeight}p)` : t('Auto');
     item.dataset.description = autoDescription;
 
-    item.prepend(createIndicator(this, 'checked-indicator'));
+    const indicator = createIndicator(this, 'checked-indicator');
+    if (indicator) {
+      item.prepend(indicator);
+    }
     this.defaultSlot.append(item);
   }
 

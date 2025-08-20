@@ -1,7 +1,7 @@
-import { MediaTextDisplay } from './media-text-display.js';
-import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
+import { MediaTextDisplay } from './media-text-display.js';
 import { getStringAttr, setStringAttr } from './utils/element-utils.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { t } from './utils/i18n.js';
 
 /**
@@ -10,7 +10,7 @@ import { t } from './utils/i18n.js';
  * @cssproperty [--media-preview-chapter-display-display = inline-flex] - `display` property of display.
  */
 class MediaPreviewChapterDisplay extends MediaTextDisplay {
-  #slot: HTMLSlotElement;
+  #slot!: HTMLSlotElement;
 
   static get observedAttributes(): string[] {
     return [
@@ -59,8 +59,8 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
     return getStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_CHAPTER);
   }
 
-  set mediaPreviewChapter(value: string | undefined) {
-    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_CHAPTER, value);
+  set mediaPreviewChapter(value: string | null) {
+    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_CHAPTER, value ?? '');
   }
 }
 

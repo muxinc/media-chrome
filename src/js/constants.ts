@@ -145,16 +145,14 @@ export type StateChangeEventToAttributeMap = {
 export const StateChangeEventToAttributeMap = Object.entries(
   MediaStateChangeEvents
 ).reduce(
-  (mapObj, [key, eventType]) => {
-    const attrName = MediaUIAttributes[key];
+  (mapObj: Record<string, string>, [key, eventType]) => {
+    const attrName = MediaUIAttributes[key as keyof typeof MediaUIAttributes];
     if (attrName) {
       mapObj[eventType] = attrName;
     }
     return mapObj;
   },
-  { userinactivechange: 'userinactive' } as Partial<
-    Writeable<StateChangeEventToAttributeMap>
-  >
+  { userinactivechange: 'userinactive' } as Record<string, string>
 ) as StateChangeEventToAttributeMap;
 
 /** @TODO Make types more precise derivations, at least after updates to event type names mentioned above (CJP) */
@@ -168,7 +166,7 @@ export const AttributeToStateChangeEventMap = Object.entries(
   MediaUIAttributes
 ).reduce(
   (mapObj, [key, attrName]) => {
-    const evtType = MediaStateChangeEvents[key];
+    const evtType = MediaStateChangeEvents[key as keyof typeof MediaStateChangeEvents];
     if (evtType) {
       mapObj[attrName] = evtType;
     }
