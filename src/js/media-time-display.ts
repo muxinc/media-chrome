@@ -239,7 +239,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * Get the duration
    */
   get mediaDuration(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_DURATION) || Number.NaN; // Default to NaN if not set
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_DURATION) || Number.NaN;
   }
 
   set mediaDuration(time: number) {
@@ -250,7 +250,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
    * The current time in seconds
    */
   get mediaCurrentTime(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME ) || 0; // Default to 0 if not set
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME ) || 0;
   }
 
   set mediaCurrentTime(time: number) {
