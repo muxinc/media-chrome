@@ -9,6 +9,7 @@ import { MediaStateReceiverAttributes } from '../../src/js/constants.js';
 import { constants } from '../../src/js/index.js';
 import '../../src/js/media-controller.js';
 import { MediaController } from '../../src/js/media-controller.js';
+import { spy } from 'sinon';
 
 const {
   MediaUIEvents,
@@ -246,6 +247,60 @@ describe('<media-controller>', () => {
       mediaController.mediaStateReceivers.indexOf(div) >= 0,
       'registers div'
     );
+  });
+
+  it('toggles hotkeys on and off with nohotkeys attribute', async () => {
+    const addEventListenerSpy = spy(
+      MediaController.prototype,
+      'addEventListener'
+    );
+    const removeEventListenerSpy = spy(
+      MediaController.prototype,
+      'removeEventListener'
+    );
+
+    const mediaController = await fixture<MediaController>(`
+      <media-controller nohotkeys>
+        <video 
+          slot="media" 
+          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+          muted 
+          crossorigin 
+          playsinline
+        ></video>
+      </media-controller>
+    `);
+    await nextFrame();
+
+    // On creation with nohotkeys, should call removeEventListener for keydown
+    const removedKeydown = removeEventListenerSpy.calledWith('keydown');
+    assert.isTrue(
+      removedKeydown,
+      'Should remove keydown listener when nohotkeys is present'
+    );
+
+    // Remove nohotkeys attribute (should enable hotkeys)
+    mediaController.removeAttribute('nohotkeys');
+    await nextFrame();
+    const addedKeydown = addEventListenerSpy.calledWith('keydown');
+    assert.isTrue(
+      addedKeydown,
+      'Should add keydown listener when nohotkeys is removed'
+    );
+
+    // Add nohotkeys attribute again (should disable hotkeys)
+    mediaController.setAttribute('nohotkeys', '');
+    await nextFrame();
+    const removedKeydownCalls = removeEventListenerSpy
+      .getCalls()
+      .filter((call) => call.args[0] === 'keydown').length;
+    assert.isTrue(
+      removedKeydownCalls > 1,
+      'Should remove keydown listener again when nohotkeys is set'
+    );
+
+    addEventListenerSpy.restore();
+    removeEventListenerSpy.restore();
   });
 });
 
