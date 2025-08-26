@@ -85,7 +85,8 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         background: var(--media-menu-background, var(--media-control-background, var(--media-secondary-color, var(--_menu-bg))));
         border-radius: var(--media-menu-border-radius);
         border: var(--media-menu-border, none);
-        display: var(--media-menu-display, inline-flex);
+        display: var(--media-menu-display, inline-flex) !important;
+        ${/* ^^Prevent override by Tailwind CSS causing the menu to not hide properly. */ ''}
         transition: var(--media-menu-transition-in,
           visibility 0s,
           opacity .2s ease-out,
