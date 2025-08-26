@@ -414,6 +414,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       observeResize(getBoundsElement(this), this.#handleBoundsResize);
       observeResize(this, this.#handleMenuResize);
     }
+
+    // Required when using declarative shadow DOM.
+    this.#toggleHeader();
   }
 
   disconnectedCallback(): void {
@@ -537,15 +540,24 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
 
     if (['header', 'title'].includes(slot.name)) {
-      const header: HTMLElement = this.shadowRoot.querySelector(
-        'slot[name="header"]'
-      );
-      header.hidden = slot.assignedNodes().length === 0;
+      this.#toggleHeader();
     }
 
     if (!slot.name) {
       this.#handleMenuItems();
     }
+  }
+
+  #toggleHeader() {
+    const header = this.shadowRoot.querySelector(
+      'slot[name="header"]'
+    ) as HTMLSlotElement;
+    const title = this.shadowRoot.querySelector(
+      'slot[name="title"]'
+    ) as HTMLSlotElement;
+
+    header.hidden =
+      title.assignedNodes().length === 0 && header.assignedNodes().length === 0;
   }
 
   /**

@@ -264,6 +264,11 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
 
     this.#ownerElement = closestMenuItemsContainer(this, this.parentNode);
     this.#reset();
+
+    // Required when using declarative shadow DOM.
+    if (this.submenuElement) {
+      this.#submenuConnected();
+    }
   }
 
   disconnectedCallback(): void {
@@ -404,7 +409,9 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
    * is populated with the text of the first checked item.
    */
   #handleMenuItem = () => {
-    this.setAttribute('submenusize', `${this.submenuElement.items.length}`);
+    if (this.submenuElement.items) {
+      this.setAttribute('submenusize', `${this.submenuElement.items.length}`);
+    }
 
     const descriptionSlot = this.shadowRoot.querySelector(
       'slot[name="description"]'
