@@ -21,12 +21,12 @@ const ccIconOff = `<svg aria-hidden="true" viewBox="0 0 26 24">
 function getSlotTemplateHTML() {
   return /*html*/ `
     <style>
-      :host([aria-checked="true"]) slot[name=off] {
+      :host([aria-pressed="true"]) slot[name=off] {
         display: none !important;
       }
 
       ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-      :host(:not([aria-checked="true"])) slot[name=on] {
+      :host(:not([aria-pressed="true"])) slot[name=on] {
         display: none !important;
       }
 
@@ -47,7 +47,7 @@ function getTooltipContentHTML() {
 }
 
 const updateAriaChecked = (el: HTMLElement): void => {
-  el.setAttribute('aria-checked', areSubsOn(el).toString());
+  el.setAttribute('aria-pressed', areSubsOn(el).toString());
 };
 
 const updateAriaLabel = (el: HTMLElement): void => {

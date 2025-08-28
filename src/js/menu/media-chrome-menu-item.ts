@@ -41,7 +41,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         outline-offset: var(--media-menu-item-hover-outline-offset,  var(--media-menu-item-outline-offset, -1px));
       }
 
-      :host([aria-checked="true"]) {
+      :host([aria-pressed="true"]) {
         background: var(--media-menu-item-checked-background);
       }
 
@@ -112,7 +112,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         visibility: hidden;
       }
 
-      :host([aria-checked="true"]) [part~="checked-indicator"] {
+      :host([aria-pressed="true"]) [part~="checked-indicator"] {
         visibility: visible;
       }
     </style>
@@ -204,8 +204,8 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
       this.setAttribute('tabindex', '-1');
     }
 
-    if (isCheckable(this) && !this.hasAttribute('aria-checked')) {
-      this.setAttribute('aria-checked', 'false');
+    if (isCheckable(this) && !this.hasAttribute('aria-pressed')) {
+      this.setAttribute('aria-pressed', 'false');
     }
 
     this.addEventListener('click', this);
@@ -243,7 +243,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     newValue: string | null
   ): void {
     if (attrName === Attributes.CHECKED && isCheckable(this) && !this.#dirty) {
-      this.setAttribute('aria-checked', newValue != null ? 'true' : 'false');
+      this.setAttribute('aria-pressed', newValue != null ? 'true' : 'false');
     } else if (attrName === Attributes.TYPE && newValue !== oldValue) {
       this.role = 'menuitem' + newValue;
     } else if (attrName === Attributes.DISABLED && newValue !== oldValue) {
@@ -329,7 +329,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
 
   get checked() {
     if (!isCheckable(this)) return undefined;
-    return this.getAttribute('aria-checked') === 'true';
+    return this.getAttribute('aria-pressed') === 'true';
   }
 
   set checked(value) {
@@ -337,7 +337,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
 
     this.#dirty = true;
     // Firefox doesn't support the property .ariaChecked.
-    this.setAttribute('aria-checked', value ? 'true' : 'false');
+    this.setAttribute('aria-pressed', value ? 'true' : 'false');
 
     if (value) {
       this.part.add('checked');
@@ -459,19 +459,19 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     const items = this.#ownerElement?.radioGroupItems;
     if (!items) return;
 
-    // Default to the last aria-checked element if there isn't an active element already.
+    // Default to the last aria-pressed element if there isn't an active element already.
     let checkedItem = items
-      .filter((item) => item.getAttribute('aria-checked') === 'true')
+      .filter((item) => item.getAttribute('aria-pressed') === 'true')
       .pop();
 
     // If there isn't an active element or a checked element, default to the first element.
     if (!checkedItem) checkedItem = items[0];
 
     for (const item of items) {
-      item.setAttribute('aria-checked', 'false');
+      item.setAttribute('aria-pressed', 'false');
     }
 
-    checkedItem?.setAttribute('aria-checked', 'true');
+    checkedItem?.setAttribute('aria-pressed', 'true');
   }
 }
 

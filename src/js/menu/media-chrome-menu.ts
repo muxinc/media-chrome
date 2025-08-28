@@ -223,7 +223,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         padding: .3em .5em;
       }
 
-      media-chrome-menu-item[aria-checked="true"] {
+      media-chrome-menu-item[aria-pressed="true"] {
         background: var(--media-menu-item-checked-background, rgb(255 255 255 / .2));
       }
 
