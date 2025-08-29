@@ -17,7 +17,7 @@ The VTT file defines the images (and their coordinates) that are displayed as pr
 
 For more details on how thumbnails are integrated and controlled, see [`<media-time-range>`](media-time-range#preview-thumbnails).
 
-```css
+<style>
   media-preview-thumbnail {
     display: block;
   }
@@ -25,13 +25,11 @@ For more details on how thumbnails are integrated and controlled, see [`<media-t
   media-preview-thumbnail[mediapreviewimage] {
     height: 160px;
   }
-```
+</style>
 
 ### Default (no src)
 
-```jsx
 <media-preview-thumbnail></media-preview-thumbnail>
-```
 
 ```html
 <media-preview-thumbnail></media-preview-thumbnail>
@@ -39,11 +37,9 @@ For more details on how thumbnails are integrated and controlled, see [`<media-t
 
 ### With thumbnail and coords
 
-```jsx
 <media-preview-thumbnail
   mediapreviewimage="https://image.mux.com/O6LdRc0112FEJXH00bGsN9Q31yu5EIVHTgjTKRkKtEq1k/storyboard.jpg"
   mediapreviewcoords="284 640 284 160"></media-preview-thumbnail>
-```
 
 ```html
 <media-preview-thumbnail
