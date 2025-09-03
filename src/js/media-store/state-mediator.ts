@@ -402,13 +402,16 @@ export const stateMediator: StateMediator = {
       const { media } = stateOwners;
       if (!media) return;
 
-      try {
-        globalThis.localStorage.setItem(
-          'media-chrome-pref-muted',
-          value ? 'true' : 'false'
-        );
-      } catch (e) {
-        console.debug('Error setting muted pref', e);
+      // Prevent updating localStorage when it's not considered ("muted" attr overrides value)
+      if(!media.hasAttribute("muted")) {
+        try {
+          globalThis.localStorage.setItem(
+            'media-chrome-pref-muted',
+            value ? 'true' : 'false'
+          );
+        } catch (e) {
+          console.debug('Error setting muted pref', e);
+        }
       }
 
       media.muted = value;
