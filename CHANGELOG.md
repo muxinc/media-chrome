@@ -1,3 +1,12 @@
+## [4.13.1](https://github.com/muxinc/media-chrome/compare/v4.13.0...v4.13.1) (2025-09-03)
+
+
+### Bug Fixes
+
+* submenu DSD bug  ([#1190](https://github.com/muxinc/media-chrome/issues/1190)) ([fd8ebb8](https://github.com/muxinc/media-chrome/commit/fd8ebb8f359a1935077d30c77beafac214e24943)), closes [#1186](https://github.com/muxinc/media-chrome/issues/1186) [#1125](https://github.com/muxinc/media-chrome/issues/1125)
+
+
+
 # [4.13.0](https://github.com/muxinc/media-chrome/compare/v4.12.0...v4.13.0) (2025-08-19)
 
 

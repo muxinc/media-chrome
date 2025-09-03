@@ -20,6 +20,10 @@ import {
 import {
   MediaPlaybackRateMenu,
   MediaPlaybackRateMenuButton,
+  MediaSettingsMenu,
+  MediaSettingsMenuItem,
+  MediaSettingsMenuButton,
+  MediaRenditionMenu,
 } from 'media-chrome/react/menu';
 
 import { useState } from 'react';
@@ -106,6 +110,21 @@ export const Player = () => {
           <MediaVolumeRange></MediaVolumeRange>
           <MediaPlaybackRateButton rates={[.5, 1, 2]}></MediaPlaybackRateButton>
           <MediaPlaybackRateMenuButton></MediaPlaybackRateMenuButton>
+          <MediaSettingsMenuButton></MediaSettingsMenuButton>
+          <MediaSettingsMenu role="menu" hidden anchor="auto">
+            <MediaSettingsMenuItem>
+              Speed
+              <MediaPlaybackRateMenu slot="submenu" hidden>
+                <div slot="title">Speed</div>
+              </MediaPlaybackRateMenu>
+            </MediaSettingsMenuItem>
+            <MediaSettingsMenuItem>
+              Quality
+              <MediaRenditionMenu slot="submenu" hidden>
+                <div slot="title">Quality</div>
+              </MediaRenditionMenu>
+            </MediaSettingsMenuItem>
+          </MediaSettingsMenu>
           <MediaCaptionsButton></MediaCaptionsButton>
           <MediaAirplayButton></MediaAirplayButton>
           <MediaPipButton></MediaPipButton>
