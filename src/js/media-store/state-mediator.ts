@@ -403,7 +403,7 @@ export const stateMediator: StateMediator = {
       if (!media) return;
 
       // Prevent storing muted preference if 'muted' or noMutedPref are present
-      if(!media.hasAttribute("muted") || !noMutedPref) {
+      if(!media.hasAttribute("muted") && !noMutedPref) {
         try {
           globalThis.localStorage.setItem(
             'media-chrome-pref-muted',
