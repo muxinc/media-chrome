@@ -833,13 +833,16 @@ class MediaTimeRange extends MediaChromeRange {
     switch (evt.type) {
       case 'input':
         this.#seekRequest();
-        this.#isSeekInProgress = true;
         break;
       case 'pointermove':
         this.#handlePointerMove(evt as MouseEvent);
-        this.#isSeekInProgress = false;
         break;
       case 'pointerup':
+        if (this.#isSeekInProgress) this.#isSeekInProgress = false;
+        break;
+      case 'pointerdown':
+        this.#isSeekInProgress = true;
+        break;
       case 'pointerleave':
         this.#previewRequest(null);
         break;
