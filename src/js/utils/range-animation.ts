@@ -1,22 +1,28 @@
 type Range = { valueAsNumber: number };
 
+interface UpdateParams {
+  start: number;
+  duration: number;
+  playbackRate: number;
+}
+
 /**
  * Smoothly animate a range input accounting for hiccups and diverging playback.
  */
 export class RangeAnimation {
   fps: number;
   callback: (value: number) => void;
-  duration: number;
-  playbackRate: number;
+  duration: number = 0;
+  playbackRate: number = 0;
 
   #range: Range;
-  #startTime: number;
-  #previousTime: number;
-  #deltaTime: number;
-  #frameCount: number;
-  #updateTimestamp: number;
-  #updateStartValue: number;
-  #lastRangeIncrease: number;
+  #startTime: number = 0;
+  #previousTime: number = 0;
+  #deltaTime: number = 0;
+  #frameCount: number = 0;
+  #updateTimestamp: number = 0;
+  #updateStartValue: number = 0;
+  #lastRangeIncrease: number = 0;
   #id = 0;
 
   constructor(range: Range, callback: (value: number) => void, fps: number) {
@@ -41,7 +47,7 @@ export class RangeAnimation {
     this.#id = 0;
   }
 
-  update({ start, duration, playbackRate }) {
+  update({ start, duration, playbackRate }: UpdateParams) {
     // 1. Always allow increases.
     // 2. Allow a relatively large decrease (user action or Safari jumping back :s).
     const increase = start - this.#range.valueAsNumber;

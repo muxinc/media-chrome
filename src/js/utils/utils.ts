@@ -15,6 +15,7 @@ export function stringifyRendition(rendition: Rendition): string {
     const { id, width, height } = rendition;
     return [id, width, height].filter((a) => a != null).join(':');
   }
+  return '';
 }
 
 export function parseRendition(rendition: string): Rendition {
@@ -22,14 +23,15 @@ export function parseRendition(rendition: string): Rendition {
     const [id, width, height] = rendition.split(':');
     return { id, width: +width, height: +height };
   }
+  return { id: '', width: 0, height: 0 };
 }
 
-export function stringifyAudioTrackList(audioTracks: any[]) {
-  return audioTracks?.map(stringifyAudioTrack).join(' ');
+export function stringifyAudioTrackList(audioTracks: any[]): string {
+  return audioTracks?.map(stringifyAudioTrack).join(' ') ?? '';
 }
 
 export function parseAudioTrackList(audioTracks: string): TextTrackLike[] {
-  return audioTracks?.split(/\s+/).map(parseAudioTrack);
+  return audioTracks?.split(/\s+/).map(parseAudioTrack) ?? [];
 }
 
 export function stringifyAudioTrack(audioTrack: any): string {
@@ -37,6 +39,7 @@ export function stringifyAudioTrack(audioTrack: any): string {
     const { id, kind, language, label } = audioTrack;
     return [id, kind, language, label].filter((a) => a != null).join(':');
   }
+  return '';
 }
 
 export function parseAudioTrack(audioTrack: string): TextTrackLike {
@@ -49,6 +52,7 @@ export function parseAudioTrack(audioTrack: string): TextTrackLike {
       label,
     };
   }
+  return { id: '', kind: 'subtitles' as TextTrackKinds, language: '', label: '' };
 }
 
 export function dashedToCamel(word: string): string {

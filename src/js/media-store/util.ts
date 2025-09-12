@@ -1,17 +1,23 @@
 import { TextTrackKinds, TextTrackModes } from '../constants.js';
 import { getTextTracksList, updateTracksModeTo } from '../utils/captions.js';
 import { TextTrackLike } from '../utils/TextTrackLike.js';
+import {
+  StateOwners,
+} from './state-mediator.js';
 
-export const getSubtitleTracks = (stateOwners): TextTrackLike[] => {
-  return getTextTracksList(stateOwners.media, (textTrack) => {
+
+export const getSubtitleTracks = (
+  stateOwners: StateOwners
+): TextTrackLike[] => {
+  return getTextTracksList(stateOwners.media! as HTMLVideoElement, (textTrack) => {
     return [TextTrackKinds.SUBTITLES, TextTrackKinds.CAPTIONS].includes(
       textTrack.kind as any
     );
   }).sort((a, b) => (a.kind >= b.kind ? 1 : -1));
 };
 
-export const getShowingSubtitleTracks = (stateOwners): TextTrackLike[] => {
-  return getTextTracksList(stateOwners.media, (textTrack) => {
+export const getShowingSubtitleTracks = (stateOwners: StateOwners): TextTrackLike[] => {
+  return getTextTracksList(stateOwners.media! as HTMLVideoElement, (textTrack) => {
     return (
       textTrack.mode === TextTrackModes.SHOWING &&
       [TextTrackKinds.SUBTITLES, TextTrackKinds.CAPTIONS].includes(
@@ -21,7 +27,7 @@ export const getShowingSubtitleTracks = (stateOwners): TextTrackLike[] => {
   });
 };
 
-export const toggleSubtitleTracks = (stateOwners, force: boolean): void => {
+export const toggleSubtitleTracks = (stateOwners: StateOwners, force: boolean): void => {
   // NOTE: Like Element::toggleAttribute(), this event uses the detail for an optional "force"
   // value. When present, this means "toggle to" "on" (aka showing, even if something's already showing)
   // or "off" (aka disabled, even if all tracks are currently disabled).
@@ -55,15 +61,15 @@ export const toggleSubtitleTracks = (stateOwners, force: boolean): void => {
       const preferredAvailableSubs = tracks
         .filter((textTrack) => {
           return userLangPrefs.some((lang) =>
-            textTrack.language.toLowerCase().startsWith(lang.split('-')[0])
+            textTrack.language?.toLowerCase().startsWith(lang.split('-')[0])
           );
         })
         .sort((textTrackA, textTrackB) => {
           const idxA = userLangPrefs.findIndex((lang) =>
-            textTrackA.language.toLowerCase().startsWith(lang.split('-')[0])
+            textTrackA.language?.toLowerCase().startsWith(lang.split('-')[0])
           );
           const idxB = userLangPrefs.findIndex((lang) =>
-            textTrackB.language.toLowerCase().startsWith(lang.split('-')[0])
+            textTrackB.language?.toLowerCase().startsWith(lang.split('-')[0])
           );
           return idxA - idxB;
         });

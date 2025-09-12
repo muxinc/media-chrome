@@ -84,7 +84,7 @@ class MediaVolumeRange extends MediaChromeRange {
    *
    */
   get mediaVolume(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_VOLUME, DEFAULT_VOLUME);
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_VOLUME, DEFAULT_VOLUME)!;
   }
 
   set mediaVolume(value: number) {
@@ -110,7 +110,7 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 
   set mediaVolumeUnavailable(value: string | undefined) {
-    setStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, value);
+    setStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, value || '');
   }
 }
 
