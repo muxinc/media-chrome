@@ -136,7 +136,9 @@ class MediaController extends MediaContainer {
       prevState = nextState;
     };
 
-    this.enableHotkeys();
+    this.hasAttribute(Attributes.NO_HOTKEYS)
+      ? this.disableHotkeys()
+      : this.enableHotkeys();
   }
 
   #setupDefaultStore() {
@@ -407,7 +409,9 @@ class MediaController extends MediaContainer {
       );
     }
 
-    this.enableHotkeys();
+    this.hasAttribute(Attributes.NO_HOTKEYS)
+      ? this.disableHotkeys()
+      : this.enableHotkeys();
   }
 
   disconnectedCallback(): void {
