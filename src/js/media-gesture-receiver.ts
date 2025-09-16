@@ -130,13 +130,10 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
         return;
       }
 
-      const { pointerType = this._pointerType } = event;
-      // NOTE: While there are cases where we may have a stale this._pointerType,
-      // we're guaranteed that the most recent this._pointerType will correspond
-      // to the current click event definitionally. As such, this clearing is technically
-      // unnecessary (CJP)
+      // Skip checking event.pointerType completely — it's unreliable on iOS
+      const pointerType = this._pointerType || 'mouse'; 
+      // Only reset after click
       this._pointerType = undefined;
-
       // NOTE: Longer term, we'll likely want to delay this to support double click/double tap (CJP)
       if (pointerType === PointerTypes.TOUCH) {
         this.handleTap(event);

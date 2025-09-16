@@ -399,16 +399,19 @@ export const stateMediator: StateMediator = {
       return media?.muted ?? false;
     },
     set(value, stateOwners) {
-      const { media } = stateOwners;
+      const { media, options: { noMutedPref } = {} } = stateOwners;
       if (!media) return;
 
-      try {
-        globalThis.localStorage.setItem(
-          'media-chrome-pref-muted',
-          value ? 'true' : 'false'
-        );
-      } catch (e) {
-        console.debug('Error setting muted pref', e);
+      // Prevent storing muted preference if 'muted' or noMutedPref are present
+      if(!media.hasAttribute("muted") && !noMutedPref) {
+        try {
+          globalThis.localStorage.setItem(
+            'media-chrome-pref-muted',
+            value ? 'true' : 'false'
+          );
+        } catch (e) {
+          console.debug('Error setting muted pref', e);
+        }
       }
 
       media.muted = value;
@@ -442,14 +445,15 @@ export const stateMediator: StateMediator = {
       return media?.volume ?? 1.0;
     },
     set(value, stateOwners) {
-      const { media } = stateOwners;
+      const { media, options: { noVolumePref } = {} } = stateOwners;
       if (!media) return;
       // Store the last set volume as a local preference, if ls is supported
       /** @TODO How should we handle globalThis dependencies/"state ownership"? (CJP) */
       try {
         if (value == null) {
           globalThis.localStorage.removeItem('media-chrome-pref-volume');
-        } else {
+        } else if (!media.hasAttribute('muted') && !noVolumePref) {
+          // Prevent storing volume preference if 'muted' or noVolumePref are present
           globalThis.localStorage.setItem(
             'media-chrome-pref-volume',
             value.toString()
@@ -1066,6 +1070,9 @@ export const stateMediator: StateMediator = {
       const { media } = stateOwners;
       if (!pipSupported || !hasPipSupport(media as HTMLVideoElement))
         return AvailabilityStates.UNSUPPORTED;
+      else if (media?.disablePictureInPicture)
+        return AvailabilityStates.UNAVAILABLE;
+      return undefined;
     },
   },
   mediaVolumeUnavailable: {
