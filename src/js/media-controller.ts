@@ -59,6 +59,7 @@ export const Attributes = {
   NO_AUTO_SEEK_TO_LIVE: 'noautoseektolive',
   NO_HOTKEYS: 'nohotkeys',
   NO_VOLUME_PREF: 'novolumepref',
+  NO_MUTED_PREF: 'nomutedpref',
   NO_SUBTITLES_LANG_PREF: 'nosubtitleslangpref',
   NO_DEFAULT_STORE: 'nodefaultstore',
   KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
@@ -81,6 +82,7 @@ export const Attributes = {
  * @attr {string} seektoliveoffset
  * @attr {boolean} noautoseektolive
  * @attr {boolean} novolumepref
+ * @attr {boolean} nomutedpref
  * @attr {boolean} nosubtitleslangpref
  * @attr {boolean} nodefaultstore
  * @attr {string} lang
@@ -161,6 +163,7 @@ class MediaController extends MediaContainer {
         noAutoSeekToLive: this.hasAttribute(Attributes.NO_AUTO_SEEK_TO_LIVE),
         // NOTE: This wasn't updated if it was changed later. Should it be? (CJP)
         noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
+        noMutedPref: this.hasAttribute(Attributes.NO_MUTED_PREF),
         noSubtitlesLangPref: this.hasAttribute(
           Attributes.NO_SUBTITLES_LANG_PREF
         ),
@@ -267,6 +270,14 @@ class MediaController extends MediaContainer {
 
   set noVolumePref(value: boolean | undefined) {
     setBooleanAttr(this, Attributes.NO_VOLUME_PREF, value);
+  }
+
+  get noMutedPref(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_MUTED_PREF);
+  }
+
+  set noMutedPref(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_MUTED_PREF, value);
   }
 
   get noSubtitlesLangPref(): boolean | undefined {

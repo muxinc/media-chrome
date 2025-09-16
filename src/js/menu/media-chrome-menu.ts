@@ -85,7 +85,8 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         background: var(--media-menu-background, var(--media-control-background, var(--media-secondary-color, var(--_menu-bg))));
         border-radius: var(--media-menu-border-radius);
         border: var(--media-menu-border, none);
-        display: var(--media-menu-display, inline-flex);
+        display: var(--media-menu-display, inline-flex) !important;
+        ${/* ^^Prevent override by Tailwind CSS causing the menu to not hide properly. */ ''}
         transition: var(--media-menu-transition-in,
           visibility 0s,
           opacity .2s ease-out,
@@ -232,7 +233,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         display: var(--media-menu-item-checked-indicator-display, none);
       }
     </style>
-    <div id="container">
+    <div id="container" part="container">
       <slot name="header" hidden>
         <button part="back button" aria-label="Back to previous menu">
           <slot name="back-icon">
@@ -414,6 +415,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       observeResize(getBoundsElement(this), this.#handleBoundsResize);
       observeResize(this, this.#handleMenuResize);
     }
+
+    // Required when using declarative shadow DOM.
+    this.#toggleHeader();
   }
 
   disconnectedCallback(): void {
@@ -537,15 +541,24 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
 
     if (['header', 'title'].includes(slot.name)) {
-      const header: HTMLElement = this.shadowRoot.querySelector(
-        'slot[name="header"]'
-      );
-      header.hidden = slot.assignedNodes().length === 0;
+      this.#toggleHeader();
     }
 
     if (!slot.name) {
       this.#handleMenuItems();
     }
+  }
+
+  #toggleHeader() {
+    const header = this.shadowRoot.querySelector(
+      'slot[name="header"]'
+    ) as HTMLSlotElement;
+    const title = this.shadowRoot.querySelector(
+      'slot[name="title"]'
+    ) as HTMLSlotElement;
+
+    header.hidden =
+      title.assignedNodes().length === 0 && header.assignedNodes().length === 0;
   }
 
   /**
