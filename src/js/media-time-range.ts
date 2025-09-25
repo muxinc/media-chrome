@@ -429,7 +429,7 @@ class MediaTimeRange extends MediaChromeRange {
   #boxPaddingLeft: number;
   #boxPaddingRight: number;
   #mediaChaptersCues;
-  #isSeekInProgress: boolean;
+  #isPointerDown: boolean;
 
   constructor() {
     super();
@@ -536,7 +536,7 @@ class MediaTimeRange extends MediaChromeRange {
       this.range.valueAsNumber = value;
     }
 
-    if (!this.#isSeekInProgress) {
+    if (!this.#isPointerDown) {
       this.updateBar();
     }
   };
@@ -838,10 +838,10 @@ class MediaTimeRange extends MediaChromeRange {
         this.#handlePointerMove(evt as MouseEvent);
         break;
       case 'pointerup':
-        if (this.#isSeekInProgress) this.#isSeekInProgress = false;
+        if (this.#isPointerDown) this.#isPointerDown = false;
         break;
       case 'pointerdown':
-        this.#isSeekInProgress = true;
+        this.#isPointerDown = true;
         break;
       case 'pointerleave':
         this.#previewRequest(null);
