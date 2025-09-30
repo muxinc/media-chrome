@@ -14,7 +14,12 @@ import {
   createIndicator,
 } from './media-chrome-menu.js';
 import { Rendition } from '../media-store/state-mediator.js';
-import {t} from '../utils/i18n.js';
+import { t } from '../utils/i18n.js';
+
+export type FormatRenditionOptions = {
+  showBitrate?: boolean;
+};
+
 /**
  * @extends {MediaChromeMenu}
  *
@@ -34,6 +39,37 @@ class MediaRenditionMenu extends MediaChromeMenu {
       MediaUIAttributes.MEDIA_RENDITION_UNAVAILABLE,
       MediaUIAttributes.MEDIA_HEIGHT,
     ];
+  }
+
+  static override formatMenuItemText(
+    text: string,
+    rendition?: Rendition
+  ): string {
+    return super.formatMenuItemText(text, rendition);
+  }
+
+  static formatRendition(
+    rendition: Rendition,
+    { showBitrate = false }: FormatRenditionOptions = {}
+  ): string {
+    const renditionText = `${Math.min(
+      rendition.width as number,
+      rendition.height as number
+    )}p`;
+
+    if (showBitrate && rendition.bitrate) {
+      const mbps = rendition.bitrate / 1000000;
+      const bitrateText = `${mbps.toFixed(mbps < 1 ? 1 : 0)} Mbps`;
+      return `${renditionText} (${bitrateText})`;
+    }
+
+    return this.formatMenuItemText(renditionText, rendition);
+  }
+
+  static compareRendition(a: Rendition, b: Rendition): number {
+    return b.height === a.height
+      ? (b.bitrate ?? 0) - (a.bitrate ?? 0)
+      : b.height - a.height;
   }
 
   #renditionList: Rendition[] = [];
@@ -116,22 +152,30 @@ class MediaRenditionMenu extends MediaChromeMenu {
 
   #render(): void {
     if (
-      this.#prevState.mediaRenditionList === JSON.stringify(this.mediaRenditionList) &&
+      this.#prevState.mediaRenditionList ===
+        JSON.stringify(this.mediaRenditionList) &&
       this.#prevState.mediaHeight === this.mediaHeight
-    ) return;
+    )
+      return;
 
-    this.#prevState.mediaRenditionList = JSON.stringify(this.mediaRenditionList);
+    this.#prevState.mediaRenditionList = JSON.stringify(
+      this.mediaRenditionList
+    );
     this.#prevState.mediaHeight = this.mediaHeight;
 
     const renditionList = this.mediaRenditionList.sort(
-      (a: any, b: any) => b.height - a.height
+      this.compareRendition.bind(this)
+    );
+
+    const selectedRendition = renditionList.find(
+      (rendition) => rendition.id === this.mediaRenditionSelected
     );
 
     for (const rendition of renditionList) {
       // `selected` is not serialized in the rendition list because
       // each selection would cause a re-render of the menu.
       // @ts-ignore
-      rendition.selected = rendition.id === this.mediaRenditionSelected;
+      rendition.selected = rendition === selectedRendition;
     }
 
     this.defaultSlot.textContent = '';
@@ -139,10 +183,9 @@ class MediaRenditionMenu extends MediaChromeMenu {
     const isAuto = !this.mediaRenditionSelected;
 
     for (const rendition of renditionList) {
-      const text = this.formatMenuItemText(
-        `${Math.min(rendition.width as number, rendition.height as number)}p`,
-        rendition
-      );
+      const text = this.formatRendition(rendition, {
+        showBitrate: this.showRenditionBitrate(rendition),
+      });
 
       const item = createMenuItem({
         type: 'radio',
@@ -154,19 +197,29 @@ class MediaRenditionMenu extends MediaChromeMenu {
       this.defaultSlot.append(item);
     }
 
-    const text = isAuto
-      ? this.formatMenuItemText(`${t('Auto')} (${this.mediaHeight}p)`)
+    const showSelectedBitrate =
+      selectedRendition && this.showRenditionBitrate(selectedRendition);
+
+    const autoText = isAuto
+      ? // Auto • 1080p (4 Mbps)
+        selectedRendition
+        ? this.formatMenuItemText(
+            `${t('Auto')} • ${this.formatRendition(selectedRendition, {
+              showBitrate: showSelectedBitrate,
+            })}`,
+            selectedRendition
+          )
+        : this.formatMenuItemText(`${t('Auto')} (${this.mediaHeight}p)`)
       : this.formatMenuItemText(t('Auto'));
 
     const item = createMenuItem({
       type: 'radio',
-      text,
+      text: autoText,
       value: 'auto',
       checked: isAuto,
     });
 
-    const autoDescription = this.mediaHeight > 0 ? `${t('Auto')} (${this.mediaHeight}p)` : t('Auto');
-    item.dataset.description = autoDescription;
+    item.dataset.description = autoText;
 
     item.prepend(createIndicator(this, 'checked-indicator'));
     this.defaultSlot.append(item);
@@ -184,6 +237,33 @@ class MediaRenditionMenu extends MediaChromeMenu {
       }
     );
     this.dispatchEvent(event);
+  }
+
+  compareRendition(a: Rendition, b: Rendition): number {
+    const ctor = this.constructor as typeof MediaRenditionMenu;
+    return ctor.compareRendition(a, b);
+  }
+
+  override formatMenuItemText(text: string, rendition?: Rendition): string {
+    const ctor = this.constructor as typeof MediaRenditionMenu;
+    return ctor.formatMenuItemText(text, rendition);
+  }
+
+  formatRendition(
+    rendition: Rendition,
+    options?: FormatRenditionOptions
+  ): string {
+    const ctor = this.constructor as typeof MediaRenditionMenu;
+    return ctor.formatRendition(rendition, options);
+  }
+
+  showRenditionBitrate(rendition: Rendition): boolean {
+    return this.mediaRenditionList.some(
+      (r) =>
+        r !== rendition &&
+        r.height === rendition.height &&
+        r.bitrate !== rendition.bitrate
+    );
   }
 }
 
