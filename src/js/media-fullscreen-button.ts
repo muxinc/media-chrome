@@ -15,7 +15,6 @@ import {
   getStringAttr,
   setBooleanAttr,
   setStringAttr,
-  getMediaController,
 } from './utils/element-utils.js';
 
 const enterFullscreenIcon = `<svg aria-hidden="true" viewBox="0 0 26 24">
@@ -109,12 +108,6 @@ class MediaFullscreenButton extends MediaChromeButton {
 
     if (attrName === MediaUIAttributes.MEDIA_IS_FULLSCREEN) {
       updateAriaLabel(this);
-
-      // Move focus to media element for mouse clicks (enables player hotkeys),
-      // but keep focus on button for keyboard navigation (maintains accessibility)
-      if (this.#lastActionEvent instanceof PointerEvent) {
-        this.moveFocusToMedia();
-      }
     }
   }
 
@@ -142,26 +135,19 @@ class MediaFullscreenButton extends MediaChromeButton {
 
   handleClick(e: Event): void {
     this.#lastActionEvent = e;
+    const isPointerEvent = this.#lastActionEvent instanceof PointerEvent;
 
-    const eventName = this.mediaIsFullscreen
-      ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
-      : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
-      
-    this.dispatchEvent(
-      new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
-    );
-  }
+    const event = this.mediaIsFullscreen
+      ? new globalThis.CustomEvent(
+          MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST,
+          { composed: true, bubbles: true }
+        )
+      : new globalThis.CustomEvent(
+          MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST,
+          { composed: true, bubbles: true, detail: isPointerEvent }
+        );
 
-  private moveFocusToMedia(): void {
-    const mediaController = getMediaController(this);
-    if (!mediaController) return;
-
-    const mediaElement = mediaController.querySelector(
-      '[slot="media"]'
-    ) as HTMLElement | null;
-    if (!mediaElement) return;
-
-    mediaElement.focus();
+    this.dispatchEvent(event);
   }
 }
 
