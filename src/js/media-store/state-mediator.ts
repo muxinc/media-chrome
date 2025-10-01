@@ -125,7 +125,11 @@ export type FacadeGetter<T, D = T> = (
   event?: EventOrAction<D>
 ) => T;
 
-export type FacadeSetter<T> = (value: T, stateOwners: StateOwners) => void;
+export type FacadeSetter<T> = (
+  value: T,
+  stateOwners: StateOwners,
+  event?: EventOrAction<any>
+) => void;
 
 export type StateOwnerUpdateHandler<T> = (
   handler: (value: T) => void,
@@ -403,7 +407,7 @@ export const stateMediator: StateMediator = {
       if (!media) return;
 
       // Prevent storing muted preference if 'muted' or noMutedPref are present
-      if(!media.hasAttribute("muted") && !noMutedPref) {
+      if (!media.hasAttribute('muted') && !noMutedPref) {
         try {
           globalThis.localStorage.setItem(
             'media-chrome-pref-muted',
@@ -982,11 +986,13 @@ export const stateMediator: StateMediator = {
     get(stateOwners) {
       return isFullscreen(stateOwners);
     },
-    set(value, stateOwners) {
+    set(value, stateOwners, event) {
       if (!value) {
         exitFullscreen(stateOwners);
       } else {
         enterFullscreen(stateOwners);
+        const isPointer = event.detail;
+        if (isPointer) stateOwners.media?.focus();
       }
     },
     // older Safari version may require webkit-specific events

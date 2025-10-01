@@ -11,7 +11,7 @@ import {
   updateTracksModeTo,
 } from '../utils/captions.js';
 import { getSubtitleTracks, toggleSubtitleTracks } from './util.js';
-import { StateMediator, StateOwners } from './state-mediator.js';
+import { StateMediator, StateOwners, EventOrAction } from './state-mediator.js';
 import { MediaState } from './media-store.js';
 
 export type MediaUIEventsType =
@@ -39,7 +39,7 @@ export type RequestMap = {
   [K in MediaRequestTypes]: (
     stateMediator: StateMediator,
     stateOwners: StateOwners,
-    action: Partial<Pick<CustomEvent<any>, 'type' | 'detail'>>
+    action: EventOrAction<any>
   ) => Partial<MediaState> | undefined | void;
 };
 
@@ -267,7 +267,11 @@ export const requestMap: RequestMap = {
     const value = false;
     stateMediator[key].set(value, stateOwners);
   },
-  [MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST](stateMediator, stateOwners) {
+  [MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST](
+    stateMediator,
+    stateOwners,
+    event
+  ) {
     const key = 'mediaIsFullscreen';
     const value = true;
     // Exit PiP if in PiP and entering fullscreen
@@ -275,7 +279,7 @@ export const requestMap: RequestMap = {
       // Should be async
       stateMediator.mediaIsPip.set(false, stateOwners);
     }
-    stateMediator[key].set(value, stateOwners);
+    stateMediator[key].set(value, stateOwners, event);
   },
   [MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST](stateMediator, stateOwners) {
     const key = 'mediaIsFullscreen';
