@@ -1,0 +1,173 @@
+name: Test HTML Examples
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 0 * * *'  # Run daily at midnight UTC
+
+jobs:
+  test-examples:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        
+    - name: Create test package
+      run: |
+        cat << 'EOF' > package.json
+        {
+          "name": "test-examples",
+          "type": "module",
+          "dependencies": {
+            "playwright": "1.49.1"
+          }
+        }
+        EOF
+        npm install
+        
+    - name: Install browser
+      run: npx playwright install chromium
+        
+    - name: Create test script
+      run: |
+        cat << 'EOF' > test-examples.js
+        import { chromium } from 'playwright';
+        import path from 'path';
+        import { fileURLToPath } from 'url';
+        import { readdir, stat } from 'fs/promises';
+        import http from 'http';
+        import { readFile } from 'fs/promises';
+
+        const __filename = fileURLToPath(import.meta.url);
+        const __dirname = path.dirname(__filename);
+
+        // Start local server
+        const server = http.createServer(async (req, res) => {
+          try {
+            const filePath = path.join(process.cwd(), req.url === '/' ? 'index.html' : req.url);
+            const content = await readFile(filePath);
+            const ext = path.extname(filePath);
+            
+            // Set content type based on file extension
+            const contentTypes = {
+              '.html': 'text/html',
+              '.js': 'text/javascript',
+              '.css': 'text/css',
+              '.json': 'application/json',
+              '.png': 'image/png',
+              '.jpg': 'image/jpg',
+              '.svg': 'image/svg+xml'
+            };
+            
+            res.setHeader('Content-Type', contentTypes[ext] || 'text/plain');
+            res.end(content);
+          } catch (error) {
+            res.statusCode = 404;
+            res.end('File not found');
+          }
+        });
+        
+        const port = 3000;
+        await new Promise((resolve) => server.listen(port, resolve));
+        console.log(`Server running at http://localhost:${port}`);
+
+        const walkDir = async (dir) => {
+          const examples = [];
+          const files = await readdir(dir);
+          
+          for (const file of files) {
+            const filePath = path.join(dir, file);
+            const stats = await stat(filePath);
+            
+            if (stats.isDirectory()) {
+              examples.push(...(await walkDir(filePath)));
+            } else if (file.endsWith('.html')) {
+              examples.push(filePath);
+            }
+          }
+          
+          return examples;
+        };
+
+        try {
+          const browser = await chromium.launch({
+            args: [
+              '--autoplay-policy=no-user-gesture-required',
+              '--no-sandbox'
+            ]
+          });
+          const context = await browser.newContext({
+            locale: 'en-US',
+            timezoneId: 'America/Los_Angeles',
+            ignoreHTTPSErrors: true
+          });
+          
+          // Enable console error collection
+          let hasErrors = false;
+          
+          // Get all HTML files in examples directory
+          const examples = await walkDir('examples');
+          
+          for (const example of examples) {
+            const page = await context.newPage();
+            
+            // Listen for console errors
+            page.on('console', msg => {
+              if (msg.type() === 'error') {
+                console.log(msg);
+                const text = msg.text();
+                // Only ignore favicon errors
+                if (text.includes('favicon.ico')) {
+                  return;
+                }
+                console.error(`Error in ${example}:`, text);
+                hasErrors = true;
+              }
+            });
+            
+            // Listen for page errors
+            page.on('pageerror', error => {
+              console.error(`Page error in ${example}:`, error);
+              hasErrors = true;
+            });
+            
+            try {
+              // Load the page via HTTP server
+              const url = `http://localhost:${port}/${example}`;
+              await page.goto(url, {
+                waitUntil: 'networkidle'
+              });
+              
+              // Wait a bit to catch any async errors
+              await page.waitForTimeout(1000);
+              
+              console.log(`✓ Tested ${example}`);
+            } catch (error) {
+              console.error(`Failed to load ${example}:`, error);
+              hasErrors = true;
+            } finally {
+              await page.close();
+            }
+          }
+          
+          await browser.close();
+          
+          if (hasErrors) {
+            process.exit(1);
+          }
+        } finally {
+          // Cleanup: stop the server
+          server.close();
+        }
+        EOF
+        
+    - name: Run tests
+      run: node test-examples.js
