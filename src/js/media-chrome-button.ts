@@ -50,7 +50,7 @@ function getTemplateHTML(_attrs: Record<string, string>, _props: Record<string, 
       */ ''
       }
       :host(:focus-visible) {
-        box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
+        box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
         outline: 0;
       }
       ${
