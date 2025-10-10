@@ -1,5 +1,6 @@
 import { globalThis, document } from '../../utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from '../../constants.js';
+import { setNumericAttr } from '../../utils/element-utils.js';
 
 const template: HTMLTemplateElement = document.createElement('template');
 
@@ -207,8 +208,16 @@ class MediaClipSelector extends globalThis.HTMLElement {
     return +this.getAttribute(MediaUIAttributes.MEDIA_DURATION);
   }
 
+  set mediaDuration(value: number) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_DURATION, value);
+  }
+
   get mediaCurrentTime(): number {
     return +this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME);
+  }
+
+  set mediaCurrentTime(value: number) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_CURRENT_TIME, value);
   }
 
   /*
