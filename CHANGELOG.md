@@ -1,3 +1,12 @@
+# [4.14.0](https://github.com/muxinc/media-chrome/compare/v4.13.1...v4.14.0) (2025-10-01)
+
+
+### Features
+
+* support multiple bitrates in rendition menu ([#1209](https://github.com/muxinc/media-chrome/issues/1209)) ([3c2ca97](https://github.com/muxinc/media-chrome/commit/3c2ca9755d337523c1501150e2f2bcc989a507c4))
+
+
+
 ## [4.13.1](https://github.com/muxinc/media-chrome/compare/v4.13.0...v4.13.1) (2025-09-03)
 
 
