@@ -53,6 +53,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         display: inline-block;
         line-height: 0;
         background-color: var(--media-background-color, #000);
+        overflow: hidden;
       }
 
       :host(:not([${Attributes.AUDIO}])) [part~=layer]:not([part~=media-layer]) {
