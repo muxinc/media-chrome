@@ -33,6 +33,48 @@ class MediaContextMenu extends MediaChromeMenu {
     this.hidden = !this.#isContextMenuOpen;
   }
 
+  #closeContextMenu(): void {
+    this.#isContextMenuOpen = false;
+    this.#updateVisibility();
+    // Restore scrolling
+    document.body.style.overflow = '';
+  }
+
+  #closeOtherContextMenus(): void {
+    // Find all media-context-menu elements in the document
+    const allContextMenus = document.querySelectorAll('media-context-menu');
+    allContextMenus.forEach(menu => {
+      if (menu !== this) {
+        (menu as any).#closeContextMenu();
+      }
+    });
+  }
+
+  #isVideoContainer(element: HTMLElement | null): boolean {
+    if (!element) return false;
+    
+    // Check if the element contains a video
+    const hasVideoChild = element.querySelector('video') !== null;
+    if (hasVideoChild) return true;
+    
+    // Check if it has a slot="media" attribute
+    if (element.hasAttribute('slot') && element.getAttribute('slot') === 'media') {
+      return true;
+    }
+    
+    // Check if it's a custom element
+    if (element.nodeName.includes('-') && element.tagName.includes('-')) {
+      // Check if it has video-related attributes or contains video
+      const hasVideoAttributes = element.hasAttribute('src') || 
+                                element.hasAttribute('poster') || 
+                                element.hasAttribute('preload') ||
+                                element.hasAttribute('playsinline');
+      return hasVideoAttributes || hasVideoChild;
+    }
+    
+    return false;
+  }
+
   connectedCallback(): void {
     super.connectedCallback();
     getMediaController(this).addEventListener(
@@ -55,24 +97,30 @@ class MediaContextMenu extends MediaChromeMenu {
 
   #onControllerContextMenu = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
-    if (target?.nodeName === 'VIDEO') {
-      if (!this.#isContextMenuOpen) {
-        this.#onContextMenu(event);
-      } else {
-        this.#isContextMenuOpen = false;
-        this.#updateVisibility();
+    const isVideoElement = target?.nodeName === 'VIDEO';
+    const isVideoContainer = this.#isVideoContainer(target);
+    
+      if (isVideoElement || isVideoContainer) {
+        if (!this.#isContextMenuOpen) {
+          this.#onContextMenu(event);
+        } else {
+          this.#closeContextMenu();
+        }
       }
-    }
   };
 
   #onContextMenu(event: MouseEvent): void {
     event.preventDefault();
+    this.#closeOtherContextMenus();
     this.#isContextMenuOpen = true;
 
     this.style.position = 'fixed';
     this.style.left = `${event.clientX}px`;
     this.style.top = `${event.clientY}px`;
     this.#updateVisibility();
+
+    // Prevent scrolling when context menu is open
+    document.body.style.overflow = 'hidden';
 
     document.addEventListener('mousedown', this.#onDocumentClick, {
       once: true,
@@ -84,18 +132,17 @@ class MediaContextMenu extends MediaChromeMenu {
     const target = event.target as HTMLElement;
     const isRightClick = event.button === 2;
     const isVideo = target?.nodeName === 'VIDEO';
+    const isVideoContainer = this.#isVideoContainer(target);
     const isInsideMenu = this.contains(target);
 
-    if (!isInsideMenu && !(isRightClick && isVideo)) {
-      this.#isContextMenuOpen = false;
-      this.#updateVisibility();
+    if (!isInsideMenu && !(isRightClick && (isVideo || isVideoContainer))) {
+      this.#closeContextMenu();
     }
   };
 
   #onKeyDown = (event: KeyboardEvent): void => {
     if (event.key === 'Escape') {
-      this.#isContextMenuOpen = false;
-      this.#updateVisibility();
+      this.#closeContextMenu();
     }
   };
 
@@ -109,8 +156,7 @@ class MediaContextMenu extends MediaChromeMenu {
       input && navigator.clipboard.writeText(input.value);
     }
     
-    this.#isContextMenuOpen = false;
-    this.#updateVisibility();
+    this.#closeContextMenu();
   };
 }
 
