@@ -107,7 +107,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
 
     this.defaultSlot.textContent = '';
     
-    audioTrackList.sort((a, b) => a.id.localeCompare(b.id));
+    audioTrackList.sort((a, b) => a.id.localeCompare(b.id, undefined, {numeric: true}));
     for (const audioTrack of audioTrackList) {
       const text = this.formatMenuItemText(audioTrack.label, audioTrack);
 
