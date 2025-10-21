@@ -391,11 +391,11 @@ class MediaController extends MediaContainer {
           mediaLang: newValue,
         },
       });
-    } else if (attrName === Attributes.NO_VOLUME_PREF && newValue !== oldValue) {
+    } else if (attrName === Attributes.NO_MUTED_PREF && newValue !== oldValue) {
       this.#mediaStore?.dispatch({
         type: 'optionschangerequest',
         detail: {
-          noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
+          noMutedPref: this.hasAttribute(Attributes.NO_MUTED_PREF),
         },
       });
     }
