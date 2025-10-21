@@ -38,8 +38,6 @@ class MediaContextMenu extends MediaChromeMenu {
   #closeContextMenu(): void {
     this.#isContextMenuOpen = false;
     this.#updateVisibility();
-    // Restore scrolling
-    document.body.style.overflow = '';
   }
 
   #closeOtherContextMenus(): void {
@@ -115,9 +113,6 @@ class MediaContextMenu extends MediaChromeMenu {
     this.style.left = `${event.clientX}px`;
     this.style.top = `${event.clientY}px`;
     this.#updateVisibility();
-
-    // Prevent scrolling when context menu is open
-    document.body.style.overflow = 'hidden';
 
     document.addEventListener('mousedown', this.#onDocumentClick, {
       once: true,
