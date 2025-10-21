@@ -53,23 +53,18 @@ class MediaContextMenu extends MediaChromeMenu {
   #isVideoContainer(element: HTMLElement | null): boolean {
     if (!element) return false;
     
-    // Check if the element contains a video
-    const hasVideoChild = element.querySelector('video') !== null;
-    if (hasVideoChild) return true;
-    
     // Check if it has a slot="media" attribute
     if (element.hasAttribute('slot') && element.getAttribute('slot') === 'media') {
       return true;
     }
     
-    // Check if it's a custom element
+    // Check if it's a custom element with video-related attributes
     if (element.nodeName.includes('-') && element.tagName.includes('-')) {
-      // Check if it has video-related attributes or contains video
       const hasVideoAttributes = element.hasAttribute('src') || 
                                 element.hasAttribute('poster') || 
                                 element.hasAttribute('preload') ||
                                 element.hasAttribute('playsinline');
-      return hasVideoAttributes || hasVideoChild;
+      return hasVideoAttributes;
     }
     
     return false;
@@ -130,14 +125,25 @@ class MediaContextMenu extends MediaChromeMenu {
 
   #onDocumentClick = (event: MouseEvent): void => {
     const target = event.target as HTMLElement;
+    const isInsideMenu = this.contains(target);
     const isRightClick = event.button === 2;
     const isVideo = target?.nodeName === 'VIDEO';
     const isVideoContainer = this.#isVideoContainer(target);
-    const isInsideMenu = this.contains(target);
 
-    if (!isInsideMenu && !(isRightClick && (isVideo || isVideoContainer))) {
-      this.#closeContextMenu();
+    // Don't close if click is inside the menu
+    if (isInsideMenu) {
+      return;
     }
+
+    // Don't close if it's a right-click on video/videoContainer
+    // This allows the native context menu to show instead
+    const isRightClickOnVideo = isRightClick && (isVideo || isVideoContainer);
+    if (isRightClickOnVideo) {
+      return;
+    }
+
+    // Close the menu for all other clicks outside the menu
+    this.#closeContextMenu();
   };
 
   #onKeyDown = (event: KeyboardEvent): void => {
