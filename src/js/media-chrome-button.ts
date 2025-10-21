@@ -1,13 +1,17 @@
-import { MediaStateReceiverAttributes } from './constants.js';
+import {
+  MediaStateReceiverAttributes,
+  MediaUIAttributes,
+} from './constants.js';
 import MediaTooltip, { TooltipPlacement } from './media-tooltip.js';
 import {
   getBooleanAttr,
   getOrInsertCSSRule,
   getStringAttr,
+  namedNodeMapToObject,
   setBooleanAttr,
   setStringAttr,
 } from './utils/element-utils.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 
 const Attributes = {
   TOOLTIP_PLACEMENT: 'tooltipplacement',
@@ -15,94 +19,112 @@ const Attributes = {
   NO_TOOLTIP: 'notooltip',
 };
 
-const template = document.createElement('template');
-template.innerHTML = /*html*/ `
-<style>
-  :host {
-    position: relative;
-    font: var(--media-font,
-      var(--media-font-weight, bold)
-      var(--media-font-size, 14px) /
-      var(--media-text-content-height, var(--media-control-height, 24px))
-      var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
-    color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-    background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
-    padding: var(--media-button-padding, var(--media-control-padding, 10px));
-    justify-content: var(--media-button-justify-content, center);
-    display: inline-flex;
-    align-items: center;
-    vertical-align: middle;
-    box-sizing: border-box;
-    transition: background .15s linear;
-    pointer-events: auto;
-    cursor: var(--media-cursor, pointer);
-    -webkit-tap-highlight-color: transparent;
-  }
+function getTemplateHTML(_attrs: Record<string, string>, _props: Record<string, any> = {}) {
+  return /*html*/ `
+    <style>
+      :host {
+        position: relative;
+        font: var(--media-font,
+          var(--media-font-weight, bold)
+          var(--media-font-size, 14px) /
+          var(--media-text-content-height, var(--media-control-height, 24px))
+          var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+        color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
+        background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
+        padding: var(--media-button-padding, var(--media-control-padding, 10px));
+        justify-content: var(--media-button-justify-content, center);
+        display: inline-flex;
+        align-items: center;
+        vertical-align: middle;
+        box-sizing: border-box;
+        transition: background .15s linear;
+        pointer-events: auto;
+        cursor: var(--media-cursor, pointer);
+        -webkit-tap-highlight-color: transparent;
+      }
 
-  ${
-    /*
-    Only show outline when keyboard focusing.
-    https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
-  */ ''
-  }
-  :host(:focus-visible) {
-    box-shadow: inset 0 0 0 2px rgb(27 127 204 / .9);
-    outline: 0;
-  }
-  ${
-    /*
-     * hide default focus ring, particularly when using mouse
-     */ ''
-  }
-  :host(:where(:focus)) {
-    box-shadow: none;
-    outline: 0;
-  }
+      ${
+        /*
+        Only show outline when keyboard focusing.
+        https://drafts.csswg.org/selectors-4/#the-focus-visible-pseudo
+      */ ''
+      }
+      :host(:focus-visible) {
+        box-shadow: var(--media-focus-box-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
+        outline: 0;
+      }
+      ${
+        /*
+        * hide default focus ring, particularly when using mouse
+        */ ''
+      }
+      :host(:where(:focus)) {
+        box-shadow: none;
+        outline: 0;
+      }
 
-  :host(:hover) {
-    background: var(--media-control-hover-background, rgba(50 50 70 / .7));
-  }
+      :host(:hover) {
+        background: var(--media-control-hover-background, rgba(50 50 70 / .7));
+      }
 
-  svg, img, ::slotted(svg), ::slotted(img) {
-    width: var(--media-button-icon-width);
-    height: var(--media-button-icon-height, var(--media-control-height, 24px));
-    transform: var(--media-button-icon-transform);
-    transition: var(--media-button-icon-transition);
-    fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
-    vertical-align: middle;
-    max-width: 100%;
-    max-height: 100%;
-    min-width: 100%;
-  }
+      svg, img, ::slotted(svg), ::slotted(img) {
+        width: var(--media-button-icon-width);
+        height: var(--media-button-icon-height, var(--media-control-height, 24px));
+        transform: var(--media-button-icon-transform);
+        transition: var(--media-button-icon-transition);
+        fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
+        vertical-align: middle;
+        max-width: 100%;
+        max-height: 100%;
+        min-width: 100%;
+      }
 
-  media-tooltip {
-    ${
-      /** Make sure unpositioned tooltip doesn't cause page overflow (scroll). */ ''
-    }
-    max-width: 0;
-    overflow-x: clip;
-    opacity: 0;
-    transition: opacity .3s, max-width 0s 9s;
-  }
+      media-tooltip {
+        ${
+          /** Make sure unpositioned tooltip doesn't cause page overflow (scroll). */ ''
+        }
+        max-width: 0;
+        overflow-x: clip;
+        opacity: 0;
+        transition: opacity .3s, max-width 0s 9s;
+      }
 
-  :host(:hover) media-tooltip,
-  :host(:focus-visible) media-tooltip {
-    max-width: 100vw;
-    opacity: 1;
-    transition: opacity .3s;
-  }
+      :host(:hover) media-tooltip,
+      :host(:focus-visible) media-tooltip {
+        max-width: 100vw;
+        opacity: 1;
+        transition: opacity .3s;
+      }
 
-  :host([notooltip]) slot[name="tooltip"] {
-    display: none;
-  }
-</style>
+      :host([notooltip]) slot[name="tooltip"] {
+        display: none;
+      }
+    </style>
 
-<slot name="tooltip">
-  <media-tooltip part="tooltip" aria-hidden="true">
-    <slot name="tooltip-content"></slot>
-  </media-tooltip>
-</slot>
-`;
+    ${this.getSlotTemplateHTML(_attrs, _props)}
+
+    <slot name="tooltip">
+      <media-tooltip part="tooltip" aria-hidden="true">
+        <template shadowrootmode="${MediaTooltip.shadowRootOptions.mode}">
+          ${MediaTooltip.getTemplateHTML({})}
+        </template>
+        <slot name="tooltip-content">
+          ${this.getTooltipContentHTML(_attrs)}
+        </slot>
+      </media-tooltip>
+    </slot>
+  `;
+}
+
+function getSlotTemplateHTML(_attrs: Record<string, string>, _props: Record<string, any>) {
+  return /*html*/ `
+    <slot></slot>
+  `;
+}
+
+function getTooltipContentHTML() {
+  return '';
+}
 
 /**
  * @extends {HTMLElement}
@@ -135,53 +157,38 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-button-icon-transition - `transition` of button icon.
  */
 class MediaChromeButton extends globalThis.HTMLElement {
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
+  static getTemplateHTML = getTemplateHTML;
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   #mediaController;
   preventClick = false;
-  nativeEl: DocumentFragment;
   tooltipEl: MediaTooltip = null;
-  tooltipContent: string = '';
 
   static get observedAttributes() {
     return [
       'disabled',
       Attributes.TOOLTIP_PLACEMENT,
       MediaStateReceiverAttributes.MEDIA_CONTROLLER,
+      MediaUIAttributes.MEDIA_LANG
     ];
   }
 
-  constructor(
-    options: Partial<{
-      slotTemplate: HTMLTemplateElement;
-      defaultContent: string;
-      tooltipContent: string;
-    }> = {}
-  ) {
+  constructor() {
     super();
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow((this.constructor as typeof MediaChromeButton).shadowRootOptions);
 
-      const buttonHTML = template.content.cloneNode(true) as DocumentFragment;
-      this.nativeEl = buttonHTML;
-
-      // Slots
-      let slotTemplate = options.slotTemplate;
-
-      if (!slotTemplate) {
-        slotTemplate = document.createElement('template');
-        slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
-      }
-
-      if (options.tooltipContent) {
-        buttonHTML.querySelector('slot[name="tooltip-content"]').innerHTML =
-          options.tooltipContent ?? '';
-        this.tooltipContent = options.tooltipContent;
-      }
-
-      this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
-
-      this.shadowRoot.appendChild(buttonHTML);
+      const attrs = namedNodeMapToObject(this.attributes);
+      const html = (this.constructor as typeof MediaChromeButton).getTemplateHTML(attrs);
+      // From MDN: setHTMLUnsafe should be used instead of ShadowRoot.innerHTML 
+      // when a string of HTML may contain declarative shadow roots.
+      this.shadowRoot.setHTMLUnsafe ?
+        this.shadowRoot.setHTMLUnsafe(html) :
+        this.shadowRoot.innerHTML = html;
     }
 
     this.tooltipEl = this.shadowRoot.querySelector('media-tooltip');
@@ -262,6 +269,9 @@ class MediaChromeButton extends globalThis.HTMLElement {
       newValue !== oldValue
     ) {
       this.tooltipEl.placement = newValue;
+    }
+    else if (attrName === MediaUIAttributes.MEDIA_LANG) {
+      this.shadowRoot.querySelector('slot[name="tooltip-content"]').innerHTML = (this.constructor as typeof MediaChromeButton).getTooltipContentHTML();
     }
 
     // The tooltips label, and subsequently it's size and position, are a function

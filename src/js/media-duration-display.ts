@@ -5,13 +5,20 @@ import { MediaUIAttributes } from './constants.js';
 import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
 // Todo: Use data locals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/toLocaleTimeString
 
+function getSlotTemplateHTML(_attrs: Record<string, string>, props: Record<string, any>) {
+  return /*html*/ `
+    <slot>${formatTime(props.mediaDuration)}</slot>
+  `;
+}
+
 /**
  * @attr {string} mediaduration - (read-only) Set to the media duration.
  *
  * @cssproperty [--media-duration-display-display = inline-flex] - `display` property of display.
  */
 class MediaDurationDisplay extends MediaTextDisplay {
-  /** @type {HTMLSlotElement} */
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+
   #slot: HTMLSlotElement;
 
   static get observedAttributes(): string[] {
@@ -21,7 +28,7 @@ class MediaDurationDisplay extends MediaTextDisplay {
   constructor() {
     super();
     this.#slot = this.shadowRoot.querySelector('slot') as HTMLSlotElement;
-    this.#slot.textContent = formatTime(0);
+    this.#slot.textContent = formatTime(this.mediaDuration ?? 0);
   }
 
   attributeChangedCallback(

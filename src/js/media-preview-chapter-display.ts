@@ -2,6 +2,7 @@ import { MediaTextDisplay } from './media-text-display.js';
 import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIAttributes } from './constants.js';
 import { getStringAttr, setStringAttr } from './utils/element-utils.js';
+import { t } from './utils/i18n.js';
 
 /**
  * @attr {string} mediapreviewchapter - (read-only) Set to the timeline preview chapter.
@@ -15,6 +16,7 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_PREVIEW_CHAPTER,
+      MediaUIAttributes.MEDIA_LANG,
     ];
   }
 
@@ -30,13 +32,19 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (attrName === MediaUIAttributes.MEDIA_PREVIEW_CHAPTER) {
+    if (
+      attrName === MediaUIAttributes.MEDIA_PREVIEW_CHAPTER ||
+      attrName === MediaUIAttributes.MEDIA_LANG
+    ) {
       // Only update if it changed, preview events are called a few times per second.
       if (newValue !== oldValue && newValue != null) {
         this.#slot.textContent = newValue;
 
         if (newValue !== '') {
-          this.setAttribute('aria-valuetext', `chapter: ${newValue}`);
+          const ariaValueText = t('chapter: {chapterName}', {
+            chapterName: newValue,
+          });
+          this.setAttribute('aria-valuetext', ariaValueText);
         } else {
           this.removeAttribute('aria-valuetext');
         }

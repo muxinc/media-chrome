@@ -1,6 +1,6 @@
 import { MediaUIAttributes } from '../constants.js';
 import { MediaChromeMenuButton } from './media-chrome-menu-button.js';
-import { globalThis, document } from '../utils/server-safe-globals.js';
+import { globalThis } from '../utils/server-safe-globals.js';
 import {
   getStringAttr,
   setStringAttr,
@@ -13,15 +13,25 @@ const audioTrackIcon = /*html*/ `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10Zm-2 0a8 8 0 1 0-16 0 8 8 0 0 0 16 0Z"/>
 </svg>`;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-    :host([aria-expanded="true"]) slot[name=tooltip] {
-      display: none;
-    }
-  </style>
-  <slot name="icon">${audioTrackIcon}</slot>
-`;
+function getSlotTemplateHTML() {
+  return /*html*/ `
+    <style>
+      :host([aria-expanded="true"]) slot[name=tooltip] {
+        display: none;
+      }
+    </style>
+    <slot name="icon">${audioTrackIcon}</slot>
+  `;
+}
+
+function getTooltipContentHTML() {
+  return t('Audio');
+}
+
+const updateAriaLabel = (el: MediaAudioTrackMenuButton) => {
+  const label = t('Audio')
+  el.setAttribute('aria-label', label);
+};
 
 /**
  * @attr {string} mediaaudiotrackenabled - (read-only) Set to the selected audio track id.
@@ -30,6 +40,9 @@ slotTemplate.innerHTML = /*html*/ `
  * @cssproperty [--media-audio-track-menu-button-display = inline-flex] - `display` property of button.
  */
 class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
@@ -38,21 +51,21 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
     ];
   }
 
-  constructor() {
-    super({ slotTemplate, tooltipContent: t('Audio') });
-  }
-
   connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute('aria-label', t('Audio'));
+    updateAriaLabel(this);
   }
 
   attributeChangedCallback(
     attrName: string,
-    oldValue: string | null,
+    _oldValue: string | null,
     newValue: string | null
   ): void {
-    super.attributeChangedCallback(attrName, oldValue, newValue);
+    super.attributeChangedCallback(attrName, _oldValue, newValue);
+
+    if (attrName === MediaUIAttributes.MEDIA_LANG){
+      updateAriaLabel(this);
+    }
   }
 
   /**

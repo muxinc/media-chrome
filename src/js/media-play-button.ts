@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { t } from './utils/i18n.js';
 import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
@@ -12,32 +12,35 @@ const pauseIcon = `<svg aria-hidden="true" viewBox="0 0 24 24">
   <path d="M6 20h4V4H6v16Zm8-16v16h4V4h-4Z"/>
 </svg>`;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-    :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause],
-    :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=play] {
-      display: none !important;
-    }
+function getSlotTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=pause],
+      :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=play] {
+        display: none !important;
+      }
 
-    :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=tooltip-pause],
-    :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=tooltip-play] {
-      display: none;
-    }
-  </style>
+      :host([${MediaUIAttributes.MEDIA_PAUSED}]) slot[name=tooltip-pause],
+      :host(:not([${MediaUIAttributes.MEDIA_PAUSED}])) slot[name=tooltip-play] {
+        display: none;
+      }
+    </style>
 
-  <slot name="icon">
-    <slot name="play">${playIcon}</slot>
-    <slot name="pause">${pauseIcon}</slot>
-  </slot>
-`;
+    <slot name="icon">
+      <slot name="play">${playIcon}</slot>
+      <slot name="pause">${pauseIcon}</slot>
+    </slot>
+  `;
+}
 
-const tooltipContent = /*html*/ `
-  <slot name="tooltip-play">${t('Play')}</slot>
-  <slot name="tooltip-pause">${t('Pause')}</slot>
-`;
+function getTooltipContentHTML() {
+  return /*html*/ `
+    <slot name="tooltip-play">${t('Play')}</slot>
+    <slot name="tooltip-pause">${t('Pause')}</slot>
+  `;
+}
 
-const updateAriaLabel = (el: any): void => {
+const updateAriaLabel = (el: MediaPlayButton) => {
   const label = el.mediaPaused ? t('play') : t('pause');
   el.setAttribute('aria-label', label);
 };
@@ -52,6 +55,9 @@ const updateAriaLabel = (el: any): void => {
  * @cssproperty [--media-play-button-display = inline-flex] - `display` property of button.
  */
 class MediaPlayButton extends MediaChromeButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes(): string[] {
     return [
       ...super.observedAttributes,
@@ -60,13 +66,9 @@ class MediaPlayButton extends MediaChromeButton {
     ];
   }
 
-  constructor(options = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
-  }
-
   connectedCallback(): void {
-    updateAriaLabel(this);
     super.connectedCallback();
+    updateAriaLabel(this);
   }
 
   attributeChangedCallback(
@@ -74,10 +76,11 @@ class MediaPlayButton extends MediaChromeButton {
     oldValue: string | null,
     newValue: string | null
   ): void {
-    if (attrName === MediaUIAttributes.MEDIA_PAUSED) {
+    super.attributeChangedCallback(attrName, oldValue, newValue);
+
+    if (attrName === MediaUIAttributes.MEDIA_PAUSED || attrName === MediaUIAttributes.MEDIA_LANG) {
       updateAriaLabel(this);
     }
-    super.attributeChangedCallback(attrName, oldValue, newValue);
   }
 
   /**

@@ -7,20 +7,21 @@ import {
 import {
   closestComposedNode,
   getBooleanAttr,
+  namedNodeMapToObject,
   setBooleanAttr,
 } from './utils/element-utils.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 
-const template: HTMLTemplateElement = document.createElement('template');
-
-template.innerHTML = /*html*/ `
-<style>
-  :host {
-    display: var(--media-control-display, var(--media-gesture-receiver-display, inline-block));
-    box-sizing: border-box;
-  }
-</style>
-`;
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        display: var(--media-control-display, var(--media-gesture-receiver-display, inline-block));
+        box-sizing: border-box;
+      }
+    </style>
+  `;
+}
 
 /**
  * @extends {HTMLElement}
@@ -32,6 +33,9 @@ template.innerHTML = /*html*/ `
  * @cssproperty --media-control-display - `display` property of control.
  */
 class MediaGestureReceiver extends globalThis.HTMLElement {
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
+  static getTemplateHTML = getTemplateHTML;
+
   #mediaController;
 
   // NOTE: Currently "baking in" actions + attrs until we come up with
@@ -43,34 +47,17 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
     ];
   }
 
-  nativeEl: HTMLElement;
   _pointerType: string;
 
-  constructor(
-    options: {
-      slotTemplate?: HTMLTemplateElement;
-      defaultContent?: string;
-    } = {}
-  ) {
+  constructor() {
     super();
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      const shadow = this.attachShadow({ mode: 'open' });
+      this.attachShadow((this.constructor as typeof MediaGestureReceiver).shadowRootOptions);
 
-      const buttonHTML = template.content.cloneNode(true);
-      this.nativeEl = buttonHTML as HTMLElement;
-
-      // Slots
-      let slotTemplate = options.slotTemplate;
-
-      if (!slotTemplate) {
-        slotTemplate = document.createElement('template');
-        slotTemplate.innerHTML = `<slot>${options.defaultContent || ''}</slot>`;
-      }
-
-      this.nativeEl.appendChild(slotTemplate.content.cloneNode(true));
-      shadow.appendChild(buttonHTML);
+      const attrs = namedNodeMapToObject(this.attributes);
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaGestureReceiver).getTemplateHTML(attrs);
     }
   }
 
@@ -143,13 +130,10 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
         return;
       }
 
-      const { pointerType = this._pointerType } = event;
-      // NOTE: While there are cases where we may have a stale this._pointerType,
-      // we're guaranteed that the most recent this._pointerType will correspond
-      // to the current click event definitionally. As such, this clearing is technically
-      // unnecessary (CJP)
+      // Skip checking event.pointerType completely — it's unreliable on iOS
+      const pointerType = this._pointerType || 'mouse'; 
+      // Only reset after click
       this._pointerType = undefined;
-
       // NOTE: Longer term, we'll likely want to delay this to support double click/double tap (CJP)
       if (pointerType === PointerTypes.TOUCH) {
         this.handleTap(event);

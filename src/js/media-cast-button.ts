@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { t } from './utils/i18n.js';
 import {
@@ -13,40 +13,43 @@ const enterIcon = `<svg aria-hidden="true" viewBox="0 0 24 24"><g><path class="c
 
 const exitIcon = `<svg aria-hidden="true" viewBox="0 0 24 24"><g><path class="cast_caf_icon_arch0" d="M1,18 L1,21 L4,21 C4,19.3 2.66,18 1,18 L1,18 Z"/><path class="cast_caf_icon_arch1" d="M1,14 L1,16 C3.76,16 6,18.2 6,21 L8,21 C8,17.13 4.87,14 1,14 L1,14 Z"/><path class="cast_caf_icon_arch2" d="M1,10 L1,12 C5.97,12 10,16.0 10,21 L12,21 C12,14.92 7.07,10 1,10 L1,10 Z"/><path class="cast_caf_icon_box" d="M21,3 L3,3 C1.9,3 1,3.9 1,5 L1,8 L3,8 L3,5 L21,5 L21,19 L14,19 L14,21 L21,21 C22.1,21 23,20.1 23,19 L23,5 C23,3.9 22.1,3 21,3 L21,3 Z"/><path class="cast_caf_icon_boxfill" d="M5,7 L5,8.63 C8,8.6 13.37,14 13.37,17 L19,17 L19,7 Z"/></g></svg>`;
 
-const slotTemplate: HTMLTemplateElement = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-  :host([${
-    MediaUIAttributes.MEDIA_IS_CASTING
-  }]) slot[name=icon] slot:not([name=exit]) {
-    display: none !important;
-  }
+function getSlotTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host([${
+        MediaUIAttributes.MEDIA_IS_CASTING
+      }]) slot[name=icon] slot:not([name=exit]) {
+        display: none !important;
+      }
 
-  ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
-  :host(:not([${
-    MediaUIAttributes.MEDIA_IS_CASTING
-  }])) slot[name=icon] slot:not([name=enter]) {
-    display: none !important;
-  }
+      ${/* Double negative, but safer if display doesn't equal 'block' */ ''}
+      :host(:not([${
+        MediaUIAttributes.MEDIA_IS_CASTING
+      }])) slot[name=icon] slot:not([name=enter]) {
+        display: none !important;
+      }
 
-  :host([${MediaUIAttributes.MEDIA_IS_CASTING}]) slot[name=tooltip-enter],
-    :host(:not([${
-      MediaUIAttributes.MEDIA_IS_CASTING
-    }])) slot[name=tooltip-exit] {
-      display: none;
-    }
-  </style>
+      :host([${MediaUIAttributes.MEDIA_IS_CASTING}]) slot[name=tooltip-enter],
+      :host(:not([${
+        MediaUIAttributes.MEDIA_IS_CASTING
+      }])) slot[name=tooltip-exit] {
+        display: none;
+      }
+    </style>
 
-  <slot name="icon">
-    <slot name="enter">${enterIcon}</slot>
-    <slot name="exit">${exitIcon}</slot>
-  </slot>
-`;
+    <slot name="icon">
+      <slot name="enter">${enterIcon}</slot>
+      <slot name="exit">${exitIcon}</slot>
+    </slot>
+  `;
+}
 
-const tooltipContent = /*html*/ `
-  <slot name="tooltip-enter">${t('Start casting')}</slot>
-  <slot name="tooltip-exit">${t('Stop casting')}</slot>
-`;
+function getTooltipContentHTML() {
+  return /*html*/ `
+    <slot name="tooltip-enter">${t('Start casting')}</slot>
+    <slot name="tooltip-exit">${t('Stop casting')}</slot>
+  `;
+}
 
 const updateAriaLabel = (el: MediaCastButton) => {
   const label = el.mediaIsCasting ? t('stop casting') : t('start casting');
@@ -64,16 +67,15 @@ const updateAriaLabel = (el: MediaCastButton) => {
  * @cssproperty [--media-cast-button-display = inline-flex] - `display` property of button.
  */
 class MediaCastButton extends MediaChromeButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
       MediaUIAttributes.MEDIA_IS_CASTING,
       MediaUIAttributes.MEDIA_CAST_UNAVAILABLE,
     ];
-  }
-
-  constructor(options = {}) {
-    super({ slotTemplate, tooltipContent, ...options });
   }
 
   connectedCallback(): void {

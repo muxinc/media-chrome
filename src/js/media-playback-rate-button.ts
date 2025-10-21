@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import { getNumericAttr, setNumericAttr } from './utils/element-utils.js';
@@ -12,16 +12,21 @@ export const Attributes = {
 export const DEFAULT_RATES = [1, 1.2, 1.5, 1.7, 2];
 export const DEFAULT_RATE = 1;
 
-const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-    :host {
-      min-width: 5ch;
-      padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
-    }
-  </style>
-  <slot name="icon"></slot>
-`;
+function getSlotTemplateHTML(attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        min-width: 5ch;
+        padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
+      }
+    </style>
+    <slot name="icon">${attrs['mediaplaybackrate'] || DEFAULT_RATE}x</slot>
+  `;
+}
+
+function getTooltipContentHTML() {
+  return t('Playback rate');
+}
 
 /**
  * @attr {string} rates - Set custom playback rates for the user to choose from.
@@ -30,6 +35,9 @@ slotTemplate.innerHTML = /*html*/ `
  * @cssproperty [--media-playback-rate-button-display = inline-flex] - `display` property of button.
  */
 class MediaPlaybackRateButton extends MediaChromeButton {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+  static getTooltipContentHTML = getTooltipContentHTML;
+
   static get observedAttributes() {
     return [
       ...super.observedAttributes,
@@ -44,14 +52,10 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   container: HTMLSlotElement;
 
-  constructor(options = {}) {
-    super({
-      slotTemplate,
-      tooltipContent: t('Playback rate'),
-      ...options,
-    });
+  constructor() {
+    super();
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
-    this.container.innerHTML = `${DEFAULT_RATE}x`;
+    this.container.innerHTML = `${this.mediaPlaybackRate ?? DEFAULT_RATE}x`;
   }
 
   attributeChangedCallback(
@@ -86,12 +90,15 @@ class MediaPlaybackRateButton extends MediaChromeButton {
 
   /**
    * Set the playback rates for the button.
+   * For React 19+ compatibility, accept a string of space-separated rates.
    */
-  set rates(value: ArrayLike<number> | null | undefined) {
+  set rates(value: ArrayLike<number> | string | null | undefined) {
     if (!value) {
       this.#rates.value = '';
     } else if (Array.isArray(value)) {
       this.#rates.value = value.join(' ');
+    } else if (typeof value === 'string') {
+      this.#rates.value = value;
     }
   }
 

@@ -3,129 +3,137 @@ import { InvokeEvent } from '../utils/events.js';
 import {
   getDocumentOrShadowRoot,
   containsComposedNode,
+  namedNodeMapToObject,
 } from '../utils/element-utils.js';
 import type MediaChromeMenu from './media-chrome-menu.js';
 
-const template: HTMLTemplateElement = document.createElement('template');
-template.innerHTML = /*html*/ `
-  <style>
-    :host {
-      transition: var(--media-menu-item-transition,
-        background .15s linear,
-        opacity .2s ease-in-out
-      );
-      outline: var(--media-menu-item-outline, 0);
-      outline-offset: var(--media-menu-item-outline-offset, -1px);
-      cursor: var(--media-cursor, pointer);
-      display: flex;
-      align-items: center;
-      align-self: stretch;
-      justify-self: stretch;
-      white-space: nowrap;
-      white-space-collapse: collapse;
-      text-wrap: nowrap;
-      padding: .4em .8em .4em 1em;
-    }
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        transition: var(--media-menu-item-transition,
+          background .15s linear,
+          opacity .2s ease-in-out
+        );
+        outline: var(--media-menu-item-outline, 0);
+        outline-offset: var(--media-menu-item-outline-offset, -1px);
+        cursor: var(--media-cursor, pointer);
+        display: flex;
+        align-items: center;
+        align-self: stretch;
+        justify-self: stretch;
+        white-space: nowrap;
+        white-space-collapse: collapse;
+        text-wrap: nowrap;
+        padding: .4em .8em .4em 1em;
+      }
 
-    :host(:focus-visible) {
-      box-shadow: var(--media-menu-item-focus-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
-      outline: var(--media-menu-item-hover-outline, 0);
-      outline-offset: var(--media-menu-item-hover-outline-offset,  var(--media-menu-item-outline-offset, -1px));
-    }
+      :host(:focus-visible) {
+        box-shadow: var(--media-menu-item-focus-shadow, inset 0 0 0 2px rgb(27 127 204 / .9));
+        outline: var(--media-menu-item-hover-outline, 0);
+        outline-offset: var(--media-menu-item-hover-outline-offset,  var(--media-menu-item-outline-offset, -1px));
+      }
 
-    :host(:hover) {
-      cursor: var(--media-cursor, pointer);
-      background: var(--media-menu-item-hover-background, rgb(92 92 102 / .5));
-      outline: var(--media-menu-item-hover-outline);
-      outline-offset: var(--media-menu-item-hover-outline-offset,  var(--media-menu-item-outline-offset, -1px));
-    }
+      :host(:hover) {
+        cursor: var(--media-cursor, pointer);
+        background: var(--media-menu-item-hover-background, rgb(92 92 102 / .5));
+        outline: var(--media-menu-item-hover-outline);
+        outline-offset: var(--media-menu-item-hover-outline-offset,  var(--media-menu-item-outline-offset, -1px));
+      }
 
-    :host([aria-checked="true"]) {
-      background: var(--media-menu-item-checked-background);
-    }
+      :host([aria-checked="true"]) {
+        background: var(--media-menu-item-checked-background);
+      }
 
-    :host([hidden]) {
-      display: none;
-    }
+      :host([hidden]) {
+        display: none;
+      }
 
-    :host([disabled]) {
-      pointer-events: none;
-      color: rgba(255, 255, 255, .3);
-    }
+      :host([disabled]) {
+        pointer-events: none;
+        color: rgba(255, 255, 255, .3);
+      }
 
-    slot:not([name]) {
-      width: 100%;
-    }
+      slot:not([name]) {
+        width: 100%;
+      }
 
-    slot:not([name="submenu"]) {
-      display: inline-flex;
-      align-items: center;
-      transition: inherit;
-      opacity: var(--media-menu-item-opacity, 1);
-    }
+      slot:not([name="submenu"]) {
+        display: inline-flex;
+        align-items: center;
+        transition: inherit;
+        opacity: var(--media-menu-item-opacity, 1);
+      }
 
-    slot[name="description"] {
-      justify-content: end;
-    }
+      slot[name="description"] {
+        justify-content: end;
+      }
 
-    slot[name="description"] > span {
-      display: inline-block;
-      margin-inline: 1em .2em;
-      max-width: var(--media-menu-item-description-max-width, 100px);
-      text-overflow: ellipsis;
-      overflow: hidden;
-      font-size: .8em;
-      font-weight: 400;
-      text-align: right;
-      position: relative;
-      top: .04em;
-    }
+      slot[name="description"] > span {
+        display: inline-block;
+        margin-inline: 1em .2em;
+        max-width: var(--media-menu-item-description-max-width, 100px);
+        text-overflow: ellipsis;
+        overflow: hidden;
+        font-size: .8em;
+        font-weight: 400;
+        text-align: right;
+        position: relative;
+        top: .04em;
+      }
 
-    slot[name="checked-indicator"] {
-      display: none;
-    }
+      slot[name="checked-indicator"] {
+        display: none;
+      }
 
-    :host(:is([role="menuitemradio"],[role="menuitemcheckbox"])) slot[name="checked-indicator"] {
-      display: var(--media-menu-item-checked-indicator-display, inline-block);
-    }
+      :host(:is([role="menuitemradio"],[role="menuitemcheckbox"])) slot[name="checked-indicator"] {
+        display: var(--media-menu-item-checked-indicator-display, inline-block);
+      }
 
-    ${/* For all slotted icons in prefix and suffix. */ ''}
-    svg, img, ::slotted(svg), ::slotted(img) {
-      height: var(--media-menu-item-icon-height, var(--media-control-height, 24px));
-      fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
-      display: block;
-    }
+      ${/* For all slotted icons in prefix and suffix. */ ''}
+      svg, img, ::slotted(svg), ::slotted(img) {
+        height: var(--media-menu-item-icon-height, var(--media-control-height, 24px));
+        fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
+        display: block;
+      }
 
-    ${
-      /* Only for indicator icons like checked-indicator or captions-indicator. */ ''
-    }
-    [part~="indicator"],
-    ::slotted([part~="indicator"]) {
-      fill: var(--media-menu-item-indicator-fill,
-        var(--media-icon-color, var(--media-primary-color, rgb(238 238 238))));
-      height: var(--media-menu-item-indicator-height, 1.25em);
-      margin-right: .5ch;
-    }
+      ${
+        /* Only for indicator icons like checked-indicator or captions-indicator. */ ''
+      }
+      [part~="indicator"],
+      ::slotted([part~="indicator"]) {
+        fill: var(--media-menu-item-indicator-fill,
+          var(--media-icon-color, var(--media-primary-color, rgb(238 238 238))));
+        height: var(--media-menu-item-indicator-height, 1.25em);
+        margin-right: .5ch;
+      }
 
-    [part~="checked-indicator"] {
-      visibility: hidden;
-    }
+      [part~="checked-indicator"] {
+        visibility: hidden;
+      }
 
-    :host([aria-checked="true"]) [part~="checked-indicator"] {
-      visibility: visible;
-    }
-  </style>
-  <slot name="checked-indicator">
-    <svg aria-hidden="true" viewBox="0 1 24 24" part="checked-indicator indicator">
-      <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
-    </svg>
-  </slot>
-  <slot name="prefix"></slot>
-  <slot></slot>
-  <slot name="description"></slot>
-  <slot name="suffix"></slot>
-  <slot name="submenu"></slot>
-`;
+      :host([aria-checked="true"]) [part~="checked-indicator"] {
+        visibility: visible;
+      }
+    </style>
+    <slot name="checked-indicator">
+      <svg aria-hidden="true" viewBox="0 1 24 24" part="checked-indicator indicator">
+        <path d="m10 15.17 9.193-9.191 1.414 1.414-10.606 10.606-6.364-6.364 1.414-1.414 4.95 4.95Z"/>
+      </svg>
+    </slot>
+    <slot name="prefix"></slot>
+    <slot></slot>
+    <slot name="description"></slot>
+    <slot name="suffix">
+      ${this.getSuffixSlotInnerHTML(_attrs)}
+    </slot>
+    <slot name="submenu"></slot>
+  `;
+}
+
+function getSuffixSlotInnerHTML(_attrs: Record<string, string>) {
+  return '';
+}
 
 export const Attributes = {
   TYPE: 'type',
@@ -161,7 +169,9 @@ export const Attributes = {
  * @cssproperty --media-menu-item-indicator-height - `height` of menu-item indicator.
  */
 class MediaChromeMenuItem extends globalThis.HTMLElement {
-  static template = template;
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
+  static getTemplateHTML = getTemplateHTML;
+  static getSuffixSlotInnerHTML = getSuffixSlotInnerHTML;
 
   static get observedAttributes() {
     return [
@@ -180,9 +190,10 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
-      // @ts-ignore
-      this.shadowRoot.append(this.constructor.template.content.cloneNode(true));
+      this.attachShadow((this.constructor as typeof MediaChromeMenuItem).shadowRootOptions);
+
+      const attrs = namedNodeMapToObject(this.attributes);
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaChromeMenuItem).getTemplateHTML(attrs);
     }
 
     this.shadowRoot.addEventListener('slotchange', this);
@@ -253,6 +264,11 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
 
     this.#ownerElement = closestMenuItemsContainer(this, this.parentNode);
     this.#reset();
+
+    // Required when using declarative shadow DOM.
+    if (this.submenuElement) {
+      this.#submenuConnected();
+    }
   }
 
   disconnectedCallback(): void {
@@ -393,7 +409,9 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
    * is populated with the text of the first checked item.
    */
   #handleMenuItem = () => {
-    this.setAttribute('submenusize', `${this.submenuElement.items.length}`);
+    if (this.submenuElement.items) {
+      this.setAttribute('submenusize', `${this.submenuElement.items.length}`);
+    }
 
     const descriptionSlot = this.shadowRoot.querySelector(
       'slot[name="description"]'

@@ -94,6 +94,7 @@ export type StateOption = {
   noVolumePref?: boolean;
   noMutedPref?: boolean;
   noSubtitlesLangPref?: boolean;
+  mediaLang?: string;
 };
 
 /**
@@ -124,7 +125,11 @@ export type FacadeGetter<T, D = T> = (
   event?: EventOrAction<D>
 ) => T;
 
-export type FacadeSetter<T> = (value: T, stateOwners: StateOwners) => void;
+export type FacadeSetter<T> = (
+  value: T,
+  stateOwners: StateOwners,
+  event?: EventOrAction<any>
+) => void;
 
 export type StateOwnerUpdateHandler<T> = (
   handler: (value: T) => void,
@@ -242,6 +247,7 @@ export type StateMediator = {
     'NO_DEVICES_AVAILABLE' | 'NOT_CONNECTED' | 'CONNECTING' | 'CONNECTED'
   >;
   mediaIsAirplaying: FacadeProp<boolean>;
+  mediaLang: ReadonlyFacadeProp<string | undefined>;
   mediaFullscreenUnavailable: ReadonlyFacadeProp<
     AvailabilityStates | undefined
   >;
@@ -292,6 +298,9 @@ export const prepareStateOwners = async (
       })
   );
 };
+
+const domParser = new globalThis.DOMParser();
+const parseHtmlToText = (text: string) => text ? domParser.parseFromString(text, 'text/html').body.textContent || text : text;
 
 export const stateMediator: StateMediator = {
   mediaError: {
@@ -394,16 +403,19 @@ export const stateMediator: StateMediator = {
       return media?.muted ?? false;
     },
     set(value, stateOwners) {
-      const { media } = stateOwners;
+      const { media, options: { noMutedPref } = {} } = stateOwners;
       if (!media) return;
 
-      try {
-        globalThis.localStorage.setItem(
-          'media-chrome-pref-muted',
-          value ? 'true' : 'false'
-        );
-      } catch (e) {
-        console.debug('Error setting muted pref', e);
+      // Prevent storing muted preference if 'muted' or noMutedPref are present
+      if (!media.hasAttribute('muted') && !noMutedPref) {
+        try {
+          globalThis.localStorage.setItem(
+            'media-chrome-pref-muted',
+            value ? 'true' : 'false'
+          );
+        } catch (e) {
+          console.debug('Error setting muted pref', e);
+        }
       }
 
       media.muted = value;
@@ -437,14 +449,15 @@ export const stateMediator: StateMediator = {
       return media?.volume ?? 1.0;
     },
     set(value, stateOwners) {
-      const { media } = stateOwners;
+      const { media, options: { noVolumePref } = {} } = stateOwners;
       if (!media) return;
       // Store the last set volume as a local preference, if ls is supported
       /** @TODO How should we handle globalThis dependencies/"state ownership"? (CJP) */
       try {
         if (value == null) {
           globalThis.localStorage.removeItem('media-chrome-pref-volume');
-        } else {
+        } else if (!media.hasAttribute('muted') && !noVolumePref) {
+          // Prevent storing volume preference if 'muted' or noVolumePref are present
           globalThis.localStorage.setItem(
             'media-chrome-pref-volume',
             value.toString()
@@ -742,7 +755,7 @@ export const stateMediator: StateMediator = {
 
       return Array.from(chaptersTrack?.cues ?? []).map(
         ({ text, startTime, endTime }: VTTCue) => ({
-          text,
+          text: parseHtmlToText(text),
           startTime,
           endTime,
         })
@@ -973,11 +986,13 @@ export const stateMediator: StateMediator = {
     get(stateOwners) {
       return isFullscreen(stateOwners);
     },
-    set(value, stateOwners) {
+    set(value, stateOwners, event) {
       if (!value) {
         exitFullscreen(stateOwners);
       } else {
         enterFullscreen(stateOwners);
+        const isPointer = event.detail;
+        if (isPointer) stateOwners.media?.focus();
       }
     },
     // older Safari version may require webkit-specific events
@@ -1061,6 +1076,9 @@ export const stateMediator: StateMediator = {
       const { media } = stateOwners;
       if (!pipSupported || !hasPipSupport(media as HTMLVideoElement))
         return AvailabilityStates.UNSUPPORTED;
+      else if (media?.disablePictureInPicture)
+        return AvailabilityStates.UNAVAILABLE;
+      return undefined;
     },
   },
   mediaVolumeUnavailable: {
@@ -1226,5 +1244,11 @@ export const stateMediator: StateMediator = {
     },
     mediaEvents: ['emptied', 'loadstart'],
     audioTracksEvents: ['addtrack', 'removetrack'],
+  },
+  mediaLang: {
+    get(stateOwners) {
+      const { options: { mediaLang } = {} } = stateOwners;
+      return mediaLang ?? 'en';
+    },
   },
 };

@@ -34,8 +34,6 @@ const formatTimesLabel = (
   el: MediaTimeDisplay,
   { timesSep = DEFAULT_TIMES_SEP } = {}
 ): string => {
-  const showRemaining = el.hasAttribute(Attributes.REMAINING);
-  const showDuration = el.hasAttribute(Attributes.SHOW_DURATION);
   const currentTime = el.mediaCurrentTime ?? 0;
   const [, seekableEnd] = el.mediaSeekable ?? [];
   let endTime = 0;
@@ -45,11 +43,11 @@ const formatTimesLabel = (
     endTime = seekableEnd;
   }
 
-  const timeLabel = showRemaining
+  const timeLabel = el.remaining
     ? formatTime(0 - (endTime - currentTime))
     : formatTime(currentTime);
 
-  if (!showDuration) return timeLabel;
+  if (!el.showDuration) return timeLabel;
   return `${timeLabel}${timesSep}${formatTime(endTime)}`;
 };
 
@@ -68,14 +66,12 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
     el.setAttribute('aria-valuetext', DEFAULT_MISSING_TIME_PHRASE);
     return;
   }
-  const showRemaining = el.hasAttribute(Attributes.REMAINING);
-  const showDuration = el.hasAttribute(Attributes.SHOW_DURATION);
 
-  const currentTimePhrase = showRemaining
+  const currentTimePhrase = el.remaining
     ? formatAsTimePhrase(0 - (endTime - currentTime))
     : formatAsTimePhrase(currentTime);
 
-  if (!showDuration) {
+  if (!el.showDuration) {
     el.setAttribute('aria-valuetext', currentTimePhrase);
     return;
   }
@@ -83,6 +79,12 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
   const fullPhrase = `${currentTimePhrase} of ${totalTimePhrase}`;
   el.setAttribute('aria-valuetext', fullPhrase);
 };
+
+function getSlotTemplateHTML(_attrs: Record<string, string>, props: Record<string, any>) {
+  return /*html*/ `
+    <slot>${formatTimesLabel(props as MediaTimeDisplay)}</slot>
+  `;
+}
 
 /**
  * @attr {boolean} remaining - Toggle on to show the remaining time instead of elapsed time.
@@ -97,6 +99,8 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
  * @cssproperty --media-control-hover-background - `background` of control hover state.
  */
 class MediaTimeDisplay extends MediaTextDisplay {
+  static getSlotTemplateHTML = getSlotTemplateHTML;
+
   #slot: HTMLSlotElement;
 
   static get observedAttributes(): string[] {

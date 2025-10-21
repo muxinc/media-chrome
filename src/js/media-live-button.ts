@@ -1,5 +1,5 @@
 import { MediaChromeButton } from './media-chrome-button.js';
-import { globalThis, document } from './utils/server-safe-globals.js';
+import { globalThis } from './utils/server-safe-globals.js';
 import { MediaUIEvents, MediaUIAttributes } from './constants.js';
 import { getBooleanAttr, setBooleanAttr } from './utils/element-utils.js';
 import { t } from './utils/i18n.js';
@@ -10,49 +10,53 @@ const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
 const indicatorSVG =
   '<svg viewBox="0 0 6 12"><circle cx="3" cy="6" r="2"></circle></svg>';
 
-const slotTemplate = document.createElement('template');
-slotTemplate.innerHTML = /*html*/ `
-  <style>
-  :host { --media-tooltip-display: none; }
-  
-  slot[name=indicator] > *,
-  :host ::slotted([slot=indicator]) {
-    ${/* Override styles for icon-only buttons */ ''}
-    min-width: auto;
-    fill: var(--media-live-button-icon-color, rgb(140, 140, 140));
-    color: var(--media-live-button-icon-color, rgb(140, 140, 140));
-  }
+function getSlotTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host { --media-tooltip-display: none; }
+      
+      slot[name=indicator] > *,
+      :host ::slotted([slot=indicator]) {
+        ${/* Override styles for icon-only buttons */ ''}
+        min-width: auto;
+        fill: var(--media-live-button-icon-color, rgb(140, 140, 140));
+        color: var(--media-live-button-icon-color, rgb(140, 140, 140));
+      }
 
-  :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) slot[name=indicator] > *,
-  :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) ::slotted([slot=indicator]) {
-    fill: var(--media-live-button-indicator-color, rgb(255, 0, 0));
-    color: var(--media-live-button-indicator-color, rgb(255, 0, 0));
-  }
+      :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) slot[name=indicator] > *,
+      :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) ::slotted([slot=indicator]) {
+        fill: var(--media-live-button-indicator-color, rgb(255, 0, 0));
+        color: var(--media-live-button-indicator-color, rgb(255, 0, 0));
+      }
 
-  :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) {
-    cursor: var(--media-cursor, not-allowed);
-  }
+      :host([${MEDIA_TIME_IS_LIVE}]:not([${MEDIA_PAUSED}])) {
+        cursor: var(--media-cursor, not-allowed);
+      }
 
-  slot[name=text]{
-    text-transform: uppercase;
-  }
+      slot[name=text]{
+        text-transform: uppercase;
+      }
 
-  </style>
+    </style>
 
-  <slot name="indicator">${indicatorSVG}</slot>
-  ${
-    /*
-    A new line between spacer and text creates inconsistent spacing
-    between slotted items and default slots.
-  */ ''
-  }
-  <slot name="spacer">&nbsp;</slot><slot name="text">${t('live')}</slot>
-`;
+    <slot name="indicator">${indicatorSVG}</slot>
+    ${
+      /*
+      A new line between spacer and text creates inconsistent spacing
+      between slotted items and default slots.
+    */ ''
+    }
+    <slot name="spacer">&nbsp;</slot><slot name="text">${t('live')}</slot>
+  `;
+}
 
 const updateAriaAttributes = (el: MediaLiveButton): void => {
   const isPausedOrNotLive = el.mediaPaused || !el.mediaTimeIsLive;
   const label = isPausedOrNotLive ? t('seek to live') : t('playing live');
   el.setAttribute('aria-label', label);
+
+  const textSlot = el.shadowRoot?.querySelector('slot[name="text"]');
+  if (textSlot) textSlot.textContent = t('live');
 
   isPausedOrNotLive
     ? el.removeAttribute('aria-disabled')
@@ -72,17 +76,19 @@ const updateAriaAttributes = (el: MediaLiveButton): void => {
  * @cssproperty --media-live-button-indicator-color - `fill` and `color` of live button icon.
  */
 class MediaLiveButton extends MediaChromeButton {
-  static get observedAttributes(): string[] {
-    return [...super.observedAttributes, MEDIA_PAUSED, MEDIA_TIME_IS_LIVE];
-  }
+  static getSlotTemplateHTML = getSlotTemplateHTML;
 
-  constructor(options: object = {}) {
-    super({ slotTemplate, ...options });
+  static get observedAttributes() {
+    return [
+      ...super.observedAttributes,
+      MEDIA_TIME_IS_LIVE,
+      MEDIA_PAUSED,
+    ];
   }
 
   connectedCallback(): void {
-    updateAriaAttributes(this);
     super.connectedCallback();
+    updateAriaAttributes(this);
   }
 
   attributeChangedCallback(

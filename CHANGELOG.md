@@ -1,3 +1,67 @@
+# [4.14.0](https://github.com/muxinc/media-chrome/compare/v4.13.1...v4.14.0) (2025-10-01)
+
+
+### Features
+
+* support multiple bitrates in rendition menu ([#1209](https://github.com/muxinc/media-chrome/issues/1209)) ([3c2ca97](https://github.com/muxinc/media-chrome/commit/3c2ca9755d337523c1501150e2f2bcc989a507c4))
+
+
+
+## [4.13.1](https://github.com/muxinc/media-chrome/compare/v4.13.0...v4.13.1) (2025-09-03)
+
+
+### Bug Fixes
+
+* submenu DSD bug  ([#1190](https://github.com/muxinc/media-chrome/issues/1190)) ([fd8ebb8](https://github.com/muxinc/media-chrome/commit/fd8ebb8f359a1935077d30c77beafac214e24943)), closes [#1186](https://github.com/muxinc/media-chrome/issues/1186) [#1125](https://github.com/muxinc/media-chrome/issues/1125)
+
+
+
+# [4.13.0](https://github.com/muxinc/media-chrome/compare/v4.12.0...v4.13.0) (2025-08-19)
+
+
+### Bug Fixes
+
+* Ensure touch taps on iOS are handled correctly as pointerType "touch" ([#1174](https://github.com/muxinc/media-chrome/issues/1174)) ([1182a82](https://github.com/muxinc/media-chrome/commit/1182a82b17b5701cedf7a78e17edf9f4fdc924ca))
+
+
+### Features
+
+* expose <div> container via part so host DOM styles can target it ([#1172](https://github.com/muxinc/media-chrome/issues/1172)) ([a772d07](https://github.com/muxinc/media-chrome/commit/a772d07b3891672396c6fcf3bb1afcd122412a6f)), closes [#1100](https://github.com/muxinc/media-chrome/issues/1100)
+
+
+
+# [4.12.0](https://github.com/muxinc/media-chrome/compare/v4.11.1...v4.12.0) (2025-07-02)
+
+
+### Bug Fixes
+
+* move vercel edge to dev dep ([#1159](https://github.com/muxinc/media-chrome/issues/1159)) ([9b2d6f8](https://github.com/muxinc/media-chrome/commit/9b2d6f87466e978e92c2aff917e6dcaf13a8a69d)), closes [#1158](https://github.com/muxinc/media-chrome/issues/1158)
+
+
+### Features
+
+* dynamic label update on lang attribute change i18n ([#1152](https://github.com/muxinc/media-chrome/issues/1152)) ([1ea8237](https://github.com/muxinc/media-chrome/commit/1ea82373c1dd6ba2f5fd2b3dc6dd25d43752014d))
+
+
+
+## [4.11.1](https://github.com/muxinc/media-chrome/compare/v4.11.0...v4.11.1) (2025-06-12)
+
+
+### Bug Fixes
+
+* decode special characters in chapter text ([#1150](https://github.com/muxinc/media-chrome/issues/1150)) ([5558480](https://github.com/muxinc/media-chrome/commit/555848039ea2625052084d992d5d5e6ace40279e)), closes [#1132](https://github.com/muxinc/media-chrome/issues/1132)
+
+
+
+# [4.11.0](https://github.com/muxinc/media-chrome/compare/v4.10.0...v4.11.0) (2025-06-03)
+
+
+### Features
+
+* use getTemplateHTML (React SSR support) ([#1142](https://github.com/muxinc/media-chrome/issues/1142)) ([535ff62](https://github.com/muxinc/media-chrome/commit/535ff62ce724368a3b85a1c7976ba9502de72ab1)), closes [#1143](https://github.com/muxinc/media-chrome/issues/1143) [/github.com/muxinc/ce-la-react/blob/main/src/ce-la-react.ts#L305-L323](https://github.com//github.com/muxinc/ce-la-react/blob/main/src/ce-la-react.ts/issues/L305-L323)
+
+
+
 # [4.10.0](https://github.com/muxinc/media-chrome/compare/v4.9.1...v4.10.0) (2025-05-14)
 
 

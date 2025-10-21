@@ -11,6 +11,7 @@ import {
   getMediaController,
   getAttributeMediaController,
   getDocumentOrShadowRoot,
+  namedNodeMapToObject,
 } from '../utils/element-utils.js';
 import MediaChromeMenuItem from './media-chrome-menu-item.js';
 import MediaController from '../media-controller.js';
@@ -70,182 +71,184 @@ export function createIndicator(el: HTMLElement, name: string) {
   return '';
 }
 
-const template: HTMLTemplateElement = document.createElement('template');
-template.innerHTML = /*html*/ `
-  <style>
-    :host {
-      font: var(--media-font,
-        var(--media-font-weight, normal)
-        var(--media-font-size, 14px) /
-        var(--media-text-content-height, var(--media-control-height, 24px))
-        var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
-      color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
-      --_menu-bg: rgb(20 20 30 / .8);
-      background: var(--media-menu-background, var(--media-control-background, var(--media-secondary-color, var(--_menu-bg))));
-      border-radius: var(--media-menu-border-radius);
-      border: var(--media-menu-border, none);
-      display: var(--media-menu-display, inline-flex);
-      transition: var(--media-menu-transition-in,
-        visibility 0s,
-        opacity .2s ease-out,
-        transform .15s ease-out,
-        left .2s ease-in-out,
-        min-width .2s ease-in-out,
-        min-height .2s ease-in-out
-      ) !important;
-      ${/* ^^Prevent transition override by media-container */ ''}
-      visibility: var(--media-menu-visibility, visible);
-      opacity: var(--media-menu-opacity, 1);
-      max-height: var(--media-menu-max-height, var(--_menu-max-height, 300px));
-      transform: var(--media-menu-transform-in, translateY(0) scale(1));
-      flex-direction: column;
-      ${/* Prevent overflowing a flex container */ ''}
-      min-height: 0;
-      position: relative;
-      bottom: var(--_menu-bottom);
-      box-sizing: border-box;
-    } 
+function getTemplateHTML(_attrs: Record<string, string>) {
+  return /*html*/ `
+    <style>
+      :host {
+        font: var(--media-font,
+          var(--media-font-weight, normal)
+          var(--media-font-size, 14px) /
+          var(--media-text-content-height, var(--media-control-height, 24px))
+          var(--media-font-family, helvetica neue, segoe ui, roboto, arial, sans-serif));
+        color: var(--media-text-color, var(--media-primary-color, rgb(238 238 238)));
+        --_menu-bg: rgb(20 20 30 / .8);
+        background: var(--media-menu-background, var(--media-control-background, var(--media-secondary-color, var(--_menu-bg))));
+        border-radius: var(--media-menu-border-radius);
+        border: var(--media-menu-border, none);
+        display: var(--media-menu-display, inline-flex) !important;
+        ${/* ^^Prevent override by Tailwind CSS causing the menu to not hide properly. */ ''}
+        transition: var(--media-menu-transition-in,
+          visibility 0s,
+          opacity .2s ease-out,
+          transform .15s ease-out,
+          left .2s ease-in-out,
+          min-width .2s ease-in-out,
+          min-height .2s ease-in-out
+        ) !important;
+        ${/* ^^Prevent transition override by media-container */ ''}
+        visibility: var(--media-menu-visibility, visible);
+        opacity: var(--media-menu-opacity, 1);
+        max-height: var(--media-menu-max-height, var(--_menu-max-height, 300px));
+        transform: var(--media-menu-transform-in, translateY(0) scale(1));
+        flex-direction: column;
+        ${/* Prevent overflowing a flex container */ ''}
+        min-height: 0;
+        position: relative;
+        bottom: var(--_menu-bottom);
+        box-sizing: border-box;
+      } 
 
-    @-moz-document url-prefix() {
-      :host{
-        --_menu-bg: rgb(20 20 30);
+      @-moz-document url-prefix() {
+        :host{
+          --_menu-bg: rgb(20 20 30);
+        }
       }
-    }
 
-    :host([hidden]) {
-      transition: var(--media-menu-transition-out,
-        visibility .15s ease-in,
-        opacity .15s ease-in,
-        transform .15s ease-in
-      ) !important;
-      visibility: var(--media-menu-hidden-visibility, hidden);
-      opacity: var(--media-menu-hidden-opacity, 0);
-      max-height: var(--media-menu-hidden-max-height,
-        var(--media-menu-max-height, var(--_menu-max-height, 300px)));
-      transform: var(--media-menu-transform-out, translateY(2px) scale(.99));
-      pointer-events: none;
-    }
+      :host([hidden]) {
+        transition: var(--media-menu-transition-out,
+          visibility .15s ease-in,
+          opacity .15s ease-in,
+          transform .15s ease-in
+        ) !important;
+        visibility: var(--media-menu-hidden-visibility, hidden);
+        opacity: var(--media-menu-hidden-opacity, 0);
+        max-height: var(--media-menu-hidden-max-height,
+          var(--media-menu-max-height, var(--_menu-max-height, 300px)));
+        transform: var(--media-menu-transform-out, translateY(2px) scale(.99));
+        pointer-events: none;
+      }
 
-    :host([slot="submenu"]) {
-      background: none;
-      width: 100%;
-      min-height: 100%;
-      position: absolute;
-      bottom: 0;
-      right: -100%;
-    }
+      :host([slot="submenu"]) {
+        background: none;
+        width: 100%;
+        min-height: 100%;
+        position: absolute;
+        bottom: 0;
+        right: -100%;
+      }
 
-    #container {
-      display: flex;
-      flex-direction: column;
-      min-height: 0;
-      transition: transform .2s ease-out;
-      transform: translate(0, 0);
-    }
+      #container {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        transition: transform .2s ease-out;
+        transform: translate(0, 0);
+      }
 
-    #container.has-expanded {
-      transition: transform .2s ease-in;
-      transform: translate(-100%, 0);
-    }
+      #container.has-expanded {
+        transition: transform .2s ease-in;
+        transform: translate(-100%, 0);
+      }
 
-    button {
-      background: none;
-      color: inherit;
-      border: none;
-      padding: 0;
-      font: inherit;
-      outline: inherit;
-      display: inline-flex;
-      align-items: center;
-    }
+      button {
+        background: none;
+        color: inherit;
+        border: none;
+        padding: 0;
+        font: inherit;
+        outline: inherit;
+        display: inline-flex;
+        align-items: center;
+      }
 
-    slot[name="header"][hidden] {
-      display: none;
-    }
+      slot[name="header"][hidden] {
+        display: none;
+      }
 
-    slot[name="header"] > *,
-    slot[name="header"]::slotted(*) {
-      padding: .4em .7em;
-      border-bottom: 1px solid rgb(255 255 255 / .25);
-      cursor: var(--media-cursor, default);
-    }
+      slot[name="header"] > *,
+      slot[name="header"]::slotted(*) {
+        padding: .4em .7em;
+        border-bottom: 1px solid rgb(255 255 255 / .25);
+        cursor: var(--media-cursor, default);
+      }
 
-    slot[name="header"] > button[part~="back"],
-    slot[name="header"]::slotted(button[part~="back"]) {
-      cursor: var(--media-cursor, pointer);
-    }
+      slot[name="header"] > button[part~="back"],
+      slot[name="header"]::slotted(button[part~="back"]) {
+        cursor: var(--media-cursor, pointer);
+      }
 
-    svg[part~="back"] {
-      height: var(--media-menu-icon-height, var(--media-control-height, 24px));
-      fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
-      display: block;
-      margin-right: .5ch;
-    }
+      svg[part~="back"] {
+        height: var(--media-menu-icon-height, var(--media-control-height, 24px));
+        fill: var(--media-icon-color, var(--media-primary-color, rgb(238 238 238)));
+        display: block;
+        margin-right: .5ch;
+      }
 
-    slot:not([name]) {
-      gap: var(--media-menu-gap);
-      flex-direction: var(--media-menu-flex-direction, column);
-      overflow: var(--media-menu-overflow, hidden auto);
-      display: flex;
-      min-height: 0;
-    }
+      slot:not([name]) {
+        gap: var(--media-menu-gap);
+        flex-direction: var(--media-menu-flex-direction, column);
+        overflow: var(--media-menu-overflow, hidden auto);
+        display: flex;
+        min-height: 0;
+      }
 
-    :host([role="menu"]) slot:not([name]) {
-      padding-block: .4em;
-    }
+      :host([role="menu"]) slot:not([name]) {
+        padding-block: .4em;
+      }
 
-    slot:not([name])::slotted([role="menu"]) {
-      background: none;
-    }
+      slot:not([name])::slotted([role="menu"]) {
+        background: none;
+      }
 
-    media-chrome-menu-item > span {
-      margin-right: .5ch;
-      max-width: var(--media-menu-item-max-width);
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-  </style>
-  <style id="layout-row" media="width:0">
+      media-chrome-menu-item > span {
+        margin-right: .5ch;
+        max-width: var(--media-menu-item-max-width);
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    </style>
+    <style id="layout-row" media="width:0">
 
-    slot[name="header"] > *,
-    slot[name="header"]::slotted(*) {
-      padding: .4em .5em;
-    }
+      slot[name="header"] > *,
+      slot[name="header"]::slotted(*) {
+        padding: .4em .5em;
+      }
 
-    slot:not([name]) {
-      gap: var(--media-menu-gap, .25em);
-      flex-direction: var(--media-menu-flex-direction, row);
-      padding-inline: .5em;
-    }
+      slot:not([name]) {
+        gap: var(--media-menu-gap, .25em);
+        flex-direction: var(--media-menu-flex-direction, row);
+        padding-inline: .5em;
+      }
 
-    media-chrome-menu-item {
-      padding: .3em .5em;
-    }
+      media-chrome-menu-item {
+        padding: .3em .5em;
+      }
 
-    media-chrome-menu-item[aria-checked="true"] {
-      background: var(--media-menu-item-checked-background, rgb(255 255 255 / .2));
-    }
+      media-chrome-menu-item[aria-checked="true"] {
+        background: var(--media-menu-item-checked-background, rgb(255 255 255 / .2));
+      }
 
-    ${/* In row layout hide the checked indicator completely. */ ''}
-    media-chrome-menu-item::part(checked-indicator) {
-      display: var(--media-menu-item-checked-indicator-display, none);
-    }
-  </style>
-  <div id="container">
-    <slot name="header" hidden>
-      <button part="back button" aria-label="Back to previous menu">
-        <slot name="back-icon">
-          <svg aria-hidden="true" viewBox="0 0 20 24" part="back indicator">
-            <path d="m11.88 17.585.742-.669-4.2-4.665 4.2-4.666-.743-.669-4.803 5.335 4.803 5.334Z"/>
-          </svg>
-        </slot>
-        <slot name="title"></slot>
-      </button>
-    </slot>
-    <slot></slot>
-  </div>
-  <slot name="checked-indicator" hidden></slot>
-`;
+      ${/* In row layout hide the checked indicator completely. */ ''}
+      media-chrome-menu-item::part(checked-indicator) {
+        display: var(--media-menu-item-checked-indicator-display, none);
+      }
+    </style>
+    <div id="container" part="container">
+      <slot name="header" hidden>
+        <button part="back button" aria-label="Back to previous menu">
+          <slot name="back-icon">
+            <svg aria-hidden="true" viewBox="0 0 20 24" part="back indicator">
+              <path d="m11.88 17.585.742-.669-4.2-4.665 4.2-4.666-.743-.669-4.803 5.335 4.803 5.334Z"/>
+            </svg>
+          </slot>
+          <slot name="title"></slot>
+        </button>
+      </slot>
+      <slot></slot>
+    </div>
+    <slot name="checked-indicator" hidden></slot>
+  `;
+}
 
 export const Attributes = {
   STYLE: 'style',
@@ -300,7 +303,8 @@ export const Attributes = {
  * @cssproperty --media-menu-item-max-width - `max-width` of menu item text.
  */
 class MediaChromeMenu extends globalThis.HTMLElement {
-  static template: HTMLTemplateElement = template;
+  static shadowRootOptions = { mode: 'open' as ShadowRootMode };
+  static getTemplateHTML = getTemplateHTML;
 
   static get observedAttributes(): string[] {
     return [
@@ -324,7 +328,6 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #isPopover = false;
   #cssRule: CSSStyleRule | null = null;
 
-  nativeEl: HTMLElement;
   container: HTMLElement;
   defaultSlot: HTMLSlotElement;
 
@@ -333,12 +336,10 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     if (!this.shadowRoot) {
       // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow({ mode: 'open' });
+      this.attachShadow((this.constructor as typeof MediaChromeMenu).shadowRootOptions);
 
-      this.nativeEl = (
-        this.constructor as typeof MediaChromeMenu
-      ).template.content.cloneNode(true) as HTMLElement;
-      this.shadowRoot.append(this.nativeEl);
+      const attrs = namedNodeMapToObject(this.attributes);
+      this.shadowRoot.innerHTML = (this.constructor as typeof MediaChromeMenu).getTemplateHTML(attrs);
     }
 
     this.container = this.shadowRoot.querySelector('#container') as HTMLElement;
@@ -414,6 +415,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       observeResize(getBoundsElement(this), this.#handleBoundsResize);
       observeResize(this, this.#handleMenuResize);
     }
+
+    // Required when using declarative shadow DOM.
+    this.#toggleHeader();
   }
 
   disconnectedCallback(): void {
@@ -537,15 +541,24 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     }
 
     if (['header', 'title'].includes(slot.name)) {
-      const header: HTMLElement = this.shadowRoot.querySelector(
-        'slot[name="header"]'
-      );
-      header.hidden = slot.assignedNodes().length === 0;
+      this.#toggleHeader();
     }
 
     if (!slot.name) {
       this.#handleMenuItems();
     }
+  }
+
+  #toggleHeader() {
+    const header = this.shadowRoot.querySelector(
+      'slot[name="header"]'
+    ) as HTMLSlotElement;
+    const title = this.shadowRoot.querySelector(
+      'slot[name="title"]'
+    ) as HTMLSlotElement;
+
+    header.hidden =
+      title.assignedNodes().length === 0 && header.assignedNodes().length === 0;
   }
 
   /**

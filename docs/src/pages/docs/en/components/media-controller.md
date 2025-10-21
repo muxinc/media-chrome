@@ -13,7 +13,7 @@ The `<media-controller>` manages communication of state and state change request
 
 `audio` (boolean)
 
-Use this to enable audio chrome UI, which will not have any of the slots described in the [Position controls guide]("/docs/en/position-controls"), but instead have a single default slot for adding markup.
+Use this to enable audio chrome UI, which will not have any of the slots described in the [Position controls guide](/docs/en/position-controls), but instead have a single default slot for adding markup.
 
 ```html
 <media-controller audio>
