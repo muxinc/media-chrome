@@ -100,6 +100,8 @@ class MediaController extends MediaContainer {
       Attributes.DEFAULT_STREAM_TYPE,
       Attributes.DEFAULT_SUBTITLES,
       Attributes.DEFAULT_DURATION,
+      Attributes.NO_MUTED_PREF,
+      Attributes.NO_VOLUME_PREF,
       Attributes.LANG
     );
   }
@@ -388,6 +390,20 @@ class MediaController extends MediaContainer {
         type: 'optionschangerequest',
         detail: {
           mediaLang: newValue,
+        },
+      });
+    } else if (attrName === Attributes.NO_VOLUME_PREF && newValue !== oldValue) {
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
+        },
+      });
+    } else if (attrName === Attributes.NO_MUTED_PREF && newValue !== oldValue) {
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          noMutedPref: this.hasAttribute(Attributes.NO_MUTED_PREF),
         },
       });
     }
