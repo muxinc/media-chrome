@@ -26,6 +26,8 @@ class MediaContextMenu extends MediaChromeMenu {
 
   constructor() {
     super();
+    // Prevent the context menu from being hidden when user is inactive
+    this.setAttribute('noautohide', '');
     this.#updateVisibility();
   }
 
