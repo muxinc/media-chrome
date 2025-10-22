@@ -457,8 +457,15 @@ export const createMediaStore = ({
         // we should apply them whenever any state owner changes (CJP)
         const prevHandlerTeardown =
           stateUpdateHandlers[stateName].stateOwnersUpdateHandlers;
+
+          console.log(`${setupSomething ? "Setup": "teardown"} custom stateOwnersUpdateHandlers ${prevHandlerTeardown}`, {
+            stateName,
+            teardownSomething,
+            setupSomething,
+          });
         stateOwnersUpdateHandlers.forEach((fn) => {
-          if (prevHandlerTeardown && teardownSomething) {
+          if (prevHandlerTeardown && (teardownSomething || setupSomething)) {
+          //if (prevHandlerTeardown && teardownSomething) {
             prevHandlerTeardown();
           }
           if (setupSomething) {
