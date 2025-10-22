@@ -611,6 +611,12 @@ class MediaChromeRange extends globalThis.HTMLElement {
   }
 
   #handlePointerMove(evt) {
+    // Detect and ignore Wacom hover movement
+    if (evt.pointerType === 'pen' && evt.buttons === 0) {
+      console.log("Ignoring hover movement from pen");
+      return; // stop execution so range doesn’t move
+    }
+
     this.toggleAttribute(
       'dragging',
       evt.buttons === 1 || evt.pointerType !== 'mouse'
