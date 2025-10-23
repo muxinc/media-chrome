@@ -138,7 +138,7 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
       if (pointerType === PointerTypes.TOUCH) {
         this.handleTap(event);
         return;
-      } else if (pointerType === PointerTypes.MOUSE) {
+      } else if (pointerType === PointerTypes.MOUSE || pointerType === PointerTypes.PEN) {
         this.handleMouseClick(event);
         return;
       }
