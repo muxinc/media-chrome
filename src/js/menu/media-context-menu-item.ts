@@ -6,7 +6,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
     ${MediaChromeMenuItem.getTemplateHTML.call(this, _attrs)}
     <style>
         ::slotted(*) {
-            color: white;
+            color: var(--media-text-color, white);
             text-decoration: none;
             border: none;
             background: none;
