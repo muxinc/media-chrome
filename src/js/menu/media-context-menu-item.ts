@@ -12,7 +12,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
             background: none;
             cursor: pointer;
             padding: 0;
-            min-height: 24px;
+            min-height: var(--media-control-height, 24px);
         }
     </style>
   `;
