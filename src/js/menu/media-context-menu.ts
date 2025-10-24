@@ -13,7 +13,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
               var(--media-control-background,
                 var(--media-secondary-color, var(--_menu-bg)))));
           min-width: var(--media-settings-menu-min-width, 170px);
-          border-radius: 2px 2px 0 0;
+          border-radius: 2px;
           overflow: hidden;
         }
       </style>
