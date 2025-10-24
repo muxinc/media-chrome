@@ -1,0 +1,79 @@
+---
+title: <media-context-menu>
+description: Media Context Menu
+layout: ../../../../layouts/MainLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-context-menu.js
+---
+
+import SandpackContainer from "../../../../components/SandpackContainer.astro";
+
+A customizable context menu for video elements. This component allows you to provide your own menu items for video playback.
+Common use cases include "Copy video URL", attribution links, or other media-related actions accessible via right-click on the video element.
+
+> Remember to add the separate menu module for the menu components.
+
+```js
+import "media-chrome";
+import "media-chrome/menu";
+```
+
+### Default usage
+
+<SandpackContainer
+  editorHeight={275}
+  dependencies={{ "@mux/mux-video": "latest" }}
+  html={`<media-controller>
+  <mux-video
+    playsinline crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></mux-video>
+  <media-context-menu>
+    <media-context-menu-item>
+      <a href="https://mux.com" target="_blank">Powered by Mux</a>
+    </media-context-menu-item>
+    <media-context-menu-item>
+      <button invoke="copy">Copy Video URL</button>
+      <input slot="copy" type="hidden" value="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4">
+    </media-context-menu-item>
+  </media-context-menu>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+### Menu Items
+
+Menu items are added as `<media-context-menu-item>` elements inside `<media-context-menu>`.
+Each item can include **links**, **buttons**, or **custom elements**.
+
+
+```html
+  <media-context-menu>
+    <media-context-menu-item>
+      <a href="https://mux.com" target="_blank">Powered by Mux</a>
+    </media-context-menu-item>
+    <media-context-menu-item>
+      <button invoke="copy">Copy Video URL</button>
+      <input slot="copy" type="hidden" value="https://stream.mux.com/your-video-url.mp4">
+    </media-context-menu-item>
+  </media-context-menu>
+```
+
+
+### Using the Copy Function
+
+The `invoke="copy"` attribute on a button triggers copying of the value from an input element with `slot="copy"` inside the same menu item.
+
+To use it:
+	1.	Add a `<button invoke="copy">` inside a `<media-context-menu-item>`.
+	2.	Add an `<input slot="copy" type="hidden" value="...">` containing the text or URL to copy.
+	3.	When the button is clicked, the input's value is copied to the clipboard automatically.
+
+```html
+<media-context-menu-item>
+  <button invoke="copy">Copy Video URL</button>
+  <input slot="copy" type="hidden" value="https://stream.mux.com/example.mp4">
+</media-context-menu-item>
+```

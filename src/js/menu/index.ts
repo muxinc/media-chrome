@@ -12,3 +12,5 @@ export { MediaPlaybackRateMenuButton } from './media-playback-rate-menu-button.j
 export { MediaRenditionMenu } from './media-rendition-menu.js';
 export { MediaRenditionMenuButton } from './media-rendition-menu-button.js';
 export { MediaChromeMenuButton } from './media-chrome-menu-button.js';
+export { MediaContextMenu } from './media-context-menu.js';
+export { MediaContextMenuItem } from './media-context-menu-item.js';
