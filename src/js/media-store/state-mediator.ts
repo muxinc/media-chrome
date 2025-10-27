@@ -406,19 +406,34 @@ export const stateMediator: StateMediator = {
       const { media, options: { noMutedPref } = {} } = stateOwners;
       if (!media) return;
 
-      // Prevent storing muted preference if 'muted' or noMutedPref are present
-      if (!media.hasAttribute('muted') && !noMutedPref) {
-        try {
-          globalThis.localStorage.setItem(
-            'media-chrome-pref-muted',
-            value ? 'true' : 'false'
-          );
-        } catch (e) {
-          console.debug('Error setting muted pref', e);
-        }
-      }
-
       media.muted = value;
+
+      try {
+        const hasLocalStoragePrefMuted =
+          globalThis.localStorage.getItem('media-chrome-pref-muted') !== null;
+
+        const hasMutedAttribute = media.hasAttribute('muted');
+
+        if (noMutedPref) {
+          // remove stored preference if exists
+          if(hasLocalStoragePrefMuted) globalThis.localStorage.removeItem('media-chrome-pref-muted');
+          return;
+        }
+
+        // If muted attribute is present but there's no stored preference, it was probably set manually in the HTML
+        // Don't store preference in localStorage since it will be overridden
+        if (hasMutedAttribute && !hasLocalStoragePrefMuted) {
+          return;
+        }
+
+        // Store the preference
+        globalThis.localStorage.setItem(
+          'media-chrome-pref-muted',
+          value ? 'true' : 'false'
+        );
+      } catch (e) {
+        console.debug('Error setting muted pref', e);
+      }
     },
     mediaEvents: ['volumechange'],
     stateOwnersUpdateHandlers: [
