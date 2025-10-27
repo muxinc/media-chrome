@@ -155,6 +155,10 @@ function getTooltipContentHTML() {
  * @cssproperty --media-button-icon-height - `height` of button icon.
  * @cssproperty --media-button-icon-transform - `transform` of button icon.
  * @cssproperty --media-button-icon-transition - `transition` of button icon.
+ * @cssproperty --media-button-justify-content - `justify-content` property of button.
+ * @cssproperty --media-button-padding - `padding` of button.
+ * @cssproperty --media-cursor - `cursor` property.
+ * @cssproperty --media-focus-box-shadow - `box-shadow` of focused control.
  */
 class MediaChromeButton extends globalThis.HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };

@@ -301,6 +301,7 @@ export const Attributes = {
  * @cssproperty --media-menu-item-checked-indicator-display - `display` of check indicator.
  * @cssproperty --media-menu-item-checked-background - `background` of checked menu item.
  * @cssproperty --media-menu-item-max-width - `max-width` of menu item text.
+ * @cssproperty --media-menu-overflow - `overflow` property of menu.
  */
 class MediaChromeMenu extends globalThis.HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };

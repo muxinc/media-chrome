@@ -45,6 +45,9 @@ function getTemplateHTML(_attrs: Record<string, string>) {
  * @extends {MediaChromeMenu}
  *
  * @cssproperty --media-settings-menu-justify-content - `justify-content` of the menu.
+ * @cssproperty --media-settings-menu-background - `background` of settings menu.
+ * @cssproperty --media-settings-menu-flex-direction - `flex-direction` of settings menu.
+ * @cssproperty --media-settings-menu-min-width - `min-width` of settings menu.
  */
 class MediaSettingsMenu extends MediaChromeMenu {
   static getTemplateHTML = getTemplateHTML;

@@ -302,6 +302,12 @@ function getTemplateHTML(_attrs: Record<string, string>) {
  *
  * @cssproperty --media-range-track-pointer-background - `background` of range track pointer.
  * @cssproperty --media-range-track-pointer-border-right - `border-right` of range track pointer.
+ *
+ * @cssproperty --media-range-segments-gap - `gap` between range segments.
+ * @cssproperty --media-range-segment-transform - `transform` of range segment.
+ * @cssproperty --media-range-segment-transition - `transition` of range segment.
+ * @cssproperty --media-range-segment-hover-height - `height` of hovered range segment.
+ * @cssproperty --media-range-segment-hover-transform - `transform` of hovered range segment.
  */
 class MediaChromeRange extends globalThis.HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
