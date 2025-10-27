@@ -115,9 +115,13 @@ function backticksToMdnLinks(str) {
 
   <Markdown of="## Others" />
 
-  {getClasses(manifest)
-    .filter(cls => cls.tagName && cls.cssProperties && groups.every(group => !cls.tagName?.endsWith(group)))
-    .map(cls => (
+  {Array.from(
+    new Map(
+      getClasses(manifest)
+        .filter(cls => cls.tagName && cls.cssProperties && groups.every(group => !cls.tagName?.endsWith(group)))
+        .map(cls => [cls.tagName, cls])
+    ).values()
+  ).map(cls => (
       <Markdown of={`#### \`${cls.tagName}\` ${hasLink(cls.tagName) ? `([docs](./components/${cls.tagName}))` : ''}`} />
 
       <table>
