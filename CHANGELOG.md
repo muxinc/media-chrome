@@ -1,3 +1,56 @@
+# [4.15.0](https://github.com/muxinc/media-chrome/compare/v4.14.0...v4.15.0) (2025-10-27)
+
+
+### Bug Fixes
+
+* Prevent scrollbar when media-time-range expands to show media-preview-thumbnail in Firefox  ([3b72682](https://github.com/muxinc/media-chrome/commit/3b726828fb0602c888b94a28a0cc9de385db1c5f))
+* preventing pointermove events (wacom) unintended range updates ([#1222](https://github.com/muxinc/media-chrome/issues/1222)) ([77858f1](https://github.com/muxinc/media-chrome/commit/77858f1dbe5ffd7b37a043db4cc2f4d6f7564b64))
+* React noMutedPref and noVolumePref ([#1221](https://github.com/muxinc/media-chrome/issues/1221)) ([4ca7016](https://github.com/muxinc/media-chrome/commit/4ca7016a7bd23cb171568b373cd4dfe12b6af76f)), closes [#1220](https://github.com/muxinc/media-chrome/issues/1220)
+* setter for media duration and mediaCurrentTime ([#1213](https://github.com/muxinc/media-chrome/issues/1213)) ([98c3eae](https://github.com/muxinc/media-chrome/commit/98c3eaeafe0dd04de25ab2479a9758b28bbe1cf6)), closes [#1094](https://github.com/muxinc/media-chrome/issues/1094)
+* sort audio tracks ([#1219](https://github.com/muxinc/media-chrome/issues/1219)) ([4ead2fb](https://github.com/muxinc/media-chrome/commit/4ead2fbe6c0d543d80e4eb0f322ee7daab1262fa)), closes [#1218](https://github.com/muxinc/media-chrome/issues/1218)
+* Use CSS variable for focus shadow in media button ([#1214](https://github.com/muxinc/media-chrome/issues/1214)) ([7a9e4dd](https://github.com/muxinc/media-chrome/commit/7a9e4dd666f3751d8e47a9f0d91175d5ec3000d4))
+
+
+### Features
+
+* Add `<media-context-menu>` ([#1156](https://github.com/muxinc/media-chrome/issues/1156)) ([be48f14](https://github.com/muxinc/media-chrome/commit/be48f14160e69cf0648298df4a948fef865046e7)), closes [#1155](https://github.com/muxinc/media-chrome/issues/1155)
+* Add keyboard arrow controls for volume when not on the volume range ([#1166](https://github.com/muxinc/media-chrome/issues/1166)) ([87455f4](https://github.com/muxinc/media-chrome/commit/87455f4e90cc677c53149b90b0dbb44f5f4dce8a)), closes [#957](https://github.com/muxinc/media-chrome/issues/957)
+* hotkeys are now available after entering fullscreen by click ([#1203](https://github.com/muxinc/media-chrome/issues/1203)) ([7bcde4e](https://github.com/muxinc/media-chrome/commit/7bcde4ea362be616f3c7aa715be8c9baad8314c9))
+
+
+
+# [4.14.0](https://github.com/muxinc/media-chrome/compare/v4.13.1...v4.14.0) (2025-10-01)
+
+
+### Features
+
+* support multiple bitrates in rendition menu ([#1209](https://github.com/muxinc/media-chrome/issues/1209)) ([3c2ca97](https://github.com/muxinc/media-chrome/commit/3c2ca9755d337523c1501150e2f2bcc989a507c4))
+
+
+
+## [4.13.1](https://github.com/muxinc/media-chrome/compare/v4.13.0...v4.13.1) (2025-09-03)
+
+
+### Bug Fixes
+
+* submenu DSD bug  ([#1190](https://github.com/muxinc/media-chrome/issues/1190)) ([fd8ebb8](https://github.com/muxinc/media-chrome/commit/fd8ebb8f359a1935077d30c77beafac214e24943)), closes [#1186](https://github.com/muxinc/media-chrome/issues/1186) [#1125](https://github.com/muxinc/media-chrome/issues/1125)
+
+
+
+# [4.13.0](https://github.com/muxinc/media-chrome/compare/v4.12.0...v4.13.0) (2025-08-19)
+
+
+### Bug Fixes
+
+* Ensure touch taps on iOS are handled correctly as pointerType "touch" ([#1174](https://github.com/muxinc/media-chrome/issues/1174)) ([1182a82](https://github.com/muxinc/media-chrome/commit/1182a82b17b5701cedf7a78e17edf9f4fdc924ca))
+
+
+### Features
+
+* expose <div> container via part so host DOM styles can target it ([#1172](https://github.com/muxinc/media-chrome/issues/1172)) ([a772d07](https://github.com/muxinc/media-chrome/commit/a772d07b3891672396c6fcf3bb1afcd122412a6f)), closes [#1100](https://github.com/muxinc/media-chrome/issues/1100)
+
+
+
 # [4.12.0](https://github.com/muxinc/media-chrome/compare/v4.11.1...v4.12.0) (2025-07-02)
 
 

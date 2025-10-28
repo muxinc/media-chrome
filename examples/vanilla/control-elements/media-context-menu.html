@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <title>Media Chrome Context Menu</title>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@mux/mux-video@canary/+esm"></script>
+    <script type="module" src="../../../dist/index.js"></script>
+    <script type="module" src="../../../dist/menu/index.js"></script>
+    <style>
+      /** add styles to prevent CLS (Cumulative Layout Shift) */
+      media-controller:not([audio]) {
+        display: block;         /* expands the container if preload=none */
+        max-width: 540px;       /* allows the container to shrink if small */
+        aspect-ratio: 16 / 9;   /* set container aspect ratio if preload=none */
+      }
+
+      video,mux-video {
+        width: 100%;          /* prevents video to expand beyond its container */
+        height: fit-content;  /* Fix Safari aspect-ratio overflow glitch for custom media elements */
+      }
+
+      .examples {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- The main tag is used to exclude other body content in https://www.media-chrome.org/docs/en/examples -->
+    <main>
+        <h1>Media Chrome Context Menu</h1>
+
+        <h2>Mux Video</h2>
+        <media-controller>
+            <mux-video
+                slot="media"
+                src="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008.m3u8"
+                poster="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
+                preload="metadata"
+                muted
+                crossorigin
+            ></mux-video>
+            <media-context-menu>
+                <media-context-menu-item>
+                    <a href="https://mux.com" target="_blank">Powered by Mux</a>
+                </media-context-menu-item>
+                <media-context-menu-item>
+                    <button invoke="copy">Copy Video URL</button>
+                    <input slot="copy" type="hidden" value="https://stream.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008">
+                </media-context-menu-item>
+            </media-context-menu>
+            <media-control-bar>
+                <media-play-button></media-play-button>
+                <media-time-display showduration></media-time-display>
+                <media-time-range></media-time-range>
+                <media-mute-button></media-mute-button>
+                <media-pip-button></media-pip-button>
+                <media-fullscreen-button></media-fullscreen-button>
+            </media-control-bar>
+        </media-controller>
+
+        <h2>Native Video</h2>
+        <media-controller>
+            <video
+                slot="media"
+                playsinline
+                src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+            ></video>
+            <media-context-menu>
+                <media-context-menu-item>
+                    <a href="https://mux.com" target="_blank">Powered by Mux</a>
+                </media-context-menu-item>
+                <media-context-menu-item>
+                    <button invoke="copy">Copy Video URL</button>
+                    <input slot="copy" type="hidden" value="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4">
+                </media-context-menu-item>
+            </media-context-menu>
+            <media-control-bar>
+                <media-play-button></media-play-button>
+                <media-time-display showduration></media-time-display>
+                <media-time-range></media-time-range>
+                <media-mute-button></media-mute-button>
+                <media-pip-button></media-pip-button>
+                <media-fullscreen-button></media-fullscreen-button>
+            </media-control-bar>
+        </media-controller>
+    </main>
+
+    <br>
+
+    <div class="examples">
+      <a href="../">View more examples</a>
+    </div>
+  </body>
+</html>

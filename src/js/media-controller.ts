@@ -38,6 +38,8 @@ import { setLanguage } from './utils/i18n.js';
 const ButtonPressedKeys = [
   'ArrowLeft',
   'ArrowRight',
+  'ArrowUp',
+  'ArrowDown',
   'Enter',
   ' ',
   'f',
@@ -46,6 +48,7 @@ const ButtonPressedKeys = [
   'c',
 ];
 const DEFAULT_SEEK_OFFSET = 10;
+const DEFAULT_VOLUME_STEP = 0.025;
 
 export const Attributes = {
   DEFAULT_SUBTITLES: 'defaultsubtitles',
@@ -59,10 +62,13 @@ export const Attributes = {
   NO_AUTO_SEEK_TO_LIVE: 'noautoseektolive',
   NO_HOTKEYS: 'nohotkeys',
   NO_VOLUME_PREF: 'novolumepref',
+  NO_MUTED_PREF: 'nomutedpref',
   NO_SUBTITLES_LANG_PREF: 'nosubtitleslangpref',
   NO_DEFAULT_STORE: 'nodefaultstore',
   KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
   KEYBOARD_BACKWARD_SEEK_OFFSET: 'keyboardbackwardseekoffset',
+  KEYBOARD_UP_VOLUME_STEP: 'keyboardupvolumestep',
+  KEYBOARD_DOWN_VOLUME_STEP: 'keyboarddownvolumestep',
   LANG: 'lang',
 };
 
@@ -81,6 +87,7 @@ export const Attributes = {
  * @attr {string} seektoliveoffset
  * @attr {boolean} noautoseektolive
  * @attr {boolean} novolumepref
+ * @attr {boolean} nomutedpref
  * @attr {boolean} nosubtitleslangpref
  * @attr {boolean} nodefaultstore
  * @attr {string} lang
@@ -93,6 +100,8 @@ class MediaController extends MediaContainer {
       Attributes.DEFAULT_STREAM_TYPE,
       Attributes.DEFAULT_SUBTITLES,
       Attributes.DEFAULT_DURATION,
+      Attributes.NO_MUTED_PREF,
+      Attributes.NO_VOLUME_PREF,
       Attributes.LANG
     );
   }
@@ -134,7 +143,9 @@ class MediaController extends MediaContainer {
       prevState = nextState;
     };
 
-    this.enableHotkeys();
+    this.hasAttribute(Attributes.NO_HOTKEYS)
+      ? this.disableHotkeys()
+      : this.enableHotkeys();
   }
 
   #setupDefaultStore() {
@@ -161,6 +172,7 @@ class MediaController extends MediaContainer {
         noAutoSeekToLive: this.hasAttribute(Attributes.NO_AUTO_SEEK_TO_LIVE),
         // NOTE: This wasn't updated if it was changed later. Should it be? (CJP)
         noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
+        noMutedPref: this.hasAttribute(Attributes.NO_MUTED_PREF),
         noSubtitlesLangPref: this.hasAttribute(
           Attributes.NO_SUBTITLES_LANG_PREF
         ),
@@ -269,6 +281,14 @@ class MediaController extends MediaContainer {
     setBooleanAttr(this, Attributes.NO_VOLUME_PREF, value);
   }
 
+  get noMutedPref(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_MUTED_PREF);
+  }
+
+  set noMutedPref(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_MUTED_PREF, value);
+  }
+
   get noSubtitlesLangPref(): boolean | undefined {
     return getBooleanAttr(this, Attributes.NO_SUBTITLES_LANG_PREF);
   }
@@ -372,6 +392,20 @@ class MediaController extends MediaContainer {
           mediaLang: newValue,
         },
       });
+    } else if (attrName === Attributes.NO_VOLUME_PREF && newValue !== oldValue) {
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
+        },
+      });
+    } else if (attrName === Attributes.NO_MUTED_PREF && newValue !== oldValue) {
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          noMutedPref: this.hasAttribute(Attributes.NO_MUTED_PREF),
+        },
+      });
     }
   }
 
@@ -396,7 +430,9 @@ class MediaController extends MediaContainer {
       );
     }
 
-    this.enableHotkeys();
+    this.hasAttribute(Attributes.NO_HOTKEYS)
+      ? this.disableHotkeys()
+      : this.enableHotkeys();
   }
 
   disconnectedCallback(): void {
@@ -542,15 +578,22 @@ class MediaController extends MediaContainer {
       return;
     }
 
+    const target = e.target;
+    const isRangeInput =
+      target instanceof HTMLElement &&
+      (target.tagName.toLowerCase() === 'media-volume-range' ||
+        target.tagName.toLowerCase() === 'media-time-range');
+
     // if the pressed key might move the page, we need to preventDefault on keydown
     // because doing so on keyup is too late
     // We also want to make sure that the hotkey hasn't been turned off before doing so
     if (
-      [' ', 'ArrowLeft', 'ArrowRight'].includes(key) &&
+      [' ', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key) &&
       !(
         this.#hotKeys.contains(`no${key.toLowerCase()}`) ||
         (key === ' ' && this.#hotKeys.contains('nospace'))
-      )
+      ) &&
+      !isRangeInput // Only preventDefault if a range input is NOT selected
     ) {
       e.preventDefault();
     }
@@ -677,6 +720,38 @@ class MediaController extends MediaContainer {
           0
         );
         evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+          composed: true,
+          bubbles: true,
+          detail,
+        });
+        this.dispatchEvent(evt);
+        break;
+      }
+      case 'ArrowUp': {
+        const step = this.hasAttribute(Attributes.KEYBOARD_UP_VOLUME_STEP)
+          ? +this.getAttribute(Attributes.KEYBOARD_UP_VOLUME_STEP)
+          : DEFAULT_VOLUME_STEP;
+        detail = Math.min(
+          (this.mediaStore.getState().mediaVolume ?? 1) + step,
+          1
+        );
+        evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
+          composed: true,
+          bubbles: true,
+          detail,
+        });
+        this.dispatchEvent(evt);
+        break;
+      }
+      case 'ArrowDown': {
+        const step = this.hasAttribute(Attributes.KEYBOARD_DOWN_VOLUME_STEP)
+          ? +this.getAttribute(Attributes.KEYBOARD_DOWN_VOLUME_STEP)
+          : DEFAULT_VOLUME_STEP;
+        detail = Math.max(
+          (this.mediaStore.getState().mediaVolume ?? 1) - step,
+          0
+        );
+        evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
           composed: true,
           bubbles: true,
           detail,

@@ -79,6 +79,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Captions button', link: 'docs/en/components/media-captions-button' },
       { text: 'Captions menu', link: 'docs/en/components/media-captions-menu' },
       { text: 'Cast button', link: 'docs/en/components/media-cast-button' },
+      { text: 'Context menu', link: 'docs/en/components/media-context-menu' },
       { text: 'Control bar', link: 'docs/en/components/media-control-bar' },
       { text: 'Duration display', link: 'docs/en/components/media-duration-display' },
       { text: 'Fullscreen button', link: 'docs/en/components/media-fullscreen-button' },

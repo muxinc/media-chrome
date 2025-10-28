@@ -92,6 +92,8 @@ class MediaFullscreenButton extends MediaChromeButton {
     ];
   }
 
+  #lastActionEvent: Event | null = null;
+
   connectedCallback(): void {
     super.connectedCallback();
     updateAriaLabel(this);
@@ -131,14 +133,21 @@ class MediaFullscreenButton extends MediaChromeButton {
     setBooleanAttr(this, MediaUIAttributes.MEDIA_IS_FULLSCREEN, value);
   }
 
-  handleClick(): void {
-    const eventName = this.mediaIsFullscreen
-      ? MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST
-      : MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST;
-      
-    this.dispatchEvent(
-      new globalThis.CustomEvent(eventName, { composed: true, bubbles: true })
-    );
+  handleClick(e: Event): void {
+    this.#lastActionEvent = e;
+    const isPointerEvent = this.#lastActionEvent instanceof PointerEvent;
+
+    const event = this.mediaIsFullscreen
+      ? new globalThis.CustomEvent(
+          MediaUIEvents.MEDIA_EXIT_FULLSCREEN_REQUEST,
+          { composed: true, bubbles: true }
+        )
+      : new globalThis.CustomEvent(
+          MediaUIEvents.MEDIA_ENTER_FULLSCREEN_REQUEST,
+          { composed: true, bubbles: true, detail: isPointerEvent }
+        );
+
+    this.dispatchEvent(event);
   }
 }
 
