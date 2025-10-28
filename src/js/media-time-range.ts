@@ -402,6 +402,9 @@ const calcTimeFromRangeValue = (
  * @cssproperty --media-box-arrow-height - `height` of range box arrow.
  * @cssproperty --media-box-arrow-width - `width` of range box arrow.
  * @cssproperty --media-box-arrow-offset - `translateX` offset of range box arrow.
+ * 
+ * @cssproperty --media-cursor - `cursor` property.
+ * @cssproperty --media-focus-box-shadow - `box-shadow` of focused control.
  */
 class MediaTimeRange extends MediaChromeRange {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
