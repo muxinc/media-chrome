@@ -54,7 +54,7 @@ class MediaSettingsMenu extends MediaChromeMenu {
    */
   get anchorElement() {
     if (this.anchor !== 'auto') return super.anchorElement;
-    return getMediaController(this).querySelector<HTMLElement>(
+    return getMediaController(this)?.querySelector<HTMLElement>(
       'media-settings-menu-button'
     );
   }

@@ -390,7 +390,7 @@ export function getStringAttr(
 export function setStringAttr(
   el: HTMLElement,
   attrName: string,
-  value: string
+  value?: string
 ) {
   // also handles undefined
   if (value == null) {

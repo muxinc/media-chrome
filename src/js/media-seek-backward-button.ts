@@ -91,7 +91,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
       'aria-label',
       t('seek back {seekOffset} seconds', { seekOffset: this.seekOffset })
     );
-    updateIconText(getSlotted(this, 'icon'), this.seekOffset as any);
+    updateIconText(getSlotted(this, 'icon')!, this.seekOffset as any);
   }
 
   // Props derived from Media UI Attributes
