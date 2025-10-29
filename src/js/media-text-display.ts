@@ -76,6 +76,7 @@ function getSlotTemplateHTML(_attrs: Record<string, string>, _props: Record<stri
  * @cssproperty --media-font-family - `font-family` property.
  * @cssproperty --media-font-size - `font-size` property.
  * @cssproperty --media-text-content-height - `line-height` of text.
+ * @cssproperty --media-text-background - `background` of text display.
  */
 class MediaTextDisplay extends globalThis.HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };

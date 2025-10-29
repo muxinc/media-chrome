@@ -352,6 +352,7 @@ const calcTimeFromRangeValue = (
  * @csspart arrow - A CSS part that selects the arrow element.
  *
  * @cssproperty [--media-time-range-display = inline-block] - `display` property of range.
+ * @cssproperty --media-time-range-buffered-color - `background` color of buffered range.
  *
  * @cssproperty --media-preview-transition-property - `transition-property` of range hover preview.
  * @cssproperty --media-preview-transition-duration-out - `transition-duration` out of range hover preview.
@@ -373,6 +374,9 @@ const calcTimeFromRangeValue = (
  * @cssproperty --media-preview-chapter-padding - `padding` of range preview chapter display.
  * @cssproperty --media-preview-chapter-margin - `margin` of range preview chapter display.
  * @cssproperty --media-preview-chapter-text-shadow - `text-shadow` of range preview chapter display.
+ *
+ * @cssproperty --media-preview-background - `background` of range preview elements.
+ * @cssproperty --media-preview-border-radius - `border-radius` of range preview elements.
  *
  * @cssproperty --media-preview-time-background - `background` of range preview time display.
  * @cssproperty --media-preview-time-border-radius - `border-radius` of range preview time display.
@@ -398,6 +402,9 @@ const calcTimeFromRangeValue = (
  * @cssproperty --media-box-arrow-height - `height` of range box arrow.
  * @cssproperty --media-box-arrow-width - `width` of range box arrow.
  * @cssproperty --media-box-arrow-offset - `translateX` offset of range box arrow.
+ * 
+ * @cssproperty --media-cursor - `cursor` property.
+ * @cssproperty --media-focus-box-shadow - `box-shadow` of focused control.
  */
 class MediaTimeRange extends MediaChromeRange {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };

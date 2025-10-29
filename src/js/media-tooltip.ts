@@ -157,6 +157,8 @@ function getTemplateHTML(_attrs: Record<string, string>) {
  * @cssproperty --media-tooltip-arrow-width - Arrow width
  * @cssproperty --media-tooltip-arrow-height - Arrow height
  * @cssproperty --media-tooltip-arrow-color - Arrow color
+ * @cssproperty --media-tooltip-distance - `distance` between tooltip and target.
+ * @cssproperty --media-tooltip-offset-x - `translateX` offset of tooltip.
  */
 class MediaTooltip extends globalThis.HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };

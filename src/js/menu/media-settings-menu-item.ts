@@ -24,6 +24,11 @@ function getSuffixSlotInnerHTML(_attrs: Record<string, string>) {
   `;
 }
 
+/**
+ * @extends {MediaChromeMenuItem}
+ *
+ * @cssproperty --media-settings-menu-item-opacity - `opacity` of settings menu item.
+ */
 class MediaSettingsMenuItem extends MediaChromeMenuItem {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
   static getTemplateHTML = getTemplateHTML;

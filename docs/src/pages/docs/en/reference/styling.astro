@@ -15,6 +15,12 @@ function hasLink(tagName) {
   return components.some(c => c.file.includes(tagName));
 }
 
+function getComponentLink(tagName) {
+  const currentPath = Astro.url.pathname;
+  const langPrefix = currentPath.split('/').slice(0, 3).join('/');
+  return `${langPrefix}/components/${tagName}`;
+}
+
 const groups = [
   'button',
   'range',
@@ -82,7 +88,7 @@ function backticksToMdnLinks(str) {
         .map(cls => (
           <li>
             <code>{cls.tagName}</code>
-            {hasLink(cls.tagName) && (<>(<a href={`../components/${cls.tagName}`}>docs</a>)</>)}
+            {hasLink(cls.tagName) && (<>(<a href={getComponentLink(cls.tagName)}>docs</a>)</>)}
           </li>
         ))
       }
@@ -115,10 +121,17 @@ function backticksToMdnLinks(str) {
 
   <Markdown of="## Others" />
 
-  {getClasses(manifest)
-    .filter(cls => cls.tagName && cls.cssProperties && groups.every(group => !cls.tagName?.endsWith(group)))
-    .map(cls => (
-      <Markdown of={`#### \`${cls.tagName}\` ${hasLink(cls.tagName) ? `([docs](./components/${cls.tagName}))` : ''}`} />
+  {Array.from(
+    new Map(
+      getClasses(manifest)
+        .filter(cls => cls.tagName && cls.cssProperties && groups.every(group => !cls.tagName?.endsWith(group)))
+        .map(cls => [cls.tagName, cls])
+    ).values()
+  ).map(cls => {
+      const docLink = hasLink(cls.tagName) ? `([docs](${getComponentLink(cls.tagName)}))` : '';
+      return (
+        <>
+      <Markdown of={`#### \`${cls.tagName}\` ${docLink}`} />
 
       <table>
         <thead>
@@ -141,7 +154,9 @@ function backticksToMdnLinks(str) {
           }
         </tbody>
       </table>
-    ))
+        </>
+      );
+    })
   }
 
 </MainLayout>
