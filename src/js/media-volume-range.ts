@@ -84,7 +84,7 @@ class MediaVolumeRange extends MediaChromeRange {
    *
    */
   get mediaVolume(): number {
-    return getNumericAttr(this, MediaUIAttributes.MEDIA_VOLUME, DEFAULT_VOLUME);
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_VOLUME, DEFAULT_VOLUME)!;
   }
 
   set mediaVolume(value: number) {

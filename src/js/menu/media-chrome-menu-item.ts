@@ -313,7 +313,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   }
 
   get type() {
-    return this.getAttribute(Attributes.TYPE) ?? '';
+    return this.getAttribute(Attributes.TYPE);
   }
 
   set type(val) {

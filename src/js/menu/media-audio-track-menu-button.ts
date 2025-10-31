@@ -83,7 +83,7 @@ class MediaAudioTrackMenuButton extends MediaChromeMenuButton {
    */
   get mediaAudioTrackEnabled(): string {
     return (
-      getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED) ?? ''
+      getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED)
     );
   }
 

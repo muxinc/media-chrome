@@ -47,12 +47,12 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
       attrName === MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED &&
       oldValue !== newValue
     ) {
-      this.value = newValue;
+      this.value = newValue || '';
     } else if (
       attrName === MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST &&
       oldValue !== newValue
     ) {
-      this.#audioTrackList = parseAudioTrackList(newValue ?? '');
+      this.#audioTrackList = parseAudioTrackList(newValue);
       this.#render();
     }
   }
@@ -91,7 +91,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
    */
   get mediaAudioTrackEnabled(): string {
     return (
-      getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED) ?? ''
+      getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED)
     );
   }
 
@@ -109,15 +109,15 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
     
     audioTrackList.sort((a, b) => a.id.localeCompare(b.id, undefined, {numeric: true}));
     for (const audioTrack of audioTrackList) {
-      const text = this.formatMenuItemText(audioTrack.label, audioTrack);
+      const text = this.formatMenuItemText(audioTrack.label || "", audioTrack);
 
       const item = createMenuItem({
         type: 'radio',
         text,
         value: `${audioTrack.id}`,
-        checked: audioTrack.enabled,
+        checked: audioTrack.enabled || false,
       });
-      item.prepend(createIndicator(this, 'checked-indicator'));
+      item.prepend(createIndicator(this, 'checked-indicator')!);
       this.defaultSlot.append(item);
     }
   }

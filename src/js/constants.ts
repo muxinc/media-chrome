@@ -145,8 +145,8 @@ export type StateChangeEventToAttributeMap = {
 export const StateChangeEventToAttributeMap = Object.entries(
   MediaStateChangeEvents
 ).reduce(
-  (mapObj, [key, eventType]) => {
-    const attrName = MediaUIAttributes[key];
+  (mapObj: Record<string, string>, [key, eventType]) => {
+    const attrName = MediaUIAttributes[key as keyof typeof MediaUIAttributes];
     if (attrName) {
       mapObj[eventType] = attrName;
     }
@@ -168,7 +168,7 @@ export const AttributeToStateChangeEventMap = Object.entries(
   MediaUIAttributes
 ).reduce(
   (mapObj, [key, attrName]) => {
-    const evtType = MediaStateChangeEvents[key];
+    const evtType = MediaStateChangeEvents[key as keyof typeof MediaStateChangeEvents];
     if (evtType) {
       mapObj[attrName] = evtType;
     }

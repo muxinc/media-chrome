@@ -91,7 +91,10 @@ class MediaSeekForwardButton extends MediaChromeButton {
       'aria-label',
       t('seek forward {seekOffset} seconds', { seekOffset: this.seekOffset })
     );
-    updateIconText(getSlotted(this, 'icon'), this.seekOffset as any);
+    const icon = getSlotted(this, 'icon');
+    if (icon) {
+      updateIconText(icon, this.seekOffset as any);
+    }
   }
 
   // Props derived from Media UI Attributes

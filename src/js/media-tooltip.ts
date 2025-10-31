@@ -178,10 +178,10 @@ class MediaTooltip extends globalThis.HTMLElement {
       this.attachShadow((this.constructor as typeof MediaTooltip).shadowRootOptions);
 
       const attrs = namedNodeMapToObject(this.attributes);
-      this.shadowRoot.innerHTML = (this.constructor as typeof MediaTooltip).getTemplateHTML(attrs);
+      this.shadowRoot!.innerHTML = (this.constructor as typeof MediaTooltip).getTemplateHTML(attrs);
     }
 
-    this.arrowEl = this.shadowRoot.querySelector('#arrow');
+    this.arrowEl = this.shadowRoot!.querySelector('#arrow')!;
 
     // Check if the placement prop has been set before the element was
     // defined / upgraded. Without this, placement might be permanently overriden

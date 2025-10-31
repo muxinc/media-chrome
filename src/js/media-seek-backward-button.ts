@@ -32,7 +32,7 @@ function getTooltipContentHTML() {
 const DEFAULT_TIME = 0;
 
 /**
- * @slot icon - The element shown for the seek backward button’s display.
+ * @slot icon - The element shown for the seek backward button's display.
  *
  * @attr {string} seekoffset - Adjusts how much time (in seconds) the playhead should seek backward.
  * @attr {string} mediacurrenttime - (read-only) Set to the current media time.
@@ -91,7 +91,7 @@ class MediaSeekBackwardButton extends MediaChromeButton {
       'aria-label',
       t('seek back {seekOffset} seconds', { seekOffset: this.seekOffset })
     );
-    updateIconText(getSlotted(this, 'icon'), this.seekOffset as any);
+    updateIconText(getSlotted(this, 'icon')!, this.seekOffset as any);
   }
 
   // Props derived from Media UI Attributes
