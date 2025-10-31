@@ -44,7 +44,7 @@ function getElementRects({
 
 function getRectRelativeToOffsetParent(
   element: Element,
-  offsetParent: Element | null
+  offsetParent: Element
 ): Rect {
   const rect = element.getBoundingClientRect();
   // offsetParent returns null in the following situations:
@@ -63,7 +63,7 @@ function getRectRelativeToOffsetParent(
 function computeCoordsFromPlacement(
   { anchor, floating }: PositionRects,
   placement: string
-): Point {
+): Rect {
   const alignmentAxis = getSideAxis(placement) === 'x' ? 'y' : 'x';
   const alignLength = alignmentAxis === 'y' ? 'height' : 'width';
   const side = getSide(placement);
@@ -72,7 +72,7 @@ function computeCoordsFromPlacement(
   const commonY = anchor.y + anchor.height / 2 - floating.height / 2;
   const commonAlign = anchor[alignLength] / 2 - floating[alignLength] / 2;
 
-  let coords: Point;
+  let coords;
   switch (side) {
     case 'top':
       coords = { x: commonX, y: anchor.y - floating.height };

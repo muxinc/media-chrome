@@ -52,7 +52,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
       attrName === MediaUIAttributes.MEDIA_AUDIO_TRACK_LIST &&
       oldValue !== newValue
     ) {
-      this.#audioTrackList = parseAudioTrackList(newValue ?? '');
+      this.#audioTrackList = parseAudioTrackList(newValue);
       this.#render();
     }
   }
@@ -91,7 +91,7 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
    */
   get mediaAudioTrackEnabled(): string {
     return (
-      getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED) ?? ''
+      getStringAttr(this, MediaUIAttributes.MEDIA_AUDIO_TRACK_ENABLED)
     );
   }
 

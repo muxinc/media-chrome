@@ -60,7 +60,7 @@ class MediaPreviewChapterDisplay extends MediaTextDisplay {
   }
 
   set mediaPreviewChapter(value: string | null) {
-    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_CHAPTER, value ?? '');
+    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_CHAPTER, value);
   }
 }
 

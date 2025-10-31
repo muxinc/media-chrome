@@ -152,7 +152,9 @@ export const StateChangeEventToAttributeMap = Object.entries(
     }
     return mapObj;
   },
-  { userinactivechange: 'userinactive' } as Record<string, string>
+  { userinactivechange: 'userinactive' } as Partial<
+    Writeable<StateChangeEventToAttributeMap>
+  >
 ) as StateChangeEventToAttributeMap;
 
 /** @TODO Make types more precise derivations, at least after updates to event type names mentioned above (CJP) */

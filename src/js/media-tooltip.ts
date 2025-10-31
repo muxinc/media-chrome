@@ -268,7 +268,7 @@ class MediaTooltip extends globalThis.HTMLElement {
   }
 
   set placement(value: TooltipPlacement | undefined) {
-    setStringAttr(this, Attributes.PLACEMENT, value || '');
+    setStringAttr(this, Attributes.PLACEMENT, value);
   }
 
   /**
@@ -280,7 +280,7 @@ class MediaTooltip extends globalThis.HTMLElement {
   }
 
   set bounds(value: string | undefined) {
-    setStringAttr(this, Attributes.BOUNDS, value || '');
+    setStringAttr(this, Attributes.BOUNDS, value);
   }
 }
 

@@ -3,7 +3,7 @@ import { MediaChromeMenuItem } from './media-chrome-menu-item.js';
 
 function getTemplateHTML(_attrs: Record<string, string>) {
   return /*html*/ `
-    ${MediaChromeMenuItem.getTemplateHTML(_attrs)}
+    ${MediaChromeMenuItem.getTemplateHTML.call(this, _attrs)}
     <style>
       slot:not([name="submenu"]) {
         opacity: var(--media-settings-menu-item-opacity, var(--media-menu-item-opacity));

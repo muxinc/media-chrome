@@ -672,7 +672,7 @@ class MediaTimeRange extends MediaChromeRange {
   }
 
   set mediaPreviewImage(value: string | undefined) {
-    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_IMAGE, value ?? '');
+    setStringAttr(this, MediaUIAttributes.MEDIA_PREVIEW_IMAGE, value);
   }
 
   /**

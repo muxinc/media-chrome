@@ -205,7 +205,7 @@ class MediaClipSelector extends globalThis.HTMLElement {
   }
 
   get mediaDuration(): number {
-    return +(this.getAttribute(MediaUIAttributes.MEDIA_DURATION) ?? 0);
+    return +(this.getAttribute(MediaUIAttributes.MEDIA_DURATION));
   }
 
   set mediaDuration(value: number) {
@@ -213,7 +213,7 @@ class MediaClipSelector extends globalThis.HTMLElement {
   }
 
   get mediaCurrentTime(): number {
-    return +(this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) ?? 0);
+    return +(this.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME));
   }
 
   set mediaCurrentTime(value: number) {

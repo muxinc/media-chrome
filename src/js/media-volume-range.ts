@@ -110,7 +110,7 @@ class MediaVolumeRange extends MediaChromeRange {
   }
 
   set mediaVolumeUnavailable(value: string | undefined) {
-    setStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, value || '');
+    setStringAttr(this, MediaUIAttributes.MEDIA_VOLUME_UNAVAILABLE, value);
   }
 }
 
