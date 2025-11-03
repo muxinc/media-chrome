@@ -66,7 +66,8 @@ class MediaCaptionsMenu extends MediaChromeMenu {
       attrName === MediaUIAttributes.MEDIA_SUBTITLES_SHOWING &&
       oldValue !== newValue
     ) {
-      this.value = newValue;
+      this.value = newValue || "";
+      this.#render();
     }
   }
 
@@ -116,7 +117,11 @@ class MediaCaptionsMenu extends MediaChromeMenu {
   }
 
   #render(): void {
-    if (this.#prevState === JSON.stringify(this.mediaSubtitlesList)) return;
+    
+    const hasListChanged = this.#prevState !== JSON.stringify(this.mediaSubtitlesList);
+    const hasShowingChanged = this.value !== this.getAttribute(MediaUIAttributes.MEDIA_SUBTITLES_SHOWING);
+
+    if (!hasListChanged && !hasShowingChanged) return;
     this.#prevState = JSON.stringify(this.mediaSubtitlesList);
 
     this.defaultSlot.textContent = '';
