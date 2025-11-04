@@ -95,4 +95,15 @@ export const Document: typeof globalThis['document'] &
     webkitExitFullscreen: typeof globalThis['document']['exitFullscreen'];
   }> = isServer && !isShimmed ? documentShim : globalThis.document;
 
+/* 
+ * For cases like jest with jsdom, isServer will be false,
+ * but we don't have some of the APIs
+ * So we add the shims for the APIs missing.
+ */
+for (const key of Object.keys(globalThisShim)) {
+  if (!(key in GlobalThis)) {
+    GlobalThis[key] = globalThisShim[key];
+  }
+}
+
 export { GlobalThis as globalThis, Document as document };
