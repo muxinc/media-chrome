@@ -84,7 +84,8 @@ const globalThisShim = {
 } as unknown as typeof globalThis;
 
 export const isServer =
-  typeof window === 'undefined' || typeof window.customElements === 'undefined';
+  'global' in globalThis && globalThis?.global === globalThis || // node or node-like environments, whether or not there are global polyfills like jsdom
+  typeof window === 'undefined' || typeof window.customElements === 'undefined'; // generic check for global window object to account for non-node-like server environements
 
 const isShimmed = Object.keys(globalThisShim).every((key) => key in globalThis);
 
@@ -94,16 +95,5 @@ export const Document: typeof globalThis['document'] &
   Partial<{
     webkitExitFullscreen: typeof globalThis['document']['exitFullscreen'];
   }> = isServer && !isShimmed ? documentShim : globalThis.document;
-
-/* 
- * For cases like jest with jsdom, isServer will be false,
- * but we don't have some of the APIs
- * So we add the shims for the APIs missing.
- */
-for (const key of Object.keys(globalThisShim)) {
-  if (!(key in GlobalThis)) {
-    GlobalThis[key] = globalThisShim[key];
-  }
-}
 
 export { GlobalThis as globalThis, Document as document };
