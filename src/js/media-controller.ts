@@ -655,7 +655,7 @@ class MediaController extends MediaContainer {
     // if the blocklist contains the key, skip handling it.
     if (this.#hotKeys.contains(`no${e.key.toLowerCase()}`)) return;
     if (e.key === ' ' && this.#hotKeys.contains(`nospace`)) return;
-    // Check for Shift + / blocklist (noshift+/)
+
     const isShiftSlash = e.shiftKey && (e.key === '/' || e.key === '?');
     if (isShiftSlash && this.#hotKeys.contains('noshift+/')) return;
 

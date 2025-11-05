@@ -97,13 +97,13 @@ function formatKeyboardShortcuts() {
     { keys: ['Space', 'k'], description: 'Toggle Playback' },
     { keys: ['m'], description: 'Toggle mute' },
     { keys: ['f'], description: 'Toggle fullscreen' },
-    { keys: ['c'], description: 'Toggle captions or subtitles' },
+    { keys: ['c'], description: 'Toggle captions or subtitles, if available' },
     { keys: ['←', 'j'], description: 'Seek back 10s' },
     { keys: ['→', 'l'], description: 'Seek forward 10s' },
     { keys: ['↑'], description: 'Turn volume up' },
     { keys: ['↓'], description: 'Turn volume down' },
-    { keys: ['<'], description: 'Decrease playback rate' },
-    { keys: ['>'], description: 'Increase playback rate' },
+    { keys: ['< (SHIFT+,)'], description: 'Decrease playback rate' },
+    { keys: ['> (SHIFT+.)'], description: 'Increase playback rate' },
   ];
 
   const rows = shortcuts.map(({ keys, description }) => {
