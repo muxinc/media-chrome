@@ -57,6 +57,7 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
       oldValue != newValue
     ) {
       this.value = newValue;
+      this.#render();
     } else if (attrName === Attributes.RATES && oldValue != newValue) {
       this.#rates.value = newValue;
       this.#render();
@@ -123,12 +124,21 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   #render(): void {
     this.defaultSlot.textContent = '';
 
-    for (const rate of this.#rates) {
+    const currentRate = this.mediaPlaybackRate;
+    const ratesSet = new Set(Array.from(this.#rates).map(rate => Number(rate)));
+    
+    // If current rate is not in the list, add it to show it as selected
+    if (currentRate > 0 && !ratesSet.has(currentRate)) {
+      ratesSet.add(currentRate);
+    }
+    const sortedRates = Array.from(ratesSet).sort((a, b) => a - b);
+
+    for (const rate of sortedRates) {
       const item = createMenuItem({
         type: 'radio',
         text: this.formatMenuItemText(`${rate}x`, rate),
-        value: rate as string,
-        checked: this.mediaPlaybackRate === Number(rate),
+        value: rate.toString(),
+        checked: currentRate === rate,
       });
       item.prepend(createIndicator(this, 'checked-indicator'));
       this.defaultSlot.append(item);
