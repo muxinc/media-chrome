@@ -587,6 +587,12 @@ class MediaController extends MediaContainer {
     const { metaKey, altKey, key, shiftKey } = e;
     // Check for Shift + / (which produces '?' on US keyboards or '/' on others)
     const isShiftSlash = shiftKey && (key === '/' || key === '?');
+    // If dialog is open, remove keyup handler - the dialog will handle closing itself
+    if (isShiftSlash && this.#keyboardShortcutsDialog?.open) {
+      this.removeEventListener('keyup', this.#keyUpHandler);
+      return;
+    }
+    
     if (metaKey || altKey || (!isShiftSlash && !ButtonPressedKeys.includes(key))) {
       this.removeEventListener('keyup', this.#keyUpHandler);
       return;

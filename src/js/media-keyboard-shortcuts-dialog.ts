@@ -179,7 +179,8 @@ class MediaKeyboardShortcutsDialog extends MediaChromeDialog {
   #keyDownHandler = (e: KeyboardEvent) => {
     if (!this.open) return;
     
-    if (e.key === 'Escape' && !e.ctrlKey && !e.altKey && !e.metaKey) {
+    const isShiftSlash = e.shiftKey && (e.key === '/' || e.key === '?');
+    if ((e.key === 'Escape' || isShiftSlash) && !e.ctrlKey && !e.altKey && !e.metaKey) {
       this.open = false;
       e.preventDefault();
       e.stopPropagation();
