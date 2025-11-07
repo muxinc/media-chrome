@@ -51,6 +51,7 @@ const ButtonPressedKeys = [
   'j',
   '>',
   '<',
+  'p',
 ];
 const DEFAULT_SEEK_OFFSET = 10;
 const DEFAULT_VOLUME_STEP = 0.025;
@@ -733,6 +734,7 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
+
       case 'ArrowRight':
       case 'l': {
         const offsetValue = this.hasAttribute(
@@ -752,6 +754,7 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
+
       case 'ArrowUp': {
         const step = this.hasAttribute(Attributes.KEYBOARD_UP_VOLUME_STEP)
           ? +this.getAttribute(Attributes.KEYBOARD_UP_VOLUME_STEP)
@@ -768,6 +771,7 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
+
       case 'ArrowDown': {
         const step = this.hasAttribute(Attributes.KEYBOARD_DOWN_VOLUME_STEP)
           ? +this.getAttribute(Attributes.KEYBOARD_DOWN_VOLUME_STEP)
@@ -784,6 +788,7 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
+
       case '<': {
         const playbackRate = this.mediaStore.getState().mediaPlaybackRate ?? 1;
         detail = Math.max(
@@ -798,6 +803,7 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
+
       case '>': {
         const playbackRate = this.mediaStore.getState().mediaPlaybackRate ?? 1;
         detail = Math.min(
@@ -812,12 +818,25 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
+
       case '/':
       case '?': {
         // Check if Shift is pressed for Shift + /
         if (e.shiftKey) {
           this.#showKeyboardShortcutsDialog();
         }
+        break;
+      }
+
+      case 'p': {
+        eventName = this.mediaStore.getState().mediaIsPip
+          ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
+          : MediaUIEvents.MEDIA_ENTER_PIP_REQUEST;
+        evt = new globalThis.CustomEvent(eventName, {
+          composed: true,
+          bubbles: true,
+        });
+        this.dispatchEvent(evt);
         break;
       }
       default:

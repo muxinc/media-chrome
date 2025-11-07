@@ -14,6 +14,7 @@ The following controls are supported:
 | `m`           | `nom`               | Toggle mute |
 | `f`           | `nof`               | Toggle fullscreen |
 | `c`           | `noc`               | Toggle captions or subtitles, if available |
+| `p`           | `nop`               | Toggle Picture in Picture |
 | `ArrowLeft`   | `noarrowleft`       | Seek back 10s |
 | `j`           | `noj`               | Seek back 10s |
 | `ArrowRight`  | `noarrowright`      | Seek forward 10s |

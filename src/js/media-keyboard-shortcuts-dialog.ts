@@ -98,6 +98,7 @@ function formatKeyboardShortcuts() {
     { keys: ['m'], description: 'Toggle mute' },
     { keys: ['f'], description: 'Toggle fullscreen' },
     { keys: ['c'], description: 'Toggle captions or subtitles, if available' },
+    { keys: ['p'], description: 'Toggle Picture in Picture' },
     { keys: ['←', 'j'], description: 'Seek back 10s' },
     { keys: ['→', 'l'], description: 'Seek forward 10s' },
     { keys: ['↑'], description: 'Turn volume up' },
