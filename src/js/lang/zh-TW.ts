@@ -67,6 +67,15 @@ export const ZhTw: TranslateDictionary = {
     '發生不支援的錯誤。伺服器或網路可能有問題，或瀏覽器不支援這個格式。',
   'The media is encrypted and there are no keys to decrypt it.':
     '媒體已加密，但找不到解密金鑰。',
+  hour: '小時',
+  hours: '小時',
+  minute: '分鐘',
+  minutes: '分鐘',
+  second: '秒',
+  seconds: '秒',
+  '{time} remaining': '剩餘 {time}',
+  '{currentTime} of {totalTime}': '{currentTime} / {totalTime}',
+  'video not loaded, unknown time.': '影片未載入，時間未知。',
 };
 
 addTranslation('zh-TW', ZhTw);

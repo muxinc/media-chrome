@@ -63,7 +63,7 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
     endTime = seekableEnd;
   }
   if (currentTime == null || endTime === null) {
-    el.setAttribute('aria-valuetext', DEFAULT_MISSING_TIME_PHRASE);
+    el.setAttribute('aria-valuetext', t(DEFAULT_MISSING_TIME_PHRASE));
     return;
   }
 
@@ -76,7 +76,10 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
     return;
   }
   const totalTimePhrase = formatAsTimePhrase(endTime);
-  const fullPhrase = `${currentTimePhrase} of ${totalTimePhrase}`;
+  const fullPhrase = t('{currentTime} of {totalTime}', {
+    currentTime: currentTimePhrase,
+    totalTime: totalTimePhrase,
+  });
   el.setAttribute('aria-valuetext', fullPhrase);
 };
 

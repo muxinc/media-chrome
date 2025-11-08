@@ -67,6 +67,15 @@ export const Fr: TranslateDictionary = {
     'Une erreur non supportée s’est produite. Le serveur ou le réseau a échoué, ou votre navigateur ne prend pas en charge ce format.',
   'The media is encrypted and there are no keys to decrypt it.':
     'Le média est chiffré et il n’y a pas de clés pour le déchiffrer.',
+  hour: 'heure',
+  hours: 'heures',
+  minute: 'minute',
+  minutes: 'minutes',
+  second: 'seconde',
+  seconds: 'secondes',
+  '{time} remaining': '{time} restant',
+  '{currentTime} of {totalTime}': '{currentTime} sur {totalTime}',
+  'video not loaded, unknown time.': 'vidéo non chargée, durée inconnue.',
 };
 
 addTranslation('fr', Fr);
