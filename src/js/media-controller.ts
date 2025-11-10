@@ -153,7 +153,7 @@ class MediaController extends MediaContainer {
       media: this.media,
       fullscreenElement: this.fullscreenElement,
       options: {
-        defaultSubtitles: this.hasAttribute(Attributes.DEFAULT_SUBTITLES),
+        defaultSubtitles: this.hasAttribute(Attributes.DEFAULT_SUBTITLES) ? this.getAttribute(Attributes.DEFAULT_SUBTITLES) !== 'false' : undefined,
         defaultDuration: this.hasAttribute(Attributes.DEFAULT_DURATION)
           ? +this.getAttribute(Attributes.DEFAULT_DURATION)
           : undefined,
