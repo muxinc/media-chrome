@@ -34,6 +34,7 @@ import MediaTooltip from './media-tooltip.js';
 import MediaVolumeRange from './media-volume-range.js';
 import MediaContainer from './media-container.js';
 import MediaTextDisplay from './media-text-display.js';
+import MediaLoopButton from './media-loop-button.js';
 
 export {
   MediaAirplayButton,
@@ -53,6 +54,7 @@ export {
   MediaMuteButton,
   MediaPipButton,
   MediaPlaybackRateButton,
+  MediaLoopButton,
   MediaPlayButton,
   MediaPosterImage,
   MediaPreviewChapterDisplay,

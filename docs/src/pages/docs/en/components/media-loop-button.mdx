@@ -1,0 +1,49 @@
+---
+title: <media-loop-button>
+description: Media Loop Button
+layout: ../../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-loop-button.ts
+---
+
+import SandpackContainer from "../../../../components/SandpackContainer.astro";
+
+The `<media-loop-button>` component toggles media looping on and off. When active, the media will automatically restart after finishing playback. This component is especially made for being included inside a `<media-context-menu>` and `<media-context-menu-item>` as a playback option.
+
+
+## Usage
+
+The `<media-loop-button>` is commonly used as part of a `<media-context-menu>` to allow users to toggle looping playback within an options panel.
+
+<SandpackContainer
+  html={`<media-controller>
+  <video
+    playsinline muted crossorigin
+    slot="media"
+    src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/low.mp4"
+  ></video>
+
+  <media-context-menu>
+    <media-context-menu-item>
+      <media-loop-button></media-loop-button>
+    </media-context-menu-item>
+  </media-context-menu>
+</media-controller>`}
+/>
+
+When used in this way, selecting the button from the menu dispatches a `media-loop-request` event, toggling the looping behavior of the current media element.
+
+## Styling with attributes
+
+The `<media-loop-button>` updates automatically with [Media UI Attributes](#media-ui-attributes), reflecting the current looping state of the media.
+
+You can use these attributes to style the button. For example, to visually highlight when looping is enabled:
+
+```css
+media-loop-button[medialoop] {
+  color: var(--media-button-active-color, #1e90ff);
+}
+
+media-loop-button:not([medialoop]) {
+  opacity: 0.6;
+}
+```

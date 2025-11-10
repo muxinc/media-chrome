@@ -16,6 +16,7 @@ import {
   MediaPipButton,
   MediaFullscreenButton,
   MediaErrorDialog,
+  MediaLoopButton,
 } from 'media-chrome/react';
 import {
   MediaPlaybackRateMenu,
@@ -24,6 +25,8 @@ import {
   MediaSettingsMenuItem,
   MediaSettingsMenuButton,
   MediaRenditionMenu,
+  MediaContextMenu,
+  MediaContextMenuItem
 } from 'media-chrome/react/menu';
 
 import { useState } from 'react';
@@ -93,6 +96,14 @@ export const Player = () => {
           }}
           alt="woman in misery kneeling down in desert looking up at the sky"
         />
+        <MediaContextMenu hidden>
+          <MediaContextMenuItem>
+            <a href="https://mux.com" target="_blank">Powered by Mux</a>
+          </MediaContextMenuItem>
+          <MediaContextMenuItem>
+            <MediaLoopButton></MediaLoopButton>
+          </MediaContextMenuItem>
+        </MediaContextMenu>
         <MediaErrorDialog role="dialog" slot="dialog"></MediaErrorDialog>
         <MediaLoadingIndicator
           noAutohide

@@ -85,6 +85,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Fullscreen button', link: 'docs/en/components/media-fullscreen-button' },
       { text: 'Live indicator / button', link: 'docs/en/components/media-live-button' },
       { text: 'Loading indicator', link: 'docs/en/components/media-loading-indicator' },
+      { text: 'Loop button', link: 'docs/en/components/media-loop-button' },
       { text: 'Media controller', link: 'docs/en/components/media-controller' },
       { text: 'Mute button', link: 'docs/en/components/media-mute-button' },
       { text: 'PiP button', link: 'docs/en/components/media-pip-button' },

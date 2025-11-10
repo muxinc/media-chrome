@@ -14,6 +14,7 @@ export const ZhTw: TranslateDictionary = {
   'Exit fullscreen mode': '離開全螢幕',
   Mute: '靜音',
   Unmute: '取消靜音',
+  Loop: '循環播放',
   'Enter picture in picture mode': '開啟子母畫面',
   'Exit picture in picture mode': '關閉子母畫面',
   Play: '播放',

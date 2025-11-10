@@ -14,6 +14,7 @@ export const ZhCn: TranslateDictionary = {
   'Exit fullscreen mode': '退出全屏',
   Mute: '静音',
   Unmute: '恢复音量',
+  Loop: '循环播放',
   'Enter picture in picture mode': '开启画中画',
   'Exit picture in picture mode': '关闭画中画',
   Play: '播放',
