@@ -794,7 +794,7 @@ class MediaController extends MediaContainer {
         detail = Math.max(
           playbackRate - DEFAULT_PLAYBACK_RATE_STEP,
           MIN_PLAYBACK_RATE
-        );
+        ).toFixed(2);
         evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST, {
           composed: true,
           bubbles: true,
@@ -809,7 +809,7 @@ class MediaController extends MediaContainer {
         detail = Math.min(
           playbackRate + DEFAULT_PLAYBACK_RATE_STEP,
           MAX_PLAYBACK_RATE
-        );
+        ).toFixed(2);
         evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST, {
           composed: true,
           bubbles: true,
