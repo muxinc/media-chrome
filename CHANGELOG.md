@@ -1,3 +1,12 @@
+## [4.15.1](https://github.com/muxinc/media-chrome/compare/v4.15.0...v4.15.1) (2025-10-30)
+
+
+### Bug Fixes
+
+* muted pref covers border cases ([#1224](https://github.com/muxinc/media-chrome/issues/1224)) ([6366f72](https://github.com/muxinc/media-chrome/commit/6366f72babf076adefc8feb8c6a20d8d5717ba7e)), closes [#1226](https://github.com/muxinc/media-chrome/issues/1226)
+
+
+
 # [4.15.0](https://github.com/muxinc/media-chrome/compare/v4.14.0...v4.15.0) (2025-10-27)
 
 
