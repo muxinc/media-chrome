@@ -71,6 +71,7 @@ export const Attributes = {
   KEYBOARD_UP_VOLUME_STEP: 'keyboardupvolumestep',
   KEYS_USED: 'keysused',
   LANG: 'lang',
+  LOOP: 'loop',  
   LIVE_EDGE_OFFSET: 'liveedgeoffset',
   NO_AUTO_SEEK_TO_LIVE: 'noautoseektolive',
   NO_DEFAULT_STORE: 'nodefaultstore',
@@ -111,7 +112,8 @@ class MediaController extends MediaContainer {
       Attributes.DEFAULT_DURATION,
       Attributes.NO_MUTED_PREF,
       Attributes.NO_VOLUME_PREF,
-      Attributes.LANG
+      Attributes.LANG,
+      Attributes.LOOP
     );
   }
 
@@ -401,6 +403,11 @@ class MediaController extends MediaContainer {
         detail: {
           mediaLang: newValue,
         },
+      });
+    } else if (attrName === Attributes.LOOP && newValue !== oldValue) {
+      this.#mediaStore?.dispatch({
+        type: MediaUIEvents.MEDIA_LOOP_REQUEST,
+        detail: newValue != null,
       });
     } else if (attrName === Attributes.NO_VOLUME_PREF && newValue !== oldValue) {
       this.#mediaStore?.dispatch({
