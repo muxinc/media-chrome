@@ -9,6 +9,7 @@
 */
 import { MediaContainer } from './media-container.js';
 import { document, globalThis } from './utils/server-safe-globals.js';
+import { MediaKeyboardShortcutsDialog } from './media-keyboard-shortcuts-dialog.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import {
   delay,
@@ -46,9 +47,17 @@ const ButtonPressedKeys = [
   'm',
   'k',
   'c',
+  'l',
+  'j',
+  '>',
+  '<',
+  'p',
 ];
 const DEFAULT_SEEK_OFFSET = 10;
 const DEFAULT_VOLUME_STEP = 0.025;
+const DEFAULT_PLAYBACK_RATE_STEP = 0.25;
+const MIN_PLAYBACK_RATE = 0.25;
+const MAX_PLAYBACK_RATE = 2;
 
 export const Attributes = {
   DEFAULT_SUBTITLES: 'defaultsubtitles',
@@ -56,21 +65,21 @@ export const Attributes = {
   DEFAULT_DURATION: 'defaultduration',
   FULLSCREEN_ELEMENT: 'fullscreenelement',
   HOTKEYS: 'hotkeys',
+  KEYBOARD_BACKWARD_SEEK_OFFSET: 'keyboardbackwardseekoffset',
+  KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
+  KEYBOARD_DOWN_VOLUME_STEP: 'keyboarddownvolumestep',
+  KEYBOARD_UP_VOLUME_STEP: 'keyboardupvolumestep',
   KEYS_USED: 'keysused',
+  LANG: 'lang',
+  LOOP: 'loop',  
   LIVE_EDGE_OFFSET: 'liveedgeoffset',
-  SEEK_TO_LIVE_OFFSET: 'seektoliveoffset',
   NO_AUTO_SEEK_TO_LIVE: 'noautoseektolive',
+  NO_DEFAULT_STORE: 'nodefaultstore',
   NO_HOTKEYS: 'nohotkeys',
-  NO_VOLUME_PREF: 'novolumepref',
   NO_MUTED_PREF: 'nomutedpref',
   NO_SUBTITLES_LANG_PREF: 'nosubtitleslangpref',
-  NO_DEFAULT_STORE: 'nodefaultstore',
-  KEYBOARD_FORWARD_SEEK_OFFSET: 'keyboardforwardseekoffset',
-  KEYBOARD_BACKWARD_SEEK_OFFSET: 'keyboardbackwardseekoffset',
-  KEYBOARD_UP_VOLUME_STEP: 'keyboardupvolumestep',
-  KEYBOARD_DOWN_VOLUME_STEP: 'keyboarddownvolumestep',
-  LANG: 'lang',
-  LOOP: 'loop',
+  NO_VOLUME_PREF: 'novolumepref',
+  SEEK_TO_LIVE_OFFSET: 'seektoliveoffset',
 };
 
 /**
@@ -114,6 +123,7 @@ class MediaController extends MediaContainer {
   #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
   #fullscreenElement: HTMLElement;
   #mediaStore: MediaStore;
+  #keyboardShortcutsDialog: MediaKeyboardShortcutsDialog | null = null;
   #mediaStateCallback: (nextState: any) => void;
   #mediaStoreUnsubscribe: () => void;
   #mediaStateEventHandler = (event): void => {
@@ -569,8 +579,11 @@ class MediaController extends MediaContainer {
   }
 
   #keyUpHandler(e: KeyboardEvent) {
-    const { key } = e;
-    if (!ButtonPressedKeys.includes(key)) {
+    const { key, shiftKey } = e;
+    // Check for Shift + / (which produces '?' on US keyboards or '/' on others)
+    const isShiftSlash = shiftKey && (key === '/' || key === '?');
+    const shouldHandle = isShiftSlash || ButtonPressedKeys.includes(key);
+    if (!shouldHandle) {
       this.removeEventListener('keyup', this.#keyUpHandler);
       return;
     }
@@ -579,8 +592,16 @@ class MediaController extends MediaContainer {
   }
 
   #keyDownHandler(e: KeyboardEvent) {
-    const { metaKey, altKey, key } = e;
-    if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+    const { metaKey, altKey, key, shiftKey } = e;
+    // Check for Shift + / (which produces '?' on US keyboards or '/' on others)
+    const isShiftSlash = shiftKey && (key === '/' || key === '?');
+    // If dialog is open, remove keyup handler - the dialog will handle closing itself
+    if (isShiftSlash && this.#keyboardShortcutsDialog?.open) {
+      this.removeEventListener('keyup', this.#keyUpHandler);
+      return;
+    }
+    
+    if (metaKey || altKey || (!isShiftSlash && !ButtonPressedKeys.includes(key))) {
       this.removeEventListener('keyup', this.#keyUpHandler);
       return;
     }
@@ -649,6 +670,9 @@ class MediaController extends MediaContainer {
     if (this.#hotKeys.contains(`no${e.key.toLowerCase()}`)) return;
     if (e.key === ' ' && this.#hotKeys.contains(`nospace`)) return;
 
+    const isShiftSlash = e.shiftKey && (e.key === '/' || e.key === '?');
+    if (isShiftSlash && this.#hotKeys.contains('noshift+/')) return;
+
     // These event triggers were copied from the revelant buttons
     switch (e.key) {
       case ' ':
@@ -698,7 +722,8 @@ class MediaController extends MediaContainer {
         );
         break;
 
-      case 'ArrowLeft': {
+      case 'ArrowLeft':
+      case 'j': {
         const offsetValue = this.hasAttribute(
           Attributes.KEYBOARD_BACKWARD_SEEK_OFFSET
         )
@@ -716,7 +741,9 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
-      case 'ArrowRight': {
+
+      case 'ArrowRight':
+      case 'l': {
         const offsetValue = this.hasAttribute(
           Attributes.KEYBOARD_FORWARD_SEEK_OFFSET
         )
@@ -734,6 +761,7 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
+
       case 'ArrowUp': {
         const step = this.hasAttribute(Attributes.KEYBOARD_UP_VOLUME_STEP)
           ? +this.getAttribute(Attributes.KEYBOARD_UP_VOLUME_STEP)
@@ -750,6 +778,7 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
+
       case 'ArrowDown': {
         const step = this.hasAttribute(Attributes.KEYBOARD_DOWN_VOLUME_STEP)
           ? +this.getAttribute(Attributes.KEYBOARD_DOWN_VOLUME_STEP)
@@ -766,9 +795,70 @@ class MediaController extends MediaContainer {
         this.dispatchEvent(evt);
         break;
       }
+
+      case '<': {
+        const playbackRate = this.mediaStore.getState().mediaPlaybackRate ?? 1;
+        detail = Math.max(
+          playbackRate - DEFAULT_PLAYBACK_RATE_STEP,
+          MIN_PLAYBACK_RATE
+        ).toFixed(2);
+        evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST, {
+          composed: true,
+          bubbles: true,
+          detail,
+        });
+        this.dispatchEvent(evt);
+        break;
+      }
+
+      case '>': {
+        const playbackRate = this.mediaStore.getState().mediaPlaybackRate ?? 1;
+        detail = Math.min(
+          playbackRate + DEFAULT_PLAYBACK_RATE_STEP,
+          MAX_PLAYBACK_RATE
+        ).toFixed(2);
+        evt = new globalThis.CustomEvent(MediaUIEvents.MEDIA_PLAYBACK_RATE_REQUEST, {
+          composed: true,
+          bubbles: true,
+          detail,
+        });
+        this.dispatchEvent(evt);
+        break;
+      }
+
+      case '/':
+      case '?': {
+        // Check if Shift is pressed for Shift + /
+        if (e.shiftKey) {
+          this.#showKeyboardShortcutsDialog();
+        }
+        break;
+      }
+
+      case 'p': {
+        eventName = this.mediaStore.getState().mediaIsPip
+          ? MediaUIEvents.MEDIA_EXIT_PIP_REQUEST
+          : MediaUIEvents.MEDIA_ENTER_PIP_REQUEST;
+        evt = new globalThis.CustomEvent(eventName, {
+          composed: true,
+          bubbles: true,
+        });
+        this.dispatchEvent(evt);
+        break;
+      }
       default:
         break;
     }
+  }
+
+  #showKeyboardShortcutsDialog() {
+    if (!this.#keyboardShortcutsDialog) {
+      this.#keyboardShortcutsDialog = document.createElement(
+        'media-keyboard-shortcuts-dialog'
+      ) as MediaKeyboardShortcutsDialog;
+      this.appendChild(this.#keyboardShortcutsDialog);
+    }
+    this.#keyboardShortcutsDialog.open = true;
   }
 }
 

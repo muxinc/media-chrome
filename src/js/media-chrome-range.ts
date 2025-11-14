@@ -3,6 +3,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import {
   getOrInsertCSSRule,
   getPointProgressOnLine,
+  insertCSSRule,
   namedNodeMapToObject,
 } from './utils/element-utils.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
@@ -502,7 +503,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
         'http://www.w3.org/2000/svg',
         'rect'
       );
-      const cssRule = getOrInsertCSSRule(
+      const cssRule = insertCSSRule(
         this.shadowRoot,
         `#segments-clipping rect:nth-child(${i + 1})`
       );
