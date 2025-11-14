@@ -35,8 +35,11 @@ const updateAriaValueText = (el: any): void => {
   const currentTimePhrase = formatAsTimePhrase(+calcTimeFromRangeValue(el));
   const totalTimePhrase = formatAsTimePhrase(+el.mediaSeekableEnd);
   const fullPhrase = !(currentTimePhrase && totalTimePhrase)
-    ? DEFAULT_MISSING_TIME_PHRASE
-    : `${currentTimePhrase} of ${totalTimePhrase}`;
+    ? t(DEFAULT_MISSING_TIME_PHRASE)
+    : t('{currentTime} of {totalTime}', {
+        currentTime: currentTimePhrase,
+        totalTime: totalTimePhrase,
+      });
   range.setAttribute('aria-valuetext', fullPhrase);
 };
 
