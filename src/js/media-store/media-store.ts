@@ -455,19 +455,30 @@ export const createMediaStore = ({
 
         // NOTE: Since custom update handlers may depend on *any* state owner
         // we should apply them whenever any state owner changes (CJP)
-        const prevHandlerTeardown =
+        const prevHandlerTeardowns =
           stateUpdateHandlers[stateName].stateOwnersUpdateHandlers;
-        stateOwnersUpdateHandlers.forEach((fn) => {
-          if (prevHandlerTeardown && teardownSomething) {
-            prevHandlerTeardown();
-          }
-          if (setupSomething) {
-            stateUpdateHandlers[stateName].stateOwnersUpdateHandlers = fn(
-              handler,
-              nextStateOwners
-            );
-          }
-        });
+
+        if (prevHandlerTeardowns && teardownSomething) {
+          const teardowns = Array.isArray(prevHandlerTeardowns)
+            ? prevHandlerTeardowns
+            : [prevHandlerTeardowns];
+          teardowns.forEach((teardown) => {
+            if (typeof teardown === 'function') {
+              teardown();
+            }
+          });
+        }
+
+        if (setupSomething) {
+          const newTeardowns = stateOwnersUpdateHandlers
+            .map((fn) => fn(handler, nextStateOwners))
+            .filter((teardown) => typeof teardown === 'function');
+
+          stateUpdateHandlers[stateName].stateOwnersUpdateHandlers =
+            newTeardowns.length === 1 ? newTeardowns[0] : newTeardowns;
+        } else if (teardownSomething) {
+          stateUpdateHandlers[stateName].stateOwnersUpdateHandlers = undefined;
+        }
       }
     );
 
