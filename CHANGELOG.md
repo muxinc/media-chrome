@@ -1,3 +1,21 @@
+# [4.16.0](https://github.com/muxinc/media-chrome/compare/v4.15.1...v4.16.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* Ensure all stateOwnersUpdateHandlers are properly torn down ([#1237](https://github.com/muxinc/media-chrome/issues/1237)) ([c49c8da](https://github.com/muxinc/media-chrome/commit/c49c8daaf13e298ded5c15f027307f245c8e8508))
+* Fixed shimming for node-like environments ([#1229](https://github.com/muxinc/media-chrome/issues/1229)) ([fd6fded](https://github.com/muxinc/media-chrome/commit/fd6fdedf49a084cbab6bcd88736f3d823ad10064))
+* prevent glitch on dynamically add chapters re-render ([#1236](https://github.com/muxinc/media-chrome/issues/1236)) ([bb02aa5](https://github.com/muxinc/media-chrome/commit/bb02aa5d5fdce7cd36be5d90a8d5d33fbb199ffe))
+* Sync captions toggle and menu on attribute/list changes ([#1227](https://github.com/muxinc/media-chrome/issues/1227)) ([884f3ce](https://github.com/muxinc/media-chrome/commit/884f3ce0b9788409ca327e002f3b54ace1641bff))
+
+
+### Features
+
+* Add support for hotkeys ([#1231](https://github.com/muxinc/media-chrome/issues/1231)) ([5c54cc5](https://github.com/muxinc/media-chrome/commit/5c54cc56db1cd0e342f4f0087d2328a751ce8e5e)), closes [#1171](https://github.com/muxinc/media-chrome/issues/1171)
+* create <media-loop-button> component for being used inside of context menu ([#1233](https://github.com/muxinc/media-chrome/issues/1233)) ([58d1e1b](https://github.com/muxinc/media-chrome/commit/58d1e1be656152f8fd6d6c37f2b7a4083acf6090))
+
+
+
 ## [4.15.1](https://github.com/muxinc/media-chrome/compare/v4.15.0...v4.15.1) (2025-10-30)
 
 
