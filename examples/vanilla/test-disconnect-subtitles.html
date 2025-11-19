@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width">
+    <title>Test: Subtitles Disabled on Disconnect</title>
+    <script type="module" src="../../../dist/index.js"></script>
+    <style>
+      body {
+        font-family: system-ui, sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      
+      media-controller {
+        display: block;
+        max-width: 640px;
+        aspect-ratio: 16 / 9;
+        margin: 20px 0;
+      }
+
+      video {
+        width: 100%;
+      }
+
+      .controls {
+        margin: 20px 0;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .info {
+        background: #f5f5f5;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 20px 0;
+        font-family: monospace;
+        white-space: pre-wrap;
+      }
+
+      .status {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+
+      .status.connected {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status.disconnected {
+        background: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Test: Subtitles Disabled on MediaController Disconnect</h1>
+    <p>This example demonstrates that subtitles are automatically disabled when the MediaController is disconnected from the DOM, but the preference is saved and restored on reconnect.</p>
+    <p><strong>Note:</strong> To see subtitles visually, you need to play the video. The track info below shows the state of subtitle tracks regardless of playback.</p>
+
+    <div id="status" class="status connected">Status: MediaController is CONNECTED</div>
+
+    <div id="container">
+      <media-controller id="mc">
+        <video
+          slot="media"
+          id="video"
+          src="https://d2zihajmogu5jn.cloudfront.net/elephantsdream/ed_hd.mp4"
+          preload="metadata"
+          muted
+          crossorigin
+        >
+          <track label="English" kind="captions" srclang="en" src="./vtt/elephantsdream/captions.en.vtt"></track>
+          <track label="English Subtitles" kind="subtitles" srclang="en" src="./vtt/elephantsdream/captions.en.vtt"></track>
+        </video>
+        <media-control-bar>
+          <media-play-button></media-play-button>
+          <media-time-range></media-time-range>
+          <media-time-display showduration></media-time-display>
+          <media-captions-button></media-captions-button>
+          <media-fullscreen-button></media-fullscreen-button>
+        </media-control-bar>
+      </media-controller>
+    </div>
+
+    <div class="controls">
+      <button id="enableSubs">Enable Subtitles</button>
+      <button id="disableSubs">Disable Subtitles</button>
+      <button id="disconnect">Disconnect MediaController</button>
+      <button id="reconnect">Reconnect MediaController</button>
+      <button id="refreshInfo">Refresh Track Info</button>
+    </div>
+
+    <div class="info" id="trackInfo">Click "Refresh Track Info" to see subtitle track states</div>
+
+    <script type="module">
+      const container = document.getElementById('container');
+      const mc = document.getElementById('mc');
+      const video = document.getElementById('video');
+      const status = document.getElementById('status');
+      const trackInfo = document.getElementById('trackInfo');
+      const enableSubsBtn = document.getElementById('enableSubs');
+      const disableSubsBtn = document.getElementById('disableSubs');
+      const disconnectBtn = document.getElementById('disconnect');
+      const reconnectBtn = document.getElementById('reconnect');
+      const refreshBtn = document.getElementById('refreshInfo');
+
+      let isConnected = true;
+
+      function updateStatus() {
+        if (isConnected) {
+          status.textContent = 'Status: MediaController is CONNECTED';
+          status.className = 'status connected';
+        } else {
+          status.textContent = 'Status: MediaController is DISCONNECTED';
+          status.className = 'status disconnected';
+        }
+      }
+
+      function getSubtitleTracks() {
+        const tracks = Array.from(video.textTracks || []);
+        return tracks.filter(t => 
+          t.kind === 'subtitles' || t.kind === 'captions'
+        );
+      }
+
+      function getTrackInfo() {
+        const tracks = Array.from(video.textTracks || []);
+        const subtitleTracks = getSubtitleTracks();
+        
+        let info = `Total text tracks: ${tracks.length}\n`;
+        info += `Subtitle/Caption tracks: ${subtitleTracks.length}\n\n`;
+        
+        if (subtitleTracks.length === 0) {
+          info += `No subtitle/caption tracks found yet.\n`;
+          info += `Wait for video to load or check track sources.\n\n`;
+        } else {
+          subtitleTracks.forEach((track, index) => {
+            info += `Track ${index + 1}:\n`;
+            info += `  Label: ${track.label}\n`;
+            info += `  Kind: ${track.kind}\n`;
+            info += `  Language: ${track.language}\n`;
+            info += `  Mode: ${track.mode}\n`;
+            info += `  Showing: ${track.mode === 'showing' ? 'YES ✅' : 'NO'}\n`;
+            info += `\n`;
+          });
+        }
+
+        const showingTracks = subtitleTracks.filter(t => t.mode === 'showing');
+        info += `\nCurrently showing: ${showingTracks.length} track(s)\n`;
+        if (showingTracks.length > 0) {
+          info += showingTracks.map(t => `  - ${t.label} (${t.kind})`).join('\n');
+        }
+
+        return info;
+      }
+
+      function refreshTrackInfo() {
+        trackInfo.textContent = getTrackInfo();
+      }
+
+      function waitForTracks(callback, maxAttempts = 20) {
+        let attempts = 0;
+        const checkTracks = () => {
+          const subtitleTracks = getSubtitleTracks();
+          if (subtitleTracks.length > 0) {
+            callback();
+          } else if (attempts < maxAttempts) {
+            attempts++;
+            setTimeout(checkTracks, 100);
+          } else {
+            refreshTrackInfo();
+          }
+        };
+        checkTracks();
+      }
+
+      function enableSubtitles() {
+        if (mc.mediaStore) {
+          mc.mediaStore.dispatch({
+            type: 'mediatogglesubtitlesrequest',
+            detail: true
+          });
+        }
+        setTimeout(refreshTrackInfo, 200);
+      }
+
+      function disableSubtitles() {
+        if (mc.mediaStore) {
+          mc.mediaStore.dispatch({
+            type: 'mediatogglesubtitlesrequest',
+            detail: false
+          });
+        }
+        setTimeout(refreshTrackInfo, 200);
+      }
+
+      enableSubsBtn.addEventListener('click', enableSubtitles);
+      disableSubsBtn.addEventListener('click', disableSubtitles);
+
+      disconnectBtn.addEventListener('click', () => {
+        if (isConnected) {
+          mc.remove();
+          isConnected = false;
+          updateStatus();
+          setTimeout(refreshTrackInfo, 200);
+        }
+      });
+
+      reconnectBtn.addEventListener('click', () => {
+        if (!isConnected) {
+          container.appendChild(mc);
+          isConnected = true;
+          updateStatus();
+          waitForTracks(() => {
+            refreshTrackInfo();
+          });
+        }
+      });
+
+      refreshBtn.addEventListener('click', refreshTrackInfo);
+
+      function setupTrackListeners() {
+        Array.from(video.textTracks || []).forEach(track => {
+          track.addEventListener('change', refreshTrackInfo);
+        });
+      }
+
+      video.addEventListener('loadstart', () => {
+        waitForTracks(() => {
+          setupTrackListeners();
+          refreshTrackInfo();
+        });
+      });
+
+      video.addEventListener('loadedmetadata', () => {
+        waitForTracks(() => {
+          setupTrackListeners();
+          refreshTrackInfo();
+        });
+      });
+
+      if (video.textTracks) {
+        video.textTracks.addEventListener('addtrack', () => {
+          waitForTracks(() => {
+            setupTrackListeners();
+            refreshTrackInfo();
+          });
+        });
+      }
+
+      setTimeout(() => {
+        waitForTracks(() => {
+          setupTrackListeners();
+          refreshTrackInfo();
+        });
+      }, 500);
+    </script>
+  </body>
+</html>
