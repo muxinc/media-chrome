@@ -126,6 +126,9 @@ class MediaController extends MediaContainer {
   #keyboardShortcutsDialog: MediaKeyboardShortcutsDialog | null = null;
   #mediaStateCallback: (nextState: any) => void;
   #mediaStoreUnsubscribe: () => void;
+  #subtitlePreferenceUnsubscribe: () => void;
+  #isDisconnecting: boolean = false;
+  #isRestoring: boolean = false;
   #mediaStateEventHandler = (event): void => {
     this.#mediaStore?.dispatch(event);
   };
@@ -445,18 +448,48 @@ class MediaController extends MediaContainer {
       this.#mediaStoreUnsubscribe = this.#mediaStore?.subscribe(
         this.#mediaStateCallback
       );
+      
+      // Listen for subtitle state changes to clear preference when user manually disables
+      this.#handleSubtitlePreferenceChanges();
     }
 
     this.hasAttribute(Attributes.NO_HOTKEYS)
       ? this.disableHotkeys()
       : this.enableHotkeys();
+
+    // Use a delay to ensure the subscription is set up first
+    if (this.media) {
+      setTimeout(() => {
+        this.#restoreSubtitlePreference(this.media);
+      }, 100);
+    }
   }
 
   disconnectedCallback(): void {
     // mediaUnsetCallback() is called in super.disconnectedCallback();
     super.disconnectedCallback?.();
 
+    // Set flag to prevent clearing preference during disconnect
+    this.#isDisconnecting = true;
+
     if (this.#mediaStore) {
+      // Save subtitle preference before disabling
+      try {
+        const state = this.#mediaStore.getState();
+        const subtitlesShowing = state.mediaSubtitlesShowing;
+        const hadSubtitlesEnabled = subtitlesShowing && subtitlesShowing.length > 0;
+        
+        // Only save preference if subtitles were enabled
+        if (hadSubtitlesEnabled) {
+          globalThis.localStorage.setItem(
+            'media-chrome-pref-subtitles-enabled',
+            'true'
+          );
+        }
+      } catch (e) {
+        console.debug('Error saving subtitle preference', e);
+      }
+
       this.#mediaStore?.dispatch({
         type: 'documentelementchangerequest',
         detail: undefined,
@@ -473,6 +506,16 @@ class MediaController extends MediaContainer {
       this.#mediaStoreUnsubscribe?.();
       this.#mediaStoreUnsubscribe = undefined;
     }
+
+    if (this.#subtitlePreferenceUnsubscribe) {
+      this.#subtitlePreferenceUnsubscribe?.();
+      this.#subtitlePreferenceUnsubscribe = undefined;
+    }
+
+    // Reset flag after a delay to allow any pending operations to complete
+    setTimeout(() => {
+      this.#isDisconnecting = false;
+    }, 100);
   }
 
   /**
@@ -490,6 +533,104 @@ class MediaController extends MediaContainer {
     if (!media.hasAttribute('tabindex')) {
       media.tabIndex = -1;
     }
+  }
+
+  #restoreSubtitlePreference(media: HTMLMediaElement): void {
+    try {
+      const subtitlesEnabledPref = globalThis.localStorage.getItem(
+        'media-chrome-pref-subtitles-enabled'
+      );
+      
+      if (subtitlesEnabledPref !== 'true') {
+        return;
+      }
+
+      const state = this.#mediaStore?.getState();
+      const currentSubtitlesShowing = state?.mediaSubtitlesShowing;
+      if (currentSubtitlesShowing && currentSubtitlesShowing.length > 0) {
+        // Already showing, no need to restore
+        return;
+      }
+
+      // Wait for tracks to be available before restoring
+      const checkTracks = (attempts = 0) => {
+        if (!this.#mediaStore) {
+          return;
+        }
+
+        const tracks = Array.from(media.textTracks || []);
+        const subtitleTracks = tracks.filter(
+          (t) => t.kind === 'subtitles' || t.kind === 'captions'
+        );
+
+        if (subtitleTracks.length > 0) {
+          this.#isRestoring = true;
+          setTimeout(() => {
+            if (this.#mediaStore) {
+              this.#mediaStore.dispatch({
+                type: MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
+                detail: true,
+              });
+              // Reset flag after a delay to allow state to update
+              setTimeout(() => {
+                this.#isRestoring = false;
+              }, 200);
+            } else {
+              this.#isRestoring = false;
+            }
+          }, 50);
+        } else if (attempts < 30) {
+          // Tracks not ready yet, try again after a short delay
+          setTimeout(() => checkTracks(attempts + 1), 150);
+        }
+      };
+
+      // Start checking after a short delay to allow tracks to initialize
+      setTimeout(() => checkTracks(), 200);
+    } catch (e) {
+      console.debug('Error restoring subtitle preference', e);
+    }
+  }
+
+  #handleSubtitlePreferenceChanges(): void {
+    if (!this.#mediaStore || this.#subtitlePreferenceUnsubscribe) return;
+
+    let prevSubtitlesShowing: any[] | undefined = undefined;
+    let isInitialState = true;
+
+    // Subscribe to state changes to detect when user manually disables subtitles
+    this.#subtitlePreferenceUnsubscribe = this.#mediaStore.subscribe((state) => {
+      const currentSubtitlesShowing = state.mediaSubtitlesShowing;
+      
+      // Skip the initial state to avoid false positives
+      if (isInitialState) {
+        prevSubtitlesShowing = currentSubtitlesShowing;
+        isInitialState = false;
+        return;
+      }
+      
+      // If we're disconnecting or restoring, don't clear the preference
+      if (this.#isDisconnecting || this.#isRestoring) {
+        prevSubtitlesShowing = currentSubtitlesShowing;
+        return;
+      }
+
+      // If subtitles were showing before and are now disabled (and we're not disconnecting/restoring),
+      // clear the preference (user manually disabled them)
+      if (
+        prevSubtitlesShowing &&
+        prevSubtitlesShowing.length > 0 &&
+        (!currentSubtitlesShowing || currentSubtitlesShowing.length === 0)
+      ) {
+        try {
+          globalThis.localStorage.removeItem('media-chrome-pref-subtitles-enabled');
+        } catch (e) {
+          console.debug('Error clearing subtitle preference', e);
+        }
+      }
+
+      prevSubtitlesShowing = currentSubtitlesShowing;
+    });
   }
 
   /**
