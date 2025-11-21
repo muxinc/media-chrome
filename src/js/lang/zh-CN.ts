@@ -68,5 +68,14 @@ export const ZhCn: TranslateDictionary = {
     '发生未支持的错误，可能是服务器或网络故障，或浏览器不支持该格式。',
   'The media is encrypted and there are no keys to decrypt it.':
     '媒体已加密，缺少解密密钥。',
+  hour: '小时',
+  hours: '小时',
+  minute: '分钟',
+  minutes: '分钟',
+  second: '秒',
+  seconds: '秒',
+  '{time} remaining': '剩余 {time}',
+  '{currentTime} of {totalTime}': '{currentTime} / {totalTime}',
+  'video not loaded, unknown time.': '视频未加载，时间未知。',
 };
 addTranslation('zh-CN', ZhCn);

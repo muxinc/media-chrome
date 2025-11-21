@@ -68,6 +68,15 @@ export const Es: TranslateDictionary = {
     'Ocurrió un error de incompatibilidad. El servidor o la red fallaron, o tu navegador no admite este formato.',
   'The media is encrypted and there are no keys to decrypt it.':
     'El contenido está cifrado y no hay claves disponibles para descifrarlo.',
+  hour: 'hora',
+  hours: 'horas',
+  minute: 'minuto',
+  minutes: 'minutos',
+  second: 'segundo',
+  seconds: 'segundos',
+  '{time} remaining': '{time} restante',
+  '{currentTime} of {totalTime}': '{currentTime} de {totalTime}',
+  'video not loaded, unknown time.': 'video no cargado, tiempo desconocido.',
 };
 
 addTranslation('es', Es);
