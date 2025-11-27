@@ -1,3 +1,12 @@
+## [4.16.1](https://github.com/muxinc/media-chrome/compare/v4.16.0...v4.16.1) (2025-11-27)
+
+
+### Bug Fixes
+
+* Updated ce-la-react ([#1242](https://github.com/muxinc/media-chrome/issues/1242)) ([4e423b4](https://github.com/muxinc/media-chrome/commit/4e423b4b3602884ee0b517f118adbe4d66c17410))
+
+
+
 # [4.16.0](https://github.com/muxinc/media-chrome/compare/v4.15.1...v4.16.0) (2025-11-18)
 
 
