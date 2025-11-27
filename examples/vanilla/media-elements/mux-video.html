@@ -66,6 +66,24 @@
             kind="metadata"
             src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/storyboard.vtt"
           />
+          <track
+            label="English"
+            kind="captions"
+            srclang="en"
+            src="../vtt/en-cc.vtt"
+          />
+          <track
+            label="English Subtitles"
+            kind="subtitles"
+            srclang="en"
+            src="../vtt/en-sub.vtt"
+          />
+          <track
+            label="Español"
+            kind="subtitles"
+            srclang="es"
+            src="../vtt/es-sub.vtt"
+          />
         </mux-video>
         <media-audio-track-menu anchor="auto" hidden>
           <div slot="header">Audio</div>
@@ -89,6 +107,7 @@
           <media-time-display showduration></media-time-display>
           <media-audio-track-menu-button></media-audio-track-menu-button>
           <media-rendition-menu-button></media-rendition-menu-button>
+          <media-captions-button></media-captions-button>
           <media-captions-menu-button></media-captions-menu-button>
           <media-playback-rate-menu-button></media-playback-rate-menu-button>
           <media-pip-button></media-pip-button>
