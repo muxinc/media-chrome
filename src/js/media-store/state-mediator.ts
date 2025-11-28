@@ -93,6 +93,7 @@ export type StateOption = {
   noAutoSeekToLive?: boolean;
   noVolumePref?: boolean;
   noMutedPref?: boolean;
+  noCaptionsPref?: boolean;
   noSubtitlesLangPref?: boolean;
   mediaLang?: string;
 };
@@ -768,6 +769,49 @@ export const stateMediator: StateMediator = {
             'removetrack',
             updateDefaultSubtitlesCallback
           );
+        };
+      },
+      (_handler, stateOwners) => {
+        const { media, options } = stateOwners;
+        if (!media || options?.noCaptionsPref) return;
+
+        const applyCaptionsPreference = () => {
+          try {
+            const captionsPref =
+              globalThis.localStorage.getItem('media-chrome-pref-captions');
+            
+            // Only apply preference if it's explicitly set to 'true'
+            // This allows defaultSubtitles to work independently
+            if (captionsPref === 'true') {
+              const tracks = getSubtitleTracks(stateOwners);
+              // Only apply if there are tracks available
+              if (tracks.length > 0) {
+                toggleSubtitleTracks(stateOwners, true);
+              }
+            }
+          } catch (e) {
+            console.debug('Error getting captions pref', e);
+          }
+        };
+
+        // Apply preference when tracks become available
+        const checkAndApplyPreference = () => {
+          const tracks = getSubtitleTracks(stateOwners);
+          if (tracks.length > 0) {
+            applyCaptionsPreference();
+          }
+        };
+
+        // Check immediately if tracks are already available
+        checkAndApplyPreference();
+
+        // Also check when tracks are added
+        media.textTracks?.addEventListener('addtrack', checkAndApplyPreference);
+        media.addEventListener('loadstart', checkAndApplyPreference);
+
+        return () => {
+          media.textTracks?.removeEventListener('addtrack', checkAndApplyPreference);
+          media.removeEventListener('loadstart', checkAndApplyPreference);
         };
       },
     ],

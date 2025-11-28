@@ -77,6 +77,7 @@ export const Attributes = {
   NO_DEFAULT_STORE: 'nodefaultstore',
   NO_HOTKEYS: 'nohotkeys',
   NO_MUTED_PREF: 'nomutedpref',
+  NO_CAPTIONS_PREF: 'nocaptionspref',
   NO_SUBTITLES_LANG_PREF: 'nosubtitleslangpref',
   NO_VOLUME_PREF: 'novolumepref',
   SEEK_TO_LIVE_OFFSET: 'seektoliveoffset',
@@ -185,6 +186,7 @@ class MediaController extends MediaContainer {
         // NOTE: This wasn't updated if it was changed later. Should it be? (CJP)
         noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
         noMutedPref: this.hasAttribute(Attributes.NO_MUTED_PREF),
+        noCaptionsPref: this.hasAttribute(Attributes.NO_CAPTIONS_PREF),
         noSubtitlesLangPref: this.hasAttribute(
           Attributes.NO_SUBTITLES_LANG_PREF
         ),
@@ -299,6 +301,14 @@ class MediaController extends MediaContainer {
 
   set noMutedPref(value: boolean | undefined) {
     setBooleanAttr(this, Attributes.NO_MUTED_PREF, value);
+  }
+
+  get noCaptionsPref(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_CAPTIONS_PREF);
+  }
+
+  set noCaptionsPref(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_CAPTIONS_PREF, value);
   }
 
   get noSubtitlesLangPref(): boolean | undefined {
@@ -421,6 +431,13 @@ class MediaController extends MediaContainer {
         type: 'optionschangerequest',
         detail: {
           noMutedPref: this.hasAttribute(Attributes.NO_MUTED_PREF),
+        },
+      });
+    } else if (attrName === Attributes.NO_CAPTIONS_PREF && newValue !== oldValue) {
+      this.#mediaStore?.dispatch({
+        type: 'optionschangerequest',
+        detail: {
+          noCaptionsPref: this.hasAttribute(Attributes.NO_CAPTIONS_PREF),
         },
       });
     }
