@@ -434,6 +434,14 @@ class MediaController extends MediaContainer {
         },
       });
     } else if (attrName === Attributes.NO_CAPTIONS_PREF && newValue !== oldValue) {
+      // Clear captions preference from localStorage when noCaptionsPref is activated
+      if (newValue != null) {
+        try {
+          globalThis.localStorage.removeItem('media-chrome-pref-captions');
+        } catch (e) {
+          console.debug('Error removing captions pref', e);
+        }
+      }
       this.#mediaStore?.dispatch({
         type: 'optionschangerequest',
         detail: {
@@ -448,6 +456,15 @@ class MediaController extends MediaContainer {
     // rely on createElement('media-controller') (like many frameworks "under the hood") (CJP).
     if (!this.#mediaStore && !this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
       this.#setupDefaultStore();
+    }
+
+    // Clear captions preference if noCaptionsPref is already present in HTML
+    if (this.hasAttribute(Attributes.NO_CAPTIONS_PREF)) {
+      try {
+        globalThis.localStorage.removeItem('media-chrome-pref-captions');
+      } catch (e) {
+        console.debug('Error removing captions pref', e);
+      }
     }
 
     this.#mediaStore?.dispatch({

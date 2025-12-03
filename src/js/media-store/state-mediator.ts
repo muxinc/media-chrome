@@ -723,7 +723,7 @@ export const stateMediator: StateMediator = {
     mediaEvents: ['loadstart'],
     textTracksEvents: ['addtrack', 'removetrack', 'change'],
     stateOwnersUpdateHandlers: [
-      // User preference handler - runs FIRST to prioritize user choice
+      // User preference handler runs first to prioritize user choice
       (_handler, stateOwners) => {
         const { media, options } = stateOwners;
         if (!media || options?.noCaptionsPref) return;
@@ -733,8 +733,7 @@ export const stateMediator: StateMediator = {
             const captionsPref =
               globalThis.localStorage.getItem('media-chrome-pref-captions');
             
-            // If no preference is stored, don't apply anything (let defaults work)
-            if (captionsPref == null) return;
+            // If no preference is stored, don't apply anything
 
             const tracks = getSubtitleTracks(stateOwners);
             // Only apply if there are tracks available
@@ -768,7 +767,7 @@ export const stateMediator: StateMediator = {
           media.removeEventListener('loadstart', checkAndApplyPreference);
         };
       },
-      // defaultSubtitles handler - runs SECOND, only if no user preference exists
+      // defaultSubtitles handler, runs only if no user preference exists
       (_handler, stateOwners) => {
         const { media, options } = stateOwners;
         if (!media) return;
@@ -776,11 +775,11 @@ export const stateMediator: StateMediator = {
         const updateDefaultSubtitlesCallback = (event?: Event) => {
           if (!options.defaultSubtitles) return;
 
-          // Check if user has a saved preference - if so, don't override it
+          // Check if user has a saved preference. If so, don't override it
           try {
             const captionsPref =
               globalThis.localStorage.getItem('media-chrome-pref-captions');
-            // If user has a preference (either 'true' or 'false'), respect it
+            // If user has a preference respect it
             if (captionsPref != null) return;
           } catch (e) {
             console.debug('Error checking captions pref', e);
