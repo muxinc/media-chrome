@@ -95,6 +95,8 @@ export type StateOption = {
   noMutedPref?: boolean;
   noCaptionsPref?: boolean;
   noSubtitlesLangPref?: boolean;
+  noPlaybackRatePref?: boolean;
+  noRenditionPref?: boolean;
   mediaLang?: string;
 };
 
@@ -391,12 +393,60 @@ export const stateMediator: StateMediator = {
       return media?.playbackRate ?? 1;
     },
     set(value, stateOwners) {
-      const { media } = stateOwners;
+      const { media, options: { noPlaybackRatePref } = {} } = stateOwners;
       if (!media) return;
       if (!Number.isFinite(+value)) return;
       media.playbackRate = +value;
+
+      // Store the playback rate as a local preference, if ls is supported
+      try {
+        if (noPlaybackRatePref) {
+          // remove stored preference if exists
+          if (globalThis.localStorage.getItem('media-chrome-pref-playback-rate') !== null) {
+            globalThis.localStorage.removeItem('media-chrome-pref-playback-rate');
+          }
+          return;
+        }
+
+        // Store the preference (only if different from default 1.0)
+        if (value == null || value === 1) {
+          globalThis.localStorage.removeItem('media-chrome-pref-playback-rate');
+        } else {
+          globalThis.localStorage.setItem(
+            'media-chrome-pref-playback-rate',
+            value.toString()
+          );
+        }
+      } catch (e) {
+        console.debug('Error setting playback rate pref', e);
+      }
     },
     mediaEvents: ['ratechange', 'loadstart'],
+    stateOwnersUpdateHandlers: [
+      (handler, stateOwners) => {
+        const {
+          options: { noPlaybackRatePref },
+        } = stateOwners;
+        if (noPlaybackRatePref) return;
+        try {
+          const { media } = stateOwners;
+          if (!media) return;
+
+          const playbackRatePref = globalThis.localStorage.getItem(
+            'media-chrome-pref-playback-rate'
+          );
+
+          if (playbackRatePref == null) return;
+          const rate = +playbackRatePref;
+          if (Number.isFinite(rate) && rate > 0) {
+            stateMediator.mediaPlaybackRate.set(rate, stateOwners);
+            handler(rate);
+          }
+        } catch (e) {
+          console.debug('Error getting playback rate pref', e);
+        }
+      },
+    ],
   },
   mediaMuted: {
     get(stateOwners) {
@@ -1012,7 +1062,7 @@ export const stateMediator: StateMediator = {
       return media?.videoRenditions?.[media.videoRenditions?.selectedIndex]?.id;
     },
     set(value, stateOwners) {
-      const { media } = stateOwners;
+      const { media, options: { noRenditionPref } = {} } = stateOwners;
       if (!media?.videoRenditions) {
         console.warn(
           'MediaController: Rendition selection not supported by this media.'
@@ -1030,9 +1080,89 @@ export const stateMediator: StateMediator = {
       if (media.videoRenditions.selectedIndex != index) {
         media.videoRenditions.selectedIndex = index;
       }
+
+      // Store the rendition selection as a local preference, if ls is supported
+      try {
+        if (noRenditionPref) {
+          // remove stored preference if exists
+          if (globalThis.localStorage.getItem('media-chrome-pref-rendition') !== null) {
+            globalThis.localStorage.removeItem('media-chrome-pref-rendition');
+          }
+          return;
+        }
+
+        // Store the preference (empty string means auto/undefined)
+        if (value == null || value === '') {
+          globalThis.localStorage.removeItem('media-chrome-pref-rendition');
+        } else {
+          globalThis.localStorage.setItem(
+            'media-chrome-pref-rendition',
+            value
+          );
+        }
+      } catch (e) {
+        console.debug('Error setting rendition pref', e);
+      }
     },
     mediaEvents: ['emptied'],
     videoRenditionsEvents: ['addrendition', 'removerendition', 'change'],
+    stateOwnersUpdateHandlers: [
+      (handler, stateOwners) => {
+        const {
+          options: { noRenditionPref },
+        } = stateOwners;
+        if (noRenditionPref) return;
+
+        const applyRenditionPreference = () => {
+          try {
+            const { media } = stateOwners;
+            if (!media?.videoRenditions) return;
+
+            const renditionPref = globalThis.localStorage.getItem(
+              'media-chrome-pref-rendition'
+            );
+
+            if (renditionPref == null) return;
+
+            // Verify the rendition still exists
+            const renditionExists = Array.prototype.some.call(
+              media.videoRenditions,
+              (r) => r.id == renditionPref
+            );
+
+            if (renditionExists) {
+              stateMediator.mediaRenditionSelected.set(renditionPref, stateOwners);
+              handler(renditionPref);
+            }
+          } catch (e) {
+            console.debug('Error getting rendition pref', e);
+          }
+        };
+
+        // Apply preference when renditions become available
+        const checkAndApplyPreference = () => {
+          const { media } = stateOwners;
+          if (media?.videoRenditions && media.videoRenditions.length > 0) {
+            applyRenditionPreference();
+          }
+        };
+
+        // Check immediately if renditions are already available
+        checkAndApplyPreference();
+
+        // Also check when renditions are added
+        const { media } = stateOwners;
+        if (media?.videoRenditions) {
+          media.videoRenditions.addEventListener('addrendition', checkAndApplyPreference);
+        }
+        media?.addEventListener('loadstart', checkAndApplyPreference);
+
+        return () => {
+          media?.videoRenditions?.removeEventListener('addrendition', checkAndApplyPreference);
+          media?.removeEventListener('loadstart', checkAndApplyPreference);
+        };
+      },
+    ],
   },
   mediaAudioTrackList: {
     get(stateOwners) {

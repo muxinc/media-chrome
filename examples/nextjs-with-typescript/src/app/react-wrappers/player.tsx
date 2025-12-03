@@ -1,4 +1,5 @@
 'use client';
+import '@mux/mux-video';
 import {
   MediaController,
   MediaControlBar,
@@ -25,11 +26,12 @@ import {
   MediaSettingsMenuItem,
   MediaSettingsMenuButton,
   MediaRenditionMenu,
+  MediaRenditionMenuButton,
   MediaContextMenu,
   MediaContextMenuItem
 } from 'media-chrome/react/menu';
 
-import { useState } from 'react';
+import { useState, createElement } from 'react';
 
 const chromeStyles = {
   '--media-primary-color': 'white',
@@ -61,40 +63,44 @@ export const Player = () => {
           ></input>
         </span>
       </div>
+      <div style={{ padding: '10px', fontSize: '14px', color: '#666' }}>
+        <p><strong>Test Persistence:</strong> Change the playback rate (speed) or video quality, then reload the page. Your preferences should be restored automatically.</p>
+      </div>
       <br />
       {mounted && (<MediaController hotkeys={"noarrowleft noarrowright"} style={chromeStyles as any} defaultSubtitles noDefaultStore={noDefaultStore}>
-        <video
-          suppressHydrationWarning={true}
-          style={{ width: '100%', aspectRatio: 2.4 }}
-          slot="media"
-          src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4"
-          preload="auto"
-          muted
-          crossOrigin=""
-        >
-          <track
-            label="thumbnails"
-            default
-            kind="metadata"
-            src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/storyboard.vtt"
-          />
-          <track
-            label="English"
-            kind="captions"
-            srcLang="en"
-            src="./vtt/en-cc.vtt"
-          />
-        </video>
+        {createElement('mux-video', {
+          suppressHydrationWarning: true,
+          style: { width: '100%', aspectRatio: 2.4 },
+          slot: 'media',
+          'playback-id': 'Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008',
+          preload: 'metadata',
+          muted: true,
+          crossOrigin: '',
+        }, [
+          createElement('track', {
+            key: 'thumbnails',
+            label: 'thumbnails',
+            default: true,
+            kind: 'metadata',
+            src: 'https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/storyboard.vtt'
+          }),
+          createElement('track', {
+            key: 'captions',
+            label: 'English',
+            kind: 'captions',
+            srcLang: 'en',
+            src: './vtt/en-cc.vtt'
+          })
+        ])}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           slot="poster"
-          src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.webp"
+          src="https://image.mux.com/Sc89iWAyNkhJ3P1rQ02nrEdCFTnfT01CZ2KmaEcxXfB008/thumbnail.webp?time=13"
           style={{
             width: '100%',
             height: '100%',
-            background: `center/cover no-repeat url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><filter id="b" color-interpolation-filters="sRGB"><feGaussianBlur stdDeviation="20"/><feComponentTransfer><feFuncA type="discrete" tableValues="1 1"/></feComponentTransfer></filter><g filter="url(%23b)"><image width="100%" height="100%" preserveAspectRatio="xMidYMid slice" href="data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAABwAgCdASoQAAcAAQAcJbACdLoBJgALN3YuJFiQAP6YWQV+kfwz/U15OyfDLJfktLsUBsNc6MmJGK3NclPSL3/5Cvv4BFA+Uq8P/rs/69v1VTpZxcP6J8wAAAA="/></g></svg>')`,
           }}
-          alt="woman in misery kneeling down in desert looking up at the sky"
+          alt="Elephants Dream"
         />
         <MediaContextMenu hidden>
           <MediaContextMenuItem>
@@ -111,16 +117,20 @@ export const Player = () => {
           style={{ '--media-loading-indicator-icon-height': '200px' } as any}
         ></MediaLoadingIndicator>
         <MediaPlaybackRateMenu role="menu" hidden anchor="auto" rates={[.5, 1, 2]} />
+        <MediaRenditionMenu role="menu" hidden anchor="auto">
+          <div slot="header">Quality</div>
+        </MediaRenditionMenu>
         <MediaControlBar>
           <MediaPlayButton mediaPaused={true}></MediaPlayButton>
           <MediaSeekBackwardButton seekOffset={10}></MediaSeekBackwardButton>
           <MediaSeekForwardButton seekOffset={10}></MediaSeekForwardButton>
           <MediaTimeRange></MediaTimeRange>
-          <MediaTimeDisplay showDuration mediaDuration={134}></MediaTimeDisplay>
+          <MediaTimeDisplay showDuration></MediaTimeDisplay>
           <MediaMuteButton mediaVolumeLevel="off"></MediaMuteButton>
           <MediaVolumeRange></MediaVolumeRange>
           <MediaPlaybackRateButton rates={[.5, 1, 2]}></MediaPlaybackRateButton>
           <MediaPlaybackRateMenuButton></MediaPlaybackRateMenuButton>
+          <MediaRenditionMenuButton></MediaRenditionMenuButton>
           <MediaSettingsMenuButton></MediaSettingsMenuButton>
           <MediaSettingsMenu role="menu" hidden anchor="auto">
             <MediaSettingsMenuItem>
