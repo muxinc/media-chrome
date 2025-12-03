@@ -80,8 +80,6 @@ export const Attributes = {
   NO_CAPTIONS_PREF: 'nocaptionspref',
   NO_SUBTITLES_LANG_PREF: 'nosubtitleslangpref',
   NO_VOLUME_PREF: 'novolumepref',
-  NO_PLAYBACK_RATE_PREF: 'noplaybackratepref',
-  NO_RENDITION_PREF: 'norenditionpref',
   SEEK_TO_LIVE_OFFSET: 'seektoliveoffset',
 };
 
@@ -102,8 +100,6 @@ export const Attributes = {
  * @attr {boolean} novolumepref
  * @attr {boolean} nomutedpref
  * @attr {boolean} nosubtitleslangpref
- * @attr {boolean} noplaybackratepref
- * @attr {boolean} norenditionpref
  * @attr {boolean} nodefaultstore
  * @attr {string} lang
  */
@@ -117,8 +113,6 @@ class MediaController extends MediaContainer {
       Attributes.DEFAULT_DURATION,
       Attributes.NO_MUTED_PREF,
       Attributes.NO_VOLUME_PREF,
-      Attributes.NO_PLAYBACK_RATE_PREF,
-      Attributes.NO_RENDITION_PREF,
       Attributes.LANG,
       Attributes.LOOP
     );
@@ -196,8 +190,6 @@ class MediaController extends MediaContainer {
         noSubtitlesLangPref: this.hasAttribute(
           Attributes.NO_SUBTITLES_LANG_PREF
         ),
-        noPlaybackRatePref: this.hasAttribute(Attributes.NO_PLAYBACK_RATE_PREF),
-        noRenditionPref: this.hasAttribute(Attributes.NO_RENDITION_PREF),
       },
     });
   }
@@ -442,32 +434,10 @@ class MediaController extends MediaContainer {
         },
       });
     } else if (attrName === Attributes.NO_CAPTIONS_PREF && newValue !== oldValue) {
-      // Clear captions preference from localStorage when noCaptionsPref is activated
-      if (newValue != null) {
-        try {
-          globalThis.localStorage.removeItem('media-chrome-pref-captions');
-        } catch (e) {
-          console.debug('Error removing captions pref', e);
-        }
-      }
       this.#mediaStore?.dispatch({
         type: 'optionschangerequest',
         detail: {
           noCaptionsPref: this.hasAttribute(Attributes.NO_CAPTIONS_PREF),
-        },
-      });
-    } else if (attrName === Attributes.NO_PLAYBACK_RATE_PREF && newValue !== oldValue) {
-      this.#mediaStore?.dispatch({
-        type: 'optionschangerequest',
-        detail: {
-          noPlaybackRatePref: this.hasAttribute(Attributes.NO_PLAYBACK_RATE_PREF),
-        },
-      });
-    } else if (attrName === Attributes.NO_RENDITION_PREF && newValue !== oldValue) {
-      this.#mediaStore?.dispatch({
-        type: 'optionschangerequest',
-        detail: {
-          noRenditionPref: this.hasAttribute(Attributes.NO_RENDITION_PREF),
         },
       });
     }
@@ -478,15 +448,6 @@ class MediaController extends MediaContainer {
     // rely on createElement('media-controller') (like many frameworks "under the hood") (CJP).
     if (!this.#mediaStore && !this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
       this.#setupDefaultStore();
-    }
-
-    // Clear captions preference if noCaptionsPref is already present in HTML
-    if (this.hasAttribute(Attributes.NO_CAPTIONS_PREF)) {
-      try {
-        globalThis.localStorage.removeItem('media-chrome-pref-captions');
-      } catch (e) {
-        console.debug('Error removing captions pref', e);
-      }
     }
 
     this.#mediaStore?.dispatch({
