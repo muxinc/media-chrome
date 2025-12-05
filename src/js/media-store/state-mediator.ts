@@ -93,7 +93,6 @@ export type StateOption = {
   noAutoSeekToLive?: boolean;
   noVolumePref?: boolean;
   noMutedPref?: boolean;
-  noCaptionsPref?: boolean;
   noSubtitlesLangPref?: boolean;
   mediaLang?: string;
 };
@@ -723,67 +722,13 @@ export const stateMediator: StateMediator = {
     mediaEvents: ['loadstart'],
     textTracksEvents: ['addtrack', 'removetrack', 'change'],
     stateOwnersUpdateHandlers: [
-      // User preference handler runs first to prioritize user choice
-      (_handler, stateOwners) => {
-        const { media, options } = stateOwners;
-        if (!media || options?.noCaptionsPref) return;
-
-        const applyCaptionsPreference = () => {
-          try {
-            const captionsPref =
-              globalThis.localStorage.getItem('media-chrome-pref-captions');
-            
-            // If no preference is stored, don't apply anything
-
-            const tracks = getSubtitleTracks(stateOwners);
-            // Only apply if there are tracks available
-            if (tracks.length > 0) {
-              // Apply user preference: 'true' enables, 'false' disables
-              // This also handles HTML5 track 'default' attribute by overriding it
-              toggleSubtitleTracks(stateOwners, captionsPref === 'true');
-            }
-          } catch (e) {
-            console.debug('Error getting captions pref', e);
-          }
-        };
-
-        // Apply preference when tracks become available
-        const checkAndApplyPreference = () => {
-          const tracks = getSubtitleTracks(stateOwners);
-          if (tracks.length > 0) {
-            applyCaptionsPreference();
-          }
-        };
-
-        // Check immediately if tracks are already available
-        checkAndApplyPreference();
-
-        // Also check when tracks are added
-        media.textTracks?.addEventListener('addtrack', checkAndApplyPreference);
-        media.addEventListener('loadstart', checkAndApplyPreference);
-
-        return () => {
-          media.textTracks?.removeEventListener('addtrack', checkAndApplyPreference);
-          media.removeEventListener('loadstart', checkAndApplyPreference);
-        };
-      },
-      // defaultSubtitles handler, runs only if no user preference exists
+      // defaultSubtitles handler
       (_handler, stateOwners) => {
         const { media, options } = stateOwners;
         if (!media) return;
 
         const updateDefaultSubtitlesCallback = (event?: Event) => {
           if (!options.defaultSubtitles) return;
-
-          // Check if user has a saved preference. If so, don't override it
-          try {
-            const captionsPref =
-              globalThis.localStorage.getItem('media-chrome-pref-captions');
-            // If user has a preference respect it
-            if (captionsPref != null) return;
-          } catch (e) {
-            console.debug('Error checking captions pref', e);
-          }
 
           const nonSubsEvent =
             event &&

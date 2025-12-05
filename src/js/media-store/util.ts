@@ -41,19 +41,6 @@ export const toggleSubtitleTracks = (stateOwners, force: boolean): void => {
   // (e.g. HLS) media where we may not get our preferred subtitles lang until later (CJP)
   if (force === false || (subtitlesShowing && force !== true)) {
     updateTracksModeTo(TextTrackModes.DISABLED, tracks, showingSubitleTracks);
-    
-    // Save preference when disabling subtitles
-    const { options } = stateOwners;
-    if (!options?.noCaptionsPref) {
-      try {
-        globalThis.localStorage.setItem(
-          'media-chrome-pref-captions',
-          'false'
-        );
-      } catch (e) {
-        console.debug('Error setting captions pref', e);
-      }
-    }
   } else if (force === true || (!subtitlesShowing && force !== false)) {
     let subTrack = tracks[0];
     const { options } = stateOwners;
@@ -92,18 +79,6 @@ export const toggleSubtitleTracks = (stateOwners, force: boolean): void => {
     updateTracksModeTo(TextTrackModes.SHOWING, tracks, [
       { language, label, kind },
     ]);
-    
-    // Save preference when enabling subtitles
-    if (!options?.noCaptionsPref) {
-      try {
-        globalThis.localStorage.setItem(
-          'media-chrome-pref-captions',
-          'true'
-        );
-      } catch (e) {
-        console.debug('Error setting captions pref', e);
-      }
-    }
   }
 };
 

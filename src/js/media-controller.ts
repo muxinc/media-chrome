@@ -77,7 +77,6 @@ export const Attributes = {
   NO_DEFAULT_STORE: 'nodefaultstore',
   NO_HOTKEYS: 'nohotkeys',
   NO_MUTED_PREF: 'nomutedpref',
-  NO_CAPTIONS_PREF: 'nocaptionspref',
   NO_SUBTITLES_LANG_PREF: 'nosubtitleslangpref',
   NO_VOLUME_PREF: 'novolumepref',
   SEEK_TO_LIVE_OFFSET: 'seektoliveoffset',
@@ -130,6 +129,8 @@ class MediaController extends MediaContainer {
   #mediaStateEventHandler = (event): void => {
     this.#mediaStore?.dispatch(event);
   };
+  #subtitlesState: boolean | undefined = undefined;
+  #restoreSubtitlesCleanup: (() => void) | null = null;
 
   constructor() {
     super();
@@ -186,7 +187,6 @@ class MediaController extends MediaContainer {
         // NOTE: This wasn't updated if it was changed later. Should it be? (CJP)
         noVolumePref: this.hasAttribute(Attributes.NO_VOLUME_PREF),
         noMutedPref: this.hasAttribute(Attributes.NO_MUTED_PREF),
-        noCaptionsPref: this.hasAttribute(Attributes.NO_CAPTIONS_PREF),
         noSubtitlesLangPref: this.hasAttribute(
           Attributes.NO_SUBTITLES_LANG_PREF
         ),
@@ -301,14 +301,6 @@ class MediaController extends MediaContainer {
 
   set noMutedPref(value: boolean | undefined) {
     setBooleanAttr(this, Attributes.NO_MUTED_PREF, value);
-  }
-
-  get noCaptionsPref(): boolean | undefined {
-    return getBooleanAttr(this, Attributes.NO_CAPTIONS_PREF);
-  }
-
-  set noCaptionsPref(value: boolean | undefined) {
-    setBooleanAttr(this, Attributes.NO_CAPTIONS_PREF, value);
   }
 
   get noSubtitlesLangPref(): boolean | undefined {
@@ -433,21 +425,6 @@ class MediaController extends MediaContainer {
           noMutedPref: this.hasAttribute(Attributes.NO_MUTED_PREF),
         },
       });
-    } else if (attrName === Attributes.NO_CAPTIONS_PREF && newValue !== oldValue) {
-      // Clear captions preference from localStorage when noCaptionsPref is activated
-      if (newValue != null) {
-        try {
-          globalThis.localStorage.removeItem('media-chrome-pref-captions');
-        } catch (e) {
-          console.debug('Error removing captions pref', e);
-        }
-      }
-      this.#mediaStore?.dispatch({
-        type: 'optionschangerequest',
-        detail: {
-          noCaptionsPref: this.hasAttribute(Attributes.NO_CAPTIONS_PREF),
-        },
-      });
     }
   }
 
@@ -456,15 +433,6 @@ class MediaController extends MediaContainer {
     // rely on createElement('media-controller') (like many frameworks "under the hood") (CJP).
     if (!this.#mediaStore && !this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
       this.#setupDefaultStore();
-    }
-
-    // Clear captions preference if noCaptionsPref is already present in HTML
-    if (this.hasAttribute(Attributes.NO_CAPTIONS_PREF)) {
-      try {
-        globalThis.localStorage.removeItem('media-chrome-pref-captions');
-      } catch (e) {
-        console.debug('Error removing captions pref', e);
-      }
     }
 
     this.#mediaStore?.dispatch({
@@ -481,6 +449,19 @@ class MediaController extends MediaContainer {
       );
     }
 
+    // Restore subtitles state if it was saved before disconnecting
+    if (this.#subtitlesState !== undefined && this.#mediaStore && this.media) {
+      // Wait for mediaStore to sync, then try to restore
+      requestAnimationFrame(() => {
+        if (this.media?.textTracks?.length) {
+          this.#mediaStore?.dispatch({
+            type: MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
+            detail: this.#subtitlesState,
+          });
+        }
+      });
+    }
+
     this.hasAttribute(Attributes.NO_HOTKEYS)
       ? this.disableHotkeys()
       : this.enableHotkeys();
@@ -491,6 +472,9 @@ class MediaController extends MediaContainer {
     super.disconnectedCallback?.();
 
     if (this.#mediaStore) {
+      // Save the current state of subtitles before disconnecting
+      const currentState = this.#mediaStore.getState();
+      this.#subtitlesState = !!currentState.mediaSubtitlesShowing?.length;
       this.#mediaStore?.dispatch({
         type: 'documentelementchangerequest',
         detail: undefined,
@@ -501,6 +485,13 @@ class MediaController extends MediaContainer {
         type: MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
         detail: false,
       });
+    }
+
+
+    // Clean up restore subtitles listeners if they exist
+    if (this.#restoreSubtitlesCleanup) {
+      this.#restoreSubtitlesCleanup();
+      this.#restoreSubtitlesCleanup = null;
     }
 
     if (this.#mediaStoreUnsubscribe) {
