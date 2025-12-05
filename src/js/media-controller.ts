@@ -130,7 +130,6 @@ class MediaController extends MediaContainer {
     this.#mediaStore?.dispatch(event);
   };
   #subtitlesState: boolean | undefined = undefined;
-  #restoreSubtitlesCleanup: (() => void) | null = null;
 
   constructor() {
     super();
@@ -485,13 +484,6 @@ class MediaController extends MediaContainer {
         type: MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
         detail: false,
       });
-    }
-
-
-    // Clean up restore subtitles listeners if they exist
-    if (this.#restoreSubtitlesCleanup) {
-      this.#restoreSubtitlesCleanup();
-      this.#restoreSubtitlesCleanup = null;
     }
 
     if (this.#mediaStoreUnsubscribe) {

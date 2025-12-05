@@ -722,7 +722,6 @@ export const stateMediator: StateMediator = {
     mediaEvents: ['loadstart'],
     textTracksEvents: ['addtrack', 'removetrack', 'change'],
     stateOwnersUpdateHandlers: [
-      // defaultSubtitles handler
       (_handler, stateOwners) => {
         const { media, options } = stateOwners;
         if (!media) return;
