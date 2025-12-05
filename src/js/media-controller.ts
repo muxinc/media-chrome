@@ -451,14 +451,14 @@ class MediaController extends MediaContainer {
     // Restore subtitles state if it was saved before disconnecting
     if (this.#subtitlesState !== undefined && this.#mediaStore && this.media) {
       // Wait for mediaStore to sync, then try to restore
-      requestAnimationFrame(() => {
+      setTimeout(() => {
         if (this.media?.textTracks?.length) {
           this.#mediaStore?.dispatch({
             type: MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
             detail: this.#subtitlesState,
           });
         }
-      });
+      }, 0);
     }
 
     this.hasAttribute(Attributes.NO_HOTKEYS)
