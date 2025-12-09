@@ -1,3 +1,12 @@
+# [4.17.0](https://github.com/muxinc/media-chrome/compare/v4.16.1...v4.17.0) (2025-12-09)
+
+
+### Features
+
+* persist subtitles state across element disconnect/reconnect ([#1241](https://github.com/muxinc/media-chrome/issues/1241)) ([b6dd0f4](https://github.com/muxinc/media-chrome/commit/b6dd0f4f49e2a177e9dc71382ed61c9dc55bfd31)), closes [#777](https://github.com/muxinc/media-chrome/issues/777)
+
+
+
 ## [4.16.1](https://github.com/muxinc/media-chrome/compare/v4.16.0...v4.16.1) (2025-11-27)
 
 
