@@ -18,6 +18,10 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
         padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
       }
       
+      :host([aria-expanded="true"]) slot {
+        display: block;
+      }
+
       :host([aria-expanded="true"]) slot[name=tooltip] {
         display: none;
       }
