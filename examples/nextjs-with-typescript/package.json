@@ -16,7 +16,7 @@
     "@mux/mux-video": "^0.17.5",
     "media-chrome": "file:../../",
     "next": "15.3.8",
-    "react": "file:../../node_modules/react",
+    "react": "19.2.2",
     "react-dom": "19.2.2"
   },
   "devDependencies": {
