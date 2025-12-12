@@ -1,3 +1,13 @@
+## [4.17.1](https://github.com/muxinc/media-chrome/compare/v4.17.0...v4.17.1) (2025-12-12)
+
+
+### Bug Fixes
+
+* Safari issue where sibling slots disappear when hiding a slot ([#1246](https://github.com/muxinc/media-chrome/issues/1246)) ([5933163](https://github.com/muxinc/media-chrome/commit/5933163c1136fddbff3caed736c09523e5db2eaf))
+* updating nextjs and react for new vulnerabilities ([#1248](https://github.com/muxinc/media-chrome/issues/1248)) ([12bd474](https://github.com/muxinc/media-chrome/commit/12bd47411f6f86338d890645fdf3a702b7bb4c5b))
+
+
+
 # [4.17.0](https://github.com/muxinc/media-chrome/compare/v4.16.1...v4.17.0) (2025-12-09)
 
 
