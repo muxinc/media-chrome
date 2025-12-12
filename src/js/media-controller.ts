@@ -129,6 +129,7 @@ class MediaController extends MediaContainer {
   #mediaStateEventHandler = (event): void => {
     this.#mediaStore?.dispatch(event);
   };
+  #subtitlesState: boolean | undefined = undefined;
 
   constructor() {
     super();
@@ -447,6 +448,19 @@ class MediaController extends MediaContainer {
       );
     }
 
+    // Restore subtitles state if it was saved before disconnecting
+    if (this.#subtitlesState !== undefined && this.#mediaStore && this.media) {
+      // Wait for mediaStore to sync, then try to restore
+      setTimeout(() => {
+        if (this.media?.textTracks?.length) {
+          this.#mediaStore?.dispatch({
+            type: MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
+            detail: this.#subtitlesState,
+          });
+        }
+      }, 0);
+    }
+
     this.hasAttribute(Attributes.NO_HOTKEYS)
       ? this.disableHotkeys()
       : this.enableHotkeys();
@@ -457,6 +471,9 @@ class MediaController extends MediaContainer {
     super.disconnectedCallback?.();
 
     if (this.#mediaStore) {
+      // Save the current state of subtitles before disconnecting
+      const currentState = this.#mediaStore.getState();
+      this.#subtitlesState = !!currentState.mediaSubtitlesShowing?.length;
       this.#mediaStore?.dispatch({
         type: 'documentelementchangerequest',
         detail: undefined,
