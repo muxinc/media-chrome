@@ -243,9 +243,15 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         <svg id="segments"><clipPath id="segments-clipping"></clipPath></svg>
       </div>
       <input id="range" type="range" min="0" max="1" step="any" value="0">
+
+      ${this.getContainerTemplateHTML(_attrs)}
     </div>
     <div id="rightgap"></div>
   `;
+}
+
+function getContainerTemplateHTML(_attrs: Record<string, string>) {
+  return '';
 }
 
 /**
@@ -313,6 +319,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
 class MediaChromeRange extends globalThis.HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
   static getTemplateHTML = getTemplateHTML;
+  static getContainerTemplateHTML = getContainerTemplateHTML;
 
   #mediaController;
   #isInputTarget;
