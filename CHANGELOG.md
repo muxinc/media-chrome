@@ -1,3 +1,12 @@
+## [4.17.2](https://github.com/muxinc/media-chrome/compare/v4.17.1...v4.17.2) (2025-12-15)
+
+
+### Bug Fixes
+
+* preview alignment bug due to regression ([#1249](https://github.com/muxinc/media-chrome/issues/1249)) ([3eab146](https://github.com/muxinc/media-chrome/commit/3eab146e3359b6db596c4faab19c5ce157e82484))
+
+
+
 ## [4.17.1](https://github.com/muxinc/media-chrome/compare/v4.17.0...v4.17.1) (2025-12-12)
 
 
