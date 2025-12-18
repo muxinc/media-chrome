@@ -3,6 +3,7 @@ const require = createRequire(import.meta.url);
 import { fileURLToPath } from 'url';
 import path from 'path';
 import fs from 'fs';
+import os from 'os';
 const { dirname } = path;
 
 const __filename = fileURLToPath(import.meta.url);
@@ -109,7 +110,7 @@ const entryPointsToReactModulesIterable = (
             ext: '.d.ts',
           });
 
-          return import(importPath)
+          return import((os.platform() === 'win32') ? `file://${importPath}` : importPath)
             .then((_) => {
               const customElementNames = getDefinedCustomElements();
 
@@ -130,7 +131,7 @@ const entryPointsToReactModulesIterable = (
               const importPathRelative = path.relative(distReactRoot, importPathAbs);
               const utilsBase = path.dirname(path.relative(importPathAbs, distRoot));
               const moduleStr = `${toImportsStr({
-                importPath: importPathRelative,
+                importPath: path.posix.join(...importPathRelative.split(path.sep)),
                 utilsBase
               })}\n${componentsWithExports.join('\n')}`;
 
@@ -143,9 +144,8 @@ const entryPointsToReactModulesIterable = (
               );
 
               const tsDeclStr = `${toTypeImportsAndGenericDefinitionsStr({
-                importPath: importPathRelative})}\n${declarationsWithExports.join(
-                '\n'
-              )}`;
+                importPath: path.posix.join(...importPathRelative.split(path.sep))
+              })}\n${declarationsWithExports.join('\n')}`;
 
               fs.writeFileSync(tsDeclPathAbs, tsDeclStr);
 
