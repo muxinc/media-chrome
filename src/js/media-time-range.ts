@@ -28,14 +28,12 @@ type Rects = {
   bounds?: DOMRect;
 };
 
-const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
-
 const updateAriaValueText = (el: any): void => {
   const range = el.range;
   const currentTimePhrase = formatAsTimePhrase(+calcTimeFromRangeValue(el));
   const totalTimePhrase = formatAsTimePhrase(+el.mediaSeekableEnd);
   const fullPhrase = !(currentTimePhrase && totalTimePhrase)
-    ? t(DEFAULT_MISSING_TIME_PHRASE)
+    ? t('video not loaded, unknown time.')
     : t('{currentTime} of {totalTime}', {
         currentTime: currentTimePhrase,
         totalTime: totalTimePhrase,

@@ -51,8 +51,6 @@ const formatTimesLabel = (
   return `${timeLabel}${timesSep}${formatTime(endTime)}`;
 };
 
-const DEFAULT_MISSING_TIME_PHRASE = 'video not loaded, unknown time.';
-
 const updateAriaValueText = (el: MediaTimeDisplay): void => {
   const currentTime = el.mediaCurrentTime;
   const [, seekableEnd] = el.mediaSeekable ?? [];
@@ -63,7 +61,7 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
     endTime = seekableEnd;
   }
   if (currentTime == null || endTime === null) {
-    el.setAttribute('aria-valuetext', t(DEFAULT_MISSING_TIME_PHRASE));
+    el.setAttribute('aria-valuetext', t('video not loaded, unknown time.'));
     return;
   }
 
@@ -88,6 +86,11 @@ function getSlotTemplateHTML(_attrs: Record<string, string>, props: Record<strin
     <slot>${formatTimesLabel(props as MediaTimeDisplay)}</slot>
   `;
 }
+
+const updateAriaLabel = (el: MediaTimeDisplay): void => {
+  el.setAttribute('aria-label',  t('playback time'));
+};
+
 
 /**
  * @attr {boolean} remaining - Toggle on to show the remaining time instead of elapsed time.
@@ -180,6 +183,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
     oldValue: string | null,
     newValue: string | null
   ): void {
+    updateAriaLabel(this);
     if (CombinedAttributes.includes(attrName)) {
       this.update();
     } else if (attrName === 'disabled' && newValue !== oldValue) {
