@@ -25,6 +25,10 @@ function getSlotTemplateHTML(_attrs: Record<string, string>, props: Record<strin
   `;
 }
 
+const updateAriaLabel = (el: MediaSeekBackwardButton, seekOffset: number): void => {
+  el.setAttribute('aria-label',  t('seek back {seekOffset} seconds', { seekOffset: seekOffset }));
+};
+
 function getTooltipContentHTML() {
   return t('Seek backward');
 }
@@ -66,6 +70,8 @@ class MediaSeekBackwardButton extends MediaChromeButton {
     newValue: string | null
   ): void {
     super.attributeChangedCallback(attrName, _oldValue, newValue);
+    updateAriaLabel(this, this.seekOffset);
+
 
     if (attrName === Attributes.SEEK_OFFSET) {
       this.seekOffset = getNumericAttr(
