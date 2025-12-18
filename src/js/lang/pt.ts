@@ -68,5 +68,14 @@ export const Pt: TranslateDictionary = {
     'Ocorreu um erro de incompatibilidade. O servidor ou a rede falharam, ou seu navegador não suporta este formato.',
   'The media is encrypted and there are no keys to decrypt it.':
     'O conteúdo está criptografado e não há chaves disponíveis para descriptografá-lo.',
+  hour: 'hora',
+  hours: 'horas',
+  minute: 'minuto',
+  minutes: 'minutos',
+  second: 'segundo',
+  seconds: 'segundos',
+  '{time} remaining': '{time} restante',
+  '{currentTime} of {totalTime}': '{currentTime} de {totalTime}',
+  'video not loaded, unknown time.': 'vídeo não carregado, tempo desconhecido.',
 };
 addTranslation('pt', Pt);

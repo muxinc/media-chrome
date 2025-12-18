@@ -1,4 +1,5 @@
 import { isValidNumber } from './utils.js';
+import { t } from './i18n.js';
 
 const UnitLabels = [
   {
@@ -13,12 +14,13 @@ const UnitLabels = [
     singular: 'second',
     plural: 'seconds',
   },
-];
+] as const;
+
 const toTimeUnitPhrase = (timeUnitValue, unitIndex) => {
   const unitLabel =
     timeUnitValue === 1
-      ? UnitLabels[unitIndex].singular
-      : UnitLabels[unitIndex].plural;
+      ? t(UnitLabels[unitIndex].singular)
+      : t(UnitLabels[unitIndex].plural);
 
   return `${timeUnitValue} ${unitLabel}`;
 };
@@ -52,9 +54,11 @@ export const formatAsTimePhrase = (seconds) => {
     .join(', ');
 
   // If the time was negative, assume it represents some remaining amount of time/"count down".
-  const negativeSuffix = negative ? ' remaining' : '';
+  if (negative) {
+    return t('{time} remaining', { time: timeString });
+  }
 
-  return `${timeString}${negativeSuffix}`;
+  return timeString;
 };
 
 /**

@@ -66,6 +66,15 @@ export const En = {
     'An unsupported error occurred. The server or network failed, or your browser does not support this format.',
   'The media is encrypted and there are no keys to decrypt it.':
     'The media is encrypted and there are no keys to decrypt it.',
+  hour: 'hour',
+  hours: 'hours',
+  minute: 'minute',
+  minutes: 'minutes',
+  second: 'second',
+  seconds: 'seconds',
+  '{time} remaining': '{time} remaining',
+  '{currentTime} of {totalTime}': '{currentTime} of {totalTime}',
+  'video not loaded, unknown time.': 'video not loaded, unknown time.',
 } as const;
 
 export type TranslateKeys = keyof typeof En;
