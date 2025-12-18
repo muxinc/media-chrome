@@ -14,6 +14,7 @@ export const Es: TranslateDictionary = {
   'Exit fullscreen mode': 'Salir del modo pantalla completa',
   Mute: 'Silenciar',
   Unmute: 'Reactivar sonido',
+  Loop: 'Bucle',
   'Enter picture in picture mode': 'Entrar en modo imagen en imagen',
   'Exit picture in picture mode': 'Salir del modo imagen en imagen',
   Play: 'Reproducir',

@@ -41,9 +41,8 @@ const updateAriaValueText = (el: any): void => {
   range.setAttribute('aria-valuetext', fullPhrase);
 };
 
-function getTemplateHTML(_attrs: Record<string, string>) {
+function getContainerTemplateHTML(_attrs: Record<string, string>) {
   return /*html*/ `
-    ${MediaChromeRange.getTemplateHTML(_attrs)}
     <style>
       :host {
         --media-box-border-radius: 4px;
@@ -409,7 +408,7 @@ const calcTimeFromRangeValue = (
  */
 class MediaTimeRange extends MediaChromeRange {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
-  static getTemplateHTML = getTemplateHTML;
+  static getContainerTemplateHTML = getContainerTemplateHTML;
 
   static get observedAttributes(): string[] {
     return [

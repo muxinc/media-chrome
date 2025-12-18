@@ -169,6 +169,12 @@ export const requestMap: RequestMap = {
     }
     stateMediator[key].set(value, stateOwners);
   },
+  [MediaUIEvents.MEDIA_LOOP_REQUEST](stateMediator, stateOwners, { detail }) {
+    const key = 'mediaLoop';
+    const value = !!detail;
+    stateMediator[key].set(value, stateOwners);
+    return { mediaLoop: value } as Partial<MediaState>;
+  },
   [MediaUIEvents.MEDIA_VOLUME_REQUEST](stateMediator, stateOwners, { detail }) {
     const key = 'mediaVolume';
     const value = detail;

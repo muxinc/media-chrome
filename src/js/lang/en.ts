@@ -11,6 +11,7 @@ export const En = {
   'Exit fullscreen mode': 'Exit fullscreen mode',
   Mute: 'Mute',
   Unmute: 'Unmute',
+  Loop: 'Loop',
   'Enter picture in picture mode': 'Enter picture in picture mode',
   'Exit picture in picture mode': 'Exit picture in picture mode',
   Play: 'Play',

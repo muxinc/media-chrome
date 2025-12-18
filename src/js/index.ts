@@ -14,6 +14,7 @@ import MediaChromeRange from './media-chrome-range.js';
 import MediaControlBar from './media-control-bar.js';
 import MediaDurationDisplay from './media-duration-display.js';
 import MediaErrorDialog from './media-error-dialog.js';
+import MediaKeyboardShortcutsDialog from './media-keyboard-shortcuts-dialog.js';
 import MediaFullscreenButton from './media-fullscreen-button.js';
 import MediaGestureReceiver from './media-gesture-receiver.js';
 import MediaLiveButton from './media-live-button.js';
@@ -34,6 +35,7 @@ import MediaTooltip from './media-tooltip.js';
 import MediaVolumeRange from './media-volume-range.js';
 import MediaContainer from './media-container.js';
 import MediaTextDisplay from './media-text-display.js';
+import MediaLoopButton from './media-loop-button.js';
 
 export {
   MediaAirplayButton,
@@ -46,6 +48,7 @@ export {
   MediaController,
   MediaDurationDisplay,
   MediaErrorDialog,
+  MediaKeyboardShortcutsDialog,
   MediaFullscreenButton,
   MediaGestureReceiver,
   MediaLiveButton,
@@ -53,6 +56,7 @@ export {
   MediaMuteButton,
   MediaPipButton,
   MediaPlaybackRateButton,
+  MediaLoopButton,
   MediaPlayButton,
   MediaPosterImage,
   MediaPreviewChapterDisplay,

@@ -14,6 +14,7 @@ export const Pt: TranslateDictionary = {
   'Exit fullscreen mode': 'Sair do modo de tela cheia',
   Mute: 'Silenciar',
   Unmute: 'Ativar som',
+  Loop: 'Loop',
   'Enter picture in picture mode': 'Entrar no modo PiP (Imagem na tela)',
   'Exit picture in picture mode': 'Sair do modo PiP',
   Play: 'Reproduzir',

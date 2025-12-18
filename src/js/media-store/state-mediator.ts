@@ -216,6 +216,7 @@ export type StateMediator = {
   mediaEnded: ReadonlyFacadeProp<HTMLMediaElement['ended']>;
   mediaPlaybackRate: FacadeProp<HTMLMediaElement['playbackRate']>;
   mediaMuted: FacadeProp<HTMLMediaElement['muted']>;
+  mediaLoop: FacadeProp<HTMLMediaElement['loop']>;
   mediaVolume: FacadeProp<HTMLMediaElement['volume']>;
   mediaVolumeLevel: ReadonlyFacadeProp<'high' | 'medium' | 'low' | 'off'>;
   mediaCurrentTime: FacadeProp<HTMLMediaElement['currentTime']>;
@@ -456,6 +457,18 @@ export const stateMediator: StateMediator = {
         }
       },
     ],
+  },
+  mediaLoop: {
+    get(stateOwners) {
+      const { media } = stateOwners;
+      return media?.loop;
+    },
+    set(value, stateOwners) {
+      const { media } = stateOwners;
+      if (!media) return;
+      media.loop = value;
+    },
+    mediaEvents: ['medialooprequest'],
   },
   mediaVolume: {
     get(stateOwners) {

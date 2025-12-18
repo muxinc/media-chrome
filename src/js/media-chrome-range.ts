@@ -3,6 +3,7 @@ import { globalThis, document } from './utils/server-safe-globals.js';
 import {
   getOrInsertCSSRule,
   getPointProgressOnLine,
+  insertCSSRule,
   namedNodeMapToObject,
 } from './utils/element-utils.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
@@ -242,9 +243,15 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         <svg id="segments"><clipPath id="segments-clipping"></clipPath></svg>
       </div>
       <input id="range" type="range" min="0" max="1" step="any" value="0">
+
+      ${this.getContainerTemplateHTML(_attrs)}
     </div>
     <div id="rightgap"></div>
   `;
+}
+
+function getContainerTemplateHTML(_attrs: Record<string, string>) {
+  return '';
 }
 
 /**
@@ -312,6 +319,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
 class MediaChromeRange extends globalThis.HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
   static getTemplateHTML = getTemplateHTML;
+  static getContainerTemplateHTML = getContainerTemplateHTML;
 
   #mediaController;
   #isInputTarget;
@@ -502,7 +510,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
         'http://www.w3.org/2000/svg',
         'rect'
       );
-      const cssRule = getOrInsertCSSRule(
+      const cssRule = insertCSSRule(
         this.shadowRoot,
         `#segments-clipping rect:nth-child(${i + 1})`
       );

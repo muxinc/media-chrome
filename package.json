@@ -1,6 +1,6 @@
 {
   "name": "media-chrome",
-  "version": "4.15.1",
+  "version": "4.17.2",
   "description": "Custom elements (web components) for making audio and video player controls that look great in your website or app.",
   "author": "@muxinc",
   "license": "MIT",
@@ -105,13 +105,13 @@
     "url": "git+https://github.com/muxinc/media-chrome.git"
   },
   "dependencies": {
-    "ce-la-react": "^0.3.0"
+    "ce-la-react": "^0.3.2"
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.10.2",
     "@open-wc/testing": "^3.1.6",
     "@types/mocha": "^10.0.6",
-    "@types/react": "19.1.2",
+    "@types/react": "19.2.2",
     "@vercel/edge": "^1.2.1",
     "@web/dev-server-esbuild": "^1.0.2",
     "@web/test-runner": "^0.19.0",
@@ -121,7 +121,7 @@
     "eslint": "^8.56.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
-    "react": "19.1.0",
+    "react": "19.2.2",
     "resolve.exports": "^2.0.3",
     "rimraf": "^3.0.2",
     "sinon": "^14.0.1",

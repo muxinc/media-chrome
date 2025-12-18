@@ -1,3 +1,58 @@
+## [4.17.2](https://github.com/muxinc/media-chrome/compare/v4.17.1...v4.17.2) (2025-12-15)
+
+
+### Bug Fixes
+
+* preview alignment bug due to regression ([#1249](https://github.com/muxinc/media-chrome/issues/1249)) ([3eab146](https://github.com/muxinc/media-chrome/commit/3eab146e3359b6db596c4faab19c5ce157e82484))
+
+
+
+## [4.17.1](https://github.com/muxinc/media-chrome/compare/v4.17.0...v4.17.1) (2025-12-12)
+
+
+### Bug Fixes
+
+* Safari issue where sibling slots disappear when hiding a slot ([#1246](https://github.com/muxinc/media-chrome/issues/1246)) ([5933163](https://github.com/muxinc/media-chrome/commit/5933163c1136fddbff3caed736c09523e5db2eaf))
+* updating nextjs and react for new vulnerabilities ([#1248](https://github.com/muxinc/media-chrome/issues/1248)) ([12bd474](https://github.com/muxinc/media-chrome/commit/12bd47411f6f86338d890645fdf3a702b7bb4c5b))
+
+
+
+# [4.17.0](https://github.com/muxinc/media-chrome/compare/v4.16.1...v4.17.0) (2025-12-09)
+
+
+### Features
+
+* persist subtitles state across element disconnect/reconnect ([#1241](https://github.com/muxinc/media-chrome/issues/1241)) ([b6dd0f4](https://github.com/muxinc/media-chrome/commit/b6dd0f4f49e2a177e9dc71382ed61c9dc55bfd31)), closes [#777](https://github.com/muxinc/media-chrome/issues/777)
+
+
+
+## [4.16.1](https://github.com/muxinc/media-chrome/compare/v4.16.0...v4.16.1) (2025-11-27)
+
+
+### Bug Fixes
+
+* Updated ce-la-react ([#1242](https://github.com/muxinc/media-chrome/issues/1242)) ([4e423b4](https://github.com/muxinc/media-chrome/commit/4e423b4b3602884ee0b517f118adbe4d66c17410))
+
+
+
+# [4.16.0](https://github.com/muxinc/media-chrome/compare/v4.15.1...v4.16.0) (2025-11-18)
+
+
+### Bug Fixes
+
+* Ensure all stateOwnersUpdateHandlers are properly torn down ([#1237](https://github.com/muxinc/media-chrome/issues/1237)) ([c49c8da](https://github.com/muxinc/media-chrome/commit/c49c8daaf13e298ded5c15f027307f245c8e8508))
+* Fixed shimming for node-like environments ([#1229](https://github.com/muxinc/media-chrome/issues/1229)) ([fd6fded](https://github.com/muxinc/media-chrome/commit/fd6fdedf49a084cbab6bcd88736f3d823ad10064))
+* prevent glitch on dynamically add chapters re-render ([#1236](https://github.com/muxinc/media-chrome/issues/1236)) ([bb02aa5](https://github.com/muxinc/media-chrome/commit/bb02aa5d5fdce7cd36be5d90a8d5d33fbb199ffe))
+* Sync captions toggle and menu on attribute/list changes ([#1227](https://github.com/muxinc/media-chrome/issues/1227)) ([884f3ce](https://github.com/muxinc/media-chrome/commit/884f3ce0b9788409ca327e002f3b54ace1641bff))
+
+
+### Features
+
+* Add support for hotkeys ([#1231](https://github.com/muxinc/media-chrome/issues/1231)) ([5c54cc5](https://github.com/muxinc/media-chrome/commit/5c54cc56db1cd0e342f4f0087d2328a751ce8e5e)), closes [#1171](https://github.com/muxinc/media-chrome/issues/1171)
+* create <media-loop-button> component for being used inside of context menu ([#1233](https://github.com/muxinc/media-chrome/issues/1233)) ([58d1e1b](https://github.com/muxinc/media-chrome/commit/58d1e1be656152f8fd6d6c37f2b7a4083acf6090))
+
+
+
 ## [4.15.1](https://github.com/muxinc/media-chrome/compare/v4.15.0...v4.15.1) (2025-10-30)
 
 
