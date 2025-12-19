@@ -31,6 +31,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         cursor: var(--media-cursor, pointer);
         pointer-events: auto;
         touch-action: none; ${/* Prevent scrolling when dragging on mobile. */ ''}
+        overflow: hidden; ${/* Prevent absolute positioned #range from affecting parent layout on focus */ ''}
       }
 
       ${/* Reset before `outline` on track could be set by a CSS var */ ''}
