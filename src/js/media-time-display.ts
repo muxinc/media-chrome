@@ -108,6 +108,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
   static getSlotTemplateHTML = getSlotTemplateHTML;
 
   #slot: HTMLSlotElement;
+  #keyUpHandler: ((evt: KeyboardEvent) => void) | null = null;
 
   static get observedAttributes(): string[] {
     return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
@@ -132,37 +133,58 @@ class MediaTimeDisplay extends MediaTextDisplay {
     );
 
     this.setAttribute('aria-label', t('playback time'));
-    
-    // Set role="button" and make it focusable if element is clickable
-    if (!this.noToggle) {
-      this.setAttribute('role', 'button');
-      if (!this.hasAttribute('disabled')) {
-        this.enable();
-      }
+    this.#makeInteractive();
+
+    super.connectedCallback();
+  }
+
+  #setupEventListeners(): void {
+    if (this.#keyUpHandler) {
+      return;
     }
 
-    const keyUpHandler = (evt) => {
+    this.#keyUpHandler = (evt: KeyboardEvent) => {
       const { key } = evt;
       if (!ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
+        this.removeEventListener('keyup', this.#keyUpHandler!);
         return;
       }
 
       this.toggleTimeDisplay();
     };
 
-    this.addEventListener('keydown', (evt) => {
+    this.addEventListener('keydown', (evt: KeyboardEvent) => {
       const { metaKey, altKey, key } = evt;
       if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
+        this.removeEventListener('keyup', this.#keyUpHandler!);
         return;
       }
-      this.addEventListener('keyup', keyUpHandler);
+      this.addEventListener('keyup', this.#keyUpHandler!);
     });
 
     this.addEventListener('click', this.toggleTimeDisplay);
+  }
 
-    super.connectedCallback();
+  #removeEventListeners(): void {
+    if (this.#keyUpHandler) {
+      this.removeEventListener('keyup', this.#keyUpHandler);
+      this.removeEventListener('click', this.toggleTimeDisplay);
+      this.#keyUpHandler = null;
+    }
+  }
+
+  #makeInteractive(): void {
+    if (!this.noToggle && !this.hasAttribute('disabled')) {
+      this.setAttribute('role', 'button');
+      this.enable();
+      this.#setupEventListeners();
+    }
+  }
+
+  #makeNonInteractive(): void {
+    this.removeAttribute('role');
+    this.disable();
+    this.#removeEventListeners();
   }
 
   toggleTimeDisplay(): void {
@@ -191,21 +213,15 @@ class MediaTimeDisplay extends MediaTextDisplay {
       this.update();
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
-        if (!this.noToggle) {
-          this.enable();
-        }
+        this.#makeInteractive();
       } else {
-        this.disable();
+        this.#makeNonInteractive();
       }
     } else if (attrName === Attributes.NO_TOGGLE && newValue !== oldValue) {
       if (this.noToggle) {
-        this.removeAttribute('role');
-        this.disable();
+        this.#makeNonInteractive();
       } else {
-        this.setAttribute('role', 'button');
-        if (!this.hasAttribute('disabled')) {
-          this.enable();
-        }
+        this.#makeInteractive();
       }
     }
 
