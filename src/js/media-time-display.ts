@@ -131,12 +131,15 @@ class MediaTimeDisplay extends MediaTextDisplay {
       'var(--media-control-hover-background, rgba(50 50 70 / .7))'
     );
 
-    if (!this.hasAttribute('disabled')) {
-      this.enable();
-    }
-
-    this.setAttribute('role', 'progressbar');
     this.setAttribute('aria-label', t('playback time'));
+    
+    // Set role="button" and make it focusable if element is clickable
+    if (!this.noToggle) {
+      this.setAttribute('role', 'button');
+      if (!this.hasAttribute('disabled')) {
+        this.enable();
+      }
+    }
 
     const keyUpHandler = (evt) => {
       const { key } = evt;
@@ -188,9 +191,21 @@ class MediaTimeDisplay extends MediaTextDisplay {
       this.update();
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
-        this.enable();
+        if (!this.noToggle) {
+          this.enable();
+        }
       } else {
         this.disable();
+      }
+    } else if (attrName === Attributes.NO_TOGGLE && newValue !== oldValue) {
+      if (this.noToggle) {
+        this.removeAttribute('role');
+        this.disable();
+      } else {
+        this.setAttribute('role', 'button');
+        if (!this.hasAttribute('disabled')) {
+          this.enable();
+        }
       }
     }
 
@@ -198,7 +213,10 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   enable(): void {
-    this.tabIndex = 0;
+    
+    if (!this.noToggle) {
+      this.tabIndex = 0;
+    }
   }
 
   disable(): void {
