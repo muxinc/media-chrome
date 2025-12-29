@@ -227,6 +227,14 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         transform: var(--media-range-segment-transform, scaleY(1));
         transform-origin: center;
       }
+
+      /* Visible label for accessibility - positioned off-screen but technically visible (Firefox requires visible labels) */
+      #range-label {
+        position: absolute;
+        left: -10000px;
+        background: var(--media-control-background, var(--media-secondary-color, rgb(20 20 30 / .7)));
+        pointer-events: none;
+      }
     </style>
     <div id="leftgap"></div>
     <div id="container">
@@ -242,7 +250,8 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         </slot>
         <svg id="segments"><clipPath id="segments-clipping"></clipPath></svg>
       </div>
-      <input id="range" type="range" min="0" max="1" step="any" value="0">
+        <input id="range" type="range" min="0" max="1" step="any" value="0">
+        <label for="range" id="range-label"></label>
 
       ${this.getContainerTemplateHTML(_attrs)}
     </div>
