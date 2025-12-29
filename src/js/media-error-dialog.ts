@@ -91,6 +91,11 @@ class MediaErrorDialog extends MediaChromeDialog {
     if (this.open) {
       this.shadowRoot.querySelector('slot').name = `error-${this.mediaErrorCode}`;
       this.shadowRoot.querySelector('#content').innerHTML = this.formatErrorMessage(mediaError);
+      
+      if (!this.hasAttribute('aria-label')) {
+        const { title } = formatError(mediaError);
+        if (title) this.setAttribute('aria-label', title);
+      }
     }
   }
 

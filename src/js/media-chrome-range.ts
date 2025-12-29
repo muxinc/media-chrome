@@ -248,7 +248,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         <slot name="thumb">
           <div id="thumb" part="thumb"></div>
         </slot>
-        <svg id="segments"><clipPath id="segments-clipping"></clipPath></svg>
+        <svg id="segments" aria-hidden="true"><clipPath id="segments-clipping"></clipPath></svg>
       </div>
         <input id="range" type="range" min="0" max="1" step="any" value="0">
         <label for="range" id="range-label"></label>
