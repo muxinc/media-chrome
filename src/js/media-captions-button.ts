@@ -77,7 +77,7 @@ class MediaCaptionsButton extends MediaChromeButton {
 
   connectedCallback(): void {
     super.connectedCallback();
-    this.setAttribute('role', 'switch');
+    this.setAttribute('role', 'button');
     this.setAttribute('aria-label', t('closed captions'));
     updateAriaChecked(this);
   }

@@ -8,7 +8,7 @@ const { MEDIA_TIME_IS_LIVE, MEDIA_PAUSED } = MediaUIAttributes;
 const { MEDIA_SEEK_TO_LIVE_REQUEST, MEDIA_PLAY_REQUEST } = MediaUIEvents;
 
 const indicatorSVG =
-  '<svg viewBox="0 0 6 12"><circle cx="3" cy="6" r="2"></circle></svg>';
+  '<svg viewBox="0 0 6 12" aria-hidden="true"><circle cx="3" cy="6" r="2"></circle></svg>';
 
 function getSlotTemplateHTML(_attrs: Record<string, string>) {
   return /*html*/ `
