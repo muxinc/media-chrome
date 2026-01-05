@@ -515,6 +515,12 @@ class MediaTimeRange extends MediaChromeRange {
       this.mediaChaptersCues = this.#mediaChaptersCues;
       this.updateBar();
     }
+
+    if (
+      attrName === 'mediadecreasethreshold'
+    ) {
+      this.#updateDecreaseThreshold(newValue)
+    }
   }
 
   #toggleRangeAnimation(): void {
@@ -547,6 +553,13 @@ class MediaTimeRange extends MediaChromeRange {
       this.updateBar();
     }
   };
+
+  #updateDecreaseThreshold(value: string) {
+    const numValue = parseFloat(value);
+    if (isValidNumber(numValue)) {
+      this.#animation.decreaseThreshold = numValue;
+    }
+  }
 
   get mediaChaptersCues(): any[] {
     return this.#mediaChaptersCues;
