@@ -173,6 +173,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
     }
   }
 
+  // Makes element clickable and focusable only when not disabled and noToggle is not present
   #makeInteractive(): void {
     if (!this.noToggle && !this.hasAttribute('disabled')) {
       this.setAttribute('role', 'button');
@@ -181,6 +182,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
     }
   }
 
+  // Removes interactivity from the element, making it neither clickable nor focusable
   #makeNonInteractive(): void {
     this.removeAttribute('role');
     this.disable();
