@@ -108,6 +108,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
   static getSlotTemplateHTML = getSlotTemplateHTML;
 
   #slot: HTMLSlotElement;
+  #keyUpHandler: ((evt: KeyboardEvent) => void) | null = null;
 
   static get observedAttributes(): string[] {
     return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
@@ -131,35 +132,61 @@ class MediaTimeDisplay extends MediaTextDisplay {
       'var(--media-control-hover-background, rgba(50 50 70 / .7))'
     );
 
-    if (!this.hasAttribute('disabled')) {
-      this.enable();
+    this.setAttribute('aria-label', t('playback time'));
+    this.#makeInteractive();
+
+    super.connectedCallback();
+  }
+
+  #setupEventListeners(): void {
+    if (this.#keyUpHandler) {
+      return;
     }
 
-    this.setAttribute('role', 'progressbar');
-    this.setAttribute('aria-label', t('playback time'));
-
-    const keyUpHandler = (evt) => {
+    this.#keyUpHandler = (evt: KeyboardEvent) => {
       const { key } = evt;
       if (!ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
+        this.removeEventListener('keyup', this.#keyUpHandler!);
         return;
       }
 
       this.toggleTimeDisplay();
     };
 
-    this.addEventListener('keydown', (evt) => {
+    this.addEventListener('keydown', (evt: KeyboardEvent) => {
       const { metaKey, altKey, key } = evt;
       if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', keyUpHandler);
+        this.removeEventListener('keyup', this.#keyUpHandler!);
         return;
       }
-      this.addEventListener('keyup', keyUpHandler);
+      this.addEventListener('keyup', this.#keyUpHandler!);
     });
 
     this.addEventListener('click', this.toggleTimeDisplay);
+  }
 
-    super.connectedCallback();
+  #removeEventListeners(): void {
+    if (this.#keyUpHandler) {
+      this.removeEventListener('keyup', this.#keyUpHandler);
+      this.removeEventListener('click', this.toggleTimeDisplay);
+      this.#keyUpHandler = null;
+    }
+  }
+
+  // Makes element clickable and focusable only when not disabled and noToggle is not present
+  #makeInteractive(): void {
+    if (!this.noToggle && !this.hasAttribute('disabled')) {
+      this.setAttribute('role', 'button');
+      this.enable();
+      this.#setupEventListeners();
+    }
+  }
+
+  // Removes interactivity from the element, making it neither clickable nor focusable
+  #makeNonInteractive(): void {
+    this.removeAttribute('role');
+    this.disable();
+    this.#removeEventListeners();
   }
 
   toggleTimeDisplay(): void {
@@ -188,9 +215,15 @@ class MediaTimeDisplay extends MediaTextDisplay {
       this.update();
     } else if (attrName === 'disabled' && newValue !== oldValue) {
       if (newValue == null) {
-        this.enable();
+        this.#makeInteractive();
       } else {
-        this.disable();
+        this.#makeNonInteractive();
+      }
+    } else if (attrName === Attributes.NO_TOGGLE && newValue !== oldValue) {
+      if (this.noToggle) {
+        this.#makeNonInteractive();
+      } else {
+        this.#makeInteractive();
       }
     }
 
@@ -198,7 +231,10 @@ class MediaTimeDisplay extends MediaTextDisplay {
   }
 
   enable(): void {
-    this.tabIndex = 0;
+    
+    if (!this.noToggle) {
+      this.tabIndex = 0;
+    }
   }
 
   disable(): void {
