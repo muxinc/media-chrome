@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>&lt;mux-video&gt; example</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="../../dist/index.js"></script>
+    <style>
+      mux-video {
+        display: block;
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        margin: 1rem 0 2rem;
+      }
+    </style>
+  </head>
+  <body>
+    <button id="mount">Mount player</button>
+    <button id="unmount">Unmount player</button>
+
+    <div id="root"></div>
+
+    <script type="module">
+      const root = document.getElementById('root');
+      let controller = null;
+
+      function mount() {
+        if (controller) return;
+
+        controller = document.createElement('media-controller');
+
+        controller.innerHTML = `
+          <video
+            slot="media"
+            playsinline
+            src="https://stream.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/high.mp4">
+          </video>
+          <media-poster-image
+            slot="poster"
+            src="https://image.mux.com/A3VXy02VoUinw01pwyomEO3bHnG4P32xzV7u1j1FSzjNg/thumbnail.jpg"
+            placeholdersrc="data:image/jpeg;base64,/9j/2wBDABQODxIPDRQSEBIXFRQYHjIhHhwcHj0sLiQySUBMS0dARkVQWnNiUFVtVkVGZIhlbXd7gYKBTmCNl4x9lnN+gXz/2wBDARUXFx4aHjshITt8U0ZTfHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHx8fHz/wAARCAAUADADASIAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAECBAP/xAAdEAEBAAEEAwAAAAAAAAAAAAAAARECAxITFCFR/8QAGQEAAwADAAAAAAAAAAAAAAAAAAEDAgQF/8QAGBEBAQEBAQAAAAAAAAAAAAAAAAETERL/2gAMAwEAAhEDEQA/ANeC4ldyI1b2EtIzzrrIqYZLvl5FGkGdbfQzGPvo76WsPxXLlfqbaA5va2iVJADgPELACsD/2Q==">
+          </media-poster-image>
+
+          <media-loading-indicator
+            slot="centered-chrome"
+            noautohide>
+          </media-loading-indicator>
+
+          <media-control-bar>
+            <media-play-button></media-play-button>
+            <media-mute-button></media-mute-button>
+            <media-volume-range></media-volume-range>
+            <media-time-display></media-time-display>
+            <media-time-range></media-time-range>
+            <media-duration-display></media-duration-display>
+            <media-playback-rate-button></media-playback-rate-button>
+            <media-fullscreen-button></media-fullscreen-button>
+          </media-control-bar>
+        `;
+        root.appendChild(controller);
+      }
+
+      function unmount() {
+        if (!controller) return;
+
+        controller.remove();
+        controller = null;
+      }
+
+      document.getElementById('mount').addEventListener('click', mount);
+      document.getElementById('unmount').addEventListener('click', unmount);
+    </script>
+  </body>
+</html>

@@ -422,6 +422,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   disconnectedCallback(): void {
+    this.#mutationObserver.disconnect();
+
     unobserveResize(getBoundsElement(this), this.#handleBoundsResize);
     unobserveResize(this, this.#handleMenuResize);
 

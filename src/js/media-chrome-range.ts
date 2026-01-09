@@ -373,6 +373,9 @@ class MediaChromeRange extends globalThis.HTMLElement {
      * {value: number, min: number, max: number}} */
     this.range = this.shadowRoot.querySelector('#range');
     this.appearance = this.shadowRoot.querySelector('#appearance');
+
+    this.#onFocusIn = this.#onFocusIn.bind(this);
+    this.#onFocusOut = this.#onFocusOut.bind(this);
   }
 
   #onFocusIn = (): void => {
@@ -577,6 +580,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.removeEventListener('input', this);
     this.removeEventListener('pointerdown', this);
     this.removeEventListener('pointerenter', this);
+    this.removeEventListener('pointerleave', this);
     globalThis.window?.removeEventListener('pointerup', this);
     globalThis.window?.removeEventListener('pointermove', this);
   }

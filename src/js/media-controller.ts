@@ -490,6 +490,8 @@ class MediaController extends MediaContainer {
       this.#mediaStoreUnsubscribe?.();
       this.#mediaStoreUnsubscribe = undefined;
     }
+
+    this.unassociateElement(this);
   }
 
   /**
