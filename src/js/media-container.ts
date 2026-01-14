@@ -428,6 +428,7 @@ class MediaContainer extends globalThis.HTMLElement {
     const setVideoAccessibility = (videoEl: HTMLVideoElement) => {
       if (!videoEl.hasAttribute('aria-hidden')) {
         videoEl.setAttribute('aria-hidden', 'true');
+        videoEl.setAttribute('inert', 'true')
       }
     };
 
