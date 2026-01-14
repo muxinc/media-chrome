@@ -372,23 +372,6 @@ class MediaContainer extends globalThis.HTMLElement {
     }
     this.#mutationObserver = new MutationObserver(this.#handleMutation);
 
-    // Handles the case when the slotted media element is a slot element itself.
-    // e.g. chaining media slots for media themes.
-    const chainedSlot = this.querySelector(
-      ':scope > slot[slot=media]'
-    ) as HTMLSlotElement;
-    if (chainedSlot) {
-      chainedSlot.addEventListener('slotchange', () => {
-        const slotEls = chainedSlot.assignedElements({ flatten: true });
-        if (!slotEls.length) {
-          if (this.#currentMedia) {
-            this.mediaUnsetCallback(this.#currentMedia);
-          }
-          return;
-        }
-        this.handleMediaUpdated(this.media);
-      });
-    }
   }
 
   // Could share this code with media-chrome-html-element instead
@@ -467,6 +450,16 @@ class MediaContainer extends globalThis.HTMLElement {
 
     // Set breakpoints on connect since we delay resize observer callbacks.
     setBreakpoints(this, this.getBoundingClientRect().width);
+    
+    // Handles the case when the slotted media element is a slot element itself.
+    // e.g. chaining media slots for media themes.
+    const chainedSlot = this.querySelector(
+      ':scope > slot[slot=media]'
+    ) as HTMLSlotElement;
+    if (chainedSlot) {
+      this.#chainedSlot = chainedSlot;
+      this.#chainedSlot.addEventListener('slotchange', this.#handleSlotChange)
+    }
 
     this.addEventListener('pointerdown', this);
     this.addEventListener('pointermove', this);
@@ -495,6 +488,12 @@ class MediaContainer extends globalThis.HTMLElement {
     this.removeEventListener('pointerup', this);
     this.removeEventListener('mouseleave', this);
     this.removeEventListener('keyup', this);
+
+    if (this.#chainedSlot){
+      this.#chainedSlot.removeEventListener('slotchange', this.#handleSlotChange)
+      // Free this because it is set on connect
+      this.#chainedSlot = null;
+    }
   }
 
   /**
@@ -692,6 +691,18 @@ class MediaContainer extends globalThis.HTMLElement {
       this.#setInactive();
     }, autohide * 1000);
   }
+
+  #chainedSlot: HTMLSlotElement | null
+  #handleSlotChange = () => {
+    const slotEls = this.#chainedSlot.assignedElements({ flatten: true });
+    if (!slotEls.length) {
+      if (this.#currentMedia) {
+        this.mediaUnsetCallback(this.#currentMedia);
+      }
+      return;
+    }
+    this.handleMediaUpdated(this.media);
+  };
 
   set autohide(seconds: string) {
     const parsedSeconds = Number(seconds);

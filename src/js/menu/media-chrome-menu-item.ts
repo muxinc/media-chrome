@@ -183,7 +183,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
   }
 
   #dirty = false;
-  #ownerElement;
+  #ownerElement: MediaChromeMenu | null;
 
   constructor() {
     super();
@@ -195,8 +195,6 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
       const attrs = namedNodeMapToObject(this.attributes);
       this.shadowRoot.innerHTML = (this.constructor as typeof MediaChromeMenuItem).getTemplateHTML(attrs);
     }
-
-    this.shadowRoot.addEventListener('slotchange', this);
   }
 
   enable() {
@@ -269,6 +267,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     if (this.submenuElement) {
       this.#submenuConnected();
     }
+    this.shadowRoot.addEventListener('slotchange', this);
   }
 
   disconnectedCallback(): void {
@@ -276,6 +275,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
 
     this.#reset();
     this.#ownerElement = null;
+    this.shadowRoot.removeEventListener('slotchange', this);
   }
 
   get invokeTarget() {
@@ -440,7 +440,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     return ['Enter', ' '];
   }
 
-  #handleKeyUp(event) {
+  #handleKeyUp = (event: KeyboardEvent) => {
     const { key } = event;
 
     if (!this.keysUsed.includes(key)) {
@@ -451,7 +451,7 @@ class MediaChromeMenuItem extends globalThis.HTMLElement {
     this.handleClick(event);
   }
 
-  #handleKeyDown(event) {
+  #handleKeyDown = (event: KeyboardEvent) => {
     const { metaKey, altKey, key } = event;
 
     if (metaKey || altKey || !this.keysUsed.includes(key)) {
