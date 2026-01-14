@@ -470,6 +470,8 @@ class MediaController extends MediaContainer {
     // mediaUnsetCallback() is called in super.disconnectedCallback();
     super.disconnectedCallback?.();
 
+    this.disableHotkeys();
+
     if (this.#mediaStore) {
       // Save the current state of subtitles before disconnecting
       const currentState = this.#mediaStore.getState();
@@ -648,13 +650,19 @@ class MediaController extends MediaContainer {
     this.addEventListener('keyup', this.#keyUpHandler, { once: true });
   }
 
+  /** Used to prevent hotkeys event listeners from being set more than once */
+  #hotkeysEnabled: boolean = false;
   enableHotkeys() {
-    this.addEventListener('keydown', this.#keyDownHandler);
+    if (!this.#hotkeysEnabled) {
+      this.addEventListener('keydown', this.#keyDownHandler);
+      this.#hotkeysEnabled = true;
+    }
   }
 
   disableHotkeys() {
     this.removeEventListener('keydown', this.#keyDownHandler);
     this.removeEventListener('keyup', this.#keyUpHandler);
+    this.#hotkeysEnabled = false
   }
 
   get hotkeys(): string | undefined {
