@@ -198,7 +198,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.tooltipEl = this.shadowRoot.querySelector('media-tooltip');
   }
 
-  #clickListener = (e) => {
+  #clickListener = (e: MouseEvent) => {
     if (!this.preventClick) {
       this.handleClick(e);
     }
@@ -216,7 +216,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   // NOTE: There are definitely some "false positive" cases with multi-key pressing,
   // but this should be good enough for most use cases.
-  #keyupListener = (e) => {
+  #keyupListener = (e: KeyboardEvent) => {
     const { key } = e;
     if (!this.keysUsed.includes(key)) {
       this.removeEventListener('keyup', this.#keyupListener);
@@ -228,7 +228,7 @@ class MediaChromeButton extends globalThis.HTMLElement {
     }
   };
 
-  #keydownListener = (e) => {
+  #keydownListener = (e: KeyboardEvent) => {
     const { metaKey, altKey, key } = e;
     if (metaKey || altKey || !this.keysUsed.includes(key)) {
       this.removeEventListener('keyup', this.#keyupListener);
@@ -237,10 +237,15 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.addEventListener('keyup', this.#keyupListener, { once: true });
   };
 
+  /** Prevent events to be setup multiple times */
+  #eventsSetup: boolean = false;
   enable() {
+    if (this.#eventsSetup) return;
+
     this.addEventListener('click', this.#clickListener);
     this.addEventListener('keydown', this.#keydownListener);
     this.tabIndex = 0;
+    this.#eventsSetup = true;
   }
 
   disable() {
@@ -248,6 +253,8 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.removeEventListener('keydown', this.#keydownListener);
     this.removeEventListener('keyup', this.#keyupListener);
     this.tabIndex = -1;
+
+    this.#eventsSetup = false;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {
@@ -379,9 +386,8 @@ class MediaChromeButton extends globalThis.HTMLElement {
 
   /**
    * @abstract
-   * @argument {Event} e
    */
-  handleClick(e) {} // eslint-disable-line
+  handleClick(_e: Event) {}
 }
 
 if (!globalThis.customElements.get('media-chrome-button')) {
