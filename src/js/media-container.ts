@@ -348,7 +348,7 @@ class MediaContainer extends globalThis.HTMLElement {
         )
     );
   }
-
+  #mutationObserver: MutationObserver
   #pointerDownTimeStamp = 0;
   #currentMedia: HTMLMediaElement | null = null;
   #inactiveTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -370,6 +370,7 @@ class MediaContainer extends globalThis.HTMLElement {
         this.shadowRoot.setHTMLUnsafe(html) :
         this.shadowRoot.innerHTML = html;
     }
+    this.#mutationObserver = new MutationObserver(this.#handleMutation);
 
     // Handles the case when the slotted media element is a slot element itself.
     // e.g. chaining media slots for media themes.
@@ -476,8 +477,9 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   disconnectedCallback(): void {
-    this.#mutationObserver.disconnect();
     unobserveResize(this, this.#handleResize);
+    clearTimeout(this.#inactiveTimeout);
+    this.#mutationObserver.disconnect();
 
     // When disconnected from the DOM, remove root node and media event listeners
     // to prevent memory leaks and unneeded invisble UI updates.
@@ -486,6 +488,12 @@ class MediaContainer extends globalThis.HTMLElement {
     }
 
     globalThis.window?.removeEventListener('mouseup', this);
+
+    this.removeEventListener('pointerdown', this);
+    this.removeEventListener('pointermove', this);
+    this.removeEventListener('pointerup', this);
+    this.removeEventListener('mouseleave', this);
+    this.removeEventListener('keyup', this);
   }
 
   /**
@@ -524,8 +532,7 @@ class MediaContainer extends globalThis.HTMLElement {
     }
   }
 
-  #mutationObserver = new MutationObserver(this.#handleMutation.bind(this));
-  #handleMutation(mutationsList: MutationRecord[]) {
+  #handleMutation = (mutationsList: MutationRecord[]) => {
     const media = this.media;
 
     for (const mutation of mutationsList) {
