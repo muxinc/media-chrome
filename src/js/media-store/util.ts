@@ -1,6 +1,7 @@
 import { TextTrackKinds, TextTrackModes } from '../constants.js';
 import { getTextTracksList, updateTracksModeTo } from '../utils/captions.js';
 import { TextTrackLike } from '../utils/TextTrackLike.js';
+import { globalThis } from '../utils/server-safe-globals.js';
 
 export const getSubtitleTracks = (stateOwners): TextTrackLike[] => {
   return getTextTracksList(stateOwners.media, (textTrack) => {

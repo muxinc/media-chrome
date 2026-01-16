@@ -271,10 +271,8 @@ export function insertCSSRule(
     };
   }
 
-  style?.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
-  return /** @type {CSSStyleRule} */ style.sheet.cssRules?.[
-    style.sheet.cssRules.length - 1
-  ];
+  const cssRuleId = style?.sheet.insertRule(`${selectorText}{}`, style.sheet.cssRules.length);
+  return style.sheet.cssRules?.[cssRuleId];
 }
 
 /**

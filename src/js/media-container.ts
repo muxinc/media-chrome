@@ -348,7 +348,7 @@ class MediaContainer extends globalThis.HTMLElement {
         )
     );
   }
-
+  #mutationObserver: MutationObserver
   #pointerDownTimeStamp = 0;
   #currentMedia: HTMLMediaElement | null = null;
   #inactiveTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -370,24 +370,8 @@ class MediaContainer extends globalThis.HTMLElement {
         this.shadowRoot.setHTMLUnsafe(html) :
         this.shadowRoot.innerHTML = html;
     }
+    this.#mutationObserver = new MutationObserver(this.#handleMutation);
 
-    // Handles the case when the slotted media element is a slot element itself.
-    // e.g. chaining media slots for media themes.
-    const chainedSlot = this.querySelector(
-      ':scope > slot[slot=media]'
-    ) as HTMLSlotElement;
-    if (chainedSlot) {
-      chainedSlot.addEventListener('slotchange', () => {
-        const slotEls = chainedSlot.assignedElements({ flatten: true });
-        if (!slotEls.length) {
-          if (this.#currentMedia) {
-            this.mediaUnsetCallback(this.#currentMedia);
-          }
-          return;
-        }
-        this.handleMediaUpdated(this.media);
-      });
-    }
   }
 
   // Could share this code with media-chrome-html-element instead
@@ -427,6 +411,7 @@ class MediaContainer extends globalThis.HTMLElement {
     const setVideoAccessibility = (videoEl: HTMLVideoElement) => {
       if (!videoEl.hasAttribute('aria-hidden')) {
         videoEl.setAttribute('aria-hidden', 'true');
+        videoEl.setAttribute('inert', 'true')
       }
     };
 
@@ -465,6 +450,16 @@ class MediaContainer extends globalThis.HTMLElement {
 
     // Set breakpoints on connect since we delay resize observer callbacks.
     setBreakpoints(this, this.getBoundingClientRect().width);
+    
+    // Handles the case when the slotted media element is a slot element itself.
+    // e.g. chaining media slots for media themes.
+    const chainedSlot = this.querySelector(
+      ':scope > slot[slot=media]'
+    ) as HTMLSlotElement;
+    if (chainedSlot) {
+      this.#chainedSlot = chainedSlot;
+      this.#chainedSlot.addEventListener('slotchange', this.#handleSlotChange)
+    }
 
     this.addEventListener('pointerdown', this);
     this.addEventListener('pointermove', this);
@@ -476,8 +471,9 @@ class MediaContainer extends globalThis.HTMLElement {
   }
 
   disconnectedCallback(): void {
-    this.#mutationObserver.disconnect();
     unobserveResize(this, this.#handleResize);
+    clearTimeout(this.#inactiveTimeout);
+    this.#mutationObserver.disconnect();
 
     // When disconnected from the DOM, remove root node and media event listeners
     // to prevent memory leaks and unneeded invisble UI updates.
@@ -486,6 +482,18 @@ class MediaContainer extends globalThis.HTMLElement {
     }
 
     globalThis.window?.removeEventListener('mouseup', this);
+
+    this.removeEventListener('pointerdown', this);
+    this.removeEventListener('pointermove', this);
+    this.removeEventListener('pointerup', this);
+    this.removeEventListener('mouseleave', this);
+    this.removeEventListener('keyup', this);
+
+    if (this.#chainedSlot){
+      this.#chainedSlot.removeEventListener('slotchange', this.#handleSlotChange)
+      // Free this because it is set on connect
+      this.#chainedSlot = null;
+    }
   }
 
   /**
@@ -524,8 +532,7 @@ class MediaContainer extends globalThis.HTMLElement {
     }
   }
 
-  #mutationObserver = new MutationObserver(this.#handleMutation.bind(this));
-  #handleMutation(mutationsList: MutationRecord[]) {
+  #handleMutation = (mutationsList: MutationRecord[]) => {
     const media = this.media;
 
     for (const mutation of mutationsList) {
@@ -684,6 +691,18 @@ class MediaContainer extends globalThis.HTMLElement {
       this.#setInactive();
     }, autohide * 1000);
   }
+
+  #chainedSlot: HTMLSlotElement | null
+  #handleSlotChange = () => {
+    const slotEls = this.#chainedSlot.assignedElements({ flatten: true });
+    if (!slotEls.length) {
+      if (this.#currentMedia) {
+        this.mediaUnsetCallback(this.#currentMedia);
+      }
+      return;
+    }
+    this.handleMediaUpdated(this.media);
+  };
 
   set autohide(seconds: string) {
     const parsedSeconds = Number(seconds);

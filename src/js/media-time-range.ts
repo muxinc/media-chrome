@@ -427,8 +427,8 @@ class MediaTimeRange extends MediaChromeRange {
     ];
   }
 
-  #rootNode;
-  #animation;
+  #rootNode: Node | null = null;
+  #animation: RangeAnimation;
   #boxes;
   #previewTime: number;
   #previewBox: HTMLElement;
@@ -517,7 +517,7 @@ class MediaTimeRange extends MediaChromeRange {
     }
   }
 
-  #toggleRangeAnimation(): void {
+  #toggleRangeAnimation = (): void => {
     if (this.#shouldRangeAnimate()) {
       this.#animation.start();
     } else {
