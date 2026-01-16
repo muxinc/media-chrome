@@ -599,7 +599,7 @@ class MediaController extends MediaContainer {
     els.splice(index, 1);
   }
 
-  #keyUpHandler(e: KeyboardEvent) {
+  #keyUpHandler = (e: KeyboardEvent) => {
     const { key, shiftKey } = e;
     // Check for Shift + / (which produces '?' on US keyboards or '/' on others)
     const isShiftSlash = shiftKey && (key === '/' || key === '?');

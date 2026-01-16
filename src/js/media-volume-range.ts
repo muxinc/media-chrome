@@ -38,11 +38,6 @@ class MediaVolumeRange extends MediaChromeRange {
     ];
   }
 
-  constructor() {
-    super();
-    this.#handleRangeInput = this.#handleRangeInput.bind(this);
-  }
-
   #handleRangeInput: () => void = () => {
     const detail = this.range.value;
     const evt = new globalThis.CustomEvent(

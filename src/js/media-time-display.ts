@@ -110,13 +110,13 @@ class MediaTimeDisplay extends MediaTextDisplay {
   #slot: HTMLSlotElement;
   #keyUpHandler: ((evt: KeyboardEvent) => void) | null = null;
   #keyDownHandler = (evt: KeyboardEvent) => {
-      const { metaKey, altKey, key } = evt;
-      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', this.#keyUpHandler);
-        return;
-      }
-      this.addEventListener('keyup', this.#keyUpHandler);
+    const { metaKey, altKey, key } = evt;
+    if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+      this.removeEventListener('keyup', this.#keyUpHandler);
+      return;
     }
+    this.addEventListener('keyup', this.#keyUpHandler);
+  }
 
   static get observedAttributes(): string[] {
     return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
@@ -127,7 +127,6 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
     this.#slot = this.shadowRoot.querySelector('slot');
     this.#slot.innerHTML = `${formatTimesLabel(this)}`;
-    this.#keyDownHandler = this.#keyDownHandler.bind(this);
   }
 
   connectedCallback(): void {
@@ -161,7 +160,6 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
       this.toggleTimeDisplay();
     };
-    this.#keyUpHandler = this.#keyUpHandler.bind(this);
     this.addEventListener('keydown', this.#keyDownHandler);
     this.addEventListener('click', this.toggleTimeDisplay);
   }

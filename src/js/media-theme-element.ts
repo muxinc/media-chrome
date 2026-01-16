@@ -108,10 +108,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
       subtree: true,
     });
 
-    this.addEventListener(
-      MediaStateChangeEvents.BREAKPOINTS_COMPUTED,
-      this.render
-    );
+    this.#renderBind = this.render.bind(this);
 
     // In case the template prop was set before custom element upgrade.
     // https://web.dev/custom-elements-best-practices/#make-properties-lazy
@@ -196,7 +193,19 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   }
 
   connectedCallback(): void {
+    this.addEventListener(
+      MediaStateChangeEvents.BREAKPOINTS_COMPUTED,
+      this.#renderBind
+    );
+    
     this.#updateTemplate();
+  }
+
+  disconnectedCallback(): void {
+    this.removeEventListener(
+      MediaStateChangeEvents.BREAKPOINTS_COMPUTED,
+      this.#renderBind
+    );
   }
 
   #updateTemplate(): void {
@@ -252,6 +261,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     }
   }
 
+  #renderBind: () => void;
   render(): void {
     this.renderer?.update(this.props);
   }

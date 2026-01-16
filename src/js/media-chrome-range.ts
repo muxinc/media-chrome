@@ -373,9 +373,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
      * {value: number, min: number, max: number}} */
     this.range = this.shadowRoot.querySelector('#range');
     this.appearance = this.shadowRoot.querySelector('#appearance');
-
-    this.#onFocusIn = this.#onFocusIn.bind(this);
-    this.#onFocusOut = this.#onFocusOut.bind(this);
   }
 
   #onFocusIn = (): void => {
@@ -568,12 +565,14 @@ class MediaChromeRange extends globalThis.HTMLElement {
     return this.hasAttribute('dragging');
   }
 
+  #userEventsSetup: boolean = false
   #enableUserEvents() {
-    if (this.hasAttribute('disabled')) return;
+    if (this.hasAttribute('disabled') || this.#userEventsSetup || !this.isConnected) return;
 
     this.addEventListener('input', this);
     this.addEventListener('pointerdown', this);
     this.addEventListener('pointerenter', this);
+    this.#userEventsSetup = true;
   }
 
   #disableUserEvents() {
@@ -583,6 +582,7 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.removeEventListener('pointerleave', this);
     globalThis.window?.removeEventListener('pointerup', this);
     globalThis.window?.removeEventListener('pointermove', this);
+    this.#userEventsSetup = false;
   }
 
   handleEvent(evt) {
@@ -612,14 +612,14 @@ class MediaChromeRange extends globalThis.HTMLElement {
     // Events outside the range element are handled manually below.
     this.#isInputTarget = evt.composedPath().includes(this.range);
 
-    globalThis.window?.addEventListener('pointerup', this);
+    globalThis.window?.addEventListener('pointerup', this, {once: true});
   }
 
   #handlePointerEnter(evt) {
     // On mobile a pointerdown is not required to drag the range.
     if (evt.pointerType !== 'mouse') this.#handlePointerDown(evt);
 
-    this.addEventListener('pointerleave', this);
+    this.addEventListener('pointerleave', this, {once: true});
     globalThis.window?.addEventListener('pointermove', this);
   }
 
