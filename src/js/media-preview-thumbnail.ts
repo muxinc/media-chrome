@@ -182,6 +182,8 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
         this.imgWidth = img.naturalWidth;
         this.imgHeight = img.naturalHeight;
         resize();
+
+        img.onload = null;
       };
       img.src = src;
       resize();

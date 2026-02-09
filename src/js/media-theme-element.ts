@@ -99,15 +99,6 @@ export class MediaThemeElement extends globalThis.HTMLElement {
       }
     });
 
-    // Observe the `<media-theme>` element for attribute changes.
-    observer.observe(this, { attributes: true });
-
-    // Observe the subtree of the render root, by default the elements in the shadow dom.
-    observer.observe(this.renderRoot, {
-      attributes: true,
-      subtree: true,
-    });
-
     this.#renderBind = this.render.bind(this);
 
     // In case the template prop was set before custom element upgrade.
@@ -198,6 +189,15 @@ export class MediaThemeElement extends globalThis.HTMLElement {
       this.#renderBind
     );
     
+    // Observe the `<media-theme>` element for attribute changes.
+    this.#observer.observe(this, { attributes: true });
+
+    // Observe the subtree of the render root, by default the elements in the shadow dom.
+    this.#observer.observe(this.renderRoot, {
+      attributes: true,
+      subtree: true,
+    });
+
     this.#updateTemplate();
   }
 
@@ -206,6 +206,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
       MediaStateChangeEvents.BREAKPOINTS_COMPUTED,
       this.#renderBind
     );
+    this.#observer.disconnect();
   }
 
   #updateTemplate(): void {
