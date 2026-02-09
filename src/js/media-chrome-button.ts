@@ -237,15 +237,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.addEventListener('keyup', this.#keyupListener, { once: true });
   };
 
-  /** Prevent events to be setup multiple times */
-  #eventsSetup: boolean = false;
   enable() {
-    if (this.#eventsSetup) return;
-
     this.addEventListener('click', this.#clickListener);
     this.addEventListener('keydown', this.#keydownListener);
     this.tabIndex = 0;
-    this.#eventsSetup = true;
   }
 
   disable() {
@@ -253,8 +248,6 @@ class MediaChromeButton extends globalThis.HTMLElement {
     this.removeEventListener('keydown', this.#keydownListener);
     this.removeEventListener('keyup', this.#keyupListener);
     this.tabIndex = -1;
-
-    this.#eventsSetup = false;
   }
 
   attributeChangedCallback(attrName, oldValue, newValue) {

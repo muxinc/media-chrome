@@ -59,6 +59,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   #template: HTMLTemplateElement;
   #prevTemplate: HTMLTemplateElement;
   #prevTemplateId: string | null;
+  #observer: MutationObserver;
 
   constructor() {
     super();
@@ -71,7 +72,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
       this.createRenderer();
     }
 
-    const observer = new MutationObserver((mutationList) => {
+    this.#observer = new MutationObserver((mutationList) => {
       // Only update if `<media-controller>` has computed breakpoints at least once.
       if (this.mediaController && !this.mediaController?.breakpointsComputed)
         return;

@@ -565,14 +565,12 @@ class MediaChromeRange extends globalThis.HTMLElement {
     return this.hasAttribute('dragging');
   }
 
-  #userEventsSetup: boolean = false
   #enableUserEvents() {
-    if (this.hasAttribute('disabled') || this.#userEventsSetup || !this.isConnected) return;
+    if (this.hasAttribute('disabled') || !this.isConnected) return;
 
     this.addEventListener('input', this);
     this.addEventListener('pointerdown', this);
     this.addEventListener('pointerenter', this);
-    this.#userEventsSetup = true;
   }
 
   #disableUserEvents() {
@@ -582,7 +580,6 @@ class MediaChromeRange extends globalThis.HTMLElement {
     this.removeEventListener('pointerleave', this);
     globalThis.window?.removeEventListener('pointerup', this);
     globalThis.window?.removeEventListener('pointermove', this);
-    this.#userEventsSetup = false;
   }
 
   handleEvent(evt) {
