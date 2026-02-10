@@ -366,6 +366,7 @@ const calcTimeFromRangeValue = (
  * @cssproperty --media-preview-thumbnail-max-height - `max-height` of range preview thumbnail.
  * @cssproperty --media-preview-thumbnail-min-width - `min-width` of range preview thumbnail.
  * @cssproperty --media-preview-thumbnail-min-height - `min-height` of range preview thumbnail.
+ * @cssproperty --media-preview-thumbnail-object-fit - Controls scaling behavior: `contain` (default, maintains aspect ratio) or `fill` (allows independent width/height scaling).
  * @cssproperty --media-preview-thumbnail-border-radius - `border-radius` of range preview thumbnail.
  * @cssproperty --media-preview-thumbnail-border - `border` of range preview thumbnail.
  *
