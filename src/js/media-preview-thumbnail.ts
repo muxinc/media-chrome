@@ -177,7 +177,6 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
       const maxRatio = Math.min(parseInt(maxWidth) / w, parseInt(maxHeight) / h);
       const minRatio = Math.max(parseInt(minWidth) / w, parseInt(minHeight) / h);
 
-      // maxRatio scales down and takes priority, minRatio scales up.
       const isScalingDown = maxRatio < 1;
       const scale = isScalingDown ? maxRatio : minRatio > 1 ? minRatio : 1;
 
