@@ -508,10 +508,9 @@ class MediaController extends MediaContainer {
     });
 
     /*
-     * Prevents the media element from being tab focusable, this is to prevent blue border, particularly when going full screen.
-     * The media controller should take on the accessibility responsabilities (clickable, keyboard controls, etc.)
-     * 
-     * Note: This implies we should never .focus on the media element.
+     * Prevents the media element from being tab focusable to avoid the blue focus ring,
+     * particularly when going full screen. The media controller handles all accessibility
+     * responsibilities (clickable, keyboard controls, etc.) instead.
      * 
      * See related links:
      * - https://github.com/muxinc/media-chrome/issues/309
@@ -519,7 +518,6 @@ class MediaController extends MediaContainer {
      */
     if (!media.hasAttribute('tabindex')) {
       media.tabIndex = -1;
-      media.ariaHidden = "true"
     }
   }
 
