@@ -408,23 +408,6 @@ class MediaContainer extends globalThis.HTMLElement {
       await globalThis.customElements.whenDefined(media.localName);
     }
 
-    const setVideoAccessibility = (videoEl: HTMLVideoElement) => {
-      if (!videoEl.hasAttribute('aria-hidden')) {
-        videoEl.setAttribute('aria-hidden', 'true');
-        videoEl.setAttribute('inert', 'true')
-      }
-    };
-
-    if (media instanceof HTMLVideoElement || media.tagName === 'VIDEO') {
-      setVideoAccessibility(media as HTMLVideoElement);
-    } else if (media.localName?.includes('-')) {
-      // If `media` is a custom media element search in its shadow DOM
-      const videoElement = media.shadowRoot?.querySelector('video') as HTMLVideoElement | null;
-      if (videoElement) {
-        setVideoAccessibility(videoElement);
-      }
-    }
-
     // Even if we are not connected to the DOM after this await still call mediaSetCallback
     // so the media state is already computed once, then when the container is connected
     // to the DOM mediaSetCallback is called again to attach the root node event listeners.

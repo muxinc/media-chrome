@@ -507,9 +507,19 @@ class MediaController extends MediaContainer {
       detail: media,
     });
 
-    // TODO: What does this do? At least add comment, maybe move to media-container
+    /*
+     * Prevents the media element from being tab focusable, this is to prevent blue border, particularly when going full screen.
+     * The media controller should take on the accessibility responsabilities (clickable, keyboard controls, etc.)
+     * 
+     * Note: This implies we should never .focus on the media element.
+     * 
+     * See related links:
+     * - https://github.com/muxinc/media-chrome/issues/309
+     * - https://github.com/muxinc/media-chrome/pull/312
+     */
     if (!media.hasAttribute('tabindex')) {
       media.tabIndex = -1;
+      media.ariaHidden = "true"
     }
   }
 
@@ -650,19 +660,13 @@ class MediaController extends MediaContainer {
     this.addEventListener('keyup', this.#keyUpHandler, { once: true });
   }
 
-  /** Used to prevent hotkeys event listeners from being set more than once */
-  #hotkeysEnabled: boolean = false;
   enableHotkeys() {
-    if (!this.#hotkeysEnabled) {
-      this.addEventListener('keydown', this.#keyDownHandler);
-      this.#hotkeysEnabled = true;
-    }
+    this.addEventListener('keydown', this.#keyDownHandler);
   }
 
   disableHotkeys() {
     this.removeEventListener('keydown', this.#keyDownHandler);
     this.removeEventListener('keyup', this.#keyUpHandler);
-    this.#hotkeysEnabled = false
   }
 
   get hotkeys(): string | undefined {

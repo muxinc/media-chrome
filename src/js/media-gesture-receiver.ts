@@ -88,8 +88,18 @@ class MediaGestureReceiver extends globalThis.HTMLElement {
       this.#mediaController?.associateElement?.(this);
     }
 
-    this.#mediaController?.addEventListener('pointerdown', this);
-    this.#mediaController?.addEventListener('click', this);
+    if (!this.#mediaController) return
+
+    this.#mediaController.addEventListener('pointerdown', this);
+    this.#mediaController.addEventListener('click', this);
+    
+    /* 
+     * Note: According to ARIA: "Clickable elements must be focusable and should have interactive semantics"
+     * Since this class adds the click listener, it also makes it focusable
+     */
+    if (!this.#mediaController.hasAttribute("tabindex")) {
+      this.#mediaController.tabIndex = 0;
+    }
   }
 
   disconnectedCallback(): void {
