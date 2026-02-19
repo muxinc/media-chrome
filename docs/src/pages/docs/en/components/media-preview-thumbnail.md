@@ -47,3 +47,76 @@ For more details on how thumbnails are integrated and controlled, see [`<media-t
   mediapreviewcoords="284 640 284 160"
 ></media-preview-thumbnail>
 ```
+
+## Sizing and Customization
+
+The preview thumbnail size is controlled via CSS custom properties on the [`<media-time-range>`](media-time-range) component:
+
+```css
+media-time-range {
+  --media-preview-thumbnail-max-width: 200px;
+  --media-preview-thumbnail-max-height: 200px;
+}
+```
+
+### Aspect Ratio Behavior
+
+By default, thumbnails maintain their original aspect ratio using `--media-preview-thumbnail-object-fit: contain` (the default). This means:
+
+- The thumbnail scales to fit within the max/min dimensions
+- The original aspect ratio is preserved
+- Setting equal width and height won't create a square if the source isn't square
+
+**Example with default behavior:**
+
+```css
+media-time-range {
+  --media-preview-thumbnail-max-width: 200px;
+  --media-preview-thumbnail-max-height: 200px;
+  /* Maintains aspect ratio - won't be square unless source is square */
+}
+```
+
+### Independent Width/Height Scaling
+
+To allow independent width and height scaling (useful for square thumbnails or vertical videos), use `object-fit: fill`:
+
+```css
+media-time-range {
+  --media-preview-thumbnail-max-width: 200px;
+  --media-preview-thumbnail-max-height: 200px;
+  --media-preview-thumbnail-object-fit: fill;
+  /* Creates square thumbnails by stretching to fill */
+}
+```
+
+### Vertical Video Thumbnails
+
+For vertical/portrait videos (like TikTok or Instagram Stories), use taller dimensions with `object-fit: fill`:
+
+```css
+media-time-range {
+  --media-preview-thumbnail-max-width: 160px;
+  --media-preview-thumbnail-max-height: 384px;
+  --media-preview-thumbnail-object-fit: fill;
+}
+```
+
+## CSS Custom Properties
+
+### Available Properties
+
+| Property | Default | Description |
+|----------|---------|-------------|
+| `--media-preview-thumbnail-max-width` | `180px` | Maximum thumbnail width |
+| `--media-preview-thumbnail-max-height` | `160px` | Maximum thumbnail height |
+| `--media-preview-thumbnail-min-width` | `120px` | Minimum thumbnail width |
+| `--media-preview-thumbnail-min-height` | `80px` | Minimum thumbnail height |
+| `--media-preview-thumbnail-object-fit` | `contain` | Scaling behavior: `contain` (maintains aspect ratio) or `fill` (independent width/height) |
+| `--media-preview-thumbnail-background` | - | Background color |
+| `--media-preview-thumbnail-box-shadow` | `0 0 4px rgba(0,0,0,0.2)` | Box shadow |
+| `--media-preview-thumbnail-border` | - | Border style |
+| `--media-preview-thumbnail-border-radius` | - | Border radius |
+
+**Note:** Using `fill` may cause image stretching if the aspect ratio doesn't match the source thumbnails.
+```
