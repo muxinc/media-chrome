@@ -1,3 +1,20 @@
+# [4.18.0](https://github.com/muxinc/media-chrome/compare/v4.17.2...v4.18.0) (2026-02-19)
+
+
+### Bug Fixes
+
+* aria-label i18n time range and seek buttons ([#1253](https://github.com/muxinc/media-chrome/issues/1253)) ([6203cd9](https://github.com/muxinc/media-chrome/commit/6203cd9363221bc6d4b5dc58c0f539ce2777f9fa))
+* firefox accessibility test ([#1258](https://github.com/muxinc/media-chrome/issues/1258)) ([440fdbc](https://github.com/muxinc/media-chrome/commit/440fdbc079cd3b419848b0af02d242b867d1a1eb))
+* Patch Memory Leaks ([#1261](https://github.com/muxinc/media-chrome/issues/1261)) ([d0b6922](https://github.com/muxinc/media-chrome/commit/d0b6922a2b163e0fad5877fbf3059b5d442d4ca4))
+* thumbnail preview sizing ([#1262](https://github.com/muxinc/media-chrome/issues/1262)) ([659c13f](https://github.com/muxinc/media-chrome/commit/659c13f3941157e7c69d807d31323c0263d3fdc6)), closes [#1160](https://github.com/muxinc/media-chrome/issues/1160)
+
+
+### Features
+
+* [a11y and i18n] Translate time phrases ([#1232](https://github.com/muxinc/media-chrome/issues/1232)) ([a725fd4](https://github.com/muxinc/media-chrome/commit/a725fd430458da68e5f4875333d0b533469582ca))
+
+
+
 ## [4.17.2](https://github.com/muxinc/media-chrome/compare/v4.17.1...v4.17.2) (2025-12-15)
 
 
