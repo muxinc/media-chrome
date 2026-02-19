@@ -109,6 +109,14 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   #slot: HTMLSlotElement;
   #keyUpHandler: ((evt: KeyboardEvent) => void) | null = null;
+  #keyDownHandler = (evt: KeyboardEvent) => {
+    const { metaKey, altKey, key } = evt;
+    if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
+      this.removeEventListener('keyup', this.#keyUpHandler);
+      return;
+    }
+    this.addEventListener('keyup', this.#keyUpHandler);
+  }
 
   static get observedAttributes(): string[] {
     return [...super.observedAttributes, ...CombinedAttributes, 'disabled'];
@@ -146,28 +154,20 @@ class MediaTimeDisplay extends MediaTextDisplay {
     this.#keyUpHandler = (evt: KeyboardEvent) => {
       const { key } = evt;
       if (!ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', this.#keyUpHandler!);
+        this.removeEventListener('keyup', this.#keyUpHandler);
         return;
       }
 
       this.toggleTimeDisplay();
     };
-
-    this.addEventListener('keydown', (evt: KeyboardEvent) => {
-      const { metaKey, altKey, key } = evt;
-      if (metaKey || altKey || !ButtonPressedKeys.includes(key)) {
-        this.removeEventListener('keyup', this.#keyUpHandler!);
-        return;
-      }
-      this.addEventListener('keyup', this.#keyUpHandler!);
-    });
-
+    this.addEventListener('keydown', this.#keyDownHandler);
     this.addEventListener('click', this.toggleTimeDisplay);
   }
 
   #removeEventListeners(): void {
     if (this.#keyUpHandler) {
       this.removeEventListener('keyup', this.#keyUpHandler);
+      this.removeEventListener('keydown', this.#keyDownHandler);
       this.removeEventListener('click', this.toggleTimeDisplay);
       this.#keyUpHandler = null;
     }
@@ -202,6 +202,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   disconnectedCallback(): void {
     this.disable();
+    this.#removeEventListeners();
     super.disconnectedCallback();
   }
 

@@ -38,26 +38,28 @@ class MediaVolumeRange extends MediaChromeRange {
     ];
   }
 
-  constructor() {
-    super();
-
-    this.range.addEventListener('input', () => {
-      const detail = this.range.value;
-      const evt = new globalThis.CustomEvent(
-        MediaUIEvents.MEDIA_VOLUME_REQUEST,
-        {
-          composed: true,
-          bubbles: true,
-          detail,
-        }
-      );
-      this.dispatchEvent(evt);
-    });
+  #handleRangeInput: () => void = () => {
+    const detail = this.range.value;
+    const evt = new globalThis.CustomEvent(
+      MediaUIEvents.MEDIA_VOLUME_REQUEST,
+      {
+        composed: true,
+        bubbles: true,
+        detail,
+      }
+    );
+    this.dispatchEvent(evt);
   }
 
   connectedCallback(): void {
     super.connectedCallback();
     this.range.setAttribute('aria-label', t('volume'));
+    this.range.addEventListener('input', this.#handleRangeInput);
+  }
+
+  disconnectedCallback(): void {
+    this.range.removeEventListener('input', this.#handleRangeInput);
+    super.disconnectedCallback();
   }
 
   attributeChangedCallback(

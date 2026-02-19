@@ -470,6 +470,8 @@ class MediaController extends MediaContainer {
     // mediaUnsetCallback() is called in super.disconnectedCallback();
     super.disconnectedCallback?.();
 
+    this.disableHotkeys();
+
     if (this.#mediaStore) {
       // Save the current state of subtitles before disconnecting
       const currentState = this.#mediaStore.getState();
@@ -490,6 +492,8 @@ class MediaController extends MediaContainer {
       this.#mediaStoreUnsubscribe?.();
       this.#mediaStoreUnsubscribe = undefined;
     }
+
+    this.unassociateElement(this);
   }
 
   /**
@@ -503,7 +507,15 @@ class MediaController extends MediaContainer {
       detail: media,
     });
 
-    // TODO: What does this do? At least add comment, maybe move to media-container
+    /*
+     * Prevents the media element from being tab focusable to avoid the blue focus ring,
+     * particularly when going full screen. The media controller handles all accessibility
+     * responsibilities (clickable, keyboard controls, etc.) instead.
+     * 
+     * See related links:
+     * - https://github.com/muxinc/media-chrome/issues/309
+     * - https://github.com/muxinc/media-chrome/pull/312
+     */
     if (!media.hasAttribute('tabindex')) {
       media.tabIndex = -1;
     }
@@ -595,7 +607,7 @@ class MediaController extends MediaContainer {
     els.splice(index, 1);
   }
 
-  #keyUpHandler(e: KeyboardEvent) {
+  #keyUpHandler = (e: KeyboardEvent) => {
     const { key, shiftKey } = e;
     // Check for Shift + / (which produces '?' on US keyboards or '/' on others)
     const isShiftSlash = shiftKey && (key === '/' || key === '?');

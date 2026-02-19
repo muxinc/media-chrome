@@ -1020,7 +1020,7 @@ export const stateMediator: StateMediator = {
       } else {
         enterFullscreen(stateOwners);
         const isPointer = event.detail;
-        if (isPointer) stateOwners.media?.focus();
+        if (isPointer && !stateOwners.media?.inert) stateOwners.media?.focus();
       }
     },
     // older Safari version may require webkit-specific events

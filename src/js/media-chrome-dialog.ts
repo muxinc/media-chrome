@@ -121,10 +121,6 @@ class MediaChromeDialog extends globalThis.HTMLElement {
 
   constructor() {
     super();
-
-    this.addEventListener('invoke', this);
-    this.addEventListener('focusout', this);
-    this.addEventListener('keydown', this);
   }
 
   get open() {
@@ -177,6 +173,16 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     if (!this.role) {
       this.role = 'dialog';
     }
+
+    this.addEventListener('invoke', this);
+    this.addEventListener('focusout', this);
+    this.addEventListener('keydown', this);
+  }
+  
+  disconnectedCallback(): void {
+    this.removeEventListener('invoke', this);
+    this.removeEventListener('focusout', this);
+    this.removeEventListener('keydown', this);
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {

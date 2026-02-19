@@ -59,6 +59,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   #template: HTMLTemplateElement;
   #prevTemplate: HTMLTemplateElement;
   #prevTemplateId: string | null;
+  #observer: MutationObserver;
 
   constructor() {
     super();
@@ -71,7 +72,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
       this.createRenderer();
     }
 
-    const observer = new MutationObserver((mutationList) => {
+    this.#observer = new MutationObserver((mutationList) => {
       // Only update if `<media-controller>` has computed breakpoints at least once.
       if (this.mediaController && !this.mediaController?.breakpointsComputed)
         return;
@@ -99,19 +100,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
       }
     });
 
-    // Observe the `<media-theme>` element for attribute changes.
-    observer.observe(this, { attributes: true });
-
-    // Observe the subtree of the render root, by default the elements in the shadow dom.
-    observer.observe(this.renderRoot, {
-      attributes: true,
-      subtree: true,
-    });
-
-    this.addEventListener(
-      MediaStateChangeEvents.BREAKPOINTS_COMPUTED,
-      this.render
-    );
+    this.#renderBind = this.render.bind(this);
 
     // In case the template prop was set before custom element upgrade.
     // https://web.dev/custom-elements-best-practices/#make-properties-lazy
@@ -196,7 +185,29 @@ export class MediaThemeElement extends globalThis.HTMLElement {
   }
 
   connectedCallback(): void {
+    this.addEventListener(
+      MediaStateChangeEvents.BREAKPOINTS_COMPUTED,
+      this.#renderBind
+    );
+    
+    // Observe the `<media-theme>` element for attribute changes.
+    this.#observer.observe(this, { attributes: true });
+
+    // Observe the subtree of the render root, by default the elements in the shadow dom.
+    this.#observer.observe(this.renderRoot, {
+      attributes: true,
+      subtree: true,
+    });
+
     this.#updateTemplate();
+  }
+
+  disconnectedCallback(): void {
+    this.removeEventListener(
+      MediaStateChangeEvents.BREAKPOINTS_COMPUTED,
+      this.#renderBind
+    );
+    this.#observer.disconnect();
   }
 
   #updateTemplate(): void {
@@ -252,6 +263,7 @@ export class MediaThemeElement extends globalThis.HTMLElement {
     }
   }
 
+  #renderBind: () => void;
   render(): void {
     this.renderer?.update(this.props);
   }

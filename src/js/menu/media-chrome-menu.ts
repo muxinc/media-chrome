@@ -348,10 +348,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
       'slot:not([name])'
     ) as HTMLSlotElement;
 
-    this.shadowRoot.addEventListener('slotchange', this);
-
     this.#mutationObserver = new MutationObserver(this.#handleMenuItems);
-    this.#mutationObserver.observe(this.defaultSlot, { childList: true });
   }
 
   enable(): void {
@@ -394,6 +391,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   }
 
   connectedCallback(): void {
+    this.#mutationObserver.observe(this.defaultSlot, { childList: true });
     this.#cssRule = insertCSSRule(this.shadowRoot, ':host');
 
     this.#updateLayoutStyle();
@@ -419,9 +417,13 @@ class MediaChromeMenu extends globalThis.HTMLElement {
 
     // Required when using declarative shadow DOM.
     this.#toggleHeader();
+
+    this.shadowRoot.addEventListener('slotchange', this);
   }
 
   disconnectedCallback(): void {
+    this.#mutationObserver.disconnect();
+
     unobserveResize(getBoundsElement(this), this.#handleBoundsResize);
     unobserveResize(this, this.#handleMenuResize);
 
@@ -430,6 +432,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
+
+    this.shadowRoot.removeEventListener('slotchange', this);
   }
 
   attributeChangedCallback(
