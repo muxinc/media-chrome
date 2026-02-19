@@ -104,4 +104,3 @@ media-time-range {
 
 
 **Note:** Using `fill` may cause image stretching if the aspect ratio doesn't match the source thumbnails.
-```
