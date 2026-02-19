@@ -102,21 +102,6 @@ media-time-range {
 }
 ```
 
-## CSS Custom Properties
-
-### Available Properties
-
-| Property | Default | Description |
-|----------|---------|-------------|
-| `--media-preview-thumbnail-max-width` | `180px` | Maximum thumbnail width |
-| `--media-preview-thumbnail-max-height` | `160px` | Maximum thumbnail height |
-| `--media-preview-thumbnail-min-width` | `120px` | Minimum thumbnail width |
-| `--media-preview-thumbnail-min-height` | `80px` | Minimum thumbnail height |
-| `--media-preview-thumbnail-object-fit` | `contain` | Scaling behavior: `contain` (maintains aspect ratio) or `fill` (independent width/height) |
-| `--media-preview-thumbnail-background` | - | Background color |
-| `--media-preview-thumbnail-box-shadow` | `0 0 4px rgba(0,0,0,0.2)` | Box shadow |
-| `--media-preview-thumbnail-border` | - | Border style |
-| `--media-preview-thumbnail-border-radius` | - | Border radius |
 
 **Note:** Using `fill` may cause image stretching if the aspect ratio doesn't match the source thumbnails.
 ```
