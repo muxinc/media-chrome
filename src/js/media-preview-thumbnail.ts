@@ -37,6 +37,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
  *
  * @cssproperty [--media-preview-thumbnail-display = inline-block] - `display` property of display.
  * @cssproperty [--media-control-display = inline-block] - `display` property of control.
+ * @cssproperty [--media-preview-thumbnail-object-fit = contain] - Controls how the thumbnail scales within its container. `contain` (default) maintains aspect ratio, `fill` allows independent width/height scaling.
  */
 class MediaPreviewThumbnail extends globalThis.HTMLElement {
   static shadowRootOptions = { mode: 'open' as ShadowRootMode };
@@ -153,27 +154,48 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
 
     const computedStyle = getComputedStyle(this);
     const { maxWidth, maxHeight, minWidth, minHeight } = computedStyle;
-    const maxRatio = Math.min(parseInt(maxWidth) / w, parseInt(maxHeight) / h);
-    const minRatio = Math.max(parseInt(minWidth) / w, parseInt(minHeight) / h);
 
-    // maxRatio scales down and takes priority, minRatio scales up.
-    const isScalingDown = maxRatio < 1;
-    const scale = isScalingDown ? maxRatio : minRatio > 1 ? minRatio : 1;
+    // Check if user wants independent width/height scaling (fill mode)
+    // Default is 'contain' which preserves aspect ratio
+    const objectFit = computedStyle.getPropertyValue('--media-preview-thumbnail-object-fit').trim() || 'contain';
+
+    let scaleX: number;
+    let scaleY: number;
+
+    if (objectFit === 'fill') {
+      const maxRatioX = parseInt(maxWidth) / w;
+      const maxRatioY = parseInt(maxHeight) / h;
+      const minRatioX = parseInt(minWidth) / w;
+      const minRatioY = parseInt(minHeight) / h;
+
+      scaleX = maxRatioX < 1 ? maxRatioX : Math.max(maxRatioX, minRatioX);
+      scaleY = maxRatioY < 1 ? maxRatioY : Math.max(maxRatioY, minRatioY);
+    } else {
+      const maxRatio = Math.min(parseInt(maxWidth) / w, parseInt(maxHeight) / h);
+      const minRatio = Math.max(parseInt(minWidth) / w, parseInt(minHeight) / h);
+
+      const isScalingDown = maxRatio < 1;
+      const scale = isScalingDown ? maxRatio : minRatio > 1 ? minRatio : 1;
+
+      scaleX = scale;
+      scaleY = scale;
+    }
 
     const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
     const imgStyle = getOrInsertCSSRule(this.shadowRoot, 'img').style;
     const img = this.shadowRoot.querySelector('img');
 
     // Revert one set of extremum to its initial value on a known scale direction.
+    const isScalingDown = Math.min(scaleX, scaleY) < 1;
     const extremum = isScalingDown ? 'min' : 'max';
     style.setProperty(`${extremum}-width`, 'initial', 'important');
     style.setProperty(`${extremum}-height`, 'initial', 'important');
-    style.width = `${w * scale}px`;
-    style.height = `${h * scale}px`;
+    style.width = `${w * scaleX}px`;
+    style.height = `${h * scaleY}px`;
 
     const resize = () => {
-      imgStyle.width = `${this.imgWidth * scale}px`;
-      imgStyle.height = `${this.imgHeight * scale}px`;
+      imgStyle.width = `${this.imgWidth * scaleX}px`;
+      imgStyle.height = `${this.imgHeight * scaleY}px`;
       imgStyle.display = 'block';
     };
 
@@ -190,7 +212,7 @@ class MediaPreviewThumbnail extends globalThis.HTMLElement {
     }
 
     resize();
-    imgStyle.transform = `translate(-${x * scale}px, -${y * scale}px)`;
+    imgStyle.transform = `translate(-${x * scaleX}px, -${y * scaleY}px)`;
   }
 }
 
