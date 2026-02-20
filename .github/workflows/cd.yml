@@ -49,7 +49,7 @@ jobs:
           fetch-depth: 0 # Fetch all history for all tags and branches
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           # this line is required for the setup-node action to be able to run the npm publish below.
           registry-url: 'https://registry.npmjs.org'
       - uses: fregante/setup-git-user@v1
