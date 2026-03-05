@@ -50,5 +50,5 @@ If you have a live player with no DVR functionality, you might want to turn off 
 
 ```js
 const mc = document.querySelector('media-controller');
-mc.hotkeys.add('noarrowleft', 'noarrowright);
+mc.hotkeys.add('noarrowleft', 'noarrowright');
 ```
