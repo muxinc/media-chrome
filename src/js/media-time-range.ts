@@ -475,7 +475,7 @@ class MediaTimeRange extends MediaChromeRange {
 
   disconnectedCallback(): void {
     super.disconnectedCallback();
-    this.#toggleRangeAnimation();
+    this.#animation.stop();
 
     this.#rootNode?.removeEventListener('transitionstart', this);
     this.#rootNode = null;

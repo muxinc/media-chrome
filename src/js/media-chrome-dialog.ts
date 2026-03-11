@@ -115,7 +115,6 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     return [Attributes.OPEN, Attributes.ANCHOR];
   }
 
-  #isInit = false;
   #previouslyFocused: HTMLElement | null = null;
   #invokerElement: HTMLElement | null = null;
 
@@ -132,25 +131,22 @@ class MediaChromeDialog extends globalThis.HTMLElement {
   }
 
   #init() {
-    if (this.#isInit) return;
-    this.#isInit = true;
+    if (this.shadowRoot) return;
 
-    if (!this.shadowRoot) {
-      // Set up the Shadow DOM if not using Declarative Shadow DOM.
-      this.attachShadow((this.constructor as typeof MediaChromeDialog).shadowRootOptions);
+    // Set up the Shadow DOM if not using Declarative Shadow DOM.
+    this.attachShadow((this.constructor as typeof MediaChromeDialog).shadowRootOptions);
 
-      const attrs = namedNodeMapToObject(this.attributes);
-      this.shadowRoot.innerHTML = (this.constructor as typeof MediaChromeDialog).getTemplateHTML(attrs);
+    const attrs = namedNodeMapToObject(this.attributes);
+    this.shadowRoot.innerHTML = (this.constructor as typeof MediaChromeDialog).getTemplateHTML(attrs);
 
-      // Delay setting the transition to prevent seeing the transition from default start styles.
-      queueMicrotask(() => {
-        const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
-        style.setProperty(
-          'transition',
-          `display .15s, visibility .15s, opacity .15s ease-in, transform .15s ease-in`
-        );
-      });
-    }
+    // Delay setting the transition to prevent seeing the transition from default start styles.
+    queueMicrotask(() => {
+      const { style } = getOrInsertCSSRule(this.shadowRoot, ':host');
+      style.setProperty(
+        'transition',
+        `display .15s, visibility .15s, opacity .15s ease-in, transform .15s ease-in`
+      );
+    });
   }
 
   handleEvent(event: Event) {
@@ -183,6 +179,8 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     this.removeEventListener('invoke', this);
     this.removeEventListener('focusout', this);
     this.removeEventListener('keydown', this);
+    this.#previouslyFocused = null;
+    this.#invokerElement = null;
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {

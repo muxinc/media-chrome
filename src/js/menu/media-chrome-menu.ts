@@ -432,6 +432,8 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     // Use cached mediaController, getRootNode() doesn't work if disconnected.
     this.#mediaController?.unassociateElement?.(this);
     this.#mediaController = null;
+    this.#previouslyFocused = null;
+    this.#invokerElement = null;
 
     this.shadowRoot.removeEventListener('slotchange', this);
   }
