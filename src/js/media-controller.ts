@@ -113,7 +113,10 @@ class MediaController extends MediaContainer {
       Attributes.NO_MUTED_PREF,
       Attributes.NO_VOLUME_PREF,
       Attributes.LANG,
-      Attributes.LOOP
+      Attributes.LOOP,
+      Attributes.LIVE_EDGE_OFFSET,
+      Attributes.SEEK_TO_LIVE_OFFSET,
+      Attributes.NO_AUTO_SEEK_TO_LIVE
     );
   }
 
