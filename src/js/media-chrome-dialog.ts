@@ -179,8 +179,6 @@ class MediaChromeDialog extends globalThis.HTMLElement {
     this.removeEventListener('invoke', this);
     this.removeEventListener('focusout', this);
     this.removeEventListener('keydown', this);
-    this.#previouslyFocused = null;
-    this.#invokerElement = null;
   }
 
   attributeChangedCallback(attrName: string, oldValue: string | null, newValue: string | null) {

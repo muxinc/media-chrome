@@ -80,14 +80,14 @@ class MediaContextMenu extends MediaChromeMenu {
   }
 
   disconnectedCallback(): void {
-    getMediaController(this)?.removeEventListener(
+    super.disconnectedCallback();
+    getMediaController(this).removeEventListener(
       'contextmenu',
       this.#onControllerContextMenu
     );
     this.removeEventListener('click', this.#onMenuClick);
     document.removeEventListener('mousedown', this.#onDocumentClick);
     document.removeEventListener('keydown', this.#onKeyDown);
-    super.disconnectedCallback();
   }
 
   #onControllerContextMenu = (event: MouseEvent): void => {

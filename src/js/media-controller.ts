@@ -472,39 +472,35 @@ class MediaController extends MediaContainer {
 
     this.disableHotkeys();
 
-    // Unsubscribe first so the subscriber count drops to 0 before
-    // dispatching stateOwner teardowns. This avoids a race condition where
-    // the async updateStateOwners batches the unsubscribe's nextSubscriberCount=0
-    // into a pending update and loses it.
-    if (this.#mediaStoreUnsubscribe) {
-      this.#mediaStoreUnsubscribe();
-      this.#mediaStoreUnsubscribe = undefined;
-    }
-
     if (this.#mediaStore) {
       // Save the current state of subtitles before disconnecting
       const currentState = this.#mediaStore.getState();
       this.#subtitlesState = !!currentState.mediaSubtitlesShowing?.length;
 
       // Clear all stateOwners to teardown event handlers and release DOM references.
-      this.#mediaStore.dispatch({
+      this.#mediaStore?.dispatch({
         type: 'mediaelementchangerequest',
         detail: undefined,
       });
-      this.#mediaStore.dispatch({
+      this.#mediaStore?.dispatch({
         type: 'fullscreenelementchangerequest',
         detail: undefined,
       });
-      this.#mediaStore.dispatch({
+      this.#mediaStore?.dispatch({
         type: 'documentelementchangerequest',
         detail: undefined,
       });
       /** @TODO Revisit: may not be necessary anymore or better solved via unsubscribe behavior? (CJP) */
       // Disable captions on disconnect to prevent a memory leak if they stay enabled.
-      this.#mediaStore.dispatch({
+      this.#mediaStore?.dispatch({
         type: MediaUIEvents.MEDIA_TOGGLE_SUBTITLES_REQUEST,
         detail: false,
       });
+    }
+
+    if (this.#mediaStoreUnsubscribe) {
+      this.#mediaStoreUnsubscribe?.();
+      this.#mediaStoreUnsubscribe = undefined;
     }
 
     this.unassociateElement(this);
