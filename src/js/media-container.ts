@@ -477,6 +477,8 @@ class MediaContainer extends globalThis.HTMLElement {
       // Free this because it is set on connect
       this.#chainedSlot = null;
     }
+
+    this.#isResizePending = false;
   }
 
   /**
