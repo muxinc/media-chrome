@@ -667,7 +667,8 @@ class MediaController extends MediaContainer {
     this.removeEventListener('keyup', this.#keyUpHandler);
   }
 
-  get hotkeys(): AttributeTokenList {
+  // Added string to support JSX compatibility
+  get hotkeys(): AttributeTokenList | string {
     return this.#hotKeys;
   }
 
