@@ -438,6 +438,10 @@ class MediaController extends MediaContainer {
       type: 'documentelementchangerequest',
       detail: document,
     });
+    this.#mediaStore?.dispatch({
+      type: 'fullscreenelementchangerequest',
+      detail: this.fullscreenElement,
+    });
 
     // mediaSetCallback() is called in super.connectedCallback();
     super.connectedCallback();
@@ -478,10 +482,7 @@ class MediaController extends MediaContainer {
       this.#subtitlesState = !!currentState.mediaSubtitlesShowing?.length;
 
       // Clear all stateOwners to teardown event handlers and release DOM references.
-      this.#mediaStore?.dispatch({
-        type: 'mediaelementchangerequest',
-        detail: undefined,
-      });
+      // Note: mediaelementchangerequest is already dispatched by super.disconnectedCallback() via mediaUnsetCallback.
       this.#mediaStore?.dispatch({
         type: 'fullscreenelementchangerequest',
         detail: undefined,
