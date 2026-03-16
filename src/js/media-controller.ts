@@ -359,24 +359,33 @@ class MediaController extends MediaContainer {
             this.getAttribute(Attributes.DEFAULT_STREAM_TYPE) ?? undefined,
         },
       });
-    } else if (attrName === Attributes.LIVE_EDGE_OFFSET) {
+    } else if (attrName === Attributes.LIVE_EDGE_OFFSET && newValue !== oldValue) {
       this.#mediaStore?.dispatch({
         type: 'optionschangerequest',
         detail: {
           liveEdgeOffset: this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)
             ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
             : undefined,
-          seekToLiveOffset: !this.hasAttribute(Attributes.SEEK_TO_LIVE_OFFSET)
+          seekToLiveOffset: this.hasAttribute(Attributes.SEEK_TO_LIVE_OFFSET)
+            ? +this.getAttribute(Attributes.SEEK_TO_LIVE_OFFSET)
+            : this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)
             ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
             : undefined,
-        },
+          },
       });
-    } else if (attrName === Attributes.SEEK_TO_LIVE_OFFSET) {
+    } else if (
+      attrName === Attributes.SEEK_TO_LIVE_OFFSET &&
+      newValue !== oldValue
+    ) {
       this.#mediaStore?.dispatch({
         type: 'optionschangerequest',
         detail: {
+          // Mirror #setupDefaultStore: prefer seektoliveoffset, fall back to
+          // liveedgeoffset, otherwise undefined.
           seekToLiveOffset: this.hasAttribute(Attributes.SEEK_TO_LIVE_OFFSET)
             ? +this.getAttribute(Attributes.SEEK_TO_LIVE_OFFSET)
+            : this.hasAttribute(Attributes.LIVE_EDGE_OFFSET)
+            ? +this.getAttribute(Attributes.LIVE_EDGE_OFFSET)
             : undefined,
         },
       });
