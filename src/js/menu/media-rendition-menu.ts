@@ -38,6 +38,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       MediaUIAttributes.MEDIA_RENDITION_SELECTED,
       MediaUIAttributes.MEDIA_RENDITION_UNAVAILABLE,
       MediaUIAttributes.MEDIA_HEIGHT,
+      MediaUIAttributes.MEDIA_WIDTH,
     ];
   }
 
@@ -82,23 +83,21 @@ class MediaRenditionMenu extends MediaChromeMenu {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (
-      attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED &&
-      oldValue !== newValue
-    ) {
-      this.value = newValue ?? 'auto';
-      this.#render();
-    } else if (
-      attrName === MediaUIAttributes.MEDIA_RENDITION_LIST &&
-      oldValue !== newValue
-    ) {
-      this.#renditionList = parseRenditionList(newValue);
-      this.#render();
-    } else if (
-      attrName === MediaUIAttributes.MEDIA_HEIGHT &&
-      oldValue !== newValue
-    ) {
-      this.#render();
+    if (oldValue !== newValue) {
+      switch (attrName) {
+        case MediaUIAttributes.MEDIA_RENDITION_SELECTED:
+          this.value = newValue ?? 'auto';
+          this.#render();
+          break;
+        case MediaUIAttributes.MEDIA_RENDITION_LIST:
+          this.#renditionList = parseRenditionList(newValue);
+          this.#render();
+          break;
+        case MediaUIAttributes.MEDIA_HEIGHT:
+        case MediaUIAttributes.MEDIA_WIDTH:
+          this.#render();
+          break
+      }
     }
   }
 
@@ -150,11 +149,20 @@ class MediaRenditionMenu extends MediaChromeMenu {
     setNumericAttr(this, MediaUIAttributes.MEDIA_HEIGHT, height);
   }
 
+  get mediaWidth(): number {
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_WIDTH);
+  }
+
+  set mediaWidth(width: number) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_WIDTH, width);
+  }
+
   #render(): void {
     if (
       this.#prevState.mediaRenditionList ===
         JSON.stringify(this.mediaRenditionList) &&
-      this.#prevState.mediaHeight === this.mediaHeight
+      this.#prevState.mediaHeight === this.mediaHeight &&
+      this.#prevState.mediaWidth === this.mediaWidth
     )
       return;
 
@@ -162,12 +170,13 @@ class MediaRenditionMenu extends MediaChromeMenu {
       this.mediaRenditionList
     );
     this.#prevState.mediaHeight = this.mediaHeight;
+    this.#prevState.mediaWidth = this.mediaWidth;
 
     const renditionList = this.mediaRenditionList.sort(
       this.compareRendition.bind(this)
     );
 
-    const selectedRendition = renditionList.find(
+    const selectedRendition: Rendition | undefined = renditionList.find(
       (rendition) => rendition.id === this.mediaRenditionSelected
     );
 
@@ -209,7 +218,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
             })}`,
             selectedRendition
           )
-        : this.formatMenuItemText(`${t('Auto')} (${this.mediaHeight}p)`)
+        : this.formatMenuItemText(`${t('Auto')} (${Math.min(this.mediaWidth, this.mediaHeight)}p)`)
       : this.formatMenuItemText(t('Auto'));
 
     const item = createMenuItem({
