@@ -1,3 +1,13 @@
+## [4.18.1](https://github.com/muxinc/media-chrome/compare/v4.18.0...v4.18.1) (2026-03-17)
+
+
+### Bug Fixes
+
+* Add observed attributes for live ([#1272](https://github.com/muxinc/media-chrome/issues/1272)) ([897f4e9](https://github.com/muxinc/media-chrome/commit/897f4e9f196686f669e20b1e36618f5649c70b87)), closes [#1265](https://github.com/muxinc/media-chrome/issues/1265)
+* hotkeys properties support ([#1266](https://github.com/muxinc/media-chrome/issues/1266)) ([6227c5f](https://github.com/muxinc/media-chrome/commit/6227c5f3ae9a14ff36928876665d25186e09c4cd)), closes [#1260](https://github.com/muxinc/media-chrome/issues/1260)
+
+
+
 # [4.18.0](https://github.com/muxinc/media-chrome/compare/v4.17.2...v4.18.0) (2026-02-19)
 
 
