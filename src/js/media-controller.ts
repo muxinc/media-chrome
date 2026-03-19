@@ -450,6 +450,10 @@ class MediaController extends MediaContainer {
       type: 'documentelementchangerequest',
       detail: document,
     });
+    this.#mediaStore?.dispatch({
+      type: 'fullscreenelementchangerequest',
+      detail: this.fullscreenElement,
+    });
 
     // mediaSetCallback() is called in super.connectedCallback();
     super.connectedCallback();
@@ -488,6 +492,13 @@ class MediaController extends MediaContainer {
       // Save the current state of subtitles before disconnecting
       const currentState = this.#mediaStore.getState();
       this.#subtitlesState = !!currentState.mediaSubtitlesShowing?.length;
+
+      // Clear all stateOwners to teardown event handlers and release DOM references.
+      // Note: mediaelementchangerequest is already dispatched by super.disconnectedCallback() via mediaUnsetCallback.
+      this.#mediaStore?.dispatch({
+        type: 'fullscreenelementchangerequest',
+        detail: undefined,
+      });
       this.#mediaStore?.dispatch({
         type: 'documentelementchangerequest',
         detail: undefined,
@@ -506,6 +517,11 @@ class MediaController extends MediaContainer {
     }
 
     this.unassociateElement(this);
+
+    if (this.#keyboardShortcutsDialog) {
+      this.#keyboardShortcutsDialog.remove();
+      this.#keyboardShortcutsDialog = null;
+    }
   }
 
   /**
