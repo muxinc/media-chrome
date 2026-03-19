@@ -1,3 +1,12 @@
+## [4.18.2](https://github.com/muxinc/media-chrome/compare/v4.18.1...v4.18.2) (2026-03-19)
+
+
+### Bug Fixes
+
+* Patch Memory Leaks ([#1273](https://github.com/muxinc/media-chrome/issues/1273)) ([b380873](https://github.com/muxinc/media-chrome/commit/b3808733d4560e2bb17cbd78f94b4ca56292b5e8)), closes [#1261](https://github.com/muxinc/media-chrome/issues/1261) [#1235](https://github.com/muxinc/media-chrome/issues/1235) [#1261](https://github.com/muxinc/media-chrome/issues/1261) [#1261](https://github.com/muxinc/media-chrome/issues/1261) [#1285](https://github.com/muxinc/media-chrome/issues/1285)
+
+
+
 ## [4.18.1](https://github.com/muxinc/media-chrome/compare/v4.18.0...v4.18.1) (2026-03-17)
 
 
