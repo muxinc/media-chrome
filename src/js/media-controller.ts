@@ -158,10 +158,6 @@ class MediaController extends MediaContainer {
       });
       prevState = nextState;
     };
-
-    this.hasAttribute(Attributes.NO_HOTKEYS)
-      ? this.disableHotkeys()
-      : this.enableHotkeys();
   }
 
   #setupDefaultStore() {
@@ -440,6 +436,8 @@ class MediaController extends MediaContainer {
   }
 
   connectedCallback(): void {
+    this.associateElement(this);
+
     // NOTE: Need to defer default MediaStore creation until connected for use cases that
     // rely on createElement('media-controller') (like many frameworks "under the hood") (CJP).
     if (!this.#mediaStore && !this.hasAttribute(Attributes.NO_DEFAULT_STORE)) {
