@@ -38,6 +38,7 @@ class MediaRenditionMenu extends MediaChromeMenu {
       MediaUIAttributes.MEDIA_RENDITION_SELECTED,
       MediaUIAttributes.MEDIA_RENDITION_UNAVAILABLE,
       MediaUIAttributes.MEDIA_HEIGHT,
+      MediaUIAttributes.MEDIA_WIDTH,
     ];
   }
 
@@ -82,23 +83,21 @@ class MediaRenditionMenu extends MediaChromeMenu {
   ): void {
     super.attributeChangedCallback(attrName, oldValue, newValue);
 
-    if (
-      attrName === MediaUIAttributes.MEDIA_RENDITION_SELECTED &&
-      oldValue !== newValue
-    ) {
-      this.value = newValue ?? 'auto';
-      this.#render();
-    } else if (
-      attrName === MediaUIAttributes.MEDIA_RENDITION_LIST &&
-      oldValue !== newValue
-    ) {
-      this.#renditionList = parseRenditionList(newValue);
-      this.#render();
-    } else if (
-      attrName === MediaUIAttributes.MEDIA_HEIGHT &&
-      oldValue !== newValue
-    ) {
-      this.#render();
+    if (oldValue !== newValue) {
+      switch (attrName) {
+        case MediaUIAttributes.MEDIA_RENDITION_SELECTED:
+          this.value = newValue ?? 'auto';
+          this.#render();
+          break;
+        case MediaUIAttributes.MEDIA_RENDITION_LIST:
+          this.#renditionList = parseRenditionList(newValue);
+          this.#render();
+          break;
+        case MediaUIAttributes.MEDIA_HEIGHT:
+        case MediaUIAttributes.MEDIA_WIDTH:
+          this.#render();
+          break
+      }
     }
   }
 
@@ -150,11 +149,23 @@ class MediaRenditionMenu extends MediaChromeMenu {
     setNumericAttr(this, MediaUIAttributes.MEDIA_HEIGHT, height);
   }
 
+  get mediaWidth(): number {
+    return getNumericAttr(this, MediaUIAttributes.MEDIA_WIDTH);
+  }
+
+  set mediaWidth(width: number) {
+    setNumericAttr(this, MediaUIAttributes.MEDIA_WIDTH, width);
+  }
+
   #render(): void {
+    const isAuto = !this.mediaRenditionSelected;
+
     if (
       this.#prevState.mediaRenditionList ===
         JSON.stringify(this.mediaRenditionList) &&
-      this.#prevState.mediaHeight === this.mediaHeight
+      this.#prevState.mediaHeight === this.mediaHeight &&
+      this.#prevState.mediaWidth === this.mediaWidth && 
+      this.#prevState.isAuto === isAuto
     )
       return;
 
@@ -162,12 +173,14 @@ class MediaRenditionMenu extends MediaChromeMenu {
       this.mediaRenditionList
     );
     this.#prevState.mediaHeight = this.mediaHeight;
+    this.#prevState.mediaWidth = this.mediaWidth;
+    this.#prevState.isAuto = isAuto;
 
     const renditionList = this.mediaRenditionList.sort(
       this.compareRendition.bind(this)
     );
 
-    const selectedRendition = renditionList.find(
+    const selectedRendition: Rendition | undefined = renditionList.find(
       (rendition) => rendition.id === this.mediaRenditionSelected
     );
 
@@ -179,8 +192,6 @@ class MediaRenditionMenu extends MediaChromeMenu {
     }
 
     this.defaultSlot.textContent = '';
-
-    const isAuto = !this.mediaRenditionSelected;
 
     for (const rendition of renditionList) {
       const text = this.formatRendition(rendition, {
@@ -199,18 +210,30 @@ class MediaRenditionMenu extends MediaChromeMenu {
 
     const showSelectedBitrate =
       selectedRendition && this.showRenditionBitrate(selectedRendition);
-
-    const autoText = isAuto
-      ? // Auto • 1080p (4 Mbps)
-        selectedRendition
-        ? this.formatMenuItemText(
-            `${t('Auto')} • ${this.formatRendition(selectedRendition, {
-              showBitrate: showSelectedBitrate,
-            })}`,
-            selectedRendition
-          )
-        : this.formatMenuItemText(`${t('Auto')} (${this.mediaHeight}p)`)
-      : this.formatMenuItemText(t('Auto'));
+    
+    let autoText = undefined;
+    if (isAuto) {
+      // TODO: If isAuto === true -> selectedRendition will be undefined
+      //    so this is effectively dead code, but I'm leaving it here because
+      //    it's a nice to have. 
+      // We would need a way to get the active rendition in a similar way as we
+      // get selectedRendition or a way to get mediaBitrate (not currently provided by state).
+      if (selectedRendition) {
+        // Auto • 1080p (4 Mbps)
+        autoText = this.formatMenuItemText(
+          `${t('Auto')} • ${this.formatRendition(selectedRendition, {
+            showBitrate: showSelectedBitrate,
+          })}`,
+          selectedRendition
+        )
+      } else if (this.mediaHeight > 0 && this.mediaWidth > 0) {
+        autoText = this.formatMenuItemText(`${t('Auto')} (${Math.min(this.mediaWidth, this.mediaHeight)}p)`)
+      }
+    }
+    
+    if (!autoText) {
+      autoText = this.formatMenuItemText(t('Auto'));
+    }
 
     const item = createMenuItem({
       type: 'radio',
