@@ -1,3 +1,12 @@
+## [4.18.3](https://github.com/muxinc/media-chrome/compare/v4.18.2...v4.18.3) (2026-03-25)
+
+
+### Bug Fixes
+
+* Re associate element on reconnect ([#1277](https://github.com/muxinc/media-chrome/issues/1277)) ([80a4cd6](https://github.com/muxinc/media-chrome/commit/80a4cd69bbf850f59eaba4ad3b7e1c6d686c938a))
+
+
+
 ## [4.18.2](https://github.com/muxinc/media-chrome/compare/v4.18.1...v4.18.2) (2026-03-19)
 
 
