@@ -6,7 +6,7 @@ export const SITE = {
 
 export const OPEN_GRAPH = {
   image: {
-    src: 'https://www.media-chrome.org/favicon/favicon-48x48.png',
+    src: '/og-image.png',
     alt: 'html tag on a green background',
   },
   twitter: 'MuxHQ',
