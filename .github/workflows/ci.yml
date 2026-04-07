@@ -43,6 +43,7 @@ jobs:
           verbose: true
       - run: npm run manifest
       - run: npm run build
+      - run: npm run test:examples
 
   canary:
     if: ${{ github.ref == 'refs/heads/main' }}
