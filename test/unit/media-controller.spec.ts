@@ -370,6 +370,10 @@ describe('receiving state / dispatching (bubbling) events', () => {
       !mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
       'has no mediapaused'
     );
+    assert(
+      !mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
+      'has no mediapaused'
+    );
 
     div.dispatchEvent(
       new Event(MediaUIEvents.MEDIA_PAUSE_REQUEST, { bubbles: true })
@@ -377,6 +381,10 @@ describe('receiving state / dispatching (bubbling) events', () => {
 
     await waitUntil(() => video.paused);
     await waitUntil(() =>
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
+      'has mediapaused'
+    );
+    assert(
       mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
       'has mediapaused'
     );
@@ -394,6 +402,10 @@ describe('receiving state / dispatching (bubbling) events', () => {
       !mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED),
       'has no mediamuted'
     );
+    assert(
+      !mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED),
+      'has no mediamuted'
+    );
 
     div.dispatchEvent(
       new Event(MediaUIEvents.MEDIA_MUTE_REQUEST, { bubbles: true })
@@ -401,7 +413,11 @@ describe('receiving state / dispatching (bubbling) events', () => {
 
     await waitUntil(() => video.muted, 'video.muted is true');
     await waitUntil(() =>
-      !mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED),
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED),
+      'has mediamuted'
+    );
+    assert(
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED),
       'has mediamuted'
     );
   });
