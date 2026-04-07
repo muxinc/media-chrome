@@ -350,7 +350,11 @@ describe('receiving state / dispatching (bubbling) events', () => {
       MediaUIAttributes.MEDIA_VOLUME_LEVEL
     );
 
-    await aTimeout(200);
+    await waitUntil(
+      () => video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA,
+      'video is not ready to play',
+      { timeout: 10000 }
+    );
 
     await video.play();
 
@@ -435,7 +439,9 @@ describe('receiving state / dispatching (bubbling) events', () => {
     await waitUntil(
       () =>
         // @ts-ignore
-        mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) >= 2
+        mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) >= 2,
+      'mediacurrenttime did not reach 2',
+      { timeout: 10000 }
     );
     assert(true, 'mediacurrenttime is 2');
   });
@@ -452,8 +458,8 @@ describe('receiving state / dispatching (bubbling) events', () => {
       () =>
         // @ts-ignore
         mediaController.getAttribute(MediaUIAttributes.MEDIA_VOLUME) == 0.73,
-      // @ts-ignore
-      10000
+      'mediavolume did not reach 0.73',
+      { timeout: 10000 }
     );
     assert(true, 'mediavolume is 0.73');
   });
