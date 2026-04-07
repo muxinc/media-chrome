@@ -71,6 +71,8 @@ jobs:
           path: ~/.cache/ms-playwright
           key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
 
+      - name: Remove man-db to speed up apt installs
+        run: sudo apt-get remove -y man-db
       - run: npx playwright install --with-deps
         if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
       - run: npx playwright install-deps
