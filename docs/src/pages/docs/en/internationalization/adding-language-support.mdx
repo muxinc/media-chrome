@@ -8,6 +8,8 @@ Media Chrome supports multiple languages for its UI components. By default, it u
 ## Available Languages
 Currently, the supported languages are:
 
+- **Chinese (Simplified)** (`zh-CN`)
+- **Chinese (Traditional)** (`zh-TW`)
 - **English** (default)
 - **French** (`fr`)
 - **German** (`de`)
@@ -37,9 +39,34 @@ import "media-chrome/lang/pt.js";
 Again, replace `pt.js` with the desired language code.
 
 ## How Language Selection Works
-Media Chrome automatically detects the user's preferred language based on their browser settings. If the corresponding language file has been imported, the UI will switch to that language.
+Media Chrome automatically detects the user's preferred language based on their browser settings. If the corresponding language file has been imported, the UI will switch to that language. 
+
+> **Note:** When using HTML, make sure the language file `<script>` tag is loaded **before** the main Media Chrome script so the translations are registered before the components initialize.
 
 If the user’s preferred language is not available, the UI will fall back to English.
+
+## Manually Setting the Language
+
+You can also override the language explicitly by setting the `lang` attribute on the `<media-controller>` element after the language file has been loaded:
+
+```html
+<script type="module" src="https://cdn.jsdelivr.net/npm/media-chrome@4/dist/lang/es.js"></script>
+
+<media-controller lang="es">
+  ...
+</media-controller>
+```
+
+Or dynamically via JavaScript after the language module is imported:
+
+```js
+import "media-chrome/lang/es.js";
+
+const controller = document.querySelector("media-controller");
+controller.setAttribute("lang", "es");
+```
+
+This is useful when you want to set the language programmatically regardless of the user’s browser settings.
 
 
 ## Adding a New Language
@@ -47,12 +74,16 @@ If you want to add support for a new language, you can create your own language 
 
 1. Copy the contents of an existing language file (e.g., `es.js`).
 2. Modify the translations to match your desired language.
-3. Save it as a new file, e.g., `de.js` for German.
+3. Save it as a new file, e.g., `it.js` for Italian.
 4. Import it into your project using:
 
    ```js
-   import "./path-to-your-lang/de.js";
+   import "./path-to-your-lang/it.js";
    ```
 
 5. Ensure the browser can detect and apply the language based on user preferences.
+
+## Contributing a Language to the Library
+
+Want to share your translation? Add your language file to `src/js/lang/` and open a [Pull Request](https://github.com/muxinc/media-chrome/pulls).
 

@@ -34,7 +34,7 @@ import {
 } from './utils/element-utils.js';
 import { createMediaStore, MediaStore } from './media-store/media-store.js';
 import { CustomElement } from './utils/CustomElement.js';
-import { setLanguage } from './utils/i18n.js';
+import { setLanguage, getResolvedLanguage } from './utils/i18n.js';
 
 const ButtonPressedKeys = [
   'ArrowLeft',
@@ -315,6 +315,10 @@ class MediaController extends MediaContainer {
 
   set noDefaultStore(value: boolean | undefined) {
     setBooleanAttr(this, Attributes.NO_DEFAULT_STORE, value);
+  }
+
+  get resolvedLang(): string {
+    return getResolvedLanguage();
   }
 
   attributeChangedCallback(
