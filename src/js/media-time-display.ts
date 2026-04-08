@@ -51,7 +51,7 @@ const formatTimesLabel = (
   return `${timeLabel}${timesSep}${formatTime(endTime)}`;
 };
 
-const updateAriaValueText = (el: MediaTimeDisplay): void => {
+const updateAriaDescription = (el: MediaTimeDisplay): void => {
   const currentTime = el.mediaCurrentTime;
   const [, seekableEnd] = el.mediaSeekable ?? [];
   let endTime = null;
@@ -61,7 +61,7 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
     endTime = seekableEnd;
   }
   if (currentTime == null || endTime === null) {
-    el.setAttribute('aria-valuetext', t('video not loaded, unknown time.'));
+    el.setAttribute('aria-description', t('video not loaded, unknown time.'));
     return;
   }
 
@@ -70,7 +70,7 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
     : formatAsTimePhrase(currentTime);
 
   if (!el.showDuration) {
-    el.setAttribute('aria-valuetext', currentTimePhrase);
+    el.setAttribute('aria-description', currentTimePhrase);
     return;
   }
   const totalTimePhrase = formatAsTimePhrase(endTime);
@@ -78,7 +78,7 @@ const updateAriaValueText = (el: MediaTimeDisplay): void => {
     currentTime: currentTimePhrase,
     totalTime: totalTimePhrase,
   });
-  el.setAttribute('aria-valuetext', fullPhrase);
+  el.setAttribute('aria-description', fullPhrase);
 };
 
 function getSlotTemplateHTML(_attrs: Record<string, string>, props: Record<string, any>) {
@@ -322,7 +322,7 @@ class MediaTimeDisplay extends MediaTextDisplay {
 
   update(): void {
     const timesLabel = formatTimesLabel(this);
-    updateAriaValueText(this);
+    updateAriaDescription(this);
     // Only update if it changed, timeupdate events are called a few times per second.
     if (timesLabel !== this.#slot.innerHTML) {
       this.#slot.innerHTML = timesLabel;
