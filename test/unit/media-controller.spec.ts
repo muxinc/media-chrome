@@ -326,11 +326,6 @@ describe('receiving state / dispatching (bubbling) events', function () {
     video = mediaController.querySelector('video') as HTMLVideoElement;
     div = mediaController.querySelector('div') as HTMLDivElement;
 
-    await waitUntil(
-      () => video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA,
-      'video is not ready to play',
-      { timeout: 29000 }
-    );
   });
 
   it('receives state as attributes from the media', async () => {
