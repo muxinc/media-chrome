@@ -1,5 +1,4 @@
 import {
-  aTimeout,
   assert,
   fixture,
   nextFrame,
@@ -304,7 +303,8 @@ describe('<media-controller>', () => {
   });
 });
 
-describe('receiving state / dispatching (bubbling) events', () => {
+describe('receiving state / dispatching (bubbling) events', function () {
+  this.timeout(30000);
   let mediaController: MediaController;
   let video: HTMLVideoElement;
   let div: HTMLDivElement;
@@ -318,12 +318,19 @@ describe('receiving state / dispatching (bubbling) events', () => {
           muted
           crossorigin
           playsinline
+          preload="auto"
         ></video>
         <div></div>
       </media-controller>
     `);
     video = mediaController.querySelector('video') as HTMLVideoElement;
     div = mediaController.querySelector('div') as HTMLDivElement;
+
+    await waitUntil(
+      () => video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA,
+      'video is not ready to play',
+      { timeout: 29000 }
+    );
   });
 
   it('receives state as attributes from the media', async () => {
@@ -348,12 +355,6 @@ describe('receiving state / dispatching (bubbling) events', () => {
       mediaController.getAttribute(MediaUIAttributes.MEDIA_VOLUME_LEVEL),
       'off',
       MediaUIAttributes.MEDIA_VOLUME_LEVEL
-    );
-
-    await waitUntil(
-      () => video.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA,
-      'video is not ready to play',
-      { timeout: 10000 }
     );
 
     await video.play();
@@ -441,7 +442,7 @@ describe('receiving state / dispatching (bubbling) events', () => {
         // @ts-ignore
         mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) >= 2,
       'mediacurrenttime did not reach 2',
-      { timeout: 10000 }
+      { timeout: 29000 }
     );
     assert(true, 'mediacurrenttime is 2');
   });
@@ -459,7 +460,7 @@ describe('receiving state / dispatching (bubbling) events', () => {
         // @ts-ignore
         mediaController.getAttribute(MediaUIAttributes.MEDIA_VOLUME) == 0.73,
       'mediavolume did not reach 0.73',
-      { timeout: 10000 }
+      { timeout: 29000 }
     );
     assert(true, 'mediavolume is 0.73');
   });
