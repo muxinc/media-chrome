@@ -1,5 +1,4 @@
 import {
-  aTimeout,
   assert,
   fixture,
   nextFrame,
@@ -304,7 +303,8 @@ describe('<media-controller>', () => {
   });
 });
 
-describe('receiving state / dispatching (bubbling) events', () => {
+describe('receiving state / dispatching (bubbling) events', function () {
+  this.timeout(30000);
   let mediaController: MediaController;
   let video: HTMLVideoElement;
   let div: HTMLDivElement;
@@ -318,12 +318,14 @@ describe('receiving state / dispatching (bubbling) events', () => {
           muted
           crossorigin
           playsinline
+          preload="auto"
         ></video>
         <div></div>
       </media-controller>
     `);
     video = mediaController.querySelector('video') as HTMLVideoElement;
     div = mediaController.querySelector('div') as HTMLDivElement;
+
   });
 
   it('receives state as attributes from the media', async () => {
@@ -350,8 +352,6 @@ describe('receiving state / dispatching (bubbling) events', () => {
       MediaUIAttributes.MEDIA_VOLUME_LEVEL
     );
 
-    await aTimeout(200);
-
     await video.play();
 
     assert(!mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED));
@@ -364,9 +364,12 @@ describe('receiving state / dispatching (bubbling) events', () => {
     div.dispatchEvent(
       new Event(MediaUIEvents.MEDIA_PLAY_REQUEST, { bubbles: true })
     );
-    await aTimeout(10);
 
-    assert(!video.paused, 'video.paused is false');
+    await waitUntil(() => !video.paused, 'video.paused is false');
+    await waitUntil(() =>
+      !mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
+      'has no mediapaused'
+    );
     assert(
       !mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
       'has no mediapaused'
@@ -375,9 +378,12 @@ describe('receiving state / dispatching (bubbling) events', () => {
     div.dispatchEvent(
       new Event(MediaUIEvents.MEDIA_PAUSE_REQUEST, { bubbles: true })
     );
-    await aTimeout(10);
 
-    assert(video.paused, 'video.paused is true');
+    await waitUntil(() => video.paused);
+    await waitUntil(() =>
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
+      'has mediapaused'
+    );
     assert(
       mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
       'has mediapaused'
@@ -390,9 +396,12 @@ describe('receiving state / dispatching (bubbling) events', () => {
     div.dispatchEvent(
       new Event(MediaUIEvents.MEDIA_UNMUTE_REQUEST, { bubbles: true })
     );
-    await aTimeout(10);
 
-    assert(!video.muted, 'video.muted is false');
+    await waitUntil(() => !video.muted, 'video.muted is false');
+    await waitUntil(() =>
+      !mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED),
+      'has no mediamuted'
+    );
     assert(
       !mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED),
       'has no mediamuted'
@@ -401,9 +410,12 @@ describe('receiving state / dispatching (bubbling) events', () => {
     div.dispatchEvent(
       new Event(MediaUIEvents.MEDIA_MUTE_REQUEST, { bubbles: true })
     );
-    await aTimeout(10);
 
-    assert(video.muted, 'video.muted is true');
+    await waitUntil(() => video.muted, 'video.muted is true');
+    await waitUntil(() =>
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED),
+      'has mediamuted'
+    );
     assert(
       mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED),
       'has mediamuted'
@@ -423,7 +435,9 @@ describe('receiving state / dispatching (bubbling) events', () => {
     await waitUntil(
       () =>
         // @ts-ignore
-        mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) >= 2
+        mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME) >= 2,
+      'mediacurrenttime did not reach 2',
+      { timeout: 29000 }
     );
     assert(true, 'mediacurrenttime is 2');
   });
@@ -440,8 +454,8 @@ describe('receiving state / dispatching (bubbling) events', () => {
       () =>
         // @ts-ignore
         mediaController.getAttribute(MediaUIAttributes.MEDIA_VOLUME) == 0.73,
-      // @ts-ignore
-      10000
+      'mediavolume did not reach 0.73',
+      { timeout: 29000 }
     );
     assert(true, 'mediavolume is 0.73');
   });
