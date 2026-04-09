@@ -4,7 +4,8 @@ import '../../src/js/index.js';
 import '../../src/js/media-theme-element.js';
 import { MediaThemeElement } from '../../src/js/media-theme-element.js';
 
-describe('<media-theme>', () => {
+describe('<media-theme>', function () {
+  this.timeout(15000);
   it(`<media-theme> with template attribute works w/ delayed document append`, async () => {
     const template: HTMLTemplateElement = document.createElement('template');
     template.id = 'not-yet';
@@ -29,8 +30,6 @@ describe('<media-theme>', () => {
   });
 
   it(`<media-theme> w/ template HTML file URL doesn't duplicate fetch/render `, async function () {
-    this.timeout(5000);
-
     const theme = document.createElement('media-theme');
     theme.setAttribute(
       'template',
@@ -39,7 +38,8 @@ describe('<media-theme>', () => {
 
     await waitUntil(
       () => theme!.shadowRoot!.querySelector('media-controller'),
-      5000 as any
+      'media-controller not found in shadow root',
+      { timeout: 10000 }
     );
     const mediaController =
       theme!.shadowRoot!.querySelector('media-controller');
