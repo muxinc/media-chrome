@@ -1,3 +1,20 @@
+# [4.19.0](https://github.com/muxinc/media-chrome/compare/v4.18.3...v4.19.0) (2026-04-13)
+
+
+### Bug Fixes
+
+* Auto rendition label for vertical videos ([#1274](https://github.com/muxinc/media-chrome/issues/1274)) ([de23cdc](https://github.com/muxinc/media-chrome/commit/de23cdc07c3bc204c046ad85ed54db46ad661159))
+* Replace aria-valuetext with aria-description for improved accessibility ([#1286](https://github.com/muxinc/media-chrome/issues/1286)) ([3b1014b](https://github.com/muxinc/media-chrome/commit/3b1014b97f57b23f00742901d07b96cefa067c12))
+* replace low-res 48x48 favicon with proper 1200x630 OG image ([#1283](https://github.com/muxinc/media-chrome/issues/1283)) ([3688052](https://github.com/muxinc/media-chrome/commit/36880523d1e3de36e93e58b2a6ac04237252acf8))
+* update focus-visible box-shadow to use CSS variable ([#1279](https://github.com/muxinc/media-chrome/issues/1279)) ([4975ab8](https://github.com/muxinc/media-chrome/commit/4975ab8456df1110aa6d8ae6dce7b9f6f806ef26)), closes [#1278](https://github.com/muxinc/media-chrome/issues/1278) [/#diff-453ac22c98e6886a5fa7e178193648b57e699c7a80e7af61b07a4a92911dfaf3L35-R35](https://github.com///issues/diff-453ac22c98e6886a5fa7e178193648b57e699c7a80e7af61b07a4a92911dfaf3L35-R35)
+
+
+### Features
+
+* (i18n) add German localization ([#1276](https://github.com/muxinc/media-chrome/issues/1276)) ([f3fc0ee](https://github.com/muxinc/media-chrome/commit/f3fc0ee537049c41edb30702b9185856b82f7ca3)), closes [#1275](https://github.com/muxinc/media-chrome/issues/1275)
+
+
+
 ## [4.18.3](https://github.com/muxinc/media-chrome/compare/v4.18.2...v4.18.3) (2026-03-25)
 
 
