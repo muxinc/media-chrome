@@ -28,6 +28,13 @@ const resolveTranslation = (key: TranslateKeys): string => {
   );
 };
 
+export const getResolvedLanguage = (): string => {
+  const [base] = currentLang.split('-');
+  if (translations[currentLang]) return currentLang;
+  if (translations[base]) return base;
+  return 'en';
+};
+
 export const t = (
   key: TranslateKeys,
   vars: Record<string, string | number> = {}

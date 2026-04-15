@@ -4,13 +4,14 @@
     <meta name="viewport" content="width=device-width">
     <title>Media Chrome Advanced Video Usage Example</title>
     <script type="module" src="https://cdn.jsdelivr.net/npm/hls-video-element@1.1/+esm"></script>
-    <script type="module" src="../../dist/index.js"></script>
-    <script type="module" src="../../dist/menu/index.js"></script>
-    <script type="module" src="../../dist/lang/es.js"></script>
-    <script type="module" src="../../dist/lang/pt.js"></script>
-    <script type="module" src="../../dist/lang/fr.js"></script>
     <script type="module" src="../../dist/lang/zh-CN.js"></script>
     <script type="module" src="../../dist/lang/zh-TW.js"></script>
+    <script type="module" src="../../dist/lang/es.js"></script>
+    <script type="module" src="../../dist/lang/de.js"></script>    
+    <script type="module" src="../../dist/lang/fr.js"></script>
+    <script type="module" src="../../dist/lang/pt.js"></script>
+    <script type="module" src="../../dist/index.js"></script>
+    <script type="module" src="../../dist/menu/index.js"></script>
     <style>
       /* Hide custom elements that are not defined yet */
       :not(:defined) {
@@ -62,7 +63,7 @@
 
       <media-controller
         id="mc"
-        lang='en'
+        lang="en"
         defaultsubtitles
         keyboardforwardseekoffset="15"
         keyboardbackwardseekoffset="5"
@@ -120,20 +121,58 @@
       </media-controller>
     </main>
 
+    <p id="browser-lang-info"></p>
+    <p id="set-lang-info"></p>
+<hr/>
     <p>
-      <button onclick='setLang("en")'>Switch to English</button>
-      <button onclick='setLang("es")'>Switch to Spanish</button>
-      <button onclick='setLang("fr")'>Switch to French</button>
-      <button onclick='setLang("pt")'>Switch to Portuguese</button>
-      <button onclick='setLang("zh-CN")'>Switch to Chinese (Simplified)</button>
-      <button onclick='setLang("zh-TW")'>Switch to Chinese (Traditional)</button>
+      <label for="lang-select">Switch Language:</label>
+      <select id="lang-select" onchange='setLang(this.value)'>
+        <option value="zh-CN">Chinese (Simplified)</option>
+        <option value="zh-TW">Chinese (Traditional)</option>
+        <option value="en">English</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="pt">Portuguese</option>
+        <option value="es">Spanish</option>
+      </select>
     </p>
 
     <script>
-      function setLang(lang) {
-          const mediaController = document.getElementById('mc');
-          mediaController.setAttribute('lang', lang);
+      const browserLang = navigator.language;
+      const displayName = new Intl.DisplayNames([browserLang], { type: 'language' }).of(browserLang);
+      document.getElementById('browser-lang-info').innerHTML =
+        `Browser language detected: <strong>[${browserLang}]</strong> - (${displayName})`;
+
+      function getAvailableLangs() {
+        return Array.from(document.getElementById('lang-select').options)
+          .map(o => o.value)
+          .filter(v => v !== '');
       }
+
+      function resolveLang(lang, available) {
+        if (available.includes(lang)) return lang;
+        const base = lang.split('-')[0];
+        return available.find(l => l === base || l.startsWith(base + '-')) ?? 'en';
+      }
+
+      function updateSetLangInfo() {
+        const active = document.getElementById('mc').resolvedLang ?? 'en';
+        const setDisplayName = new Intl.DisplayNames([active], { type: 'language' }).of(active);
+        document.getElementById('set-lang-info').innerHTML =
+          `Language set: <strong>[${active}]</strong> - (${setDisplayName})`;
+        document.documentElement.lang = active;
+      }
+
+      function setLang(lang) {
+        document.getElementById('mc').setAttribute('lang', lang);
+        document.getElementById('lang-select').value = lang;
+        updateSetLangInfo();
+      }
+
+      customElements.whenDefined('media-controller').then(() => {
+        const lang = resolveLang(browserLang, getAvailableLangs());
+        setLang(lang);
+      });
     </script>
 
     <div class="examples">
