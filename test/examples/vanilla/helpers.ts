@@ -19,6 +19,7 @@ export function findHtmlFiles(dir: string, base = dir): string[] {
   return files.sort();
 }
 
+export type SYNTH_STREAM_RES = 'skipped' | 'timeout' | 'playing'
 /**
  * Replaces the first native <video> or <audio> element's source with a
  * synthetic stream (canvas or AudioContext) so tests run without network
@@ -27,13 +28,13 @@ export function findHtmlFiles(dir: string, base = dir): string[] {
  * The store blocks all state-change requests when mediaErrorCode is non-null,
  * which happens when the external video URL fails to load in CI.
  */
-export async function injectSyntheticStream(page: Page): Promise<void> {
-  await page.evaluate(async () => {
+export async function injectSyntheticStream(page: Page): Promise<SYNTH_STREAM_RES> {
+  return await page.evaluate(async () => {
     const mediaEl = document.querySelector(
       'video, audio'
     ) as HTMLVideoElement | HTMLAudioElement | null;
 
-    if (!mediaEl || mediaEl.tagName.includes('-')) return;
+    if (!mediaEl || mediaEl.tagName.includes('-')) return 'skipped';
 
     if (mediaEl.tagName === 'AUDIO') {
       const ctx = new AudioContext();
@@ -51,10 +52,10 @@ export async function injectSyntheticStream(page: Page): Promise<void> {
       (mediaEl as HTMLVideoElement).srcObject = canvas.captureStream();
     }
 
-    await new Promise<void>((resolve) => {
-      if (mediaEl.readyState >= 1) { resolve(); return; }
-      mediaEl.addEventListener('loadedmetadata', () => resolve(), { once: true });
-      setTimeout(resolve, 2000);
+    return await new Promise<SYNTH_STREAM_RES>((resolve) => {
+      if (mediaEl.readyState >= 1) { resolve('playing'); return; }
+      mediaEl.addEventListener('loadedmetadata', () => resolve('playing'), { once: true });
+      setTimeout(() => resolve('timeout'), 2000);
     });
   });
 }
@@ -64,6 +65,7 @@ export async function injectSyntheticStream(page: Page): Promise<void> {
  * - No media elements (index, memory-leak-tester, media-chrome-menu)
  * - Not a real page (iframe embeds another example)
  * - Intentionally shows error states (media-error-dialog)
+ * - JWPlayer media element - CDN fails sometimes, external to this repo
  */
 export const SKIP_PLAY_TEST = new Set([
   'index.html',
@@ -71,4 +73,5 @@ export const SKIP_PLAY_TEST = new Set([
   'iframe.html',
   'control-elements/media-chrome-menu.html',
   'control-elements/media-error-dialog.html',
+  'media-elements/jwplayer.html',
 ]);

@@ -5,6 +5,7 @@ const PORT = 4567;
 export default defineConfig({
   testDir: './examples',
   retries: 2,
+  testIgnore: process.env.FEATURE_TESTS ? [] : ['**/features/**'],
 
   webServer: {
     command: `npm run serve:test -- -p ${PORT}`,
