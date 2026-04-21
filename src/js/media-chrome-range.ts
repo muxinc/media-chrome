@@ -96,7 +96,7 @@ function getTemplateHTML(_attrs: Record<string, string>) {
       @media (hover: hover) {
         #range {
           bottom: var(--media-time-range-hover-bottom, 0);
-          height: var(--media-time-range-hover-height, max(calc(100%), 20px));
+          height: var(--media-time-range-hover-height, max(100%, 20px));
         }
       }
 
