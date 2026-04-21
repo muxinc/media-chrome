@@ -1,23 +1,15 @@
+/**
+ * Smoke tests — scope: all example pages
+ *
+ * Checks that every page:
+ *   1. Loads without uncaught JS errors
+ *   2. Has all media-* custom elements properly registered
+ *
+ * This is the fastest / widest safety net. A failure here means a broken
+ * import or missing component registration — the most common regression type.
+ */
 import { test, expect } from 'playwright/test';
-import { readdirSync, statSync } from 'fs';
-import { join, relative, dirname } from 'path';
-import { fileURLToPath } from 'url';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const EXAMPLES_DIR = join(__dirname, '../../../examples/vanilla');
-
-function findHtmlFiles(dir: string, base = dir): string[] {
-  const files: string[] = [];
-  for (const entry of readdirSync(dir)) {
-    const fullPath = join(dir, entry);
-    if (statSync(fullPath).isDirectory()) {
-      files.push(...findHtmlFiles(fullPath, base));
-    } else if (entry.endsWith('.html')) {
-      files.push(relative(base, fullPath));
-    }
-  }
-  return files.sort();
-}
+import { findHtmlFiles, EXAMPLES_DIR } from './helpers.js';
 
 const htmlFiles = findHtmlFiles(EXAMPLES_DIR);
 

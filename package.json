@@ -115,6 +115,7 @@
     "@custom-elements-manifest/analyzer": "^0.10.2",
     "@open-wc/testing": "^3.1.6",
     "@types/mocha": "^10.0.6",
+    "@types/node": "^25.6.0",
     "@types/react": "19.2.2",
     "@vercel/edge": "^1.2.1",
     "@web/dev-server-esbuild": "^1.0.2",
