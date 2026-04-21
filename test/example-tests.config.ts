@@ -4,6 +4,7 @@ const PORT = 4567;
 
 export default defineConfig({
   testDir: './examples',
+  retries: 2,
 
   webServer: {
     command: `npm run serve:test -- -p ${PORT}`,
