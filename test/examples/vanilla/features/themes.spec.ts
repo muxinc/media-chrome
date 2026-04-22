@@ -29,26 +29,35 @@ const THEMES: Array<{
   { file: 'themes/demuxed-2022-theme.html',    element: 'media-theme-demuxed-2022',  hasNativeVideo: false },
 ];
 
-let nonDefinedThemes = 0;
+let cdnAvailable = true;
+
+// A single upfront check avoids a module-level counter that gets reset when
+// Playwright restarts a worker for retries.
+test.beforeAll(async ({ request }) => {
+  try {
+    const res = await request.head('https://cdn.jsdelivr.net/npm/@player.style/yt/+esm');
+    cdnAvailable = res.ok();
+  } catch {
+    cdnAvailable = false;
+  }
+});
+
 for (const { file, element, hasNativeVideo } of THEMES) {
   test.describe(`${file}`, () => {
     test.beforeEach(async ({ page }) => {
       await page.goto(`/examples/vanilla/${file}`, { waitUntil: 'load' });
     });
 
-    test(`${element} is registered as a custom element`, async ({ page }) => {
+    test.only(`${element} is registered as a custom element`, async ({ page }) => {
       const defined = await page.evaluate(
         (tag) => !!customElements.get(tag),
         element
       );
 
       if (!defined) {
-        nonDefinedThemes++;
-        
-        if (nonDefinedThemes === THEMES.length) {
-          test.fail(true, "Themes are not defined");
+        if (cdnAvailable) {
+          test.fail(true, `${element} failed to register despite CDN being reachable`);
         } else {
-          // CDN unavailable — skip rather than fail
           test.skip();
         }
         return;
