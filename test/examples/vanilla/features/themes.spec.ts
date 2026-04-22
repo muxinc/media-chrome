@@ -48,7 +48,7 @@ for (const { file, element, hasNativeVideo } of THEMES) {
       await page.goto(`/examples/vanilla/${file}`, { waitUntil: 'load' });
     });
 
-    test.only(`${element} is registered as a custom element`, async ({ page }) => {
+    test(`${element} is registered as a custom element`, async ({ page }) => {
       const defined = await page.evaluate(
         (tag) => !!customElements.get(tag),
         element
