@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   test:
+    name: Run Unit Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,11 +46,46 @@ jobs:
           verbose: true
       - run: npm run manifest
       - run: npm run build
+
+  test-examples:
+    name: Run Tests on Example Pages
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Store Playwright's Version
+        run: |
+          PLAYWRIGHT_VERSION=$(npm view @web/test-runner-playwright dependencies.playwright)
+          echo "Playwright's Version: $PLAYWRIGHT_VERSION"
+          echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
+
+      - name: Cache Playwright Browsers for Playwright's Version
+        id: cache-playwright-browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-browsers-${{ env.PLAYWRIGHT_VERSION }}
+
+      - name: Remove man-db to speed up apt installs
+        run: sudo apt-get remove -y man-db
+      - run: npx playwright install --with-deps
+        if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+      - run: npx playwright install-deps
+        if: steps.cache-playwright-browsers.outputs.cache-hit == 'true'
+
+      - run: npm run manifest
+      - run: npm run build
       - run: npm run test:examples
 
   canary:
     if: ${{ github.ref == 'refs/heads/main' }}
-    needs: test
+    needs: [test, test-examples]
     runs-on: ubuntu-latest
 
     permissions:
