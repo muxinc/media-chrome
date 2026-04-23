@@ -81,6 +81,12 @@ jobs:
 
       - run: npm run manifest
       - run: npm run build
+      - name: Install React example dependencies (vite-react)
+        run: yarn install --frozen-lockfile
+        working-directory: ./examples/vite-react-with-typescript
+      - name: Install React example dependencies (nextjs)
+        run: npm ci
+        working-directory: ./examples/nextjs-with-typescript
       - run: npm run test:examples
 
   canary:
