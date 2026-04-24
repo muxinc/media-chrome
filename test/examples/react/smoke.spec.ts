@@ -13,10 +13,10 @@ test.describe.configure({ mode: 'parallel' });
 
 // MUI + Emotion always produces a hydration mismatch in Next.js dev mode due to
 // server-rendered <style> tags differing from the client. Known limitation of the example.
-const EXPECTS_ERROR: Map<string, { expectedErrors: string[] }> = new Map(
+const KNOWN_ERRORS: Map<string, { patterns: string[] }> = new Map(
   [['nextjs/material-ui-player-chrome',
     {
-      expectedErrors: ["A tree hydrated but some attributes of the server rendered HTML didn't match the client properties."]
+      patterns: ["Hydration failed because the server rendered HTML didn't match the client."]
     }]]
 );
 
@@ -73,12 +73,16 @@ for (const route of ROUTES) {
       ).toHaveLength(0);
     }
 
-    if (EXPECTS_ERROR.has(route.label)) {
+    if (KNOWN_ERRORS.has(route.label)) {
+      const known = KNOWN_ERRORS.get(route.label)!.patterns;
       pageErrors.forEach(error => {
-        expect(EXPECTS_ERROR.get(route.label)!.expectedErrors.filter(exp => error.includes(exp)), "Unexpected error")
+        expect(
+          known.some(k => error.includes(k)),
+          `Unexpected error (not in KNOWN_ERRORS): ${error}`
+        ).toBe(true);
       });
-      return;
+    } else {
+      expect(pageErrors, `Page errors: ${pageErrors.join('; ')}`).toHaveLength(0);
     }
-    expect(pageErrors, `Page errors: ${pageErrors.join('; ')}`).toHaveLength(0);
   });
 }
