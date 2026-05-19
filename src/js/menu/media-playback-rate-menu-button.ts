@@ -7,17 +7,21 @@ import {
   getMediaController,
 } from '../utils/element-utils.js';
 import { t } from '../utils/i18n.js';
+import { normalizePlaybackRate } from '../media-playback-rate-button.js';
 
 export const DEFAULT_RATE = 1;
 
 function getSlotTemplateHTML(attrs: Record<string, string>) {
+  const rate = attrs['mediaplaybackrate']
+    ? normalizePlaybackRate(+attrs['mediaplaybackrate'])
+    : DEFAULT_RATE;
   return /*html*/ `
     <style>
       :host {
         min-width: 5ch;
         padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
       }
-      
+
       :host([aria-expanded="true"]) slot {
         display: block;
       }
@@ -26,7 +30,7 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
         display: none;
       }
     </style>
-    <slot name="icon">${attrs['mediaplaybackrate'] || DEFAULT_RATE}x</slot>
+    <slot name="icon">${rate}x</slot>
   `;
 }
 
@@ -55,7 +59,7 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
   constructor() {
     super();
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
-    this.container.innerHTML = `${this.mediaPlaybackRate ?? DEFAULT_RATE}x`;
+    this.container.innerHTML = `${normalizePlaybackRate(this.mediaPlaybackRate ?? DEFAULT_RATE)}x`;
   }
 
   attributeChangedCallback(
@@ -67,9 +71,9 @@ class MediaPlaybackRateMenuButton extends MediaChromeMenuButton {
 
     if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
       const newPlaybackRate = newValue ? +newValue : Number.NaN;
-      const playbackRate = !Number.isNaN(newPlaybackRate)
-        ? newPlaybackRate
-        : DEFAULT_RATE;
+      const playbackRate = normalizePlaybackRate(
+        !Number.isNaN(newPlaybackRate) ? newPlaybackRate : DEFAULT_RATE
+      );
       this.container.innerHTML = `${playbackRate}x`;
       this.setAttribute(
         'aria-label',

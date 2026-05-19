@@ -6,7 +6,11 @@ import {
   setNumericAttr,
   getMediaController,
 } from '../utils/element-utils.js';
-import { DEFAULT_RATES, DEFAULT_RATE } from '../media-playback-rate-button.js';
+import {
+  DEFAULT_RATES,
+  DEFAULT_RATE,
+  normalizePlaybackRate,
+} from '../media-playback-rate-button.js';
 import {
   MediaChromeMenu,
   createMenuItem,
@@ -124,9 +128,11 @@ class MediaPlaybackRateMenu extends MediaChromeMenu {
   #render(): void {
     this.defaultSlot.textContent = '';
 
-    const currentRate = this.mediaPlaybackRate;
-    const ratesSet = new Set(Array.from(this.#rates).map(rate => Number(rate)));
-    
+    const currentRate = normalizePlaybackRate(this.mediaPlaybackRate);
+    const ratesSet = new Set(
+      Array.from(this.#rates).map((rate) => normalizePlaybackRate(Number(rate)))
+    );
+
     // If current rate is not in the list, add it to show it as selected
     if (currentRate > 0 && !ratesSet.has(currentRate)) {
       ratesSet.add(currentRate);
