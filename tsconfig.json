@@ -20,12 +20,6 @@
     "outDir": "./dist/",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,
-    
-
-    "moduleResolution": "node",
-    "resolveJsonModule": true,
-
-
+    "skipLibCheck": true
   }
 }
