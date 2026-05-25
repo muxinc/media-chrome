@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Media Chrome Desktop Button V-Align Repro</title>
+    <script type="module" src="../../dist/index.js"></script>
+    <style>
+      :not(:defined) {
+        display: none;
+      }
+
+      :root {
+        color-scheme: dark;
+      }
+
+      body {
+        margin: 0;
+        font-family: ui-monospace, SFMono-Regular, SFMono-Regular, Menlo, Monaco,
+          Consolas, Liberation Mono, Courier New, monospace;
+        background: #0f1117;
+        color: #f3f4f6;
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      h1,
+      h2,
+      p,
+      li {
+        line-height: 1.5;
+      }
+
+      code {
+        background: rgb(255 255 255 / 0.08);
+        padding: 0.1em 0.3em;
+      }
+
+      .demo-grid {
+        display: grid;
+        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        margin: 24px 0;
+      }
+
+      .panel {
+        background: #171923;
+        border: 1px solid rgb(255 255 255 / 0.12);
+        border-radius: 12px;
+        padding: 20px;
+      }
+
+      .comparison-grid {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      }
+
+      .variant h3 {
+        margin: 0 0 12px;
+      }
+
+      .variant p {
+        margin: 0 0 12px;
+        color: #cbd5e1;
+        font-size: 0.9rem;
+      }
+
+      media-controller {
+        display: block;
+        width: 100%;
+        background: #000;
+      }
+
+      .player-mobile {
+        max-width: 390px;
+        aspect-ratio: 16 / 9;
+      }
+
+      .player-desktop {
+        max-width: 785px;
+        aspect-ratio: 16 / 9;
+      }
+
+      video {
+        width: 100%;
+        height: 100%;
+      }
+
+      media-control-bar {
+        background: rgb(17 24 39 / 0.92);
+      }
+
+      .site-mobile-overlay {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+      }
+
+      .site-mobile-overlay media-play-button,
+      .site-mobile-overlay media-seek-backward-button,
+      .site-mobile-overlay media-seek-forward-button {
+        padding: 0;
+        margin: 5%;
+        background: transparent;
+        outline: 1px dashed rgb(255 255 255 / 0.35);
+        outline-offset: -1px;
+      }
+
+      .site-mobile-overlay media-play-button {
+        width: 15%;
+      }
+
+      .site-mobile-overlay :is(media-seek-backward-button, media-seek-forward-button) {
+        width: 10%;
+      }
+
+      .site-mobile-progress {
+        height: 32px;
+      }
+
+      .site-mobile-controls {
+        height: 36px;
+      }
+
+      .site-mobile-controls .spacer {
+        flex-grow: 1;
+        background: rgb(17 24 39 / 0.92);
+      }
+
+      .site-desktop-controls {
+        height: 44px;
+      }
+
+      .site-desktop-controls media-play-button,
+      .site-desktop-controls media-seek-backward-button,
+      .site-desktop-controls media-seek-forward-button {
+        background: rgb(17 24 39 / 0.6);
+        outline: 1px dashed rgb(255 255 255 / 0.35);
+        outline-offset: -1px;
+      }
+
+      .site-desktop-controls--website media-play-button,
+      .site-desktop-controls--website media-seek-backward-button,
+      .site-desktop-controls--website media-seek-forward-button {
+        display: block;
+      }
+
+      .metrics {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 16px;
+      }
+
+      .metrics th,
+      .metrics td {
+        border-top: 1px solid rgb(255 255 255 / 0.12);
+        padding: 10px 12px;
+        text-align: left;
+      }
+
+      .metrics th {
+        color: #cbd5e1;
+      }
+
+      .offset-positive {
+        color: #fca5a5;
+      }
+
+      .offset-neutral {
+        color: #93c5fd;
+      }
+
+      .examples {
+        margin-top: 24px;
+      }
+
+      a {
+        color: #93c5fd;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Desktop button v-align repro</h1>
+      <p>
+        This page now locally mimics the live desktop landing page on
+        <code>media-chrome.org</code>, including the external
+        <code>display: block</code> applied by <code>lg:block</code> to the
+        desktop control buttons. That layout is what reproduces the visible
+        vertical drift.
+      </p>
+
+      <div class="demo-grid">
+        <section class="panel">
+          <h2>Marketing site mobile overlay</h2>
+          <div class="comparison-grid">
+            <div class="variant">
+              <h3>Current</h3>
+              <p>Default component markup.</p>
+              <media-controller class="player-mobile" autohide="-1" defaultduration="134">
+                <video
+                  slot="media"
+                  src="https://stream.mux.com/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/high.mp4"
+                  poster="https://image.mux.com/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/thumbnail.jpg?time=0"
+                  crossorigin
+                  muted
+                  playsinline
+                  preload="none"
+                ></video>
+                <div slot="centered-chrome" class="site-mobile-overlay">
+                  <media-seek-backward-button
+                    data-metric-label="Mobile seek backward (current)"
+                    data-emulate-pre-fix
+                  ></media-seek-backward-button>
+                  <media-play-button
+                    data-metric-label="Mobile play (current)"
+                    data-emulate-pre-fix
+                  ></media-play-button>
+                  <media-seek-forward-button
+                    data-metric-label="Mobile seek forward (current)"
+                    data-emulate-pre-fix
+                  ></media-seek-forward-button>
+                </div>
+                <media-control-bar class="site-mobile-progress">
+                  <media-time-range></media-time-range>
+                  <media-time-display showduration remaining></media-time-display>
+                </media-control-bar>
+                <media-control-bar class="site-mobile-controls">
+                  <media-mute-button></media-mute-button>
+                  <div class="spacer"></div>
+                  <media-captions-button></media-captions-button>
+                  <media-playback-rate-button></media-playback-rate-button>
+                  <media-fullscreen-button></media-fullscreen-button>
+                </media-control-bar>
+              </media-controller>
+            </div>
+
+            <div class="variant">
+              <h3>Attempted slot/v-align fix</h3>
+              <p>
+                Emulates commit <code>71ed2fa</code> by making
+                <code>slot[name="icon"]</code> <code>inline-flex</code>.
+              </p>
+              <media-controller class="player-mobile" autohide="-1" defaultduration="134">
+                <video
+                  slot="media"
+                  src="https://stream.mux.com/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/high.mp4"
+                  poster="https://image.mux.com/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/thumbnail.jpg?time=0"
+                  crossorigin
+                  muted
+                  playsinline
+                  preload="none"
+                ></video>
+                <div slot="centered-chrome" class="site-mobile-overlay">
+                  <media-seek-backward-button
+                    data-metric-label="Mobile seek backward (slot fix)"
+                    data-emulate-slot-fix
+                  ></media-seek-backward-button>
+                  <media-play-button
+                    data-metric-label="Mobile play (slot fix)"
+                    data-emulate-slot-fix
+                  ></media-play-button>
+                  <media-seek-forward-button
+                    data-metric-label="Mobile seek forward (slot fix)"
+                    data-emulate-slot-fix
+                  ></media-seek-forward-button>
+                </div>
+                <media-control-bar class="site-mobile-progress">
+                  <media-time-range></media-time-range>
+                  <media-time-display showduration remaining></media-time-display>
+                </media-control-bar>
+                <media-control-bar class="site-mobile-controls">
+                  <media-mute-button></media-mute-button>
+                  <div class="spacer"></div>
+                  <media-captions-button></media-captions-button>
+                  <media-playback-rate-button></media-playback-rate-button>
+                  <media-fullscreen-button></media-fullscreen-button>
+                </media-control-bar>
+              </media-controller>
+            </div>
+
+            <div class="variant">
+              <h3>Actual icon fix</h3>
+              <p>Moves the play path <code>-1.5px</code> on the x-axis.</p>
+              <media-controller class="player-mobile" autohide="-1" defaultduration="134">
+                <video
+                  slot="media"
+                  src="https://stream.mux.com/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/high.mp4"
+                  poster="https://image.mux.com/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/thumbnail.jpg?time=0"
+                  crossorigin
+                  muted
+                  playsinline
+                  preload="none"
+                ></video>
+                <div slot="centered-chrome" class="site-mobile-overlay">
+                  <media-seek-backward-button
+                    data-metric-label="Mobile seek backward (path fix)"
+                  ></media-seek-backward-button>
+                  <media-play-button data-metric-label="Mobile play (path fix)">
+                    <svg slot="play" aria-hidden="true" viewBox="0 0 24 24">
+                      <path d="m6 21 15-9L6 3v18Z" transform="translate(-1.5 0)"></path>
+                    </svg>
+                  </media-play-button>
+                  <media-seek-forward-button
+                    data-metric-label="Mobile seek forward (path fix)"
+                  ></media-seek-forward-button>
+                </div>
+                <media-control-bar class="site-mobile-progress">
+                  <media-time-range></media-time-range>
+                  <media-time-display showduration remaining></media-time-display>
+                </media-control-bar>
+                <media-control-bar class="site-mobile-controls">
+                  <media-mute-button></media-mute-button>
+                  <div class="spacer"></div>
+                  <media-captions-button></media-captions-button>
+                  <media-playback-rate-button></media-playback-rate-button>
+                  <media-fullscreen-button></media-fullscreen-button>
+                </media-control-bar>
+              </media-controller>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2>Desktop landing page mimic</h2>
+          <div class="comparison-grid">
+            <div class="variant">
+              <h3>Current website layout</h3>
+              <p>
+                Reproduces the site by forcing the desktop buttons to
+                <code>display: block</code>.
+              </p>
+              <media-controller class="player-desktop" autohide="-1" defaultduration="134">
+                <video
+                  slot="media"
+                  src="https://stream.mux.com/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/high.mp4"
+                  poster="https://image.mux.com/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/thumbnail.jpg?time=0"
+                  crossorigin
+                  muted
+                  playsinline
+                  preload="none"
+                ></video>
+                <media-control-bar class="site-desktop-controls site-desktop-controls--website">
+                  <media-play-button
+                    data-metric-label="Desktop play (current)"
+                    data-emulate-pre-fix
+                  ></media-play-button>
+                  <media-seek-forward-button
+                    data-metric-label="Desktop seek forward (current)"
+                    data-emulate-pre-fix
+                  ></media-seek-forward-button>
+                  <media-seek-backward-button
+                    data-metric-label="Desktop seek backward (current)"
+                    data-emulate-pre-fix
+                  ></media-seek-backward-button>
+                  <media-time-range></media-time-range>
+                  <media-time-display showduration></media-time-display>
+                </media-control-bar>
+              </media-controller>
+            </div>
+
+            <div class="variant">
+              <h3>Attempted slot/v-align fix</h3>
+              <p>
+                Same desktop website layout, plus commit <code>71ed2fa</code> by making
+                <code>slot[name="icon"]</code> <code>inline-flex</code>.
+              </p>
+              <media-controller class="player-desktop" autohide="-1" defaultduration="134">
+                <video
+                  slot="media"
+                  src="https://stream.mux.com/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/high.mp4"
+                  poster="https://image.mux.com/ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY/thumbnail.jpg?time=0"
+                  crossorigin
+                  muted
+                  playsinline
+                  preload="none"
+                ></video>
+                <media-control-bar class="site-desktop-controls site-desktop-controls--website">
+                  <media-play-button
+                    data-metric-label="Desktop play (slot fix)"
+                    data-emulate-slot-fix
+                  ></media-play-button>
+                  <media-seek-forward-button
+                    data-metric-label="Desktop seek forward (slot fix)"
+                    data-emulate-slot-fix
+                  ></media-seek-forward-button>
+                  <media-seek-backward-button
+                    data-metric-label="Desktop seek backward (slot fix)"
+                    data-emulate-slot-fix
+                  ></media-seek-backward-button>
+                  <media-time-range></media-time-range>
+                  <media-time-display showduration></media-time-display>
+                </media-control-bar>
+              </media-controller>
+            </div>
+
+          </div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <h2>Measured offsets</h2>
+        <p>
+          For the desktop site bug, focus on the <strong>Y offset</strong>. The
+          local reproduction is correct when the current desktop buttons show a
+          positive Y offset and the slot fix drops that value back toward zero.
+        </p>
+        <table class="metrics">
+          <thead>
+            <tr>
+              <th>Element</th>
+              <th>X offset</th>
+              <th>Y offset</th>
+            </tr>
+          </thead>
+          <tbody id="metrics-body"></tbody>
+        </table>
+      </section>
+
+      <div class="examples">
+        <a href="./">View more examples</a>
+      </div>
+    </main>
+
+    <script type="module">
+      const body = document.getElementById('metrics-body');
+
+      const measure = (el) => {
+        const path =
+          el.querySelector('[slot="play"] path, [slot="icon"] path') ??
+          el.shadowRoot?.querySelector('path');
+        if (!path) return null;
+
+        const hostRect = el.getBoundingClientRect();
+        const pathRect = path.getBoundingClientRect();
+        const hostCenter = hostRect.left + hostRect.width / 2;
+        const pathCenter = pathRect.left + pathRect.width / 2;
+        const hostMiddle = hostRect.top + hostRect.height / 2;
+        const pathMiddle = pathRect.top + pathRect.height / 2;
+
+        return {
+          x: pathCenter - hostCenter,
+          y: pathMiddle - hostMiddle,
+        };
+      };
+
+      const emulateSlotFix = (el) => {
+        const iconSlot = el.shadowRoot?.querySelector('slot[name="icon"]');
+        if (!iconSlot) return;
+        iconSlot.style.display = 'inline-flex';
+        iconSlot.style.alignItems = 'center';
+      };
+
+      const emulatePreFix = (el) => {
+        const iconSlot = el.shadowRoot?.querySelector('slot[name="icon"]');
+        const svg = el.shadowRoot?.querySelector('svg');
+        if (!iconSlot) return;
+        iconSlot.style.display = 'contents';
+        iconSlot.style.alignItems = 'normal';
+        if (svg) {
+          svg.style.display = 'inline';
+          svg.style.verticalAlign = 'middle';
+        }
+      };
+
+      const renderMetrics = () => {
+        const metrics = [...document.querySelectorAll('[data-metric-label]')]
+          .map((el) => ({
+            label: el.getAttribute('data-metric-label'),
+            offset: measure(el),
+          }))
+          .filter((entry) => entry.offset != null);
+
+        body.innerHTML = metrics
+          .map(({ label, offset }) => {
+            const xRounded = offset.x.toFixed(1);
+            const yRounded = offset.y.toFixed(1);
+            const xClassName =
+              Math.abs(offset.x) >= 1 ? 'offset-positive' : 'offset-neutral';
+            const yClassName =
+              Math.abs(offset.y) >= 1 ? 'offset-positive' : 'offset-neutral';
+            return `
+              <tr>
+                <td>${label}</td>
+                <td class="${xClassName}">${xRounded}px</td>
+                <td class="${yClassName}">${yRounded}px</td>
+              </tr>
+            `;
+          })
+          .join('');
+      };
+
+      customElements.whenDefined('media-play-button').then(() => {
+        document
+          .querySelectorAll('[data-emulate-pre-fix]')
+          .forEach((el) => emulatePreFix(el));
+        document
+          .querySelectorAll('[data-emulate-slot-fix]')
+          .forEach((el) => emulateSlotFix(el));
+        requestAnimationFrame(renderMetrics);
+      });
+
+      addEventListener('resize', renderMetrics);
+    </script>
+  </body>
+</html>
