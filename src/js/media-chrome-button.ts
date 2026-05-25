@@ -67,6 +67,11 @@ function getTemplateHTML(_attrs: Record<string, string>, _props: Record<string, 
         background: var(--media-control-hover-background, rgba(50 50 70 / .7));
       }
 
+      slot[name="icon"] {
+        display: inline-flex;
+        align-items: center;
+      }
+
       svg, img, ::slotted(svg), ::slotted(img) {
         width: var(--media-button-icon-width);
         height: var(--media-button-icon-height, var(--media-control-height, 24px));
