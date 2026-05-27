@@ -32,4 +32,12 @@ describe('<media-playback-rate-button>', () => {
     el.rates = [0.5, 1, 2];
     assert.equal(el.rates, '0.5 1 2');
   });
+
+  it('rounds float-precision drift in the displayed rate', () => {
+    // Safari returns 1.15 as 1.1499999999999999 from HTMLMediaElement.playbackRate
+    el.setAttribute('mediaplaybackrate', '1.1499999999999999');
+    const slot = el.shadowRoot.querySelector('slot[name="icon"]');
+    assert.equal(slot.innerHTML, '1.15x');
+    assert.equal(el.getAttribute('aria-label'), 'Playback rate 1.15');
+  });
 });
