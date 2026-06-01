@@ -1,3 +1,14 @@
+## [4.19.1](https://github.com/muxinc/media-chrome/compare/v4.19.0...v4.19.1) (2026-06-01)
+
+
+### Bug Fixes
+
+* add inline-flex alignment to slot[name=icon] for proper SVG centering in buttons ([#1295](https://github.com/muxinc/media-chrome/issues/1295)) ([7e0869a](https://github.com/muxinc/media-chrome/commit/7e0869af0fdfbaf1d890c7ce472fd61fe431320d)), closes [#1294](https://github.com/muxinc/media-chrome/issues/1294)
+* input range margin on focus ([#1288](https://github.com/muxinc/media-chrome/issues/1288)) ([65d4394](https://github.com/muxinc/media-chrome/commit/65d4394aa5ae0a4f8aa9825145df682683eefcce)), closes [#1254](https://github.com/muxinc/media-chrome/issues/1254)
+* round playback rate display to avoid Safari float drift ([#1292](https://github.com/muxinc/media-chrome/issues/1292)) ([49785ef](https://github.com/muxinc/media-chrome/commit/49785efd1db0fa81c59c7cd1961a6500fa7d4752)), closes [muxinc/elements#1333](https://github.com/muxinc/elements/issues/1333)
+
+
+
 # [4.19.0](https://github.com/muxinc/media-chrome/compare/v4.18.3...v4.19.0) (2026-04-13)
 
 
