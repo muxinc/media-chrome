@@ -1,3 +1,12 @@
+## [4.19.2](https://github.com/muxinc/media-chrome/compare/v4.19.1...v4.19.2) (2026-06-10)
+
+
+### Bug Fixes
+
+* treat only remote.state === "connected" as casting ([#1296](https://github.com/muxinc/media-chrome/issues/1296)) ([155e46d](https://github.com/muxinc/media-chrome/commit/155e46d57adae3503885456398aa69228ca46bcf))
+
+
+
 ## [4.19.1](https://github.com/muxinc/media-chrome/compare/v4.19.0...v4.19.1) (2026-06-01)
 
 
