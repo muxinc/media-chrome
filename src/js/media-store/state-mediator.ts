@@ -1040,7 +1040,7 @@ export const stateMediator: StateMediator = {
       if (!media?.remote || media.remote?.state === 'disconnected')
         return false;
 
-      return !!media.remote.state;
+      return media.remote.state === 'connected';
     },
     set(value, stateOwners) {
       const { media } = stateOwners;
