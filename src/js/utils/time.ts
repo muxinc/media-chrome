@@ -58,7 +58,7 @@ export const formatAsTimePhrase = (seconds) => {
     return t('{time} remaining', { time: timeString });
   }
 
-  return timeString || toTimeUnitPhrase(0, 2);
+  return positiveSeconds === 0 ? toTimeUnitPhrase(0, 2) : timeString;
 };
 
 /**
