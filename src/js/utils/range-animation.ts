@@ -8,6 +8,7 @@ export class RangeAnimation {
   callback: (value: number) => void;
   duration: number;
   playbackRate: number;
+  decreaseThreshold = 0.03;
 
   #range: Range;
   #startTime: number;
@@ -46,7 +47,7 @@ export class RangeAnimation {
     // 2. Allow a relatively large decrease (user action or Safari jumping back :s).
     const increase = start - this.#range.valueAsNumber;
     const durationDelta = Math.abs(duration - this.duration);
-    if (increase > 0 || increase < -0.03 || durationDelta >= 0.5) {
+    if (increase > 0 || increase < -this.decreaseThreshold || durationDelta >= 0.5) {
       this.callback(start);
     }
 
