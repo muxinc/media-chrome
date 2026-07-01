@@ -58,6 +58,7 @@ export const formatAsTimePhrase = (seconds) => {
     return t('{time} remaining', { time: timeString });
   }
 
+  // timeString will be empty for 0 seconds, so we explicitly build '0 seconds'
   return timeString || toTimeUnitPhrase(0, 2);
 };
 
