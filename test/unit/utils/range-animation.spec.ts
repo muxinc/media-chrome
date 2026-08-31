@@ -33,11 +33,9 @@ function harness() {
 
   return {
     animation,
-    // Current playhead the range is displaying, in seconds.
     get displayedTime() {
       return range.valueAsNumber * DURATION;
     },
-    // Advance the fake clock, firing one animation frame every ~16.7ms.
     tick(ms: number) {
       const frames = Math.round(ms / 16.7);
       for (let i = 0; i < frames; i++) {
@@ -103,10 +101,8 @@ describe('RangeAnimation', () => {
   });
 
   it('holds the playhead when time updates stop arriving', () => {
-    // A media element can report itself as unpaused while playback is actually
-    // stalled — iOS does this when restoring a page that was suspended in the
-    // background. Extrapolating from the wall clock then makes the range claim
-    // progress that never happened.
+    // A media element can report itself as unpaused while playback is stalled;
+    // extrapolating then claims progress that never happened.
     h.updateTo(7);
     h.animation.start();
 

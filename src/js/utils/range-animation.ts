@@ -5,9 +5,8 @@ type Range = { valueAsNumber: number };
  */
 export class RangeAnimation {
   /**
-   * How long to keep extrapolating the playhead after the last real time update,
-   * in milliseconds. Browsers fire `timeupdate` at most every 250ms, so anything
-   * past this means playback is stalled rather than merely hiccuping.
+   * How long to keep extrapolating the playhead after the last time update, in ms.
+   * `timeupdate` fires at most every 250ms, so past this playback is stalled.
    */
   static STALE_TIMEOUT = 1000;
 
@@ -73,17 +72,12 @@ export class RangeAnimation {
       // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
       this.#previousTime = now - (this.#deltaTime % fpsInterval);
 
-      // This animation exists to smooth over the gaps between `timeupdate`s, which
-      // browsers fire at most every 250ms. Once nothing has come in for much longer
-      // than that, the playhead is not advancing at all and extrapolating from the
-      // wall clock would make the range lie about the current time. That happens on
-      // iOS when a suspended page is restored: the media element reports itself as
-      // unpaused but never resumes decoding, so no `timeupdate` ever arrives while
-      // the range keeps sliding. Hold the playhead instead until real updates return.
+      // No update for this long means the playhead isn't advancing, so extrapolating
+      // would make the range lie about the current time. iOS leaves the media element
+      // unpaused but stalled when it restores a suspended page.
       if (now - this.#updateTimestamp > RangeAnimation.STALE_TIMEOUT) {
         this.#lastRangeIncrease = 0;
-        // Restart frame accounting so the fps estimate stays meaningful once
-        // updates resume.
+        // Restart frame accounting so the fps estimate survives the stall.
         this.#startTime = now;
         this.#frameCount = 0;
         return;
