@@ -4,6 +4,12 @@ type Range = { valueAsNumber: number };
  * Smoothly animate a range input accounting for hiccups and diverging playback.
  */
 export class RangeAnimation {
+  /**
+   * How long to keep extrapolating the playhead after the last time update, in ms.
+   * `timeupdate` fires at most every 250ms, so past this playback is stalled.
+   */
+  static STALE_TIMEOUT = 1000;
+
   fps: number;
   callback: (value: number) => void;
   duration: number;
@@ -65,6 +71,17 @@ export class RangeAnimation {
       // Get ready for next frame by setting previousTime=now, but also adjust for your
       // specified fpsInterval not being a multiple of RAF's interval (16.7ms)
       this.#previousTime = now - (this.#deltaTime % fpsInterval);
+
+      // No update for this long means the playhead isn't advancing, so extrapolating
+      // would make the range lie about the current time. iOS leaves the media element
+      // unpaused but stalled when it restores a suspended page.
+      if (now - this.#updateTimestamp > RangeAnimation.STALE_TIMEOUT) {
+        this.#lastRangeIncrease = 0;
+        // Restart frame accounting so the fps estimate survives the stall.
+        this.#startTime = now;
+        this.#frameCount = 0;
+        return;
+      }
 
       const fps = 1000 / ((now - this.#startTime) / ++this.#frameCount);
       const delta = (now - this.#updateTimestamp) / 1000 / this.duration;
