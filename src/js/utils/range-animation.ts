@@ -43,10 +43,10 @@ export class RangeAnimation {
 
   update({ start, duration, playbackRate }) {
     // 1. Always allow increases.
-    // 2. Allow a relatively large decrease (user action or Safari jumping back :s).
+    // 2. Allow a decrease larger than 0.5s of media time (user action or Safari jumping back :s).
     const increase = start - this.#range.valueAsNumber;
     const durationDelta = Math.abs(duration - this.duration);
-    if (increase > 0 || increase < -0.03 || durationDelta >= 0.5) {
+    if (increase > 0 || increase < -0.5 / duration || durationDelta >= 0.5) {
       this.callback(start);
     }
 
