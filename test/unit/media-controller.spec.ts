@@ -2,6 +2,7 @@ import {
   assert,
   fixture,
   nextFrame,
+  oneEvent,
   waitUntil,
 } from '@open-wc/testing';
 import { MediaStateReceiverAttributes } from '../../src/js/constants.js';
@@ -440,6 +441,22 @@ describe('receiving state / dispatching (bubbling) events', function () {
       { timeout: 29000 }
     );
     assert(true, 'mediacurrenttime is 2');
+  });
+
+  it('updates mediacurrenttime when a seek starts, before it completes', async () => {
+    if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
+      await oneEvent(video, 'loadedmetadata');
+    }
+
+    // Registered after the media store's listener, so the store has handled `seeking` by now.
+    const seeking = oneEvent(video, 'seeking');
+    video.currentTime = 5;
+    await seeking;
+
+    assert.equal(
+      mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME),
+      '5'
+    );
   });
 
   (isSafari ? it.skip : it)('can change volume', async () => {
