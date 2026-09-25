@@ -1,5 +1,100 @@
 import { globalThis } from './utils/server-safe-globals.js';
 import { MediaChromeDialog } from './media-chrome-dialog.js';
+import { AttributeTokenList } from './utils/attribute-token-list.js';
+import {
+  getBooleanAttr,
+  setBooleanAttr,
+  setStringAttr,
+} from './utils/element-utils.js';
+
+export const Attributes = {
+  HOTKEYS: 'hotkeys',
+  NO_HOTKEYS: 'nohotkeys',
+};
+
+type Shortcut = {
+  keys: { label: string; token: string }[];
+  description: string;
+};
+
+/**
+ * The keyboard shortcuts this dialog advertises, in display order.
+ *
+ * Each key carries the `hotkeys` token that turns it off, so a shortcut that has
+ * been disabled is not shown as if it still works. Keep in sync with
+ * `keyboardShortcutHandler()` in `media-controller.ts`.
+ */
+const shortcuts: Shortcut[] = [
+  {
+    keys: [
+      { label: 'Space', token: 'nospace' },
+      { label: 'k', token: 'nok' },
+    ],
+    description: 'Toggle Playback',
+  },
+  { keys: [{ label: 'm', token: 'nom' }], description: 'Toggle mute' },
+  { keys: [{ label: 'f', token: 'nof' }], description: 'Toggle fullscreen' },
+  {
+    keys: [{ label: 'c', token: 'noc' }],
+    description: 'Toggle captions or subtitles, if available',
+  },
+  {
+    keys: [{ label: 'p', token: 'nop' }],
+    description: 'Toggle Picture in Picture',
+  },
+  {
+    keys: [
+      { label: '←', token: 'noarrowleft' },
+      { label: 'j', token: 'noj' },
+    ],
+    description: 'Seek back 10s',
+  },
+  {
+    keys: [
+      { label: '→', token: 'noarrowright' },
+      { label: 'l', token: 'nol' },
+    ],
+    description: 'Seek forward 10s',
+  },
+  {
+    keys: [{ label: '↑', token: 'noarrowup' }],
+    description: 'Turn volume up',
+  },
+  {
+    keys: [{ label: '↓', token: 'noarrowdown' }],
+    description: 'Turn volume down',
+  },
+  {
+    keys: [{ label: '< (SHIFT+,)', token: 'no<' }],
+    description: 'Decrease playback rate',
+  },
+  {
+    keys: [{ label: '> (SHIFT+.)', token: 'no>' }],
+    description: 'Increase playback rate',
+  },
+];
+
+/**
+ * Filter out the shortcuts that have been turned off, either individually via
+ * `hotkeys` or all at once via `nohotkeys`.
+ *
+ * Filtering is per key rather than per row, matching how the hotkeys are
+ * blocked: `hotkeys="nok"` leaves `Space` listed for Toggle Playback, and only
+ * `hotkeys="nok nospace"` drops the row entirely.
+ */
+function getEnabledShortcuts(attrs: Record<string, string>): Shortcut[] {
+  if (attrs[Attributes.NO_HOTKEYS] != null) return [];
+
+  const disabled = new Set(attrs[Attributes.HOTKEYS]?.split(' ') ?? []);
+  if (!disabled.size) return shortcuts;
+
+  return shortcuts
+    .map(({ keys, description }) => ({
+      keys: keys.filter(({ token }) => !disabled.has(token)),
+      description,
+    }))
+    .filter(({ keys }) => keys.length);
+}
 
 function getSlotTemplateHTML(_attrs: Record<string, string>) {
   return /*html*/ `
@@ -87,33 +182,28 @@ function getSlotTemplateHTML(_attrs: Record<string, string>) {
       }
     </style>
     <slot id="content">
-      ${formatKeyboardShortcuts()}
+      ${formatKeyboardShortcuts(_attrs)}
     </slot>
   `;
 }
 
-function formatKeyboardShortcuts() {
-  const shortcuts = [
-    { keys: ['Space', 'k'], description: 'Toggle Playback' },
-    { keys: ['m'], description: 'Toggle mute' },
-    { keys: ['f'], description: 'Toggle fullscreen' },
-    { keys: ['c'], description: 'Toggle captions or subtitles, if available' },
-    { keys: ['p'], description: 'Toggle Picture in Picture' },
-    { keys: ['←', 'j'], description: 'Seek back 10s' },
-    { keys: ['→', 'l'], description: 'Seek forward 10s' },
-    { keys: ['↑'], description: 'Turn volume up' },
-    { keys: ['↓'], description: 'Turn volume down' },
-    { keys: ['< (SHIFT+,)'], description: 'Decrease playback rate' },
-    { keys: ['> (SHIFT+.)'], description: 'Increase playback rate' },
-  ];
+function formatKeyboardShortcuts(attrs: Record<string, string>) {
+  const enabledShortcuts = getEnabledShortcuts(attrs);
 
-  const rows = shortcuts.map(({ keys, description }) => {
-    const keyCombo = keys.map((key, index) => 
-      index > 0 
-        ? `<span class="key-separator">or</span><span class="key">${key}</span>`
-        : `<span class="key">${key}</span>`
+  if (!enabledShortcuts.length) {
+    return `
+      <h2>Keyboard Shortcuts</h2>
+      <p class="description">All keyboard shortcuts are turned off.</p>
+    `;
+  }
+
+  const rows = enabledShortcuts.map(({ keys, description }) => {
+    const keyCombo = keys.map(({ label }, index) =>
+      index > 0
+        ? `<span class="key-separator">or</span><span class="key">${label}</span>`
+        : `<span class="key">${label}</span>`
     ).join('');
-    
+
     return `
       <tr>
         <td>
@@ -131,8 +221,57 @@ function formatKeyboardShortcuts() {
 }
 
 
+/**
+ * @extends {MediaChromeDialog}
+ *
+ * @attr {string} hotkeys - Space separated list of hotkeys that are turned off.
+ *   Shortcuts listed here are omitted from the dialog.
+ * @attr {boolean} nohotkeys - All hotkeys are turned off, no shortcuts are listed.
+ */
 class MediaKeyboardShortcutsDialog extends MediaChromeDialog {
   static getSlotTemplateHTML = getSlotTemplateHTML;
+  static formatKeyboardShortcuts = formatKeyboardShortcuts;
+
+  static get observedAttributes() {
+    return [
+      ...super.observedAttributes,
+      Attributes.HOTKEYS,
+      Attributes.NO_HOTKEYS,
+    ];
+  }
+
+  #hotKeys = new AttributeTokenList(this, Attributes.HOTKEYS);
+
+  // Added string to support JSX compatibility
+  get hotkeys(): AttributeTokenList | string {
+    return this.#hotKeys;
+  }
+
+  set hotkeys(value: string | undefined) {
+    setStringAttr(this, Attributes.HOTKEYS, value);
+  }
+
+  get noHotkeys(): boolean | undefined {
+    return getBooleanAttr(this, Attributes.NO_HOTKEYS);
+  }
+
+  set noHotkeys(value: boolean | undefined) {
+    setBooleanAttr(this, Attributes.NO_HOTKEYS, value);
+  }
+
+  formatKeyboardShortcuts(attrs: Record<string, string>) {
+    return (this.constructor as typeof MediaKeyboardShortcutsDialog).formatKeyboardShortcuts(attrs);
+  }
+
+  #renderShortcuts() {
+    const content = this.shadowRoot?.querySelector('#content');
+    if (!content) return;
+
+    content.innerHTML = this.formatKeyboardShortcuts({
+      [Attributes.HOTKEYS]: this.#hotKeys.value,
+      ...(this.noHotkeys ? { [Attributes.NO_HOTKEYS]: '' } : null),
+    });
+  }
 
   connectedCallback() {
     super.connectedCallback();
@@ -158,6 +297,11 @@ class MediaKeyboardShortcutsDialog extends MediaChromeDialog {
         this.removeEventListener('click', this.#clickHandler);
         document.removeEventListener('keydown', this.#keyDownHandler);
       }
+    } else if (attrName === Attributes.HOTKEYS && newValue !== oldValue) {
+      this.#hotKeys.value = newValue;
+      this.#renderShortcuts();
+    } else if (attrName === Attributes.NO_HOTKEYS && newValue !== oldValue) {
+      this.#renderShortcuts();
     }
   }
 
