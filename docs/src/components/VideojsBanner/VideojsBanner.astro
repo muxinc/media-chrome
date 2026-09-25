@@ -1,0 +1,45 @@
+---
+const VIDEOJS_URL = 'https://videojs.org/?utm_source=media-chrome&utm_medium=docs-banner';
+---
+
+<aside class="videojs-banner" aria-label="Video.js">
+  <p>
+    <strong>Media Chrome got a new suit 🕺</strong> Its ideas and team are now part of Video.js.{' '}
+    <a href={VIDEOJS_URL}>Try Video.js&nbsp;→</a>
+  </p>
+</aside>
+
+<style>
+  .videojs-banner {
+    padding: 0.625rem 1rem;
+    border-bottom: 1px solid var(--theme-divider);
+    /* One step darker than the nav's gray; the text holds APCA Lc 95+ on it. */
+    background-color: var(--theme-bg-offset);
+    color: var(--theme-text);
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  /* Dark mode's offset gray is near-black, so lift the nav's gray instead. */
+  :global(.theme-dark) .videojs-banner {
+    background-color: color-mix(in srgb, var(--theme-navbar-bg), white 7%);
+  }
+
+  /* Override the docs' global paragraph color and 75ch measure. */
+  .videojs-banner p {
+    max-width: none;
+    margin: 0;
+    color: inherit;
+    line-height: inherit;
+    text-align: center;
+    text-wrap: pretty;
+  }
+
+  .videojs-banner a {
+    color: inherit;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+    white-space: nowrap;
+  }
+</style>
