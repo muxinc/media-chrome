@@ -4,7 +4,7 @@ import HeadCommon from '../components/HeadCommon.astro';
 import HeadSEO from '../components/HeadSEO.astro';
 import AstroLogo from '../components/Header/AstroLogo.astro';
 
-const title = 'Media Chrome got a new suit';
+const title = 'Media Chrome is now part of Video.js';
 const description =
   'The folks behind Media Chrome, Plyr, and Vidstack have joined forces to build the latest version of Video.js: one modern, accessible player with the best of all three.';
 const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(/\/$/, '');
@@ -28,7 +28,7 @@ const actions = [
   <head>
     <HeadCommon />
     <HeadSEO
-      frontmatter={{ title, description, layout: '', image: { src: 'https://videojs.org/og/index.png', alt: 'Video.js' } }}
+      frontmatter={{ title, description, layout: '' }}
       canonicalUrl={canonicalURL}
     />
     <title>{title}</title>
