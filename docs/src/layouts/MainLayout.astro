@@ -146,9 +146,13 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
       .mobile-sidebar-toggle {
         overflow: hidden;
       }
+      /* Open the mobile menu below the banner and nav, and keep its scroll area inside the viewport. */
       .mobile-sidebar-toggle #grid-left {
         display: block !important;
-        top: 2rem;
+        top: var(--site-top-height, 5rem);
+      }
+      .mobile-sidebar-toggle #grid-left .nav-groups {
+        max-height: calc(100vh - var(--site-top-height, 5rem));
       }
     </style>
     <script>
