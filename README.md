@@ -19,7 +19,7 @@
 >
 > The folks behind Media Chrome, Plyr and Vidstack have joined forces to build the latest version of Video.js: one modern, accessible player with the best of all three. It keeps what made Media Chrome great, like HTML-first `media-*` elements styled with plain CSS, and adds React components, polished skins, and streaming built in. Starting something new? Give Video.js a try.
 >
-> **[Try Video.js →](https://videojs.org?utm_source=media-chrome)** · [Migrate from Media Chrome](https://videojs.org/docs/framework/html/how-to/migrate-from-media-chrome?utm_source=media-chrome)
+> **[Try Video.js →](https://videojs.org?utm_source=media-chrome)** · [Migrate from Media Chrome](https://videojs.org/docs/framework/html/guides/migrate-from-media-chrome?utm_source=media-chrome)
 
 Your media player's dancing suit. :man_dancing:
 
