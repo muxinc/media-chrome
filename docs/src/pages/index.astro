@@ -310,17 +310,9 @@ const actions = [
     color: var(--theme-text-light);
   }
 
-  .action:is(:hover, :focus-visible) .action-arrow {
-    transform: translateX(0.25rem);
-  }
-
   @media (prefers-reduced-motion: reduce) {
     .action-fill {
       transition: none;
-    }
-
-    .action:is(:hover, :focus-visible) .action-arrow {
-      transform: none;
     }
   }
 
