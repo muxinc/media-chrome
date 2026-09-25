@@ -46,7 +46,7 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
       body {
         width: 100%;
         display: grid;
-        grid-template-rows: auto var(--theme-navbar-height) 1fr;
+        grid-template-rows: auto 1fr;
         --gutter: 0.5rem;
         --doc-padding: 2rem;
       }
@@ -61,9 +61,16 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
         overflow-x: hidden;
       }
 
+      /* The banner and nav stick together, so the page sticks things below their measured height. */
+      .site-top {
+        position: sticky;
+        top: 0;
+        z-index: 11;
+      }
+
       .grid-sidebar {
         position: sticky;
-        top: 5rem;
+        top: var(--site-top-height, 5rem);
         padding: 0;
       }
 
@@ -94,7 +101,7 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
         }
 
         .grid-sidebar {
-          height: calc(100vh - 80px);
+          height: calc(100vh - var(--site-top-height, 80px));
         }
 
         #grid-left {
@@ -152,8 +159,18 @@ const githubEditUrl = `${CONFIG.GITHUB_EDIT_URL}/${currentFile}`;
     </script>
   </head>
   <body>
-    <VideojsBanner show={banner !== false} />
-    <Header currentPage={currentPage} />
+    <div class="site-top">
+      {banner !== false && <VideojsBanner />}
+      <Header currentPage={currentPage} />
+    </div>
+    <script is:inline>
+      (() => {
+        const top = document.querySelector('.site-top');
+        const sync = () => document.documentElement.style.setProperty('--site-top-height', `${top.offsetHeight}px`);
+        sync();
+        new ResizeObserver(sync).observe(top);
+      })();
+    </script>
     <main id="layout" class="layout">
       <aside id="grid-left" class="grid-sidebar" title="Site Navigation">
         <slot name="left-sidebar">

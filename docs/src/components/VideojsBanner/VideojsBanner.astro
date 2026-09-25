@@ -1,26 +1,13 @@
 ---
-type Props = {
-  // Pages that size content to the viewport (the examples) leave the banner out.
-  show?: boolean;
-};
-
-const { show = true } = Astro.props as Props;
 const VIDEOJS_URL = 'https://videojs.org/?utm_source=media-chrome&utm_medium=docs-banner';
 ---
 
-{/* The slot always renders so MainLayout's grid rows stay put when the banner is hidden. */}
-<div class="videojs-banner-slot">
-  {
-    show && (
-      <aside class="videojs-banner" aria-label="Video.js">
-        <p>
-          <strong>Media Chrome got a new suit 🕺</strong> Its ideas and team are now part of Video.js.{' '}
-          <a href={VIDEOJS_URL}>Try Video.js&nbsp;→</a>
-        </p>
-      </aside>
-    )
-  }
-</div>
+<aside class="videojs-banner" aria-label="Video.js">
+  <p>
+    <strong>Media Chrome got a new suit 🕺</strong> Its ideas and team are now part of Video.js.{' '}
+    <a href={VIDEOJS_URL}>Try Video.js&nbsp;→</a>
+  </p>
+</aside>
 
 <style>
   .videojs-banner {

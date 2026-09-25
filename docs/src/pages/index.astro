@@ -68,7 +68,8 @@ const actions = [
           </div>
           <div class="media">
             <div class="player-frame">
-              <video-player>
+              {/* An empty title overrides the one Mux supplies, which hides the skin's title overlay. */}
+              <video-player content-title="">
                 <video-skin>
                   <mux-video src={`https://stream.mux.com/${PLAYBACK_ID}.m3u8`} playsinline crossorigin></mux-video>
                 </video-skin>
@@ -106,6 +107,7 @@ const actions = [
     --gutter: clamp(1rem, 4vw, 4rem);
     --col: min(100% - 2 * var(--gutter), 84rem);
     --line: 1px solid var(--theme-divider);
+    --inset: clamp(1.5rem, 3.5vw, 3.5rem);
 
     margin: 0;
     background: var(--theme-navbar-bg);
@@ -198,8 +200,9 @@ const actions = [
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 1.25rem;
-    padding: clamp(1.5rem, 3.5vw, 3.5rem);
+    gap: 1.75rem;
+    padding: var(--inset);
+    padding-bottom: calc(var(--inset) * 1.5);
   }
 
   h1 {
@@ -215,8 +218,9 @@ const actions = [
   .copy p {
     margin: 0;
     color: var(--theme-text-light);
-    font-size: 1.0625rem;
-    line-height: 1.65;
+    /* Same fluid size and line height as the docs' body text (styles/index.css). */
+    font-size: clamp(0.9rem, 0.75rem + 0.375vw, 1rem);
+    line-height: 1.65em;
     text-wrap: pretty;
   }
 
@@ -232,7 +236,6 @@ const actions = [
   .player-frame {
     width: 100%;
     aspect-ratio: 16 / 9;
-    --media-border-radius: 0.75rem;
   }
 
   .player-frame video-skin {
@@ -245,8 +248,9 @@ const actions = [
   }
 
   .action {
-    --sweep-duration: 400ms;
-    --sweep-ease: cubic-bezier(0.65, 0, 0.35, 1);
+    --sweep-duration: 250ms;
+    /* mux.com's easing. */
+    --sweep-ease: cubic-bezier(0.7, 0, 0.3, 1);
 
     display: grid;
     min-height: 4.5rem;
@@ -282,7 +286,7 @@ const actions = [
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1rem 1.25rem;
+    padding: 1rem 1.25rem 1rem var(--inset);
   }
 
   /* White measures APCA Lc 61 on the orange and Lc 62 on the green; near-black only reaches Lc 45–46. */
@@ -306,17 +310,12 @@ const actions = [
     color: var(--theme-text-light);
   }
 
-  .action-arrow {
-    transition: transform var(--sweep-duration) var(--sweep-ease);
-  }
-
   .action:is(:hover, :focus-visible) .action-arrow {
     transform: translateX(0.25rem);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .action-fill,
-    .action-arrow {
+    .action-fill {
       transition: none;
     }
 
