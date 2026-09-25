@@ -547,7 +547,7 @@ export const stateMediator: StateMediator = {
       if (!media || !isValidNumber(value)) return;
       media.currentTime = value;
     },
-    mediaEvents: ['timeupdate', 'loadedmetadata'],
+    mediaEvents: ['timeupdate', 'loadedmetadata', 'seeking'],
   },
   mediaDuration: {
     get(stateOwners) {
