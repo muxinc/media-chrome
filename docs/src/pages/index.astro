@@ -285,7 +285,8 @@ const actions = [
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1rem 1.25rem 1rem var(--inset);
+    /* Halfway between the right padding and the copy's inset. */
+    padding: 1rem 1.25rem 1rem calc((1.25rem + var(--inset)) / 2);
   }
 
   /* White measures APCA Lc 61 on the orange and Lc 62 on the green; near-black only reaches Lc 45–46. */
