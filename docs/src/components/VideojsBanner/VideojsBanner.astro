@@ -1,0 +1,36 @@
+---
+const VIDEOJS_URL = 'https://videojs.org/?utm_source=media-chrome&utm_medium=docs-banner';
+---
+
+<aside class="videojs-banner" aria-label="Video.js">
+  <p>
+    <strong>Media Chrome, meet Video.js 👋</strong>
+    The team behind Media Chrome now builds Video.js, an HTML-first player with the best of Media Chrome, Plyr and
+    Vidstack. Starting something new? <a href={VIDEOJS_URL}>Try Video.js&nbsp;→</a>
+  </p>
+</aside>
+
+<style>
+  .videojs-banner {
+    margin-bottom: 2rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--theme-divider);
+    border-left: 4px solid var(--theme-accent);
+    background-color: var(--theme-bg-offset);
+    font-size: 0.95em;
+    line-height: 1.5;
+  }
+
+  .videojs-banner p {
+    margin: 0;
+  }
+
+  .videojs-banner strong {
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .videojs-banner a {
+    font-weight: 600;
+  }
+</style>

@@ -1,8 +1,86 @@
 ---
-import LandingLayout from '../layouts/LandingLayout.astro';
-import Landing from './landing/index';
+import HeadCommon from '../components/HeadCommon.astro';
+import HeadSEO from '../components/HeadSEO.astro';
+
+const title = 'Media Chrome, meet Video.js';
+const description =
+  'The folks behind Media Chrome, Plyr and Vidstack have joined forces on Video.js: one modern, accessible player with the best of all three. New projects should start with Video.js.';
+const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(/\/$/, '');
+
+const VIDEOJS_URL = 'https://videojs.org/?utm_source=media-chrome';
+const MIGRATION_URL = 'https://videojs.org/docs/framework/html/how-to/migrate-from-media-chrome?utm_source=media-chrome';
+const MUX_URL = 'https://www.mux.com/?utm_source=media-chrome';
+
+// Pinned so the demo can't break under us; bump alongside Video.js releases.
+const VJS_CDN = 'https://cdn.jsdelivr.net/npm/@videojs/cdn@10.0.0-rc.2';
+const PLAYBACK_ID = 'BV3YZtogl89mg9VcNBhhnHm02Y34zI1nlMuMQfAbl3dM';
 ---
 
-<LandingLayout>
-  <Landing client:load />
-</LandingLayout>
+<html dir="ltr" lang="en-us">
+  <head>
+    <HeadCommon />
+    <HeadSEO
+      frontmatter={{ title, description, layout: '', image: { src: 'https://videojs.org/og/index.png', alt: 'Video.js' } }}
+      canonicalUrl={canonicalURL}
+    />
+    <title>{title}</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="preload" as="image" href={`https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp`} />
+    <link rel="stylesheet" href={`${VJS_CDN}/global.css`} />
+    <script type="module" src={`${VJS_CDN}/video.js`}></script>
+    <script type="module" src={`${VJS_CDN}/media/mux-video/spf.js`}></script>
+  </head>
+  <body class="font-mono bg-primary-50 text-black">
+    <div
+      class="mx-auto flex min-h-svh w-full max-w-lg flex-col-reverse items-center justify-center gap-12 p-6 lg:max-w-7xl lg:flex-row lg:gap-20 lg:p-12"
+    >
+      <header class="flex flex-col gap-8 text-center lg:max-w-lg lg:flex-1 lg:text-left">
+        <p class="text-sm">{`<media-chrome>`}</p>
+        <h1 class="text-[clamp(2rem,4vw,3rem)] font-semibold leading-tight text-balance">
+          Media Chrome, meet Video.js 👋
+        </h1>
+        <p class="leading-relaxed">
+          The folks behind Media Chrome, Plyr and Vidstack have joined forces to build the latest version of Video.js:
+          one modern, accessible player with the best of all three. It keeps what made Media Chrome great, like HTML-first
+          <code>media-*</code> elements styled with plain CSS, and adds React components, polished skins, and
+          streaming built in. Starting something new? Give Video.js a try.
+        </p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <a
+            href={VIDEOJS_URL}
+            class="border border-black bg-black px-4 py-3 text-center font-semibold text-white hover:bg-primary-700 hover:border-primary-700"
+          >
+            Check out Video.js
+          </a>
+          <a
+            href={MIGRATION_URL}
+            class="border border-black bg-white px-4 py-3 text-center font-semibold hover:bg-secondary-225"
+          >
+            Migrate from Media Chrome
+          </a>
+        </div>
+        <p class="text-sm">
+          Using Media Chrome today? Its <a class="border-b border-current" href="/docs/en/get-started">docs</a> and
+          <a class="border-b border-current" href="https://github.com/muxinc/media-chrome">GitHub repo</a> are right
+          where you left them.
+        </p>
+        <p class="text-sm">
+          Need somewhere to host your video? <a class="border-b border-current" href={MUX_URL}>Mux</a> is a video API for
+          developers, from the team behind Media Chrome and Video.js.
+        </p>
+      </header>
+      <main class="w-full min-w-0 lg:flex-1">
+        <div class="aspect-video w-full rounded-2xl shadow-2xl shadow-primary-700/30">
+          <video-player>
+            <video-skin class="h-full w-full">
+              <mux-video src={`https://stream.mux.com/${PLAYBACK_ID}.m3u8`} playsinline crossorigin></mux-video>
+            </video-skin>
+          </video-player>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>
