@@ -1,19 +1,27 @@
 ---
+import '../styles/theme.css';
 import HeadCommon from '../components/HeadCommon.astro';
 import HeadSEO from '../components/HeadSEO.astro';
+import AstroLogo from '../components/Header/AstroLogo.astro';
 
-const title = 'Media Chrome, meet Video.js';
+const title = 'Media Chrome got a new suit';
 const description =
-  'The folks behind Media Chrome, Plyr and Vidstack have joined forces on Video.js: one modern, accessible player with the best of all three. New projects should start with Video.js.';
+  'The folks behind Media Chrome, Plyr, and Vidstack have joined forces to build the latest version of Video.js: one modern, accessible player with the best of all three.';
 const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(/\/$/, '');
 
 const VIDEOJS_URL = 'https://videojs.org/?utm_source=media-chrome';
 const MIGRATION_URL = 'https://videojs.org/docs/framework/html/how-to/migrate-from-media-chrome?utm_source=media-chrome';
-const MUX_URL = 'https://www.mux.com/?utm_source=media-chrome';
 
 // Pinned so the demo can't break under us; bump alongside Video.js releases.
-const VJS_CDN = 'https://cdn.jsdelivr.net/npm/@videojs/cdn@10.0.0-rc.2';
+const VJS_CDN = 'https://cdn.jsdelivr.net/npm/@videojs/cdn@10.0.0-rc.3';
 const PLAYBACK_ID = 'BV3YZtogl89mg9VcNBhhnHm02Y34zI1nlMuMQfAbl3dM';
+
+// Video.js links sweep in Video.js orange; the Media Chrome docs link sweeps in Media Chrome green.
+const actions = [
+  { href: VIDEOJS_URL, label: 'Check out Video.js', variant: 'primary', sweep: 'videojs' },
+  { href: MIGRATION_URL, label: 'Migrate from Media Chrome', variant: 'secondary', sweep: 'videojs' },
+  { href: '/docs/en/get-started', label: 'Media Chrome docs', variant: 'tertiary', sweep: 'media-chrome' },
+];
 ---
 
 <html dir="ltr" lang="en-us">
@@ -24,63 +32,338 @@ const PLAYBACK_ID = 'BV3YZtogl89mg9VcNBhhnHm02Y34zI1nlMuMQfAbl3dM';
       canonicalUrl={canonicalURL}
     />
     <title>{title}</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
     <link rel="preload" as="image" href={`https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp`} />
     <link rel="stylesheet" href={`${VJS_CDN}/global.css`} />
     <script type="module" src={`${VJS_CDN}/video.js`}></script>
     <script type="module" src={`${VJS_CDN}/media/mux-video/spf.js`}></script>
   </head>
-  <body class="font-mono bg-primary-50 text-black">
-    <div
-      class="mx-auto flex min-h-svh w-full max-w-lg flex-col-reverse items-center justify-center gap-12 p-6 lg:max-w-7xl lg:flex-row lg:gap-20 lg:p-12"
-    >
-      <header class="flex flex-col gap-8 text-center lg:max-w-lg lg:flex-1 lg:text-left">
-        <p class="text-sm">{`<media-chrome>`}</p>
-        <h1 class="text-[clamp(2rem,4vw,3rem)] font-semibold leading-tight text-balance">
-          Media Chrome, meet Video.js 👋
-        </h1>
-        <p class="leading-relaxed">
-          The folks behind Media Chrome, Plyr and Vidstack have joined forces to build the latest version of Video.js:
-          one modern, accessible player with the best of all three. It keeps what made Media Chrome great, like HTML-first
-          <code>media-*</code> elements styled with plain CSS, and adds React components, polished skins, and
-          streaming built in. Starting something new? Give Video.js a try.
-        </p>
-        <div class="grid gap-4 sm:grid-cols-2">
-          <a
-            href={VIDEOJS_URL}
-            class="border border-black bg-black px-4 py-3 text-center font-semibold text-white hover:bg-primary-700 hover:border-primary-700"
-          >
-            Check out Video.js
+  <body>
+    <div class="page">
+      {/* Column edges drawn once, full height, so they read as guides running past every row. */}
+      <div class="guides" aria-hidden="true"></div>
+
+      <div class="spacer"></div>
+
+      <header class="row row-top">
+        <div class="col masthead">
+          <a class="wordmark" href="/">
+            <AstroLogo size={28} />
+            <span>media-chrome</span>
           </a>
-          <a
-            href={MIGRATION_URL}
-            class="border border-black bg-white px-4 py-3 text-center font-semibold hover:bg-secondary-225"
-          >
-            Migrate from Media Chrome
-          </a>
+          <a class="masthead-link" href="https://github.com/muxinc/media-chrome">GitHub <span aria-hidden="true">↗</span></a>
         </div>
-        <p class="text-sm">
-          Using Media Chrome today? Its <a class="border-b border-current" href="/docs/en/get-started">docs</a> and
-          <a class="border-b border-current" href="https://github.com/muxinc/media-chrome">GitHub repo</a> are right
-          where you left them.
-        </p>
-        <p class="text-sm">
-          Need somewhere to host your video? <a class="border-b border-current" href={MUX_URL}>Mux</a> is a video API for
-          developers, from the team behind Media Chrome and Video.js.
-        </p>
       </header>
-      <main class="w-full min-w-0 lg:flex-1">
-        <div class="aspect-video w-full rounded-2xl shadow-2xl shadow-primary-700/30">
-          <video-player>
-            <video-skin class="h-full w-full">
-              <mux-video src={`https://stream.mux.com/${PLAYBACK_ID}.m3u8`} playsinline crossorigin></mux-video>
-            </video-skin>
-          </video-player>
+
+      <main class="row row-card">
+        <div class="col card">
+          <div class="copy">
+            <h1>Media Chrome got a new suit 🕺</h1>
+            <p>
+              The folks behind Media Chrome, Plyr, and Vidstack have joined forces to build the latest version of
+              Video.js: one modern, accessible player with the best of all three. It keeps what made Media Chrome great,
+              like natural-feeling HTML custom elements that you can style with plain CSS. But now, there's first-class
+              React components, polished skins, smaller bundles, and a great agentic experience. Starting something
+              new? Give Video.js a try.
+            </p>
+          </div>
+          <div class="media">
+            <div class="player-frame">
+              <video-player>
+                <video-skin>
+                  <mux-video src={`https://stream.mux.com/${PLAYBACK_ID}.m3u8`} playsinline crossorigin></mux-video>
+                </video-skin>
+              </video-player>
+            </div>
+          </div>
         </div>
       </main>
+
+      <nav class="row row-actions" aria-label="Next steps">
+        <div class="col actions">
+          {
+            actions.map(({ href, label, variant, sweep }) => (
+              <a class={`action action-${variant}`} data-sweep={sweep} href={href}>
+                <span class="action-layer">
+                  {label} <span class="action-arrow" aria-hidden="true">→</span>
+                </span>
+                {/* A colored copy of the label, revealed left to right on hover so the text changes color at the edge. */}
+                <span class="action-layer action-fill" aria-hidden="true">
+                  {label} <span class="action-arrow">→</span>
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </nav>
+
+      <div class="spacer"></div>
     </div>
   </body>
 </html>
+
+<style>
+  body {
+    --gutter: clamp(1rem, 4vw, 4rem);
+    --col: min(100% - 2 * var(--gutter), 84rem);
+    --line: 1px solid var(--theme-divider);
+
+    margin: 0;
+    background: var(--theme-navbar-bg);
+    color: var(--theme-text);
+    font-family: var(--font-body);
+  }
+
+  .page {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding-block: clamp(1rem, 4vh, 3rem);
+  }
+
+  .guides {
+    pointer-events: none;
+    position: absolute;
+    inset-block: 0;
+    left: 50%;
+    z-index: 1;
+    width: var(--col);
+    transform: translateX(-50%);
+    border-inline: var(--line);
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  /* Rows span the viewport so their borders become the horizontal grid lines; content sits in the column. */
+  .row-top {
+    border-top: var(--line);
+  }
+
+  .row-card {
+    border-block: var(--line);
+  }
+
+  .row-actions {
+    border-bottom: var(--line);
+  }
+
+  .col {
+    width: var(--col);
+    margin-inline: auto;
+  }
+
+  .masthead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    height: 4rem;
+    padding-inline: clamp(1rem, 2vw, 1.25rem);
+    font-family: var(--font-mono);
+  }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    color: inherit;
+    font-size: 1.125rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .masthead-link {
+    color: var(--theme-text-light);
+    font-size: 0.8125rem;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .masthead-link:hover {
+    color: var(--theme-text-accent);
+  }
+
+  .card {
+    display: grid;
+    background: var(--theme-bg);
+  }
+
+  .copy {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.25rem;
+    padding: clamp(1.5rem, 3.5vw, 3.5rem);
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: clamp(1.75rem, 1.25rem + 1.75vw, 2.75rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+  }
+
+  .copy p {
+    margin: 0;
+    color: var(--theme-text-light);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  /* Player first on narrow screens, divided from the copy by a horizontal rule. */
+  .media {
+    order: -1;
+    display: grid;
+    place-items: center;
+    padding: clamp(1rem, 2.5vw, 2.5rem);
+    border-bottom: var(--line);
+  }
+
+  .player-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    --media-border-radius: 0.75rem;
+  }
+
+  .player-frame video-skin {
+    height: 100%;
+    width: 100%;
+  }
+
+  .actions {
+    display: grid;
+  }
+
+  .action {
+    --sweep-duration: 400ms;
+    --sweep-ease: cubic-bezier(0.65, 0, 0.35, 1);
+
+    display: grid;
+    min-height: 4.5rem;
+    color: var(--theme-text);
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-decoration: none;
+    text-transform: uppercase;
+  }
+
+  .action[data-sweep='videojs'] {
+    --sweep: #ff6200;
+  }
+
+  .action[data-sweep='media-chrome'] {
+    --sweep: #00aa3c;
+  }
+
+  .action + .action {
+    border-top: var(--line);
+  }
+
+  .action:focus-visible {
+    outline: 2px solid var(--sweep);
+    outline-offset: -2px;
+  }
+
+  .action-layer {
+    grid-area: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+  }
+
+  /* White measures APCA Lc 61 on the orange and Lc 62 on the green; near-black only reaches Lc 45–46. */
+  .action-fill {
+    background: var(--sweep);
+    color: #fff;
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path var(--sweep-duration) var(--sweep-ease);
+  }
+
+  .action:is(:hover, :focus-visible) .action-fill {
+    clip-path: inset(0 0 0 0);
+  }
+
+  .action-primary {
+    background: var(--theme-text);
+    color: var(--theme-bg);
+  }
+
+  .action-tertiary {
+    color: var(--theme-text-light);
+  }
+
+  .action-arrow {
+    transition: transform var(--sweep-duration) var(--sweep-ease);
+  }
+
+  .action:is(:hover, :focus-visible) .action-arrow {
+    transform: translateX(0.25rem);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .action-fill,
+    .action-arrow {
+      transition: none;
+    }
+
+    .action:is(:hover, :focus-visible) .action-arrow {
+      transform: none;
+    }
+  }
+
+  @media (min-width: 40rem) {
+    .actions {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .action + .action {
+      border-top: 0;
+      border-left: var(--line);
+    }
+  }
+
+  /* Side by side: copy | player, and the actions line up under that same split. */
+  @media (min-width: 60rem) {
+    .card {
+      grid-template-columns: var(--card);
+    }
+
+    .media {
+      order: 0;
+      border-bottom: 0;
+      border-left: var(--line);
+    }
+
+    .actions {
+      grid-template-columns: var(--actions);
+    }
+  }
+
+  /* Even split while the copy column would be cramped; give the player more room once there's space. */
+  /* The actions' first track matches the copy column, so the card's divider continues through the button row. */
+  body {
+    --card: minmax(0, 1fr) minmax(0, 1fr);
+    --actions: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  @media (min-width: 90rem) {
+    body {
+      --card: minmax(0, 5fr) minmax(0, 7fr);
+      --actions: minmax(0, 10fr) minmax(0, 7fr) minmax(0, 7fr);
+    }
+  }
+</style>
