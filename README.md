@@ -14,6 +14,13 @@
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/media-chrome?style=flat-square&color=informational&label=gzip)](https://bundlephobia.com/result?p=media-chrome) 
 [![slack](https://img.shields.io/badge/slack-%23media--chrome-pink?style=flat-square&color=informational)](https://www.video-dev.org/)
 
+> [!IMPORTANT]
+> **Media Chrome, meet Video.js 👋**
+>
+> The folks behind Media Chrome, Plyr and Vidstack have joined forces to build the latest version of Video.js: one modern, accessible player with the best of all three. It keeps what made Media Chrome great, like HTML-first `media-*` elements styled with plain CSS, and adds React components, polished skins, and streaming built in. Starting something new? Give Video.js a try.
+>
+> **[Try Video.js →](https://videojs.org?utm_source=media-chrome)** · [Migrate from Media Chrome](https://videojs.org/docs/framework/html/guides/migrate-from-media-chrome?utm_source=media-chrome)
+
 Your media player's dancing suit. :man_dancing:
 
 Fully customizable media player controls using web components (native custom elements).
@@ -23,7 +30,7 @@ Fully customizable media player controls using web components (native custom ele
 - [x] Simple HTML to add/remove controls
 - [x] Simple CSS to style the controls
 
-_From [Mux](https://mux.com?utm_source=github&utm_medium=social&utm_campaign=media-chrome) and the creator of [Video.js](https://videojs.com/)._
+_From [Mux](https://mux.com?utm_source=media-chrome), the team behind [Video.js](https://videojs.org?utm_source=media-chrome). Need video hosting? [Check out Mux!](https://mux.com?utm_source=media-chrome)_
 
 ## Documentation
 
