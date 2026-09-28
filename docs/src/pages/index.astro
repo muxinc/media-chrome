@@ -38,7 +38,8 @@ const actions = [
     <link rel="preload" as="image" href={POSTER} />
     <link rel="stylesheet" href={`${VJS_CDN}/global.css`} />
     <script type="module" src={`${VJS_CDN}/video.js`}></script>
-    <script type="module" src={`${VJS_CDN}/media/mux-video/spf.js`}></script>
+    {/* hls.js, not SPF: this older asset streams MPEG-TS segments, and SPF only plays fMP4. */}
+    <script type="module" src={`${VJS_CDN}/media/mux-video/hls-js.js`}></script>
   </head>
   <body>
     <div class="page">
