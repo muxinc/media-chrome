@@ -16,11 +16,12 @@ const MIGRATION_URL = 'https://videojs.org/docs/framework/html/guides/migrate-fr
 const VJS_CDN = 'https://cdn.jsdelivr.net/npm/@videojs/cdn@10.0.0-rc.3';
 const PLAYBACK_ID = 'BV3YZtogl89mg9VcNBhhnHm02Y34zI1nlMuMQfAbl3dM';
 
+// Labels keep "Media Chrome" on one line (non-breaking space).
 // Video.js links sweep in Video.js orange; the Media Chrome docs link sweeps in Media Chrome green.
 const actions = [
   { href: VIDEOJS_URL, label: 'Check out Video.js', variant: 'primary', sweep: 'videojs' },
-  { href: MIGRATION_URL, label: 'Migrate from Media Chrome', variant: 'secondary', sweep: 'videojs' },
-  { href: '/docs/en/get-started', label: 'Media Chrome docs', variant: 'tertiary', sweep: 'media-chrome' },
+  { href: MIGRATION_URL, label: 'Migrate from Media\u00a0Chrome', variant: 'secondary', sweep: 'videojs' },
+  { href: '/docs/en/get-started', label: 'Media\u00a0Chrome docs', variant: 'tertiary', sweep: 'media-chrome' },
 ];
 ---
 
