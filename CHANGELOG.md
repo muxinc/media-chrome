@@ -1,3 +1,15 @@
+## [4.19.3](https://github.com/muxinc/media-chrome/compare/v4.19.2...v4.19.3) (2026-09-28)
+
+
+### Bug Fixes
+
+* (docs) correct broken link to defaultstreamtype on stream-type page ([#1298](https://github.com/muxinc/media-chrome/issues/1298)) ([d8e337f](https://github.com/muxinc/media-chrome/commit/d8e337f78821c0bd26142e05d2bde42c9d1147b6)), closes [#1297](https://github.com/muxinc/media-chrome/issues/1297)
+* return '0 seconds' for zero input in formatAsTimePhrase ([#1300](https://github.com/muxinc/media-chrome/issues/1300)) ([c624760](https://github.com/muxinc/media-chrome/commit/c62476041348882699b6925c429dc89774394887)), closes [#1299](https://github.com/muxinc/media-chrome/issues/1299)
+* snap media-time-range when seeking back less than 3% of duration ([#1315](https://github.com/muxinc/media-chrome/issues/1315)) ([803787e](https://github.com/muxinc/media-chrome/commit/803787e819177c33f80a7b354f35e532b2215aca)), closes [#1306](https://github.com/muxinc/media-chrome/issues/1306) [#1307](https://github.com/muxinc/media-chrome/issues/1307)
+* updates mediacurrenttime when a seek starts, before it completes ([#1316](https://github.com/muxinc/media-chrome/issues/1316)) ([7e8a08f](https://github.com/muxinc/media-chrome/commit/7e8a08fedf921f8c93bb17bc22f8bfff40038800))
+
+
+
 ## [4.19.2](https://github.com/muxinc/media-chrome/compare/v4.19.1...v4.19.2) (2026-06-10)
 
 
