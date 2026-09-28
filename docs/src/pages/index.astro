@@ -14,7 +14,9 @@ const MIGRATION_URL = 'https://videojs.org/docs/framework/html/guides/migrate-fr
 
 // Pinned so the demo can't break under us; bump alongside Video.js releases.
 const VJS_CDN = 'https://cdn.jsdelivr.net/npm/@videojs/cdn@10.0.0-rc.3';
-const PLAYBACK_ID = 'BV3YZtogl89mg9VcNBhhnHm02Y34zI1nlMuMQfAbl3dM';
+// The video, poster frame, and captions mashup from the original media-chrome.org landing page.
+const PLAYBACK_ID = 'ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY';
+const POSTER = `https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp?time=0`;
 
 // Labels keep "Media Chrome" on one line (non-breaking space).
 // Video.js links sweep in Video.js orange; the Media Chrome docs link sweeps in Media Chrome green.
@@ -33,7 +35,7 @@ const actions = [
       canonicalUrl={canonicalURL}
     />
     <title>{title}</title>
-    <link rel="preload" as="image" href={`https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp`} />
+    <link rel="preload" as="image" href={POSTER} />
     <link rel="stylesheet" href={`${VJS_CDN}/global.css`} />
     <script type="module" src={`${VJS_CDN}/video.js`}></script>
     <script type="module" src={`${VJS_CDN}/media/mux-video/spf.js`}></script>
@@ -70,9 +72,11 @@ const actions = [
           <div class="media">
             <div class="player-frame">
               {/* An empty title overrides the one Mux supplies, which hides the skin's title overlay. */}
-              <video-player content-title="">
+              <video-player content-title="" poster={POSTER}>
                 <video-skin>
-                  <mux-video src={`https://stream.mux.com/${PLAYBACK_ID}.m3u8`} playsinline crossorigin></mux-video>
+                  <mux-video src={`https://stream.mux.com/${PLAYBACK_ID}.m3u8`} playsinline crossorigin>
+                    <track label="English" kind="captions" srclang="en" src="/vtt/en-cc-mashup.vtt" />
+                  </mux-video>
                 </video-skin>
               </video-player>
             </div>
