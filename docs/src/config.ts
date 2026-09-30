@@ -82,6 +82,7 @@ export const SIDEBAR: Sidebar = {
       { text: 'Context menu', link: 'docs/en/components/media-context-menu' },
       { text: 'Control bar', link: 'docs/en/components/media-control-bar' },
       { text: 'Duration display', link: 'docs/en/components/media-duration-display' },
+      { text: 'Error dialog', link: 'docs/en/components/media-error-dialog' },
       { text: 'Fullscreen button', link: 'docs/en/components/media-fullscreen-button' },
       { text: 'Live indicator / button', link: 'docs/en/components/media-live-button' },
       { text: 'Loading indicator', link: 'docs/en/components/media-loading-indicator' },
