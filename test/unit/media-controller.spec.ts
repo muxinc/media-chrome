@@ -459,6 +459,35 @@ describe('receiving state / dispatching (bubbling) events', function () {
     );
   });
 
+  it('hides the poster when seeking while paused', async () => {
+    const poster = document.createElement('img');
+    poster.slot = 'poster';
+    mediaController.append(poster);
+    const posterSlot = mediaController.shadowRoot.querySelector(
+      'slot[name=poster]'
+    ) as HTMLSlotElement;
+
+    assert.notEqual(getComputedStyle(posterSlot).display, 'none');
+
+    div.dispatchEvent(
+      new CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+        detail: 2,
+        bubbles: true,
+      })
+    );
+
+    await waitUntil(
+      () => getComputedStyle(posterSlot).display === 'none',
+      'poster was not hidden after seeking',
+      { timeout: 29000 }
+    );
+    assert.isTrue(video.paused, 'video is still paused');
+    assert.isFalse(
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_HAS_PLAYED),
+      'mediahasplayed is not set by a seek'
+    );
+  });
+
   (isSafari ? it.skip : it)('can change volume', async () => {
     div.dispatchEvent(
       new CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {
