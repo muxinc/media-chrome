@@ -17,6 +17,11 @@ const config = {
   // concurrency: 1,
 
   browsers: [chromeLauncher({ launchOptions: { args: ['--headless'] } })],
+
+  /** Only report on library source; tests, package.json and build scripts are noise */
+  coverageConfig: {
+    include: ['src/js/**/*'],
+  },
 };
 
 if (process.argv.some((arg) => arg.includes('--all'))) {
