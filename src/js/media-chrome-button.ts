@@ -281,8 +281,12 @@ class MediaChromeButton extends globalThis.HTMLElement {
     // The tooltips label, and subsequently it's size and position, are a function
     // of the buttons state, so we greedily assume we need account for any form
     // of state change by reacting to all attribute changes, even if sometimes the
-    // update might be redundant
-    this.#positionTooltip();
+    // update might be redundant.
+    // Positioning forces a synchronous layout, so only do it while the tooltip is
+    // shown; mouseenter/focus position it when it becomes visible.
+    if (this.matches(':hover, :focus-visible')) {
+      this.#positionTooltip();
+    }
   }
 
   connectedCallback() {
