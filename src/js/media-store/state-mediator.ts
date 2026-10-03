@@ -348,7 +348,9 @@ export const stateMediator: StateMediator = {
     get(stateOwners) {
       const { media } = stateOwners;
 
-      return media?.paused ?? true;
+      // A failed source can leave `paused` false even though playback has
+      // stopped. Present the play action so controls can retry the source.
+      return !!media?.error || (media?.paused ?? true);
     },
     set(value, stateOwners) {
       const { media } = stateOwners;
@@ -360,7 +362,7 @@ export const stateMediator: StateMediator = {
         media.play()?.catch(() => {});
       }
     },
-    mediaEvents: ['play', 'playing', 'pause', 'emptied'],
+    mediaEvents: ['play', 'playing', 'pause', 'emptied', 'error'],
   },
   mediaHasPlayed: {
     // We want to let the user know that the media started playing at any point (`media-has-played`).

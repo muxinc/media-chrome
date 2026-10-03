@@ -8,11 +8,16 @@ import { stateMediator } from '../../../src/js/media-store/state-mediator.js';
 describe('RequestMap', () => {
   it('retries playback after a media source error', async () => {
     const media = document.createElement('video');
-    let error = { code: 4, message: 'Failed to open media' };
+    let error = null;
 
     Object.defineProperty(media, 'error', {
       configurable: true,
       get: () => error,
+    });
+    // A source error during playback does not necessarily set `paused`.
+    Object.defineProperty(media, 'paused', {
+      configurable: true,
+      get: () => false,
     });
     const load = stub(media, 'load').callsFake(() => {
       error = null;
@@ -24,7 +29,13 @@ describe('RequestMap', () => {
       monitorStateOwnersOnlyWithSubscriptions: false,
     });
 
+    media.dispatchEvent(new Event('play'));
+    await waitUntil(() => store.getState().mediaPaused === false);
+    expect(store.getState().mediaPaused).to.be.false;
+    error = { code: 4, message: 'Failed to open media' };
+    media.dispatchEvent(new Event('error'));
     await waitUntil(() => store.getState().mediaErrorCode === 4);
+    expect(store.getState().mediaPaused).to.be.true;
     store.dispatch({ type: MediaUIEvents.MEDIA_PLAY_REQUEST });
 
     expect(load.calledOnce).to.be.true;
