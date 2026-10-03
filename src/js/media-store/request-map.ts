@@ -15,7 +15,7 @@ import { StateMediator, StateOwners, EventOrAction } from './state-mediator.js';
 import { MediaState } from './media-store.js';
 
 export type MediaUIEventsType =
-  typeof MediaUIEvents[keyof typeof MediaUIEvents];
+  (typeof MediaUIEvents)[keyof typeof MediaUIEvents];
 export type MediaRequestTypes = Exclude<
   MediaUIEventsType,
   | 'registermediastatereceiver'
@@ -125,6 +125,11 @@ export const requestMap: RequestMap = {
     stateMediator[key].set(value, stateOwners);
   },
   [MediaUIEvents.MEDIA_PLAY_REQUEST](stateMediator, stateOwners) {
+    // A failed source needs a new load attempt before play can resume.
+    if (stateOwners.media?.error) {
+      stateOwners.media.load?.();
+    }
+
     const key = 'mediaPaused';
     const value = false;
 
