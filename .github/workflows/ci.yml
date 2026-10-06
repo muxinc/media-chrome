@@ -41,9 +41,14 @@ jobs:
 
       - run: npm run test:unit:all
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          disable_search: true
+          # Pushes always have the token, so a failed upload there is a real
+          # problem. Fork PRs upload tokenless and shouldn't block on Codecov.
+          fail_ci_if_error: ${{ github.event_name == 'push' }}
           verbose: true
       - run: npm run manifest
       - run: npm run build
