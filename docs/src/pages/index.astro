@@ -12,8 +12,8 @@ const canonicalURL = `${new URL(Astro.url.pathname, Astro.site)}`.replace(/\/$/,
 const VIDEOJS_URL = 'https://videojs.org/?utm_source=media-chrome';
 const MIGRATION_URL = 'https://videojs.org/docs/framework/html/guides/migrate-from-media-chrome?utm_source=media-chrome';
 
-// Pinned so the demo can't break under us; bump alongside Video.js releases.
-const VJS_CDN = 'https://cdn.jsdelivr.net/npm/@videojs/cdn@10.0.0-rc.3';
+// The latest stable 10.x release; jsDelivr never resolves a major range to a prerelease.
+const VJS_CDN = 'https://cdn.jsdelivr.net/npm/@videojs/cdn@10';
 // The video, poster frame, and captions mashup from the original media-chrome.org landing page.
 const PLAYBACK_ID = 'ddBx5002F02xe7ftFvTFkYBxEdQ2inQ2o029CMqu9A4IcY';
 const POSTER = `https://image.mux.com/${PLAYBACK_ID}/thumbnail.webp?time=0`;
