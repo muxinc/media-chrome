@@ -208,6 +208,16 @@ class MediaChromeButton extends globalThis.HTMLElement {
     setTimeout(this.#positionTooltip, 0);
   };
 
+  // Mirrors the :hover / :focus-visible rule that shows the tooltip.
+  #isTooltipShown(): boolean {
+    try {
+      return this.matches(':hover, :focus-visible');
+    } catch {
+      // :focus-visible is an invalid selector before Safari 15.4.
+      return this.matches(':hover, :focus');
+    }
+  }
+
   #positionTooltip = () => {
     // Conditional chaining accounts for scenarios
     // where the tooltip element isn't yet defined.
@@ -278,13 +288,10 @@ class MediaChromeButton extends globalThis.HTMLElement {
       this.shadowRoot.querySelector('slot[name="tooltip-content"]').innerHTML = (this.constructor as typeof MediaChromeButton).getTooltipContentHTML();
     }
 
-    // The tooltips label, and subsequently it's size and position, are a function
-    // of the buttons state, so we greedily assume we need account for any form
-    // of state change by reacting to all attribute changes, even if sometimes the
-    // update might be redundant.
-    // Positioning forces a synchronous layout, so only do it while the tooltip is
-    // shown; mouseenter/focus position it when it becomes visible.
-    if (this.matches(':hover, :focus-visible')) {
+    // The tooltip's label, and so its size and position, depend on the button's
+    // state. Positioning forces a synchronous style/layout pass, so only redo it
+    // while the tooltip is shown; mouseenter/focus position it when it appears.
+    if (this.#isTooltipShown()) {
       this.#positionTooltip();
     }
   }
