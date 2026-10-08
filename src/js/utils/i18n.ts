@@ -1,6 +1,6 @@
 import { En, TranslateDictionary, TranslateKeys } from '../lang/en.js';
 
-const translations: Record<string, TranslateDictionary> = {
+const translations: Record<string, Partial<TranslateDictionary>> = {
   en: En
 };
 
@@ -12,7 +12,7 @@ export const setLanguage = (langCode: string) => {
 
 export const addTranslation = (
   lang: string,
-  languageDictionary: TranslateDictionary
+  languageDictionary: Partial<TranslateDictionary>
 ) => {
   translations[lang] = languageDictionary;
 };
@@ -26,6 +26,13 @@ const resolveTranslation = (key: TranslateKeys): string => {
     translations.en?.[key] ||
     key
   );
+};
+
+export const getResolvedLanguage = (): string => {
+  const [base] = currentLang.split('-');
+  if (translations[currentLang]) return currentLang;
+  if (translations[base]) return base;
+  return 'en';
 };
 
 export const t = (

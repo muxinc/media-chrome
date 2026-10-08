@@ -78,8 +78,8 @@ function getTemplateHTML(_attrs: Record<string, string>) {
       #range {
         ${/* The input range acts as a hover and hit zone for input events. */ ''}
         display: var(--media-time-range-hover-display, block);
-        bottom: var(--media-time-range-hover-bottom, -7px);
-        height: var(--media-time-range-hover-height, max(100% + 7px, 25px));
+        bottom: var(--media-time-range-hover-bottom, 0);
+        height: var(--media-time-range-hover-height, max(100% , 25px));
         width: 100%;
         position: absolute;
         cursor: var(--media-cursor, pointer);
@@ -95,8 +95,8 @@ function getTemplateHTML(_attrs: Record<string, string>) {
 
       @media (hover: hover) {
         #range {
-          bottom: var(--media-time-range-hover-bottom, -5px);
-          height: var(--media-time-range-hover-height, max(100% + 5px, 20px));
+          bottom: var(--media-time-range-hover-bottom, 0);
+          height: var(--media-time-range-hover-height, max(100%, 20px));
         }
       }
 

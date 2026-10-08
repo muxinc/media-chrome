@@ -547,7 +547,7 @@ export const stateMediator: StateMediator = {
       if (!media || !isValidNumber(value)) return;
       media.currentTime = value;
     },
-    mediaEvents: ['timeupdate', 'loadedmetadata'],
+    mediaEvents: ['timeupdate', 'loadedmetadata', 'seeking'],
   },
   mediaDuration: {
     get(stateOwners) {
@@ -1040,7 +1040,7 @@ export const stateMediator: StateMediator = {
       if (!media?.remote || media.remote?.state === 'disconnected')
         return false;
 
-      return !!media.remote.state;
+      return media.remote.state === 'connected';
     },
     set(value, stateOwners) {
       const { media } = stateOwners;

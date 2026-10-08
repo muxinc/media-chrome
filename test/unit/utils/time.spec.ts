@@ -3,7 +3,7 @@ import { formatAsTimePhrase, formatTime } from '../../../src/js/utils/time.js';
 
 describe('formatAsTimePhrase', () => {
   it('formats time in seconds as a phrase', () => {
-    assert.equal(formatAsTimePhrase(0), '');
+    assert.equal(formatAsTimePhrase(0), '0 seconds');
     assert.equal(formatAsTimePhrase(1), '1 second');
     assert.equal(formatAsTimePhrase(176), '2 minutes, 56 seconds');
     assert.equal(formatAsTimePhrase(48932), '13 hours, 35 minutes, 32 seconds');

@@ -12,7 +12,16 @@ export const Attributes = {
 export const DEFAULT_RATES = [1, 1.2, 1.5, 1.7, 2];
 export const DEFAULT_RATE = 1;
 
+// Round to 2 decimals so binary-float drift from HTMLMediaElement.playbackRate
+// (e.g. Safari returning 1.1499999999999999 for 1.15) doesn't leak into the UI.
+export function normalizePlaybackRate(rate: number): number {
+  return Math.round(rate * 100) / 100;
+}
+
 function getSlotTemplateHTML(attrs: Record<string, string>) {
+  const rate = attrs['mediaplaybackrate']
+    ? normalizePlaybackRate(+attrs['mediaplaybackrate'])
+    : DEFAULT_RATE;
   return /*html*/ `
     <style>
       :host {
@@ -20,7 +29,7 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
         padding: var(--media-button-padding, var(--media-control-padding, 10px 5px));
       }
     </style>
-    <slot name="icon">${attrs['mediaplaybackrate'] || DEFAULT_RATE}x</slot>
+    <slot name="icon">${rate}x</slot>
   `;
 }
 
@@ -55,7 +64,7 @@ class MediaPlaybackRateButton extends MediaChromeButton {
   constructor() {
     super();
     this.container = this.shadowRoot.querySelector('slot[name="icon"]');
-    this.container.innerHTML = `${this.mediaPlaybackRate ?? DEFAULT_RATE}x`;
+    this.container.innerHTML = `${normalizePlaybackRate(this.mediaPlaybackRate ?? DEFAULT_RATE)}x`;
   }
 
   attributeChangedCallback(
@@ -70,9 +79,9 @@ class MediaPlaybackRateButton extends MediaChromeButton {
     }
     if (attrName === MediaUIAttributes.MEDIA_PLAYBACK_RATE) {
       const newPlaybackRate = newValue ? +newValue : Number.NaN;
-      const playbackRate = !Number.isNaN(newPlaybackRate)
-        ? newPlaybackRate
-        : DEFAULT_RATE;
+      const playbackRate = normalizePlaybackRate(
+        !Number.isNaN(newPlaybackRate) ? newPlaybackRate : DEFAULT_RATE
+      );
       this.container.innerHTML = `${playbackRate}x`;
       this.setAttribute(
         'aria-label',

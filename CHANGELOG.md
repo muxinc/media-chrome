@@ -1,3 +1,52 @@
+## [4.19.3](https://github.com/muxinc/media-chrome/compare/v4.19.2...v4.19.3) (2026-09-28)
+
+
+### Bug Fixes
+
+* (docs) correct broken link to defaultstreamtype on stream-type page ([#1298](https://github.com/muxinc/media-chrome/issues/1298)) ([d8e337f](https://github.com/muxinc/media-chrome/commit/d8e337f78821c0bd26142e05d2bde42c9d1147b6)), closes [#1297](https://github.com/muxinc/media-chrome/issues/1297)
+* return '0 seconds' for zero input in formatAsTimePhrase ([#1300](https://github.com/muxinc/media-chrome/issues/1300)) ([c624760](https://github.com/muxinc/media-chrome/commit/c62476041348882699b6925c429dc89774394887)), closes [#1299](https://github.com/muxinc/media-chrome/issues/1299)
+* snap media-time-range when seeking back less than 3% of duration ([#1315](https://github.com/muxinc/media-chrome/issues/1315)) ([803787e](https://github.com/muxinc/media-chrome/commit/803787e819177c33f80a7b354f35e532b2215aca)), closes [#1306](https://github.com/muxinc/media-chrome/issues/1306) [#1307](https://github.com/muxinc/media-chrome/issues/1307)
+* updates mediacurrenttime when a seek starts, before it completes ([#1316](https://github.com/muxinc/media-chrome/issues/1316)) ([7e8a08f](https://github.com/muxinc/media-chrome/commit/7e8a08fedf921f8c93bb17bc22f8bfff40038800))
+
+
+
+## [4.19.2](https://github.com/muxinc/media-chrome/compare/v4.19.1...v4.19.2) (2026-06-10)
+
+
+### Bug Fixes
+
+* treat only remote.state === "connected" as casting ([#1296](https://github.com/muxinc/media-chrome/issues/1296)) ([155e46d](https://github.com/muxinc/media-chrome/commit/155e46d57adae3503885456398aa69228ca46bcf))
+
+
+
+## [4.19.1](https://github.com/muxinc/media-chrome/compare/v4.19.0...v4.19.1) (2026-06-01)
+
+
+### Bug Fixes
+
+* add inline-flex alignment to slot[name=icon] for proper SVG centering in buttons ([#1295](https://github.com/muxinc/media-chrome/issues/1295)) ([7e0869a](https://github.com/muxinc/media-chrome/commit/7e0869af0fdfbaf1d890c7ce472fd61fe431320d)), closes [#1294](https://github.com/muxinc/media-chrome/issues/1294)
+* input range margin on focus ([#1288](https://github.com/muxinc/media-chrome/issues/1288)) ([65d4394](https://github.com/muxinc/media-chrome/commit/65d4394aa5ae0a4f8aa9825145df682683eefcce)), closes [#1254](https://github.com/muxinc/media-chrome/issues/1254)
+* round playback rate display to avoid Safari float drift ([#1292](https://github.com/muxinc/media-chrome/issues/1292)) ([49785ef](https://github.com/muxinc/media-chrome/commit/49785efd1db0fa81c59c7cd1961a6500fa7d4752)), closes [muxinc/elements#1333](https://github.com/muxinc/elements/issues/1333)
+
+
+
+# [4.19.0](https://github.com/muxinc/media-chrome/compare/v4.18.3...v4.19.0) (2026-04-13)
+
+
+### Bug Fixes
+
+* Auto rendition label for vertical videos ([#1274](https://github.com/muxinc/media-chrome/issues/1274)) ([de23cdc](https://github.com/muxinc/media-chrome/commit/de23cdc07c3bc204c046ad85ed54db46ad661159))
+* Replace aria-valuetext with aria-description for improved accessibility ([#1286](https://github.com/muxinc/media-chrome/issues/1286)) ([3b1014b](https://github.com/muxinc/media-chrome/commit/3b1014b97f57b23f00742901d07b96cefa067c12))
+* replace low-res 48x48 favicon with proper 1200x630 OG image ([#1283](https://github.com/muxinc/media-chrome/issues/1283)) ([3688052](https://github.com/muxinc/media-chrome/commit/36880523d1e3de36e93e58b2a6ac04237252acf8))
+* update focus-visible box-shadow to use CSS variable ([#1279](https://github.com/muxinc/media-chrome/issues/1279)) ([4975ab8](https://github.com/muxinc/media-chrome/commit/4975ab8456df1110aa6d8ae6dce7b9f6f806ef26)), closes [#1278](https://github.com/muxinc/media-chrome/issues/1278) [/#diff-453ac22c98e6886a5fa7e178193648b57e699c7a80e7af61b07a4a92911dfaf3L35-R35](https://github.com///issues/diff-453ac22c98e6886a5fa7e178193648b57e699c7a80e7af61b07a4a92911dfaf3L35-R35)
+
+
+### Features
+
+* (i18n) add German localization ([#1276](https://github.com/muxinc/media-chrome/issues/1276)) ([f3fc0ee](https://github.com/muxinc/media-chrome/commit/f3fc0ee537049c41edb30702b9185856b82f7ca3)), closes [#1275](https://github.com/muxinc/media-chrome/issues/1275)
+
+
+
 ## [4.18.3](https://github.com/muxinc/media-chrome/compare/v4.18.2...v4.18.3) (2026-03-25)
 
 

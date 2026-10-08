@@ -3,7 +3,7 @@ export * as timeUtils from './utils/time.js';
 export { t } from './utils/i18n.js';
 
 // Import media-controller first to ensure it's available for other components
-// when calling `associateElement(this)` in connectedCallback.
+// when calling `associateElement(this)` in `connectedCallback()`.
 import MediaController from './media-controller.js';
 import MediaAirplayButton from './media-airplay-button.js';
 import MediaCaptionsButton from './media-captions-button.js';
