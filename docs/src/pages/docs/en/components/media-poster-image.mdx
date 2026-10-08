@@ -55,4 +55,4 @@ You can either use the `<media-poster-image>` component as a static image on its
 
 ## Hiding the poster image on play
 
-When your media begins to play back, `media-controller` will be assigned the `mediahasplayed` attribute. Media Chrome default styling will ensure that any `media-poster-image` elements that are a child of `media-controller` are hidden when this attribute is present.
+When your media begins to play back, `media-controller` will be assigned the `mediahasplayed` attribute. Media Chrome default styling will ensure that any `media-poster-image` elements that are a child of `media-controller` are hidden when this attribute is present, or, for on-demand media, when the current time (`mediacurrenttime`) is no longer `0`, e.g. after seeking while paused. Live streams keep the poster until playback starts.
