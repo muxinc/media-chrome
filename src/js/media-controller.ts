@@ -336,10 +336,13 @@ class MediaController extends MediaContainer {
           );
         }
         this.disableHotkeys();
+        // With every hotkey off there is nothing left for the dialog to list.
+        if (this.#keyboardShortcutsDialog) {
+          this.#keyboardShortcutsDialog.open = false;
+        }
       } else if (newValue !== oldValue && newValue === null) {
         this.enableHotkeys();
       }
-      this.#syncKeyboardShortcutsDialog();
     } else if (attrName === Attributes.HOTKEYS) {
       this.#hotKeys.value = newValue;
       this.#syncKeyboardShortcutsDialog();
@@ -913,15 +916,14 @@ class MediaController extends MediaContainer {
     }
   }
 
-  // Keep the dialog's advertised shortcuts in sync with the hotkeys that are
-  // actually enabled, so it never lists a shortcut that has been turned off.
+  // Keep the dialog from listing shortcuts that have been turned off.
   #syncKeyboardShortcutsDialog() {
     if (!this.#keyboardShortcutsDialog) return;
-
     this.#keyboardShortcutsDialog.hotkeys = this.#hotKeys.value || undefined;
-    this.#keyboardShortcutsDialog.noHotkeys = this.hasAttribute(
-      Attributes.NO_HOTKEYS
-    );
+    // The dialog can't be reopened once its own shortcut is off, so close it.
+    if (this.#hotKeys.contains('noshift+/')) {
+      this.#keyboardShortcutsDialog.open = false;
+    }
   }
 
   #showKeyboardShortcutsDialog() {
@@ -929,11 +931,7 @@ class MediaController extends MediaContainer {
       this.#keyboardShortcutsDialog = document.createElement(
         'media-keyboard-shortcuts-dialog'
       ) as MediaKeyboardShortcutsDialog;
-    }
-    // Sync before appending so the dialog renders the right shortcuts up front.
-    this.#syncKeyboardShortcutsDialog();
-
-    if (!this.#keyboardShortcutsDialog.isConnected) {
+      this.#syncKeyboardShortcutsDialog();
       this.appendChild(this.#keyboardShortcutsDialog);
     }
     this.#keyboardShortcutsDialog.open = true;

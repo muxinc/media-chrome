@@ -1,6 +1,7 @@
 import { assert, expect, fixture, waitUntil } from '@open-wc/testing';
 import '../../src/js/index.js';
 import { MediaController } from '../../src/js/media-controller.js';
+import { AttributeTokenList } from '../../src/js/utils/attribute-token-list.js';
 import { MediaKeyboardShortcutsDialog } from '../../src/js/media-keyboard-shortcuts-dialog.js';
 
 /**
@@ -20,6 +21,9 @@ function listedDescriptions(el: MediaKeyboardShortcutsDialog): string[] {
     (description) => description.textContent.trim()
   );
 }
+
+const ALL_KEYS_OFF =
+  'nok nospace nom nof noc nop noj nol noarrowup noarrowleft noarrowright noarrowdown no< no>';
 
 describe('<media-keyboard-shortcuts-dialog>', () => {
   it('passes the a11y audit', async () => {
@@ -81,13 +85,40 @@ describe('<media-keyboard-shortcuts-dialog>', () => {
     assert.notInclude(listedDescriptions(el), 'Toggle Playback');
   });
 
-  it('lists no shortcuts when nohotkeys is set', async () => {
+  it('matches tokens against the key, not its display label', async () => {
     const el = await fixture<MediaKeyboardShortcutsDialog>(
-      `<media-keyboard-shortcuts-dialog nohotkeys></media-keyboard-shortcuts-dialog>`
+      `<media-keyboard-shortcuts-dialog hotkeys="noarrowleft no<"></media-keyboard-shortcuts-dialog>`
     );
 
-    assert.isEmpty(listedKeys(el), 'no shortcut keys are listed');
-    assert.notInclude(listedDescriptions(el), 'Toggle Playback');
+    assert.notInclude(listedKeys(el), '←', 'left arrow is not listed');
+    assert.include(listedKeys(el), 'j', 'j still seeks back');
+    assert.notInclude(listedDescriptions(el), 'Decrease playback rate');
+  });
+
+  it('lists the Shift + / binding last', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog></media-keyboard-shortcuts-dialog>`
+    );
+
+    assert.equal(listedKeys(el).at(-1), 'SHIFT+/');
+    assert.equal(listedDescriptions(el).at(-1), 'Show keyboard shortcuts');
+  });
+
+  it('only lists the Shift + / binding when every other key is turned off', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog hotkeys="${ALL_KEYS_OFF}"></media-keyboard-shortcuts-dialog>`
+    );
+
+    assert.deepEqual(listedKeys(el), ['SHIFT+/']);
+    assert.deepEqual(listedDescriptions(el), ['Show keyboard shortcuts']);
+  });
+
+  it('does not list Shift + / when noshift+/ is set', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog hotkeys="noshift+/"></media-keyboard-shortcuts-dialog>`
+    );
+
+    assert.notInclude(listedKeys(el), 'SHIFT+/');
   });
 
   it('updates the listed shortcuts when hotkeys changes', async () => {
@@ -101,19 +132,6 @@ describe('<media-keyboard-shortcuts-dialog>', () => {
 
     el.removeAttribute('hotkeys');
     assert.include(listedKeys(el), 'f', 'fullscreen key comes back');
-  });
-
-  it('updates the listed shortcuts when nohotkeys is toggled', async () => {
-    const el = await fixture<MediaKeyboardShortcutsDialog>(
-      `<media-keyboard-shortcuts-dialog></media-keyboard-shortcuts-dialog>`
-    );
-    assert.isNotEmpty(listedKeys(el));
-
-    el.toggleAttribute('nohotkeys', true);
-    assert.isEmpty(listedKeys(el), 'everything is removed');
-
-    el.toggleAttribute('nohotkeys', false);
-    assert.isNotEmpty(listedKeys(el), 'everything comes back');
   });
 });
 
@@ -168,9 +186,72 @@ describe('<media-controller> keyboard shortcuts dialog', () => {
     const dialog = await openDialog(mediaController);
     assert.include(listedKeys(dialog), 'f', 'fullscreen key starts out listed');
 
-    dialog.open = false;
-    (mediaController.hotkeys as any).add('nof');
+    (mediaController.hotkeys as AttributeTokenList).add('nof');
 
     assert.notInclude(listedKeys(dialog), 'f', 'fullscreen key is removed');
+  });
+
+  it('still lists Shift + / when every other key is turned off', async () => {
+    const mediaController = await fixture<MediaController>(`
+      <media-controller hotkeys="${ALL_KEYS_OFF}"></media-controller>
+    `);
+
+    const dialog = await openDialog(mediaController);
+
+    assert(dialog.open, 'Shift + / still opens the dialog');
+    assert.deepEqual(listedKeys(dialog), ['SHIFT+/']);
+  });
+
+  it('does not open the dialog when noshift+/ is set from the start', async () => {
+    const mediaController = await fixture<MediaController>(`
+      <media-controller hotkeys="noshift+/"></media-controller>
+    `);
+
+    pressShiftSlash(mediaController);
+
+    assert.isNull(
+      mediaController.querySelector('media-keyboard-shortcuts-dialog'),
+      'dialog was never created'
+    );
+  });
+
+  it('does not open the dialog when noshift+/ is added before it was ever opened', async () => {
+    const mediaController = await fixture<MediaController>(`
+      <media-controller></media-controller>
+    `);
+
+    (mediaController.hotkeys as AttributeTokenList).add('noshift+/');
+    pressShiftSlash(mediaController);
+
+    assert.isNull(
+      mediaController.querySelector('media-keyboard-shortcuts-dialog'),
+      'dialog was never created'
+    );
+  });
+
+  it('closes the dialog when noshift+/ is added', async () => {
+    const mediaController = await fixture<MediaController>(`
+      <media-controller></media-controller>
+    `);
+
+    const dialog = await openDialog(mediaController);
+    assert(dialog.open, 'dialog is open');
+
+    (mediaController.hotkeys as AttributeTokenList).add('noshift+/');
+
+    assert.isFalse(dialog.open, 'dialog is closed');
+  });
+
+  it('closes the dialog when every hotkey is turned off', async () => {
+    const mediaController = await fixture<MediaController>(`
+      <media-controller></media-controller>
+    `);
+
+    const dialog = await openDialog(mediaController);
+    assert(dialog.open, 'dialog is open');
+
+    mediaController.toggleAttribute('nohotkeys', true);
+
+    assert.isFalse(dialog.open, 'dialog is closed');
   });
 });
