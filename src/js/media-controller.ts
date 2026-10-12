@@ -9,7 +9,10 @@
 */
 import { MediaContainer } from './media-container.js';
 import { document, globalThis } from './utils/server-safe-globals.js';
-import { MediaKeyboardShortcutsDialog } from './media-keyboard-shortcuts-dialog.js';
+import {
+  MediaKeyboardShortcutsDialog,
+  getHotkeyToken,
+} from './media-keyboard-shortcuts-dialog.js';
 import { AttributeTokenList } from './utils/attribute-token-list.js';
 import {
   delay,
@@ -339,8 +342,10 @@ class MediaController extends MediaContainer {
       } else if (newValue !== oldValue && newValue === null) {
         this.enableHotkeys();
       }
+      this.#syncKeyboardShortcutsDialog();
     } else if (attrName === Attributes.HOTKEYS) {
       this.#hotKeys.value = newValue;
+      this.#syncKeyboardShortcutsDialog();
     } else if (
       attrName === Attributes.DEFAULT_SUBTITLES &&
       newValue !== oldValue
@@ -676,10 +681,7 @@ class MediaController extends MediaContainer {
     // We also want to make sure that the hotkey hasn't been turned off before doing so
     if (
       [' ', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(key) &&
-      !(
-        this.#hotKeys.contains(`no${key.toLowerCase()}`) ||
-        (key === ' ' && this.#hotKeys.contains('nospace'))
-      ) &&
+      !this.#hotKeys.contains(getHotkeyToken(key)) &&
       !isRangeInput // Only preventDefault if a range input is NOT selected
     ) {
       e.preventDefault();
@@ -727,8 +729,7 @@ class MediaController extends MediaContainer {
 
     let eventName, detail, evt;
     // if the blocklist contains the key, skip handling it.
-    if (this.#hotKeys.contains(`no${e.key.toLowerCase()}`)) return;
-    if (e.key === ' ' && this.#hotKeys.contains(`nospace`)) return;
+    if (this.#hotKeys.contains(getHotkeyToken(e.key))) return;
 
     const isShiftSlash = e.shiftKey && (e.key === '/' || e.key === '?');
     if (isShiftSlash && this.#hotKeys.contains('noshift+/')) return;
@@ -911,11 +912,22 @@ class MediaController extends MediaContainer {
     }
   }
 
+  // Keep the dialog from listing shortcuts that have been turned off.
+  #syncKeyboardShortcutsDialog() {
+    if (!this.#keyboardShortcutsDialog) return;
+    this.#keyboardShortcutsDialog.hotkeys = this.#hotKeys.value || undefined;
+    // The dialog can't be reopened once its own shortcut is off, so close it.
+    if (this.noHotkeys || this.#hotKeys.contains('noshift+/')) {
+      this.#keyboardShortcutsDialog.open = false;
+    }
+  }
+
   #showKeyboardShortcutsDialog() {
     if (!this.#keyboardShortcutsDialog) {
       this.#keyboardShortcutsDialog = document.createElement(
         'media-keyboard-shortcuts-dialog'
       ) as MediaKeyboardShortcutsDialog;
+      this.#syncKeyboardShortcutsDialog();
       this.appendChild(this.#keyboardShortcutsDialog);
     }
     this.#keyboardShortcutsDialog.open = true;
