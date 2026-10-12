@@ -1,8 +1,48 @@
-import { expect, fixture } from '@open-wc/testing';
+import { expect, fixture, waitUntil } from '@open-wc/testing';
+import { stub } from 'sinon';
+import { MediaUIEvents } from '../../../src/js/constants.js';
+import { createMediaStore } from '../../../src/js/media-store/media-store.js';
 import { requestMap } from '../../../src/js/media-store/request-map.js';
 import { stateMediator } from '../../../src/js/media-store/state-mediator.js';
 
 describe('RequestMap', () => {
+  it('retries playback after a media source error', async () => {
+    const media = document.createElement('video');
+    let error = null;
+
+    Object.defineProperty(media, 'error', {
+      configurable: true,
+      get: () => error,
+    });
+    // A source error during playback does not necessarily set `paused`.
+    Object.defineProperty(media, 'paused', {
+      configurable: true,
+      get: () => false,
+    });
+    const load = stub(media, 'load').callsFake(() => {
+      error = null;
+      media.dispatchEvent(new Event('emptied'));
+    });
+    const play = stub(media, 'play').resolves();
+    const store = createMediaStore({
+      media,
+      monitorStateOwnersOnlyWithSubscriptions: false,
+    });
+
+    media.dispatchEvent(new Event('play'));
+    await waitUntil(() => store.getState().mediaPaused === false);
+    expect(store.getState().mediaPaused).to.be.false;
+    error = { code: 4, message: 'Failed to open media' };
+    media.dispatchEvent(new Event('error'));
+    await waitUntil(() => store.getState().mediaErrorCode === 4);
+    expect(store.getState().mediaPaused).to.be.true;
+    store.dispatch({ type: MediaUIEvents.MEDIA_PLAY_REQUEST });
+
+    expect(load.calledOnce).to.be.true;
+    expect(play.calledOnce).to.be.true;
+    expect(load.calledBefore(play)).to.be.true;
+  });
+
   const requestMapEntries = Object.entries(requestMap);
   describe('no stateOwners', () => {
     const stateOwners = {};
