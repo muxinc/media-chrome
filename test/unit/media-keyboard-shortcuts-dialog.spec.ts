@@ -265,6 +265,22 @@ describe('<media-keyboard-shortcuts-dialog>', () => {
     assert.notInclude(listedKeys(el), 'SHIFT+/');
   });
 
+  it('reflects the hotkeys property to the attribute', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog></media-keyboard-shortcuts-dialog>`
+    );
+    assert.isUndefined(el.hotkeys);
+
+    el.hotkeys = 'nof';
+    assert.equal(el.getAttribute('hotkeys'), 'nof');
+    assert.equal(el.hotkeys, 'nof');
+    assert.notInclude(listedKeys(el), 'f', 'setting the property re-renders');
+
+    el.hotkeys = undefined;
+    assert.isFalse(el.hasAttribute('hotkeys'));
+    assert.isUndefined(el.hotkeys);
+  });
+
   it('updates the listed shortcuts when hotkeys changes', async () => {
     const el = await fixture<MediaKeyboardShortcutsDialog>(
       `<media-keyboard-shortcuts-dialog></media-keyboard-shortcuts-dialog>`
