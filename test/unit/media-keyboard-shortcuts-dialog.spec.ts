@@ -152,18 +152,23 @@ describe('<media-controller> keyboard shortcuts dialog', () => {
     }
   }
 
-  async function openDialog(mediaController: MediaController) {
-    pressShiftSlash(mediaController);
-
-    await waitUntil(
-      () => mediaController.querySelector('media-keyboard-shortcuts-dialog'),
-      'keyboard shortcuts dialog was added'
-    );
-
+  function getDialog(mediaController: MediaController) {
     return mediaController.querySelector<MediaKeyboardShortcutsDialog>(
       'media-keyboard-shortcuts-dialog'
     );
   }
+
+  async function openDialog(mediaController: MediaController) {
+    pressShiftSlash(mediaController);
+    await waitUntil(
+      () => getDialog(mediaController),
+      'keyboard shortcuts dialog was added'
+    );
+    return getDialog(mediaController);
+  }
+
+  const addNoShiftSlash = (mediaController: MediaController) =>
+    (mediaController.hotkeys as AttributeTokenList).add('noshift+/');
 
   it('does not advertise shortcuts disabled on the controller', async () => {
     const mediaController = await fixture<MediaController>(`
@@ -209,10 +214,7 @@ describe('<media-controller> keyboard shortcuts dialog', () => {
 
     pressShiftSlash(mediaController);
 
-    assert.isNull(
-      mediaController.querySelector('media-keyboard-shortcuts-dialog'),
-      'dialog was never created'
-    );
+    assert.isNull(getDialog(mediaController), 'dialog was never created');
   });
 
   it('does not open the dialog when noshift+/ is added before it was ever opened', async () => {
@@ -220,38 +222,31 @@ describe('<media-controller> keyboard shortcuts dialog', () => {
       <media-controller></media-controller>
     `);
 
-    (mediaController.hotkeys as AttributeTokenList).add('noshift+/');
+    addNoShiftSlash(mediaController);
     pressShiftSlash(mediaController);
 
-    assert.isNull(
-      mediaController.querySelector('media-keyboard-shortcuts-dialog'),
-      'dialog was never created'
-    );
+    assert.isNull(getDialog(mediaController), 'dialog was never created');
   });
 
-  it('closes the dialog when noshift+/ is added', async () => {
-    const mediaController = await fixture<MediaController>(`
-      <media-controller></media-controller>
-    `);
+  for (const [name, turnOff] of [
+    ['noshift+/ is added', addNoShiftSlash],
+    [
+      'every hotkey is turned off',
+      (mediaController: MediaController) =>
+        mediaController.toggleAttribute('nohotkeys', true),
+    ],
+  ] as const) {
+    it(`closes the dialog when ${name}`, async () => {
+      const mediaController = await fixture<MediaController>(`
+        <media-controller></media-controller>
+      `);
 
-    const dialog = await openDialog(mediaController);
-    assert(dialog.open, 'dialog is open');
+      const dialog = await openDialog(mediaController);
+      assert(dialog.open, 'dialog is open');
 
-    (mediaController.hotkeys as AttributeTokenList).add('noshift+/');
+      turnOff(mediaController);
 
-    assert.isFalse(dialog.open, 'dialog is closed');
-  });
-
-  it('closes the dialog when every hotkey is turned off', async () => {
-    const mediaController = await fixture<MediaController>(`
-      <media-controller></media-controller>
-    `);
-
-    const dialog = await openDialog(mediaController);
-    assert(dialog.open, 'dialog is open');
-
-    mediaController.toggleAttribute('nohotkeys', true);
-
-    assert.isFalse(dialog.open, 'dialog is closed');
-  });
+      assert.isFalse(dialog.open, 'dialog is closed');
+    });
+  }
 });
