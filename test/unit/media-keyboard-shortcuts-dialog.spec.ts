@@ -1,5 +1,7 @@
 import { assert, expect, fixture, waitUntil } from '@open-wc/testing';
+import { spy } from 'sinon';
 import '../../src/js/index.js';
+import { MediaChromeDialog } from '../../src/js/media-chrome-dialog.js';
 import { MediaController } from '../../src/js/media-controller.js';
 import { AttributeTokenList } from '../../src/js/utils/attribute-token-list.js';
 import { MediaKeyboardShortcutsDialog } from '../../src/js/media-keyboard-shortcuts-dialog.js';
@@ -22,6 +24,17 @@ function listedDescriptions(el: MediaKeyboardShortcutsDialog): string[] {
   );
 }
 
+const docKeydown = (init: KeyboardEventInit) => {
+  const evt = new KeyboardEvent('keydown', {
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+    ...init,
+  });
+  document.dispatchEvent(evt);
+  return evt;
+};
+
 const ALL_KEYS_OFF =
   'nok nospace nom nof noc nop noj nol noarrowup noarrowleft noarrowright noarrowdown no< no>';
 
@@ -33,17 +46,157 @@ describe('<media-keyboard-shortcuts-dialog>', () => {
     await expect(el).shadowDom.to.be.accessible();
   });
 
-  it('lists every shortcut when none are turned off', async () => {
+  it('is a media-chrome-dialog with a dialog role', async () => {
     const el = await fixture<MediaKeyboardShortcutsDialog>(
       `<media-keyboard-shortcuts-dialog></media-keyboard-shortcuts-dialog>`
     );
+    assert.instanceOf(el, MediaChromeDialog);
+    assert.equal(el.getAttribute('role'), 'dialog');
+    assert.isFalse(el.open);
+  });
 
-    assert.includeMembers(
-      listedKeys(el),
-      ['Space', 'k', 'm', 'f', 'c', 'p', 'j', 'l'],
-      'all default shortcut keys are listed'
+  it('renders the keyboard shortcuts table', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog></media-keyboard-shortcuts-dialog>`
     );
-    assert.include(listedDescriptions(el), 'Toggle fullscreen');
+    const content = el.shadowRoot.querySelector('#content');
+    assert.exists(content);
+    assert.equal(
+      content.querySelector('h2').textContent.trim(),
+      'Keyboard Shortcuts'
+    );
+
+    const rows = content.querySelectorAll('.shortcuts-table tr');
+    assert.equal(rows.length, 12);
+
+    const descriptions = Array.from(
+      content.querySelectorAll('.description')
+    ).map((d) => d.textContent.trim());
+    assert.include(descriptions, 'Toggle Playback');
+    assert.include(descriptions, 'Toggle fullscreen');
+    assert.include(descriptions, 'Increase playback rate');
+
+    // First row has two keys ("Space" or "k") joined by a separator.
+    const firstRowKeys = Array.from(rows[0].querySelectorAll('.key')).map(
+      (k) => k.textContent
+    );
+    assert.deepEqual(firstRowKeys, ['Space', 'k']);
+    assert.equal(rows[0].querySelectorAll('.key-separator').length, 1);
+    // Single key rows have no separator.
+    assert.equal(rows[1].querySelectorAll('.key-separator').length, 0);
+
+    // The binding that opens the dialog is always listed last.
+    const lastRow = rows[rows.length - 1];
+    assert.equal(lastRow.querySelector('.key').textContent, 'SHIFT+/');
+    assert.equal(
+      lastRow.querySelector('.description').textContent.trim(),
+      'Show keyboard shortcuts'
+    );
+  });
+
+  it('closes on Escape pressed anywhere in the document when open', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog></media-keyboard-shortcuts-dialog>`
+    );
+    el.open = true;
+    const evt = docKeydown({ key: 'Escape' });
+    assert.isFalse(el.open);
+    assert.isTrue(evt.defaultPrevented);
+  });
+
+  it('closes on Shift + / and Shift + ?', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog open></media-keyboard-shortcuts-dialog>`
+    );
+    assert.isTrue(el.open);
+    docKeydown({ key: '?', shiftKey: true });
+    assert.isFalse(el.open);
+
+    el.open = true;
+    docKeydown({ key: '/', shiftKey: true });
+    assert.isFalse(el.open);
+  });
+
+  it('ignores unrelated keys and modified keys', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog open></media-keyboard-shortcuts-dialog>`
+    );
+    let evt = docKeydown({ key: '/' });
+    assert.isTrue(el.open, 'plain / does not close');
+    assert.isFalse(evt.defaultPrevented);
+
+    evt = docKeydown({ key: 'k' });
+    assert.isTrue(el.open, 'other keys do not close');
+
+    for (const mod of ['ctrlKey', 'altKey', 'metaKey']) {
+      evt = docKeydown({ key: 'Escape', [mod]: true });
+      assert.isTrue(el.open, `${mod}+Escape does not close`);
+      assert.isFalse(evt.defaultPrevented);
+    }
+  });
+
+  it('adds and removes the document keydown listener as it opens and closes', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog></media-keyboard-shortcuts-dialog>`
+    );
+    const addSpy = spy(document, 'addEventListener');
+    const removeSpy = spy(document, 'removeEventListener');
+    try {
+      el.open = true;
+      assert(addSpy.calledWith('keydown'), 'added on open');
+      el.open = false;
+      assert(removeSpy.calledWith('keydown'), 'removed on close');
+      const handler = addSpy.getCalls().find((c) => c.args[0] === 'keydown')
+        .args[1];
+      assert(
+        removeSpy.calledWith('keydown', handler),
+        'removes the same handler'
+      );
+    } finally {
+      addSpy.restore();
+      removeSpy.restore();
+    }
+  });
+
+  it('closes when clicking the backdrop (the host itself)', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog open></media-keyboard-shortcuts-dialog>`
+    );
+    el.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, composed: true })
+    );
+    assert.isFalse(el.open);
+  });
+
+  it('stays open when clicking inside the content', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog open></media-keyboard-shortcuts-dialog>`
+    );
+    const heading = el.shadowRoot.querySelector('h2');
+    heading.dispatchEvent(
+      new MouseEvent('click', { bubbles: true, composed: true })
+    );
+    assert.isTrue(el.open);
+  });
+
+  it('removes document listeners when disconnected', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog open></media-keyboard-shortcuts-dialog>`
+    );
+    el.remove();
+    docKeydown({ key: 'Escape' });
+    assert.isTrue(el.open, 'disconnected dialog ignores document keys');
+  });
+
+  it('re-adds listeners when reconnected while open', async () => {
+    const el = await fixture<MediaKeyboardShortcutsDialog>(
+      `<media-keyboard-shortcuts-dialog open></media-keyboard-shortcuts-dialog>`
+    );
+    const parent = el.parentElement;
+    el.remove();
+    parent.append(el);
+    docKeydown({ key: 'Escape' });
+    assert.isFalse(el.open);
   });
 
   it('does not list a shortcut turned off via the hotkeys attribute', async () => {
@@ -93,15 +246,6 @@ describe('<media-keyboard-shortcuts-dialog>', () => {
     assert.notInclude(listedKeys(el), '←', 'left arrow is not listed');
     assert.include(listedKeys(el), 'j', 'j still seeks back');
     assert.notInclude(listedDescriptions(el), 'Decrease playback rate');
-  });
-
-  it('lists the Shift + / binding last', async () => {
-    const el = await fixture<MediaKeyboardShortcutsDialog>(
-      `<media-keyboard-shortcuts-dialog></media-keyboard-shortcuts-dialog>`
-    );
-
-    assert.equal(listedKeys(el).at(-1), 'SHIFT+/');
-    assert.equal(listedDescriptions(el).at(-1), 'Show keyboard shortcuts');
   });
 
   it('only lists the Shift + / binding when every other key is turned off', async () => {

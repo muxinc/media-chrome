@@ -1,0 +1,142 @@
+---
+title: <media-error-dialog>
+description: Media Error Dialog
+layout: ../../../../layouts/ComponentLayout.astro
+source: https://github.com/muxinc/media-chrome/tree/main/src/js/media-error-dialog.ts
+---
+
+import SandpackContainer from "../../../../components/SandpackContainer.astro";
+
+The `<media-error-dialog>` component displays a message when the media element fails with an error. It is hidden by default and opens automatically when the media element fires an `error` event. It closes again when the media is reset, for example, by assigning a new `src` or calling `load()` (which fires `emptied` event) or when playback resumes (`playing` event).
+
+## Default usage
+
+`<media-controller>` doesn't add this component for you. Place it in the `dialog` slot so it renders on top of the media.
+
+The example below uses a source that doesn't exist, which triggers a `MEDIA_ERR_SRC_NOT_SUPPORTED` error.
+
+<SandpackContainer
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/this-video-does-not-exist.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-error-dialog slot="dialog"></media-error-dialog>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-range></media-time-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+## Default error messages
+
+The dialog shows a title and a message based on the [`MediaError` code](https://developer.mozilla.org/en-US/docs/Web/API/MediaError/code):
+
+| Code | Constant                      | Title                  |
+| ---- | ----------------------------- | ---------------------- |
+| 1    | `MEDIA_ERR_ABORTED`           | _Not shown_            |
+| 2    | `MEDIA_ERR_NETWORK`           | Network Error          |
+| 3    | `MEDIA_ERR_DECODE`            | Decode Error           |
+| 4    | `MEDIA_ERR_SRC_NOT_SUPPORTED` | Source Not Supported   |
+| 5    | `MEDIA_ERR_ENCRYPTED`         | Encryption Error       |
+
+`MEDIA_ERR_ABORTED` means the user or the browser stopped fetching the media on purpose, so the dialog stays closed. For any other code, the title is `Error <code>` and the message is the error's own `message`.
+
+The default titles and messages can be translated. See [Adding language support](/docs/en/internationalization/adding-language-support).
+
+## Customize error content
+
+You can replace the content for a specific error code using slots:
+
+- `error-<code>` replaces the whole content (title and message).
+- `error-<code>-title` replaces only the title.
+- `error-<code>-message` replaces only the message.
+
+### Replace the whole content
+
+Everything assigned to the `error-<code>` slot replaces the default title and message, so you can use any markup, such as icons or links.
+
+<SandpackContainer
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/this-video-does-not-exist.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-error-dialog slot="dialog">
+    <div slot="error-4" style="text-align: center">
+      <div style="font-size: 3em">📼</div>
+      <strong>This tape got tangled.</strong>
+      <p>
+        Double-check the video URL, or
+        <a href="https://github.com/muxinc/media-chrome/issues" target="_blank" style="color: inherit">let us know</a>.
+      </p>
+    </div>
+  </media-error-dialog>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-range></media-time-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+### Replace only the title or message
+
+Use `error-<code>-title` or `error-<code>-message` to keep one of the defaults and replace the other.
+
+<SandpackContainer
+  html={`<media-controller>
+  <video
+    slot="media"
+    src="https://stream.mux.com/this-video-does-not-exist.mp4"
+    playsinline
+    muted
+  ></video>
+  <media-error-dialog slot="dialog">
+    <h3 slot="error-4-title">We can't play this video</h3>
+  </media-error-dialog>
+  <media-control-bar>
+    <media-play-button></media-play-button>
+    <media-time-range></media-time-range>
+  </media-control-bar>
+</media-controller>`}
+/>
+
+### Formatting messages with JavaScript
+
+To build the content from the error object itself, override the static `formatErrorMessage()` method in a subclass. It receives the `mediaError` object and returns an HTML string. Media elements that add extra fields to their `error` object can use this to show more detail.
+
+```js
+const MediaErrorDialog = customElements.get('media-error-dialog');
+
+class MyErrorDialog extends MediaErrorDialog {
+  static formatErrorMessage(error) {
+    return `<h3>Something went wrong (${error.code})</h3><p>${error.message}</p>`;
+  }
+}
+
+customElements.define('my-error-dialog', MyErrorDialog);
+```
+
+```html
+<media-controller>
+  <video slot="media" src="..."></video>
+  <my-error-dialog slot="dialog"></my-error-dialog>
+</media-controller>
+```
+
+## Styling with attributes
+
+When an error occurs, `<media-controller>` sets the `mediaerrorcode` attribute on itself, and `<media-error-dialog>` gets both `mediaerrorcode` and `mediaerrormessage`. They are removed when the error clears. You can use `mediaerrorcode` to style other parts of the player, for example to hide the control bar while an error is displayed:
+
+```css
+media-controller[mediaerrorcode] media-control-bar {
+  display: none;
+}
+```
+
+The `open` attribute is set on `<media-error-dialog>` while it is visible.

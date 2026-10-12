@@ -17,7 +17,7 @@ const {
 const currentPage = Astro.url.pathname;
 ---
 
-<MainLayout {...Astro.props}>
+<MainLayout {...Astro.props} banner={false}>
   <LeftSidebar slot="left-sidebar" currentPage={currentPage} sidebar={leftSidebar} />
 
   <slot />

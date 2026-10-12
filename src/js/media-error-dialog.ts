@@ -56,6 +56,11 @@ const observedAttributes: string[] = [
 ];
 
 /**
+ * @slot - Not used; assign content to an `error-{code}` slot.
+ * @slot error-{code} - Replaces the whole content for the given error code, e.g. `error-4`.
+ * @slot error-{code}-title - Replaces the title for the given error code, e.g. `error-4-title`.
+ * @slot error-{code}-message - Replaces the message for the given error code, e.g. `error-4-message`.
+ *
  * @attr {number} mediaerrorcode - (read-only) The error code for the current media error.
  * @attr {string} mediaerrormessage - (read-only) The error message for the current media error.
  *

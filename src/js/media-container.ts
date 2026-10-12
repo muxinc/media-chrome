@@ -8,7 +8,11 @@
   * Auto-hide controls on inactivity while playing
 */
 import { globalThis } from './utils/server-safe-globals.js';
-import { MediaUIAttributes, MediaStateChangeEvents } from './constants.js';
+import {
+  MediaUIAttributes,
+  MediaStateChangeEvents,
+  StreamTypes,
+} from './constants.js';
 import { observeResize, unobserveResize } from './utils/resize-observer.js';
 // Guarantee that `<media-gesture-receiver/>` is available for use in the template
 import './media-gesture-receiver.js';
@@ -206,9 +210,18 @@ function getTemplateHTML(_attrs: Record<string, string>) {
       ${
         /* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''
       }
+      ${
+        /* Hide the poster once playback started: played, or moved off 0 (e.g. seeked while paused).
+         * The current time check only applies to on-demand media, since live streams start off 0. */ ''
+      }
       :host(:not([${Attributes.AUDIO}])[${
         MediaUIAttributes.MEDIA_HAS_PLAYED
-      }]) slot[name=poster] {
+      }]) slot[name=poster],
+      :host(:not([${Attributes.AUDIO}])[${
+        MediaUIAttributes.MEDIA_STREAM_TYPE
+      }="${StreamTypes.ON_DEMAND}"][${
+        MediaUIAttributes.MEDIA_CURRENT_TIME
+      }]:not([${MediaUIAttributes.MEDIA_CURRENT_TIME}="0"])) slot[name=poster] {
         display: none;
       }
 

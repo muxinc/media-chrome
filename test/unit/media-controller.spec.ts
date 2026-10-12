@@ -2,6 +2,7 @@ import {
   assert,
   fixture,
   nextFrame,
+  oneEvent,
   waitUntil,
 } from '@open-wc/testing';
 import { MediaStateReceiverAttributes } from '../../src/js/constants.js';
@@ -440,6 +441,51 @@ describe('receiving state / dispatching (bubbling) events', function () {
       { timeout: 29000 }
     );
     assert(true, 'mediacurrenttime is 2');
+  });
+
+  it('updates mediacurrenttime when a seek starts, before it completes', async () => {
+    if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
+      await oneEvent(video, 'loadedmetadata');
+    }
+
+    // Registered after the media store's listener, so the store has handled `seeking` by now.
+    const seeking = oneEvent(video, 'seeking');
+    video.currentTime = 5;
+    await seeking;
+
+    assert.equal(
+      mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME),
+      '5'
+    );
+  });
+
+  it('hides the poster when seeking while paused', async () => {
+    const poster = document.createElement('img');
+    poster.slot = 'poster';
+    mediaController.append(poster);
+    const posterSlot = mediaController.shadowRoot.querySelector(
+      'slot[name=poster]'
+    ) as HTMLSlotElement;
+
+    assert.notEqual(getComputedStyle(posterSlot).display, 'none');
+
+    div.dispatchEvent(
+      new CustomEvent(MediaUIEvents.MEDIA_SEEK_REQUEST, {
+        detail: 2,
+        bubbles: true,
+      })
+    );
+
+    await waitUntil(
+      () => getComputedStyle(posterSlot).display === 'none',
+      'poster was not hidden after seeking',
+      { timeout: 29000 }
+    );
+    assert.isTrue(video.paused, 'video is still paused');
+    assert.isFalse(
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_HAS_PLAYED),
+      'mediahasplayed is not set by a seek'
+    );
   });
 
   (isSafari ? it.skip : it)('can change volume', async () => {

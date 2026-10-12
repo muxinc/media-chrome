@@ -47,4 +47,63 @@ describe('<media-container>', () => {
     video.remove();
     assert.equal(mediaContainer.media, null);
   });
+
+  describe('poster visibility', () => {
+    let mediaContainer: MediaContainer;
+    const posterDisplay = () =>
+      getComputedStyle(
+        mediaContainer.shadowRoot.querySelector('slot[name=poster]')
+      ).display;
+
+    beforeEach(async () => {
+      mediaContainer = await fixture<MediaContainer>(`
+        <media-container>
+          <img slot="poster" alt="">
+        </media-container>
+      `);
+    });
+
+    it('shows the poster before playback starts', () => {
+      assert.notEqual(posterDisplay(), 'none');
+      mediaContainer.setAttribute('mediastreamtype', 'on-demand');
+      mediaContainer.setAttribute('mediacurrenttime', '0');
+      assert.notEqual(posterDisplay(), 'none');
+    });
+
+    it('hides the poster once the media has played', () => {
+      mediaContainer.setAttribute('mediahasplayed', '');
+      mediaContainer.setAttribute('mediacurrenttime', '0');
+      assert.equal(posterDisplay(), 'none');
+    });
+
+    it('hides the poster when on-demand current time moves off 0', () => {
+      mediaContainer.setAttribute('mediastreamtype', 'on-demand');
+      mediaContainer.setAttribute('mediacurrenttime', '2.5');
+      assert.equal(posterDisplay(), 'none');
+
+      mediaContainer.setAttribute('mediacurrenttime', '0');
+      assert.notEqual(posterDisplay(), 'none');
+    });
+
+    it('keeps the poster for live or unknown streams until played', () => {
+      mediaContainer.setAttribute('mediacurrenttime', '120');
+      assert.notEqual(posterDisplay(), 'none', 'no stream type');
+
+      mediaContainer.setAttribute('mediastreamtype', 'unknown');
+      assert.notEqual(posterDisplay(), 'none', 'unknown stream type');
+
+      mediaContainer.setAttribute('mediastreamtype', 'live');
+      assert.notEqual(posterDisplay(), 'none', 'live stream type');
+
+      mediaContainer.setAttribute('mediahasplayed', '');
+      assert.equal(posterDisplay(), 'none', 'hidden after play');
+    });
+
+    it('keeps the poster visible in audio mode', () => {
+      mediaContainer.setAttribute('audio', '');
+      mediaContainer.setAttribute('mediastreamtype', 'on-demand');
+      mediaContainer.setAttribute('mediacurrenttime', '2.5');
+      assert.notEqual(posterDisplay(), 'none');
+    });
+  });
 });

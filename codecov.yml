@@ -1,0 +1,21 @@
+# https://docs.codecov.com/docs/codecov-yaml
+coverage:
+  status:
+    project:
+      default:
+        # Fail if overall coverage drops by more than 1% vs. the base commit.
+        target: auto
+        threshold: 1%
+    patch:
+      default:
+        # Changed lines in a PR should be reasonably covered.
+        target: 70%
+        informational: true
+
+ignore:
+  # Vendored from React, exercised by the React wrapper, not the unit tests.
+  - 'src/js/react/**'
+
+comment:
+  layout: 'diff, flags, files'
+  require_changes: true
