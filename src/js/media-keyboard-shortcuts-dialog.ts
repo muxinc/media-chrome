@@ -56,10 +56,10 @@ const shortcuts: Shortcut[] = [
 ];
 
 /**
- * The `hotkeys` token that turns `key` off, derived the same way
- * `keyboardShortcutHandler()` checks its blocklist.
+ * The `hotkeys` token that turns `key` off. Shared with `<media-controller>`,
+ * which uses it to check its blocklist.
  */
-function getHotkeyToken(key: string) {
+export function getHotkeyToken(key: string) {
   return key === ' ' ? 'nospace' : `no${key.toLowerCase()}`;
 }
 
