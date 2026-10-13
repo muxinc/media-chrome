@@ -52,6 +52,7 @@ export const MediaUIProps = {
   MEDIA_ERROR_MESSAGE: 'mediaErrorMessage',
   MEDIA_FULLSCREEN_UNAVAILABLE: 'mediaFullscreenUnavailable',
   MEDIA_HAS_PLAYED: 'mediaHasPlayed',
+  MEDIA_HAS_SEEKED: 'mediaHasSeeked',
   MEDIA_HEIGHT: 'mediaHeight',
   MEDIA_IS_AIRPLAYING: 'mediaIsAirplaying',
   MEDIA_IS_CASTING: 'mediaIsCasting',

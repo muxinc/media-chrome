@@ -76,17 +76,24 @@ describe('<media-container>', () => {
       assert.equal(posterDisplay(), 'none');
     });
 
-    it('hides the poster when on-demand current time moves off 0', () => {
+    it('hides the poster once on-demand media has been seeked', () => {
       mediaContainer.setAttribute('mediastreamtype', 'on-demand');
-      mediaContainer.setAttribute('mediacurrenttime', '2.5');
+      mediaContainer.setAttribute('mediahasseeked', '');
       assert.equal(posterDisplay(), 'none');
 
-      mediaContainer.setAttribute('mediacurrenttime', '0');
+      mediaContainer.removeAttribute('mediahasseeked');
+      assert.notEqual(posterDisplay(), 'none');
+    });
+
+    it('keeps the poster when on-demand current time starts off 0 without a seek', () => {
+      // e.g. WebKit reports the first frame's timestamp on load.
+      mediaContainer.setAttribute('mediastreamtype', 'on-demand');
+      mediaContainer.setAttribute('mediacurrenttime', '0.033');
       assert.notEqual(posterDisplay(), 'none');
     });
 
     it('keeps the poster for live or unknown streams until played', () => {
-      mediaContainer.setAttribute('mediacurrenttime', '120');
+      mediaContainer.setAttribute('mediahasseeked', '');
       assert.notEqual(posterDisplay(), 'none', 'no stream type');
 
       mediaContainer.setAttribute('mediastreamtype', 'unknown');
@@ -102,7 +109,7 @@ describe('<media-container>', () => {
     it('keeps the poster visible in audio mode', () => {
       mediaContainer.setAttribute('audio', '');
       mediaContainer.setAttribute('mediastreamtype', 'on-demand');
-      mediaContainer.setAttribute('mediacurrenttime', '2.5');
+      mediaContainer.setAttribute('mediahasseeked', '');
       assert.notEqual(posterDisplay(), 'none');
     });
   });

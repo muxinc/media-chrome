@@ -337,9 +337,10 @@ describe('receiving state / dispatching (bubbling) events', function () {
   it('receives state as attributes from the media', async () => {
     assert(mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED));
     assert(mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED));
-    assert.equal(
-      mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME),
-      '0',
+    // Some browsers (e.g. WebKit) report the first frame's timestamp (e.g. 0.033) instead of 0.
+    assert.isBelow(
+      Number(mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME)),
+      0.1,
       MediaUIAttributes.MEDIA_CURRENT_TIME
     );
     assert.equal(
@@ -485,6 +486,10 @@ describe('receiving state / dispatching (bubbling) events', function () {
       { timeout: 29000 }
     );
     assert.isTrue(video.paused, 'video is still paused');
+    assert.isTrue(
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_HAS_SEEKED),
+      'mediahasseeked is set by a seek'
+    );
     assert.isFalse(
       mediaController.hasAttribute(MediaUIAttributes.MEDIA_HAS_PLAYED),
       'mediahasplayed is not set by a seek'
