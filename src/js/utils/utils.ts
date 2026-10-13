@@ -100,3 +100,15 @@ export const delay = (ms: number): Promise<void> =>
 
 export const capitalize = (str: string) =>
   str && str[0].toUpperCase() + str.slice(1);
+
+const htmlEscapes: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+export function escapeHTML(value: unknown): string {
+  return String(value).replace(/[&<>"']/g, (char) => htmlEscapes[char]);
+}
