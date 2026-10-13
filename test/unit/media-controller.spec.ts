@@ -327,6 +327,11 @@ describe('receiving state / dispatching (bubbling) events', function () {
     video = mediaController.querySelector('video') as HTMLVideoElement;
     div = mediaController.querySelector('div') as HTMLDivElement;
 
+    // The media is fetched over the network, so wait for metadata before tests
+    // rely on state derived from it (duration, stream type, seeking).
+    if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
+      await oneEvent(video, 'loadedmetadata');
+    }
   });
 
   it('receives state as attributes from the media', async () => {
@@ -366,7 +371,9 @@ describe('receiving state / dispatching (bubbling) events', function () {
       new Event(MediaUIEvents.MEDIA_PLAY_REQUEST, { bubbles: true })
     );
 
-    await waitUntil(() => !video.paused, 'video.paused is false');
+    await waitUntil(() => !video.paused, 'video.paused is false', {
+      timeout: 29000,
+    });
     await waitUntil(() =>
       !mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
       'has no mediapaused'
@@ -444,10 +451,6 @@ describe('receiving state / dispatching (bubbling) events', function () {
   });
 
   it('updates mediacurrenttime when a seek starts, before it completes', async () => {
-    if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
-      await oneEvent(video, 'loadedmetadata');
-    }
-
     // Registered after the media store's listener, so the store has handled `seeking` by now.
     const seeking = oneEvent(video, 'seeking');
     video.currentTime = 5;
