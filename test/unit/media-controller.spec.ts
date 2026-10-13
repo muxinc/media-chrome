@@ -327,14 +327,20 @@ describe('receiving state / dispatching (bubbling) events', function () {
     video = mediaController.querySelector('video') as HTMLVideoElement;
     div = mediaController.querySelector('div') as HTMLDivElement;
 
+    // The media is fetched over the network, so wait for metadata before tests
+    // rely on state derived from it (duration, stream type, seeking).
+    if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
+      await oneEvent(video, 'loadedmetadata');
+    }
   });
 
   it('receives state as attributes from the media', async () => {
     assert(mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED));
     assert(mediaController.hasAttribute(MediaUIAttributes.MEDIA_MUTED));
-    assert.equal(
-      mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME),
-      '0',
+    // Some browsers (e.g. WebKit) report the first frame's timestamp (e.g. 0.033) instead of 0.
+    assert.isBelow(
+      Number(mediaController.getAttribute(MediaUIAttributes.MEDIA_CURRENT_TIME)),
+      0.1,
       MediaUIAttributes.MEDIA_CURRENT_TIME
     );
     assert.equal(
@@ -366,7 +372,9 @@ describe('receiving state / dispatching (bubbling) events', function () {
       new Event(MediaUIEvents.MEDIA_PLAY_REQUEST, { bubbles: true })
     );
 
-    await waitUntil(() => !video.paused, 'video.paused is false');
+    await waitUntil(() => !video.paused, 'video.paused is false', {
+      timeout: 29000,
+    });
     await waitUntil(() =>
       !mediaController.hasAttribute(MediaUIAttributes.MEDIA_PAUSED),
       'has no mediapaused'
@@ -444,10 +452,6 @@ describe('receiving state / dispatching (bubbling) events', function () {
   });
 
   it('updates mediacurrenttime when a seek starts, before it completes', async () => {
-    if (video.readyState < HTMLMediaElement.HAVE_METADATA) {
-      await oneEvent(video, 'loadedmetadata');
-    }
-
     // Registered after the media store's listener, so the store has handled `seeking` by now.
     const seeking = oneEvent(video, 'seeking');
     video.currentTime = 5;
@@ -482,9 +486,33 @@ describe('receiving state / dispatching (bubbling) events', function () {
       { timeout: 29000 }
     );
     assert.isTrue(video.paused, 'video is still paused');
+    assert.isTrue(
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_HAS_SEEKED),
+      'mediahasseeked is set by a seek'
+    );
     assert.isFalse(
       mediaController.hasAttribute(MediaUIAttributes.MEDIA_HAS_PLAYED),
       'mediahasplayed is not set by a seek'
+    );
+  });
+
+  it('keeps mediahasseeked after the store recomputes its state', async () => {
+    const seeking = oneEvent(video, 'seeking');
+    video.currentTime = 2;
+    await seeking;
+    assert.isTrue(
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_HAS_SEEKED),
+      'mediahasseeked is set by a seek'
+    );
+
+    // Options changes and new subscribers recompute every state without an event.
+    mediaController.setAttribute('lang', 'es');
+    mediaController.mediaStore.subscribe(() => {})();
+    await nextFrame();
+
+    assert.isTrue(
+      mediaController.hasAttribute(MediaUIAttributes.MEDIA_HAS_SEEKED),
+      'mediahasseeked survives event-less recomputes'
     );
   });
 

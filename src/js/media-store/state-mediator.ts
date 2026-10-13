@@ -213,6 +213,7 @@ export type StateMediator = {
   mediaHeight: ReadonlyFacadeProp<number>;
   mediaPaused: FacadeProp<HTMLMediaElement['paused']>;
   mediaHasPlayed: ReadonlyFacadeProp<boolean>;
+  mediaHasSeeked: ReadonlyFacadeProp<boolean>;
   mediaEnded: ReadonlyFacadeProp<HTMLMediaElement['ended']>;
   mediaPlaybackRate: FacadeProp<HTMLMediaElement['playbackRate']>;
   mediaMuted: FacadeProp<HTMLMediaElement['muted']>;
@@ -303,6 +304,9 @@ export const prepareStateOwners = async (
 const domParser = new globalThis.DOMParser();
 const parseHtmlToText = (text: string) => text ? domParser.parseFromString(text, 'text/html').body.textContent || text : text;
 
+// Media elements that have been seeked since their current source loaded (see `mediaHasSeeked`).
+const seekedMedia = new WeakSet<object>();
+
 export const stateMediator: StateMediator = {
   mediaError: {
     get(stateOwners, event) {
@@ -374,6 +378,22 @@ export const stateMediator: StateMediator = {
       return event.type === 'playing';
     },
     mediaEvents: ['playing', 'emptied'],
+  },
+  mediaHasSeeked: {
+    // Set once the currently loaded media has been seeked. Tracked per media element.
+    // This is done mainly to hide poster on seek before play. Done this way instead of 
+    // checking `currentTime !== 0` because some browsers (mainly WebKit) report > 0 
+    // values on first frame for certain videos. 
+    // (e.g. Webkit reporting 0.033 for mp4 after metadata loads)
+    get(stateOwners, event) {
+      const { media } = stateOwners;
+
+      if (!media) return false;
+      if (event?.type === 'seeking') seekedMedia.add(media);
+      if (event?.type === 'emptied') seekedMedia.delete(media);
+      return seekedMedia.has(media);
+    },
+    mediaEvents: ['seeking', 'emptied'],
   },
   mediaEnded: {
     get(stateOwners) {
