@@ -8,6 +8,7 @@ import {
   setNumericAttr,
   setStringAttr,
 } from './utils/element-utils.js';
+import { escapeHTML } from './utils/utils.js';
 
 type MediaErrorLike = {
   code: number;
@@ -16,6 +17,7 @@ type MediaErrorLike = {
 };
 
 function getSlotTemplateHTML(attrs: Record<string, string>) {
+  const code = +attrs.mediaerrorcode;
   return /*html*/ `
     <style>
       :host {
@@ -32,8 +34,8 @@ function getSlotTemplateHTML(attrs: Record<string, string>) {
         margin-block: 0 .3em;
       }
     </style>
-    <slot name="error-${attrs.mediaerrorcode}" id="content">
-      ${formatErrorMessage({ code: +attrs.mediaerrorcode, message: attrs.mediaerrormessage })}
+    <slot name="error-${code}" id="content">
+      ${formatErrorMessage({ code, message: attrs.mediaerrormessage })}
     </slot>
   `;
 }
@@ -44,9 +46,10 @@ function shouldOpenErrorDialog(error: MediaErrorLike) {
 
 function formatErrorMessage(error: MediaErrorLike) {
   const { title, message } = formatError(error) ?? {};
+  const code = escapeHTML(error.code);
   let html = '';
-  if (title) html += `<slot name="error-${error.code}-title"><h3>${title}</h3></slot>`;
-  if (message) html += `<slot name="error-${error.code}-message"><p>${message}</p></slot>`;
+  if (title) html += `<slot name="error-${code}-title"><h3>${escapeHTML(title)}</h3></slot>`;
+  if (message) html += `<slot name="error-${code}-message"><p>${escapeHTML(message)}</p></slot>`;
   return html;
 }
 
