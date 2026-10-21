@@ -2,6 +2,7 @@ import { assert } from '@open-wc/testing';
 import {
   camelCase,
   constToCamel,
+  escapeHTML,
   isNumericString,
   isValidNumber,
 } from '../../../src/js/utils/utils.js';
@@ -66,5 +67,23 @@ describe('constToCamel', () => {
 
   it('translates snake case to camel case w/ first uppercase ', () => {
     assert.equal(constToCamel('my_cool_prop', true), 'MyCoolProp');
+  });
+});
+
+describe('escapeHTML', () => {
+  it('escapes the characters that start markup or end an attribute', () => {
+    assert.equal(
+      escapeHTML(`<a href="x" title='y'>&</a>`),
+      '&lt;a href=&quot;x&quot; title=&#39;y&#39;&gt;&amp;&lt;/a&gt;'
+    );
+  });
+
+  it('leaves plain text unchanged', () => {
+    assert.equal(escapeHTML('Network Error 2'), 'Network Error 2');
+  });
+
+  it('converts non string values to strings', () => {
+    assert.equal(escapeHTML(4), '4');
+    assert.equal(escapeHTML(undefined), 'undefined');
   });
 });
