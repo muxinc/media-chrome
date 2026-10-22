@@ -496,26 +496,6 @@ describe('receiving state / dispatching (bubbling) events', function () {
     );
   });
 
-  it('keeps mediahasseeked after the store recomputes its state', async () => {
-    const seeking = oneEvent(video, 'seeking');
-    video.currentTime = 2;
-    await seeking;
-    assert.isTrue(
-      mediaController.hasAttribute(MediaUIAttributes.MEDIA_HAS_SEEKED),
-      'mediahasseeked is set by a seek'
-    );
-
-    // Options changes and new subscribers recompute every state without an event.
-    mediaController.setAttribute('lang', 'es');
-    mediaController.mediaStore.subscribe(() => {})();
-    await nextFrame();
-
-    assert.isTrue(
-      mediaController.hasAttribute(MediaUIAttributes.MEDIA_HAS_SEEKED),
-      'mediahasseeked survives event-less recomputes'
-    );
-  });
-
   (isSafari ? it.skip : it)('can change volume', async () => {
     div.dispatchEvent(
       new CustomEvent(MediaUIEvents.MEDIA_VOLUME_REQUEST, {

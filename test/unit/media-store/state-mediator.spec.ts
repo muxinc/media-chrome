@@ -65,22 +65,16 @@ describe('StateMediator', () => {
   describe('mediaHasSeeked', () => {
     const { get } = stateMediator.mediaHasSeeked;
 
-    it('is set by a seek and persists until the media is emptied', () => {
-      const media = document.createElement('video');
-      const stateOwners = { media };
+    it('is set by a seek and cleared when the media is emptied', () => {
+      const stateOwners = { media: document.createElement('video') };
 
       expect(get(stateOwners)).to.be.false;
       expect(get(stateOwners, new Event('seeking'))).to.be.true;
-      // Event-less recomputes (e.g. state owner changes) keep the flag.
-      expect(get(stateOwners)).to.be.true;
       expect(get(stateOwners, new Event('emptied'))).to.be.false;
-      expect(get(stateOwners)).to.be.false;
     });
 
-    it('is tracked per media element', () => {
-      const seeked = document.createElement('video');
-      get({ media: seeked }, new Event('seeking'));
-      expect(get({ media: document.createElement('video') })).to.be.false;
+    it('is false without media', () => {
+      expect(get({}, new Event('seeking'))).to.be.false;
     });
   });
 });

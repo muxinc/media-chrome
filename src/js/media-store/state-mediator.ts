@@ -304,9 +304,6 @@ export const prepareStateOwners = async (
 const domParser = new globalThis.DOMParser();
 const parseHtmlToText = (text: string) => text ? domParser.parseFromString(text, 'text/html').body.textContent || text : text;
 
-// Media elements that have been seeked since their current source loaded (see `mediaHasSeeked`).
-const seekedMedia = new WeakSet<object>();
-
 export const stateMediator: StateMediator = {
   mediaError: {
     get(stateOwners, event) {
@@ -380,8 +377,8 @@ export const stateMediator: StateMediator = {
     mediaEvents: ['playing', 'emptied'],
   },
   mediaHasSeeked: {
-    // Set once the currently loaded media has been seeked. Tracked per media element.
-    // This is done mainly to hide poster on seek before play. Done this way instead of 
+    // Set once the currently loaded media has been seeked, mainly to hide the poster on a seek
+    // before play. Done this way instead of 
     // checking `currentTime !== 0` because some browsers (mainly WebKit) report > 0 
     // values on first frame for certain videos. 
     // (e.g. Webkit reporting 0.033 for mp4 after metadata loads)
@@ -389,9 +386,10 @@ export const stateMediator: StateMediator = {
       const { media } = stateOwners;
 
       if (!media) return false;
-      if (event?.type === 'seeking') seekedMedia.add(media);
-      if (event?.type === 'emptied') seekedMedia.delete(media);
-      return seekedMedia.has(media);
+      // Like `mediaHasPlayed`, event-less state recomputes (e.g. store subscribe/unsubscribe or
+      // option changes) fall back to the media element, which only reports an in-progress seek.
+      if (!event) return !!media.seeking;
+      return event.type === 'seeking';
     },
     mediaEvents: ['seeking', 'emptied'],
   },
