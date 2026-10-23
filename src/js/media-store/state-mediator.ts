@@ -213,6 +213,7 @@ export type StateMediator = {
   mediaHeight: ReadonlyFacadeProp<number>;
   mediaPaused: FacadeProp<HTMLMediaElement['paused']>;
   mediaHasPlayed: ReadonlyFacadeProp<boolean>;
+  mediaHasSeeked: ReadonlyFacadeProp<boolean>;
   mediaEnded: ReadonlyFacadeProp<HTMLMediaElement['ended']>;
   mediaPlaybackRate: FacadeProp<HTMLMediaElement['playbackRate']>;
   mediaMuted: FacadeProp<HTMLMediaElement['muted']>;
@@ -374,6 +375,23 @@ export const stateMediator: StateMediator = {
       return event.type === 'playing';
     },
     mediaEvents: ['playing', 'emptied'],
+  },
+  mediaHasSeeked: {
+    // Set once the currently loaded media has been seeked, mainly to hide the poster on a seek
+    // before play. Done this way instead of 
+    // checking `currentTime !== 0` because some browsers (mainly WebKit) report > 0 
+    // values on first frame for certain videos. 
+    // (e.g. Webkit reporting 0.033 for mp4 after metadata loads)
+    get(stateOwners, event) {
+      const { media } = stateOwners;
+
+      if (!media) return false;
+      // Like `mediaHasPlayed`, event-less state recomputes (e.g. store subscribe/unsubscribe or
+      // option changes) fall back to the media element, which only reports an in-progress seek.
+      if (!event) return !!media.seeking;
+      return event.type === 'seeking';
+    },
+    mediaEvents: ['seeking', 'emptied'],
   },
   mediaEnded: {
     get(stateOwners) {

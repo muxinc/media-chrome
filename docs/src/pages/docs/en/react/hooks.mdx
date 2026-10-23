@@ -213,6 +213,7 @@ Below is a list of all available `MediaState` properties with descriptions.
 |------|------|-------------|
 |`mediaPaused`|`boolean`|`true` if the media is paused, otherwise `false` (i.e. when attempting to play).|
 |`mediaHasPlayed`|`boolean`|`true` if the currently loaded media has played, otherwise `false`. Helpful for things like initial UI transitions or gating whether or not to show a loading indicator on initial media load.|
+|`mediaHasSeeked`|`boolean`|`true` if the currently loaded media has been seeked (including while paused), otherwise `false`. Resets when the media source changes. Media Chrome uses it to hide the poster for on-demand media.|
 |`mediaLoading`|`boolean`|`true` if the media is loading content needed to play for the current playhead time, otherwise `false`. Helpful for conditionally showing a loading indicator and possibly hiding/disabling other UI components.|
 |`mediaEnded`|`boolean`|`true` if the media has ended, otherwise `false`. Gets reset from things like replaying the media.|
 |`mediaPlaybackRate`|`number`|A number representing a multiplier for how fast media is playing or will play. The majority of playback environments have a minimum value of `0` and a maximum value of no more than `3`.|

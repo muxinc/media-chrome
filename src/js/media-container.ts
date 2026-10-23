@@ -211,8 +211,8 @@ function getTemplateHTML(_attrs: Record<string, string>) {
         /* ::slotted([slot=poster]) doesn't work for slot fallback content so hide parent slot instead */ ''
       }
       ${
-        /* Hide the poster once playback started: played, or moved off 0 (e.g. seeked while paused).
-         * The current time check only applies to on-demand media, since live streams start off 0. */ ''
+        /* Hide the poster once playback started: played, or seeked (e.g. while paused).
+         * The seek check only applies to on-demand media, since live streams seek to the live edge on load. */ ''
       }
       :host(:not([${Attributes.AUDIO}])[${
         MediaUIAttributes.MEDIA_HAS_PLAYED
@@ -220,8 +220,8 @@ function getTemplateHTML(_attrs: Record<string, string>) {
       :host(:not([${Attributes.AUDIO}])[${
         MediaUIAttributes.MEDIA_STREAM_TYPE
       }="${StreamTypes.ON_DEMAND}"][${
-        MediaUIAttributes.MEDIA_CURRENT_TIME
-      }]:not([${MediaUIAttributes.MEDIA_CURRENT_TIME}="0"])) slot[name=poster] {
+        MediaUIAttributes.MEDIA_HAS_SEEKED
+      }]) slot[name=poster] {
         display: none;
       }
 
