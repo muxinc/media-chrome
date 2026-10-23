@@ -1,3 +1,20 @@
+## [4.19.4](https://github.com/muxinc/media-chrome/compare/v4.19.3...v4.19.4) (2026-10-23)
+
+
+### Bug Fixes
+
+* don't list disabled hotkeys in the keyboard shortcuts dialog ([#1312](https://github.com/muxinc/media-chrome/issues/1312)) ([9c819e1](https://github.com/muxinc/media-chrome/commit/9c819e10dde67d810e5f00ff12f377573d4323bc)), closes [#1305](https://github.com/muxinc/media-chrome/issues/1305)
+* **error-dialog:** render error attribute values as text ([#1331](https://github.com/muxinc/media-chrome/issues/1331)) ([d862932](https://github.com/muxinc/media-chrome/commit/d8629324c3032363e23aef35235b1ec013fe1693))
+* hide poster on seek for ON_DEMAND streams ([#1322](https://github.com/muxinc/media-chrome/issues/1322)) ([2e7c52e](https://github.com/muxinc/media-chrome/commit/2e7c52eaa19ae02d9d76a7b72dc594062edb8cf4))
+* **i18n:** accept partial dictionaries in addTranslation ([#1321](https://github.com/muxinc/media-chrome/issues/1321)) ([0ddb749](https://github.com/muxinc/media-chrome/commit/0ddb7494ee550755e0ca2734979a49794d8cfcda)), closes [#1314](https://github.com/muxinc/media-chrome/issues/1314)
+
+
+### Performance Improvements
+
+* **tooltip:** avoid recalculating tooltip on every attribute change ([#1325](https://github.com/muxinc/media-chrome/issues/1325)) ([df4ce9a](https://github.com/muxinc/media-chrome/commit/df4ce9aafe0e9d2d39b5b82bc571b187d0b0a6ee))
+
+
+
 ## [4.19.3](https://github.com/muxinc/media-chrome/compare/v4.19.2...v4.19.3) (2026-09-28)
 
 
