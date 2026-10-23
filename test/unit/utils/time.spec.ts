@@ -9,6 +9,15 @@ describe('formatAsTimePhrase', () => {
     assert.equal(formatAsTimePhrase(48932), '13 hours, 35 minutes, 32 seconds');
     assert.equal(formatAsTimePhrase(-3), '3 seconds remaining');
   });
+
+  it('formats times of 24 hours or more', () => {
+    assert.equal(formatAsTimePhrase(86400), '24 hours');
+    assert.equal(formatAsTimePhrase(90061), '25 hours, 1 minute, 1 second');
+    assert.equal(
+      formatAsTimePhrase(-100000),
+      '27 hours, 46 minutes, 40 seconds remaining'
+    );
+  });
 });
 
 describe('formatTime', () => {
