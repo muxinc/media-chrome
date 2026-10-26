@@ -4,6 +4,9 @@ import type { TextTrackLike } from '../../../src/js/utils/TextTrackLike';
 import {
   formatTextTrackObj,
   getTextTracksList,
+  parseTextTracksStr,
+  stringifyTextTrackList,
+  updateTracksModeTo,
 } from '../../../src/js/utils/captions';
 
 describe('module: util/captions', () => {
@@ -117,7 +120,7 @@ describe('module: util/captions', () => {
       const track = { kind: 'subtitles' as TextTrackKinds, language: 'es' };
 
       const actual = formatTextTrackObj(track);
-      const expected = 'es';
+      const expected = 'sb:es:';
 
       expect(actual).to.equal(expected);
     });
@@ -133,6 +136,36 @@ describe('module: util/captions', () => {
       const expected = 'cc:en:English%3A%20with%20descriptions';
 
       expect(actual).to.equal(expected);
+    });
+  });
+  describe('tracks without a label', () => {
+    it('should parse the string formatTextTrackObj() yields back to the same language', () => {
+      const [parsed] = parseTextTracksStr(
+        formatTextTrackObj({
+          kind: 'subtitles' as TextTrackKinds,
+          language: 'es',
+        })
+      );
+
+      expect(parsed.language).to.equal('es');
+    });
+
+    it('should show an unlabeled <track> requested by its serialized form', () => {
+      const video = document.createElement('video');
+      const trackEl = document.createElement('track');
+      trackEl.kind = 'subtitles';
+      trackEl.srclang = 'es';
+      video.append(trackEl);
+      const [track] = Array.from(video.textTracks);
+      expect(track.label).to.equal('');
+      track.mode = 'disabled';
+
+      // This is what media-controller puts in mediasubtitleslist and what the
+      // captions button / menu send back in a show-subtitles request.
+      const serialized = stringifyTextTrackList(video.textTracks);
+      updateTracksModeTo('showing', video.textTracks, serialized);
+
+      expect(track.mode).to.equal('showing');
     });
   });
 });
