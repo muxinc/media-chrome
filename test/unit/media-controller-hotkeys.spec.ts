@@ -335,6 +335,18 @@ describe('<media-controller> hotkeys', () => {
       );
     });
 
+    it('ignores keys pressed with the ctrl modifier', async () => {
+      const { mediaController, store } = await setup();
+      const downs = ['f', 'p', 'c', 'k', 'l', ' ', 'ArrowLeft'].map((key) =>
+        press(mediaController, key, { ctrlKey: true })
+      );
+      assert.deepEqual(
+        uiRequests(store).map((evt) => evt.type),
+        []
+      );
+      downs.forEach((down) => assert.isFalse(down.defaultPrevented));
+    });
+
     it('only handles a shortcut on keyup after a matching keydown', async () => {
       const { mediaController, store } = await setup();
 
