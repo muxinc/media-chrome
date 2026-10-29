@@ -53,11 +53,11 @@ describe('<media-loop-button>', () => {
     expect(handler.firstCall.args[0].detail).to.equal(false);
   });
 
-  it('updates aria-checked when the loop state changes after connect', () => {
+  it('updates aria-pressed when the loop state changes after connect', () => {
     el.setAttribute(MEDIA_LOOP, '');
-    expect(el.getAttribute('aria-checked')).to.equal('true');
+    expect(el.getAttribute('aria-pressed')).to.equal('true');
     el.removeAttribute(MEDIA_LOOP);
-    expect(el.getAttribute('aria-checked')).to.equal('false');
+    expect(el.getAttribute('aria-pressed')).to.equal('false');
   });
 
   it('shows the checked indicator while looping', () => {

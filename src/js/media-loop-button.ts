@@ -71,7 +71,7 @@ class MediaLoopButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
     if (attrName === MediaUIAttributes.MEDIA_LOOP && this.container) {
       this.setAttribute(
-        'aria-checked',
+        'aria-pressed',
         this.mediaLoop ? 'true' : 'false'
       );
     }
