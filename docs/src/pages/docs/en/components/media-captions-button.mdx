@@ -75,7 +75,7 @@ css={`.my-icon {
   border-radius: 5px;
 }
 
-media-captions-button[aria-pressed=true] .my-icon {
+media-captions-button[aria-checked=true] .my-icon {
   font-weight: 700;
   text-decoration: underline;
   color: red;
@@ -101,12 +101,3 @@ media-captions-button[mediasubtitlesshowing] {
   --media-control-background: blue;
 }
 ```
-
-The button also reflects its toggle state through the `aria-pressed` attribute (`"true"` when captions or subtitles are showing, `"false"` otherwise), which can be used as a selector as well.
-```css
-media-captions-button[aria-pressed="true"] {
-  --media-control-background: blue;
-}
-```
-
-> **Note:** Earlier versions used `aria-checked` for this state. Since the button has `role="button"`, `aria-pressed` is the valid ARIA attribute. Update any `[aria-checked]` selectors to `[aria-pressed]`.

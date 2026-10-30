@@ -24,13 +24,13 @@ describe('<media-captions-button>', () => {
       );
     });
 
-    it('has the closed captions label and button role', () => {
+    it('has the closed captions label and switch role', () => {
       expect(el.getAttribute('aria-label')).to.equal(t('closed captions'));
-      expect(el.getAttribute('role')).to.equal('button');
+      expect(el.getAttribute('role')).to.equal('switch');
     });
 
     it('is not checked', () => {
-      expect(el.getAttribute('aria-pressed')).to.equal('false');
+      expect(el.getAttribute('aria-checked')).to.equal('false');
     });
 
     it('shows the off icon and enable tooltip', () => {
@@ -69,7 +69,7 @@ describe('<media-captions-button>', () => {
     });
 
     it('is checked', () => {
-      expect(el.getAttribute('aria-pressed')).to.equal('true');
+      expect(el.getAttribute('aria-checked')).to.equal('true');
     });
 
     it('shows the on icon and disable tooltip', () => {
@@ -95,7 +95,7 @@ describe('<media-captions-button>', () => {
 
     it('becomes unchecked when the showing attribute is removed', () => {
       el.removeAttribute(MEDIA_SUBTITLES_SHOWING);
-      expect(el.getAttribute('aria-pressed')).to.equal('false');
+      expect(el.getAttribute('aria-checked')).to.equal('false');
     });
   });
 
@@ -105,7 +105,7 @@ describe('<media-captions-button>', () => {
     );
     expect(el.mediaSubtitlesList).to.deep.equal([english, frenchCC]);
     // The list alone does not mean subtitles are showing.
-    expect(el.getAttribute('aria-pressed')).to.equal('false');
+    expect(el.getAttribute('aria-checked')).to.equal('false');
   });
 
   it('serializes the subtitles list property to the attribute', async () => {
@@ -120,17 +120,17 @@ describe('<media-captions-button>', () => {
     expect(el.hasAttribute(MEDIA_SUBTITLES_LIST)).to.be.false;
   });
 
-  it('serializes the showing subtitles property and updates aria-pressed', async () => {
+  it('serializes the showing subtitles property and updates aria-checked', async () => {
     const el = await fixture<MediaCaptionsButton>(
       `<media-captions-button></media-captions-button>`
     );
     el.mediaSubtitlesShowing = [english];
     expect(el.getAttribute(MEDIA_SUBTITLES_SHOWING)).to.equal('sb:en:English');
-    expect(el.getAttribute('aria-pressed')).to.equal('true');
+    expect(el.getAttribute('aria-checked')).to.equal('true');
 
     el.mediaSubtitlesShowing = null;
     expect(el.hasAttribute(MEDIA_SUBTITLES_SHOWING)).to.be.false;
-    expect(el.getAttribute('aria-pressed')).to.equal('false');
+    expect(el.getAttribute('aria-checked')).to.equal('false');
   });
 
   it('does not re-set the attribute when the value is unchanged', async () => {
