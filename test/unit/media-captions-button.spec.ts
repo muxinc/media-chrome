@@ -24,9 +24,9 @@ describe('<media-captions-button>', () => {
       );
     });
 
-    it('has the closed captions label and button role', () => {
+    it('has the closed captions label and switch role', () => {
       expect(el.getAttribute('aria-label')).to.equal(t('closed captions'));
-      expect(el.getAttribute('role')).to.equal('button');
+      expect(el.getAttribute('role')).to.equal('switch');
     });
 
     it('is not checked', () => {

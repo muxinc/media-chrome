@@ -57,6 +57,7 @@ class MediaLoopButton extends MediaChromeButton {
 
   connectedCallback() {
     super.connectedCallback();
+    this.setAttribute('role', 'switch');
     this.container = this.shadowRoot?.querySelector('#icon') || null;
     if (this.container) {
       this.container.textContent = t('Loop');
