@@ -57,6 +57,7 @@ class MediaLoopButton extends MediaChromeButton {
 
   connectedCallback() {
     super.connectedCallback();
+    this.setAttribute('role', 'switch');
     this.container = this.shadowRoot?.querySelector('#icon') || null;
     if (this.container) {
       this.container.textContent = t('Loop');
@@ -71,7 +72,7 @@ class MediaLoopButton extends MediaChromeButton {
     super.attributeChangedCallback(attrName, oldValue, newValue);
     if (attrName === MediaUIAttributes.MEDIA_LOOP && this.container) {
       this.setAttribute(
-        'aria-pressed',
+        'aria-checked',
         this.mediaLoop ? 'true' : 'false'
       );
     }
