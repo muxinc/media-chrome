@@ -41,6 +41,8 @@ jobs:
 
       - run: npm run test:unit:all
       - name: Upload coverage to Codecov
+        # Forks have no CODECOV_TOKEN; only PRs may upload tokenless from them.
+        if: github.repository == 'muxinc/media-chrome' || github.event_name == 'pull_request'
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
