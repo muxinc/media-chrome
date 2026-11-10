@@ -1,4 +1,5 @@
 import {
+  aTimeout,
   assert,
   fixture,
   nextFrame,
@@ -270,7 +271,7 @@ describe('<media-controller>', () => {
         ></video>
       </media-controller>
     `);
-    await nextFrame();
+    await aTimeout(0);
 
     // On creation with nohotkeys, should call removeEventListener for keydown
     const removedKeydown = removeEventListenerSpy.calledWith('keydown');
@@ -281,7 +282,7 @@ describe('<media-controller>', () => {
 
     // Remove nohotkeys attribute (should enable hotkeys)
     mediaController.removeAttribute('nohotkeys');
-    await nextFrame();
+    await aTimeout(0);
     const addedKeydown = addEventListenerSpy.calledWith('keydown');
     assert.isTrue(
       addedKeydown,
@@ -290,7 +291,7 @@ describe('<media-controller>', () => {
 
     // Add nohotkeys attribute again (should disable hotkeys)
     mediaController.setAttribute('nohotkeys', '');
-    await nextFrame();
+    await aTimeout(0);
     const removedKeydownCalls = removeEventListenerSpy
       .getCalls()
       .filter((call) => call.args[0] === 'keydown').length;

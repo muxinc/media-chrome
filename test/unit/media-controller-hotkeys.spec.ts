@@ -1,10 +1,4 @@
-import {
-  aTimeout,
-  assert,
-  fixture,
-  nextFrame,
-  waitUntil,
-} from '@open-wc/testing';
+import { aTimeout, assert, fixture, waitUntil } from '@open-wc/testing';
 import { spy, stub } from 'sinon';
 import type { SinonSpy } from 'sinon';
 import { constants } from '../../src/js/index.js';
@@ -503,7 +497,9 @@ describe('<media-controller> hotkeys', () => {
       );
       assert.exists(dialog);
       // Let the dialog finish its (microtask deferred) init before removal.
-      await nextFrame();
+      // A task is enough; rAF-based nextFrame() can stall in a background
+      // WebKit page and time out.
+      await aTimeout(0);
 
       mediaController.remove();
       assert.isFalse(dialog.isConnected);
@@ -914,7 +910,7 @@ describe('<media-controller> media and receivers', () => {
     const { mediaController } = await setup();
     const span = document.createElement('span');
     mediaController.append(span);
-    await nextFrame();
+    await aTimeout(0);
     assert.notInclude(mediaController.mediaStateReceivers, span);
 
     span.setAttribute('mediachromeattributes', 'mediapaused');
