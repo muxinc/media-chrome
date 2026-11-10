@@ -63,7 +63,7 @@ jobs:
       # Caching logic adapted from https://github.com/microsoft/playwright/issues/7249#issuecomment-1385567519
       - name: Store Playwright's Version
         run: |
-          PLAYWRIGHT_VERSION=$(npm view @web/test-runner-playwright dependencies.playwright)
+          PLAYWRIGHT_VERSION=$(node -p "require('playwright/package.json').version")
           echo "Playwright's Version: $PLAYWRIGHT_VERSION"
           echo "PLAYWRIGHT_VERSION=$PLAYWRIGHT_VERSION" >> $GITHUB_ENV
 
