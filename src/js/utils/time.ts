@@ -51,13 +51,15 @@ export const formatAsTimePhrase = (seconds) => {
     // join into a single comma-separated string phrase
     .join(', ');
 
+  // timeString will be empty for anything under 1 second, so we explicitly build '0 seconds'
+  const timePhrase = timeString || toTimeUnitPhrase(0, 2);
+
   // If the time was negative, assume it represents some remaining amount of time/"count down".
   if (negative) {
-    return t('{time} remaining', { time: timeString });
+    return t('{time} remaining', { time: timePhrase });
   }
 
-  // timeString will be empty for 0 seconds, so we explicitly build '0 seconds'
-  return positiveSeconds === 0 ? toTimeUnitPhrase(0, 2) : timeString;
+  return timePhrase;
 };
 
 /**
