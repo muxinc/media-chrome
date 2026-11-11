@@ -48,9 +48,8 @@ describe('media-chrome-button tooltip positioning', () => {
     visibilitySpy = spy(Element.prototype, 'checkVisibility');
   });
 
-  afterEach(async () => {
+  afterEach(() => {
     restore();
-    await resetMouse();
   });
 
   it('does not measure the tooltip on attribute changes while it is hidden', async () => {
@@ -109,13 +108,17 @@ describe('media-chrome-button tooltip positioning', () => {
       type: 'move',
       position: [Math.round(x + width / 2), Math.round(y + height / 2)],
     });
-    expect(el.matches(':hover')).to.be.true;
-    rectSpy.resetHistory();
-    visibilitySpy.resetHistory();
+    try {
+      expect(el.matches(':hover')).to.be.true;
+      rectSpy.resetHistory();
+      visibilitySpy.resetHistory();
 
-    el.toggleAttribute(MediaUIAttributes.MEDIA_PAUSED);
+      el.toggleAttribute(MediaUIAttributes.MEDIA_PAUSED);
 
-    expect(tooltipMeasurements()).to.be.greaterThan(0);
+      expect(tooltipMeasurements()).to.be.greaterThan(0);
+    } finally {
+      await resetMouse();
+    }
   });
 
   it('still repositions the tooltip on attribute changes while keyboard focused', async () => {

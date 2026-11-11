@@ -509,8 +509,6 @@ describe('<media-controller> hotkeys', () => {
       );
       assert.exists(dialog);
       // Let the dialog finish its (microtask deferred) init before removal.
-      // A task is enough; rAF-based nextFrame() can stall in a background
-      // WebKit page and time out.
       await aTimeout(0);
 
       mediaController.remove();
