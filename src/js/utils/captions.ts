@@ -24,7 +24,10 @@ export const splitTextTracksStr = (textTracksStr = ''): string[] =>
  */
 export const parseTextTrackStr = (textTrackStr = ''): TextTrackLike => {
   const [kind, language, encodedLabel] = textTrackStr.split(':');
-  const label = encodedLabel ? decodeURIComponent(encodedLabel) : undefined;
+  // An empty label segment ("sb:es:") is a track whose label is "", which is
+  // what the browser reports for a <track> without a label attribute.
+  const label =
+    encodedLabel !== undefined ? decodeURIComponent(encodedLabel) : undefined;
   return {
     kind: kind === 'cc' ? TextTrackKinds.CAPTIONS : TextTrackKinds.SUBTITLES,
     language,
@@ -95,14 +98,15 @@ export const parseTracks = (trackOrTracks: TrackOrTracks): TextTrackLike[] => {
 /**
  * Translates a TextTrack-like object into a well-defined string representation for the TextTrack
  * @param obj - A TextTrack or TextTrack-like object
- * @returns {string} A string representing a TextTrack with the format: "language[:label]"
+ * @returns {string} A string representing a TextTrack with the format: "kind:language:label" (kind is "cc" or "sb", the label may be empty)
  */
 export const formatTextTrackObj = (
   { kind, label, language }: TextTrackLike = { kind: 'subtitles' }
 ): string => {
-  if (!label) return language;
+  // Always keep the kind and language, even without a label, so that
+  // parseTextTrackStr() can read the string back (it splits on ":").
   return `${kind === 'captions' ? 'cc' : 'sb'}:${language}:${encodeURIComponent(
-    label
+    label ?? ''
   )}`;
 };
 
