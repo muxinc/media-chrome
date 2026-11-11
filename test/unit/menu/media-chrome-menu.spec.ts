@@ -714,6 +714,27 @@ describe('<media-chrome-menu>', () => {
     });
   });
 
+  describe('resize observation', () => {
+    it('stops observing its bounds element when disconnected', async () => {
+      // The bounds element defaults to the parent, which can't be resolved
+      // anymore once the menu is removed, so it must not be looked up again.
+      const container = await fixture(html`
+        <div><media-chrome-menu></media-chrome-menu></div>
+      `);
+      const menu = container.querySelector(
+        'media-chrome-menu'
+      ) as MediaChromeMenu;
+      const unobserve = spy(ResizeObserver.prototype, 'unobserve');
+
+      try {
+        menu.remove();
+        assert.isTrue(unobserve.calledWith(container));
+      } finally {
+        unobserve.restore();
+      }
+    });
+  });
+
   describe('layout', () => {
     it('enables the row layout via --media-menu-layout', async () => {
       const menu = await fixture<MediaChromeMenu>(html`

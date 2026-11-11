@@ -328,6 +328,9 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   #mutationObserver: MutationObserver;
   #isPopover = false;
   #cssRule: CSSStyleRule | null = null;
+  // The bounds element is resolved from the DOM (e.g. parentElement), which
+  // changes once the menu is disconnected, so keep the one actually observed.
+  #observedBoundsElement: HTMLElement | null = null;
 
   container: HTMLElement;
   defaultSlot: HTMLSlotElement;
@@ -411,8 +414,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.#mediaController?.associateElement?.(this);
 
     if (!this.hidden) {
-      observeResize(getBoundsElement(this), this.#handleBoundsResize);
-      observeResize(this, this.#handleMenuResize);
+      this.#observeResize();
     }
 
     // Required when using declarative shadow DOM.
@@ -424,8 +426,7 @@ class MediaChromeMenu extends globalThis.HTMLElement {
   disconnectedCallback(): void {
     this.#mutationObserver.disconnect();
 
-    unobserveResize(getBoundsElement(this), this.#handleBoundsResize);
-    unobserveResize(this, this.#handleMenuResize);
+    this.#unobserveResize();
 
     this.disable();
 
@@ -619,14 +620,28 @@ class MediaChromeMenu extends globalThis.HTMLElement {
     this.addEventListener('transitionend', () => this.focus(), { once: true });
 
     // A resize callback is also fired when the menu is opened.
-    observeResize(getBoundsElement(this), this.#handleBoundsResize);
-    observeResize(this, this.#handleMenuResize);
+    this.#observeResize();
   }
 
   #handleClosed() {
     this.#invokerElement?.setAttribute('aria-expanded', 'false');
 
-    unobserveResize(getBoundsElement(this), this.#handleBoundsResize);
+    this.#unobserveResize();
+  }
+
+  #observeResize() {
+    // Drop a previous bounds element in case the menu moved since.
+    this.#unobserveResize();
+    this.#observedBoundsElement = getBoundsElement(this);
+    observeResize(this.#observedBoundsElement, this.#handleBoundsResize);
+    observeResize(this, this.#handleMenuResize);
+  }
+
+  #unobserveResize() {
+    if (this.#observedBoundsElement) {
+      unobserveResize(this.#observedBoundsElement, this.#handleBoundsResize);
+      this.#observedBoundsElement = null;
+    }
     unobserveResize(this, this.#handleMenuResize);
   }
 
