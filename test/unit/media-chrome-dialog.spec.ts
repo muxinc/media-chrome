@@ -1,4 +1,4 @@
-import { assert, fixture, nextFrame } from '@open-wc/testing';
+import { aTimeout, assert, fixture } from '@open-wc/testing';
 import { spy } from 'sinon';
 import { MediaChromeDialog } from '../../src/js/media-chrome-dialog.js';
 import { InvokeEvent } from '../../src/js/utils/events.js';
@@ -35,7 +35,7 @@ describe('<media-chrome-dialog>', () => {
     const el = await fixture<MediaChromeDialog>(
       `<media-chrome-dialog></media-chrome-dialog>`
     );
-    await nextFrame();
+    await aTimeout(0);
     const sheet = el.shadowRoot.querySelector('style').sheet;
     const hostRule = Array.from(sheet.cssRules).find(
       (rule) => (rule as CSSStyleRule).selectorText === ':host'

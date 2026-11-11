@@ -1,10 +1,4 @@
-import {
-  aTimeout,
-  assert,
-  fixture,
-  nextFrame,
-  waitUntil,
-} from '@open-wc/testing';
+import { aTimeout, assert, fixture, waitUntil } from '@open-wc/testing';
 import { spy, stub } from 'sinon';
 import type { SinonSpy } from 'sinon';
 import { constants } from '../../src/js/index.js';
@@ -335,6 +329,18 @@ describe('<media-controller> hotkeys', () => {
       );
     });
 
+    it('ignores keys pressed with the ctrl modifier', async () => {
+      const { mediaController, store } = await setup();
+      const downs = ['f', 'p', 'c', 'k', 'l', ' ', 'ArrowLeft'].map((key) =>
+        press(mediaController, key, { ctrlKey: true })
+      );
+      assert.deepEqual(
+        uiRequests(store).map((evt) => evt.type),
+        []
+      );
+      downs.forEach((down) => assert.isFalse(down.defaultPrevented));
+    });
+
     it('only handles a shortcut on keyup after a matching keydown', async () => {
       const { mediaController, store } = await setup();
 
@@ -503,7 +509,9 @@ describe('<media-controller> hotkeys', () => {
       );
       assert.exists(dialog);
       // Let the dialog finish its (microtask deferred) init before removal.
-      await nextFrame();
+      // A task is enough; rAF-based nextFrame() can stall in a background
+      // WebKit page and time out.
+      await aTimeout(0);
 
       mediaController.remove();
       assert.isFalse(dialog.isConnected);
@@ -914,7 +922,7 @@ describe('<media-controller> media and receivers', () => {
     const { mediaController } = await setup();
     const span = document.createElement('span');
     mediaController.append(span);
-    await nextFrame();
+    await aTimeout(0);
     assert.notInclude(mediaController.mediaStateReceivers, span);
 
     span.setAttribute('mediachromeattributes', 'mediapaused');

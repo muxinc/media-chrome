@@ -137,7 +137,7 @@
   },
   "overrides": {
     "source-map": "^0.7.4",
-    "playwright": "1.49.1"
+    "playwright": "1.65.0"
   },
   "prettier": {
     "trailingComma": "es5",
