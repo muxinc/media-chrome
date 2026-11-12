@@ -1,3 +1,18 @@
+## [4.19.5](https://github.com/muxinc/media-chrome/compare/v4.19.4...v4.19.5) (2026-11-12)
+
+
+### Bug Fixes
+
+* **a11y:** use aria-pressed on captions and loop buttons ([#1337](https://github.com/muxinc/media-chrome/issues/1337)) ([5e0f39e](https://github.com/muxinc/media-chrome/commit/5e0f39e54894f9509b433b46d0fef831148856eb)), closes [#1334](https://github.com/muxinc/media-chrome/issues/1334) [#1197](https://github.com/muxinc/media-chrome/issues/1197) [#1202](https://github.com/muxinc/media-chrome/issues/1202) [#1258](https://github.com/muxinc/media-chrome/issues/1258)
+* format time phrases of 24 hours or more ([#1329](https://github.com/muxinc/media-chrome/issues/1329)) ([04eaf1d](https://github.com/muxinc/media-chrome/commit/04eaf1d5a8a8ae6b3e7017784e144548feaee728)), closes [#1328](https://github.com/muxinc/media-chrome/issues/1328)
+* format time phrases under 1 second as 0 seconds ([#1340](https://github.com/muxinc/media-chrome/issues/1340)) ([cd80c51](https://github.com/muxinc/media-chrome/commit/cd80c5197341186ed027a47deac4509297439b04)), closes [#1339](https://github.com/muxinc/media-chrome/issues/1339) [#1300](https://github.com/muxinc/media-chrome/issues/1300)
+* hide poster on seek with mediaHasSeeked, fix flaky webkit tests ([#1330](https://github.com/muxinc/media-chrome/issues/1330)) ([cc8bad3](https://github.com/muxinc/media-chrome/commit/cc8bad30032a6d9a217145a1a01029772f31608b)), closes [muxinc/media-chrome#1322](https://github.com/muxinc/media-chrome/issues/1322) [#1322](https://github.com/muxinc/media-chrome/issues/1322)
+* ignore hotkeys pressed with the ctrl modifier ([#1333](https://github.com/muxinc/media-chrome/issues/1333)) ([cd58a99](https://github.com/muxinc/media-chrome/commit/cd58a995c2b22d0a6aa22b75d0392dd89eb50d89)), closes [#1332](https://github.com/muxinc/media-chrome/issues/1332)
+* keep kind and language when serializing unlabeled text tracks ([#1336](https://github.com/muxinc/media-chrome/issues/1336)) ([6164c72](https://github.com/muxinc/media-chrome/commit/6164c72fd7053802770cfcdbc9d20d6555e07e23)), closes [#1335](https://github.com/muxinc/media-chrome/issues/1335)
+* show a name for unlabeled tracks in captions and audio menus ([#1343](https://github.com/muxinc/media-chrome/issues/1343)) ([002d657](https://github.com/muxinc/media-chrome/commit/002d6579784641b729dc110cac6019d8559f6c30)), closes [#1336](https://github.com/muxinc/media-chrome/issues/1336) [#1336](https://github.com/muxinc/media-chrome/issues/1336) [#1336](https://github.com/muxinc/media-chrome/issues/1336)
+
+
+
 ## [4.19.4](https://github.com/muxinc/media-chrome/compare/v4.19.3...v4.19.4) (2026-10-23)
 
 
