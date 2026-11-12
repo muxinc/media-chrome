@@ -162,4 +162,14 @@ describe('<media-audio-track-menu>', () => {
     );
     assert.notExists(el.anchorElement);
   });
+
+  it('names unlabeled tracks by language, then kind, then "Audio"', () => {
+    menu.mediaAudioTrackList = [
+      { id: '1', kind: 'main', language: 'en', label: '' },
+      { id: '2', kind: 'alternative', language: '', label: '' },
+      { id: '3', kind: '' as TextTrackKind, language: '', label: '' },
+    ];
+
+    assert.deepEqual(labels(menu), ['en', 'alternative', 'Audio']);
+  });
 });

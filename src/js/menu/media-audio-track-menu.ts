@@ -12,6 +12,18 @@ import {
   getMediaController,
 } from '../utils/element-utils.js';
 import { TextTrackLike } from '../utils/TextTrackLike.js';
+import { t } from '../utils/i18n.js';
+
+/**
+ * Visible name for an audio track: its label, else its language, else its
+ * kind, else a generic "Audio". Mirrors Video.js v10.
+ */
+function formatTrackLabel(track: TextTrackLike): string {
+  if (track.label) return track.label;
+  if (track.language) return track.language;
+  if (track.kind) return track.kind;
+  return t('Audio');
+}
 
 /**
  * @extends {MediaChromeMenu}
@@ -109,7 +121,10 @@ class MediaAudioTrackMenu extends MediaChromeMenu {
     
     audioTrackList.sort((a, b) => a.id.localeCompare(b.id, undefined, {numeric: true}));
     for (const audioTrack of audioTrackList) {
-      const text = this.formatMenuItemText(audioTrack.label, audioTrack);
+      const text = this.formatMenuItemText(
+        formatTrackLabel(audioTrack),
+        audioTrack
+      );
 
       const item = createMenuItem({
         type: 'radio',

@@ -222,4 +222,20 @@ describe('<media-captions-menu>', () => {
       controller.querySelector('media-captions-menu-button')
     );
   });
+
+  it('names unlabeled tracks by language, then "Captions"', () => {
+    menu.setAttribute('mediasubtitleslist', 'sb:es: cc:: sb:: sb:en:English');
+
+    assert.deepEqual(labels(menu), [
+      'Off',
+      'es',
+      'Captions',
+      'Captions',
+      'English',
+    ]);
+    assert.deepEqual(
+      menu.items.map((item) => item.value),
+      ['off', 'sb:es:', 'cc::', 'sb::', 'sb:en:English']
+    );
+  });
 });

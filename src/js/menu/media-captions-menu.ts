@@ -27,6 +27,17 @@ function getTemplateHTML(_attrs: Record<string, string>) {
 }
 
 /**
+ * Visible name for a text track: its label, else its language, else a
+ * generic "Captions". Mirrors Video.js v10, except that the last fallback
+ * does not depend on the track kind.
+ */
+function formatTrackLabel(track: TextTrackLike): string {
+  if (track.label) return track.label;
+  if (track.language) return track.language;
+  return t('Captions');
+}
+
+/**
  * @extends {MediaChromeMenu}
  *
  * @slot - Default slotted elements.
@@ -141,7 +152,7 @@ class MediaCaptionsMenu extends MediaChromeMenu {
     for (const subs of subtitlesList) {
       const item = createMenuItem({
         type: 'radio',
-        text: this.formatMenuItemText(subs.label, subs),
+        text: this.formatMenuItemText(formatTrackLabel(subs), subs),
         value: formatTextTrackObj(subs),
         checked: this.value == formatTextTrackObj(subs),
       });
