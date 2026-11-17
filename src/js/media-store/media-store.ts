@@ -202,11 +202,10 @@ export const createMediaStore = ({
     pendingStateOwners = nextStateOwners;
 
     await prepareStateOwners(...Object.values(nextStateOwnersDelta));
-    if (nextStateOwners !== pendingStateOwners) return;
 
     const shouldMonitorStateOwners =
       !monitorStateOwnersOnlyWithSubscriptions || callbacks.length > 0;
-    // Subscription changes must not wait for a replacement owner to be ready.
+    // Reconcile subscriptions even if a pending replacement superseded this update.
     if (
       stateOwnersInitialized &&
       monitoringStateOwners !== shouldMonitorStateOwners
@@ -214,6 +213,7 @@ export const createMediaStore = ({
       applyStateOwners(stateOwners);
     }
 
+    if (nextStateOwners !== pendingStateOwners) return;
     await prepareStateOwners(...Object.values(nextStateOwners));
     // Only apply the latest fully prepared owners.
     if (nextStateOwners !== pendingStateOwners) return;

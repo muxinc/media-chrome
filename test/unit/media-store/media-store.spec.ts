@@ -413,4 +413,123 @@ describe('MediaStore subscription monitoring', () => {
     expect(store.getState().mediaCurrentTime).to.equal(2);
     unsubscribeAgain();
   });
+
+  for (const type of [
+    'mediaelementchangerequest',
+    'documentelementchangerequest',
+    'fullscreenelementchangerequest',
+  ]) {
+    it(`tears down current owners when unsubscribe precedes pending ${type}`, async () => {
+      const owners = createOwners();
+      const { store, customMonitors } = createStore(owners);
+      const unsubscribe = store.subscribe(() => {});
+      await settle();
+      const pending = pendingMedia();
+      try {
+        unsubscribe();
+        store.dispatch({ type, detail: pending.media });
+        await settle();
+        expectListeners(owners, 0);
+        expect(customMonitors()).to.equal(0);
+        const snapshot = store.getState();
+        owners.media.value = 41;
+        targets(owners).forEach((owner) => {
+          owner.dispatchEvent(new Event('timeupdate'));
+          owner.dispatchEvent(new Event('change'));
+        });
+        expect(store.getState()).to.equal(snapshot);
+      } finally {
+        pending.define();
+        await settle();
+      }
+      expectListeners(owners, 0);
+      expect(customMonitors()).to.equal(0);
+    });
+
+    it(`restores current owners when subscribe precedes pending ${type}`, async () => {
+      const owners = createOwners();
+      const { store, customMonitors } = createStore(owners);
+      await settle();
+      const pending = pendingMedia();
+      const unsubscribe = store.subscribe(() => {});
+      try {
+        store.dispatch({ type, detail: pending.media });
+        await settle();
+        expectListeners(owners, 1);
+        expect(customMonitors()).to.equal(1);
+        owners.media.value = 42;
+        owners.media.dispatchEvent(new Event('timeupdate'));
+        expect(store.getState().mediaCurrentTime).to.equal(42);
+        unsubscribe();
+        await settle();
+        expectListeners(owners, 0);
+        expect(customMonitors()).to.equal(0);
+      } finally {
+        unsubscribe();
+        pending.define();
+        await settle();
+      }
+    });
+  }
+
+  it('uses the latest subscriber count across same-turn churn and multiple pending owner kinds', async () => {
+    const owners = createOwners();
+    const { store, customMonitors } = createStore(owners);
+    const first = store.subscribe(() => {});
+    await settle();
+    const media = pendingMedia();
+    const root = pendingMedia();
+    try {
+      first();
+      const second = store.subscribe(() => {});
+      store.dispatch({ type: 'mediaelementchangerequest', detail: media.media });
+      second();
+      store.dispatch({ type: 'documentelementchangerequest', detail: root.media });
+      await settle();
+      expectListeners(owners, 0);
+      expect(customMonitors()).to.equal(0);
+      const third = store.subscribe(() => {});
+      await settle();
+      expectListeners(owners, 1);
+      expect(customMonitors()).to.equal(1);
+      third();
+      await settle();
+      expectListeners(owners, 0);
+      expect(customMonitors()).to.equal(0);
+    } finally {
+      media.define();
+      root.define();
+      await settle();
+    }
+  });
+
+  it('reconciles a reentrant unsubscribe followed by a pending replacement during projection', async () => {
+    const owners = createOwners();
+    const { store, customMonitors } = createStore(owners);
+    const first = store.subscribe(() => {});
+    await settle();
+    first();
+    await settle();
+    owners.media.value = 43;
+    const pending = pendingMedia();
+    let unsubscribe = () => {};
+    let replaced = false;
+    try {
+      unsubscribe = store.subscribe((state) => {
+        if (state.mediaCurrentTime === 43 && !replaced) {
+          replaced = true;
+          unsubscribe();
+          store.dispatch({ type: 'mediaelementchangerequest', detail: pending.media });
+        }
+      });
+      await settle();
+      expect(replaced).to.equal(true);
+      expectListeners(owners, 0);
+      expect(customMonitors()).to.equal(0);
+    } finally {
+      unsubscribe();
+      pending.define();
+      await settle();
+    }
+  });
 });
