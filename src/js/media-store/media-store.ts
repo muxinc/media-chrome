@@ -189,21 +189,42 @@ export const createMediaStore = ({
   // and will re-compute the general next state whenever any "state owner" is set or updated,
   // which includes the media element, but also the documentElement and the fullscreenElement
   // This is roughly equivalent to what used to be in `mediaSetCallback`/`mediaUnsetCallback` (CJP)
-  let nextStateOwners = undefined;
-  const updateStateOwners = async (
-    nextStateOwnersDelta: any,
-    nextSubscriberCount?: number
-  ) => {
-    const pendingUpdate = !!nextStateOwners;
-    nextStateOwners = {
+  let pendingStateOwners: any = undefined;
+  let monitoringStateOwners = false;
+  let stateOwnersInitialized = false;
+  const updateStateOwners = async (nextStateOwnersDelta: any) => {
+    const nextStateOwners = {
       ...stateOwners,
-      ...(nextStateOwners ?? {}),
+      ...(pendingStateOwners ?? {}),
       ...nextStateOwnersDelta,
     };
 
-    if (pendingUpdate) return;
+    pendingStateOwners = nextStateOwners;
 
     await prepareStateOwners(...Object.values(nextStateOwnersDelta));
+    if (nextStateOwners !== pendingStateOwners) return;
+
+    const shouldMonitorStateOwners =
+      !monitorStateOwnersOnlyWithSubscriptions || callbacks.length > 0;
+    // Subscription changes must not wait for a replacement owner to be ready.
+    if (
+      stateOwnersInitialized &&
+      monitoringStateOwners !== shouldMonitorStateOwners
+    ) {
+      applyStateOwners(stateOwners);
+    }
+
+    await prepareStateOwners(...Object.values(nextStateOwners));
+    // Only apply the latest fully prepared owners.
+    if (nextStateOwners !== pendingStateOwners) return;
+    applyStateOwners(nextStateOwners);
+    stateOwnersInitialized = true;
+    if (nextStateOwners === pendingStateOwners) pendingStateOwners = undefined;
+  };
+
+  const applyStateOwners = (nextStateOwners: any) => {
+    const shouldMonitorStateOwners =
+      !monitorStateOwnersOnlyWithSubscriptions || callbacks.length > 0;
 
     // Define all of the disparate stateOwner monitoring teardown/setup once, up front.
 
@@ -212,9 +233,7 @@ export const createMediaStore = ({
     // that means they should teardown pre-existing monitoring (e.g. event handlers)
     // whenever the subscribers "head count" goes from > 0 to 0.
     const shouldTeardownFromSubscriberCount =
-      callbacks.length > 0 &&
-      nextSubscriberCount === 0 &&
-      monitorStateOwnersOnlyWithSubscriptions;
+      monitoringStateOwners && !shouldMonitorStateOwners;
 
     // These define whether a particular `stateOwner` (or "sub-owner", e.g. media.textTracks)
     // has changed since the last time this function was invoked. Relevant for both
@@ -275,9 +294,7 @@ export const createMediaStore = ({
     // that means they should teardown pre-existing monitoring (e.g. event handlers)
     // whenever the subscribers "head count" goes from > 0 to 0.
     const shouldSetupFromSubscriberCount =
-      callbacks.length === 0 &&
-      nextSubscriberCount === 1 &&
-      monitorStateOwnersOnlyWithSubscriptions;
+      !monitoringStateOwners && shouldMonitorStateOwners;
 
     // For any particular `stateOwner` (or "sub-owner"), we should setup if and only if:
     // * the new `stateOwner` exists (or is not being replaced) -AND-
@@ -285,27 +302,33 @@ export const createMediaStore = ({
     // * we are configured to start monitoring due to the subscriber "head count".
     const setupMedia =
       !!nextStateOwners.media &&
-      (mediaChanged || shouldSetupFromSubscriberCount);
+      (mediaChanged || shouldSetupFromSubscriberCount) &&
+      shouldMonitorStateOwners;
 
     const setupTextTracks =
       !!nextStateOwners.media?.textTracks &&
-      (textTracksChanged || shouldSetupFromSubscriberCount);
+      (textTracksChanged || shouldSetupFromSubscriberCount) &&
+      shouldMonitorStateOwners;
 
     const setupVideoRenditions =
       !!nextStateOwners.media?.videoRenditions &&
-      (videoRenditionsChanged || shouldSetupFromSubscriberCount);
+      (videoRenditionsChanged || shouldSetupFromSubscriberCount) &&
+      shouldMonitorStateOwners;
 
     const setupAudioTracks =
       !!nextStateOwners.media?.audioTracks &&
-      (audioTracksChanged || shouldSetupFromSubscriberCount);
+      (audioTracksChanged || shouldSetupFromSubscriberCount) &&
+      shouldMonitorStateOwners;
 
     const setupRemote =
       !!nextStateOwners.media?.remote &&
-      (remoteChanged || shouldSetupFromSubscriberCount);
+      (remoteChanged || shouldSetupFromSubscriberCount) &&
+      shouldMonitorStateOwners;
 
     const setupRootNode =
       !!nextStateOwners.documentElement &&
-      (rootNodeChanged || shouldSetupFromSubscriberCount);
+      (rootNodeChanged || shouldSetupFromSubscriberCount) &&
+      shouldMonitorStateOwners;
 
     // This is simply a convenience definition saying we should be setting up *something*
     // used for short circuiting conditions.
@@ -327,8 +350,8 @@ export const createMediaStore = ({
           stateOwners[stateOwnerName] = stateOwner;
         }
       );
+      monitoringStateOwners = shouldMonitorStateOwners;
       updateStateFromFacade();
-      nextStateOwners = undefined;
       return;
     }
 
@@ -485,8 +508,8 @@ export const createMediaStore = ({
     Object.entries(nextStateOwners).forEach(([stateOwnerName, stateOwner]) => {
       stateOwners[stateOwnerName] = stateOwner;
     });
+    monitoringStateOwners = shouldMonitorStateOwners;
     updateStateFromFacade();
-    nextStateOwners = undefined;
   };
 
   updateStateOwners({ media, fullscreenElement, documentElement, options });
@@ -548,9 +571,8 @@ export const createMediaStore = ({
     subscribe(callback) {
       // Since state owner monitoring can change based on subscription "head count",
       // make sure we invoke `updateStateOwners()` whenever someone subscribes.
-      // NOTE: Must do this before updating `callbacks` to compare next vs. previous callback count.
-      updateStateOwners({}, callbacks.length + 1);
       callbacks.push(callback);
+      updateStateOwners({});
 
       // give the callback the current state immediately so it can get whatever the state is currently.
       callback(state);
@@ -559,9 +581,8 @@ export const createMediaStore = ({
         if (idx >= 0) {
           // Since state owner monitoring can change based on subscription "head count",
           // make sure we invoke `updateStateOwners()` whenever someone unsubscribes.
-          // NOTE: Must do this before updating `callbacks` to compare next vs. previous callback count.
-          updateStateOwners({}, callbacks.length - 1);
           callbacks.splice(idx, 1);
+          updateStateOwners({});
         }
       };
     },
